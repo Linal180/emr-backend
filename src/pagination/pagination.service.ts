@@ -1,0 +1,198 @@
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { Between, Equal, FindManyOptions, FindOperator, Repository, JoinOptions, ObjectLiteral, FindConditions, WhereExpressionBuilder, Not, In, Like } from "typeorm";
+import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
+import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
+
+interface whereConditionInput {
+  status?: string | number
+  phychType?: string
+  ageGroupId?: string
+  categoryId?: string
+  createdAt?: FindOperator<string>
+  dueDate?: FindOperator<string>
+  user?: {
+    id: string
+
+  },
+  ageGroups?: {
+    id: string
+  },
+  category?: {
+    id: string
+  },
+}
+interface WhereOptions<Entity = any> {
+  where: whereConditionInput & (FindConditions<Entity>[] | FindConditions<Entity> | ObjectLiteral | string),
+  withDeleted?: boolean
+}
+
+interface FilterOptionsResponse {
+  where?: ObjectLiteral,
+  join?: JoinOptions
+}
+
+@Injectable()
+export class PaginationService {
+
+  /**
+   * Will paginate
+   * @template T 
+   * @param repository 
+   * @param paginationInput 
+   * @returns paginated response PaginationPayloadInterface<T>
+   */
+  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput): Promise<PaginationPayloadInterface<T>> {
+    try {
+      const { associatedTo, relationField, associatedToField } = paginationInput;
+      const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
+      let filterOption: FilterOptionsResponse = null;
+      if (associatedTo && relationField && associatedToField.columnValue) {
+        filterOption = this.getFilterOptions(paginationInput);
+      }
+      const { paginationOptions: { page, limit } } = paginationInput || {};
+      let query: FindManyOptions = null;
+      if (filterOption) {
+        query = {
+          where: (qb: WhereExpressionBuilder) => {
+            qb.where(
+              filterOption.where.str,
+              filterOption.where.obj
+            ).andWhere(where as ObjectLiteral)
+          },
+          skip,
+          take,
+          order,
+        };
+        query.join = filterOption.join;
+      } else {
+        query = {
+          where: (qb: WhereExpressionBuilder) => {
+            qb.where(where as ObjectLiteral)
+          },
+          skip,
+          take,
+          order,
+        }
+      }
+      const [paginatedData, totalCount] = await repository.findAndCount(query);
+      const totalPages = Math.ceil(totalCount / limit)
+
+      if (page > totalPages)
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Page Not Found',
+        });
+
+      return {
+        totalCount,
+        page,
+        limit,
+        totalPages,
+        data: paginatedData,
+      }
+
+    } catch (error) {
+      console.log("error", error)
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Filter options
+   * @param paginationInput 
+   * @returns options 
+   */
+  private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
+    const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
+    const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
+    let where = { str: {}, obj: {} }
+    if (filterType === 'enumFilter') {
+      where = {
+        str: `${associatedTo}.${columnName} IN (:...data)`,
+        obj: { data: [columnValue] }
+      };
+    } else if (filterType === 'stringFilter') {
+      where = {
+        str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data`,
+        obj: { data: `%${columnValue}%` }
+      };
+    }
+    return { join, where };
+  }
+
+
+  /**
+   * Orchestrates options
+   * @param paginationInput 
+   * @returns options 
+   */
+  private orchestrateOptions<Entity = any>(paginationInput: PaginatedEntityInput): FindManyOptions {
+    const {
+      status,
+      userId,
+      to,
+      requestType,
+      MembershipPlan,
+      currentPhaseId,
+      from,
+      dueToday,
+      phychType,
+      ageGroupId,
+      categoryId,
+      category,
+      paginationOptions: { page, limit: take } } = paginationInput || {}
+    const skip = (page - 1) * take;
+    const whereOptions: WhereOptions = {
+      where: {
+        ...(phychType && {
+          phychType
+        }),
+        ...(ageGroupId && {
+          ageGroupId
+        }),
+        ...(categoryId && {
+          categoryId
+        }),
+        ...(category && {
+          category
+        }),
+        ...(status != null && {
+          status
+        }),
+        ...(requestType && {
+          requestStatus: Not(requestType)
+        }),
+        ...(MembershipPlan && {
+          membershipId: MembershipPlan
+        }),
+        ...(currentPhaseId && {
+          phaseId: currentPhaseId
+        }),
+        ...(dueToday && {
+          dueDate: Equal(new Date().toISOString().split('T')[0])
+        }),
+      }
+    };
+    // Assigned to User
+    if (userId) {
+      !Number.isInteger(status) && !status && delete whereOptions.where.status
+      whereOptions.where.user = { id: userId }
+    }
+
+    // FROM - TO Filter
+    if (from) {
+      const toDate: Date = to ? new Date(to) : new Date()
+      whereOptions.where.createdAt = Between(new Date(from).toISOString(), toDate.toISOString())
+    }
+
+    // Where clause options
+    return {
+      ...whereOptions,
+      order: {
+        createdAt: "DESC"
+      },
+      skip,
+      take,
+    };
+  }
+}

@@ -1,0 +1,188 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Role {
+  id: String!
+  role: UserRole!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user role assigned"""
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  DOCTOR
+  PATIENT
+  NURSE
+  BILLING
+  STAFF
+}
+
+type UserToRole {
+  id: String!
+  role: Role!
+  user: User!
+  assignedAt: String!
+  removedAt: String!
+  assignedById: User!
+  removedById: User!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type User {
+  id: String!
+  status: UserStatus!
+  emailVerified: Boolean!
+  email: String!
+  inviteSentAt: String!
+  inviteAcceptedAt: String!
+  userId: String!
+  token: String!
+  userType: String!
+  roles: UserToRole!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user status"""
+enum UserStatus {
+  DEACTIVATED
+  ACTIVE
+}
+
+type PaginationPayload {
+  page: Int
+  limit: Int
+  totalCount: Int
+  totalPages: Int
+}
+
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type UsersPayload {
+  response: ResponsePayload
+  users: [User]
+  pagination: PaginationPayload
+}
+
+type AccessUserPayload {
+  access_token: String
+  roles: [UserToRole!]
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  response: ResponsePayload
+}
+
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+}
+
+type Query {
+  fetchAllUsers(userInput: UsersInput!): UsersPayload!
+  fetchUser: UserPayload!
+  getUser(getUser: GetUser!): UserPayload!
+  me: UserPayload!
+  fetchAllRoles: RolesPayload!
+  searchUser(search: String!): UsersPayload!
+}
+
+input UsersInput {
+  status: UserStatus
+  role: UserRole
+  paginationOptions: PaginationInput!
+}
+
+input PaginationInput {
+  page: Int!
+  limit: Int!
+}
+
+input GetUser {
+  id: String!
+}
+
+type Mutation {
+  login(loginUser: LoginUserInput!): AccessUserPayload!
+  registerUser(user: RegisterUserInput!): UserPayload!
+  forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
+  verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
+  resendVerificationEmail(resendVerificationEmail: ResendVerificationEmail!): UserPayload!
+  resetPassword(resetPassword: ResetPasswordInput!): UserPayload!
+  updatePassword(updatePasswordInput: UpdatePasswordInput!): UserPayload!
+  removeUser(user: UserIdInput!): UserPayload!
+  activateUser(user: UserIdInput!): UserPayload!
+  updateUser(user: UpdateUserInput!): UserPayload!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input RegisterUserInput {
+  firstName: String!
+  lastName: String!
+  password: String!
+  email: String!
+
+  """Send Investor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String!
+  phone: String!
+  zipCode: String!
+}
+
+input ForgotPasswordInput {
+  email: String!
+}
+
+input VerifyEmailInput {
+  token: String!
+}
+
+input ResendVerificationEmail {
+  email: String
+}
+
+input ResetPasswordInput {
+  password: String!
+  token: String!
+}
+
+input UpdatePasswordInput {
+  id: String!
+  newPassword: String!
+  oldPassword: String!
+}
+
+input UserIdInput {
+  userId: String!
+  isEnabled: Boolean
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  email: String
+  adminId: String
+  phone: String
+  zipCode: String
+  id: String!
+  emailVerified: Boolean
+}

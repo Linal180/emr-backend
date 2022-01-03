@@ -1,0 +1,234 @@
+import { HttpStatus, NotFoundException, UseFilters, UseGuards, SetMetadata, ForbiddenException, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { UsersService } from './users.service';
+import { LoginUserInput } from './dto/login-user-input.dto';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import { CurrentUser } from '../customDecorators/current-user.decorator';
+import { UsersPayload } from './dto/users-payload.dto';
+import { AccessUserPayload } from './dto/access-user.dto';
+import { RegisterUserInput } from './dto/register-user-input.dto';
+import { UserPayload } from './dto/register-user-payload.dto';
+import { HttpExceptionFilterGql } from 'src/exception-filter';
+import { ForgotPasswordInput } from './dto/forget-password-input.dto';
+import { ResetPasswordInput } from './dto/reset-password-input.dto';
+import { ForgotPasswordPayload } from './dto/forgot-password-payload.dto';
+import RolesPayload from './dto/roles-payload.dto';
+import RoleGuard from 'src/users/auth/role.guard';
+import { UserIdInput } from './dto/user-id-input.dto';
+import { GetUser, ResendVerificationEmail, UpdateUserInput } from './dto/update-user-input.dto';
+import UsersInput from './dto/users-input.dto';
+import { UpdateRoleInput } from './dto/update-role-input.dto';
+import { VerifyEmailInput } from './dto/verify-email-input.dto';
+import { CurrentUserInterface } from './auth/dto/current-user.dto';
+import { UpdatePasswordInput } from './dto/update-password-input.dto';
+
+@Resolver('users')
+@UseFilters(HttpExceptionFilterGql)
+export class UsersResolver {
+  constructor(
+    private readonly usersService: UsersService
+  ) { }
+
+  // Queries 
+
+  @Query(returns => UsersPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async fetchAllUsers(@Args('userInput') usersInput: UsersInput): Promise<UsersPayload> {
+    const users = await this.usersService.findAll(usersInput);
+    if (users) {
+      return {
+        ...users,
+        response: { status: 200, message: "OK" },
+      }
+    }
+  }
+
+  @Query(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  async fetchUser(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
+    const userFound = await this.usersService.findOne(user.email);
+    return { user: userFound, response: { status: 200, message: 'User Data' } }
+  }
+
+  @Query(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async getUser(@Args('getUser') getUser: GetUser): Promise<UserPayload> {
+    const userFound = await this.usersService.findUserById(getUser.id);
+    return { user: userFound, response: { status: 200, message: 'User Data' } }
+  }
+
+  @Query(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
+    const userFound = await this.usersService.findOne(user.email)
+    if (!userFound) {
+      throw new UnauthorizedException({
+        status: HttpStatus.UNAUTHORIZED,
+        error: 'User Does not exist',
+      });
+    }
+    else if (userFound && userFound.emailVerified) {
+      return { user: userFound, response: { status: 200, message: 'User Data' } }
+    }
+    throw new ForbiddenException({
+      status: HttpStatus.FORBIDDEN,
+      error: 'Email changed or not verified, please verify your email',
+    });
+  }
+
+  @Query(returns => RolesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async fetchAllRoles(): Promise<RolesPayload> {
+    const roles = await this.usersService.findAllRoles()
+    if (roles) {
+      return {
+        roles,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'User not found',
+    });
+  }
+
+  @Query(returns => UsersPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async searchUser(@Args('search') searchTerm: string): Promise<UsersPayload> {
+    const users = await this.usersService.search(searchTerm);
+    return { users, response: { status: 200, message: 'User Data fetched successfully' } }
+  }
+
+  Mutations
+  @Mutation(returns => AccessUserPayload)
+  async login(@Args('loginUser') loginUserInput: LoginUserInput): Promise<AccessUserPayload> {
+    const { email, password } = loginUserInput
+    const user = await this.usersService.findOne(email.trim().toLowerCase())
+    console.log("user", user);
+    if (user) {
+      if (user.emailVerified) {
+        return this.usersService.createToken(user, password);
+      }
+      throw new ForbiddenException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'Email changed or not verified, please verify your email',
+      });
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'User not found',
+    });
+  }
+
+  @Mutation(returns => UserPayload)
+  async registerUser(@Args('user') registerUserInput: RegisterUserInput): Promise<UserPayload> {
+    return {
+      user: await this.usersService.create(registerUserInput),
+      response: { status: 200, message: 'An email has been sent to you, check your email for verification' }
+    };
+  }
+
+  @Mutation(returns => ForgotPasswordPayload)
+  async forgotPassword(@Args('forgotPassword') forgotPasswordInput: ForgotPasswordInput): Promise<ForgotPasswordPayload> {
+    const { email } = forgotPasswordInput
+    const user = await this.usersService.forgotPassword(email.trim().toLowerCase())
+    if (user) {
+      return { response: { status: 200, message: 'Forgot Password Email Sent to User' } }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'User not found',
+    });
+  }
+
+  @Mutation(returns => UserPayload)
+  async verifyEmail(@Args('verifyEmail') { token }: VerifyEmailInput): Promise<UserPayload> {
+    const user = await this.usersService.verifyEmail(token)
+    if (user) {
+      return { user, response: { status: 200, message: "Email verified successfully", name: "Email Verified Successfully" } }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Token not found',
+    });
+  }
+
+  @Mutation(returns => UserPayload)
+  async resendVerificationEmail(@Args('resendVerificationEmail') resendVerificationEmail: ResendVerificationEmail): Promise<UserPayload> {
+    return {
+      user: await this.usersService.resendVerificationEmail(resendVerificationEmail),
+      response: { status: 200, message: 'An email has been sent to you, check your email for verification' }
+    };
+  }
+
+  @Mutation(returns => UserPayload)
+  async resetPassword(@Args('resetPassword') resetPasswordInput: ResetPasswordInput): Promise<UserPayload> {
+    const { token, password } = resetPasswordInput
+    const user = await this.usersService.resetPassword(password, token)
+    if (user) {
+      return { user, response: { status: 200, message: "Password reset successfully", name: "PasswordReset succesfully" } }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Token not found',
+    });
+  }
+
+  @Mutation(returns => UserPayload)
+  async updatePassword(@Args('updatePasswordInput') updatePasswordInput: UpdatePasswordInput): Promise<UserPayload> {
+    const user = await this.usersService.updatePassword(updatePasswordInput)
+    if (user) {
+      return { user, response: { status: 200, message: "Password updated successfully", name: "updatePassword succesfully" } }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'User not found',
+    });
+  }
+
+  // @Mutation(returns => UserPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin'])
+  // async deactivateUser(@Args('user') { userId }: UserIdInput): Promise<UserPayload> {
+  //   const user = await this.usersService.deactivateUser(userId);
+  //   return { user, response: { status: 200, message: 'User Deactivated' } }
+  // }
+
+  @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async removeUser(@Args('user') { userId }: UserIdInput) {
+    await this.usersService.removeUser(userId);
+    return { response: { status: 200, message: 'User Deleted' } }
+  }
+
+  @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async activateUser(@Args('user') { userId }: UserIdInput): Promise<UserPayload> {
+    const user = await this.usersService.activateUser(userId);
+    return { user, response: { status: 200, message: 'User Activated' } }
+  }
+
+  @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin', 'owner', 'investor'])
+  async updateUser(@Args('user') updateUserInput: UpdateUserInput): Promise<UserPayload> {
+    const user = await this.usersService.update(updateUserInput);
+    return { user, response: { status: 200, message: 'User Data updated successfully' } }
+  }
+
+  // @Mutation(returns => UserPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin'])
+  // async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
+  //   const user = await this.usersService.updateRole(updateRoleInput);
+  //   return { user, response: { status: 200, message: 'User Data updated successfully' } }
+  // }
+}
