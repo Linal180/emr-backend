@@ -15,7 +15,8 @@ import { UpdateRoleInput } from './dto/update-role-input.dto';
 import { AccessUserPayload } from './dto/access-user.dto';
 import { MailerService } from 'src/mailer/mailer.service';
 import { UpdatePasswordInput } from './dto/update-password-input.dto';
-import { UserToRole } from './entities/user-role.entity';
+import { UserLog } from './entities/user-logs.entity';
+import { UserIdInput } from './dto/user-id-input.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,8 +25,8 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
-    @InjectRepository(UserToRole)
-    private userTorolesRepository: Repository<UserToRole>,
+    @InjectRepository(UserLog)
+    private UserLogRepository: Repository<UserLog>,
     private readonly jwtService: JwtService,
     private readonly paginationService: PaginationService,
     private readonly mailerSerivce: MailerService
@@ -50,25 +51,16 @@ export class UsersService {
         // User Creation
         const userInstance = this.usersRepository.create({ ...registerUserInput, email: registerUserInput.email.trim().toLowerCase() })
         const role = await this.rolesRepository.findOne({ role: registerUserInput.roleType });
-        userInstance.userType = role.role
+        userInstance.roles = [role]
         const token = createToken();
         userInstance.token = token;
         const user = await this.usersRepository.save(userInstance);
-        //adding userRole
-        const userRoleObj = this.userTorolesRepository.create({
-          user: user,
-          userId: user.id,
-          roleId: role.id,
-          role: role,
-          assignedById: admin
-        })
-        await this.userTorolesRepository.save(userRoleObj)
         // SEND EMAIL TO ALL ADMINS & SUPERADMINS that a new sign - up was made
-        // this.mailerSerivce.sendEmailNotification(await this.getAdmins(), 'newSignUp', {
-        //   userEmail: user.email
-        // })
+        this.mailerSerivce.sendEmailNotification(await this.getAdmins(), 'newSignUp', {
+          userEmail: user.email
+        })
         // SEND EMAIL TO USER FOR EMAIL VERIFICATION
-        // this.mailerSerivce.sendVerificationEmail(user.email, user.email, user.id, user.emailVerified, token)
+        this.mailerSerivce.sendVerificationEmail(user.email, user.email, user.id, user.emailVerified, token)
         return user;
       }
       throw new NotFoundException({
@@ -90,7 +82,7 @@ export class UsersService {
       const user = await this.findOne(resendVerificationEmail.email);
       const token = createToken();
       user.token = token;
-      const isAdmin = user && user.roles.some(roleItem => roleItem.role.role.includes('super-admin' || 'admin'))
+      const isAdmin = user && user.roles.some(roleItem => roleItem.role.includes('super-admin' || 'admin'))
       if (!user) {
         throw new ForbiddenException({
           status: HttpStatus.FORBIDDEN,
@@ -134,38 +126,38 @@ export class UsersService {
    * @param updateRoleInput 
    * @returns role 
    */
-  // async updateRole(updateRoleInput: UpdateRoleInput): Promise<User> {
-  //   try {
-  //     const { roles } = updateRoleInput
-  //     const isSuperAdmin = roles.find(item => item === UserRole.SUPER_ADMIN)
-  //     if (isSuperAdmin) {
-  //       throw new ConflictException({
-  //         status: HttpStatus.CONFLICT,
-  //         error: 'Can not assign this role to user',
-  //       });
-  //     }
-  //     const user = await this.findById(updateRoleInput.id);
+  async updateRole(updateRoleInput: UpdateRoleInput): Promise<User> {
+    try {
+      const { roles } = updateRoleInput
+      const isSuperAdmin = roles.find(item => item === UserRole.SUPER_ADMIN)
+      if (isSuperAdmin) {
+        throw new ConflictException({
+          status: HttpStatus.CONFLICT,
+          error: 'Can not assign this role to user',
+        });
+      }
+      const user = await this.findById(updateRoleInput.id);
 
-  //     if (user) {
-  //       const fetchdRoles = await getConnection()
-  //         .getRepository(Role)
-  //         .createQueryBuilder("role")
-  //         .where("role.role IN (:...roles)", { roles })
-  //         .getMany();
+      if (user) {
+        const fetchdRoles = await getConnection()
+          .getRepository(Role)
+          .createQueryBuilder("role")
+          .where("role.role IN (:...roles)", { roles })
+          .getMany();
 
-  //       user.roles = fetchdRoles
-  //       return await this.usersRepository.save(user);
-  //     }
+        user.roles = fetchdRoles
+        return await this.usersRepository.save(user);
+      }
 
-  //     throw new NotFoundException({
-  //       status: HttpStatus.NOT_FOUND,
-  //       error: 'User not found',
-  //     });
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'User not found',
+      });
 
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
   /**
    * Finds all
@@ -253,8 +245,19 @@ export class UsersService {
     await this.usersRepository.delete(user.id);
   }
 
-  async removeUser(id: string): Promise<void> {
-    return await this.remove(id);
+  async removeUser(userIdInput: UserIdInput): Promise<void> {
+    try {
+      const admin = await this.findById(userIdInput.adminId)
+      if (admin) {
+        return await this.remove(userIdInput.userId);
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Admin not found or disabled',
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
@@ -266,7 +269,7 @@ export class UsersService {
     try {
       const user = await this.findById(id);
       if (user) {
-        if ([UserRole.ADMIN, UserRole.SUPER_ADMIN].every(i => user.roles.map(roleItem => roleItem.role.role).includes(i))) {
+        if ([UserRole.ADMIN, UserRole.SUPER_ADMIN].every(i => user.roles.map(role => role.role).includes(i))) {
           throw new ForbiddenException({
             status: HttpStatus.FORBIDDEN,
             error: "Super Admin can't be deactivated",
@@ -396,7 +399,7 @@ export class UsersService {
       user.token = token;
       const roles = user.roles.map(u => u.role);
       if (user) {
-        const isAdmin = roles.some(role => role.role.includes('admin' || 'super-admin'))
+        const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
         this.mailerSerivce.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token)
         delete user.roles
         await this.usersRepository.save(user);
@@ -485,25 +488,6 @@ export class UsersService {
           role: Not(UserRole.SUPER_ADMIN)
         }
       });
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
-
-  /**
-   * Gets roles
-   * @param id 
-   * @returns roles 
-   */
-  async getRoles(id: string): Promise<UserToRole[]> {
-    try {
-      const roles = await this.userTorolesRepository.find({
-        where: {
-          userId: id,
-        },
-        relations: ["role"]
-      });
-      return roles;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

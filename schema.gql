@@ -2,6 +2,38 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Facility {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  mobile: String!
+  fax: String!
+  stateImmunizationId: String!
+  practiceType: PracticeType!
+  federalTaxId: String!
+  checkPayableTo: String!
+  bankAccount: String!
+  revenueCode: String!
+  tamxonomyCode: String!
+  pos: String!
+  merchantId: String!
+  hpsaModifier: String!
+  serviceLocationQualifies: String!
+  excludeChargesFromPatient: String!
+  startDate: String!
+  npi: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The facility assigned type"""
+enum PracticeType {
+  HOSPITAL
+  LAB
+  CLINIC
+}
+
 type Role {
   id: String!
   role: UserRole!
@@ -20,18 +52,6 @@ enum UserRole {
   STAFF
 }
 
-type UserToRole {
-  id: String!
-  role: Role!
-  user: User!
-  assignedAt: String!
-  removedAt: String!
-  assignedById: User!
-  removedById: User!
-  createdAt: String!
-  updatedAt: String!
-}
-
 type User {
   id: String!
   status: UserStatus!
@@ -42,7 +62,8 @@ type User {
   userId: String!
   token: String!
   userType: String!
-  roles: UserToRole!
+  facilityId: String!
+  roles: [Role]
   createdAt: String!
   updatedAt: String!
 }
@@ -53,6 +74,18 @@ enum UserStatus {
   ACTIVE
 }
 
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
 type PaginationPayload {
   page: Int
   limit: Int
@@ -60,11 +93,10 @@ type PaginationPayload {
   totalPages: Int
 }
 
-type ResponsePayload {
-  status: Float
-  error: String
-  message: String
-  name: String
+type FacilitiesPayload {
+  response: ResponsePayload
+  facility: [Facility]
+  pagination: PaginationPayload
 }
 
 type UsersPayload {
@@ -75,7 +107,7 @@ type UsersPayload {
 
 type AccessUserPayload {
   access_token: String
-  roles: [UserToRole!]
+  roles: [Role!]
   response: ResponsePayload
 }
 
@@ -100,6 +132,8 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
+  getFacility(getFacility: GetFacility!): FacilityPayload!
 }
 
 input UsersInput {
@@ -117,6 +151,14 @@ input GetUser {
   id: String!
 }
 
+input FacilityInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetFacility {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -126,9 +168,13 @@ type Mutation {
   resetPassword(resetPassword: ResetPasswordInput!): UserPayload!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): UserPayload!
   deactivateUser(user: UserIdInput!): UserPayload!
-  removeUser(user: UserIdInput!): UserPayload!
+  removeUser(userIdInput: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
+  updateRole(user: UpdateRoleInput!): UserPayload!
+  createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
+  updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
+  removeFacility(removeFacility: RemoveFacility!): FacilityPayload!
 }
 
 input LoginUserInput {
@@ -174,6 +220,7 @@ input UpdatePasswordInput {
 
 input UserIdInput {
   userId: String!
+  adminId: String
   isEnabled: Boolean
 }
 
@@ -186,4 +233,56 @@ input UpdateUserInput {
   zipCode: String
   id: String!
   emailVerified: Boolean
+}
+
+input UpdateRoleInput {
+  id: String!
+  roles: [UserRole!]!
+}
+
+input CreateFacilityInput {
+  name: String!
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  stateImmunizationId: String
+  practiceType: String!
+  federalTaxId: String
+  checkPayableTo: String
+  bankAccount: String
+  revenueCode: String
+  tamxonomyCode: String
+  pos: String
+  merchantId: String
+  hpsaModifier: String
+  serviceLocationQualifies: String
+  excludeChargesFromPatient: String
+  npi: String
+}
+
+input UpdateFacilityInput {
+  name: String
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  stateImmunizationId: String
+  practiceType: String
+  federalTaxId: String
+  checkPayableTo: String
+  bankAccount: String
+  revenueCode: String
+  tamxonomyCode: String
+  pos: String
+  merchantId: String
+  hpsaModifier: String
+  serviceLocationQualifies: String
+  excludeChargesFromPatient: String
+  npi: String
+  id: String!
+}
+
+input RemoveFacility {
+  id: String!
 }

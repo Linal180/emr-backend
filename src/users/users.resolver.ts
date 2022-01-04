@@ -62,6 +62,7 @@ export class UsersResolver {
   @Query(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
+    console.log("CurrentUser", user);
     const userFound = await this.usersService.findOne(user.email)
     if (!userFound) {
       throw new UnauthorizedException({
@@ -105,12 +106,10 @@ export class UsersResolver {
     return { users, response: { status: 200, message: 'User Data fetched successfully' } }
   }
 
-  Mutations
   @Mutation(returns => AccessUserPayload)
   async login(@Args('loginUser') loginUserInput: LoginUserInput): Promise<AccessUserPayload> {
     const { email, password } = loginUserInput
     const user = await this.usersService.findOne(email.trim().toLowerCase())
-    console.log("user", user);
     if (user) {
       if (user.emailVerified) {
         return this.usersService.createToken(user, password);
@@ -203,8 +202,8 @@ export class UsersResolver {
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin'])
-  async removeUser(@Args('user') { userId }: UserIdInput) {
-    await this.usersService.removeUser(userId);
+  async removeUser(@Args('userIdInput') userIdInput: UserIdInput) {
+    await this.usersService.removeUser(userIdInput);
     return { response: { status: 200, message: 'User Deleted' } }
   }
 
@@ -218,17 +217,17 @@ export class UsersResolver {
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'owner', 'investor'])
+  @SetMetadata('roles', ['admin', 'super-admin', 'staff', 'doctor'])
   async updateUser(@Args('user') updateUserInput: UpdateUserInput): Promise<UserPayload> {
     const user = await this.usersService.update(updateUserInput);
     return { user, response: { status: 200, message: 'User Data updated successfully' } }
   }
 
-  // @Mutation(returns => UserPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['admin', 'super-admin'])
-  // async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
-  //   const user = await this.usersService.updateRole(updateRoleInput);
-  //   return { user, response: { status: 200, message: 'User Data updated successfully' } }
-  // }
+  @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
+    const user = await this.usersService.updateRole(updateRoleInput);
+    return { user, response: { status: 200, message: 'User Data updated successfully' } }
+  }
 }

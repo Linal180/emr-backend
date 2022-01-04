@@ -6,5 +6,8 @@ export class UserIdInput {
   userId: string;
 
   @Field({ nullable: true })
+  adminId?: string;
+
+  @Field({ nullable: true })
   isEnabled?: boolean;
 }

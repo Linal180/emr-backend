@@ -14,5 +14,4 @@ export const RolesData = [
 
 export const UsersData = [
     { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", roleType: UserRole.SUPER_ADMIN, zipCode: "54000", emailVerified: true },
-    { firstName: "Shah", lastName: "Zaib", password: "super123", email: "shah.zaib@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", roleType: UserRole.ADMIN, zipCode: "54000", emailVerified: true }
 ];

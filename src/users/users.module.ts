@@ -12,11 +12,11 @@ import { UserSubscriber } from "./subscribers/user.subscriber";
 import { ConfigService } from "@nestjs/config";
 import { MailerModule } from "src/mailer/mailer.module";
 import { PaginationModule } from "src/pagination/pagination.module";
-import { UserToRole } from "./entities/user-role.entity";
+import { UserLog } from "./entities/user-logs.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role, UserToRole]),
+    TypeOrmModule.forFeature([User, Role, UserLog]),
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({

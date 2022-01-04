@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { UserToRole } from './user-role.entity';
+import { Role } from './role.entity';
+import { UserLog } from './user-logs.entity';
 
 
 export enum UserStatus {
@@ -57,9 +58,17 @@ export class User {
   @Field()
   userType: string;
 
-  @OneToMany(() => UserToRole, userToRole => userToRole.user, { eager: true })
-  @Field(type => UserToRole)
-  roles: UserToRole[];
+  @Column({ nullable: true })
+  @Field()
+  facilityId: string;
+
+  @Field(type => [Role], { nullable: 'itemsAndList' })
+  @ManyToMany(type => Role, role => role.users, { eager: true })
+  @JoinTable({ name: 'UserRoles' })
+  roles: Role[];
+
+  @OneToMany(() => UserLog, Userlog => Userlog.userId)
+  UserLogs: UserLog[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

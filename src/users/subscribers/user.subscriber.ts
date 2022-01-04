@@ -24,13 +24,9 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
     event.entity.password = await bcrypt.hash(event.entity.password, await bcrypt.genSalt());
   }
 
-  async afterLoad(entity: User): Promise<User> {
-    const roles = await this.usersService.getRoles(entity.id)
-    entity.roles = roles
-    return entity;
-  }
-
   async beforeUpdate(event: UpdateEvent<User>): Promise<void> {
+    console.log("----------beforeUpdate-----------", event);
+
     const emailGotUpdated = event.updatedColumns.find(value => value.propertyName, User.prototype.email);
     const passwordGotUpdated = event.updatedColumns.find(value => value.propertyName, User.prototype.password);
     if (emailGotUpdated) {

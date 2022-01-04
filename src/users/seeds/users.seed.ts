@@ -5,7 +5,6 @@ import { Role } from '../entities/role.entity'
 import { User } from '../entities/user.entity'
 import { RolesData, UsersData } from './seed-data'
 import { createPasswordHash } from '../../lib/helper';
-import { UserToRole } from "../entities/user-role.entity";
 
 @Injectable()
 export class CreateUsers implements Seeder {
@@ -26,18 +25,10 @@ export class CreateUsers implements Seeder {
         for (let index = 0; index < UsersData.length; index++) {
           const user = UsersData[index];
           user.password = await createPasswordHash(user.password);
-          let UserObj = getRepository(User).create(user)
+          const UserObj = getRepository(User).create(user)
           const role = roles.filter(obj => obj.role === user.roleType);
-          UserObj.userType = role[0].role
-          UserObj = await getRepository(User).save(UserObj)
-          //add userRole 
-          const userRoleObj = {
-            user: UserObj,
-            role: role[0],
-            AssignedById: UserObj
-          }
-          let userRole = getRepository(UserToRole).create(userRoleObj)
-          await queryRunner.manager.save(userRole);
+          UserObj.roles = role;
+          await queryRunner.manager.save(UserObj);
         }
       }
       await queryRunner.commitTransaction();
