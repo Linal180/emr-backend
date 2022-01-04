@@ -14,7 +14,6 @@ import UsersInput from './dto/users-input.dto';
 import { UpdateRoleInput } from './dto/update-role-input.dto';
 import { AccessUserPayload } from './dto/access-user.dto';
 import { MailerService } from 'src/mailer/mailer.service';
-import { RedisService } from 'src/redis/redis.service';
 import { UpdatePasswordInput } from './dto/update-password-input.dto';
 import { UserToRole } from './entities/user-role.entity';
 
@@ -29,8 +28,7 @@ export class UsersService {
     private userTorolesRepository: Repository<UserToRole>,
     private readonly jwtService: JwtService,
     private readonly paginationService: PaginationService,
-    private readonly mailerSerivce: MailerService,
-    private readonly redisService: RedisService
+    private readonly mailerSerivce: MailerService
   ) { }
 
   /**
@@ -214,7 +212,6 @@ export class UsersService {
     return await this.usersRepository.findOne({ email: email, status: UserStatus.ACTIVE });
   }
 
-
   /**
    * Finds one by email
    * @param email 
@@ -265,28 +262,27 @@ export class UsersService {
    * @param id 
    * @returns user 
    */
-  // async deactivateUser(id: string): Promise<User> {
-  //   try {
-  //     const user = await this.findById(id);
-  //     if (user) {
-  //       if ([UserRole.ADMIN, UserRole.SUPER_ADMIN].every(i => user.roles.map(role => role.role).includes(i))) {
-  //         throw new ForbiddenException({
-  //           status: HttpStatus.FORBIDDEN,
-  //           error: "Super Admin can't be deactivated",
-  //         });
-  //       }
-  //       user.status = UserStatus.DEACTIVATED;
-  //       return await this.usersRepository.save(user);
-  //     }
-
-  //     throw new ForbiddenException({
-  //       status: HttpStatus.FORBIDDEN,
-  //       error: 'User already Deactivated',
-  //     });
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
+  async deactivateUser(id: string): Promise<User> {
+    try {
+      const user = await this.findById(id);
+      if (user) {
+        if ([UserRole.ADMIN, UserRole.SUPER_ADMIN].every(i => user.roles.map(roleItem => roleItem.role.role).includes(i))) {
+          throw new ForbiddenException({
+            status: HttpStatus.FORBIDDEN,
+            error: "Super Admin can't be deactivated",
+          });
+        }
+        user.status = UserStatus.DEACTIVATED;
+        return await this.usersRepository.save(user);
+      }
+      throw new ForbiddenException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'User already Deactivated',
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
   /**
    * Activates user

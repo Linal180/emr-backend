@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '@sendgrid/mail';
 import { createToken } from 'src/lib/helper';
-import { RedisService } from 'src/redis/redis.service';
 import { DynamicTemplateData, TemplateSwitch } from './dto/dynamicTemplateData.dto';
 
 
@@ -10,7 +9,6 @@ import { DynamicTemplateData, TemplateSwitch } from './dto/dynamicTemplateData.d
 export class MailerService {
   constructor(
     private readonly configService: ConfigService,
-    private readonly redisService: RedisService,
     @Inject('SGMAILER')
     private readonly sgMail: MailService
   ) { }
@@ -80,37 +78,6 @@ export class MailerService {
         verifyEmailURL
       }
     };
-    try {
-      await this.sgMail.send(msg);
-    } catch (error) {
-      console.error(error);
-      if (error.response) {
-        console.error(error.response.body)
-      }
-    }
-  }
-
-  /**
-   * Sends email invite
-   * @param email 
-   * @param inviteId 
-   */
-  async sendEmailInvite(email: string, inviteId: string) {
-    const token = createToken();
-    await this.redisService.set(`INVITE-${token}`, inviteId, 60 * 60 * 24);
-    await this.redisService.set(`INVITE-SHADOW-${token}`, inviteId);
-    const portalAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
-    const url = `${portalAppBaseUrl}/confirm-invitation?token=${token}`;
-
-    const msg = {
-      to: email,
-      from: this.configService.get('FROM_EMAIL'),
-      templateId: this.configService.get('INVITATION_TEMPLATE_ID'),
-      dynamicTemplateData: {
-        inviteURL: url,
-      }
-    };
-
     try {
       await this.sgMail.send(msg);
     } catch (error) {

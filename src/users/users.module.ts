@@ -11,7 +11,6 @@ import { Role } from "./entities/role.entity";
 import { UserSubscriber } from "./subscribers/user.subscriber";
 import { ConfigService } from "@nestjs/config";
 import { MailerModule } from "src/mailer/mailer.module";
-import { RedisModule } from "src/redis/redis.module";
 import { PaginationModule } from "src/pagination/pagination.module";
 import { UserToRole } from "./entities/user-role.entity";
 
@@ -27,7 +26,6 @@ import { UserToRole } from "./entities/user-role.entity";
       inject: [ConfigService],
     }),
     MailerModule,
-    RedisModule,
     PaginationModule
   ],
   providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],

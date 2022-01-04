@@ -8,7 +8,6 @@ import configuration from './config/configuration';
 import { DatabaseConfig } from './database.config';
 import { MailerModule } from './mailer/mailer.module';
 import { PaginationModule } from './pagination/pagination.module';
-import { RedisModule } from './redis/redis.module';
 import { UsersModule } from './users/users.module';
 import { UtilsModule } from './util/utils.module';
 
@@ -16,7 +15,6 @@ import { UtilsModule } from './util/utils.module';
   imports: [
     UsersModule,
     MailerModule,
-    RedisModule,
     PaginationModule,
     UtilsModule,
     GraphQLModule.forRoot({

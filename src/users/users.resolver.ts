@@ -192,13 +192,13 @@ export class UsersResolver {
     });
   }
 
-  // @Mutation(returns => UserPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['admin', 'super-admin'])
-  // async deactivateUser(@Args('user') { userId }: UserIdInput): Promise<UserPayload> {
-  //   const user = await this.usersService.deactivateUser(userId);
-  //   return { user, response: { status: 200, message: 'User Deactivated' } }
-  // }
+  @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async deactivateUser(@Args('user') { userId }: UserIdInput): Promise<UserPayload> {
+    const user = await this.usersService.deactivateUser(userId);
+    return { user, response: { status: 200, message: 'User Deactivated' } }
+  }
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)

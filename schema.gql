@@ -125,6 +125,7 @@ type Mutation {
   resendVerificationEmail(resendVerificationEmail: ResendVerificationEmail!): UserPayload!
   resetPassword(resetPassword: ResetPasswordInput!): UserPayload!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): UserPayload!
+  deactivateUser(user: UserIdInput!): UserPayload!
   removeUser(user: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
