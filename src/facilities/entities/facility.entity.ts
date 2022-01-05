@@ -10,7 +10,7 @@ export enum PracticeType {
 
 registerEnumType(PracticeType, {
   name: "PracticeType",
-  description: "The facility assigned type",
+  description: "The facility practice type assigned type",
 });
 
 @Entity({ name: 'Facilities' })

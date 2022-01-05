@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -25,6 +25,14 @@ export class FacilityService {
    */
   async createFacility(createFacilityInput: CreateFacilityInput): Promise<Facility> {
     try {
+      //Check facility with email
+      const existingFacility = await this.findOneByEmail(createFacilityInput.email);
+      if (existingFacility) {
+        throw new ConflictException({
+          status: HttpStatus.CONFLICT,
+          error: 'Facility this email already exists'
+        });
+      }
       // Facility Creation
       const facility = this.facilityRepository.create(createFacilityInput)
       return await this.facilityRepository.save(facility);
@@ -84,5 +92,9 @@ export class FacilityService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async findOneByEmail(email: string): Promise<Facility> {
+    return await this.facilityRepository.findOne({ email: email });
   }
 }

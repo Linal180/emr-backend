@@ -7,8 +7,8 @@ export class CreateFacilityInput {
   @Field({ nullable: false })
   name: string;
 
-  @Field({ nullable: true })
-  email?: string;
+  @Field({ nullable: false })
+  email: string;
 
   @Field({ nullable: true })
   phone?: string;
@@ -22,8 +22,8 @@ export class CreateFacilityInput {
   @Field({ nullable: true })
   stateImmunizationId?: string;
 
-  @Field({ nullable: false })
-  practiceType: PracticeType;
+  @Field(type => PracticeType, { description: 'Facility type', nullable: true })
+  practiceType?: PracticeType;
 
   @Field({ nullable: true })
   federalTaxId?: string;
