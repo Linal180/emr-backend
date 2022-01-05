@@ -27,7 +27,7 @@ type Facility {
   updatedAt: String!
 }
 
-"""The facility assigned type"""
+"""The facility practice type assigned type"""
 enum PracticeType {
   HOSPITAL
   LAB
@@ -242,12 +242,14 @@ input UpdateRoleInput {
 
 input CreateFacilityInput {
   name: String!
-  email: String
+  email: String!
   phone: String
   mobile: String
   fax: String
   stateImmunizationId: String
-  practiceType: String!
+
+  """Facility type"""
+  practiceType: PracticeType
   federalTaxId: String
   checkPayableTo: String
   bankAccount: String
@@ -268,7 +270,9 @@ input UpdateFacilityInput {
   mobile: String
   fax: String
   stateImmunizationId: String
-  practiceType: String
+
+  """Facility type"""
+  practiceType: PracticeType
   federalTaxId: String
   checkPayableTo: String
   bankAccount: String
