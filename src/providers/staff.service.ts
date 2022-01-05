@@ -1,0 +1,111 @@
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { UtilsService } from 'src/util/utils.service';
+import { Repository } from 'typeorm';
+import { CreateStaffInput } from './dto/create-staff.input';
+import { Staff } from './entities/staff.entity';
+import { RemoveStaff } from './dto/update-facility.input';
+import { UsersService } from 'src/users/users.service';
+import { FacilityService } from 'src/facilities/facility.service';
+import { UpdateFacilityInput } from 'src/facilities/dto/update-facility.input';
+import StaffInput from './dto/staff-input.dto';
+import { AllStaffPayload } from './dto/all-staff-payload.dto';
+
+@Injectable()
+export class StaffService {
+  constructor(
+    @InjectRepository(Staff)
+    private staffRepository: Repository<Staff>,
+    private readonly paginationService: PaginationService,
+    private readonly usersService: UsersService,
+    private readonly facilityService: FacilityService,
+    private readonly utilsService: UtilsService,
+  ) { }
+
+
+  /**
+   * Creates staff
+   * @param createStaffInput 
+   * @returns staff 
+   */
+  async createStaff(createStaffInput: CreateStaffInput): Promise<Staff> {
+    try {
+      // register staff as user 
+      const user = await this.usersService.create(createStaffInput)
+      //get facility 
+      const facility = await this.facilityService.findOne(createStaffInput.facilityId)
+      // Staff Creation
+      const staff = this.staffRepository.create(createStaffInput)
+      staff.user = user;
+      staff.facility = facility;
+      return await this.staffRepository.save(staff);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Updates staff
+   * @param updateFacilityInput 
+   * @returns staff 
+   */
+  async updateStaff(updateFacilityInput: UpdateFacilityInput): Promise<Staff> {
+    try {
+      return await this.utilsService.updateEntityManager(Staff, updateFacilityInput.id, updateFacilityInput, this.staffRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Finds all staff
+   * @param staffInput 
+   * @returns all staff 
+   */
+  async findAllStaff(staffInput: StaffInput): Promise<AllStaffPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Staff>(this.staffRepository, staffInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        allstaff: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<Staff> {
+    return await this.staffRepository.findOne(id);
+  }
+
+  /**
+   * Removes staff
+   * @param { id } 
+   */
+  async removeStaff({ id }: RemoveStaff) {
+    try {
+      await this.staffRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds one by email
+   * @param email 
+   * @returns one by email 
+   */
+  async findOneByEmail(email: string): Promise<Staff> {
+    return await this.staffRepository.findOne({ email: email });
+  }
+}
