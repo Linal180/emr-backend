@@ -107,4 +107,5 @@ export class Facility {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
+
 }
