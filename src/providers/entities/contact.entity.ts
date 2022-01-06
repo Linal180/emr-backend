@@ -3,43 +3,16 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-export enum Gender {
-  MALE = "male",
-  FEMALE = "female",
-  OTHER = "other"
-}
-
-registerEnumType(Gender, {
-  name: "Gender",
-  description: "The user gender assigned",
-});
-
-@Entity({ name: 'Staff' })
+@Entity({ name: 'Contacts' })
 @ObjectType()
-export class Staff {
+export class Contact {
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
 
   @Column()
   @Field()
-  firstName: string;
-
-  @Column()
-  @Field()
-  lastName: string;
-
-  @Column({ nullable: true })
-  @Field()
   email: string;
-
-  @Column({ nullable: true })
-  @Field()
-  username: string;
-
-  @Column({ nullable: true })
-  @Field()
-  dob: string;
 
   @Column({ nullable: true })
   @Field()
@@ -49,22 +22,44 @@ export class Staff {
   @Field()
   mobile: string;
 
-  @Column({
-    type: "enum",
-    enum: Gender,
-    default: Gender.MALE
-  })
-  @Field(type => Gender)
-  gender: Gender
+  @Column({ nullable: true })
+  @Field()
+  pager: string;
 
-  @OneToOne(() => User, { eager: true })
-  @JoinColumn()
-  @Field({ nullable: true })
-  user: User;
+  @Column({ nullable: true })
+  @Field()
+  fax: string;
 
-  @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
-  @Field(type => [Facility], { nullable: true })
-  facility: Facility;
+  @Column({ nullable: true })
+  @Field()
+  address: string;
+
+  @Column({ nullable: true })
+  @Field()
+  address2: string;
+
+  @Column({ nullable: true })
+  @Field()
+  zipCode: string;
+
+  @Column({ nullable: true })
+  @Field()
+  city: string;
+
+  @Column({ nullable: true })
+  @Field()
+  state: string;
+
+  @Column({ nullable: true })
+  @Field()
+  country: string;
+
+  @OneToMany(() => Facility, facility => facility.contact, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  facilities: Facility[];
+
+  @Column({ nullable: true })
+  @Field()
+  userId: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

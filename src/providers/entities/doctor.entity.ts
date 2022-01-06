@@ -14,9 +14,39 @@ registerEnumType(Gender, {
   description: "The user gender assigned",
 });
 
-@Entity({ name: 'Dcotor' })
+
+export enum Speciality {
+  PHYSICIAN_ASSISTANT = "Physician Assistant",
+  PHARMACIST = "Pharmacist",
+  PERIODONTICS = "Periodontics",
+  PEDIATRIC_DENTIST = "Pediatric Dentist",
+  PEDIATRIC_DERMATOLOGY = "Pediatric Dermatology",
+  NEUROLOGY = "Neurology",
+  GASTROENTEROLOGY = "Gastroenterology"
+}
+
+registerEnumType(Speciality, {
+  name: "Speciality",
+  description: "The doctor's speciality",
+});
+
+export enum SsnType {
+  OASDI = "OASDI",
+  TANF = "Tanf",
+  MEDICARE = "Medicare",
+  MEDICAID = "medicaid"
+}
+
+registerEnumType(SsnType, {
+  name: "SsnType",
+  description: "The doctor's SsnType",
+});
+
+
+
+@Entity({ name: 'Doctors' })
 @ObjectType()
-export class Dcotor {
+export class Doctor {
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -53,9 +83,13 @@ export class Dcotor {
   @Field()
   degreeCredentials: string;
 
-  @Column({ nullable: true })
-  @Field()
-  speciality: string;
+  @Column({
+    type: "enum",
+    enum: Speciality,
+    default: Speciality.GASTROENTEROLOGY
+  })
+  @Field(type => Speciality)
+  speciality: Speciality
 
   @Column({ nullable: true })
   @Field()
@@ -65,9 +99,13 @@ export class Dcotor {
   @Field()
   ssn: string;
 
-  @Column({ nullable: true })
-  @Field()
-  ssnType: string;
+  @Column({
+    type: "enum",
+    enum: SsnType,
+    default: SsnType.MEDICAID
+  })
+  @Field(type => SsnType)
+  ssnType: SsnType
 
   @Column({ nullable: true })
   @Field()
@@ -85,6 +123,10 @@ export class Dcotor {
   @Field()
   deaTermDate: string;
 
+  @Column({ nullable: true })
+  @Field()
+  languagesSpoken: string;
+
   @Column({
     type: "enum",
     enum: Gender,
@@ -95,24 +137,85 @@ export class Dcotor {
 
   @Column({ nullable: true })
   @Field()
-  languagesSpoken: string;
+  taxId: string;
 
   @Column({ nullable: true })
   @Field()
-  phone: string;
+  npi: string;
 
   @Column({ nullable: true })
   @Field()
-  mobile: string;
+  upin: string;
 
-  @OneToOne(() => User, { eager: true })
-  @JoinColumn()
-  @Field({ nullable: true })
-  user: User;
+  @Column({ nullable: true })
+  @Field()
+  emcProviderId: string;
 
-  @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
-  @Field(type => [Facility], { nullable: true })
-  facility: Facility;
+  @Column({ nullable: true })
+  @Field()
+  billingFacility: string;
+
+  @Column({ nullable: true })
+  @Field()
+  medicareGrpNumber: string;
+
+  @Column({ nullable: true })
+  @Field()
+  medicaidGrpNumber: string;
+
+  @Column({ nullable: true })
+  @Field()
+  meammographyCertNumber: string;
+
+  @Column({ nullable: true })
+  @Field()
+  campusGrpNumber: string;
+
+  @Column({ nullable: true })
+  @Field()
+  blueShildNumber: string;
+
+  @Column({ nullable: true })
+  @Field()
+  taxIdStuff: string;
+
+  @Column({ nullable: true })
+  @Field()
+  specialityLicense: string;
+
+  @Column({ nullable: true })
+  @Field()
+  anesthesiaLicense: string;
+
+  @Column({ nullable: true })
+  @Field()
+  dpsCtpNumber: string;
+
+  @Column({ nullable: true })
+  @Field()
+  stateLicense: string;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  @Field()
+  licenseActiveDate: string;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  @Field()
+  licenseTermDate: string;
+
+  @Column({ nullable: true })
+  @Field()
+  prescriptiveAuthNumber: string;
+
+
+  // @OneToOne(() => User, { eager: true })
+  // @JoinColumn()
+  // @Field({ nullable: true })
+  // user: User;
+
+  // @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
+  // @Field(type => [Facility], { nullable: true })
+  // facility: Facility;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
@@ -121,5 +224,4 @@ export class Dcotor {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
-
 }

@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 import configuration from './config/configuration';
 import { DatabaseConfig } from './database.config';
 import { FacilityModule } from './facilities/facility.module';
-import { StaffModule } from './providers/staff.module';
+import { ProviderModule } from './providers/provider.module';
 import { MailerModule } from './mailer/mailer.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { UsersModule } from './users/users.module';
@@ -19,7 +19,7 @@ import { UtilsModule } from './util/utils.module';
     FacilityModule,
     MailerModule,
     PaginationModule,
-    StaffModule,
+    ProviderModule,
     UtilsModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',

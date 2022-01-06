@@ -1,13 +1,13 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+import { ConflictException, HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
-import { CreateStaffInput } from './dto/create-staff.input';
-import { StaffPayload } from './dto/staff-payload.dto';
-import { StaffService } from './staff.service';
-import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from './dto/update-facility.input';
-import { AllStaffPayload } from './dto/all-staff-payload.dto';
-import StaffInput from './dto/staff-input.dto';
+import { CreateStaffInput } from '../dto/create-staff.input';
+import { StaffPayload } from '../dto/staff-payload.dto';
+import { StaffService } from '../services/staff.service';
+import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
+import { AllStaffPayload } from '../dto/all-staff-payload.dto';
+import StaffInput from '../dto/staff-input.dto';
 
 @Resolver('staff')
 export class StaffResolver {
@@ -17,6 +17,13 @@ export class StaffResolver {
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('roles', ['super-admin', 'admin'])
   async createStaff(@Args('createStaffInput') createStaffInput: CreateStaffInput) {
+    const username = await this.staffService.findOnebyUsername(createStaffInput.username.trim().toLowerCase())
+    if (username) {
+      throw new ConflictException({
+        status: HttpStatus.CONFLICT,
+        error: 'this username is already taken',
+      });
+    }
     return {
       staff: await this.staffService.createStaff(createStaffInput),
       response: { status: 200, message: 'Staff created successfully' }

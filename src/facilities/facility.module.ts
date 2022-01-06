@@ -5,12 +5,14 @@ import { Facility } from './entities/facility.entity'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
+import { ProviderModule } from 'src/providers/provider.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Facility]),
     forwardRef(() => UsersModule),
-    PaginationModule
+    PaginationModule,
+    forwardRef(() => ProviderModule)
   ],
   providers: [FacilityResolver, FacilityService],
   exports: [FacilityService, TypeOrmModule],

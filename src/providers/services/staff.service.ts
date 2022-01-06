@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
-import { CreateStaffInput } from './dto/create-staff.input';
-import { Staff } from './entities/staff.entity';
-import { DisableStaff, RemoveStaff } from './dto/update-facility.input';
+import { CreateStaffInput } from '../dto/create-staff.input';
+import { Staff } from '../entities/staff.entity';
+import { DisableStaff, RemoveStaff } from '../dto/update-facility.input';
 import { UsersService } from 'src/users/users.service';
 import { FacilityService } from 'src/facilities/facility.service';
 import { UpdateFacilityInput } from 'src/facilities/dto/update-facility.input';
-import StaffInput from './dto/staff-input.dto';
-import { AllStaffPayload } from './dto/all-staff-payload.dto';
+import StaffInput from '../dto/staff-input.dto';
+import { AllStaffPayload } from '../dto/all-staff-payload.dto';
 
 @Injectable()
 export class StaffService {
@@ -83,6 +83,16 @@ export class StaffService {
    */
   async findOne(id: string): Promise<Staff> {
     return await this.staffRepository.findOne(id);
+  }
+
+
+  /**
+   * Finds oneby username
+   * @param username 
+   * @returns oneby username 
+   */
+  async findOnebyUsername(username: string): Promise<Staff> {
+    return await this.staffRepository.findOne({ username });
   }
 
   /**

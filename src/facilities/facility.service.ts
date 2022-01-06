@@ -8,6 +8,9 @@ import { FacilitiesPayload } from './dto/facilities-payload.dto';
 import { Facility } from './entities/facility.entity';
 import FacilityInput from './dto/facility-input.dto';
 import { RemoveFacility, UpdateFacilityInput } from './dto/update-facility.input';
+import { ContactService } from 'src/providers/services/contact.service';
+import { CreateContactInput } from 'src/providers/dto/create-contact.input';
+import { UpdateContactInput } from './dto/update-contact.input';
 
 @Injectable()
 export class FacilityService {
@@ -15,6 +18,7 @@ export class FacilityService {
     @InjectRepository(Facility)
     private facilityRepository: Repository<Facility>,
     private readonly paginationService: PaginationService,
+    private readonly contactService: ContactService,
     private readonly utilsService: UtilsService,
   ) { }
 
@@ -25,17 +29,13 @@ export class FacilityService {
    */
   async createFacility(createFacilityInput: CreateFacilityInput): Promise<Facility> {
     try {
-      //Check facility with email
-      const existingFacility = await this.findOneByEmail(createFacilityInput.email);
-      if (existingFacility) {
-        throw new ConflictException({
-          status: HttpStatus.CONFLICT,
-          error: 'Facility this email already exists'
-        });
-      }
       // Facility Creation
-      const facility = this.facilityRepository.create(createFacilityInput)
-      return await this.facilityRepository.save(facility);
+      const facilityInstance = this.facilityRepository.create(createFacilityInput)
+      const facility = await this.facilityRepository.save(facilityInstance);
+      //create contact detail of facility
+      const createContactInput: CreateContactInput = { ...createFacilityInput, facility: facility }
+      await this.contactService.createContact(createContactInput)
+      return facility
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -76,7 +76,10 @@ export class FacilityService {
    */
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
-      return await this.utilsService.updateEntityManager(Facility, updateFacilityInput.id, updateFacilityInput, this.facilityRepository)
+      const faciltiy = await this.facilityRepository.save(updateFacilityInput)
+      const UpdateContactInput: UpdateContactInput = { ...updateFacilityInput, facilityId: updateFacilityInput.id }
+      await this.contactService.updateContact(UpdateContactInput)
+      return faciltiy
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -92,9 +95,5 @@ export class FacilityService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-  }
-
-  async findOneByEmail(email: string): Promise<Facility> {
-    return await this.facilityRepository.findOne({ email: email });
   }
 }
