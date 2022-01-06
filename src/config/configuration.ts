@@ -46,7 +46,7 @@ export default () => {
       process.env.PORTAL_APP_BASE_URL || "http://localhost:3000",
     SENDGRID_API_KEY:
       process.env.SENDGRID_API_KEY ||
-      "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",
+      "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",
     INVITATION_TEMPLATE_ID:
       process.env.INVITATION_TEMPLATE_ID ||
       "",
@@ -56,10 +56,10 @@ export default () => {
     REQUEST_APPROVED: process.env.REQUEST_APPROVED || "d-59063472f76c4c5f9acb74cc93d0bf95",
     REQUEST_UPDATE_NEEDED: process.env.REQUEST_UPDATE_NEEDED || "d-80fb471a2ddc4d2bbf4305a164ff7164",
     REQUEST_UPDATE_DECLINED: process.env.REQUEST_UPDATE_DECLINED || "d-6343679f0f5448eaacdc0cb0a3ba4edc",
-    FORGOT_PASSWORD_TEMPLATE_ID: process.env.FORGOT_PASSWORD_TEMPLATE_ID || "d-0e6748b88ea74e31a2f7712705325e7b",
+    FORGOT_PASSWORD_TEMPLATE_ID: process.env.FORGOT_PASSWORD_TEMPLATE_ID || "d-c40af5d836ec4f029f9f9da1f9a06515",
     redis,
     VERIFY_EMAIL_TEMPLATE_ID: process.env.VERIFY_EMAIL_TEMPLATE_ID || "d-0923bc5b5cdb44f9993128a14bbbedd9",
-    FROM_EMAIL: process.env.FROM_EMAIL || "investor@boca-plus.com",
+    FROM_EMAIL: process.env.FROM_EMAIL || "ahmad.hassan@alxtel.com",
     database,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || "",

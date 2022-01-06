@@ -28,7 +28,6 @@ export class MailerService {
     "updateDeclined": this.configService.get('REQUEST_UPDATE_DECLINED')
   })[templateName]
 
-
   /**
    * Sends email forgot password
    * @param email 
@@ -36,7 +35,6 @@ export class MailerService {
    * @param fullName 
    */
   async sendEmailForgotPassword(email: string, userId: string, fullName: string, isAdmin: boolean, token: string) {
-    console.log("token", token);
     const portalAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
     const adminAppBaseUrl = this.configService.get('ADMIN_APP_BASE_URL');
     const url = isAdmin ? `${adminAppBaseUrl}/reset-password?token=${token}` : `${portalAppBaseUrl}/reset-password?token=${token}`
@@ -49,7 +47,7 @@ export class MailerService {
         resetPasswordURL: url
       }
     };
-
+    console.log("msg", msg)
     try {
       await this.sgMail.send(msg);
     } catch (error) {

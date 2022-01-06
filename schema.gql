@@ -2,38 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Facility {
-  id: String!
-  name: String!
-  email: String!
-  phone: String!
-  mobile: String!
-  fax: String!
-  stateImmunizationId: String!
-  practiceType: PracticeType!
-  federalTaxId: String!
-  checkPayableTo: String!
-  bankAccount: String!
-  revenueCode: String!
-  tamxonomyCode: String!
-  pos: String!
-  merchantId: String!
-  hpsaModifier: String!
-  serviceLocationQualifies: String!
-  excludeChargesFromPatient: String!
-  startDate: String!
-  npi: String!
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The facility practice type assigned type"""
-enum PracticeType {
-  HOSPITAL
-  LAB
-  CLINIC
-}
-
 type Role {
   id: String!
   role: UserRole!
@@ -72,6 +40,61 @@ type User {
 enum UserStatus {
   DEACTIVATED
   ACTIVE
+}
+
+type Staff {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  dob: String!
+  phone: String!
+  mobile: String!
+  gender: Gender!
+  user: User
+  facility: [Facility!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type Facility {
+  id: String!
+  name: String!
+  email: String!
+  phone: String!
+  mobile: String!
+  fax: String!
+  stateImmunizationId: String!
+  practiceType: PracticeType!
+  federalTaxId: String!
+  checkPayableTo: String!
+  bankAccount: String!
+  revenueCode: String!
+  tamxonomyCode: String!
+  pos: String!
+  merchantId: String!
+  hpsaModifier: String!
+  serviceLocationQualifies: String!
+  excludeChargesFromPatient: String!
+  startDate: String!
+  npi: String!
+  staff: [Staff!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The facility practice type assigned type"""
+enum PracticeType {
+  HOSPITAL
+  LAB
+  CLINIC
 }
 
 type ResponsePayload {
@@ -125,6 +148,17 @@ type RolesPayload {
   roles: [Role]
 }
 
+type StaffPayload {
+  staff: Staff
+  response: ResponsePayload
+}
+
+type AllStaffPayload {
+  response: ResponsePayload
+  allstaff: [Staff]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -134,6 +168,8 @@ type Query {
   searchUser(search: String!): UsersPayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
+  findAllStaff(staffInput: StaffInput!): AllStaffPayload!
+  getStaff(getStaff: GetStaff!): StaffPayload!
 }
 
 input UsersInput {
@@ -159,6 +195,14 @@ input GetFacility {
   id: String!
 }
 
+input StaffInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetStaff {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -175,6 +219,9 @@ type Mutation {
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
   removeFacility(removeFacility: RemoveFacility!): FacilityPayload!
+  createStaff(createStaffInput: CreateStaffInput!): StaffPayload!
+  updateStaff(updateStaffInput: UpdateStaffInput!): StaffPayload!
+  removeStaff(removeStaff: RemoveStaff!): StaffPayload!
 }
 
 input LoginUserInput {
@@ -288,5 +335,46 @@ input UpdateFacilityInput {
 }
 
 input RemoveFacility {
+  id: String!
+}
+
+input CreateStaffInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phone: String
+  mobile: String
+  dob: String
+
+  """Staff gender"""
+  gender: Gender
+
+  """Send Investor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+}
+
+input UpdateStaffInput {
+  firstName: String
+  lastName: String
+  email: String
+  password: String
+  phone: String
+  mobile: String
+  dob: String
+
+  """Staff gender"""
+  gender: Gender
+
+  """Send Investor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+  id: String!
+}
+
+input RemoveStaff {
   id: String!
 }

@@ -1,5 +1,6 @@
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Staff } from 'src/providers/entities/staff.entity';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 
 export enum PracticeType {
@@ -99,6 +100,10 @@ export class Facility {
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   npi: string;
+
+  @Field(() => [Staff], { nullable: true })
+  @OneToMany(() => Staff, staff => staff.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  staff: Staff[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

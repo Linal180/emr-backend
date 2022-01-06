@@ -45,7 +45,7 @@ export class UsersService {
         if (existingUser) {
           throw new ForbiddenException({
             status: HttpStatus.FORBIDDEN,
-            error: 'User already exists',
+            error: 'User already exists with this email',
           });
         }
         // User Creation
@@ -55,12 +55,8 @@ export class UsersService {
         const token = createToken();
         userInstance.token = token;
         const user = await this.usersRepository.save(userInstance);
-        // SEND EMAIL TO ALL ADMINS & SUPERADMINS that a new sign - up was made
-        this.mailerSerivce.sendEmailNotification(await this.getAdmins(), 'newSignUp', {
-          userEmail: user.email
-        })
-        // SEND EMAIL TO USER FOR EMAIL VERIFICATION
-        this.mailerSerivce.sendVerificationEmail(user.email, user.email, user.id, user.emailVerified, token)
+        // SEND EMAIL TO USER FOR RESET PASSWORD
+        this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token)
         return user;
       }
       throw new NotFoundException({
@@ -442,9 +438,9 @@ export class UsersService {
       const userObj = await this.findByToken(token)
       if (userObj) {
         const user = await this.findById(userObj.id);
-        delete user.roles
         delete user.token;
         user.password = password;
+        user.emailVerified = true
         const updatedUser = await this.usersRepository.save(user);
         return updatedUser;
       }
@@ -464,7 +460,6 @@ export class UsersService {
       const oldPassword = await bcrypt.compare(updatePasswordInput.oldPassword, user.password)
       if (oldPassword) {
         user.password = updatePasswordInput.newPassword
-        // delete user.roles
         const updatedUser = await this.usersRepository.save(user);
         return updatedUser;
       }

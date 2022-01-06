@@ -13,6 +13,7 @@ import { PaginationModule } from 'src/pagination/pagination.module';
     PaginationModule
   ],
   providers: [FacilityResolver, FacilityService],
+  exports: [FacilityService, TypeOrmModule],
 })
 export class FacilityModule { }
 
