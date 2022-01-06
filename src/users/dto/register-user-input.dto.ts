@@ -16,6 +16,8 @@ export class RegisterUserInput {
   @Field()
   adminId?: string;
   @Field()
+  facilityId?: string;
+  @Field()
   phone?: string;
   @Field()
   zipCode?: string;

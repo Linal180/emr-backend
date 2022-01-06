@@ -1,5 +1,6 @@
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { Staff } from 'src/providers/entities/staff.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 
@@ -104,6 +105,10 @@ export class Facility {
   @Field(() => [Staff], { nullable: true })
   @OneToMany(() => Staff, staff => staff.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
   staff: Staff[];
+
+  @Field(() => [User], { nullable: true })
+  @OneToMany(() => User, user => user.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  user: User[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

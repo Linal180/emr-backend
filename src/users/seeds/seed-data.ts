@@ -13,5 +13,5 @@ export const RolesData = [
 ];
 
 export const UsersData = [
-    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", roleType: UserRole.SUPER_ADMIN, zipCode: "54000", emailVerified: true },
+    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: UserRole.SUPER_ADMIN, roleType: UserRole.SUPER_ADMIN, zipCode: "54000", emailVerified: true },
 ];

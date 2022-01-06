@@ -17,6 +17,7 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { UpdatePasswordInput } from './dto/update-password-input.dto';
 import { UserLog } from './entities/user-logs.entity';
 import { UserIdInput } from './dto/user-id-input.dto';
+import { FacilityService } from 'src/facilities/facility.service';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +29,7 @@ export class UsersService {
     @InjectRepository(UserLog)
     private UserLogRepository: Repository<UserLog>,
     private readonly jwtService: JwtService,
+    private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
     private readonly mailerSerivce: MailerService
   ) { }
@@ -55,11 +57,14 @@ export class UsersService {
         //custom token creation
         const token = createToken();
         userInstance.token = token;
+        //getting facility 
+        const facility = await this.facilityService.findOne(registerUserInput.facilityId)
+        userInstance.facility = facility
         //setting role type & custom userId
         userInstance.userType = role.role
         const user = await this.usersRepository.save(userInstance);
         //saving userId in user
-        await this.save(user.id, userInstance)
+        await this.saveUserId(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
         this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token)
         return user;
@@ -214,7 +219,8 @@ export class UsersService {
     return await this.usersRepository.findOne({ email: email });
   }
 
-  async save(id: string, userInstance: User): Promise<User> {
+  async saveUserId(id: string, userInstance: User): Promise<User> {
+    userInstance.userId = id
     return await this.usersRepository.save(userInstance);
   }
 
