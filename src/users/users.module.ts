@@ -13,6 +13,7 @@ import { ConfigService } from "@nestjs/config";
 import { MailerModule } from "src/mailer/mailer.module";
 import { PaginationModule } from "src/pagination/pagination.module";
 import { UserLog } from "./entities/user-logs.entity";
+import { FacilityModule } from "src/facilities/facility.module";
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { UserLog } from "./entities/user-logs.entity";
       inject: [ConfigService],
     }),
     MailerModule,
-    PaginationModule
+    PaginationModule,
+    forwardRef(() => FacilityModule)
   ],
   providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
   controllers: [UsersController],

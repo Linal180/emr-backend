@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateCol
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { Role } from './role.entity';
 import { UserLog } from './user-logs.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
 
 
 export enum UserStatus {
@@ -58,9 +59,9 @@ export class User {
   @Field()
   userType: string;
 
-  @Column({ nullable: true })
-  @Field()
-  facilityId: string;
+  @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
+  @Field(type => [Facility], { nullable: true })
+  facility: Facility;
 
   @Field(type => [Role], { nullable: 'itemsAndList' })
   @ManyToMany(type => Role, role => role.users, { eager: true })

@@ -30,7 +30,7 @@ type User {
   userId: String!
   token: String!
   userType: String!
-  facilityId: String!
+  facility: [Facility!]
   roles: [Role]
   createdAt: String!
   updatedAt: String!
@@ -86,6 +86,7 @@ type Facility {
   startDate: String!
   npi: String!
   staff: [Staff!]
+  user: [User!]
   createdAt: String!
   updatedAt: String!
 }
@@ -239,6 +240,7 @@ input RegisterUserInput {
   """Send Investor Type from the ENUM - Sign-up"""
   roleType: UserRole
   adminId: String!
+  facilityId: String!
   phone: String!
   zipCode: String!
 }
@@ -277,6 +279,7 @@ input UpdateUserInput {
   lastName: String
   email: String
   adminId: String
+  facilityId: String
   phone: String
   zipCode: String
   id: String!
