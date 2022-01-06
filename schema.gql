@@ -42,11 +42,30 @@ enum UserStatus {
   ACTIVE
 }
 
+type Contact {
+  id: String!
+  email: String!
+  phone: String!
+  mobile: String!
+  pager: String!
+  fax: String!
+  address: String!
+  address2: String!
+  zipCode: String!
+  city: String!
+  state: String!
+  country: String!
+  userId: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Staff {
   id: String!
   firstName: String!
   lastName: String!
   email: String!
+  username: String!
   dob: String!
   phone: String!
   mobile: String!
@@ -67,26 +86,20 @@ enum Gender {
 type Facility {
   id: String!
   name: String!
-  email: String!
-  phone: String!
-  mobile: String!
-  fax: String!
-  stateImmunizationId: String!
   practiceType: PracticeType!
+  code: String!
+  cliaIdNumber: String!
   federalTaxId: String!
-  checkPayableTo: String!
-  bankAccount: String!
+  isPrivate: Boolean!
   revenueCode: String!
   tamxonomyCode: String!
-  pos: String!
-  merchantId: String!
-  hpsaModifier: String!
-  serviceLocationQualifies: String!
-  excludeChargesFromPatient: String!
-  startDate: String!
+  insurancePlanType: String!
+  mammographyCertificationNumber: String!
   npi: String!
+  serviceCode: ServiceCode!
   staff: [Staff!]
   user: [User!]
+  contact: Contact
   createdAt: String!
   updatedAt: String!
 }
@@ -96,6 +109,29 @@ enum PracticeType {
   HOSPITAL
   LAB
   CLINIC
+}
+
+"""The facility service code type assigned"""
+enum ServiceCode {
+  AMBULANCE_41
+  AMBULANCE_42
+  AMBULANCE_24
+  ASSISTED_LIVING_13
+  BIRTHING_CENTER_25
+  COMMUNITY_MENTAL_HEALTH_CENTER_53
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
+  CUSTODIAL_CARE_FACILITY_33
+  EMERGENCY_ROOM_23
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
+  GROUP_HOME_14
+  HOMELESS_SHELTER_04
+  HOSPICE_34
+  INDEPENDENT_CLINIC_49
+  INDEPENDENT_LABORATORY_81
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
 }
 
 type ResponsePayload {
@@ -293,48 +329,66 @@ input UpdateRoleInput {
 
 input CreateFacilityInput {
   name: String!
-  email: String!
-  phone: String
-  mobile: String
-  fax: String
   stateImmunizationId: String
 
   """Facility type"""
   practiceType: PracticeType
+
+  """Service Code type"""
+  serviceCode: ServiceCode
+  code: String
+  cliaIdNumber: String
   federalTaxId: String
-  checkPayableTo: String
-  bankAccount: String
   revenueCode: String
   tamxonomyCode: String
-  pos: String
-  merchantId: String
-  hpsaModifier: String
-  serviceLocationQualifies: String
-  excludeChargesFromPatient: String
+  insurancePlanType: String
+  mammographyCertificationNumber: String
   npi: String
+  email: String
+  pager: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  userId: String
+  facilityId: String
 }
 
 input UpdateFacilityInput {
   name: String
-  email: String
-  phone: String
-  mobile: String
-  fax: String
   stateImmunizationId: String
 
   """Facility type"""
   practiceType: PracticeType
+
+  """Service Code type"""
+  serviceCode: ServiceCode
+  code: String
+  cliaIdNumber: String
   federalTaxId: String
-  checkPayableTo: String
-  bankAccount: String
   revenueCode: String
   tamxonomyCode: String
-  pos: String
-  merchantId: String
-  hpsaModifier: String
-  serviceLocationQualifies: String
-  excludeChargesFromPatient: String
+  insurancePlanType: String
+  mammographyCertificationNumber: String
   npi: String
+  email: String
+  pager: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  userId: String
+  facilityId: String
   id: String!
 }
 
@@ -346,6 +400,7 @@ input CreateStaffInput {
   firstName: String!
   lastName: String!
   email: String!
+  username: String!
   password: String!
   phone: String
   mobile: String
@@ -364,6 +419,7 @@ input UpdateStaffInput {
   firstName: String
   lastName: String
   email: String
+  username: String
   password: String
   phone: String
   mobile: String

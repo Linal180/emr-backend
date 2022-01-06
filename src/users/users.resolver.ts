@@ -62,7 +62,6 @@ export class UsersResolver {
   @Query(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
-    console.log("CurrentUser", user);
     const userFound = await this.usersService.findOne(user.email)
     if (!userFound) {
       throw new UnauthorizedException({

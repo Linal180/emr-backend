@@ -29,6 +29,7 @@ export class UsersService {
     @InjectRepository(UserLog)
     private UserLogRepository: Repository<UserLog>,
     private readonly jwtService: JwtService,
+    @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
     private readonly mailerSerivce: MailerService

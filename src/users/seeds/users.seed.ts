@@ -3,8 +3,9 @@ import { Factory, Seeder } from "typeorm-seeding";
 import { Connection, getRepository } from "typeorm";
 import { Role } from '../entities/role.entity'
 import { User } from '../entities/user.entity'
-import { RolesData, UsersData } from './seed-data'
+import { RolesData, UsersData, FacilityData } from './seed-data'
 import { createPasswordHash } from '../../lib/helper';
+import { Facility } from "src/facilities/entities/facility.entity";
 
 @Injectable()
 export class CreateUsers implements Seeder {
@@ -13,6 +14,12 @@ export class CreateUsers implements Seeder {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      //Add Facility 
+      let facility = await getRepository(Facility).find();
+      if (!facility.length) {
+        facility = getRepository(Facility).create(FacilityData)
+        facility = await queryRunner.manager.save(facility);
+      }
       //Add Roles
       let roles = await getRepository(Role).find();
       if (!roles.length) {
@@ -28,6 +35,9 @@ export class CreateUsers implements Seeder {
           const UserObj = getRepository(User).create(user)
           const role = roles.filter(obj => obj.role === user.roleType);
           UserObj.roles = role;
+          UserObj.facility = facility[0]
+          const newuserObj = await queryRunner.manager.save(UserObj);
+          UserObj.userId = newuserObj.id
           await queryRunner.manager.save(UserObj);
         }
       }

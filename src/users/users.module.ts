@@ -14,6 +14,7 @@ import { MailerModule } from "src/mailer/mailer.module";
 import { PaginationModule } from "src/pagination/pagination.module";
 import { UserLog } from "./entities/user-logs.entity";
 import { FacilityModule } from "src/facilities/facility.module";
+import { ProviderModule } from "src/providers/provider.module";
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { FacilityModule } from "src/facilities/facility.module";
     }),
     MailerModule,
     PaginationModule,
-    forwardRef(() => FacilityModule)
+    forwardRef(() => FacilityModule),
   ],
   providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
   controllers: [UsersController],

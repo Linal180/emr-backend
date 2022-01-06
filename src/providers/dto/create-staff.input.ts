@@ -15,6 +15,9 @@ export class CreateStaffInput {
   email: string;
 
   @Field({ nullable: false })
+  username: string;
+
+  @Field({ nullable: false })
   password: string;
 
   @Field({ nullable: true })
