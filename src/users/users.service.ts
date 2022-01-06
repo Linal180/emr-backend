@@ -440,6 +440,7 @@ export class UsersService {
         const user = await this.findById(userObj.id);
         delete user.token;
         user.password = password;
+        user.emailVerified = true
         const updatedUser = await this.usersRepository.save(user);
         return updatedUser;
       }
