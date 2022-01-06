@@ -5,7 +5,7 @@ import RoleGuard from 'src/users/auth/role.guard';
 import { CreateStaffInput } from './dto/create-staff.input';
 import { StaffPayload } from './dto/staff-payload.dto';
 import { StaffService } from './staff.service';
-import { GetStaff, RemoveStaff, UpdateStaffInput } from './dto/update-facility.input';
+import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from './dto/update-facility.input';
 import { AllStaffPayload } from './dto/all-staff-payload.dto';
 import StaffInput from './dto/staff-input.dto';
 
@@ -35,7 +35,7 @@ export class StaffResolver {
 
   @Query(returns => AllStaffPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin', 'admin'])
   async findAllStaff(@Args('staffInput') staffInput: StaffInput): Promise<AllStaffPayload> {
     const allstaff = await this.staffService.findAllStaff(staffInput)
     if (allstaff) {
@@ -54,7 +54,7 @@ export class StaffResolver {
 
   @Query(returns => StaffPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
   async getStaff(@Args('getStaff') getStaff: GetStaff): Promise<StaffPayload> {
     return {
       staff: await this.staffService.findOne(getStaff.id),
@@ -64,9 +64,17 @@ export class StaffResolver {
 
   @Mutation(() => StaffPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin', 'admin'])
   async removeStaff(@Args('removeStaff') removeStaff: RemoveStaff) {
     await this.staffService.removeStaff(removeStaff);
     return { response: { status: 200, message: 'Staff Deleted' } };
+  }
+
+  @Mutation(() => StaffPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['super-admin', 'admin'])
+  async disableStaff(@Args('disableStaff') disableStaff: DisableStaff) {
+    await this.staffService.disableStaff(disableStaff);
+    return { response: { status: 200, message: 'Staff Disabled' } };
   }
 }
