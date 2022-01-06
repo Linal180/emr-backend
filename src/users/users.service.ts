@@ -52,9 +52,14 @@ export class UsersService {
         const userInstance = this.usersRepository.create({ ...registerUserInput, email: registerUserInput.email.trim().toLowerCase() })
         const role = await this.rolesRepository.findOne({ role: registerUserInput.roleType });
         userInstance.roles = [role]
+        //custom token creation
         const token = createToken();
         userInstance.token = token;
+        //setting role type & custom userId
+        userInstance.userType = role.role
         const user = await this.usersRepository.save(userInstance);
+        //saving userId in user
+        await this.save(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
         this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token)
         return user;
@@ -209,6 +214,10 @@ export class UsersService {
     return await this.usersRepository.findOne({ email: email });
   }
 
+  async save(id: string, userInstance: User): Promise<User> {
+    return await this.usersRepository.save(userInstance);
+  }
+
   /**
    * Finds User by id
    * @param id 
@@ -265,7 +274,7 @@ export class UsersService {
     try {
       const user = await this.findById(id);
       if (user) {
-        if ([UserRole.ADMIN, UserRole.SUPER_ADMIN].every(i => user.roles.map(role => role.role).includes(i))) {
+        if ([UserRole.SUPER_ADMIN].every(i => user.roles.map(role => role.role).includes(i))) {
           throw new ForbiddenException({
             status: HttpStatus.FORBIDDEN,
             error: "Super Admin can't be deactivated",

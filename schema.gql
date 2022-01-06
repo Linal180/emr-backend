@@ -222,6 +222,7 @@ type Mutation {
   createStaff(createStaffInput: CreateStaffInput!): StaffPayload!
   updateStaff(updateStaffInput: UpdateStaffInput!): StaffPayload!
   removeStaff(removeStaff: RemoveStaff!): StaffPayload!
+  disableStaff(disableStaff: DisableStaff!): StaffPayload!
 }
 
 input LoginUserInput {
@@ -376,5 +377,9 @@ input UpdateStaffInput {
 }
 
 input RemoveStaff {
+  id: String!
+}
+
+input DisableStaff {
   id: String!
 }

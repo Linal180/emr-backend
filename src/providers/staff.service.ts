@@ -5,7 +5,7 @@ import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateStaffInput } from './dto/create-staff.input';
 import { Staff } from './entities/staff.entity';
-import { RemoveStaff } from './dto/update-facility.input';
+import { DisableStaff, RemoveStaff } from './dto/update-facility.input';
 import { UsersService } from 'src/users/users.service';
 import { FacilityService } from 'src/facilities/facility.service';
 import { UpdateFacilityInput } from 'src/facilities/dto/update-facility.input';
@@ -22,7 +22,6 @@ export class StaffService {
     private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService,
   ) { }
-
 
   /**
    * Creates staff
@@ -45,7 +44,6 @@ export class StaffService {
     }
   }
 
-
   /**
    * Updates staff
    * @param updateFacilityInput 
@@ -58,7 +56,6 @@ export class StaffService {
       throw new InternalServerErrorException(error);
     }
   }
-
 
   /**
    * Finds all staff
@@ -95,6 +92,14 @@ export class StaffService {
   async removeStaff({ id }: RemoveStaff) {
     try {
       await this.staffRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async disableStaff({ id }: DisableStaff) {
+    try {
+      await this.usersService.deactivateUser(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

@@ -12,3 +12,6 @@ export class GetStaff extends PickType(UpdateStaffInput, ['id'] as const) { }
 
 @InputType()
 export class RemoveStaff extends PickType(UpdateStaffInput, ['id'] as const) { }
+
+@InputType()
+export class DisableStaff extends PickType(UpdateStaffInput, ['id'] as const) { }
