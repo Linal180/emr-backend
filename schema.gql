@@ -47,7 +47,7 @@ type User {
   inviteSentAt: String!
   inviteAcceptedAt: String!
   userId: String!
-  token: String!
+  token: String
   userType: String!
   facility: [Facility!]
   roles: [Role]
