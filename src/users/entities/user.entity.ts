@@ -52,7 +52,7 @@ export class User {
   userId: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   token: string;
 
   @Column({ nullable: true })

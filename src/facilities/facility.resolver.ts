@@ -57,10 +57,9 @@ export class FacilityResolver {
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin'])
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
-    const facilItity = await this.facilityService.GetFacility(getFacility.id)
-    console.log("facilItity", facilItity);
+    const facilitity = await this.facilityService.GetFacility(getFacility.id)
     return {
-      ...facilItity,
+      ...facilitity,
       response: { status: 200, message: 'Facility fetched successfully' }
     };
   }
