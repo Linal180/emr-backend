@@ -19,6 +19,7 @@ export class PaginatedEntityInput {
   relationField?: string
   requestType?: string
   requestStatus?: string
+  isPrivate?: boolean
   MembershipPlan?: string
   username?: string
   searchKey?: string
