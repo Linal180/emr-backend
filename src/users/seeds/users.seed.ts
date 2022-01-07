@@ -1,11 +1,11 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Factory, Seeder } from "typeorm-seeding";
-import { Connection, getRepository } from "typeorm";
-import { Role } from '../entities/role.entity'
-import { User } from '../entities/user.entity'
-import { RolesData, UsersData, FacilityData } from './seed-data'
-import { createPasswordHash } from '../../lib/helper';
 import { Facility } from "src/facilities/entities/facility.entity";
+import { Connection, getRepository } from "typeorm";
+import { Factory, Seeder } from "typeorm-seeding";
+import { createPasswordHash } from '../../lib/helper';
+import { Role } from '../entities/role.entity';
+import { User } from '../entities/user.entity';
+import { FacilityData, RolesData, UsersData } from './seed-data';
 
 @Injectable()
 export class CreateUsers implements Seeder {

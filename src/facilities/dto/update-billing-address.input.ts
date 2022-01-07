@@ -1,5 +1,4 @@
-import { CreateFacilityInput } from './create-facility.input';
-import { InputType, Field, PartialType, PickType } from '@nestjs/graphql';
+import { Field, InputType, PartialType, PickType } from '@nestjs/graphql';
 import { CreateBillingAddressInput } from 'src/providers/dto/create-billing-address.input';
 
 @InputType()

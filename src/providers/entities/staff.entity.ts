@@ -1,7 +1,7 @@
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export enum Gender {
   MALE = "male",
@@ -59,7 +59,7 @@ export class Staff {
 
   @OneToOne(() => User, { eager: true })
   @JoinColumn()
-  @Field({ nullable: true })
+  @Field(type => User, { nullable: true })
   user: User;
 
   @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })

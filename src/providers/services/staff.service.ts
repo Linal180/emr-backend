@@ -1,15 +1,15 @@
 import { ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FacilityService } from 'src/facilities/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
-import { CreateStaffInput } from '../dto/create-staff.input';
-import { Staff } from '../entities/staff.entity';
-import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
-import { UsersService } from 'src/users/users.service';
-import { FacilityService } from 'src/facilities/facility.service';
-import StaffInput from '../dto/staff-input.dto';
 import { AllStaffPayload } from '../dto/all-staff-payload.dto';
+import { CreateStaffInput } from '../dto/create-staff.input';
+import StaffInput from '../dto/staff-input.dto';
+import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
+import { Staff } from '../entities/staff.entity';
 
 @Injectable()
 export class StaffService {

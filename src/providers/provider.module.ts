@@ -1,16 +1,16 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { StaffService } from './services/staff.service';
-import { StaffResolver } from './resolvers/staff.resolver';
-import { Staff } from './entities/staff.entity'
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from 'src/users/users.module';
-import { PaginationModule } from 'src/pagination/pagination.module';
 import { FacilityModule } from 'src/facilities/facility.module';
-import { Doctor } from './entities/doctor.entity';
-import { Contact } from './entities/contact.entity';
-import { ContactService } from './services/contact.service';
+import { PaginationModule } from 'src/pagination/pagination.module';
+import { UsersModule } from 'src/users/users.module';
 import { BillingAddress } from './entities/billing-address.entity';
+import { Contact } from './entities/contact.entity';
+import { Doctor } from './entities/doctor.entity';
+import { Staff } from './entities/staff.entity';
+import { StaffResolver } from './resolvers/staff.resolver';
 import { BillingAddressService } from './services/billing-address.service';
+import { ContactService } from './services/contact.service';
+import { StaffService } from './services/staff.service';
 
 @Module({
   imports: [
@@ -23,6 +23,5 @@ import { BillingAddressService } from './services/billing-address.service';
   exports: [ContactService, StaffService, TypeOrmModule, BillingAddressService]
 })
 export class ProviderModule { }
-
 
 

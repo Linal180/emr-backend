@@ -1,6 +1,6 @@
-import { ObjectType, Field } from '@nestjs/graphql';
-import { ResponsePayload } from './response-payload.dto';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Role } from '../entities/role.entity';
+import { ResponsePayload } from './response-payload.dto';
 
 @ObjectType()
 export class AccessUserPayload {

@@ -1,4 +1,4 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { ResponsePayload, ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
 import { Facility } from '../entities/facility.entity';
 

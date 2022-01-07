@@ -1,21 +1,17 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { BillingAddressService } from 'src/providers/services/billing-address.service';
+import { ContactService } from 'src/providers/services/contact.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateFacilityInput } from './dto/create-facility.input';
 import { FacilitiesPayload } from './dto/facilities-payload.dto';
-import { Facility } from './entities/facility.entity';
 import FacilityInput from './dto/facility-input.dto';
-import { RemoveFacility, UpdateFacilityItemInput } from './dto/update-facilityItem.input';
-import { ContactService } from 'src/providers/services/contact.service';
-import { CreateContactInput } from 'src/providers/dto/create-contact.input';
-import { UpdateContactInput } from '../providers/dto/update-contact.input';
 import { FacilityPayload } from './dto/facility-payload.dto';
-import { BillingAddressService } from 'src/providers/services/billing-address.service';
-import { CreateBillingAddressInput } from 'src/providers/dto/create-billing-address.input';
-import { UpdateBillingAddressInput } from './dto/update-billing-address.input';
 import { UpdateFacilityInput } from './dto/update-facility.input';
+import { RemoveFacility } from './dto/update-facilityItem.input';
+import { Facility } from './entities/facility.entity';
 
 @Injectable()
 export class FacilityService {

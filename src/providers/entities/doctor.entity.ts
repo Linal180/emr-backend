@@ -1,7 +1,5 @@
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export enum Gender {
   MALE = "male",
@@ -203,7 +201,6 @@ export class Doctor {
   @Column({ nullable: true })
   @Field()
   prescriptiveAuthNumber: string;
-
 
   // @OneToOne(() => User, { eager: true })
   // @JoinColumn()

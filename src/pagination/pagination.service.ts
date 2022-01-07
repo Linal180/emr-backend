@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Between, Equal, FindManyOptions, FindOperator, Repository, JoinOptions, ObjectLiteral, FindConditions, WhereExpressionBuilder, Not, In, Like } from "typeorm";
+import { Between, Equal, FindConditions, FindManyOptions, FindOperator, JoinOptions, Not, ObjectLiteral, Repository, WhereExpressionBuilder } from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
 

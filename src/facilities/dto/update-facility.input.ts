@@ -1,4 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { UpdateContactInput } from 'src/providers/dto/update-contact.input';
 import { UpdateBillingAddressInput } from './update-billing-address.input';
 import { UpdateFacilityItemInput } from './update-facilityItem.input';

@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { InputType } from "@nestjs/graphql";
 import { UserStatus } from "src/users/entities/user.entity";
 import PaginationInput from "./pagination-input.dto";
 
