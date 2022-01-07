@@ -2,6 +2,27 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type BillingAddress {
+  id: String!
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  federalTaxId: String
+  bankAccount: String
+  checkPayableTo: String
+  faciltiy: Facility
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Contact {
   id: String!
   email: String
@@ -88,19 +109,20 @@ type Facility {
   id: String!
   name: String!
   practiceType: PracticeType!
-  code: String!
-  cliaIdNumber: String!
-  federalTaxId: String!
-  isPrivate: Boolean!
-  revenueCode: String!
-  tamxonomyCode: String!
-  insurancePlanType: String!
-  mammographyCertificationNumber: String!
-  npi: String!
+  code: String
+  cliaIdNumber: String
+  federalTaxId: String
+  isPrivate: Boolean
+  revenueCode: String
+  tamxonomyCode: String
+  insurancePlanType: String
+  mammographyCertificationNumber: String
+  npi: String
   serviceCode: ServiceCode!
   staff: [Staff!]
   user: [User!]
   contacts: [Contact!]
+  billingAddress: [BillingAddress!]
   createdAt: String!
   updatedAt: String!
 }
@@ -330,6 +352,12 @@ input UpdateRoleInput {
 }
 
 input CreateFacilityInput {
+  createFacilityItemInput: CreateFacilityItemInput!
+  createContactInput: CreateContactInput!
+  createBillingAddressInput: CreateBillingAddressInput!
+}
+
+input CreateFacilityItemInput {
   name: String!
   stateImmunizationId: String
 
@@ -346,7 +374,26 @@ input CreateFacilityInput {
   insurancePlanType: String
   mammographyCertificationNumber: String
   npi: String
-  email: String
+}
+
+input CreateContactInput {
+  email: String!
+  pager: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  userId: String
+  facilityId: String
+}
+
+input CreateBillingAddressInput {
+  email: String!
   pager: String
   phone: String
   mobile: String
@@ -362,6 +409,12 @@ input CreateFacilityInput {
 }
 
 input UpdateFacilityInput {
+  updateFacilityItemInput: UpdateFacilityItemInput!
+  updateContactInput: UpdateContactInput!
+  updateBillingAddressInput: UpdateBillingAddressInput!
+}
+
+input UpdateFacilityItemInput {
   name: String
   stateImmunizationId: String
 
@@ -378,6 +431,27 @@ input UpdateFacilityInput {
   insurancePlanType: String
   mammographyCertificationNumber: String
   npi: String
+  id: String!
+}
+
+input UpdateContactInput {
+  email: String
+  pager: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  userId: String
+  facilityId: String
+  id: String!
+}
+
+input UpdateBillingAddressInput {
   email: String
   pager: String
   phone: String

@@ -1,4 +1,5 @@
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -64,39 +65,39 @@ export class Facility {
   practiceType: PracticeType
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   code: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   cliaIdNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   federalTaxId: string;
 
   @Column({ nullable: true, default: false })
-  @Field()
+  @Field({ nullable: true })
   isPrivate: boolean;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   revenueCode: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   tamxonomyCode: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   insurancePlanType: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   mammographyCertificationNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   npi: string;
 
   @Column({
@@ -118,6 +119,10 @@ export class Facility {
   @OneToMany(() => Contact, contact => contact.faciltiy, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
+
+  @OneToMany(() => BillingAddress, billingAddress => billingAddress.faciltiy, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [BillingAddress], { nullable: true })
+  billingAddress: BillingAddress[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

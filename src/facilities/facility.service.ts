@@ -7,11 +7,15 @@ import { CreateFacilityInput } from './dto/create-facility.input';
 import { FacilitiesPayload } from './dto/facilities-payload.dto';
 import { Facility } from './entities/facility.entity';
 import FacilityInput from './dto/facility-input.dto';
-import { RemoveFacility, UpdateFacilityInput } from './dto/update-facility.input';
+import { RemoveFacility, UpdateFacilityItemInput } from './dto/update-facilityItem.input';
 import { ContactService } from 'src/providers/services/contact.service';
 import { CreateContactInput } from 'src/providers/dto/create-contact.input';
-import { UpdateContactInput } from './dto/update-contact.input';
+import { UpdateContactInput } from '../providers/dto/update-contact.input';
 import { FacilityPayload } from './dto/facility-payload.dto';
+import { BillingAddressService } from 'src/providers/services/billing-address.service';
+import { CreateBillingAddressInput } from 'src/providers/dto/create-billing-address.input';
+import { UpdateBillingAddressInput } from './dto/update-billing-address.input';
+import { UpdateFacilityInput } from './dto/update-facility.input';
 
 @Injectable()
 export class FacilityService {
@@ -20,6 +24,7 @@ export class FacilityService {
     private facilityRepository: Repository<Facility>,
     private readonly paginationService: PaginationService,
     private readonly contactService: ContactService,
+    private readonly billingAddressService: BillingAddressService,
     private readonly utilsService: UtilsService,
   ) { }
 
@@ -30,12 +35,15 @@ export class FacilityService {
    */
   async createFacility(createFacilityInput: CreateFacilityInput): Promise<Facility> {
     try {
-      // Facility Creation
-      const facilityInstance = this.facilityRepository.create(createFacilityInput)
+      //creating facility
+      const facilityInstance = this.facilityRepository.create(createFacilityInput.createFacilityItemInput)
       const facility = await this.facilityRepository.save(facilityInstance);
-      //create contact detail of facility
-      const createContactInput: CreateContactInput = { ...createFacilityInput, facility: facility }
+      //adding contact
+      const createContactInput = { ...createFacilityInput.createContactInput, facilityId: facility.id }
       await this.contactService.createContact(createContactInput)
+      //adding billing address details
+      const createBillingAddressInput = { ...createFacilityInput.createBillingAddressInput, facilityId: facility.id }
+      await this.billingAddressService.createBillingAddress(createBillingAddressInput)
       return facility
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -95,9 +103,13 @@ export class FacilityService {
    */
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
-      const faciltiy = await this.facilityRepository.save(updateFacilityInput)
-      const UpdateContactInput: UpdateContactInput = { ...updateFacilityInput, facilityId: updateFacilityInput.id }
-      await this.contactService.updateContact(UpdateContactInput)
+      const faciltiy = await this.facilityRepository.save(updateFacilityInput.updateFacilityItemInput)
+      //updating contact details
+      const UpdateContactInput = { ...updateFacilityInput }
+      await this.contactService.updateContact(UpdateContactInput.updateContactInput)
+      //updating billing details
+      const updateBillingAddressInput = { ...updateFacilityInput }
+      await this.billingAddressService.updateBillingAddress(updateBillingAddressInput.updateBillingAddressInput)
       return faciltiy
     } catch (error) {
       throw new InternalServerErrorException(error);

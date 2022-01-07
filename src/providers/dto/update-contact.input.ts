@@ -1,8 +1,9 @@
-import { CreateFacilityInput } from './create-facility.input';
+import { CreateFacilityInput } from '../../facilities/dto/create-facility.input';
 import { InputType, Field, PartialType, PickType } from '@nestjs/graphql';
+import { CreateContactInput } from './create-contact.input';
 
 @InputType()
-export class UpdateContactInput extends PartialType(CreateFacilityInput) {
+export class UpdateContactInput extends PartialType(CreateContactInput) {
   @Field()
   id: string;
 }
