@@ -47,7 +47,6 @@ export class MailerService {
         resetPasswordURL: url
       }
     };
-    console.log("msg", msg)
     try {
       await this.sgMail.send(msg);
     } catch (error) {

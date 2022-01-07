@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -33,11 +33,17 @@ export class StaffService {
       const user = await this.usersService.create(createStaffInput)
       //get facility 
       const facility = await this.facilityService.findOne(createStaffInput.facilityId)
-      // Staff Creation
-      const staff = this.staffRepository.create(createStaffInput)
-      staff.user = user;
-      staff.facility = facility;
-      return await this.staffRepository.save(staff);
+      if (user && facility) {
+        // Staff Creation
+        const staff = this.staffRepository.create(createStaffInput)
+        staff.user = user;
+        staff.facility = facility;
+        return await this.staffRepository.save(staff);
+      }
+      throw new ConflictException({
+        status: HttpStatus.CONFLICT,
+        error: 'Could not create staff',
+      });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
