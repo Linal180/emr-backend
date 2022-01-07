@@ -1,6 +1,5 @@
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
-import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'Contacts' })
@@ -10,55 +9,56 @@ export class Contact {
   @Field()
   id: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   email: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   phone: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   mobile: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   pager: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   fax: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   address: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   address2: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   zipCode: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   city: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   state: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   country: string;
 
-  @OneToMany(() => Facility, facility => facility.contact, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
-  facilities: Facility[];
+  @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
+  @Field(type => Facility, { nullable: true })
+  faciltiy: Facility;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   userId: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
