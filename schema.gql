@@ -225,6 +225,7 @@ input GetUser {
 }
 
 input FacilityInput {
+  isPrivate: Boolean
   paginationOptions: PaginationInput!
 }
 

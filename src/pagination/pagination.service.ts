@@ -133,6 +133,7 @@ export class PaginationService {
       to,
       requestType,
       MembershipPlan,
+      isPrivate,
       currentPhaseId,
       from,
       dueToday,
@@ -159,8 +160,8 @@ export class PaginationService {
         ...(status != null && {
           status
         }),
-        ...(requestType && {
-          requestStatus: Not(requestType)
+        ...(isPrivate && {
+          isPrivate: Not(isPrivate)
         }),
         ...(MembershipPlan && {
           membershipId: MembershipPlan

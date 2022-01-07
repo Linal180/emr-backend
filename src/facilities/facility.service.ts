@@ -48,6 +48,7 @@ export class FacilityService {
    */
   async findAllFacilities(facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     try {
+      facilityInput.isPrivate = true;
       const paginationResponse = await this.paginationService.willPaginate<Facility>(this.facilityRepository, facilityInput)
       return {
         pagination: {
