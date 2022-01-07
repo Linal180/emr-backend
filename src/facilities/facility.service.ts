@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -11,6 +11,7 @@ import { RemoveFacility, UpdateFacilityInput } from './dto/update-facility.input
 import { ContactService } from 'src/providers/services/contact.service';
 import { CreateContactInput } from 'src/providers/dto/create-contact.input';
 import { UpdateContactInput } from './dto/update-contact.input';
+import { FacilityPayload } from './dto/facility-payload.dto';
 
 @Injectable()
 export class FacilityService {
@@ -68,6 +69,23 @@ export class FacilityService {
    */
   async findOne(id: string): Promise<Facility> {
     return await this.facilityRepository.findOne(id);
+
+  }
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async GetFacility(id: string): Promise<FacilityPayload> {
+    const facility = await this.findOne(id);
+    if (facility) {
+      return { facility }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Facility not found',
+    });
   }
 
   /**

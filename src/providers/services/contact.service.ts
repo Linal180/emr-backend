@@ -31,6 +31,7 @@ export class ContactService {
       }
       // create contact for user
       const contact = this.contactRepository.create(createContactInput)
+      contact.faciltiy = createContactInput.facility
       return await this.contactRepository.save(contact);
     } catch (error) {
       throw new InternalServerErrorException(error);

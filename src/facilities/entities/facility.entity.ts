@@ -115,9 +115,9 @@ export class Facility {
   @OneToMany(() => User, user => user.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
   user: User[];
 
-  @ManyToOne(() => Contact, contact => contact.facilities, { onDelete: 'CASCADE' })
-  @Field({ nullable: true })
-  contact: Contact;
+  @OneToMany(() => Contact, contact => contact.faciltiy, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [Contact], { nullable: true })
+  contacts: Contact[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
