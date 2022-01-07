@@ -8,7 +8,8 @@ import { FacilitiesPayload } from './dto/facilities-payload.dto';
 import { Facility } from './entities/facility.entity';
 import { FacilityService } from './facility.service';
 import FacilityInput from './dto/facility-input.dto';
-import { GetFacility, RemoveFacility, UpdateFacilityInput } from './dto/update-facility.input';
+import { GetFacility, RemoveFacility } from './dto/update-facilityItem.input';
+import { UpdateFacilityInput } from './dto/update-facility.input';
 
 @Resolver(() => Facility)
 export class FacilityResolver {

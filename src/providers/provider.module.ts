@@ -9,7 +9,8 @@ import { FacilityModule } from 'src/facilities/facility.module';
 import { Doctor } from './entities/doctor.entity';
 import { Contact } from './entities/contact.entity';
 import { ContactService } from './services/contact.service';
-import { BillingAddress } from './entities/billing.entity';
+import { BillingAddress } from './entities/billing-address.entity';
+import { BillingAddressService } from './services/billing-address.service';
 
 @Module({
   imports: [
@@ -18,8 +19,8 @@ import { BillingAddress } from './entities/billing.entity';
     forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule)
   ],
-  providers: [StaffResolver, StaffService, ContactService],
-  exports: [ContactService, StaffService, TypeOrmModule]
+  providers: [StaffResolver, StaffService, ContactService, BillingAddressService],
+  exports: [ContactService, StaffService, TypeOrmModule, BillingAddressService]
 })
 export class ProviderModule { }
 

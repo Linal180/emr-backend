@@ -14,7 +14,6 @@ registerEnumType(Gender, {
   description: "The user gender assigned",
 });
 
-
 export enum Speciality {
   PHYSICIAN_ASSISTANT = "Physician Assistant",
   PHARMACIST = "Pharmacist",
@@ -41,8 +40,6 @@ registerEnumType(SsnType, {
   name: "SsnType",
   description: "The doctor's SsnType",
 });
-
-
 
 @Entity({ name: 'Doctors' })
 @ObjectType()

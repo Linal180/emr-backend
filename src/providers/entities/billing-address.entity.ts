@@ -1,4 +1,4 @@
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
@@ -76,5 +76,4 @@ export class BillingAddress {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
-
 }

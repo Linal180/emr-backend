@@ -5,10 +5,9 @@ import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateStaffInput } from '../dto/create-staff.input';
 import { Staff } from '../entities/staff.entity';
-import { DisableStaff, RemoveStaff } from '../dto/update-facility.input';
+import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
 import { UsersService } from 'src/users/users.service';
 import { FacilityService } from 'src/facilities/facility.service';
-import { UpdateFacilityInput } from 'src/facilities/dto/update-facility.input';
 import StaffInput from '../dto/staff-input.dto';
 import { AllStaffPayload } from '../dto/all-staff-payload.dto';
 
@@ -46,12 +45,12 @@ export class StaffService {
 
   /**
    * Updates staff
-   * @param updateFacilityInput 
+   * @param UpdateStaffInput 
    * @returns staff 
    */
-  async updateStaff(updateFacilityInput: UpdateFacilityInput): Promise<Staff> {
+  async updateStaff(updateStaffInput: UpdateStaffInput): Promise<Staff> {
     try {
-      return await this.utilsService.updateEntityManager(Staff, updateFacilityInput.id, updateFacilityInput, this.staffRepository)
+      return await this.utilsService.updateEntityManager(Staff, updateStaffInput.id, updateStaffInput, this.staffRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
