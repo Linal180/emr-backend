@@ -42,46 +42,6 @@ type Contact {
   updatedAt: String!
 }
 
-type Role {
-  id: String!
-  role: UserRole!
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user role assigned"""
-enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  DOCTOR
-  PATIENT
-  NURSE
-  BILLING
-  STAFF
-}
-
-type User {
-  id: String!
-  status: UserStatus!
-  emailVerified: Boolean!
-  email: String!
-  inviteSentAt: String!
-  inviteAcceptedAt: String!
-  userId: String!
-  token: String
-  userType: String!
-  facility: [Facility!]
-  roles: [Role]
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user status"""
-enum UserStatus {
-  DEACTIVATED
-  ACTIVE
-}
-
 type Staff {
   id: String!
   firstName: String!
@@ -157,6 +117,46 @@ enum ServiceCode {
   INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
 }
 
+type User {
+  id: String!
+  status: UserStatus!
+  emailVerified: Boolean!
+  email: String!
+  inviteSentAt: String!
+  inviteAcceptedAt: String!
+  userId: String!
+  token: String
+  userType: String!
+  facility: [Facility!]
+  roles: [Role]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user status"""
+enum UserStatus {
+  DEACTIVATED
+  ACTIVE
+}
+
+type Role {
+  id: String!
+  role: UserRole!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user role assigned"""
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  DOCTOR
+  PATIENT
+  NURSE
+  BILLING
+  STAFF
+}
+
 type ResponsePayload {
   status: Float
   error: String
@@ -164,9 +164,24 @@ type ResponsePayload {
   name: String
 }
 
-type FacilityPayload {
+type AccessUserPayload {
+  access_token: String
+  roles: [Role!]
   response: ResponsePayload
-  facility: Facility
+}
+
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  response: ResponsePayload
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
 }
 
 type PaginationPayload {
@@ -176,36 +191,16 @@ type PaginationPayload {
   totalPages: Int
 }
 
-type FacilitiesPayload {
-  response: ResponsePayload
-  facility: [Facility]
-  pagination: PaginationPayload
-}
-
 type UsersPayload {
   response: ResponsePayload
   users: [User]
   pagination: PaginationPayload
 }
 
-type AccessUserPayload {
-  access_token: String
-  roles: [Role!]
+type AllStaffPayload {
   response: ResponsePayload
-}
-
-type UserPayload {
-  user: User
-  response: ResponsePayload
-}
-
-type ForgotPasswordPayload {
-  response: ResponsePayload
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
+  allstaff: [Staff]
+  pagination: PaginationPayload
 }
 
 type StaffPayload {
@@ -213,10 +208,15 @@ type StaffPayload {
   response: ResponsePayload
 }
 
-type AllStaffPayload {
+type FacilitiesPayload {
   response: ResponsePayload
-  allstaff: [Staff]
+  facility: [Facility]
   pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
 }
 
 type Query {

@@ -1,17 +1,18 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
-import { BillingAddress } from '../entities/billing-address.entity';
 import { RemoveBillingAddress, UpdateBillingAddressInput } from 'src/facilities/dto/update-billing-address.input';
-import { CreateBillingAddressInput } from '../dto/create-billing-address.input';
 import { FacilityService } from 'src/facilities/facility.service';
+import { UsersService } from 'src/users/users.service';
+import { Repository } from 'typeorm';
+import { CreateBillingAddressInput } from '../dto/create-billing-address.input';
+import { BillingAddress } from '../entities/billing-address.entity';
 
 @Injectable()
 export class BillingAddressService {
   constructor(
     @InjectRepository(BillingAddress)
     private billingAddressRepository: Repository<BillingAddress>,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
@@ -39,6 +40,11 @@ export class BillingAddressService {
     }
   }
 
+  /**
+   * Updates billing address
+   * @param updateBillingAddressInput 
+   * @returns billing address 
+   */
   async updateBillingAddress(updateBillingAddressInput: UpdateBillingAddressInput): Promise<BillingAddress> {
     try {
       return await this.billingAddressRepository.save(updateBillingAddressInput)

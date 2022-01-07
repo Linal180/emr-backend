@@ -2,12 +2,12 @@ import { ConflictException, HttpStatus, NotFoundException, SetMetadata, UseGuard
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
-import { CreateStaffInput } from '../dto/create-staff.input';
-import { StaffPayload } from '../dto/staff-payload.dto';
-import { StaffService } from '../services/staff.service';
-import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
 import { AllStaffPayload } from '../dto/all-staff-payload.dto';
+import { CreateStaffInput } from '../dto/create-staff.input';
 import StaffInput from '../dto/staff-input.dto';
+import { StaffPayload } from '../dto/staff-payload.dto';
+import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
+import { StaffService } from '../services/staff.service';
 
 @Resolver('staff')
 export class StaffResolver {

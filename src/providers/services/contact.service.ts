@@ -1,18 +1,19 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FacilityService } from 'src/facilities/facility.service';
+import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
+import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
-import { Contact } from '../entities/contact.entity';
 import { CreateContactInput } from '../dto/create-contact.input';
-import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
-import { FacilityService } from 'src/facilities/facility.service';
+import { Contact } from '../entities/contact.entity';
 
 @Injectable()
 export class ContactService {
   constructor(
     @InjectRepository(Contact)
     private contactRepository: Repository<Contact>,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
@@ -63,7 +64,6 @@ export class ContactService {
   async findOne(id: string): Promise<Contact> {
     return await this.contactRepository.findOne(id);
   }
-
 
   /**
    * Removes contact

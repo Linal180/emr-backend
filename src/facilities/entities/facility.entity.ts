@@ -1,9 +1,9 @@
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 
 export enum PracticeType {

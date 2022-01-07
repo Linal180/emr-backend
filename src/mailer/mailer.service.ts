@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '@sendgrid/mail';
-import { createToken } from 'src/lib/helper';
 import { DynamicTemplateData, TemplateSwitch } from './dto/dynamicTemplateData.dto';
 
 

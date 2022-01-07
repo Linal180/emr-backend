@@ -1,23 +1,23 @@
-import { Injectable, InternalServerErrorException, ForbiddenException, HttpStatus, NotFoundException, ConflictException, forwardRef, Inject, PreconditionFailedException } from '@nestjs/common';
-import { User, UserStatus } from './entities/user.entity';
-import { Repository, Not, getConnection } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RegisterUserInput } from './dto/register-user-input.dto';
-import { createPasswordHash, createToken } from '../lib/helper';
-import { Role, UserRole } from './entities/role.entity';
-import { ResendVerificationEmail, UpdateUserInput } from './dto/update-user-input.dto';
-import { UsersPayload } from './dto/users-payload.dto';
-import { PaginationService } from 'src/pagination/pagination.service';
-import UsersInput from './dto/users-input.dto';
-import { UpdateRoleInput } from './dto/update-role-input.dto';
-import { AccessUserPayload } from './dto/access-user.dto';
-import { MailerService } from 'src/mailer/mailer.service';
-import { UpdatePasswordInput } from './dto/update-password-input.dto';
-import { UserLog } from './entities/user-logs.entity';
-import { UserIdInput } from './dto/user-id-input.dto';
+import * as bcrypt from 'bcrypt';
 import { FacilityService } from 'src/facilities/facility.service';
+import { MailerService } from 'src/mailer/mailer.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { getConnection, Not, Repository } from 'typeorm';
+import { createToken } from '../lib/helper';
+import { AccessUserPayload } from './dto/access-user.dto';
+import { RegisterUserInput } from './dto/register-user-input.dto';
+import { UpdatePasswordInput } from './dto/update-password-input.dto';
+import { UpdateRoleInput } from './dto/update-role-input.dto';
+import { ResendVerificationEmail, UpdateUserInput } from './dto/update-user-input.dto';
+import { UserIdInput } from './dto/user-id-input.dto';
+import UsersInput from './dto/users-input.dto';
+import { UsersPayload } from './dto/users-payload.dto';
+import { Role, UserRole } from './entities/role.entity';
+import { UserLog } from './entities/user-logs.entity';
+import { User, UserStatus } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -144,18 +144,15 @@ export class UsersService {
         });
       }
       const user = await this.findById(updateRoleInput.id);
-
       if (user) {
         const fetchdRoles = await getConnection()
           .getRepository(Role)
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
-
         user.roles = fetchdRoles
         return await this.usersRepository.save(user);
       }
-
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: 'User not found',

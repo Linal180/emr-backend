@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, JoinColumn, OneToMany } from 'typeorm';
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from './role.entity';
 import { UserLog } from './user-logs.entity';
-import { Facility } from 'src/facilities/entities/facility.entity';
 
 
 export enum UserStatus {

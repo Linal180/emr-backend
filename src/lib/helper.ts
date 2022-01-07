@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus } from "@nestjs/common";
+import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export function createToken(): string {
