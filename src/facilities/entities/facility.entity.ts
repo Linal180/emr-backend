@@ -1,10 +1,10 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
 
 export enum PracticeType {
   HOSPITAL = "hospital",
@@ -43,7 +43,6 @@ registerEnumType(ServiceCode, {
   name: "ServiceCode",
   description: "The facility service code type assigned",
 });
-
 
 @Entity({ name: 'Facilities' })
 @ObjectType()
@@ -111,6 +110,10 @@ export class Facility {
   @Field(() => [Staff], { nullable: true })
   @OneToMany(() => Staff, staff => staff.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
   staff: Staff[];
+
+  @Field(() => [Doctor], { nullable: true })
+  @OneToMany(() => Doctor, doctor => doctor.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  doctors: Doctor[];
 
   @Field(() => [User], { nullable: true })
   @OneToMany(() => User, user => user.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })

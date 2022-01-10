@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Doctor } from './doctor.entity';
 
 @Entity({ name: 'BillingAddresses' })
 @ObjectType()
@@ -64,6 +65,10 @@ export class BillingAddress {
   @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   faciltiy: Facility;
+
+  @ManyToOne(() => Doctor, doctor => doctor.contacts, { onDelete: 'CASCADE' })
+  @Field(type => Doctor, { nullable: true })
+  doctor: Doctor;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

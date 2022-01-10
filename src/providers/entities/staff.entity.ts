@@ -42,11 +42,11 @@ export class Staff {
   dob: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   phone: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   mobile: string;
 
   @Column({
@@ -63,7 +63,7 @@ export class Staff {
   user: User;
 
   @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
-  @Field(type => [Facility], { nullable: true })
+  @Field(type => Facility, { nullable: true })
   facility: Facility;
 
   @CreateDateColumn({ type: 'timestamptz' })
