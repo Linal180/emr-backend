@@ -7,6 +7,7 @@ import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateContactInput } from '../dto/create-contact.input';
 import { Contact } from '../entities/contact.entity';
+import { DoctorService } from './doctor.service';
 
 @Injectable()
 export class ContactService {
@@ -15,6 +16,8 @@ export class ContactService {
     private contactRepository: Repository<Contact>,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => DoctorService))
+    private readonly doctorService: DoctorService,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService,
@@ -27,16 +30,21 @@ export class ContactService {
    */
   async createContact(createContactInput: CreateContactInput): Promise<Contact> {
     try {
-      //fetch user
-      if (createContactInput.userId) {
-        const user = await this.usersService.findUserById(createContactInput.userId)
-        createContactInput.userId = user.id
-      }
       //fetch facility
       const facility = await this.facilityService.findOne(createContactInput.facilityId)
       // create contact for user
       const contact = this.contactRepository.create(createContactInput)
       contact.faciltiy = facility
+      //fetch doctor
+      if (createContactInput.doctorId) {
+        const doctor = await this.doctorService.findOne(createContactInput.doctorId)
+        contact.doctor = doctor
+      }
+      //fetch user
+      if (createContactInput.userId) {
+        const user = await this.usersService.findUserById(createContactInput.userId)
+        contact.userId = user.id
+      }
       return await this.contactRepository.save(contact);
     } catch (error) {
       throw new InternalServerErrorException(error);

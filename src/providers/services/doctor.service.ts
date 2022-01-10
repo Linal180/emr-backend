@@ -1,17 +1,17 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UsersService } from 'src/users/users.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
-import { AllStaffPayload } from '../dto/all-staff-payload.dto';
+import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
 import { CreateDoctorInput } from '../dto/create-doctor.input';
-import { CreateStaffInput } from '../dto/create-staff.input';
-import StaffInput from '../dto/staff-input.dto';
-import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
+import DoctorInput from '../dto/doctor-input.dto';
+import { UpdateDoctorInput } from '../dto/update-doctor.input';
+import { DisableDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
-import { Staff } from '../entities/staff.entity';
+import { BillingAddressService } from './billing-address.service';
+import { ContactService } from './contact.service';
 
 @Injectable()
 export class DoctorService {
@@ -19,23 +19,40 @@ export class DoctorService {
     @InjectRepository(Doctor)
     private doctorRepository: Repository<Doctor>,
     private readonly paginationService: PaginationService,
-    private readonly usersService: UsersService,
+    @Inject(forwardRef(() => ContactService))
+    private readonly contactService: ContactService,
+    @Inject(forwardRef(() => BillingAddressService))
+    private readonly billingAddressService: BillingAddressService,
+    @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
-    private readonly utilsService: UtilsService,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService
   ) { }
 
+  /**
+   * Creates doctor
+   * @param createDoctorInput 
+   * @returns doctor 
+   */
   async createDoctor(createDoctorInput: CreateDoctorInput): Promise<Doctor> {
     try {
-      // register doctor as user 
+      // register doctor as user -
       const user = await this.usersService.create(createDoctorInput.createDoctorItemInput)
       //get facility 
       const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
       if (user && facility) {
-        // Staff Creation
-        const doctor = this.doctorRepository.create(createDoctorInput.createDoctorItemInput)
-        doctor.user = user;
-        doctor.facility = facility;
-        return await this.doctorRepository.save(doctor);
+        // Doctor Creation
+        const doctorInstance = this.doctorRepository.create(createDoctorInput.createDoctorItemInput)
+        doctorInstance.user = user;
+        doctorInstance.facility = facility;
+        const doctor = await this.doctorRepository.save(doctorInstance);
+        //adding contact
+        const createContactInput = { ...createDoctorInput.createContactInput, doctorId: doctor.id, userId: user.id }
+        await this.contactService.createContact(createContactInput)
+        //adding billing address details
+        const createBillingAddressInput = { ...createDoctorInput.createBillingAddressInput, doctorId: doctor.id, userId: user.id }
+        await this.billingAddressService.createBillingAddress(createBillingAddressInput)
+        return doctor
       }
       throw new ConflictException({
         status: HttpStatus.CONFLICT,
@@ -47,82 +64,82 @@ export class DoctorService {
   }
 
   /**
-   * Updates staff
-   * @param UpdateStaffInput 
-   * @returns staff 
+   * Updates doctor
+   * @param updateDoctorInput 
+   * @returns doctor 
    */
-  // async updateStaff(updateStaffInput: UpdateStaffInput): Promise<Staff> {
-  //   try {
-  //     return await this.utilsService.updateEntityManager(Staff, updateStaffInput.id, updateStaffInput, this.staffRepository)
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
+  async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
+    try {
+      const doctor = await this.doctorRepository.save(updateDoctorInput.updateDoctorItemInput)
+      //updating contact details
+      await this.contactService.updateContact(updateDoctorInput.updateContactInput)
+      //updating billing details
+      await this.billingAddressService.updateBillingAddress(updateDoctorInput.updateBillingAddressInput)
+      return doctor
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
 
   /**
-   * Finds all staff
-   * @param staffInput 
-   * @returns all staff 
+   * Params doctor service
+   * @param doctorInput 
+   * @returns all doctor 
    */
-  // async findAllStaff(staffInput: StaffInput): Promise<AllStaffPayload> {
-  //   try {
-  //     const paginationResponse = await this.paginationService.willPaginate<Staff>(this.staffRepository, staffInput)
-  //     return {
-  //       pagination: {
-  //         ...paginationResponse
-  //       },
-  //       allstaff: paginationResponse.data,
-  //     }
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
+  async findAllDoctor(doctorInput: DoctorInput): Promise<AllDoctorPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Doctor>(this.doctorRepository, doctorInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        doctors: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
   /**
    * Finds one
    * @param id 
    * @returns one 
    */
-  // async findOne(id: string): Promise<Staff> {
-  //   return await this.staffRepository.findOne(id);
-  // }
+  async findOne(id: string): Promise<Doctor> {
+    return await this.doctorRepository.findOne(id);
+  }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOneByEmail(email: string): Promise<Doctor> {
+    return await this.doctorRepository.findOne(email);
+  }
 
-  // /**
-  //  * Finds oneby username
-  //  * @param username 
-  //  * @returns oneby username 
-  //  */
-  // async findOnebyUsername(username: string): Promise<Staff> {
-  //   return await this.staffRepository.findOne({ username });
-  // }
+  /**
+   * Removes doctor
+   * @param { id } 
+   */
+  async removeDoctor({ id }: RemoveDoctor) {
+    try {
+      await this.doctorRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
-  // /**
-  //  * Removes staff
-  //  * @param { id } 
-  //  */
-  // async removeStaff({ id }: RemoveStaff) {
-  //   try {
-  //     await this.staffRepository.delete(id)
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
-
-  // async disableStaff({ id }: DisableStaff) {
-  //   try {
-  //     await this.usersService.deactivateUser(id)
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
-
-  // /**
-  //  * Finds one by email
-  //  * @param email 
-  //  * @returns one by email 
-  //  */
-  // async findOneByEmail(email: string): Promise<Staff> {
-  //   return await this.staffRepository.findOne({ email: email });
-  // }
+  /**
+   * Disables doctor
+   * @param { id } 
+   */
+  async disableDoctor({ id }: DisableDoctor) {
+    try {
+      await this.usersService.deactivateUser(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

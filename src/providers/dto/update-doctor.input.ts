@@ -1,18 +1,16 @@
-import { CreateStaffInput } from './create-staff.input';
-import { InputType, Field, PartialType, PickType } from '@nestjs/graphql';
-import { CreateDoctorInput } from './create-doctor.input';
+import { InputType, Field } from '@nestjs/graphql';
+import { UpdateContactInput } from './update-contact.input';
+import { UpdateBillingAddressInput } from 'src/facilities/dto/update-billing-address.input';
+import { UpdateDoctorItemInput } from './update-doctorItem.input';
 
 @InputType()
-export class UpdateDoctorInput extends PartialType(CreateDoctorInput) {
+export class UpdateDoctorInput {
   @Field()
-  id: string;
+  updateDoctorItemInput: UpdateDoctorItemInput
+
+  @Field(type => UpdateContactInput)
+  updateContactInput?: UpdateContactInput
+
+  @Field(type => UpdateBillingAddressInput)
+  updateBillingAddressInput?: UpdateBillingAddressInput
 }
-
-@InputType()
-export class GetDoctor extends PickType(UpdateDoctorInput, ['id'] as const) { }
-
-@InputType()
-export class RemoveDoctor extends PickType(UpdateDoctorInput, ['id'] as const) { }
-
-@InputType()
-export class DisableDoctor extends PickType(UpdateDoctorInput, ['id'] as const) { }

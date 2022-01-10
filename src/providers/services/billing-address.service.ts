@@ -6,6 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateBillingAddressInput } from '../dto/create-billing-address.input';
 import { BillingAddress } from '../entities/billing-address.entity';
+import { DoctorService } from './doctor.service';
 
 @Injectable()
 export class BillingAddressService {
@@ -16,6 +17,8 @@ export class BillingAddressService {
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
+    @Inject(forwardRef(() => DoctorService))
+    private readonly doctorService: DoctorService,
   ) { }
 
   /**
@@ -25,15 +28,21 @@ export class BillingAddressService {
    */
   async createBillingAddress(createBillingAddressInput: CreateBillingAddressInput): Promise<BillingAddress> {
     try {
-      //fetch user
-      if (createBillingAddressInput.userId) {
-        const user = await this.usersService.findOne(createBillingAddressInput.userId)
-        createBillingAddressInput.userId = user.id
-      }
+      //fetch facility
       const facility = await this.facilityService.findOne(createBillingAddressInput.facilityId)
       // create billing address for user
       const billingAddress = this.billingAddressRepository.create(createBillingAddressInput)
       billingAddress.faciltiy = facility
+      //fetch user
+      if (createBillingAddressInput.userId) {
+        const user = await this.usersService.findUserById(createBillingAddressInput.userId)
+        billingAddress.userId = user.id
+      }
+      //fetch doctor
+      if (createBillingAddressInput.doctorId) {
+        const doctor = await this.doctorService.findOne(createBillingAddressInput.doctorId)
+        billingAddress.doctor = doctor
+      }
       return await this.billingAddressRepository.save(billingAddress);
     } catch (error) {
       throw new InternalServerErrorException(error);
