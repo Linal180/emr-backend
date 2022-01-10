@@ -194,7 +194,7 @@ export class Doctor {
   user: User;
 
   @ManyToOne(() => Facility, facility => facility.doctors, { onDelete: 'CASCADE' })
-  @Field(type => [Facility], { nullable: true })
+  @Field(type => Facility, { nullable: true })
   facility: Facility;
 
   @OneToMany(() => Contact, contact => contact.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })

@@ -29,7 +29,7 @@ export class ContactService {
     try {
       //fetch user
       if (createContactInput.userId) {
-        const user = await this.usersService.findOne(createContactInput.userId)
+        const user = await this.usersService.findUserById(createContactInput.userId)
         createContactInput.userId = user.id
       }
       //fetch facility

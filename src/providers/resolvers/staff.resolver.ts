@@ -24,10 +24,8 @@ export class StaffResolver {
         error: 'this username is already taken',
       });
     }
-    const staff = await this.staffService.createStaff(createStaffInput);
-    console.log("staff---", staff)
     return {
-      staff,
+      staff: await this.staffService.createStaff(createStaffInput),
       response: { status: 200, message: 'Staff created successfully' }
     };
   }
