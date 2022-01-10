@@ -60,7 +60,7 @@ type Doctor {
   licenseTermDate: String!
   prescriptiveAuthNumber: String!
   user: User
-  facility: [Facility!]
+  facility: Facility
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
   createdAt: String!
