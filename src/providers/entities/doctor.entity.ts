@@ -1,16 +1,10 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BillingAddress } from './billing-address.entity';
+import { Contact } from './contact.entity';
 
-export enum Gender {
-  MALE = "male",
-  FEMALE = "female",
-  OTHER = "other"
-}
-
-registerEnumType(Gender, {
-  name: "Gender",
-  description: "The user gender assigned",
-});
 
 export enum Speciality {
   PHYSICIAN_ASSISTANT = "Physician Assistant",
@@ -122,14 +116,6 @@ export class Doctor {
   @Field()
   languagesSpoken: string;
 
-  @Column({
-    type: "enum",
-    enum: Gender,
-    default: Gender.MALE
-  })
-  @Field(type => Gender)
-  gender: Gender
-
   @Column({ nullable: true })
   @Field()
   taxId: string;
@@ -202,14 +188,22 @@ export class Doctor {
   @Field()
   prescriptiveAuthNumber: string;
 
-  // @OneToOne(() => User, { eager: true })
-  // @JoinColumn()
-  // @Field({ nullable: true })
-  // user: User;
+  @OneToOne(() => User, { eager: true })
+  @JoinColumn()
+  @Field(type => User, { nullable: true })
+  user: User;
 
-  // @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
-  // @Field(type => [Facility], { nullable: true })
-  // facility: Facility;
+  @ManyToOne(() => Facility, facility => facility.doctors, { onDelete: 'CASCADE' })
+  @Field(type => [Facility], { nullable: true })
+  facility: Facility;
+
+  @OneToMany(() => Contact, contact => contact.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [Contact], { nullable: true })
+  contacts: Contact[];
+
+  @OneToMany(() => BillingAddress, billingAddress => billingAddress.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [BillingAddress], { nullable: true })
+  billingAddress: BillingAddress[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

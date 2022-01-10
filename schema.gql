@@ -2,6 +2,90 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Contact {
+  id: String!
+  email: String
+  phone: String
+  mobile: String
+  pager: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  faciltiy: Facility
+  doctor: Doctor
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Doctor {
+  id: String!
+  firstName: String!
+  middleName: String!
+  lastName: String!
+  prefix: String!
+  suffix: String!
+  email: String!
+  providerIntials: String!
+  degreeCredentials: String!
+  speciality: Speciality!
+  dob: String!
+  ssn: String!
+  ssnType: SsnType!
+  taxonomyCode: String!
+  deaNumber: String!
+  deaActiveDate: String!
+  deaTermDate: String!
+  languagesSpoken: String!
+  taxId: String!
+  npi: String!
+  upin: String!
+  emcProviderId: String!
+  billingFacility: String!
+  medicareGrpNumber: String!
+  medicaidGrpNumber: String!
+  meammographyCertNumber: String!
+  campusGrpNumber: String!
+  blueShildNumber: String!
+  taxIdStuff: String!
+  specialityLicense: String!
+  anesthesiaLicense: String!
+  dpsCtpNumber: String!
+  stateLicense: String!
+  licenseActiveDate: String!
+  licenseTermDate: String!
+  prescriptiveAuthNumber: String!
+  user: User
+  facility: [Facility!]
+  contacts: [Contact!]
+  billingAddress: [BillingAddress!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The doctor's speciality"""
+enum Speciality {
+  PHYSICIAN_ASSISTANT
+  PHARMACIST
+  PERIODONTICS
+  PEDIATRIC_DENTIST
+  PEDIATRIC_DERMATOLOGY
+  NEUROLOGY
+  GASTROENTEROLOGY
+}
+
+"""The doctor's SsnType"""
+enum SsnType {
+  OASDI
+  TANF
+  MEDICARE
+  MEDICAID
+}
+
 type BillingAddress {
   id: String!
   email: String
@@ -18,25 +102,7 @@ type BillingAddress {
   bankAccount: String
   checkPayableTo: String
   faciltiy: Facility
-  userId: String
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Contact {
-  id: String!
-  email: String
-  phone: String
-  mobile: String
-  pager: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  faciltiy: Facility
+  doctor: Doctor
   userId: String
   createdAt: String!
   updatedAt: String!
@@ -49,11 +115,11 @@ type Staff {
   email: String!
   username: String!
   dob: String!
-  phone: String!
-  mobile: String!
+  phone: String
+  mobile: String
   gender: Gender!
   user: User
-  facility: [Facility!]
+  facility: Facility
   createdAt: String!
   updatedAt: String!
 }
@@ -80,6 +146,7 @@ type Facility {
   npi: String
   serviceCode: ServiceCode!
   staff: [Staff!]
+  doctors: [Doctor!]
   user: [User!]
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
