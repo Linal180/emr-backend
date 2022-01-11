@@ -38,6 +38,7 @@ export class StaffService {
         const staff = this.staffRepository.create(createStaffInput)
         staff.user = user;
         staff.facility = facility;
+        staff.facilityId = facility.id
         return await this.staffRepository.save(staff);
       }
       throw new ConflictException({

@@ -101,11 +101,9 @@ export class FacilityService {
     try {
       const faciltiy = await this.facilityRepository.save(updateFacilityInput.updateFacilityItemInput)
       //updating contact details
-      const UpdateContactInput = { ...updateFacilityInput }
-      await this.contactService.updateContact(UpdateContactInput.updateContactInput)
+      await this.contactService.updateContact(updateFacilityInput.updateContactInput)
       //updating billing details
-      const updateBillingAddressInput = { ...updateFacilityInput }
-      await this.billingAddressService.updateBillingAddress(updateBillingAddressInput.updateBillingAddressInput)
+      await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
       return faciltiy
     } catch (error) {
       throw new InternalServerErrorException(error);

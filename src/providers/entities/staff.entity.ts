@@ -47,6 +47,14 @@ export class Staff {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  primaryProvider: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   mobile: string;
 
   @Column({

@@ -24,41 +24,41 @@ type Contact {
 
 type Doctor {
   id: String!
-  firstName: String!
-  middleName: String!
-  lastName: String!
-  prefix: String!
-  suffix: String!
-  email: String!
-  providerIntials: String!
-  degreeCredentials: String!
-  speciality: Speciality!
-  dob: String!
-  ssn: String!
-  ssnType: SsnType!
-  taxonomyCode: String!
-  deaNumber: String!
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  providerIntials: String
+  degreeCredentials: String
+  speciality: Speciality
+  dob: String
+  ssn: String
+  ssnType: SsnType
+  taxonomyCode: String
+  deaNumber: String
   deaActiveDate: String!
   deaTermDate: String!
-  languagesSpoken: String!
-  taxId: String!
-  npi: String!
-  upin: String!
-  emcProviderId: String!
-  billingFacility: String!
-  medicareGrpNumber: String!
-  medicaidGrpNumber: String!
-  meammographyCertNumber: String!
-  campusGrpNumber: String!
-  blueShildNumber: String!
-  taxIdStuff: String!
-  specialityLicense: String!
-  anesthesiaLicense: String!
-  dpsCtpNumber: String!
-  stateLicense: String!
-  licenseActiveDate: String!
-  licenseTermDate: String!
-  prescriptiveAuthNumber: String!
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
   user: User
   facility: Facility
   contacts: [Contact!]
@@ -116,6 +116,8 @@ type Staff {
   username: String!
   dob: String!
   phone: String
+  primaryProvider: String
+  facilityId: String
   mobile: String
   gender: Gender!
   user: User
@@ -264,6 +266,17 @@ type UsersPayload {
   pagination: PaginationPayload
 }
 
+type AllDoctorPayload {
+  response: ResponsePayload
+  doctors: [Doctor]
+  pagination: PaginationPayload
+}
+
+type DoctorPayload {
+  doctor: Doctor
+  response: ResponsePayload
+}
+
 type AllStaffPayload {
   response: ResponsePayload
   allstaff: [Staff]
@@ -297,6 +310,8 @@ type Query {
   getFacility(getFacility: GetFacility!): FacilityPayload!
   findAllStaff(staffInput: StaffInput!): AllStaffPayload!
   getStaff(getStaff: GetStaff!): StaffPayload!
+  findAllDoctor(doctorInput: DoctorInput!): AllDoctorPayload!
+  getDoctor(getDoctor: GetDoctor!): DoctorPayload!
 }
 
 input UsersInput {
@@ -331,6 +346,14 @@ input GetStaff {
   id: String!
 }
 
+input DoctorInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetDoctor {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -351,6 +374,10 @@ type Mutation {
   updateStaff(updateStaffInput: UpdateStaffInput!): StaffPayload!
   removeStaff(removeStaff: RemoveStaff!): StaffPayload!
   disableStaff(disableStaff: DisableStaff!): StaffPayload!
+  createDoctor(createDoctorInput: CreateDoctorInput!): DoctorPayload!
+  updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
+  removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
+  disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
 }
 
 input LoginUserInput {
@@ -456,6 +483,7 @@ input CreateContactInput {
   state: String
   country: String
   userId: String
+  doctorId: String
   facilityId: String
 }
 
@@ -472,6 +500,7 @@ input CreateBillingAddressInput {
   state: String
   country: String
   userId: String
+  doctorId: String
   facilityId: String
 }
 
@@ -514,6 +543,7 @@ input UpdateContactInput {
   state: String
   country: String
   userId: String
+  doctorId: String
   facilityId: String
   id: String!
 }
@@ -531,6 +561,7 @@ input UpdateBillingAddressInput {
   state: String
   country: String
   userId: String
+  doctorId: String
   facilityId: String
   id: String!
 }
@@ -546,6 +577,7 @@ input CreateStaffInput {
   username: String!
   password: String!
   phone: String
+  primaryProvider: String
   mobile: String
   dob: String
 
@@ -565,6 +597,7 @@ input UpdateStaffInput {
   username: String
   password: String
   phone: String
+  primaryProvider: String
   mobile: String
   dob: String
 
@@ -583,5 +616,122 @@ input RemoveStaff {
 }
 
 input DisableStaff {
+  id: String!
+}
+
+input CreateDoctorInput {
+  createDoctorItemInput: CreateDoctorItemInput!
+  createContactInput: CreateContactInput!
+  createBillingAddressInput: CreateBillingAddressInput!
+}
+
+input CreateDoctorItemInput {
+  firstName: String!
+  middleName: String!
+  lastName: String!
+  prefix: String
+  suffix: String
+  email: String!
+  password: String
+
+  """Send doctor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+  providerIntials: String
+  degreeCredentials: String
+
+  """Doctor speciality"""
+  speciality: Speciality
+  dob: String
+  ssn: String
+
+  """Doctor ssn type"""
+  ssnType: SsnType
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String
+  deaTermDate: String
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+}
+
+input UpdateDoctorInput {
+  updateDoctorItemInput: UpdateDoctorItemInput!
+  updateContactInput: UpdateContactInput!
+  updateBillingAddressInput: UpdateBillingAddressInput!
+}
+
+input UpdateDoctorItemInput {
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  password: String
+
+  """Send doctor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+  providerIntials: String
+  degreeCredentials: String
+
+  """Doctor speciality"""
+  speciality: Speciality
+  dob: String
+  ssn: String
+
+  """Doctor ssn type"""
+  ssnType: SsnType
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String
+  deaTermDate: String
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+  id: String!
+}
+
+input RemoveDoctor {
+  id: String!
+}
+
+input DisableDoctor {
   id: String!
 }

@@ -40,5 +40,8 @@ export class CreateContactInput {
   userId?: string;
 
   @Field({ nullable: true })
+  doctorId?: string;
+
+  @Field({ nullable: true })
   facilityId: string;
 }

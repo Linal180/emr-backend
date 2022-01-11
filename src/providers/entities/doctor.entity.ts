@@ -41,35 +41,35 @@ export class Doctor {
   id: string;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   firstName: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   middleName: string;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   lastName: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   prefix: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   suffix: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   email: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   providerIntials: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   degreeCredentials: string;
 
   @Column({
@@ -77,15 +77,15 @@ export class Doctor {
     enum: Speciality,
     default: Speciality.GASTROENTEROLOGY
   })
-  @Field(type => Speciality)
+  @Field(type => Speciality, { nullable: true })
   speciality: Speciality
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   dob: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   ssn: string;
 
   @Column({
@@ -93,15 +93,15 @@ export class Doctor {
     enum: SsnType,
     default: SsnType.MEDICAID
   })
-  @Field(type => SsnType)
+  @Field(type => SsnType, { nullable: true })
   ssnType: SsnType
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   taxonomyCode: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   deaNumber: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
@@ -113,79 +113,79 @@ export class Doctor {
   deaTermDate: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   languagesSpoken: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   taxId: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   npi: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   upin: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   emcProviderId: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   billingFacility: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   medicareGrpNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   medicaidGrpNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   meammographyCertNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   campusGrpNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   blueShildNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   taxIdStuff: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   specialityLicense: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   anesthesiaLicense: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   dpsCtpNumber: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   stateLicense: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Field({ nullable: true })
   licenseActiveDate: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Field({ nullable: true })
   licenseTermDate: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   prescriptiveAuthNumber: string;
 
   @OneToOne(() => User, { eager: true })
