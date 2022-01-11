@@ -24,6 +24,9 @@ export class CreateStaffInput {
   phone?: string;
 
   @Field({ nullable: true })
+  primaryProvider?: string
+
+  @Field({ nullable: true })
   mobile?: string;
 
   @Field({ nullable: true })

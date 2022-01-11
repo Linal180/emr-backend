@@ -116,6 +116,8 @@ type Staff {
   username: String!
   dob: String!
   phone: String
+  primaryProvider: String
+  facilityId: String
   mobile: String
   gender: Gender!
   user: User
@@ -575,6 +577,7 @@ input CreateStaffInput {
   username: String!
   password: String!
   phone: String
+  primaryProvider: String
   mobile: String
   dob: String
 
@@ -594,6 +597,7 @@ input UpdateStaffInput {
   username: String
   password: String
   phone: String
+  primaryProvider: String
   mobile: String
   dob: String
 
