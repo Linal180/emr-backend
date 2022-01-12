@@ -67,7 +67,8 @@ export class UsersService {
         //saving userId in user
         await this.saveUserId(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
-        this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token)
+        const isInvite = true;
+        this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
         return user;
       }
       throw new NotFoundException({
@@ -409,7 +410,8 @@ export class UsersService {
       const roles = user.roles.map(u => u.role);
       if (user) {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
-        this.mailerSerivce.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token)
+        const isInvite = false;
+        this.mailerSerivce.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
         delete user.roles
         await this.usersRepository.save(user);
         return user
