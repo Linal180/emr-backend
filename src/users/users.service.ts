@@ -67,7 +67,10 @@ export class UsersService {
         //saving userId in user
         await this.saveUserId(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
-        this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token)
+        if (registerUserInput.roleType != UserRole.PATIENT) {
+          this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token)
+        }
+        console.log("user", user)
         return user;
       }
       throw new NotFoundException({

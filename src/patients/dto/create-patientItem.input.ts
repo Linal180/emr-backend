@@ -27,9 +27,6 @@ export class CreatePatientItemInput {
   previousFirstName: string;
 
   @Field({ nullable: true })
-  usualProviderId: string;
-
-  @Field({ nullable: true })
   previouslastName: string;
 
   @Field({ nullable: true })

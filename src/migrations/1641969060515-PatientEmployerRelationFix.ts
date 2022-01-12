@@ -1,4 +1,4 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class PatientEmployerRelationFix1641969060515 implements MigrationInterface {
     name = 'PatientEmployerRelationFix1641969060515'

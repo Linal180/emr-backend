@@ -19,7 +19,7 @@ import { StaffService } from './services/staff.service';
   imports: [
     TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress]),
     PaginationModule,
-    PatientModule,
+    forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule)
   ],

@@ -1,8 +1,10 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
 import { CreatePatientInput } from '../dto/create-patient.input';
@@ -21,9 +23,15 @@ export class PatientService {
     private patientRepository: Repository<Patient>,
     private readonly paginationService: PaginationService,
     private readonly connection: Connection,
-    private readonly contactService: ContactService,
     private readonly employerService: EmployerService,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
+    @Inject(forwardRef(() => BillingAddressService))
     private readonly billingAddressService: BillingAddressService,
+    @Inject(forwardRef(() => DoctorService))
+    private readonly doctorService: DoctorService,
+    @Inject(forwardRef(() => ContactService))
+    private readonly contactService: ContactService,
     private readonly utilsService: UtilsService,
   ) { }
 
@@ -34,29 +42,36 @@ export class PatientService {
     await queryRunner.startTransaction();
     try {
       console.log("createPatientInput----", createPatientInput);
-
+      //add patient as a user
+      const user = await this.usersService.create({ ...createPatientInput.registerUserInput })
+      console.log("user------", user)
+      //get doctor 
+      const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
+      console.log("doctor------", doctor)
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
+      patientInstance.user = user
+      patientInstance.usualProvider = doctor
       const patient = await queryRunner.manager.save(patientInstance);
       console.log("patient", patient)
       //create patient contact 
-      const contact = await this.contactService.createContact(createPatientInput.createContactInput)
+      const contact = await this.contactService.createContact({ ...createPatientInput.createContactInput, patientId: patient.id })
       console.log("contact", contact)
       patient.contacts = [contact];
       //create patient emergency contact 
-      const emergencyContact = await this.contactService.createContact(createPatientInput.createEmergencyContactInput)
+      const emergencyContact = await this.contactService.createContact({ ...createPatientInput.createEmergencyContactInput, patientId: patient.id })
       console.log("emergencyContact", emergencyContact)
       patient.contacts = [emergencyContact];
       //create patient next of kin contact 
-      const nextOfKinContact = await this.contactService.createContact(createPatientInput.createNextOfKinContactInput)
+      const nextOfKinContact = await this.contactService.createContact({ ...createPatientInput.createNextOfKinContactInput, patientId: patient.id })
       console.log("nextOfKinContact", nextOfKinContact)
       patient.contacts = [nextOfKinContact];
       //create patient gurantor contact 
-      const gurantorContact = await this.contactService.createContact(createPatientInput.createGuarantorContactInput)
+      const gurantorContact = await this.contactService.createContact({ ...createPatientInput.createGuarantorContactInput, patientId: patient.id })
       console.log("gurantorContact", gurantorContact)
       patient.contacts = [gurantorContact];
       //create patient guardian contact 
-      const guardianContact = await this.contactService.createContact(createPatientInput.createGuardianContactInput)
+      const guardianContact = await this.contactService.createContact({ ...createPatientInput.createGuardianContactInput, patientId: patient.id })
       console.log("guardianContact", guardianContact)
       patient.contacts = [guardianContact];
       //create patient empoyer contact 

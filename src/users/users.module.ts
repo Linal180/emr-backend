@@ -6,6 +6,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { FacilityModule } from "src/facilities/facility.module";
 import { MailerModule } from "src/mailer/mailer.module";
 import { PaginationModule } from "src/pagination/pagination.module";
+import { PatientModule } from "src/patients/patient.module";
+import { ProviderModule } from "src/providers/provider.module";
 import { JwtStrategy } from "./auth/jwt.strategy";
 import { Role } from "./entities/role.entity";
 import { UserLog } from "./entities/user-logs.entity";
@@ -29,6 +31,8 @@ import { UsersService } from "./users.service";
     MailerModule,
     PaginationModule,
     forwardRef(() => FacilityModule),
+    forwardRef(() => ProviderModule),
+    forwardRef(() => PatientModule)
   ],
   providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
   controllers: [UsersController],

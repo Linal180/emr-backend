@@ -511,12 +511,13 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
-  findAllFacility(patientInput: PatientInput!): PatientsPayload!
+  findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
   findAllStaff(staffInput: StaffInput!): AllStaffPayload!
   getStaff(getStaff: GetStaff!): StaffPayload!
   findAllDoctor(doctorInput: DoctorInput!): AllDoctorPayload!
   getDoctor(getDoctor: GetDoctor!): DoctorPayload!
+  findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
 }
 
@@ -535,7 +536,8 @@ input GetUser {
   id: String!
 }
 
-input PatientInput {
+input FacilityInput {
+  isPrivate: Boolean
   paginationOptions: PaginationInput!
 }
 
@@ -559,6 +561,10 @@ input GetDoctor {
   id: String!
 }
 
+input PatientInput {
+  paginationOptions: PaginationInput!
+}
+
 input GetPatient {
   id: String!
 }
@@ -577,7 +583,7 @@ type Mutation {
   updateUser(user: UpdateUserInput!): UserPayload!
   updateRole(user: UpdateRoleInput!): UserPayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
-  updateFacility(updatePatientInput: UpdatePatientInput!): PatientPayload!
+  updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
   removeFacility(removeFacility: RemoveFacility!): FacilityPayload!
   createStaff(createStaffInput: CreateStaffInput!): StaffPayload!
   updateStaff(updateStaffInput: UpdateStaffInput!): StaffPayload!
@@ -588,6 +594,7 @@ type Mutation {
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
+  updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
 }
 
@@ -597,17 +604,17 @@ input LoginUserInput {
 }
 
 input RegisterUserInput {
-  firstName: String!
-  lastName: String!
+  firstName: String
+  lastName: String
   password: String!
   email: String!
 
   """Send Investor Type from the ENUM - Sign-up"""
   roleType: UserRole
-  adminId: String!
-  facilityId: String!
-  phone: String!
-  zipCode: String!
+  adminId: String
+  facilityId: String
+  phone: String
+  zipCode: String
 }
 
 input ForgotPasswordInput {
@@ -704,6 +711,7 @@ input CreateContactInput {
   userId: String
   doctorId: String
   facilityId: String
+  patientId: String
   employerName: String
 }
 
@@ -726,48 +734,29 @@ input CreateBillingAddressInput {
   facilityId: String
 }
 
-input UpdatePatientInput {
-  updatePatientItemInput: UpdatePatientItemInput!
+input UpdateFacilityInput {
+  updateFacilityItemInput: UpdateFacilityItemInput!
   updateContactInput: UpdateContactInput!
   updateBillingAddressInput: UpdateBillingAddressInput!
 }
 
-input UpdatePatientItemInput {
-  suffix: String
-  firstName: String
-  middleName: String
-  lastName: String
-  firstNameUsed: String
-  prefferedName: String
-  previousFirstName: String
-  previouslastName: String
-  motherMaidenName: String
-  ssn: String
-  dob: String
-  gender: GENDERIDENTITY
-  registrationDepartment: REGDepartment
-  primaryDepartment: PrimaryDepartment
-  registrationDate: String
-  deseasedDate: String
-  privacyNotice: Boolean
-  relaseOfInfoBill: Boolean
-  callToConsent: Boolean
-  medicationHistoryAuthority: Boolean
-  patientNote: String
-  language: String
-  race: RACE
-  ethnicity: ETHNICITY
-  maritialStatus: MARITIALSTATUS
-  sexualOrientation: SEXUALORIENTATION
-  genderIdentity: String
-  sexAtBirth: String
-  pronouns: PRONOUNS
-  homeBound: HOMEBOUND
-  holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean
-  statementNote: String
-  statementNoteDateFrom: String
-  statementNoteDateTo: String
+input UpdateFacilityItemInput {
+  name: String
+  stateImmunizationId: String
+
+  """Facility type"""
+  practiceType: PracticeType
+
+  """Service Code type"""
+  serviceCode: ServiceCode
+  code: String
+  cliaIdNumber: String
+  federalTaxId: String
+  revenueCode: String
+  tamxonomyCode: String
+  insurancePlanType: String
+  mammographyCertificationNumber: String
+  npi: String
   id: String!
 }
 
@@ -794,6 +783,7 @@ input UpdateContactInput {
   userId: String
   doctorId: String
   facilityId: String
+  patientId: String
   employerName: String
   id: String!
 }
@@ -990,6 +980,7 @@ input DisableDoctor {
 
 input CreatePatientInput {
   createPatientItemInput: CreatePatientItemInput!
+  registerUserInput: RegisterUserInput!
   createContactInput: CreateContactInput!
   createEmergencyContactInput: CreateContactInput!
   createNextOfKinContactInput: CreateContactInput!
@@ -1006,6 +997,7 @@ input CreatePatientItemInput {
   firstNameUsed: String
   prefferedName: String
   previousFirstName: String
+  usualProviderId: String
   previouslastName: String
   motherMaidenName: String
   ssn: String
@@ -1034,6 +1026,7 @@ input CreatePatientItemInput {
   statementNote: String
   statementNoteDateFrom: String
   statementNoteDateTo: String
+  adminId: String
 }
 
 input CreateEmployerInput {
@@ -1044,6 +1037,53 @@ input CreateEmployerInput {
   industry: String
   usualOccupation: String
   patientId: String
+}
+
+input UpdatePatientInput {
+  updatePatientItemInput: UpdatePatientItemInput!
+  updateContactInput: UpdateContactInput!
+  updateBillingAddressInput: UpdateBillingAddressInput!
+}
+
+input UpdatePatientItemInput {
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  firstNameUsed: String
+  prefferedName: String
+  previousFirstName: String
+  usualProviderId: String
+  previouslastName: String
+  motherMaidenName: String
+  ssn: String
+  dob: String
+  gender: GENDERIDENTITY
+  registrationDepartment: REGDepartment
+  primaryDepartment: PrimaryDepartment
+  registrationDate: String
+  deseasedDate: String
+  privacyNotice: Boolean
+  relaseOfInfoBill: Boolean
+  callToConsent: Boolean
+  medicationHistoryAuthority: Boolean
+  patientNote: String
+  language: String
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  sexualOrientation: SEXUALORIENTATION
+  genderIdentity: String
+  sexAtBirth: String
+  pronouns: PRONOUNS
+  homeBound: HOMEBOUND
+  holdStatement: HOLDSTATEMENT
+  statementDelivereOnline: Boolean
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
+  adminId: String
+  id: String!
 }
 
 input RemovePatient {

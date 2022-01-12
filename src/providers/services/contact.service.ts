@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/facility.service';
+import { PatientService } from 'src/patients/services/patient.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
 import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -20,6 +21,8 @@ export class ContactService {
     private readonly doctorService: DoctorService,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
+    @Inject(forwardRef(() => PatientService))
+    private readonly patientService: PatientService,
     private readonly utilsService: UtilsService,
   ) { }
 
@@ -30,6 +33,8 @@ export class ContactService {
    */
   async createContact(createContactInput: CreateContactInput): Promise<Contact> {
     try {
+      console.log("createContactInput", createContactInput);
+
       //fetch facility
       const facility = await this.facilityService.findOne(createContactInput.facilityId)
       // create contact for user
@@ -45,6 +50,15 @@ export class ContactService {
         const user = await this.usersService.findUserById(createContactInput.userId)
         contact.userId = user.id
       }
+      //fetch patient
+      if (createContactInput.patientId) {
+        console.log("createContactInput.patient", createContactInput.patientId);
+
+        const patient = await this.patientService.findOne(createContactInput.patientId)
+        contact.patient = patient
+      }
+
+      console.log("contact......", contact)
       return await this.contactRepository.save(contact);
     } catch (error) {
       throw new InternalServerErrorException(error);

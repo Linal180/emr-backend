@@ -28,7 +28,7 @@ export class PatientResolver {
   @Mutation(() => PatientPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('roles', ['admin', 'super-admin'])
-  async updateFacility(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
+  async updatePatient(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
     return {
       facility: await this.patientService.updatePatient(updatePatientInput),
       response: { status: 200, message: 'Facility updated successfully' }
@@ -38,7 +38,7 @@ export class PatientResolver {
   @Query(returns => PatientsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['super-admin'])
-  async findAllFacility(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
+  async findAllPatient(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
     const patients = await this.patientService.findAllPatients(patientInput)
     if (patients) {
       return {
