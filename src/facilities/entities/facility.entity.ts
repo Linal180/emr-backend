@@ -127,12 +127,12 @@ export class Facility {
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @CreateDateColumn({ type: 'timestamptz', nullable: true })
+  @Field({ nullable: true })
   createdAt: string;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @UpdateDateColumn({ type: 'timestamptz', nullable: true })
+  @Field({ nullable: true })
   updatedAt: string;
 
 }

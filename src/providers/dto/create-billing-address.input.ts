@@ -37,6 +37,12 @@ export class CreateBillingAddressInput {
   country?: string;
 
   @Field({ nullable: true })
+  bankAccount?: string;
+
+  @Field({ nullable: true })
+  checkPayableTo?: string;
+
+  @Field({ nullable: true })
   userId?: string;
 
   @Field({ nullable: true })
