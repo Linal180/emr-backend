@@ -6,7 +6,9 @@ export default () => {
       type: process.env.DATABASE_TYPE || "postgres",
       url: process.env.DATABASE_URL,
       migrationsRun: true,
-      ssl: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
       logging: true,
       migrations: ["dist/migrations/*{.ts,.js}"],
       entities: ["dist/**/*.entity{.ts,.js}"],
