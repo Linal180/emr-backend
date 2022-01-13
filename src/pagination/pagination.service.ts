@@ -131,6 +131,7 @@ export class PaginationService {
       status,
       userId,
       to,
+      facilityId,
       requestType,
       MembershipPlan,
       isPrivate,
@@ -153,6 +154,9 @@ export class PaginationService {
         }),
         ...(categoryId && {
           categoryId
+        }),
+        ...(facilityId && {
+          facilityId
         }),
         ...(category && {
           category

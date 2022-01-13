@@ -8,6 +8,9 @@ export class PatientsPayload extends ResponsePayloadResponse {
     @Field(type => [Patient], { nullable: 'itemsAndList' })
     patients: Patient[];
 
+    @Field({ nullable: true })
+    facilityId?: string
+
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
 }

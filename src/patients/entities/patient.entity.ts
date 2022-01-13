@@ -1,9 +1,10 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Facility } from 'src/facilities/entities/facility.entity';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Employer } from './employer.entity';
 
 export enum RACE {
@@ -328,10 +329,8 @@ export class Patient {
   @Field()
   statementNoteDateTo: string;
 
-  @OneToOne(() => Doctor, { eager: true })
-  @JoinColumn()
-  @Field(type => Doctor, { nullable: true })
-  usualProvider: Doctor;
+  @ManyToMany(type => Doctor, doctor => doctor.patients, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  usualProvider: Doctor[];
 
   @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Contact], { nullable: true })
@@ -340,6 +339,10 @@ export class Patient {
   @OneToMany(() => Employer, employer => employer.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Employer], { nullable: true })
   employer: Employer[];
+
+  @ManyToOne(() => Facility, facility => facility.patients, { eager: true, onDelete: 'CASCADE' })
+  @Field(type => Facility, { nullable: true })
+  facility: Facility;
 
   @OneToOne(() => User, { eager: true })
   @JoinColumn()

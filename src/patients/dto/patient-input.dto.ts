@@ -4,6 +4,9 @@ import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 @InputType()
 export default class PatientInput {
 
+    @Field()
+    facilityId?: string
+
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }

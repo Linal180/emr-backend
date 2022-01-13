@@ -116,4 +116,7 @@ export class CreatePatientItemInput {
   @Field({ nullable: true })
   adminId: string;
 
+  @Field({ nullable: false })
+  facilityId: string;
+
 }

@@ -1,9 +1,9 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
 import { CreateDoctorInput } from '../dto/create-doctor.input';
 import DoctorInput from '../dto/doctor-input.dto';
@@ -18,6 +18,7 @@ export class DoctorService {
   constructor(
     @InjectRepository(Doctor)
     private doctorRepository: Repository<Doctor>,
+    private readonly connection: Connection,
     private readonly paginationService: PaginationService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
@@ -35,31 +36,33 @@ export class DoctorService {
    * @returns doctor 
    */
   async createDoctor(createDoctorInput: CreateDoctorInput): Promise<Doctor> {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       // register doctor as user -
       const user = await this.usersService.create(createDoctorInput.createDoctorItemInput)
       //get facility 
       const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
-      if (user && facility) {
-        // Doctor Creation
-        const doctorInstance = this.doctorRepository.create(createDoctorInput.createDoctorItemInput)
-        doctorInstance.user = user;
-        doctorInstance.facility = facility;
-        const doctor = await this.doctorRepository.save(doctorInstance);
-        //adding contact
-        const createContactInput = { ...createDoctorInput.createContactInput, doctorId: doctor.id, userId: user.id }
-        await this.contactService.createContact(createContactInput)
-        //adding billing address details
-        const createBillingAddressInput = { ...createDoctorInput.createBillingAddressInput, doctorId: doctor.id, userId: user.id }
-        await this.billingAddressService.createBillingAddress(createBillingAddressInput)
-        return doctor
-      }
-      throw new ConflictException({
-        status: HttpStatus.CONFLICT,
-        error: 'Could not create doctor',
-      });
+      // Doctor Creation
+      const doctorInstance = this.doctorRepository.create(createDoctorInput.createDoctorItemInput)
+      doctorInstance.user = user;
+      doctorInstance.facility = facility;
+      //adding contact
+      const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
+      doctorInstance.contacts = [contact]
+      //adding billing address details
+      const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
+      doctorInstance.billingAddress = [billingAddress]
+      const doctor = await queryRunner.manager.save(doctorInstance);
+      await queryRunner.commitTransaction();
+      return doctor
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -125,7 +128,17 @@ export class DoctorService {
    */
   async removeDoctor({ id }: RemoveDoctor) {
     try {
-      await this.doctorRepository.delete(id)
+      const doctor = await this.doctorRepository.findOne(id)
+      if (doctor) {
+        await this.doctorRepository.delete(id)
+        await this.usersService.remove(doctor.id)
+        return
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Doctor not found or disabled',
+      });
+
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

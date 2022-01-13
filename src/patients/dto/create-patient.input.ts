@@ -28,6 +28,6 @@ export class CreatePatientInput {
   createGuarantorContactInput?: CreateContactInput
 
   @Field(type => CreateEmployerInput)
-  createEmpoyerInput?: CreateEmployerInput
+  createEmployerInput?: CreateEmployerInput
 
 }

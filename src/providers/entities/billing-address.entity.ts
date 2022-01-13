@@ -64,7 +64,7 @@ export class BillingAddress {
 
   @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
-  faciltiy: Facility;
+  facility: Facility;
 
   @ManyToOne(() => Doctor, doctor => doctor.contacts, { onDelete: 'CASCADE' })
   @Field(type => Doctor, { nullable: true })

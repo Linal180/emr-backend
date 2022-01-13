@@ -1,5 +1,6 @@
 import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FacilityService } from 'src/facilities/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
@@ -24,6 +25,7 @@ export class PatientService {
     private readonly paginationService: PaginationService,
     private readonly connection: Connection,
     private readonly employerService: EmployerService,
+    private readonly facilityService: FacilityService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => BillingAddressService))
@@ -35,50 +37,45 @@ export class PatientService {
     private readonly utilsService: UtilsService,
   ) { }
 
+
+  /**
+   * Creates patient
+   * @param createPatientInput 
+   * @returns patient 
+   */
   async createPatient(createPatientInput: CreatePatientInput): Promise<Patient> {
     //Transaction start
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      console.log("createPatientInput----", createPatientInput);
-      //add patient as a user
-      const user = await this.usersService.create({ ...createPatientInput.registerUserInput })
-      console.log("user------", user)
-      //get doctor 
-      const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
-      console.log("doctor------", doctor)
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
+      //get facility 
+      const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
+      patientInstance.facility = facility
+      //add patient as a user
+      const user = await this.usersService.create(createPatientInput.registerUserInput)
+      //get doctor 
+      const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
+      //adding user & usual provider with patient
       patientInstance.user = user
-      patientInstance.usualProvider = doctor
-      const patient = await queryRunner.manager.save(patientInstance);
-      console.log("patient", patient)
+      patientInstance.usualProvider = [doctor]
       //create patient contact 
-      const contact = await this.contactService.createContact({ ...createPatientInput.createContactInput, patientId: patient.id })
-      console.log("contact", contact)
-      patient.contacts = [contact];
+      const contact = await this.contactService.createContact(createPatientInput.createContactInput)
       //create patient emergency contact 
-      const emergencyContact = await this.contactService.createContact({ ...createPatientInput.createEmergencyContactInput, patientId: patient.id })
-      console.log("emergencyContact", emergencyContact)
-      patient.contacts = [emergencyContact];
+      const emergencyContact = await this.contactService.createContact(createPatientInput.createEmergencyContactInput)
       //create patient next of kin contact 
-      const nextOfKinContact = await this.contactService.createContact({ ...createPatientInput.createNextOfKinContactInput, patientId: patient.id })
-      console.log("nextOfKinContact", nextOfKinContact)
-      patient.contacts = [nextOfKinContact];
-      //create patient gurantor contact 
-      const gurantorContact = await this.contactService.createContact({ ...createPatientInput.createGuarantorContactInput, patientId: patient.id })
-      console.log("gurantorContact", gurantorContact)
-      patient.contacts = [gurantorContact];
+      const nextOfKinContact = await this.contactService.createContact(createPatientInput.createNextOfKinContactInput)
+      //create patient guarantor contact 
+      const guarantorContact = await this.contactService.createContact(createPatientInput.createGuarantorContactInput)
       //create patient guardian contact 
-      const guardianContact = await this.contactService.createContact({ ...createPatientInput.createGuardianContactInput, patientId: patient.id })
-      console.log("guardianContact", guardianContact)
-      patient.contacts = [guardianContact];
-      //create patient empoyer contact 
-      const employerContact = await this.employerService.createEmployer({ ...createPatientInput.createEmpoyerInput, patientId: patient.id })
-      console.log("employerContact", employerContact)
-      patient.employer = [employerContact]
-
+      const guardianContact = await this.contactService.createContact(createPatientInput.createGuardianContactInput)
+      //create patient employer contact 
+      const employerContact = await this.employerService.createEmployer(createPatientInput.createEmployerInput)
+      patientInstance.employer = [employerContact]
+      patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
+      const patient = await queryRunner.manager.save(patientInstance);
       await queryRunner.commitTransaction();
       return patient
     } catch (error) {
@@ -89,6 +86,11 @@ export class PatientService {
     }
   }
 
+  /**
+   * Finds all patients
+   * @param patientInput 
+   * @returns all patients 
+   */
   async findAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, patientInput)
@@ -128,6 +130,11 @@ export class PatientService {
     });
   }
 
+  /**
+   * Updates patient
+   * @param updatePatientInput 
+   * @returns patient 
+   */
   async updatePatient(updatePatientInput: UpdatePatientInput): Promise<Patient> {
     try {
       const patient = await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
@@ -141,9 +148,22 @@ export class PatientService {
     }
   }
 
+  /**
+   * Removes patient
+   * @param { id } 
+   */
   async removePatient({ id }: RemovePatient) {
     try {
-      await this.patientRepository.delete(id)
+      const patient = await this.findOne(id)
+      if (patient) {
+        await this.patientRepository.delete(patient.id)
+        await this.usersService.remove(patient.user.id)
+        return
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found or disabled',
+      });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
