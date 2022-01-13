@@ -141,7 +141,6 @@ export class PatientService {
     }
   }
 
-
   async removePatient({ id }: RemovePatient) {
     try {
       await this.patientRepository.delete(id)

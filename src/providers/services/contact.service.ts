@@ -53,7 +53,6 @@ export class ContactService {
       //fetch patient
       if (createContactInput.patientId) {
         console.log("createContactInput.patient", createContactInput.patientId);
-
         const patient = await this.patientService.findOne(createContactInput.patientId)
         contact.patient = patient
       }
