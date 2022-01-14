@@ -87,6 +87,51 @@ export class PatientService {
   }
 
   /**
+ * Updates patient
+ * @param updatePatientInput 
+ * @returns patient 
+ */
+  async updatePatient(updatePatientInput: UpdatePatientInput): Promise<Patient> {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      //updating patient 
+      const patientInstance = await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
+      //get facility 
+      const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
+      patientInstance.facility = facility
+      //get doctor 
+      const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
+      //updating usual provider with patient
+      patientInstance.usualProvider = [doctor]
+      //update patient contact 
+      const contact = await this.contactService.updateContact(updatePatientInput.updateContactInput)
+      //update patient emergency contact 
+      const emergencyContact = await this.contactService.updateContact(updatePatientInput.updateEmergencyContactInput)
+      //update patient next of kin contact 
+      const nextOfKinContact = await this.contactService.updateContact(updatePatientInput.updateNextOfKinContactInput)
+      //update patient guarantor contact 
+      const guarantorContact = await this.contactService.updateContact(updatePatientInput.updateGuarantorContactInput)
+      //update patient guardian contact 
+      const guardianContact = await this.contactService.updateContact(updatePatientInput.updateGuardianContactInput)
+      //update patient employer contact 
+      const employerContact = await this.employerService.updateEmployer(updatePatientInput.updateEmployerInput)
+      patientInstance.employer = [employerContact]
+      patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
+      const patient = await queryRunner.manager.save(patientInstance);
+      await queryRunner.commitTransaction();
+      return patient
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  /**
    * Finds all patients
    * @param patientInput 
    * @returns all patients 
@@ -128,24 +173,6 @@ export class PatientService {
       status: HttpStatus.NOT_FOUND,
       error: 'Patient not found',
     });
-  }
-
-  /**
-   * Updates patient
-   * @param updatePatientInput 
-   * @returns patient 
-   */
-  async updatePatient(updatePatientInput: UpdatePatientInput): Promise<Patient> {
-    try {
-      const patient = await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
-      //updating contact details
-      await this.contactService.updateContact(updatePatientInput.updateContactInput)
-      //updating billing details
-      await this.billingAddressService.updateBillingAddress(updatePatientInput.updateBillingAddressInput)
-      return patient
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
   }
 
   /**

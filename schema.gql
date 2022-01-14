@@ -565,7 +565,7 @@ input GetDoctor {
 }
 
 input PatientInput {
-  facilityId: String!
+  facilityId: String
   paginationOptions: PaginationInput!
 }
 
@@ -1047,7 +1047,11 @@ input CreateEmployerInput {
 input UpdatePatientInput {
   updatePatientItemInput: UpdatePatientItemInput!
   updateContactInput: UpdateContactInput!
-  updateBillingAddressInput: UpdateBillingAddressInput!
+  updateEmergencyContactInput: UpdateContactInput!
+  updateNextOfKinContactInput: UpdateContactInput!
+  updateGuardianContactInput: UpdateContactInput!
+  updateGuarantorContactInput: UpdateContactInput!
+  updateEmployerInput: UpdateEmployerItemInput!
 }
 
 input UpdatePatientItemInput {
@@ -1089,6 +1093,17 @@ input UpdatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String
+  id: String!
+}
+
+input UpdateEmployerItemInput {
+  name: String
+  email: String
+  phone: String
+  mobile: String
+  industry: String
+  usualOccupation: String
+  patientId: String
   id: String!
 }
 

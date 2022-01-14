@@ -30,7 +30,7 @@ export class PatientResolver {
   @SetMetadata('roles', ['admin', 'super-admin'])
   async updatePatient(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
     return {
-      facility: await this.patientService.updatePatient(updatePatientInput),
+      patient: await this.patientService.updatePatient(updatePatientInput),
       response: { status: 200, message: 'Facility updated successfully' }
     };
   }

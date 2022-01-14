@@ -76,12 +76,13 @@ export class EmployerService {
     });
   }
 
+
   /**
-   * Updates emplyer
+   * Updates employer
    * @param updateEmployerItemInput 
-   * @returns emplyer 
+   * @returns employer 
    */
-  async updateEmplyer(updateEmployerItemInput: UpdateEmployerItemInput): Promise<Employer> {
+  async updateEmployer(updateEmployerItemInput: UpdateEmployerItemInput): Promise<Employer> {
     try {
       return await this.utilsService.updateEntityManager(Employer, updateEmployerItemInput.id, updateEmployerItemInput, this.employerRepository)
     } catch (error) {
