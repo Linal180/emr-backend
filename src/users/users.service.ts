@@ -67,8 +67,9 @@ export class UsersService {
         //saving userId in user
         await this.saveUserId(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
+        const isInvite = true;
         if (registerUserInput.roleType != UserRole.PATIENT) {
-          this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token)
+          this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
         }
         return user;
       }
@@ -411,7 +412,8 @@ export class UsersService {
       const roles = user.roles.map(u => u.role);
       if (user) {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
-        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token)
+        const isInvite = false;
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
         delete user.roles
         await this.usersRepository.save(user);
         return user
