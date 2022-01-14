@@ -2,11 +2,9 @@ import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorExceptio
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
-import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/users.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import PatientInput from '../dto/patient-input.dto';
