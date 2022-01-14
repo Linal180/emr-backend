@@ -32,7 +32,7 @@ export class UsersService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
-    private readonly mailerSerivce: MailerService
+    private readonly mailerService: MailerService
   ) { }
 
   /**
@@ -68,7 +68,9 @@ export class UsersService {
         await this.saveUserId(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
         const isInvite = true;
-        this.mailerSerivce.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
+        if (registerUserInput.roleType != UserRole.PATIENT) {
+          this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
+        }
         return user;
       }
       throw new NotFoundException({
@@ -98,7 +100,7 @@ export class UsersService {
         });
       }
       //SEND EMAIL TO USER FOR EMAIL VERIFICATION
-      this.mailerSerivce.sendVerificationEmail(user.email, user.email, user.id, isAdmin, token)
+      this.mailerService.sendVerificationEmail(user.email, user.email, user.id, isAdmin, token)
       return user;
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -411,7 +413,7 @@ export class UsersService {
       if (user) {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
         const isInvite = false;
-        this.mailerSerivce.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
         delete user.roles
         await this.usersRepository.save(user);
         return user

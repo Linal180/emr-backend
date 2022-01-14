@@ -1,7 +1,8 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { BillingAddress } from './billing-address.entity';
 import { Contact } from './contact.entity';
 
@@ -204,6 +205,11 @@ export class Doctor {
   @OneToMany(() => BillingAddress, billingAddress => billingAddress.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
+
+  @Field(type => [Patient], { nullable: 'itemsAndList' })
+  @ManyToMany(type => Patient, patient => patient.usualProvider)
+  @JoinTable({ name: 'DoctorPatients' })
+  patients: Patient[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

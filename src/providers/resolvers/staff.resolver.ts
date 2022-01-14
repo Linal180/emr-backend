@@ -17,13 +17,6 @@ export class StaffResolver {
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('roles', ['super-admin', 'admin'])
   async createStaff(@Args('createStaffInput') createStaffInput: CreateStaffInput) {
-    const username = await this.staffService.findOnebyUsername(createStaffInput.username.trim().toLowerCase())
-    if (username) {
-      throw new ConflictException({
-        status: HttpStatus.CONFLICT,
-        error: 'this username is already taken',
-      });
-    }
     return {
       staff: await this.staffService.createStaff(createStaffInput),
       response: { status: 200, message: 'Staff created successfully' }

@@ -1,10 +1,10 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { AllStaffPayload } from '../dto/all-staff-payload.dto';
 import { CreateStaffInput } from '../dto/create-staff.input';
 import StaffInput from '../dto/staff-input.dto';
@@ -18,6 +18,7 @@ export class StaffService {
     private staffRepository: Repository<Staff>,
     private readonly paginationService: PaginationService,
     private readonly usersService: UsersService,
+    private readonly connection: Connection,
     private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService,
   ) { }
@@ -28,25 +29,28 @@ export class StaffService {
    * @returns staff 
    */
   async createStaff(createStaffInput: CreateStaffInput): Promise<Staff> {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       // register staff as user 
       const user = await this.usersService.create(createStaffInput)
       //get facility 
       const facility = await this.facilityService.findOne(createStaffInput.facilityId)
-      if (user && facility) {
-        // Staff Creation
-        const staff = this.staffRepository.create(createStaffInput)
-        staff.user = user;
-        staff.facility = facility;
-        staff.facilityId = facility.id
-        return await this.staffRepository.save(staff);
-      }
-      throw new ConflictException({
-        status: HttpStatus.CONFLICT,
-        error: 'Could not create staff',
-      });
+      // Staff Creation
+      const staffInstance = this.staffRepository.create(createStaffInput)
+      staffInstance.user = user;
+      staffInstance.facility = facility;
+      staffInstance.facilityId = facility.id
+      const staff = await queryRunner.manager.save(staffInstance);
+      await queryRunner.commitTransaction();
+      return staff
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -107,7 +111,16 @@ export class StaffService {
    */
   async removeStaff({ id }: RemoveStaff) {
     try {
-      await this.staffRepository.delete(id)
+      const staff = await this.findOne(id)
+      if (staff) {
+        await this.staffRepository.delete(id)
+        await this.usersService.remove(staff.user.id)
+        return
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Staff not found or disabled',
+      });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

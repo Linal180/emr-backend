@@ -104,6 +104,8 @@ export class PaginationService {
    */
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
     const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
+    console.log("associatedToField", columnValue, columnName, columnName2);
+
     const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
     let where = { str: {}, obj: {} }
     if (filterType === 'enumFilter') {
@@ -116,6 +118,7 @@ export class PaginationService {
         str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data`,
         obj: { data: `%${columnValue}%` }
       };
+      console.log("where", where);
     }
     return { join, where };
   }
@@ -185,7 +188,6 @@ export class PaginationService {
       const toDate: Date = to ? new Date(to) : new Date()
       whereOptions.where.createdAt = Between(new Date(from).toISOString(), toDate.toISOString())
     }
-
     // Where clause options
     return {
       ...whereOptions,

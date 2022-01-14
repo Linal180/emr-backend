@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
+import { PatientModule } from 'src/patients/patient.module';
 import { UsersModule } from 'src/users/users.module';
 import { BillingAddress } from './entities/billing-address.entity';
 import { Contact } from './entities/contact.entity';
@@ -18,6 +19,7 @@ import { StaffService } from './services/staff.service';
   imports: [
     TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress]),
     PaginationModule,
+    forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule)
   ],
