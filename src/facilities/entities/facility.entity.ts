@@ -86,6 +86,10 @@ export class Facility {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  color: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   tamxonomyCode: string;
 
   @Column({ nullable: true })
@@ -113,7 +117,7 @@ export class Facility {
   staff: Staff[];
 
   @Field(() => [Doctor], { nullable: true })
-  @OneToMany(() => Doctor, doctor => doctor.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @OneToMany(() => Doctor, doctor => doctor.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   doctors: Doctor[];
 
   @Field(() => [Patient], { nullable: true })

@@ -210,6 +210,7 @@ type Patient {
   statementNote: String!
   statementNoteDateFrom: String!
   statementNoteDateTo: String!
+  usualProvider: [Doctor!]
   contacts: [Contact!]
   employer: [Employer!]
   facility: Facility
@@ -337,6 +338,7 @@ type Facility {
   federalTaxId: String
   isPrivate: Boolean
   revenueCode: String
+  color: String
   tamxonomyCode: String
   insurancePlanType: String
   mammographyCertificationNumber: String
@@ -599,6 +601,7 @@ type Mutation {
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
   updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
+  updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
 }
 
@@ -686,6 +689,7 @@ input CreateFacilityItemInput {
   cliaIdNumber: String
   federalTaxId: String
   revenueCode: String
+  color: String
   tamxonomyCode: String
   insurancePlanType: String
   mammographyCertificationNumber: String
@@ -757,6 +761,7 @@ input UpdateFacilityItemInput {
   cliaIdNumber: String
   federalTaxId: String
   revenueCode: String
+  color: String
   tamxonomyCode: String
   insurancePlanType: String
   mammographyCertificationNumber: String
@@ -1105,6 +1110,11 @@ input UpdateEmployerItemInput {
   usualOccupation: String
   patientId: String
   id: String!
+}
+
+input UpdatePatientProvider {
+  patientId: String!
+  providerId: String!
 }
 
 input RemovePatient {
