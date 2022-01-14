@@ -49,6 +49,7 @@ export class DoctorService {
       const doctorInstance = this.doctorRepository.create(createDoctorInput.createDoctorItemInput)
       doctorInstance.user = user;
       doctorInstance.facility = facility;
+      doctorInstance.facilityId = facility.id
       //adding contact
       const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
       doctorInstance.contacts = [contact]

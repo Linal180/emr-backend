@@ -110,6 +110,7 @@ type Doctor {
   licenseActiveDate: String
   licenseTermDate: String
   prescriptiveAuthNumber: String
+  facilityId: String
   user: User
   facility: Facility
   contacts: [Contact!]
@@ -210,6 +211,7 @@ type Patient {
   statementNote: String!
   statementNoteDateFrom: String!
   statementNoteDateTo: String!
+  facilityId: String
   usualProvider: [Doctor!]
   contacts: [Contact!]
   employer: [Employer!]
@@ -551,6 +553,7 @@ input GetFacility {
 }
 
 input StaffInput {
+  facilityId: String
   paginationOptions: PaginationInput!
 }
 
@@ -559,6 +562,7 @@ input GetStaff {
 }
 
 input DoctorInput {
+  facilityId: String
   paginationOptions: PaginationInput!
 }
 
