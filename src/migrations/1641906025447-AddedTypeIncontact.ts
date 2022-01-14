@@ -8,7 +8,7 @@ export class AddedTypeIncontact1641906025447 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "public"."Contacts" ADD "relationship" "public"."Contacts_relationship_enum" NOT NULL DEFAULT 'Self'`);
         await queryRunner.query(`CREATE TYPE "public"."Contacts_contacttype_enum" AS ENUM('Self', 'Emergency', 'Next of Kin', 'Child (Mother''s Insurance)', 'guardian', 'gurantor')`);
         await queryRunner.query(`ALTER TABLE "public"."Contacts" ADD "contactType" "public"."Contacts_contacttype_enum" NOT NULL DEFAULT 'Self'`);
-        await queryRunner.query(`ALTER TABLE "public"."Staff" ADD "primaryProvider" character varying`);
+        await queryRunner.query(`ALTER TABLE "public"."Staff" ADD IF NOT EXISTS "primaryProvider" character varying`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
