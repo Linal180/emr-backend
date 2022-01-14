@@ -329,6 +329,10 @@ export class Patient {
   @Field()
   statementNoteDateTo: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
   @ManyToMany(type => Doctor, doctor => doctor.patients, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Doctor], { nullable: true })
   usualProvider: Doctor[];

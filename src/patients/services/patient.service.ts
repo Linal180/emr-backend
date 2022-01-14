@@ -29,13 +29,10 @@ export class PatientService {
     private readonly facilityService: FacilityService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
-    @Inject(forwardRef(() => BillingAddressService))
-    private readonly billingAddressService: BillingAddressService,
     @Inject(forwardRef(() => DoctorService))
     private readonly doctorService: DoctorService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
-    private readonly utilsService: UtilsService,
   ) { }
 
 

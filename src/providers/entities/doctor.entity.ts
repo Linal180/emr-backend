@@ -189,6 +189,10 @@ export class Doctor {
   @Field({ nullable: true })
   prescriptiveAuthNumber: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
   @OneToOne(() => User, { eager: true })
   @JoinColumn()
   @Field(type => User, { nullable: true })

@@ -140,7 +140,9 @@ export class PaginationService {
       currentPhaseId,
       from,
       dueToday,
+      facilityId,
       phychType,
+
       ageGroupId,
       categoryId,
       category,
@@ -159,6 +161,9 @@ export class PaginationService {
         }),
         ...(category && {
           category
+        }),
+        ...(facilityId && {
+          facilityId
         }),
         ...(status != null && {
           status
