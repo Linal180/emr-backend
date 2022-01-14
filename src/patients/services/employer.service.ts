@@ -76,7 +76,6 @@ export class EmployerService {
     });
   }
 
-
   /**
    * Updates employer
    * @param updateEmployerItemInput 
