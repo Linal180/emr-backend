@@ -330,6 +330,7 @@ export class Patient {
   statementNoteDateTo: string;
 
   @ManyToMany(type => Doctor, doctor => doctor.patients, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [Doctor], { nullable: true })
   usualProvider: Doctor[];
 
   @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })

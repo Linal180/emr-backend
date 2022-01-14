@@ -28,6 +28,9 @@ export class CreateFacilityItemInput {
   revenueCode?: string;
 
   @Field({ nullable: true })
+  color?: string;
+
+  @Field({ nullable: true })
   tamxonomyCode?: string;
 
   @Field({ nullable: true })

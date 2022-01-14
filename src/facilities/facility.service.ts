@@ -99,12 +99,12 @@ export class FacilityService {
    */
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
-      const faciltiy = await this.facilityRepository.save(updateFacilityInput.updateFacilityItemInput)
+      const facility = await this.facilityRepository.save(updateFacilityInput.updateFacilityItemInput)
       //updating contact details
       await this.contactService.updateContact(updateFacilityInput.updateContactInput)
       //updating billing details
       await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
-      return faciltiy
+      return facility
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

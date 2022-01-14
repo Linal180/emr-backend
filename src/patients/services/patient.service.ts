@@ -12,6 +12,7 @@ import { CreatePatientInput } from '../dto/create-patient.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
 import { Patient } from '../entities/patient.entity';
@@ -97,15 +98,11 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      //updating patient 
-      const patientInstance = await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
+      //fetch patient
+      const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
       const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
       patientInstance.facility = facility
-      //get doctor 
-      const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
-      //updating usual provider with patient
-      patientInstance.usualProvider = [doctor]
       //update patient contact 
       const contact = await this.contactService.updateContact(updatePatientInput.updateContactInput)
       //update patient emergency contact 
@@ -128,6 +125,24 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  /**
+   * Updates patient provider
+   * @param updatePatientProvider 
+   * @returns patient provider 
+   */
+  async updatePatientProvider(updatePatientProvider: UpdatePatientProvider): Promise<Patient> {
+    try {
+      const patientInstance = await this.findOne(updatePatientProvider.patientId)
+      const doctor = await this.doctorService.findOne(updatePatientProvider.providerId)
+      const updatedProviders = patientInstance.usualProvider
+      updatedProviders.push(doctor)
+      patientInstance.usualProvider = updatedProviders;
+      return await this.patientRepository.save(patientInstance)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 

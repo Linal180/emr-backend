@@ -6,6 +6,7 @@ import { CreatePatientInput } from '../dto/create-patient.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
 import { Patient } from '../entities/patient.entity';
@@ -31,7 +32,17 @@ export class PatientResolver {
   async updatePatient(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
     return {
       patient: await this.patientService.updatePatient(updatePatientInput),
-      response: { status: 200, message: 'Facility updated successfully' }
+      response: { status: 200, message: 'Patient updated successfully' }
+    };
+  }
+
+  @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async updatePatientProvider(@Args('updatePatientProvider') updatePatientProvider: UpdatePatientProvider) {
+    return {
+      patient: await this.patientService.updatePatientProvider(updatePatientProvider),
+      response: { status: 200, message: 'Patient Provider updated successfully' }
     };
   }
 
