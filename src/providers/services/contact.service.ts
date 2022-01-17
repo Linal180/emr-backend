@@ -1,8 +1,11 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationService } from 'src/pagination/pagination.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
+import ContactInput from '../dto/contact-input.dto';
+import { ContactsPayload } from '../dto/contacts-payload.dto';
 import { CreateContactInput } from '../dto/create-contact.input';
 import { Contact } from '../entities/contact.entity';
 
@@ -12,7 +15,8 @@ export class ContactService {
     @InjectRepository(Contact)
     private contactRepository: Repository<Contact>,
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -43,6 +47,25 @@ export class ContactService {
   async updateContact(updateContactInput: UpdateContactInput): Promise<Contact> {
     try {
       return await this.contactRepository.save(updateContactInput)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds all contacts
+   * @param contactInput 
+   * @returns all contacts 
+   */
+  async findAllContacts(contactInput: ContactInput): Promise<ContactsPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Contact>(this.contactRepository, contactInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        contacts: paginationResponse.data,
+      }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
