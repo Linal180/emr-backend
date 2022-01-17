@@ -1,11 +1,11 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Factory, Seeder } from "typeorm-seeding";
+import { Facility } from "src/facilities/entities/facility.entity";
 import { Connection, getRepository } from "typeorm";
-import { Role } from '../entities/role.entity'
-import { User } from '../entities/user.entity'
-import { RolesData, UsersData } from './seed-data'
+import { Factory, Seeder } from "typeorm-seeding";
 import { createPasswordHash } from '../../lib/helper';
-import { UserToRole } from "../entities/user-role.entity";
+import { Role } from '../entities/role.entity';
+import { User } from '../entities/user.entity';
+import { FacilityData, RolesData, UsersData } from './seed-data';
 
 @Injectable()
 export class CreateUsers implements Seeder {
@@ -14,6 +14,12 @@ export class CreateUsers implements Seeder {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      //Add Facility 
+      let facility = await getRepository(Facility).find();
+      if (!facility.length) {
+        facility = getRepository(Facility).create(FacilityData)
+        facility = await queryRunner.manager.save(facility);
+      }
       //Add Roles
       let roles = await getRepository(Role).find();
       if (!roles.length) {
@@ -26,18 +32,13 @@ export class CreateUsers implements Seeder {
         for (let index = 0; index < UsersData.length; index++) {
           const user = UsersData[index];
           user.password = await createPasswordHash(user.password);
-          let UserObj = getRepository(User).create(user)
+          const UserObj = getRepository(User).create(user)
           const role = roles.filter(obj => obj.role === user.roleType);
-          UserObj.userType = role[0].role
-          UserObj = await getRepository(User).save(UserObj)
-          //add userRole 
-          const userRoleObj = {
-            user: UserObj,
-            role: role[0],
-            AssignedById: UserObj
-          }
-          let userRole = getRepository(UserToRole).create(userRoleObj)
-          await queryRunner.manager.save(userRole);
+          UserObj.roles = role;
+          UserObj.facility = facility[0]
+          const newuserObj = await queryRunner.manager.save(UserObj);
+          UserObj.userId = newuserObj.id
+          await queryRunner.manager.save(UserObj);
         }
       }
       await queryRunner.commitTransaction();

@@ -1,4 +1,4 @@
-import { Field, InputType, registerEnumType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { UserRole } from '../entities/role.entity';
 import { UserStatus } from '../entities/user.entity';

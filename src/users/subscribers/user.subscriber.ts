@@ -1,17 +1,13 @@
-import { EntitySubscriberInterface, EventSubscriber, InsertEvent, Connection, UpdateEvent } from 'typeorm';
-import { MailerService } from "src/mailer/mailer.service";
-import { User } from '../entities/user.entity';
 import { Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
-import { UsersService } from '../users.service';
+import { MailerService } from "src/mailer/mailer.service";
+import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
+import { User } from '../entities/user.entity';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<User> {
   constructor(private readonly connection: Connection,
     private readonly mailerSerivce: MailerService,
-    private readonly configService: ConfigService,
-    private readonly usersService: UsersService
   ) {
     this.connection.subscribers.push(this);
   }
@@ -22,12 +18,6 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
 
   async beforeInsert(event: InsertEvent<User>): Promise<void> {
     event.entity.password = await bcrypt.hash(event.entity.password, await bcrypt.genSalt());
-  }
-
-  async afterLoad(entity: User): Promise<User> {
-    const roles = await this.usersService.getRoles(entity.id)
-    entity.roles = roles
-    return entity;
   }
 
   async beforeUpdate(event: UpdateEvent<User>): Promise<void> {

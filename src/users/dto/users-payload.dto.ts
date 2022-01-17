@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
 import { User } from 'src/users/entities/user.entity';
 import { ResponsePayloadResponse } from './response-payload.dto';

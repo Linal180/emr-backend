@@ -1,6 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, JoinColumn, OneToMany } from 'typeorm';
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { UserToRole } from './user-role.entity';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Role } from './role.entity';
+import { UserLog } from './user-logs.entity';
 
 
 export enum UserStatus {
@@ -50,16 +52,24 @@ export class User {
   userId: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   token: string;
 
   @Column({ nullable: true })
   @Field()
   userType: string;
 
-  @OneToMany(() => UserToRole, userToRole => userToRole.user, { eager: true })
-  @Field(type => UserToRole)
-  roles: UserToRole[];
+  @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
+  @Field(type => [Facility], { nullable: true })
+  facility: Facility;
+
+  @Field(type => [Role], { nullable: 'itemsAndList' })
+  @ManyToMany(type => Role, role => role.users, { eager: true })
+  @JoinTable({ name: 'UserRoles' })
+  roles: Role[];
+
+  @OneToMany(() => UserLog, Userlog => Userlog.userId)
+  UserLogs: UserLog[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

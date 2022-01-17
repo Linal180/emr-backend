@@ -1,7 +1,6 @@
-import { ManyToMany, Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, OneToMany } from 'typeorm';
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { User } from './user.entity';
-import { UserToRole } from './user-role.entity';
 
 export enum UserRole {
   SUPER_ADMIN = "super-admin",
@@ -33,8 +32,8 @@ export class Role {
   @Field(type => UserRole)
   role: UserRole
 
-  @OneToMany(() => UserToRole, userToRole => userToRole.role, { onDelete: 'CASCADE' })
-  users: UserToRole[];
+  @ManyToMany(type => User, user => user.roles)
+  users: User[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

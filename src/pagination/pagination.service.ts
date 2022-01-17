@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Between, Equal, FindManyOptions, FindOperator, Repository, JoinOptions, ObjectLiteral, FindConditions, WhereExpressionBuilder, Not, In, Like } from "typeorm";
+import { Between, Equal, FindConditions, FindManyOptions, FindOperator, JoinOptions, Not, ObjectLiteral, Repository, WhereExpressionBuilder } from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
 
@@ -104,6 +104,8 @@ export class PaginationService {
    */
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
     const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
+    console.log("associatedToField", columnValue, columnName, columnName2);
+
     const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
     let where = { str: {}, obj: {} }
     if (filterType === 'enumFilter') {
@@ -116,6 +118,7 @@ export class PaginationService {
         str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data`,
         obj: { data: `%${columnValue}%` }
       };
+      console.log("where", where);
     }
     return { join, where };
   }
@@ -133,10 +136,13 @@ export class PaginationService {
       to,
       requestType,
       MembershipPlan,
+      isPrivate,
       currentPhaseId,
       from,
       dueToday,
+      facilityId,
       phychType,
+
       ageGroupId,
       categoryId,
       category,
@@ -156,11 +162,14 @@ export class PaginationService {
         ...(category && {
           category
         }),
+        ...(facilityId && {
+          facilityId
+        }),
         ...(status != null && {
           status
         }),
-        ...(requestType && {
-          requestStatus: Not(requestType)
+        ...(isPrivate && {
+          isPrivate: Not(isPrivate)
         }),
         ...(MembershipPlan && {
           membershipId: MembershipPlan
@@ -184,7 +193,6 @@ export class PaginationService {
       const toDate: Date = to ? new Date(to) : new Date()
       whereOptions.where.createdAt = Between(new Date(from).toISOString(), toDate.toISOString())
     }
-
     // Where clause options
     return {
       ...whereOptions,

@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { InputType } from "@nestjs/graphql";
 import { UserStatus } from "src/users/entities/user.entity";
 import PaginationInput from "./pagination-input.dto";
 
@@ -9,6 +9,7 @@ export class PaginatedEntityInput {
   to?: string
   from?: string
   dueToday?: boolean
+  facilityId?: string
   phychType?: string
   ageGroupId?: string
   categoryId?: string
@@ -19,6 +20,7 @@ export class PaginatedEntityInput {
   relationField?: string
   requestType?: string
   requestStatus?: string
+  isPrivate?: boolean
   MembershipPlan?: string
   username?: string
   searchKey?: string

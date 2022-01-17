@@ -3,9 +3,9 @@ import { UserRole } from '../entities/role.entity';
 
 @InputType()
 export class RegisterUserInput {
-  @Field()
+  @Field({ nullable: true })
   firstName?: string;
-  @Field()
+  @Field({ nullable: true })
   lastName?: string;
   @Field()
   password: string;
@@ -13,10 +13,12 @@ export class RegisterUserInput {
   email: string;
   @Field(type => UserRole, { description: 'Send Investor Type from the ENUM - Sign-up', nullable: true })
   roleType?: UserRole;
-  @Field()
+  @Field({ nullable: true })
   adminId?: string;
-  @Field()
+  @Field({ nullable: true })
+  facilityId?: string;
+  @Field({ nullable: true })
   phone?: string;
-  @Field()
+  @Field({ nullable: true })
   zipCode?: string;
 }

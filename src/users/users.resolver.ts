@@ -1,26 +1,26 @@
-import { HttpStatus, NotFoundException, UseFilters, UseGuards, SetMetadata, ForbiddenException, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, NotFoundException, SetMetadata, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { UsersService } from './users.service';
-import { LoginUserInput } from './dto/login-user-input.dto';
+import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import RoleGuard from 'src/users/auth/role.guard';
 import { CurrentUser } from '../customDecorators/current-user.decorator';
-import { UsersPayload } from './dto/users-payload.dto';
+import { CurrentUserInterface } from './auth/dto/current-user.dto';
 import { AccessUserPayload } from './dto/access-user.dto';
+import { ForgotPasswordInput } from './dto/forget-password-input.dto';
+import { ForgotPasswordPayload } from './dto/forgot-password-payload.dto';
+import { LoginUserInput } from './dto/login-user-input.dto';
 import { RegisterUserInput } from './dto/register-user-input.dto';
 import { UserPayload } from './dto/register-user-payload.dto';
-import { HttpExceptionFilterGql } from 'src/exception-filter';
-import { ForgotPasswordInput } from './dto/forget-password-input.dto';
 import { ResetPasswordInput } from './dto/reset-password-input.dto';
-import { ForgotPasswordPayload } from './dto/forgot-password-payload.dto';
 import RolesPayload from './dto/roles-payload.dto';
-import RoleGuard from 'src/users/auth/role.guard';
-import { UserIdInput } from './dto/user-id-input.dto';
-import { GetUser, ResendVerificationEmail, UpdateUserInput } from './dto/update-user-input.dto';
-import UsersInput from './dto/users-input.dto';
-import { UpdateRoleInput } from './dto/update-role-input.dto';
-import { VerifyEmailInput } from './dto/verify-email-input.dto';
-import { CurrentUserInterface } from './auth/dto/current-user.dto';
 import { UpdatePasswordInput } from './dto/update-password-input.dto';
+import { UpdateRoleInput } from './dto/update-role-input.dto';
+import { GetUser, ResendVerificationEmail, UpdateUserInput } from './dto/update-user-input.dto';
+import { UserIdInput } from './dto/user-id-input.dto';
+import UsersInput from './dto/users-input.dto';
+import { UsersPayload } from './dto/users-payload.dto';
+import { VerifyEmailInput } from './dto/verify-email-input.dto';
+import { UsersService } from './users.service';
 
 @Resolver('users')
 @UseFilters(HttpExceptionFilterGql)
@@ -105,12 +105,10 @@ export class UsersResolver {
     return { users, response: { status: 200, message: 'User Data fetched successfully' } }
   }
 
-  Mutations
   @Mutation(returns => AccessUserPayload)
   async login(@Args('loginUser') loginUserInput: LoginUserInput): Promise<AccessUserPayload> {
     const { email, password } = loginUserInput
     const user = await this.usersService.findOne(email.trim().toLowerCase())
-    console.log("user", user);
     if (user) {
       if (user.emailVerified) {
         return this.usersService.createToken(user, password);
@@ -203,8 +201,8 @@ export class UsersResolver {
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin'])
-  async removeUser(@Args('user') { userId }: UserIdInput) {
-    await this.usersService.removeUser(userId);
+  async removeUser(@Args('userIdInput') userIdInput: UserIdInput) {
+    await this.usersService.removeUser(userIdInput);
     return { response: { status: 200, message: 'User Deleted' } }
   }
 
@@ -218,17 +216,17 @@ export class UsersResolver {
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'owner', 'investor'])
+  @SetMetadata('roles', ['admin', 'super-admin', 'staff', 'doctor'])
   async updateUser(@Args('user') updateUserInput: UpdateUserInput): Promise<UserPayload> {
     const user = await this.usersService.update(updateUserInput);
     return { user, response: { status: 200, message: 'User Data updated successfully' } }
   }
 
-  // @Mutation(returns => UserPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['admin', 'super-admin'])
-  // async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
-  //   const user = await this.usersService.updateRole(updateRoleInput);
-  //   return { user, response: { status: 200, message: 'User Data updated successfully' } }
-  // }
+  @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
+    const user = await this.usersService.updateRole(updateRoleInput);
+    return { user, response: { status: 200, message: 'User Data updated successfully' } }
+  }
 }

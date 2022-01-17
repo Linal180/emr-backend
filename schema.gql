@@ -2,6 +2,412 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Contact {
+  id: String!
+  email: String
+  name: String
+  firstName: String
+  lastName: String
+  middleName: String
+  suffix: String
+  phone: String
+  mobile: String
+  pager: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  ssn: String
+  employerName: String
+  relationship: RelationshipType
+  contactType: ContactType
+  facility: Facility
+  doctor: Doctor
+  patient: Patient
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user's relationship assigned"""
+enum RelationshipType {
+  SELF
+  SPOUSE
+  CHILD
+  CHILD_MOTHER_INSURANCE
+  CHILD_FATHER_INSURANCE
+  OTHER
+  GRANDPARENT
+  GRANDCHILD
+  NEPHEW_NIECE
+  FOSTHER_CHILD
+  WARD
+  STEPSON_STEPDAUGHTER
+  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE
+  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE
+  EMPLOYEE
+  UNKNOWN
+  HANDICAPPED_DEPENDENT
+  SPONSORED_DEPENDENT
+  DEPENDENT_OF_MINOR_DEPENDENT
+  SIGNIFICANT_OTHER
+  MOTHER
+  FATHER
+  EMANCIPATED_MINOR
+  ORGAN_DONOR
+  CADAVER_DONOR
+  INJURED_PLAINTIIFF
+  LIFE_PARTNER
+}
+
+"""The user's contact type assigned"""
+enum ContactType {
+  SELF
+  EMERGENCY
+  NEXT_OF_KIN
+  CHILD_MOTHER_INSURANCE
+  GUARDIAN
+  GUARANDOR
+}
+
+type Doctor {
+  id: String!
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  providerIntials: String
+  degreeCredentials: String
+  speciality: Speciality
+  dob: String
+  ssn: String
+  ssnType: SsnType
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String!
+  deaTermDate: String!
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+  facilityId: String
+  user: User
+  facility: Facility
+  contacts: [Contact!]
+  billingAddress: [BillingAddress!]
+  patients: [Patient]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The doctor's speciality"""
+enum Speciality {
+  PHYSICIAN_ASSISTANT
+  PHARMACIST
+  PERIODONTICS
+  PEDIATRIC_DENTIST
+  PEDIATRIC_DERMATOLOGY
+  NEUROLOGY
+  GASTROENTEROLOGY
+}
+
+"""The doctor's SsnType"""
+enum SsnType {
+  OASDI
+  TANF
+  MEDICARE
+  MEDICAID
+}
+
+type BillingAddress {
+  id: String!
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  federalTaxId: String
+  bankAccount: String
+  checkPayableTo: String
+  facility: Facility
+  doctor: Doctor
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Employer {
+  id: String!
+  name: String
+  email: String
+  phone: String
+  mobile: String
+  industry: String
+  usualOccupation: String
+  patient: Patient
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Patient {
+  id: String!
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  firstNameUsed: String
+  prefferedName: String
+  previousFirstName: String
+  previouslastName: String
+  motherMaidenName: String
+  ssn: String
+  gender: GENDERIDENTITY!
+  dob: String
+  registrationDepartment: REGDepartment!
+  primaryDepartment: PrimaryDepartment!
+  registrationDate: String!
+  deseasedDate: String!
+  privacyNotice: Boolean!
+  relaseOfInfoBill: Boolean!
+  callToConsent: Boolean!
+  medicationHistoryAuthority: Boolean!
+  patientNote: String
+  language: String
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  sexualOrientation: SEXUALORIENTATION
+  genderIdentity: GENDERIDENTITY
+  sexAtBirth: GENDERIDENTITY
+  pronouns: PRONOUNS
+  homeBound: HOMEBOUND
+  holdStatement: HOLDSTATEMENT
+  statementDelivereOnline: Boolean!
+  statementNote: String!
+  statementNoteDateFrom: String!
+  statementNoteDateTo: String!
+  facilityId: String
+  usualProvider: [Doctor!]
+  contacts: [Contact!]
+  employer: [Employer!]
+  facility: Facility
+  user: User
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The patient's sexual orientation type assigned"""
+enum GENDERIDENTITY {
+  MALE
+  FEMALE
+  TRANSGENDER_MALE
+  TRANSGENDER_FEMALE
+  NOT_EXCLUSIVE
+  NONE
+}
+
+"""The facility Registration Department type assigned type"""
+enum REGDepartment {
+  HOSPITAL
+  LAB
+  CLINIC
+}
+
+"""The facility Primary Department type assigned type"""
+enum PrimaryDepartment {
+  HOSPITAL
+  LAB
+  CLINIC
+}
+
+"""The user race assigned"""
+enum RACE {
+  WHITE
+  BLACK_AFRICAN_AMERICAN
+  ASIAN
+  AMERICAN_INDIAN_ALASKA_NATIVE
+  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
+  OTHER
+}
+
+"""The patient's ethnicity type assigned"""
+enum ETHNICITY {
+  NONE
+  CENTERAL_AMERICAN
+  CENTERAL_AMERICAN_INDIAN
+}
+
+"""The patient's maritial status type assigned"""
+enum MARITIALSTATUS {
+  SINGLE
+  MARIED
+  WIDOWED
+  SEPARATED
+  DIVORCED
+}
+
+"""The patient's sexual orientation type assigned"""
+enum SEXUALORIENTATION {
+  HOMOSEXUAL
+  HETEROSEXUAL
+  BISEXUAL
+  DONT_KNOW
+  NONE
+}
+
+"""The patient's pronouns type assigned"""
+enum PRONOUNS {
+  HE
+  SHE
+  NONE
+}
+
+"""The patient's homebound type assigned"""
+enum HOMEBOUND {
+  YES
+  NO
+}
+
+"""The patient's hold statement type assigned"""
+enum HOLDSTATEMENT {
+  NONE
+  BAD_ADDRESS
+  NO_FORW_ADDRESS
+  BANKRUPTCY
+  CLAIM_CANCELED
+  INCORRECT_GURANTOR
+  PATIENT_DEASEASED
+  ACCOUNT_TOO_LONG
+  PRACTICE_REQUEST
+}
+
+type Staff {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String!
+  dob: String!
+  phone: String
+  primaryProvider: String
+  facilityId: String
+  mobile: String
+  gender: Gender!
+  user: User
+  facility: Facility
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type Facility {
+  id: String!
+  name: String!
+  practiceType: PracticeType!
+  code: String
+  cliaIdNumber: String
+  federalTaxId: String
+  isPrivate: Boolean
+  revenueCode: String
+  color: String
+  tamxonomyCode: String
+  insurancePlanType: String
+  mammographyCertificationNumber: String
+  npi: String
+  serviceCode: ServiceCode!
+  staff: [Staff!]
+  doctors: [Doctor!]
+  patients: [Patient!]
+  user: [User!]
+  contacts: [Contact!]
+  billingAddress: [BillingAddress!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The facility practice type assigned type"""
+enum PracticeType {
+  HOSPITAL
+  LAB
+  CLINIC
+}
+
+"""The facility service code type assigned"""
+enum ServiceCode {
+  AMBULANCE_41
+  AMBULANCE_42
+  AMBULANCE_24
+  ASSISTED_LIVING_13
+  BIRTHING_CENTER_25
+  COMMUNITY_MENTAL_HEALTH_CENTER_53
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
+  CUSTODIAL_CARE_FACILITY_33
+  EMERGENCY_ROOM_23
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
+  GROUP_HOME_14
+  HOMELESS_SHELTER_04
+  HOSPICE_34
+  INDEPENDENT_CLINIC_49
+  INDEPENDENT_LABORATORY_81
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
+}
+
+type User {
+  id: String!
+  status: UserStatus!
+  emailVerified: Boolean!
+  email: String!
+  inviteSentAt: String!
+  inviteAcceptedAt: String!
+  userId: String!
+  token: String
+  userType: String!
+  facility: [Facility!]
+  roles: [Role]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user status"""
+enum UserStatus {
+  DEACTIVATED
+  ACTIVE
+}
+
 type Role {
   id: String!
   role: UserRole!
@@ -20,37 +426,31 @@ enum UserRole {
   STAFF
 }
 
-type UserToRole {
-  id: String!
-  role: Role!
-  user: User!
-  assignedAt: String!
-  removedAt: String!
-  assignedById: User!
-  removedById: User!
-  createdAt: String!
-  updatedAt: String!
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
 }
 
-type User {
-  id: String!
-  status: UserStatus!
-  emailVerified: Boolean!
-  email: String!
-  inviteSentAt: String!
-  inviteAcceptedAt: String!
-  userId: String!
-  token: String!
-  userType: String!
-  roles: UserToRole!
-  createdAt: String!
-  updatedAt: String!
+type AccessUserPayload {
+  access_token: String
+  roles: [Role!]
+  response: ResponsePayload
 }
 
-"""The user status"""
-enum UserStatus {
-  DEACTIVATED
-  ACTIVE
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  response: ResponsePayload
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
 }
 
 type PaginationPayload {
@@ -60,37 +460,66 @@ type PaginationPayload {
   totalPages: Int
 }
 
-type ResponsePayload {
-  status: Float
-  error: String
-  message: String
-  name: String
-}
-
 type UsersPayload {
   response: ResponsePayload
   users: [User]
   pagination: PaginationPayload
 }
 
-type AccessUserPayload {
-  access_token: String
-  roles: [UserToRole!]
+type PatientPayload {
+  response: ResponsePayload
+  patient: Patient
+}
+
+type PatientsPayload {
+  response: ResponsePayload
+  patients: [Patient]
+  facilityId: String
+  pagination: PaginationPayload
+}
+
+type ContactPayload {
+  contact: Contact
   response: ResponsePayload
 }
 
-type UserPayload {
-  user: User
+type ContactsPayload {
+  response: ResponsePayload
+  contacts: [Contact]
+  pagination: PaginationPayload
+}
+
+type AllDoctorPayload {
+  response: ResponsePayload
+  doctors: [Doctor]
+  pagination: PaginationPayload
+}
+
+type DoctorPayload {
+  doctor: Doctor
   response: ResponsePayload
 }
 
-type ForgotPasswordPayload {
+type AllStaffPayload {
+  response: ResponsePayload
+  allstaff: [Staff]
+  pagination: PaginationPayload
+}
+
+type StaffPayload {
+  staff: Staff
   response: ResponsePayload
 }
 
-type RolesPayload {
+type FacilitiesPayload {
   response: ResponsePayload
-  roles: [Role]
+  facility: [Facility]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
 }
 
 type Query {
@@ -100,6 +529,16 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
+  getFacility(getFacility: GetFacility!): FacilityPayload!
+  findAllStaff(staffInput: StaffInput!): AllStaffPayload!
+  getStaff(getStaff: GetStaff!): StaffPayload!
+  findAllContacts(contactInput: ContactInput!): ContactsPayload!
+  getContact(getContact: GetContact!): ContactPayload!
+  findAllDoctor(doctorInput: DoctorInput!): AllDoctorPayload!
+  getDoctor(getDoctor: GetDoctor!): DoctorPayload!
+  findAllPatient(patientInput: PatientInput!): PatientsPayload!
+  getPatient(getPatient: GetPatient!): PatientPayload!
 }
 
 input UsersInput {
@@ -117,6 +556,51 @@ input GetUser {
   id: String!
 }
 
+input FacilityInput {
+  isPrivate: Boolean
+  paginationOptions: PaginationInput!
+}
+
+input GetFacility {
+  id: String!
+}
+
+input StaffInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetStaff {
+  id: String!
+}
+
+input ContactInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetContact {
+  id: String!
+}
+
+input DoctorInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetDoctor {
+  id: String!
+}
+
+input PatientInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatient {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -126,9 +610,28 @@ type Mutation {
   resetPassword(resetPassword: ResetPasswordInput!): UserPayload!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): UserPayload!
   deactivateUser(user: UserIdInput!): UserPayload!
-  removeUser(user: UserIdInput!): UserPayload!
+  removeUser(userIdInput: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
+  updateRole(user: UpdateRoleInput!): UserPayload!
+  createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
+  updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
+  removeFacility(removeFacility: RemoveFacility!): FacilityPayload!
+  createStaff(createStaffInput: CreateStaffInput!): StaffPayload!
+  updateStaff(updateStaffInput: UpdateStaffInput!): StaffPayload!
+  removeStaff(removeStaff: RemoveStaff!): StaffPayload!
+  disableStaff(disableStaff: DisableStaff!): StaffPayload!
+  createContact(createContactInput: CreateContactInput!): ContactPayload!
+  updateContact(updateContactInput: UpdateContactInput!): ContactPayload!
+  removeContact(removeContact: RemoveContact!): ContactPayload!
+  createDoctor(createDoctorInput: CreateDoctorInput!): DoctorPayload!
+  updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
+  removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
+  disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
+  createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
+  updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
+  updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
+  removePatient(removePatient: RemovePatient!): PatientPayload!
 }
 
 input LoginUserInput {
@@ -137,16 +640,17 @@ input LoginUserInput {
 }
 
 input RegisterUserInput {
-  firstName: String!
-  lastName: String!
+  firstName: String
+  lastName: String
   password: String!
   email: String!
 
   """Send Investor Type from the ENUM - Sign-up"""
   roleType: UserRole
-  adminId: String!
-  phone: String!
-  zipCode: String!
+  adminId: String
+  facilityId: String
+  phone: String
+  zipCode: String
 }
 
 input ForgotPasswordInput {
@@ -174,6 +678,7 @@ input UpdatePasswordInput {
 
 input UserIdInput {
   userId: String!
+  adminId: String
   isEnabled: Boolean
 }
 
@@ -182,8 +687,469 @@ input UpdateUserInput {
   lastName: String
   email: String
   adminId: String
+  facilityId: String
   phone: String
   zipCode: String
   id: String!
   emailVerified: Boolean
+}
+
+input UpdateRoleInput {
+  id: String!
+  roles: [UserRole!]!
+}
+
+input CreateFacilityInput {
+  createFacilityItemInput: CreateFacilityItemInput!
+  createContactInput: CreateContactInput!
+  createBillingAddressInput: CreateBillingAddressInput!
+}
+
+input CreateFacilityItemInput {
+  name: String!
+  stateImmunizationId: String
+
+  """Facility type"""
+  practiceType: PracticeType
+
+  """Service Code type"""
+  serviceCode: ServiceCode
+  code: String
+  cliaIdNumber: String
+  federalTaxId: String
+  revenueCode: String
+  color: String
+  tamxonomyCode: String
+  insurancePlanType: String
+  mammographyCertificationNumber: String
+  npi: String
+}
+
+input CreateContactInput {
+  name: String
+  firstName: String
+  lastName: String
+  middleName: String
+  email: String
+  contactType: ContactType
+  relationship: RelationshipType
+  pager: String
+  phone: String
+  suffix: String
+  mobile: String
+  fax: String
+  ssn: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  userId: String
+  doctorId: String
+  facilityId: String
+  patientId: String
+  employerName: String
+}
+
+input CreateBillingAddressInput {
+  email: String!
+  pager: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  bankAccount: String
+  checkPayableTo: String
+  userId: String
+  doctorId: String
+  facilityId: String
+}
+
+input UpdateFacilityInput {
+  updateFacilityItemInput: UpdateFacilityItemInput!
+  updateContactInput: UpdateContactInput!
+  updateBillingAddressInput: UpdateBillingAddressInput!
+}
+
+input UpdateFacilityItemInput {
+  name: String
+  stateImmunizationId: String
+
+  """Facility type"""
+  practiceType: PracticeType
+
+  """Service Code type"""
+  serviceCode: ServiceCode
+  code: String
+  cliaIdNumber: String
+  federalTaxId: String
+  revenueCode: String
+  color: String
+  tamxonomyCode: String
+  insurancePlanType: String
+  mammographyCertificationNumber: String
+  npi: String
+  id: String!
+}
+
+input UpdateContactInput {
+  name: String
+  firstName: String
+  lastName: String
+  middleName: String
+  email: String
+  contactType: ContactType
+  relationship: RelationshipType
+  pager: String
+  phone: String
+  suffix: String
+  mobile: String
+  fax: String
+  ssn: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  userId: String
+  doctorId: String
+  facilityId: String
+  patientId: String
+  employerName: String
+  id: String!
+}
+
+input UpdateBillingAddressInput {
+  email: String
+  pager: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  bankAccount: String
+  checkPayableTo: String
+  userId: String
+  doctorId: String
+  facilityId: String
+  id: String!
+}
+
+input RemoveFacility {
+  id: String!
+}
+
+input CreateStaffInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String!
+  password: String!
+  phone: String
+  primaryProvider: String
+  mobile: String
+  dob: String
+
+  """Staff gender"""
+  gender: Gender
+
+  """Send Investor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+}
+
+input UpdateStaffInput {
+  firstName: String
+  lastName: String
+  email: String
+  username: String
+  password: String
+  phone: String
+  primaryProvider: String
+  mobile: String
+  dob: String
+
+  """Staff gender"""
+  gender: Gender
+
+  """Send Investor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+  id: String!
+}
+
+input RemoveStaff {
+  id: String!
+}
+
+input DisableStaff {
+  id: String!
+}
+
+input RemoveContact {
+  id: String!
+}
+
+input CreateDoctorInput {
+  createDoctorItemInput: CreateDoctorItemInput!
+  createContactInput: CreateContactInput!
+  createBillingAddressInput: CreateBillingAddressInput!
+}
+
+input CreateDoctorItemInput {
+  firstName: String!
+  middleName: String!
+  lastName: String!
+  prefix: String
+  suffix: String
+  email: String!
+  password: String
+
+  """Send doctor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+  providerIntials: String
+  degreeCredentials: String
+
+  """Doctor speciality"""
+  speciality: Speciality
+  dob: String
+  ssn: String
+
+  """Doctor ssn type"""
+  ssnType: SsnType
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String
+  deaTermDate: String
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+}
+
+input UpdateDoctorInput {
+  updateDoctorItemInput: UpdateDoctorItemInput!
+  updateContactInput: UpdateContactInput!
+  updateBillingAddressInput: UpdateBillingAddressInput!
+}
+
+input UpdateDoctorItemInput {
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  password: String
+
+  """Send doctor Type from the ENUM - Sign-up"""
+  roleType: UserRole
+  adminId: String
+  facilityId: String
+  providerIntials: String
+  degreeCredentials: String
+
+  """Doctor speciality"""
+  speciality: Speciality
+  dob: String
+  ssn: String
+
+  """Doctor ssn type"""
+  ssnType: SsnType
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String
+  deaTermDate: String
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+  id: String!
+}
+
+input RemoveDoctor {
+  id: String!
+}
+
+input DisableDoctor {
+  id: String!
+}
+
+input CreatePatientInput {
+  createPatientItemInput: CreatePatientItemInput!
+  registerUserInput: RegisterUserInput!
+  createContactInput: CreateContactInput!
+  createEmergencyContactInput: CreateContactInput!
+  createNextOfKinContactInput: CreateContactInput!
+  createGuardianContactInput: CreateContactInput!
+  createGuarantorContactInput: CreateContactInput!
+  createEmployerInput: CreateEmployerInput!
+}
+
+input CreatePatientItemInput {
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  firstNameUsed: String
+  prefferedName: String
+  previousFirstName: String
+  usualProviderId: String
+  previouslastName: String
+  motherMaidenName: String
+  ssn: String
+  dob: String
+  gender: GENDERIDENTITY
+  registrationDepartment: REGDepartment
+  primaryDepartment: PrimaryDepartment
+  registrationDate: String
+  deseasedDate: String
+  privacyNotice: Boolean
+  relaseOfInfoBill: Boolean
+  callToConsent: Boolean
+  medicationHistoryAuthority: Boolean
+  patientNote: String
+  language: String
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  sexualOrientation: SEXUALORIENTATION
+  genderIdentity: String
+  sexAtBirth: String
+  pronouns: PRONOUNS
+  homeBound: HOMEBOUND
+  holdStatement: HOLDSTATEMENT
+  statementDelivereOnline: Boolean
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
+  adminId: String
+  facilityId: String!
+}
+
+input CreateEmployerInput {
+  name: String
+  email: String
+  phone: String
+  mobile: String
+  industry: String
+  usualOccupation: String
+  patientId: String
+}
+
+input UpdatePatientInput {
+  updatePatientItemInput: UpdatePatientItemInput!
+  updateContactInput: UpdateContactInput!
+  updateEmergencyContactInput: UpdateContactInput!
+  updateNextOfKinContactInput: UpdateContactInput!
+  updateGuardianContactInput: UpdateContactInput!
+  updateGuarantorContactInput: UpdateContactInput!
+  updateEmployerInput: UpdateEmployerItemInput!
+}
+
+input UpdatePatientItemInput {
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  firstNameUsed: String
+  prefferedName: String
+  previousFirstName: String
+  usualProviderId: String
+  previouslastName: String
+  motherMaidenName: String
+  ssn: String
+  dob: String
+  gender: GENDERIDENTITY
+  registrationDepartment: REGDepartment
+  primaryDepartment: PrimaryDepartment
+  registrationDate: String
+  deseasedDate: String
+  privacyNotice: Boolean
+  relaseOfInfoBill: Boolean
+  callToConsent: Boolean
+  medicationHistoryAuthority: Boolean
+  patientNote: String
+  language: String
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  sexualOrientation: SEXUALORIENTATION
+  genderIdentity: String
+  sexAtBirth: String
+  pronouns: PRONOUNS
+  homeBound: HOMEBOUND
+  holdStatement: HOLDSTATEMENT
+  statementDelivereOnline: Boolean
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
+  adminId: String
+  facilityId: String
+  id: String!
+}
+
+input UpdateEmployerItemInput {
+  name: String
+  email: String
+  phone: String
+  mobile: String
+  industry: String
+  usualOccupation: String
+  patientId: String
+  id: String!
+}
+
+input UpdatePatientProvider {
+  patientId: String!
+  providerId: String!
+}
+
+input RemovePatient {
+  id: String!
 }

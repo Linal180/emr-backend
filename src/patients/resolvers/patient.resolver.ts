@@ -1,0 +1,86 @@
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import RoleGuard from 'src/users/auth/role.guard';
+import { CreatePatientInput } from '../dto/create-patient.input';
+import PatientInput from '../dto/patient-input.dto';
+import { PatientPayload } from '../dto/patient-payload.dto';
+import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
+import { UpdatePatientInput } from '../dto/update-patient.input';
+import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
+import { Patient } from '../entities/patient.entity';
+import { PatientService } from '../services/patient.service';
+
+@Resolver(() => Patient)
+export class PatientResolver {
+  constructor(private readonly patientService: PatientService) { }
+
+  @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['super-admin', 'admin'])
+  async createPatient(@Args('createPatientInput') createPatientInput: CreatePatientInput) {
+    return {
+      patient: await this.patientService.createPatient(createPatientInput),
+      response: { status: 200, message: 'Patient created successfully' }
+    };
+  }
+
+  @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async updatePatient(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
+    return {
+      patient: await this.patientService.updatePatient(updatePatientInput),
+      response: { status: 200, message: 'Patient updated successfully' }
+    };
+  }
+
+  @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async updatePatientProvider(@Args('updatePatientProvider') updatePatientProvider: UpdatePatientProvider) {
+    return {
+      patient: await this.patientService.updatePatientProvider(updatePatientProvider),
+      response: { status: 200, message: 'Patient Provider updated successfully' }
+    };
+  }
+
+  @Query(returns => PatientsPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['super-admin'])
+  async findAllPatient(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
+    const patients = await this.patientService.findAllPatients(patientInput)
+    if (patients) {
+      return {
+        ...patients,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Patient not found',
+    });
+  }
+
+  @Query(returns => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
+    const patients = await this.patientService.GetPatient(getPatient.id)
+    return {
+      ...patients,
+      response: { status: 200, message: 'Patient fetched successfully' }
+    };
+  }
+
+  @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['super-admin'])
+  async removePatient(@Args('removePatient') removePatient: RemovePatient) {
+    await this.patientService.removePatient(removePatient);
+    return { response: { status: 200, message: 'Patient Deleted' } };
+  }
+}

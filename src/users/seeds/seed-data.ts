@@ -1,6 +1,11 @@
-import { UserRole } from '../../users/entities/role.entity'
+import { PracticeType, ServiceCode } from '../../facilities/entities/facility.entity';
+import { UserRole } from '../../users/entities/role.entity';
 import { UserStatus } from '../entities/user.entity';
 
+
+
+export const FacilityData = [
+    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332", tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 }];
 
 export const RolesData = [
     { role: UserRole.SUPER_ADMIN },
@@ -13,6 +18,5 @@ export const RolesData = [
 ];
 
 export const UsersData = [
-    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", roleType: UserRole.SUPER_ADMIN, zipCode: "54000", emailVerified: true },
-    { firstName: "Shah", lastName: "Zaib", password: "super123", email: "shah.zaib@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", roleType: UserRole.ADMIN, zipCode: "54000", emailVerified: true }
+    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: UserRole.SUPER_ADMIN, roleType: UserRole.SUPER_ADMIN, zipCode: "54000", emailVerified: true },
 ];
