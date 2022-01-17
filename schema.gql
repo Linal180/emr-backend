@@ -478,6 +478,17 @@ type PatientsPayload {
   pagination: PaginationPayload
 }
 
+type ContactPayload {
+  contact: Contact
+  response: ResponsePayload
+}
+
+type ContactsPayload {
+  response: ResponsePayload
+  contacts: [Contact]
+  pagination: PaginationPayload
+}
+
 type AllDoctorPayload {
   response: ResponsePayload
   doctors: [Doctor]
@@ -522,6 +533,8 @@ type Query {
   getFacility(getFacility: GetFacility!): FacilityPayload!
   findAllStaff(staffInput: StaffInput!): AllStaffPayload!
   getStaff(getStaff: GetStaff!): StaffPayload!
+  findAllContacts(contactInput: ContactInput!): ContactsPayload!
+  getContact(getContact: GetContact!): ContactPayload!
   findAllDoctor(doctorInput: DoctorInput!): AllDoctorPayload!
   getDoctor(getDoctor: GetDoctor!): DoctorPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
@@ -558,6 +571,15 @@ input StaffInput {
 }
 
 input GetStaff {
+  id: String!
+}
+
+input ContactInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetContact {
   id: String!
 }
 
@@ -599,6 +621,9 @@ type Mutation {
   updateStaff(updateStaffInput: UpdateStaffInput!): StaffPayload!
   removeStaff(removeStaff: RemoveStaff!): StaffPayload!
   disableStaff(disableStaff: DisableStaff!): StaffPayload!
+  createContact(createContactInput: CreateContactInput!): ContactPayload!
+  updateContact(updateContactInput: UpdateContactInput!): ContactPayload!
+  removeContact(removeContact: RemoveContact!): ContactPayload!
   createDoctor(createDoctorInput: CreateDoctorInput!): DoctorPayload!
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
@@ -871,6 +896,10 @@ input RemoveStaff {
 }
 
 input DisableStaff {
+  id: String!
+}
+
+input RemoveContact {
   id: String!
 }
 
