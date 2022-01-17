@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FacilityService } from 'src/facilities/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
 import { UsersService } from 'src/users/users.service';
@@ -16,6 +17,8 @@ export class ContactService {
     private contactRepository: Repository<Contact>,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => FacilityService))
+    private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
   ) { }
 
@@ -32,6 +35,11 @@ export class ContactService {
       if (createContactInput.userId) {
         const user = await this.usersService.findUserById(createContactInput.userId)
         contactInstance.userId = user.id
+      }
+      //fetch user
+      if (createContactInput.facilityId) {
+        const facility = await this.facilityService.findOne(createContactInput.facilityId)
+        contactInstance.facility = facility
       }
       return await this.contactRepository.save(contactInstance);
     } catch (error) {

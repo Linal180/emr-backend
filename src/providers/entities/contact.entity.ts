@@ -127,6 +127,10 @@ export class Contact {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  color: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   ssn: string;
 
   @Column({ nullable: true })
@@ -148,6 +152,10 @@ export class Contact {
   })
   @Field(type => ContactType, { nullable: true })
   contactType: ContactType
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
 
   @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })

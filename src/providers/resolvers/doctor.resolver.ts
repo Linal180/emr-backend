@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';

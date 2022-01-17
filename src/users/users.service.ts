@@ -58,7 +58,7 @@ export class UsersService {
         //custom token creation
         const token = createToken();
         userInstance.token = token;
-        //getting facility 
+        //getting facility  
         const facility = await this.facilityService.findOne(registerUserInput.facilityId)
         userInstance.facility = facility
         //setting role type & custom userId
