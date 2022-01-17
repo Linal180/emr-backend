@@ -2,11 +2,13 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
+import { PatientModule } from 'src/patients/patient.module';
 import { UsersModule } from 'src/users/users.module';
 import { BillingAddress } from './entities/billing-address.entity';
 import { Contact } from './entities/contact.entity';
 import { Doctor } from './entities/doctor.entity';
 import { Staff } from './entities/staff.entity';
+import { ContactResolver } from './resolvers/contact.resolver';
 import { DoctorResolver } from './resolvers/doctor.resolver';
 import { StaffResolver } from './resolvers/staff.resolver';
 import { BillingAddressService } from './services/billing-address.service';
@@ -18,10 +20,11 @@ import { StaffService } from './services/staff.service';
   imports: [
     TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress]),
     PaginationModule,
+    forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule)
   ],
-  providers: [StaffResolver, StaffService, ContactService, BillingAddressService, DoctorResolver, DoctorService],
+  providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService, DoctorResolver, DoctorService],
   exports: [ContactService, StaffService, TypeOrmModule, BillingAddressService, DoctorService]
 })
 export class ProviderModule { }

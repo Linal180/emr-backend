@@ -1,13 +1,13 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from 'src/facilities/facility.service';
+import { PaginationService } from 'src/pagination/pagination.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
 import { UsersService } from 'src/users/users.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
+import ContactInput from '../dto/contact-input.dto';
+import { ContactsPayload } from '../dto/contacts-payload.dto';
 import { CreateContactInput } from '../dto/create-contact.input';
 import { Contact } from '../entities/contact.entity';
-import { DoctorService } from './doctor.service';
 
 @Injectable()
 export class ContactService {
@@ -16,11 +16,7 @@ export class ContactService {
     private contactRepository: Repository<Contact>,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
-    @Inject(forwardRef(() => DoctorService))
-    private readonly doctorService: DoctorService,
-    @Inject(forwardRef(() => FacilityService))
-    private readonly facilityService: FacilityService,
-    private readonly utilsService: UtilsService,
+    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -30,22 +26,14 @@ export class ContactService {
    */
   async createContact(createContactInput: CreateContactInput): Promise<Contact> {
     try {
-      //fetch facility
-      const facility = await this.facilityService.findOne(createContactInput.facilityId)
       // create contact for user
-      const contact = this.contactRepository.create(createContactInput)
-      contact.faciltiy = facility
-      //fetch doctor
-      if (createContactInput.doctorId) {
-        const doctor = await this.doctorService.findOne(createContactInput.doctorId)
-        contact.doctor = doctor
-      }
+      const contactInstance = this.contactRepository.create(createContactInput)
       //fetch user
       if (createContactInput.userId) {
         const user = await this.usersService.findUserById(createContactInput.userId)
-        contact.userId = user.id
+        contactInstance.userId = user.id
       }
-      return await this.contactRepository.save(contact);
+      return await this.contactRepository.save(contactInstance);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -59,6 +47,25 @@ export class ContactService {
   async updateContact(updateContactInput: UpdateContactInput): Promise<Contact> {
     try {
       return await this.contactRepository.save(updateContactInput)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds all contacts
+   * @param contactInput 
+   * @returns all contacts 
+   */
+  async findAllContacts(contactInput: ContactInput): Promise<ContactsPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Contact>(this.contactRepository, contactInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        contacts: paginationResponse.data,
+      }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

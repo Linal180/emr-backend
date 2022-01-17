@@ -33,13 +33,13 @@ export class FacilityService {
     try {
       //creating facility
       const facilityInstance = this.facilityRepository.create(createFacilityInput.createFacilityItemInput)
-      const facility = await this.facilityRepository.save(facilityInstance);
       //adding contact
-      const createContactInput = { ...createFacilityInput.createContactInput, facilityId: facility.id }
-      await this.contactService.createContact(createContactInput)
+      const contact = await this.contactService.createContact(createFacilityInput.createContactInput)
+      facilityInstance.contacts = [contact];
       //adding billing address details
-      const createBillingAddressInput = { ...createFacilityInput.createBillingAddressInput, facilityId: facility.id }
-      await this.billingAddressService.createBillingAddress(createBillingAddressInput)
+      const billingAddress = await this.billingAddressService.createBillingAddress(createFacilityInput.createBillingAddressInput)
+      facilityInstance.billingAddress = [billingAddress]
+      const facility = await this.facilityRepository.save(facilityInstance);
       return facility
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -99,12 +99,12 @@ export class FacilityService {
    */
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
-      const faciltiy = await this.facilityRepository.save(updateFacilityInput.updateFacilityItemInput)
+      const facility = await this.facilityRepository.save(updateFacilityInput.updateFacilityItemInput)
       //updating contact details
       await this.contactService.updateContact(updateFacilityInput.updateContactInput)
       //updating billing details
       await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
-      return faciltiy
+      return facility
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
