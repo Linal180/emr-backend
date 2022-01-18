@@ -22,6 +22,9 @@ export class CreateFacilityItemInput {
   cliaIdNumber?: string;
 
   @Field({ nullable: true })
+  timeZone?: string;
+
+  @Field({ nullable: true })
   federalTaxId?: string;
 
   @Field({ nullable: true })

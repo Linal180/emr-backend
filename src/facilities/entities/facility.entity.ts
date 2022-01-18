@@ -99,6 +99,10 @@ export class Facility {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  timeZone: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   mammographyCertificationNumber: string;
 
   @Column({ nullable: true })
@@ -114,7 +118,7 @@ export class Facility {
   serviceCode: ServiceCode
 
   @Field(() => [Staff], { nullable: true })
-  @OneToMany(() => Staff, staff => staff.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @OneToMany(() => Staff, staff => staff.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   staff: Staff[];
 
   @Field(() => [Doctor], { nullable: true })
