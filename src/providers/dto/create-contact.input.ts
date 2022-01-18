@@ -42,6 +42,9 @@ export class CreateContactInput {
   fax?: string;
 
   @Field({ nullable: true })
+  color?: string;
+
+  @Field({ nullable: true })
   ssn?: string;
 
   @Field({ nullable: true })

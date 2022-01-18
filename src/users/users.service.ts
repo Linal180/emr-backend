@@ -2,7 +2,7 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { FacilityService } from 'src/facilities/facility.service';
+import { FacilityService } from '../facilities/services/facility.service';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { getConnection, Not, Repository } from 'typeorm';
@@ -58,7 +58,7 @@ export class UsersService {
         //custom token creation
         const token = createToken();
         userInstance.token = token;
-        //getting facility 
+        //getting facility  
         const facility = await this.facilityService.findOne(registerUserInput.facilityId)
         userInstance.facility = facility
         //setting role type & custom userId

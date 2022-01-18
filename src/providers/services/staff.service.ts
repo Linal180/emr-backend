@@ -1,6 +1,6 @@
 import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from 'src/facilities/facility.service';
+import { FacilityService } from '../../facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
