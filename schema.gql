@@ -333,6 +333,18 @@ enum Gender {
   OTHER
 }
 
+type Service {
+  id: String!
+  name: String!
+  duration: String!
+  price: String!
+  isActive: Boolean
+  facilityId: String
+  facility: Facility
+  createdAt: String
+  updatedAt: String
+}
+
 type Facility {
   id: String!
   name: String!
@@ -353,6 +365,7 @@ type Facility {
   patients: [Patient!]
   user: [User!]
   contacts: [Contact!]
+  services: [Service!]
   billingAddress: [BillingAddress!]
   createdAt: String
   updatedAt: String
@@ -524,6 +537,17 @@ type FacilityPayload {
   facility: Facility
 }
 
+type ServicePayload {
+  response: ResponsePayload
+  service: Service
+}
+
+type ServicesPayload {
+  response: ResponsePayload
+  services: [Service]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -533,6 +557,8 @@ type Query {
   searchUser(search: String!): UsersPayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
+  findAllServices(serviceInput: ServiceInput!): ServicesPayload!
+  getService(getService: GetService!): ServicePayload!
   findAllStaff(staffInput: StaffInput!): AllStaffPayload!
   getStaff(getStaff: GetStaff!): StaffPayload!
   findAllContacts(contactInput: ContactInput!): ContactsPayload!
@@ -564,6 +590,15 @@ input FacilityInput {
 }
 
 input GetFacility {
+  id: String!
+}
+
+input ServiceInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetService {
   id: String!
 }
 
@@ -619,6 +654,9 @@ type Mutation {
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
   removeFacility(removeFacility: RemoveFacility!): FacilityPayload!
+  createService(createServiceInput: CreateServiceInput!): ServicePayload!
+  updateService(updateServiceInput: UpdateServiceInput!): ServicePayload!
+  removeService(removeService: RemoveService!): ServicePayload!
   createStaff(createStaffInput: CreateStaffInput!): StaffPayload!
   updateStaff(updateStaffInput: UpdateStaffInput!): StaffPayload!
   removeStaff(removeStaff: RemoveStaff!): StaffPayload!
@@ -851,6 +889,27 @@ input UpdateBillingAddressInput {
 }
 
 input RemoveFacility {
+  id: String!
+}
+
+input CreateServiceInput {
+  name: String!
+  duration: String!
+  price: String!
+  facilityId: String!
+  isActive: Boolean
+}
+
+input UpdateServiceInput {
+  name: String
+  duration: String
+  price: String
+  facilityId: String
+  isActive: Boolean
+  id: String!
+}
+
+input RemoveService {
   id: String!
 }
 

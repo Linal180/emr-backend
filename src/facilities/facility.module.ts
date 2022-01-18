@@ -4,18 +4,21 @@ import { PaginationModule } from 'src/pagination/pagination.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { UsersModule } from 'src/users/users.module';
 import { Facility } from './entities/facility.entity';
-import { FacilityResolver } from './facility.resolver';
-import { FacilityService } from './facility.service';
+import { Service } from './entities/services.entity';
+import { FacilityResolver } from './resolvers/facility.resolver';
+import { ServiceResolver } from './resolvers/services.resolver';
+import { FacilityService } from './services/facility.service';
+import { ServicesService } from './services/services.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Facility]),
+    TypeOrmModule.forFeature([Facility, Service]),
     forwardRef(() => UsersModule),
     PaginationModule,
     forwardRef(() => ProviderModule)
   ],
-  providers: [FacilityResolver, FacilityService],
-  exports: [FacilityService, TypeOrmModule],
+  providers: [FacilityResolver, FacilityService, ServiceResolver, ServicesService],
+  exports: [FacilityService, ServicesService, TypeOrmModule],
 })
 export class FacilityModule { }
 

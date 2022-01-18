@@ -6,6 +6,7 @@ import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Service } from './services.entity';
 
 export enum PracticeType {
   HOSPITAL = "hospital",
@@ -131,6 +132,10 @@ export class Facility {
   @OneToMany(() => Contact, contact => contact.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
+
+  @OneToMany(() => Service, service => service.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [Service], { nullable: true })
+  services: Service[];
 
   @OneToMany(() => BillingAddress, billingAddress => billingAddress.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [BillingAddress], { nullable: true })
