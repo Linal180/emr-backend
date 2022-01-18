@@ -25,7 +25,7 @@ import { StaffService } from './services/staff.service';
     forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule)
   ],
-  providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService, DoctorResolver, DoctorService],
+  providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService, DoctorResolver, DoctorService,],
   exports: [ContactService, StaffService, TypeOrmModule, BillingAddressService, DoctorService]
 })
 export class ProviderModule { }
