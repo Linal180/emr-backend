@@ -5,6 +5,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { BillingAddress } from './billing-address.entity';
 import { Contact } from './contact.entity';
+import { Schedule } from './schedule.entity';
 
 
 export enum Speciality {
@@ -214,6 +215,10 @@ export class Doctor {
   @ManyToMany(type => Patient, patient => patient.usualProvider)
   @JoinTable({ name: 'DoctorPatients' })
   patients: Patient[];
+
+  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [Schedule], { nullable: true })
+  schedule: Schedule[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

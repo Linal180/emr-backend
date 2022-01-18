@@ -75,6 +75,21 @@ enum ContactType {
   GUARANDOR
 }
 
+type Schedule {
+  id: String!
+  startAt: DateTime!
+  endAt: DateTime!
+  recurringEndDate: DateTime!
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Doctor {
   id: String!
   firstName: String
@@ -118,6 +133,7 @@ type Doctor {
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
   patients: [Patient]
+  schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
 }
@@ -357,6 +373,7 @@ type Facility {
   color: String
   tamxonomyCode: String
   insurancePlanType: String
+  timeZone: String
   mammographyCertificationNumber: String
   npi: String
   serviceCode: ServiceCode!
@@ -756,6 +773,7 @@ input CreateFacilityItemInput {
   serviceCode: ServiceCode
   code: String
   cliaIdNumber: String
+  timeZone: String
   federalTaxId: String
   revenueCode: String
   color: String
@@ -829,6 +847,7 @@ input UpdateFacilityItemInput {
   serviceCode: ServiceCode
   code: String
   cliaIdNumber: String
+  timeZone: String
   federalTaxId: String
   revenueCode: String
   color: String
