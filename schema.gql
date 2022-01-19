@@ -1191,7 +1191,7 @@ input CreatePatientItemInput {
   maritialStatus: MARITIALSTATUS
   sexualOrientation: SEXUALORIENTATION
   genderIdentity: GENDERIDENTITY
-  sexAtBirth: String
+  sexAtBirth: GENDERIDENTITY
   pronouns: PRONOUNS
   homeBound: HOMEBOUND
   holdStatement: HOLDSTATEMENT
@@ -1252,7 +1252,7 @@ input UpdatePatientItemInput {
   maritialStatus: MARITIALSTATUS
   sexualOrientation: SEXUALORIENTATION
   genderIdentity: GENDERIDENTITY
-  sexAtBirth: String
+  sexAtBirth: GENDERIDENTITY
   pronouns: PRONOUNS
   homeBound: HOMEBOUND
   holdStatement: HOLDSTATEMENT
