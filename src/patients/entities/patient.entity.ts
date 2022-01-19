@@ -217,10 +217,10 @@ export class Patient {
   deceasedDate: Date;
 
   @Column({ nullable: true, default: false })
-  @Field()
+  @Field()  
   privacyNotice: boolean;
 
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true, default: false }) 
   @Field()
   releaseOfInfoBill: boolean;
 
