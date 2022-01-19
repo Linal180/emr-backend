@@ -3,13 +3,13 @@ import { InputType, Field } from '@nestjs/graphql';
 @InputType()
 export class CreateScheduleInput {
 
-  @Field()
+  @Field({ nullable: false })
   startAt: Date;
 
-  @Field()
+  @Field({ nullable: false })
   endAt: Date;
 
-  @Field()
+  @Field({ nullable: true })
   recurringEndDate: Date;
 
   @Field()

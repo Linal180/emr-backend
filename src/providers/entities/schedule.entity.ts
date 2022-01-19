@@ -17,8 +17,8 @@ export class Schedule {
   @Field()
   endAt: Date;
 
-  @Column({ type: 'timestamptz' })
-  @Field()
+  @Column({ type: 'timestamptz', nullable: true })
+  @Field({ nullable: true })
   recurringEndDate: Date;
 
   @ManyToOne(() => Doctor, doctor => doctor.contacts, { onDelete: 'CASCADE' })

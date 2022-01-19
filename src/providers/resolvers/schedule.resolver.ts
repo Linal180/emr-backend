@@ -6,7 +6,7 @@ import { CreateScheduleInput } from '../dto/create-schedule.input';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulePayload } from '../dto/schedule-payload.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { GetSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { GetDoctorSchedule, GetSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
 import { ScheduleService } from '../services/schedule.service';
 
 @Resolver('Schedule')
@@ -59,6 +59,17 @@ export class ScheduleResolver {
     return {
       schedule: await this.scheduleService.findOne(getSchedule.id),
       response: { status: 200, message: 'Schedule fetched successfully' }
+    };
+  }
+
+  @Query(returns => SchedulesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  async getDoctorSchedules(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
+    const schedules = await this.scheduleService.getDoctorSchedule(getDoctorSchedule)
+    return {
+      ...schedules,
+      response: { status: 200, message: 'Doctor Schedule fetched successfully' }
     };
   }
 
