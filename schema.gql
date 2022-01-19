@@ -2,17 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Contact {
+type BillingAddress {
   id: String!
   email: String
-  name: String
-  firstName: String
-  lastName: String
-  middleName: String
-  suffix: String
   phone: String
   mobile: String
-  pager: String
   fax: String
   address: String
   address2: String
@@ -20,60 +14,14 @@ type Contact {
   city: String
   state: String
   country: String
-  color: String
-  primaryContact: Boolean
-  ssn: String
-  employerName: String
-  relationship: RelationshipType
-  contactType: ContactType
-  facilityId: String
+  federalTaxId: String
+  bankAccount: String
+  checkPayableTo: String
   facility: Facility
   doctor: Doctor
-  patient: Patient
   userId: String
   createdAt: String!
   updatedAt: String!
-}
-
-"""The user's relationship assigned"""
-enum RelationshipType {
-  SELF
-  SPOUSE
-  CHILD
-  CHILD_MOTHER_INSURANCE
-  CHILD_FATHER_INSURANCE
-  OTHER
-  GRANDPARENT
-  GRANDCHILD
-  NEPHEW_NIECE
-  FOSTHER_CHILD
-  WARD
-  STEPSON_STEPDAUGHTER
-  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE
-  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE
-  EMPLOYEE
-  UNKNOWN
-  HANDICAPPED_DEPENDENT
-  SPONSORED_DEPENDENT
-  DEPENDENT_OF_MINOR_DEPENDENT
-  SIGNIFICANT_OTHER
-  MOTHER
-  FATHER
-  EMANCIPATED_MINOR
-  ORGAN_DONOR
-  CADAVER_DONOR
-  INJURED_PLAINTIIFF
-  LIFE_PARTNER
-}
-
-"""The user's contact type assigned"""
-enum ContactType {
-  SELF
-  EMERGENCY
-  NEXT_OF_KIN
-  CHILD_MOTHER_INSURANCE
-  GUARDIAN
-  GUARANDOR
 }
 
 type Schedule {
@@ -158,11 +106,17 @@ enum SsnType {
   MEDICAID
 }
 
-type BillingAddress {
+type Contact {
   id: String!
   email: String
+  name: String
+  firstName: String
+  lastName: String
+  middleName: String
+  suffix: String
   phone: String
   mobile: String
+  pager: String
   fax: String
   address: String
   address2: String
@@ -170,14 +124,60 @@ type BillingAddress {
   city: String
   state: String
   country: String
-  federalTaxId: String
-  bankAccount: String
-  checkPayableTo: String
+  color: String
+  primaryContact: Boolean
+  ssn: String
+  employerName: String
+  relationship: RelationshipType
+  contactType: ContactType
+  facilityId: String
   facility: Facility
   doctor: Doctor
+  patient: Patient
   userId: String
   createdAt: String!
   updatedAt: String!
+}
+
+"""The user's relationship assigned"""
+enum RelationshipType {
+  SELF
+  SPOUSE
+  CHILD
+  CHILD_MOTHER_INSURANCE
+  CHILD_FATHER_INSURANCE
+  OTHER
+  GRANDPARENT
+  GRANDCHILD
+  NEPHEW_NIECE
+  FOSTHER_CHILD
+  WARD
+  STEPSON_STEPDAUGHTER
+  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE
+  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE
+  EMPLOYEE
+  UNKNOWN
+  HANDICAPPED_DEPENDENT
+  SPONSORED_DEPENDENT
+  DEPENDENT_OF_MINOR_DEPENDENT
+  SIGNIFICANT_OTHER
+  MOTHER
+  FATHER
+  EMANCIPATED_MINOR
+  ORGAN_DONOR
+  CADAVER_DONOR
+  INJURED_PLAINTIIFF
+  LIFE_PARTNER
+}
+
+"""The user's contact type assigned"""
+enum ContactType {
+  SELF
+  EMERGENCY
+  NEXT_OF_KIN
+  CHILD_MOTHER_INSURANCE
+  GUARDIAN
+  GUARANDOR
 }
 
 type Employer {
@@ -645,6 +645,7 @@ input GetStaff {
 
 input ContactInput {
   facilityId: String
+  primaryContact: Boolean = false
   paginationOptions: PaginationInput!
 }
 

@@ -148,7 +148,9 @@ export class PatientService {
    */
   async findAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
+      console.log("start -findAllPatients...........")
       const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, patientInput)
+      console.log("end -findAllPatients...........")
       return {
         pagination: {
           ...paginationResponse
