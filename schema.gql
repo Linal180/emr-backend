@@ -1190,7 +1190,7 @@ input CreatePatientItemInput {
   ethnicity: ETHNICITY
   maritialStatus: MARITIALSTATUS
   sexualOrientation: SEXUALORIENTATION
-  genderIdentity: String
+  genderIdentity: GENDERIDENTITY
   sexAtBirth: String
   pronouns: PRONOUNS
   homeBound: HOMEBOUND
@@ -1251,7 +1251,7 @@ input UpdatePatientItemInput {
   ethnicity: ETHNICITY
   maritialStatus: MARITIALSTATUS
   sexualOrientation: SEXUALORIENTATION
-  genderIdentity: String
+  genderIdentity: GENDERIDENTITY
   sexAtBirth: String
   pronouns: PRONOUNS
   homeBound: HOMEBOUND

@@ -86,7 +86,7 @@ export class CreatePatientItemInput {
   @Field(type => SEXUALORIENTATION, { nullable: true })
   sexualOrientation: SEXUALORIENTATION
 
-  @Field({ nullable: true })
+  @Field(type => GENDERIDENTITY, { nullable: true })
   genderIdentity: GENDERIDENTITY
 
   @Field({ nullable: true })
