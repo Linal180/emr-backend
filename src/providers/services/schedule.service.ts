@@ -6,7 +6,7 @@ import { FacilityService } from '../../facilities/services/facility.service';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { GetDoctorSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
 import { Schedule } from '../entities/schedule.entity';
 import { DoctorService } from './doctor.service';
 
@@ -50,6 +50,19 @@ export class ScheduleService {
   async updateSchedule(updateScheduleInput: UpdateScheduleInput): Promise<Schedule> {
     try {
       return await this.scheduleRepository.save(updateScheduleInput)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
+    try {
+      const schedules = await this.scheduleRepository.find({
+        where: {
+          doctor: id
+        }
+      })
+      return { schedules };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

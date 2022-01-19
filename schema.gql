@@ -79,7 +79,7 @@ type Schedule {
   id: String!
   startAt: DateTime!
   endAt: DateTime!
-  recurringEndDate: DateTime!
+  recurringEndDate: DateTime
   doctor: Doctor
   createdAt: String!
   updatedAt: String!
@@ -532,6 +532,17 @@ type DoctorPayload {
   response: ResponsePayload
 }
 
+type SchedulePayload {
+  schedule: Schedule
+  response: ResponsePayload
+}
+
+type SchedulesPayload {
+  response: ResponsePayload
+  schedules: [Schedule]
+  pagination: PaginationPayload
+}
+
 type AllStaffPayload {
   response: ResponsePayload
   allstaff: [Staff]
@@ -582,6 +593,9 @@ type Query {
   getContact(getContact: GetContact!): ContactPayload!
   findAllDoctor(doctorInput: DoctorInput!): AllDoctorPayload!
   getDoctor(getDoctor: GetDoctor!): DoctorPayload!
+  findAllSchedules(scheduleInput: ScheduleInput!): SchedulesPayload!
+  getSchedule(getSchedule: GetSchedule!): SchedulePayload!
+  getDoctorSchedules(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
 }
@@ -646,6 +660,19 @@ input GetDoctor {
   id: String!
 }
 
+input ScheduleInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetSchedule {
+  id: String!
+}
+
+input GetDoctorSchedule {
+  id: String!
+}
+
 input PatientInput {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -685,6 +712,9 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
+  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
+  removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
   updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
@@ -1099,6 +1129,25 @@ input RemoveDoctor {
 }
 
 input DisableDoctor {
+  id: String!
+}
+
+input CreateScheduleInput {
+  startAt: DateTime!
+  endAt: DateTime!
+  recurringEndDate: DateTime
+  doctorId: String!
+}
+
+input UpdateScheduleInput {
+  startAt: DateTime
+  endAt: DateTime
+  recurringEndDate: DateTime
+  doctorId: String
+  id: String!
+}
+
+input RemoveSchedule {
   id: String!
 }
 
