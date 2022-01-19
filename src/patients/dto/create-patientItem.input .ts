@@ -51,10 +51,10 @@ export class CreatePatientItemInput {
   primaryDepartment: PrimaryDepartment
 
   @Field({ nullable: true })
-  registrationDate: Date;
+  registrationDate: string;
 
   @Field({ nullable: true })
-  deceasedDate: Date;
+  deceasedDate: string;
 
   @Field({ nullable: true })
   privacyNotice: boolean;

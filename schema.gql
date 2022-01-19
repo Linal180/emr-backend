@@ -1181,8 +1181,8 @@ input CreatePatientItemInput {
   gender: GENDERIDENTITY
   registrationDepartment: REGDepartment
   primaryDepartment: PrimaryDepartment
-  registrationDate: DateTime
-  deceasedDate: DateTime
+  registrationDate: String
+  deceasedDate: String
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
@@ -1242,8 +1242,8 @@ input UpdatePatientItemInput {
   gender: GENDERIDENTITY
   registrationDepartment: REGDepartment
   primaryDepartment: PrimaryDepartment
-  registrationDate: DateTime
-  deceasedDate: DateTime
+  registrationDate: String
+  deceasedDate: String
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
