@@ -208,10 +208,10 @@ type Patient {
   dob: String
   registrationDepartment: REGDepartment!
   primaryDepartment: PrimaryDepartment!
-  registrationDate: String!
-  deseasedDate: String!
+  registrationDate: DateTime!
+  deceasedDate: DateTime!
   privacyNotice: Boolean!
-  relaseOfInfoBill: Boolean!
+  releaseOfInfoBill: Boolean!
   callToConsent: Boolean!
   medicationHistoryAuthority: Boolean!
   patientNote: String
@@ -1178,10 +1178,10 @@ input CreatePatientItemInput {
   gender: GENDERIDENTITY
   registrationDepartment: REGDepartment
   primaryDepartment: PrimaryDepartment
-  registrationDate: String
-  deseasedDate: String
+  registrationDate: DateTime
+  deceasedDate: DateTime
   privacyNotice: Boolean
-  relaseOfInfoBill: Boolean
+  releaseOfInfoBill: Boolean
   callToConsent: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
@@ -1239,10 +1239,10 @@ input UpdatePatientItemInput {
   gender: GENDERIDENTITY
   registrationDepartment: REGDepartment
   primaryDepartment: PrimaryDepartment
-  registrationDate: String
-  deseasedDate: String
+  registrationDate: DateTime
+  deceasedDate: DateTime
   privacyNotice: Boolean
-  relaseOfInfoBill: Boolean
+  releaseOfInfoBill: Boolean
   callToConsent: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
