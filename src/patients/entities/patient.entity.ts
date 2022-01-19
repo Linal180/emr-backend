@@ -210,11 +210,11 @@ export class Patient {
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
-  registrationDate: string;
+  registrationDate: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
-  deseasedDate: string;
+  deceasedDate: Date;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -222,7 +222,7 @@ export class Patient {
 
   @Column({ nullable: true, default: false })
   @Field()
-  relaseOfInfoBill: boolean;
+  releaseOfInfoBill: boolean;
 
   @Column({ nullable: true, default: false })
   @Field()
