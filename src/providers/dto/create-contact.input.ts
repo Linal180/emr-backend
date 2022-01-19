@@ -47,6 +47,9 @@ export class CreateContactInput {
   @Field({ nullable: true })
   ssn?: string;
 
+  @Field({ nullable: true, defaultValue: true })
+  primaryContact: boolean;
+
   @Field({ nullable: true })
   address?: string;
 
@@ -76,7 +79,6 @@ export class CreateContactInput {
 
   @Field({ nullable: true })
   patientId: string;
-
 
   @Field({ nullable: true })
   employerName?: string;

@@ -129,6 +129,10 @@ export class Contact {
   @Field({ nullable: true })
   color: string;
 
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
+  primaryContact: boolean;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   ssn: string;

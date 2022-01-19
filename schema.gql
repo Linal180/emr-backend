@@ -21,6 +21,7 @@ type Contact {
   state: String
   country: String
   color: String
+  primaryContact: Boolean
   ssn: String
   employerName: String
   relationship: RelationshipType
@@ -828,6 +829,7 @@ input CreateContactInput {
   fax: String
   color: String
   ssn: String
+  primaryContact: Boolean = true
   address: String
   address2: String
   zipCode: String
@@ -903,6 +905,7 @@ input UpdateContactInput {
   fax: String
   color: String
   ssn: String
+  primaryContact: Boolean = true
   address: String
   address2: String
   zipCode: String
