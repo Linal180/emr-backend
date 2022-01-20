@@ -128,6 +128,7 @@ type Contact {
   primaryContact: Boolean
   ssn: String
   employerName: String
+  serviceCode: ServiceCodes!
   relationship: RelationshipType
   contactType: ContactType
   facilityId: String
@@ -137,6 +138,29 @@ type Contact {
   userId: String
   createdAt: String!
   updatedAt: String!
+}
+
+"""The facility service code type assigned"""
+enum ServiceCodes {
+  AMBULANCE_41
+  AMBULANCE_42
+  AMBULANCE_24
+  ASSISTED_LIVING_13
+  BIRTHING_CENTER_25
+  COMMUNITY_MENTAL_HEALTH_CENTER_53
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
+  CUSTODIAL_CARE_FACILITY_33
+  EMERGENCY_ROOM_23
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
+  GROUP_HOME_14
+  HOMELESS_SHELTER_04
+  HOSPICE_34
+  INDEPENDENT_CLINIC_49
+  INDEPENDENT_LABORATORY_81
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
 }
 
 """The user's relationship assigned"""
@@ -823,6 +847,7 @@ input CreateContactInput {
   email: String
   contactType: ContactType
   relationship: RelationshipType
+  serviceCode: ServiceCodes
   pager: String
   phone: String
   suffix: String
@@ -899,6 +924,7 @@ input UpdateContactInput {
   email: String
   contactType: ContactType
   relationship: RelationshipType
+  serviceCode: ServiceCodes
   pager: String
   phone: String
   suffix: String

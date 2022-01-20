@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { ContactType, RelationshipType } from '../entities/contact.entity';
+import { ContactType, RelationshipType, ServiceCodes } from '../entities/contact.entity';
 
 @InputType()
 export class CreateContactInput {
@@ -25,6 +25,9 @@ export class CreateContactInput {
 
   @Field(type => RelationshipType, { nullable: true })
   relationship?: RelationshipType
+
+  @Field(type => ServiceCodes, { nullable: true })
+  serviceCode?: ServiceCodes
 
   @Field({ nullable: true })
   pager?: string;
