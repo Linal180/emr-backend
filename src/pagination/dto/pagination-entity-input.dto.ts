@@ -12,6 +12,7 @@ export class PaginatedEntityInput {
   facilityId?: string
   phychType?: string
   ageGroupId?: string
+  primaryContact?: boolean
   categoryId?: string
   category?: { id: string }
   associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?: string, filterType: string }

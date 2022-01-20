@@ -132,6 +132,7 @@ export class PaginationService {
   private orchestrateOptions<Entity = any>(paginationInput: PaginatedEntityInput): FindManyOptions {
     const {
       status,
+      primaryContact,
       userId,
       to,
       requestType,
@@ -167,6 +168,9 @@ export class PaginationService {
         }),
         ...(status != null && {
           status
+        }),
+        ...(primaryContact != null && {
+          primaryContact
         }),
         ...(isPrivate && {
           isPrivate: Not(isPrivate)
