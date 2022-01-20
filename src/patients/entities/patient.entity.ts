@@ -340,7 +340,7 @@ export class Patient {
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
-  @OneToMany(() => Employer, employer => employer.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => Employer, employer => employer.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true  })
   @Field(type => [Employer], { nullable: true })
   employer: Employer[];
 
