@@ -2,26 +2,44 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type BillingAddress {
+type Role {
   id: String!
-  email: String
-  phone: String
-  mobile: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  federalTaxId: String
-  bankAccount: String
-  checkPayableTo: String
-  facility: Facility
-  doctor: Doctor
-  userId: String
+  role: UserRole!
   createdAt: String!
   updatedAt: String!
+}
+
+"""The user role assigned"""
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  DOCTOR
+  PATIENT
+  NURSE
+  BILLING
+  STAFF
+}
+
+type User {
+  id: String!
+  status: UserStatus!
+  emailVerified: Boolean!
+  email: String!
+  inviteSentAt: String!
+  inviteAcceptedAt: String!
+  userId: String!
+  token: String
+  userType: String!
+  facility: [Facility!]
+  roles: [Role]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user status"""
+enum UserStatus {
+  DEACTIVATED
+  ACTIVE
 }
 
 type Schedule {
@@ -444,44 +462,43 @@ enum ServiceCode {
   INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
 }
 
-type User {
+type BillingAddress {
   id: String!
-  status: UserStatus!
-  emailVerified: Boolean!
-  email: String!
-  inviteSentAt: String!
-  inviteAcceptedAt: String!
-  userId: String!
-  token: String
-  userType: String!
-  facility: [Facility!]
-  roles: [Role]
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  federalTaxId: String
+  bankAccount: String
+  checkPayableTo: String
+  facility: Facility
+  doctor: Doctor
+  userId: String
   createdAt: String!
   updatedAt: String!
 }
 
-"""The user status"""
-enum UserStatus {
-  DEACTIVATED
-  ACTIVE
-}
-
-type Role {
+type Attachment {
   id: String!
-  role: UserRole!
+  type: AttachmentType!
+  typeId: String!
+  key: String
+  url: String
   createdAt: String!
   updatedAt: String!
 }
 
-"""The user role assigned"""
-enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  DOCTOR
+"""The type is assigned"""
+enum AttachmentType {
   PATIENT
-  NURSE
-  BILLING
-  STAFF
+  DOCTOR
+  lab
 }
 
 type ResponsePayload {
@@ -491,24 +508,14 @@ type ResponsePayload {
   name: String
 }
 
-type AccessUserPayload {
-  access_token: String
-  roles: [Role!]
+type AttachmentPayload {
   response: ResponsePayload
+  attachment: Attachment
 }
 
-type ForgotPasswordPayload {
+type AttachmentMediaPayload {
   response: ResponsePayload
-}
-
-type UserPayload {
-  user: User
-  response: ResponsePayload
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
+  preSignedUrl: String
 }
 
 type PaginationPayload {
@@ -518,9 +525,9 @@ type PaginationPayload {
   totalPages: Int
 }
 
-type UsersPayload {
+type AttachmentsPayload {
   response: ResponsePayload
-  users: [User]
+  attachments: [Attachment]
   pagination: PaginationPayload
 }
 
@@ -602,6 +609,32 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
+type AccessUserPayload {
+  access_token: String
+  roles: [Role!]
+  response: ResponsePayload
+}
+
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  response: ResponsePayload
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+}
+
+type UsersPayload {
+  response: ResponsePayload
+  users: [User]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -624,6 +657,8 @@ type Query {
   getDoctorSchedules(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
+  getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
+  getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
 }
 
 input UsersInput {
@@ -709,6 +744,14 @@ input GetPatient {
   id: String!
 }
 
+input GetAttachment {
+  typeId: String!
+}
+
+input GetMedia {
+  id: String
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -724,6 +767,7 @@ type Mutation {
   updateRole(user: UpdateRoleInput!): UserPayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
+  updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput!): FacilityPayload!
   removeFacility(removeFacility: RemoveFacility!): FacilityPayload!
   createService(createServiceInput: CreateServiceInput!): ServicePayload!
   updateService(updateServiceInput: UpdateServiceInput!): ServicePayload!
@@ -746,6 +790,9 @@ type Mutation {
   updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
+  createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
+  removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
+  updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
 }
 
 input LoginUserInput {
@@ -966,6 +1013,11 @@ input UpdateBillingAddressInput {
   doctorId: String
   facilityId: String
   id: String!
+}
+
+input UpdateFacilityTimeZoneInput {
+  id: String!
+  timeZone: String
 }
 
 input RemoveFacility {
@@ -1316,4 +1368,29 @@ input UpdatePatientProvider {
 
 input RemovePatient {
   id: String!
+}
+
+input CreateAttachmentInput {
+  """enum type for module type - Upload Media"""
+  type: AttachmentType!
+  typeId: String!
+  title: String
+  subTitle: String
+  description: String
+  url: String
+}
+
+input RemoveAttachment {
+  id: String
+}
+
+input UpdateAttachmentInput {
+  """enum type for module type - Upload Media"""
+  type: AttachmentType
+  typeId: String
+  title: String
+  subTitle: String
+  description: String
+  url: String
+  id: String
 }

@@ -18,7 +18,6 @@ export class ScheduleService {
     @Inject(forwardRef(() => DoctorService))
     private readonly doctorService: DoctorService,
     @Inject(forwardRef(() => FacilityService))
-    private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
   ) { }
 
@@ -56,57 +55,22 @@ export class ScheduleService {
     }
   }
 
-
+   /**
+   * getDoctorSchedule schedule
+   * @param getDoctorSchedule 
+   * @returns schedule 
+   */
   async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
     try {
-      //get doctor 
-       const doctor = await this.doctorService.findOne(id)
-       let timeZone = ""
-       if(doctor && doctor.timeZone){
-        timeZone = doctor.timeZone
-       }else {
-         const facility = await this.facilityService.findOne(doctor.facilityId) 
-         timeZone = facility.timeZone
-       }
       const schedules = await this.scheduleRepository.find({
         where: {
           doctor: id
         }
-      });
-      //converting utc to given timeZone
-      const convertedSchedules = await this.convertTimeZone(schedules, timeZone)
-      console.log("convertedSchedules",convertedSchedules);
-      const groupBySchedule = await this.groupByDay(convertedSchedules)
-      console.log("groupBySchedule",groupBySchedule);
-      return convertedSchedules;
+      })
+      return { schedules };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-  }
-
-  async convertTimeZone(schedules,timeZone){
-    const convertedSchedules = schedules.map(item =>{
-    return {
-      startAt: new Date(new Date(item.startAt).toLocaleString('en-US', { timeZone })),
-      endAt: new Date(new Date(item.endAt).toLocaleString('en-US', { timeZone })),
-      id: item.id,
-      createdAt: item.createdAt,
-      updateAt: item.updatedAt,
-      recurringEndDate: item.recurringEndDate
-    }
-  })
-  return convertedSchedules
-  }
-
-  async groupByDay(schedules){
-    var weekDays =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const groupBy = schedules.map(item =>{
-    const dayName = weekDays[new Date(item.endAt).getDay()]
-      return {
-        
-      }
-    })
-    return groupBy
   }
 
   /**
