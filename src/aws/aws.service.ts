@@ -62,7 +62,7 @@ export class AwsService {
       return await this.s3Client.getSignedUrl('getObject', {
         Bucket: this.Bucket,
         Key,
-        Expires: 60 //time to expire in seconds
+        Expires: 100 //time to expire in seconds
       })
     } catch (error) {
       throw new InternalServerErrorException(error);
