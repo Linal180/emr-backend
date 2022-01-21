@@ -65,10 +65,10 @@ export class ScheduleResolver {
   @Query(returns => SchedulesPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
-  async getDoctorSchedules(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
+  async getDoctorSchedules(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule){
     const schedules = await this.scheduleService.getDoctorSchedule(getDoctorSchedule)
     return {
-      ...schedules,
+      schedules,
       response: { status: 200, message: 'Doctor Schedule fetched successfully' }
     };
   }
