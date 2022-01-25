@@ -215,9 +215,7 @@ export class Doctor {
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
 
-  @Field(type => [Patient], { nullable: 'itemsAndList' })
   @ManyToMany(type => Patient, patient => patient.usualProvider)
-  @JoinTable({ name: 'DoctorPatients' })
   patients: Patient[];
 
   @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
