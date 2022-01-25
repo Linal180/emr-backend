@@ -176,12 +176,7 @@ export class PatientService {
    * @returns one 
    */
   async GetPatient(id: string): Promise<PatientPayload> {
-    const patient = await this.patientRepository.findOne({
-      where: {
-        id,
-      },
-      relations: ["usualProvider"]
-    });
+    const patient = await this.findOne(id);
     if (patient) {
       return { patient }
     }

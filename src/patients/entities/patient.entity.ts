@@ -350,7 +350,7 @@ l
   user: User;
 
   @Field(type => [Doctor], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Doctor, doctor => doctor.patients)
+  @ManyToMany(type => Doctor, doctor => doctor.patients, {lazy: true})
   @JoinTable({ name: 'DoctorPatients' })
   usualProvider: Doctor[];
   
