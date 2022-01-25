@@ -76,7 +76,7 @@ export class PaginationService {
       }
       const [paginatedData, totalCount] = await repository.findAndCount(query);
       const totalPages = Math.ceil(totalCount / limit)
-
+      
       if (page > totalPages)
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,

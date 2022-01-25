@@ -253,6 +253,7 @@ type Employer {
 type Patient {
   id: String!
   suffix: String
+  email: String
   firstName: String
   middleName: String
   lastName: String
@@ -1245,6 +1246,7 @@ input CreatePatientInput {
 
 input CreatePatientItemInput {
   suffix: String
+  email: String
   firstName: String
   middleName: String
   lastName: String
@@ -1306,6 +1308,7 @@ input UpdatePatientInput {
 
 input UpdatePatientItemInput {
   suffix: String
+  email: String
   firstName: String
   middleName: String
   lastName: String
