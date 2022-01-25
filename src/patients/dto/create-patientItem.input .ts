@@ -9,6 +9,9 @@ export class CreatePatientItemInput {
   suffix: string;
 
   @Field({ nullable: true })
+  email: string;
+
+  @Field({ nullable: true })
   firstName: string;
 
   @Field({ nullable: true })
