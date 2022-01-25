@@ -9,8 +9,8 @@ export class CreatePatientInput {
   @Field()
   createPatientItemInput: CreatePatientItemInput
 
-  @Field()
-  registerUserInput: RegisterUserInput
+  // @Field()
+  // registerUserInput: RegisterUserInput
 
   @Field(type => CreateContactInput)
   createContactInput?: CreateContactInput
