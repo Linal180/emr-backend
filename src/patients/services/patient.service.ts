@@ -4,6 +4,7 @@ import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/users.service';
@@ -170,6 +171,10 @@ export class PatientService {
     return await this.patientRepository.findOne(id);
   }
 
+  async getUsualProvider(id: string): Promise<Patient> {
+    return await this.patientRepository.findOne(id);
+  }
+
   /**
    * Finds one
    * @param id 
@@ -185,7 +190,7 @@ export class PatientService {
       error: 'Patient not found',
     });
   }
-
+  
   /**
    * Removes patient
    * @param { id } 

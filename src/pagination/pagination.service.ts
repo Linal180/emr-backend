@@ -67,6 +67,7 @@ export class PaginationService {
       } else {
         query = {
           where: (qb: WhereExpressionBuilder) => {
+            console.log("where",where);
             qb.where(where as ObjectLiteral)
           },
           skip,
@@ -82,7 +83,7 @@ export class PaginationService {
           status: HttpStatus.NOT_FOUND,
           error: 'Page Not Found',
         });
-
+      console.log("query",query);
       return {
         totalCount,
         page,
