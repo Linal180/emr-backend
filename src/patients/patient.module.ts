@@ -8,6 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 import { Employer } from './entities/employer.entity';
 import { Patient } from './entities/patient.entity';
 import { PatientController } from './patient.controller';
+import { PatientSubscriber } from './patient.subscriber';
 import { PatientResolver } from './resolvers/patient.resolver';
 import { EmployerService } from './services/employer.service';
 import { PatientService } from './services/patient.service';
@@ -21,7 +22,7 @@ import { PatientService } from './services/patient.service';
     forwardRef(() => FacilityModule),
     forwardRef(() => ProviderModule)
   ],
-  providers: [PatientResolver, PatientService, EmployerService],
+  providers: [PatientResolver, PatientService, EmployerService, PatientSubscriber],
   controllers: [PatientController],
   exports: [PatientService, TypeOrmModule, EmployerService],
 })
