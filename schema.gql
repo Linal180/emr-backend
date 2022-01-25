@@ -2,6 +2,23 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Attachment {
+  id: String!
+  type: AttachmentType!
+  typeId: String!
+  key: String
+  url: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The type is assigned"""
+enum AttachmentType {
+  PATIENT
+  DOCTOR
+  lab
+}
+
 type Role {
   id: String!
   role: UserRole!
@@ -100,7 +117,6 @@ type Doctor {
   facility: Facility
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
-  patients: [Patient]
   schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
@@ -153,7 +169,6 @@ type Contact {
   facilityId: String
   facility: Facility
   doctor: Doctor
-  patient: Patient
   userId: String
   createdAt: String!
   updatedAt: String!
@@ -231,7 +246,6 @@ type Employer {
   mobile: String
   industry: String
   usualOccupation: String
-  patient: Patient
   createdAt: String!
   updatedAt: String!
 }
@@ -274,11 +288,12 @@ type Patient {
   statementNoteDateFrom: String!
   statementNoteDateTo: String!
   facilityId: String
-  usualProvider: [Doctor!]
+  attachments: [Attachment!]
   contacts: [Contact!]
-  employer: [Employer!]
   facility: Facility
   user: User
+  usualProvider: [Doctor]
+  employer: [Employer!]
   createdAt: String!
   updatedAt: String!
 }
@@ -423,7 +438,6 @@ type Facility {
   serviceCode: ServiceCode!
   staff: [Staff!]
   doctors: [Doctor!]
-  patients: [Patient!]
   user: [User!]
   contacts: [Contact!]
   services: [Service!]
@@ -482,23 +496,6 @@ type BillingAddress {
   userId: String
   createdAt: String!
   updatedAt: String!
-}
-
-type Attachment {
-  id: String!
-  type: AttachmentType!
-  typeId: String!
-  key: String
-  url: String
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The type is assigned"""
-enum AttachmentType {
-  PATIENT
-  DOCTOR
-  lab
 }
 
 type ResponsePayload {

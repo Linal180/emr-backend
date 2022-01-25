@@ -205,7 +205,6 @@ export class Contact {
   doctor: Doctor;
 
   @ManyToOne(() => Patient, patient => patient.contacts, { onDelete: 'CASCADE' })
-  @Field(type => Patient, { nullable: true })
   patient: Patient;
 
   @Column({ nullable: true })
