@@ -1235,7 +1235,6 @@ input RemoveSchedule {
 
 input CreatePatientInput {
   createPatientItemInput: CreatePatientItemInput!
-  registerUserInput: RegisterUserInput!
   createContactInput: CreateContactInput!
   createEmergencyContactInput: CreateContactInput!
   createNextOfKinContactInput: CreateContactInput!

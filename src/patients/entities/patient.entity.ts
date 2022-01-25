@@ -343,14 +343,14 @@ export class Patient {
   @ManyToOne(() => Facility, facility => facility.patients, {eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
-
+l
   @OneToOne(() => User, {eager: true})
   @JoinColumn()
   @Field(type => User, { nullable: true })
   user: User;
 
   @Field(type => [Doctor], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Doctor, doctor => doctor.patients, {eager: true})
+  @ManyToMany(type => Doctor, doctor => doctor.patients)
   @JoinTable({ name: 'DoctorPatients' })
   usualProvider: Doctor[];
   

@@ -54,12 +54,9 @@ export class PatientService {
       //get facility 
       const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
       patientInstance.facility = facility
-      //add patient as a user
-      const user = await this.usersService.create(createPatientInput.registerUserInput)
       //get doctor 
       const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
-      //adding user & usual provider with patient
-      patientInstance.user = user
+      //adding usual provider with patient
       patientInstance.usualProvider = [doctor]
       //create patient contact 
       const contact = await this.contactService.createContact(createPatientInput.createContactInput)
@@ -179,7 +176,12 @@ export class PatientService {
    * @returns one 
    */
   async GetPatient(id: string): Promise<PatientPayload> {
-    const patient = await this.findOne(id);
+    const patient = await this.patientRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ["usualProvider"]
+    });
     if (patient) {
       return { patient }
     }
