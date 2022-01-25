@@ -5,13 +5,14 @@ import { BillingAddressService } from 'src/providers/services/billing-address.se
 import { ContactService } from 'src/providers/services/contact.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
-import { CreateFacilityInput } from './dto/create-facility.input';
-import { FacilitiesPayload } from './dto/facilities-payload.dto';
-import FacilityInput from './dto/facility-input.dto';
-import { FacilityPayload } from './dto/facility-payload.dto';
-import { UpdateFacilityInput } from './dto/update-facility.input';
-import { RemoveFacility } from './dto/update-facilityItem.input';
-import { Facility } from './entities/facility.entity';
+import { CreateFacilityInput } from '../dto/create-facility.input';
+import { FacilitiesPayload } from '../dto/facilities-payload.dto';
+import FacilityInput from '../dto/facility-input.dto';
+import { FacilityPayload } from '../dto/facility-payload.dto';
+import { UpdateFacilityInput } from '../dto/update-facility.input';
+import { RemoveFacility } from '../dto/update-facilityItem.input';
+import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
+import { Facility } from '../entities/facility.entity';
 
 @Injectable()
 export class FacilityService {
@@ -109,6 +110,19 @@ export class FacilityService {
       throw new InternalServerErrorException(error);
     }
   }
+    /**
+   * Updates facility
+   * @param updateFacilityTimeZoneInput 
+   * @returns facility 
+   */
+     async updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput): Promise<Facility> {
+      try {
+        const facility = await this.facilityRepository.save(updateFacilityTimeZoneInput)
+        return facility
+      } catch (error) { 
+        throw new InternalServerErrorException(error);
+      }
+    }
 
   /**
    * Removes facility

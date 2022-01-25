@@ -48,7 +48,7 @@ export class StaffResolver {
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
-      error: 'Facilit not found',
+      error: 'Facility not found',
     });
   }
 

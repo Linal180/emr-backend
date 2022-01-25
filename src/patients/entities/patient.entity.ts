@@ -1,10 +1,10 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
-import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Employer } from './employer.entity';
 
 export enum RACE {
@@ -146,6 +146,10 @@ export class Patient {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   firstName: string;
 
   @Column({ nullable: true })
@@ -210,11 +214,11 @@ export class Patient {
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
-  registrationDate: string;
+  registrationDate: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
-  deseasedDate: string;
+  deceasedDate: Date;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -222,7 +226,7 @@ export class Patient {
 
   @Column({ nullable: true, default: false })
   @Field()
-  relaseOfInfoBill: boolean;
+  releaseOfInfoBill: boolean;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -333,26 +337,30 @@ export class Patient {
   @Field({ nullable: true })
   facilityId: string;
 
-  @ManyToMany(type => Doctor, doctor => doctor.patients, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
-  @Field(type => [Doctor], { nullable: true })
-  usualProvider: Doctor[];
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 
-  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => Contact, contact => contact.patient, {eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
-  @OneToMany(() => Employer, employer => employer.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
-  @Field(type => [Employer], { nullable: true })
-  employer: Employer[];
-
-  @ManyToOne(() => Facility, facility => facility.patients, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Facility, facility => facility.patients, {eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
-
-  @OneToOne(() => User, { eager: true })
+l
+  @OneToOne(() => User, {eager: true})
   @JoinColumn()
   @Field(type => User, { nullable: true })
   user: User;
+
+  @Field(type => [Doctor], { nullable: 'itemsAndList' })
+  @ManyToMany(type => Doctor, doctor => doctor.patients, {lazy: true})
+  @JoinTable({ name: 'DoctorPatients' })
+  usualProvider: Doctor[];
+  
+  @OneToMany(() => Employer, employer => employer.patient, {eager: true, onDelete: "CASCADE"})
+  @Field(type => [Employer], { nullable: true })
+  employer: Employer[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

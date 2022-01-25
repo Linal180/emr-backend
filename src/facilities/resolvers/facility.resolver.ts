@@ -2,14 +2,15 @@ import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/c
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
-import { CreateFacilityInput } from './dto/create-facility.input';
-import { FacilitiesPayload } from './dto/facilities-payload.dto';
-import FacilityInput from './dto/facility-input.dto';
-import { FacilityPayload } from './dto/facility-payload.dto';
-import { UpdateFacilityInput } from './dto/update-facility.input';
-import { GetFacility, RemoveFacility } from './dto/update-facilityItem.input';
-import { Facility } from './entities/facility.entity';
-import { FacilityService } from './facility.service';
+import { CreateFacilityInput } from '../dto/create-facility.input';
+import { FacilitiesPayload } from '../dto/facilities-payload.dto';
+import FacilityInput from '../dto/facility-input.dto';
+import { FacilityPayload } from '../dto/facility-payload.dto';
+import { UpdateFacilityInput } from '../dto/update-facility.input';
+import { GetFacility, RemoveFacility } from '../dto/update-facilityItem.input';
+import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
+import { Facility } from '../entities/facility.entity';
+import { FacilityService } from '../services/facility.service';
 
 @Resolver(() => Facility)
 export class FacilityResolver {
@@ -32,6 +33,16 @@ export class FacilityResolver {
     return {
       facility: await this.facilityService.updateFacility(updateFacilityInput),
       response: { status: 200, message: 'Facility updated successfully' }
+    };
+  }
+
+  @Mutation(() => FacilityPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async updateFacilityTimeZone(@Args('updateFacilityTimeZoneInput') updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput) {
+    return {
+      facility: await this.facilityService.updateFacilityTimeZone(updateFacilityTimeZoneInput),
+      response: { status: 200, message: 'Facility TimeZone updated successfully' }
     };
   }
 

@@ -9,6 +9,9 @@ export class CreatePatientItemInput {
   suffix: string;
 
   @Field({ nullable: true })
+  email: string;
+
+  @Field({ nullable: true })
   firstName: string;
 
   @Field({ nullable: true })
@@ -50,17 +53,17 @@ export class CreatePatientItemInput {
   @Field(type => PrimaryDepartment, { nullable: true })
   primaryDepartment: PrimaryDepartment
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, })
   registrationDate: string;
 
   @Field({ nullable: true })
-  deseasedDate: string;
+  deceasedDate: string;
 
   @Field({ nullable: true })
   privacyNotice: boolean;
 
   @Field({ nullable: true })
-  relaseOfInfoBill: boolean;
+  releaseOfInfoBill: boolean;
 
   @Field({ nullable: true })
   callToConsent: boolean;
@@ -86,10 +89,10 @@ export class CreatePatientItemInput {
   @Field(type => SEXUALORIENTATION, { nullable: true })
   sexualOrientation: SEXUALORIENTATION
 
-  @Field({ nullable: true })
+  @Field(type => GENDERIDENTITY, { nullable: true })
   genderIdentity: GENDERIDENTITY
 
-  @Field({ nullable: true })
+  @Field(type => GENDERIDENTITY, { nullable: true })
   sexAtBirth: GENDERIDENTITY
 
   @Field(type => PRONOUNS, { nullable: true })

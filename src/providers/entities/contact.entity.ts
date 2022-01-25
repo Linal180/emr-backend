@@ -4,6 +4,33 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Doctor } from './doctor.entity';
 
+export enum ServiceCodes {
+  AMBULANCE_41 = "AMBULANCE - LAND [41]",
+  AMBULANCE_42 = "AMBULANCE - AIR OR WATER [42]",
+  AMBULANCE_24 = "AMBULATORY SURGICAL CENTER [24]",
+  ASSISTED_LIVING_13 = "ASSISTED LIVING [13]",
+  BIRTHING_CENTER_25 = "BIRTHING CENTER [25]",
+  COMMUNITY_MENTAL_HEALTH_CENTER_53 = "COMMUNITY MENTAL HEALTH CENTER [53]",
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61 = "COMPREHENSIVE INPATIENT REHABILITATION FACILITY [61]",
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 = "COMPREHENSIVE OUTPATIENT REHABILITATION FACILITY [62]",
+  CUSTODIAL_CARE_FACILITY_33 = "CUSTODIAL CARE FACILITY [33]",
+  EMERGENCY_ROOM_23 = "EMERGENCY ROOM [23]",
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65 = "END STAGE RENAL DISEASE TREATMENT FACILITY [65]",
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50 = "FEDERALLY QUALIFIED HEALTH CENTER [50]",
+  GROUP_HOME_14 = "GROUP HOME [14]",
+  HOMELESS_SHELTER_04 = "HOMELESS SHELTER [04]",
+  HOSPICE_34 = "HOSPICE [34]",
+  INDEPENDENT_CLINIC_49 = "INDEPENDENT CLINIC [49]",
+  INDEPENDENT_LABORATORY_81 = "INDEPENDENT LABORATORY [81]",
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05 = "INDIAN HEALTH SERVICE FREE-STANDING FACILITY [05]",
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06 = "INDIAN HEALTH SERVICE PROVIDER-BASED FACILITY [06]"
+}
+
+registerEnumType(ServiceCodes, {
+  name: "ServiceCodes",
+  description: "The facility service code type assigned",
+});
+
 export enum RelationshipType {
   SELF = "Self",
   SPOUSE = "Spouse",
@@ -127,11 +154,27 @@ export class Contact {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  color: string;
+
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
+  primaryContact: boolean;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   ssn: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   employerName: string;
+
+  @Column({
+    type: "enum",
+    enum: ServiceCodes,
+    default: ServiceCodes.AMBULANCE_24
+  })
+  @Field(type => ServiceCodes)
+  serviceCode: ServiceCodes
 
   @Column({
     type: "enum",
@@ -149,6 +192,10 @@ export class Contact {
   @Field(type => ContactType, { nullable: true })
   contactType: ContactType
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
   @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
@@ -158,7 +205,6 @@ export class Contact {
   doctor: Doctor;
 
   @ManyToOne(() => Patient, patient => patient.contacts, { onDelete: 'CASCADE' })
-  @Field(type => Patient, { nullable: true })
   patient: Patient;
 
   @Column({ nullable: true })
