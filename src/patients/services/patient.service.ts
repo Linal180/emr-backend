@@ -1,11 +1,15 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from '../../facilities/services/facility.service';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/users.service';
 import { Connection, Repository } from 'typeorm';
+import { File } from '../../aws/dto/file-input.dto';
+import { FacilityService } from '../../facilities/services/facility.service';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
@@ -31,8 +35,8 @@ export class PatientService {
     private readonly doctorService: DoctorService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
+    private readonly attachmentsService: AttachmentsService,
   ) { }
-
 
   /**
    * Creates patient
@@ -148,9 +152,7 @@ export class PatientService {
    */
   async findAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
-      console.log("start -findAllPatients...........")
       const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, patientInput)
-      console.log("end -findAllPatients...........")
       return {
         pagination: {
           ...paginationResponse
@@ -207,4 +209,78 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     }
   }
+
+
+  /**
+   * Uploads patient media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns request media 
+   */
+   async uploadPatientMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PatientPayload> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.PATIENT;
+      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+      const patient = await this.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { patient };
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+   /**
+   * Updates patient media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns patient media 
+   */
+    async updatePatientMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PatientPayload> {
+      try {
+        updateAttachmentMediaInput.type = AttachmentType.PATIENT
+        const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+        const patient = await this.patientRepository.findOne(updateAttachmentMediaInput.typeId)
+        if (attachment) {
+          return { patient }
+        }
+        throw new PreconditionFailedException({
+          status: HttpStatus.PRECONDITION_FAILED,
+          error: 'Could not create or upload media',
+        });
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+
+    /**
+   * Removes patient media
+   * @param id 
+   * @returns  
+   */
+     async removePatientMedia(id: string) {
+      try {
+        return await this.attachmentsService.removeMedia(id)
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+
+    async getPatientMedia(id: string) {
+      try {
+        return await this.attachmentsService.getMedia(id)
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+  
+
 }

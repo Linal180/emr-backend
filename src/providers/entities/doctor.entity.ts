@@ -74,6 +74,10 @@ export class Doctor {
   @Field({ nullable: true })
   degreeCredentials: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  timeZone: string;
+
   @Column({
     type: "enum",
     enum: Speciality,

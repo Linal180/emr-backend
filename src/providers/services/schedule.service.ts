@@ -55,6 +55,11 @@ export class ScheduleService {
     }
   }
 
+   /**
+   * getDoctorSchedule schedule
+   * @param getDoctorSchedule 
+   * @returns schedule 
+   */
   async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
     try {
       const schedules = await this.scheduleRepository.find({
@@ -67,7 +72,6 @@ export class ScheduleService {
       throw new InternalServerErrorException(error);
     }
   }
-
 
   /**
    * Finds all schedule
