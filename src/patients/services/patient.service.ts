@@ -4,7 +4,6 @@ import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
-import { Doctor } from 'src/providers/entities/doctor.entity';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/users.service';
@@ -18,6 +17,7 @@ import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
+import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Patient } from '../entities/patient.entity';
 import { EmployerService } from './employer.service';
 
@@ -26,6 +26,8 @@ export class PatientService {
   constructor(
     @InjectRepository(Patient)
     private patientRepository: Repository<Patient>,
+    @InjectRepository(DoctorPatient)
+    private doctorPatientRepository: Repository<DoctorPatient>,
     private readonly paginationService: PaginationService,
     private readonly connection: Connection,
     private readonly employerService: EmployerService,
@@ -57,8 +59,15 @@ export class PatientService {
       patientInstance.facility = facility
       //get doctor 
       const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
+      //creating doctorPatient Instance 
+      const doctorPatientInstance = await this.doctorPatientRepository.create({
+        doctorId: doctor.id,
+        currentProvider: true, 
+      })
+      doctorPatientInstance.doctor = doctor
+      doctorPatientInstance.doctorId = doctor.id
       //adding usual provider with patient
-      patientInstance.usualProvider = [doctor]
+      patientInstance.doctorPatients = [doctorPatientInstance]
       //create patient contact 
       const contact = await this.contactService.createContact(createPatientInput.createContactInput)
       //create patient emergency contact 
@@ -74,7 +83,10 @@ export class PatientService {
       patientInstance.employer = [employerContact]
       patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
       const patient = await queryRunner.manager.save(patientInstance);
+      doctorPatientInstance.patient = patient
+      doctorPatientInstance.patientId = patient.id
       await queryRunner.commitTransaction();
+      await this.doctorPatientRepository.save(doctorPatientInstance)
       return patient
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -131,18 +143,40 @@ export class PatientService {
    * @returns patient provider 
    */
   async updatePatientProvider(updatePatientProvider: UpdatePatientProvider): Promise<Patient> {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const patientInstance = await this.findOne(updatePatientProvider.patientId)
-      const doctor = await this.doctorService.findOne(updatePatientProvider.providerId)
-      const updatedProviders = patientInstance.usualProvider
-      updatedProviders.push(doctor)
-      patientInstance.usualProvider = updatedProviders;
-      return await this.patientRepository.save(patientInstance)
+      //get patient
+      const patient = await this.findOne(updatePatientProvider.patientId)
+      if(patient){
+      //get previous Provider of patient
+      const previousProvider = await this.doctorPatientRepository.findOne({where: [{ doctorId: updatePatientProvider.providerId ,patientId: updatePatientProvider.patientId, currentProvider: true }]})
+      if(previousProvider){
+        return patient
+      }
+      //get currentProvider
+      const currentProvider = await this.doctorPatientRepository.findOne({where: [{patientId: updatePatientProvider.patientId, currentProvider: true }]})
+      if(currentProvider){
+        await this.doctorPatientRepository.save({id: currentProvider.id, currentProvider: false})
+      }
+      const doctorPatientInstance = await this.doctorPatientRepository.create({doctorId: updatePatientProvider.providerId,currentProvider: true, patientId: updatePatientProvider.patientId})
+      await queryRunner.manager.save(doctorPatientInstance);
+      await queryRunner.commitTransaction();  
+      return patient
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
     }
   }
-
   /**
    * Finds all patients
    * @param patientInput 
@@ -163,6 +197,21 @@ export class PatientService {
   }
 
   /**
+   * Usuals provider
+   * @param id 
+   * @returns provider 
+   */
+  async usualProvider(id: string): Promise<DoctorPatient[]> {
+    return await this.doctorPatientRepository.find({
+      where: {
+        patientId: id
+      },
+      order: { createdAt: "ASC" },
+      relations: ["doctor"]
+    })
+  }
+
+  /**
    * Finds one
    * @param id 
    * @returns one 
@@ -171,6 +220,11 @@ export class PatientService {
     return await this.patientRepository.findOne(id);
   }
 
+  /**
+   * Gets usual provider
+   * @param id 
+   * @returns usual provider 
+   */
   async getUsualProvider(id: string): Promise<Patient> {
     return await this.patientRepository.findOne(id);
   }
@@ -200,7 +254,6 @@ export class PatientService {
       const patient = await this.findOne(id)
       if (patient) {
         await this.patientRepository.delete(patient.id)
-        await this.usersService.remove(patient.user.id)
         return
       }
       throw new NotFoundException({
@@ -211,7 +264,6 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     }
   }
-
 
   /**
    * Uploads patient media
@@ -275,6 +327,11 @@ export class PatientService {
       }
     }
 
+    /**
+     * Gets patient media
+     * @param id 
+     * @returns  
+     */
     async getPatientMedia(id: string) {
       try {
         return await this.attachmentsService.getMedia(id)
@@ -283,6 +340,5 @@ export class PatientService {
         throw new InternalServerErrorException(error);
       }
     }
-  
 
 }

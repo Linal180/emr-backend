@@ -5,6 +5,7 @@ import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { UsersModule } from 'src/users/users.module';
+import { DoctorPatient } from './entities/doctorPatient.entity';
 import { Employer } from './entities/employer.entity';
 import { Patient } from './entities/patient.entity';
 import { PatientController } from './patient.controller';
@@ -15,7 +16,7 @@ import { PatientService } from './services/patient.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Patient, Employer]),
+    TypeOrmModule.forFeature([Patient, Employer, DoctorPatient]),
     forwardRef(() => UsersModule),
     PaginationModule,
     forwardRef(() => AttachmentsModule),

@@ -19,6 +19,16 @@ enum AttachmentType {
   lab
 }
 
+type DoctorPatient {
+  id: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Role {
   id: String!
   role: UserRole!
@@ -293,7 +303,7 @@ type Patient {
   contacts: [Contact!]
   facility: Facility
   user: User
-  usualProvider: [Doctor]
+  doctorPatients: [DoctorPatient!]
   employer: [Employer!]
   createdAt: String!
   updatedAt: String!

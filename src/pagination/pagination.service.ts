@@ -67,7 +67,6 @@ export class PaginationService {
       } else {
         query = {
           where: (qb: WhereExpressionBuilder) => {
-            console.log("where",where);
             qb.where(where as ObjectLiteral)
           },
           skip,

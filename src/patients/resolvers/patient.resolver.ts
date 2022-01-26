@@ -11,6 +11,7 @@ import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
+import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Patient } from '../entities/patient.entity';
 import { PatientService } from '../services/patient.service';
 
@@ -50,9 +51,9 @@ export class PatientResolver {
   }
 
   @ResolveField((returns) => [Doctor])
-  async usualProvider(@Parent() patient: Patient): Promise<Doctor[]> {
+  async doctorPatients(@Parent() patient: Patient): Promise<DoctorPatient[]> {
     if (patient) {
-      const provider = await this.doctorService.usualProvider(patient.id);
+      const provider = await this.patientService.usualProvider(patient.id);
       return provider;
     }
   }
