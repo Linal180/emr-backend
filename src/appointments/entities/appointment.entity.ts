@@ -34,7 +34,7 @@ export class Appointment {
   revenueCode: string;
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Field({ nullable: true })  
   color: string;
 
   @Column({ nullable: true })
