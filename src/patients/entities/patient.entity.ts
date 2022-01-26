@@ -347,7 +347,7 @@ export class Patient {
   @ManyToOne(() => Facility, facility => facility.patients, {eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
-l
+  
   @OneToOne(() => User, {eager: true})
   @JoinColumn()
   @Field(type => User, { nullable: true })

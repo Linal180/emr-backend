@@ -195,7 +195,6 @@ export class PatientService {
       const patient = await this.findOne(id)
       if (patient) {
         await this.patientRepository.delete(patient.id)
-        await this.usersService.remove(patient.user.id)
         return
       }
       throw new NotFoundException({
