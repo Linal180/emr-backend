@@ -107,6 +107,8 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      //save patient basic info
+      await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 

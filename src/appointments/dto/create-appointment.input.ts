@@ -4,14 +4,7 @@ import { CreateContactInput } from 'src/providers/dto/create-contact.input';
 import { CreateFacilityItemInput } from './create-facilityItem.input ';
 
 @InputType()
-export class CreateFacilityInput {
-  @Field()
-  createFacilityItemInput: CreateFacilityItemInput
+export class CreateAppointmentInput {
 
-  @Field(type => CreateContactInput)
-  createContactInput?: CreateContactInput
-
-  @Field(type => CreateBillingAddressInput)
-  createBillingAddressInput?: CreateBillingAddressInput
 
 }

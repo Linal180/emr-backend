@@ -4,7 +4,7 @@ import { PaginationModule } from 'src/pagination/pagination.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { UsersModule } from 'src/users/users.module';
 import { Appointment } from './entities/appointment.entity';
-import { FacilityResolver } from './resolvers/appointment.resolver';
+import { AppointmentResolver } from './resolvers/appointment.resolver';
 import { AppointmentService } from './services/appointment.service';
 
 @Module({
@@ -14,7 +14,7 @@ import { AppointmentService } from './services/appointment.service';
     PaginationModule,
     forwardRef(() => ProviderModule)
   ],
-  providers: [FacilityResolver, AppointmentService],
+  providers: [AppointmentResolver, AppointmentService],
   exports: [AppointmentService, TypeOrmModule],
 })
 export class AppointmentModule { }

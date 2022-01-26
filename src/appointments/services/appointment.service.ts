@@ -5,10 +5,9 @@ import { BillingAddressService } from 'src/providers/services/billing-address.se
 import { ContactService } from 'src/providers/services/contact.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
-import { CreateFacilityInput } from '../dto/create-facility.input';
+import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
 import FacilityInput from '../dto/facility-input.dto';
-import { FacilityPayload } from '../dto/facility-payload.dto';
 import { UpdateFacilityInput } from '../dto/update-facility.input';
 import { RemoveFacility } from '../dto/update-facilityItem.input';
 import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
@@ -25,16 +24,16 @@ export class AppointmentService {
     private readonly utilsService: UtilsService,
   ) { }
 
-  // async createFacility(createFacilityInput: CreateFacilityInput): Promise<Appointment> {
-  //   try {
-  //     //creating facility
-  //     const facilityInstance = this.appointmentRepository.create(createFacilityInput.createFacilityItemInput)
-  //     const facility = await this.appointmentRepository.save(facilityInstance);
-  //     return facility
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
+  async createAppointment(createAppointmentInput: CreateAppointmentInput): Promise<Appointment> {
+    try {
+      //creating appointment
+      const appointmentInstance = this.appointmentRepository.create(createAppointmentInput)
+      const appointment = await this.appointmentRepository.save(appointmentInstance);
+      return appointment
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
   // async findAllFacilities(facilityInput: FacilityInput): Promise<FacilitiesPayload> {
   //   try {
