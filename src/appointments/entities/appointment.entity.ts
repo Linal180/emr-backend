@@ -1,5 +1,20 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Service } from 'src/facilities/entities/services.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+
+export enum PaymentType {
+  SELF = "self",
+  INSURANCE = "Insurance",
+}
+
+registerEnumType(PaymentType, {
+  name: "PaymentType",
+  description: "The patient payment type assigned",
+});
 
 
 @Entity({ name: 'Appointments' })
@@ -9,53 +24,78 @@ export class Appointment {
   @Field()
   id: string;
 
-  @Column()
-  @Field()
-  name: string;
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
+  isExternal: boolean;
+
+  @Column({
+    type: "enum",
+    enum: PaymentType,
+    default: PaymentType.SELF
+  })
+  @Field(type => PaymentType)
+  paymentType: PaymentType;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  code: string;
+  insuranceCompany: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  cliaIdNumber: string;
+  membershipID: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  federalTaxId: string;
+  reason: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  notes: string;
+
+  @Column({ nullable: true , default: false})
+  @Field({ nullable: true })
+  employment: boolean;
 
   @Column({ nullable: true, default: false })
   @Field({ nullable: true })
-  isPrivate: boolean;
+  autoAccident: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  otherAccident: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  otherPartyResponsible: boolean;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  revenueCode: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })  
-  color: string;
+  primaryInsurance: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  tamxonomyCode: string;
+  secondaryInsurance: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  insurancePlanType: string;
+  @CreateDateColumn({ type: 'timestamptz' })
+  @Field()
+  scheduleDateTime: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  timeZone: string;
+  @ManyToOne(() => Service, facilityService => facilityService.appointments, {eager: true, onDelete: 'CASCADE' })
+  @Field(type => Service, { nullable: true })
+  appointmentType: Service;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  mammographyCertificationNumber: string;
+  @ManyToOne(() => Facility, facility => facility.appointments, {eager: true, onDelete: 'CASCADE' })
+  @Field(type => Facility, { nullable: true })
+  facility: Facility;
+  
+  @ManyToOne(() => Doctor, doctor => doctor.appointments, {eager: true, onDelete: 'CASCADE' })
+  @Field(type => Doctor, { nullable: true })
+  provider: Doctor;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  npi: string;
+  @OneToOne(() => Patient, {eager: true})  
+  @JoinColumn()
+  @Field(type => Patient, { nullable: true })
+  patient: Patient;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

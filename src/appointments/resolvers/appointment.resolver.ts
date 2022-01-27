@@ -1,13 +1,8 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { SetMetadata, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
-import { CreateAppointmentInput } from '../dto/create-appointment.input';
-import { FacilitiesPayload } from '../dto/facilities-payload.dto';
-import FacilityInput from '../dto/facility-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
-import { UpdateFacilityInput } from '../dto/update-facility.input';
-import { GetFacility, RemoveFacility } from '../dto/update-facilityItem.input';
+import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { Appointment } from '../entities/appointment.entity';
 import { AppointmentService } from '../services/appointment.service';
 

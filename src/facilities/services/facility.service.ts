@@ -117,8 +117,7 @@ export class FacilityService {
    */
      async updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput): Promise<Facility> {
       try {
-        const facility = await this.facilityRepository.save(updateFacilityTimeZoneInput)
-        return facility
+        return this.facilityRepository.save(updateFacilityTimeZoneInput)
       } catch (error) { 
         throw new InternalServerErrorException(error);
       }

@@ -85,7 +85,6 @@ export class DoctorService {
     }
   }
 
-
   /**
    * Params doctor service
    * @param doctorInput 
@@ -113,23 +112,6 @@ export class DoctorService {
   async findOne(id: string): Promise<Doctor> {
     return await this.doctorRepository.findOne(id);
   }
-
-  /**
-   * Usuals provider
-   * @param id 
-   * @returns provider 
-   */
-  // async usualProvider(id: string): Promise<Doctor[]> {
-  //   const await this.
-  //   // return await  this.doctorRepository
-  //   // .createQueryBuilder('DoctorPatients')
-  //   // .innerJoin(
-  //   //      'doctor.patients', 
-  //   //      'patient', 
-  //   //      'patient.id = :doctorsId', 
-  //   //      { doctorsId: id }
-  //   // ).getMany();
-  // }
 
   /**
    * Finds one

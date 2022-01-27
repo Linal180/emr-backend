@@ -82,7 +82,6 @@ export class PaginationService {
           status: HttpStatus.NOT_FOUND,
           error: 'Page Not Found',
         });
-      console.log("query",query);
       return {
         totalCount,
         page,
@@ -118,7 +117,6 @@ export class PaginationService {
         str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data`,
         obj: { data: `%${columnValue}%` }
       };
-      console.log("where", where);
     }
     return { join, where };
   }

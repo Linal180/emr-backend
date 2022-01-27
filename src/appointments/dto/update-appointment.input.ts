@@ -1,0 +1,14 @@
+import { Field, InputType, PartialType, PickType } from '@nestjs/graphql';
+import { CreateAppointmentInput } from './create-appointment.input';
+
+@InputType()
+export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) {
+  @Field()
+  id: string;
+}
+
+@InputType()
+export class GetAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }
+
+@InputType()
+export class RemoveAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }

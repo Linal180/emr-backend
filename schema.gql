@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Service {
+  id: String!
+  name: String!
+  duration: String!
+  price: String!
+  isActive: Boolean
+  facilityId: String
+  facility: Facility
+  createdAt: String
+  updatedAt: String
+}
+
 type Attachment {
   id: String!
   type: AttachmentType!
@@ -394,6 +406,35 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
+type Appointment {
+  id: String!
+  isExternal: Boolean
+  paymentType: PaymentType!
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleDateTime: String!
+  appointmentType: Service
+  facility: Facility
+  provider: Doctor
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient payment type assigned"""
+enum PaymentType {
+  SELF
+  INSURANCE
+}
+
 type Staff {
   id: String!
   firstName: String!
@@ -417,18 +458,6 @@ enum Gender {
   MALE
   FEMALE
   OTHER
-}
-
-type Service {
-  id: String!
-  name: String!
-  duration: String!
-  price: String!
-  isActive: Boolean
-  facilityId: String
-  facility: Facility
-  createdAt: String
-  updatedAt: String
 }
 
 type Facility {
@@ -551,6 +580,54 @@ type PatientsPayload {
   pagination: PaginationPayload
 }
 
+type AccessUserPayload {
+  access_token: String
+  roles: [Role!]
+  response: ResponsePayload
+}
+
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  response: ResponsePayload
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+}
+
+type UsersPayload {
+  response: ResponsePayload
+  users: [User]
+  pagination: PaginationPayload
+}
+
+type FacilitiesPayload {
+  response: ResponsePayload
+  facility: [Facility]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
+type ServicePayload {
+  response: ResponsePayload
+  service: Service
+}
+
+type ServicesPayload {
+  response: ResponsePayload
+  services: [Service]
+  pagination: PaginationPayload
+}
+
 type ContactPayload {
   contact: Contact
   response: ResponsePayload
@@ -595,52 +672,9 @@ type StaffPayload {
   response: ResponsePayload
 }
 
-type FacilitiesPayload {
+type AppointmentPayload {
   response: ResponsePayload
-  facility: [Facility]
-  pagination: PaginationPayload
-}
-
-type FacilityPayload {
-  response: ResponsePayload
-  facility: Facility
-}
-
-type ServicePayload {
-  response: ResponsePayload
-  service: Service
-}
-
-type ServicesPayload {
-  response: ResponsePayload
-  services: [Service]
-  pagination: PaginationPayload
-}
-
-type AccessUserPayload {
-  access_token: String
-  roles: [Role!]
-  response: ResponsePayload
-}
-
-type ForgotPasswordPayload {
-  response: ResponsePayload
-}
-
-type UserPayload {
-  user: User
-  response: ResponsePayload
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
-}
-
-type UsersPayload {
-  response: ResponsePayload
-  users: [User]
-  pagination: PaginationPayload
+  appointment: Appointment
 }
 
 type Query {
@@ -801,6 +835,7 @@ type Mutation {
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
+  createAppointment(createAppointmentInput: CreateAppointmentInput!): AppointmentPayload!
 }
 
 input LoginUserInput {
@@ -1402,4 +1437,24 @@ input UpdateAttachmentInput {
   description: String
   url: String
   id: String
+}
+
+input CreateAppointmentInput {
+  isExternal: Boolean
+  paymentType: PaymentType!
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleDateTime: String!
+  serviceId: String
+  facilityId: String
+  providerId: String
+  patientId: String
 }

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
@@ -6,11 +6,6 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
-import { FacilitiesPayload } from '../dto/facilities-payload.dto';
-import FacilityInput from '../dto/facility-input.dto';
-import { UpdateFacilityInput } from '../dto/update-facility.input';
-import { RemoveFacility } from '../dto/update-facilityItem.input';
-import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
 import { Appointment } from '../entities/appointment.entity';
 
 @Injectable()

@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { DoctorPatient } from 'src/patients/entities/doctorPatient.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -221,6 +222,9 @@ export class Doctor {
   @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Schedule], { nullable: true })
   schedule: Schedule[];
+
+  @OneToMany(() => Appointment, appointment => appointment.provider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  appointments: Appointment[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
