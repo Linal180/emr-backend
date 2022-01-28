@@ -8,6 +8,7 @@ import { BillingAddress } from './entities/billing-address.entity';
 import { Contact } from './entities/contact.entity';
 import { Doctor } from './entities/doctor.entity';
 import { Schedule } from './entities/schedule.entity';
+import { ScheduleServices } from './entities/scheduleServices.entity';
 import { Staff } from './entities/staff.entity';
 import { ContactResolver } from './resolvers/contact.resolver';
 import { DoctorResolver } from './resolvers/doctor.resolver';
@@ -21,7 +22,7 @@ import { StaffService } from './services/staff.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress, Schedule]),
+    TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress, Schedule,ScheduleServices]),
     PaginationModule,
     forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),

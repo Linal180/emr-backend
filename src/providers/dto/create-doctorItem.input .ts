@@ -35,7 +35,7 @@ export class CreateDoctorItemInput {
   @Field({ nullable: true })
   timeZone?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   facilityId?: string;
 
   @Field({ nullable: true })
