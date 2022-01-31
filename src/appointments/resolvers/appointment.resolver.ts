@@ -36,6 +36,7 @@ export class AppointmentResolver {
     };
   }
 
+  
   @Mutation(() => AppointmentPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('roles', ['admin', 'super-admin'])
