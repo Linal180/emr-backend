@@ -11,45 +11,45 @@ export class CreateAppointmentInput {
     paymentType: PaymentType;
   
     @Field({ nullable: true })
-    insuranceCompany: string;
+    insuranceCompany?: string;
 
     @Field({ nullable: true })
-    membershipID: string;
+    membershipID?: string;
 
     @Field({ nullable: true })
-    reason: string;
+    reason?: string;
   
     @Field({ nullable: true })
-    notes: string;
+    notes?: string;
   
     @Field({ nullable: true })
-    employment: boolean;
+    employment?: boolean;
   
     @Field({ nullable: true })
-    autoAccident: boolean;
+    autoAccident?: boolean;
   
     @Field({ nullable: true })
-    otherAccident: boolean;
+    otherAccident?: boolean;
   
     @Field({ nullable: true })
-    otherPartyResponsible: boolean;
+    otherPartyResponsible?: boolean;
   
     @Field({ nullable: true })
-    primaryInsurance: string;
+    primaryInsurance?: string;
   
     @Field({ nullable: true })
-    secondaryInsurance: string;
+    secondaryInsurance?: string;
   
     @Field({ nullable: false })
-    scheduleDateTime: string;
+    scheduleDateTime?: string;
   
-    @Field({ nullable: true })
+    @Field({ nullable: false })
     serviceId: string;
   
-    @Field({ nullable: true })
+    @Field({ nullable: false })
     facilityId: string;
     
-    @Field({ nullable: true })
+    @Field({ nullable: false })
     providerId: string;
   
     @Field({ nullable: true })

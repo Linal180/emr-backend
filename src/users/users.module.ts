@@ -32,7 +32,7 @@ import { UsersService } from "./users.service";
     PaginationModule,
     forwardRef(() => FacilityModule),
     forwardRef(() => ProviderModule),
-    PatientModule
+    forwardRef(() => PatientModule)
   ],
   providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
   controllers: [UsersController],

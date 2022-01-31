@@ -37,7 +37,6 @@ export class ServicesService {
       }
       //saving service
       return await this.servicesRepository.save(serviceInstance);
-      return
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

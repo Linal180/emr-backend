@@ -3,8 +3,7 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export enum PaymentType {
   SELF = "self",
@@ -80,20 +79,35 @@ export class Appointment {
   @Field()
   scheduleDateTime: string;
 
-  @ManyToOne(() => Service, facilityService => facilityService.appointments, {eager: true, onDelete: 'CASCADE' })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  providerId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  appointmentTypeId: string;
+
+  @ManyToOne(() => Service, facilityService => facilityService.appointments, { onDelete: 'CASCADE' })
   @Field(type => Service, { nullable: true })
   appointmentType: Service;
 
-  @ManyToOne(() => Facility, facility => facility.appointments, {eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Facility, facility => facility.appointments, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
   
-  @ManyToOne(() => Doctor, doctor => doctor.appointments, {eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Doctor, doctor => doctor.appointments, { onDelete: 'CASCADE' })
   @Field(type => Doctor, { nullable: true })
   provider: Doctor;
 
-  @OneToOne(() => Patient, {eager: true})  
-  @JoinColumn()
+  @ManyToOne(() => Patient, patient => patient.appointments, { onDelete: 'CASCADE' })
   @Field(type => Patient, { nullable: true })
   patient: Patient;
 

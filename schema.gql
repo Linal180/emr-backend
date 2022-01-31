@@ -441,6 +441,10 @@ type Appointment {
   primaryInsurance: String
   secondaryInsurance: String
   scheduleDateTime: String!
+  providerId: String
+  patientId: String
+  facilityId: String
+  appointmentTypeId: String
   appointmentType: Service
   facility: Facility
   provider: Doctor
@@ -588,18 +592,6 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
-type PatientPayload {
-  response: ResponsePayload
-  patient: Patient
-}
-
-type PatientsPayload {
-  response: ResponsePayload
-  patients: [Patient]
-  facilityId: String
-  pagination: PaginationPayload
-}
-
 type AccessUserPayload {
   access_token: String
   roles: [Role!]
@@ -626,25 +618,15 @@ type UsersPayload {
   pagination: PaginationPayload
 }
 
-type FacilitiesPayload {
+type PatientPayload {
   response: ResponsePayload
-  facility: [Facility]
-  pagination: PaginationPayload
+  patient: Patient
 }
 
-type FacilityPayload {
+type PatientsPayload {
   response: ResponsePayload
-  facility: Facility
-}
-
-type ServicePayload {
-  response: ResponsePayload
-  service: Service
-}
-
-type ServicesPayload {
-  response: ResponsePayload
-  services: [Service]
+  patients: [Patient]
+  facilityId: String
   pagination: PaginationPayload
 }
 
@@ -692,9 +674,37 @@ type StaffPayload {
   response: ResponsePayload
 }
 
+type FacilitiesPayload {
+  response: ResponsePayload
+  facility: [Facility]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
+type ServicePayload {
+  response: ResponsePayload
+  service: Service
+}
+
+type ServicesPayload {
+  response: ResponsePayload
+  services: [Service]
+  pagination: PaginationPayload
+}
+
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
+}
+
+type AppointmentsPayload {
+  response: ResponsePayload
+  appointments: [Appointment]
+  pagination: PaginationPayload
 }
 
 type Query {
@@ -721,6 +731,8 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
+  findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
+  getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
 }
 
 input UsersInput {
@@ -814,6 +826,14 @@ input GetMedia {
   id: String
 }
 
+input AppointmentInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetAppointment {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -856,6 +876,8 @@ type Mutation {
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
   createAppointment(createAppointmentInput: CreateAppointmentInput!): AppointmentPayload!
+  updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
+  removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
 }
 
 input LoginUserInput {
@@ -1483,8 +1505,33 @@ input CreateAppointmentInput {
   primaryInsurance: String
   secondaryInsurance: String
   scheduleDateTime: String!
+  serviceId: String!
+  facilityId: String!
+  providerId: String!
+  patientId: String
+}
+
+input UpdateAppointmentInput {
+  isExternal: Boolean
+  paymentType: PaymentType
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleDateTime: String
   serviceId: String
   facilityId: String
   providerId: String
   patientId: String
+  id: String!
+}
+
+input RemoveAppointment {
+  id: String!
 }
