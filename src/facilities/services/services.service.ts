@@ -2,7 +2,7 @@ import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateServiceInput } from '../dto/create-service.input';
 import ServiceInput from '../dto/service-input.dto';
 import { ServicePayload } from '../dto/service-payload.dto';
@@ -37,7 +37,6 @@ export class ServicesService {
       }
       //saving service
       return await this.servicesRepository.save(serviceInstance);
-      return
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -82,6 +81,19 @@ export class ServicesService {
    */
   async findOne(id: string): Promise<Service> {
     return await this.servicesRepository.findOne(id);
+  }
+
+  /**
+   * Finds by ids
+   * @param servicesIds 
+   * @returns by ids 
+   */
+  async findByIds(servicesIds: string[]): Promise<Service[]> {
+    return await this.servicesRepository.find({
+      where: {
+        id: In(servicesIds)
+      }
+    });
   }
 
   /**

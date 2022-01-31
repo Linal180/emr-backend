@@ -85,7 +85,6 @@ export class DoctorService {
     }
   }
 
-
   /**
    * Params doctor service
    * @param doctorInput 

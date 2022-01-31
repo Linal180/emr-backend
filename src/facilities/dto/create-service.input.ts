@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { ServiceType } from '../entities/services.entity';
 
 @InputType()
 export class CreateServiceInput {
@@ -17,6 +18,9 @@ export class CreateServiceInput {
 
   @Field({ nullable: true })
   isActive: boolean;
+
+  @Field(type => ServiceType, { description: 'Service type', nullable: true })
+  serviceType?: ServiceType;
 
 
 }

@@ -1,5 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
 import { CreatePatientInput } from '../dto/create-patient.input';
@@ -9,12 +11,14 @@ import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
+import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Patient } from '../entities/patient.entity';
 import { PatientService } from '../services/patient.service';
 
 @Resolver(() => Patient)
 export class PatientResolver {
-  constructor(private readonly patientService: PatientService) { }
+  constructor(private readonly patientService: PatientService,
+    private readonly doctorService: DoctorService) { }
 
   @Mutation(() => PatientPayload)
   @UseGuards(JwtAuthGraphQLGuard)
@@ -44,6 +48,14 @@ export class PatientResolver {
       patient: await this.patientService.updatePatientProvider(updatePatientProvider),
       response: { status: 200, message: 'Patient Provider updated successfully' }
     };
+  }
+
+  @ResolveField((returns) => [Doctor])
+  async doctorPatients(@Parent() patient: Patient): Promise<DoctorPatient[]> {
+    if (patient) {
+      const provider = await this.patientService.usualProvider(patient.id);
+      return provider;
+    }
   }
 
   @Query(returns => PatientsPayload)

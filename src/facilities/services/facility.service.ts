@@ -73,8 +73,14 @@ export class FacilityService {
    * @returns one 
    */
   async findOne(id: string): Promise<Facility> {
-    return await this.facilityRepository.findOne(id);
-
+    const facility = await this.facilityRepository.findOne(id);
+    if(facility){
+      return facility
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Facility not found',
+    });
   }
 
   /**
@@ -87,10 +93,6 @@ export class FacilityService {
     if (facility) {
       return { facility }
     }
-    throw new NotFoundException({
-      status: HttpStatus.NOT_FOUND,
-      error: 'Facility not found',
-    });
   }
 
   /**
@@ -117,8 +119,7 @@ export class FacilityService {
    */
      async updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput): Promise<Facility> {
       try {
-        const facility = await this.facilityRepository.save(updateFacilityTimeZoneInput)
-        return facility
+        return this.facilityRepository.save(updateFacilityTimeZoneInput)
       } catch (error) { 
         throw new InternalServerErrorException(error);
       }

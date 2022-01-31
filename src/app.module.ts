@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AppointmentModule } from './appointments/appointment.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { AwsModule } from './aws/aws.module';
 import configuration from './config/configuration';
@@ -24,6 +25,7 @@ import { UtilsModule } from './util/utils.module';
     ProviderModule,
     AwsModule,
     AttachmentsModule,
+    AppointmentModule,
     UtilsModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',

@@ -1,10 +1,11 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { DoctorPatient } from './doctorPatient.entity';
 import { Employer } from './employer.entity';
 
 export enum RACE {
@@ -347,16 +348,18 @@ export class Patient {
   @ManyToOne(() => Facility, facility => facility.patients, {eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
-  
+
   @OneToOne(() => User, {eager: true})
   @JoinColumn()
   @Field(type => User, { nullable: true })
   user: User;
 
-  @Field(type => [Doctor], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Doctor, doctor => doctor.patients, {lazy: true})
-  @JoinTable({ name: 'DoctorPatients' })
-  usualProvider: Doctor[];
+  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.doctor, {onDelete: "CASCADE"})
+  @Field(type => [DoctorPatient], { nullable: true })
+  doctorPatients: DoctorPatient[];
+
+  @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  appointments: Appointment[];
   
   @OneToMany(() => Employer, employer => employer.patient, {eager: true, onDelete: "CASCADE"})
   @Field(type => [Employer], { nullable: true })
