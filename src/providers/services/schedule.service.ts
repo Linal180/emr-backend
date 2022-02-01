@@ -94,13 +94,41 @@ export class ScheduleService {
    * @returns schedule 
    */
   async updateSchedule(updateScheduleInput: UpdateScheduleInput): Promise<Schedule> {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      return await this.scheduleRepository.save(updateScheduleInput)
+      // fetch schedule
+      const scheduleInstance = await this.scheduleRepository.findOne(updateScheduleInput.id)
+      //fetch user
+      if (updateScheduleInput.doctorId) {
+        const doctor = await this.doctorService.findOne(updateScheduleInput.doctorId)
+        scheduleInstance.doctor = doctor
+      }
+      //fetch location/contact of facility
+      if (updateScheduleInput.locationId) {
+        const location = await this.contactService.findOne(updateScheduleInput.locationId)
+        scheduleInstance.location = location
+      }
+      const schedule =  await this.scheduleRepository.save(scheduleInstance);
+      if(updateScheduleInput.servicesIds){
+        await this.scheduleServicesRepository.delete({ scheduleId: scheduleInstance.id})
+        const services = await this.servicesService.findByIds(updateScheduleInput.servicesIds)
+        const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
+        const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
+        scheduleInstance.scheduleServices = serviceSchedule
+        await queryRunner.manager.save(serviceSchedule);
+      }
+      await queryRunner.commitTransaction();
+      return schedule
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
     }
   }
-
 
   /**
    * Gets schedule service
@@ -114,7 +142,7 @@ export class ScheduleService {
         },
         relations: ["service"]
       })
-    }
+  }
 
    /**
    * getDoctorSchedule schedule
