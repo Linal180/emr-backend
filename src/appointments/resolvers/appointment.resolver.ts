@@ -14,7 +14,8 @@ import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
-import { GetAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
+import { CancelAppointment, GetAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
 import { Appointment } from '../entities/appointment.entity';
 import { AppointmentService } from '../services/appointment.service';
 
@@ -32,6 +33,16 @@ export class AppointmentResolver {
   async createAppointment(@Args('createAppointmentInput') createAppointmentInput: CreateAppointmentInput) {
     return {
       appointment: await this.appointmentService.createAppointment(createAppointmentInput),
+      response: { status: 200, message: 'Appointment created successfully' }
+    };
+  }
+
+  @Mutation(() => AppointmentPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['super-admin', 'admin'])
+  async createExternalAppointment(@Args('createExternalAppointmentInput') createExternalAppointmentInput: CreateExternalAppointmentInput) {
+    return {
+      appointment: await this.appointmentService.createExternalAppointmentInput(createExternalAppointmentInput),
       response: { status: 200, message: 'Appointment created successfully' }
     };
   }
@@ -107,9 +118,15 @@ export class AppointmentResolver {
 
   @Mutation(() => AppointmentPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin','admin'])
   async removeAppointment(@Args('removeAppointment') removeAppointment: RemoveAppointment) {
     await this.appointmentService.removeAppointment(removeAppointment);
     return { response: { status: 200, message: 'Appointment Deleted' } };
+  }
+
+  @Mutation(() => AppointmentPayload)
+  async cancelAppointment(@Args('cancelAppointment') cancelAppointment: CancelAppointment) {
+    await this.appointmentService.cancelAppointment(cancelAppointment.token);
+    return { response: { status: 200, message: 'Appointment cancelled successfully' } };
   }
 }

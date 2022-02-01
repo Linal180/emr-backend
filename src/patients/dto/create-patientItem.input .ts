@@ -1,5 +1,4 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { UserRole } from 'src/users/entities/role.entity';
 import { ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, PrimaryDepartment, PRONOUNS, RACE, REGDepartment, SEXUALORIENTATION } from '../entities/patient.entity';
 
 @InputType()

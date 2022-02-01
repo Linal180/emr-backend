@@ -51,6 +51,10 @@ export class Appointment {
   @Field({ nullable: true })
   notes: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  token: string
+
   @Column({ nullable: true , default: false})
   @Field({ nullable: true })
   employment: boolean;
@@ -77,7 +81,11 @@ export class Appointment {
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
-  scheduleDateTime: string;
+  scheduleStartDateTime: string;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  @Field()
+  scheduleEndDateTime: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

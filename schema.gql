@@ -434,13 +434,15 @@ type Appointment {
   membershipID: String
   reason: String
   notes: String
+  token: String
   employment: Boolean
   autoAccident: Boolean
   otherAccident: Boolean
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
-  scheduleDateTime: String!
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
   providerId: String
   patientId: String
   facilityId: String
@@ -876,8 +878,10 @@ type Mutation {
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
   createAppointment(createAppointmentInput: CreateAppointmentInput!): AppointmentPayload!
+  createExternalAppointment(createExternalAppointmentInput: CreateExternalAppointmentInput!): AppointmentPayload!
   updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
+  cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
 }
 
 input LoginUserInput {
@@ -1492,7 +1496,6 @@ input UpdateAttachmentInput {
 }
 
 input CreateAppointmentInput {
-  isExternal: Boolean
   paymentType: PaymentType!
   insuranceCompany: String
   membershipID: String
@@ -1504,7 +1507,26 @@ input CreateAppointmentInput {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
-  scheduleDateTime: String!
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
+  serviceId: String!
+  facilityId: String!
+  providerId: String!
+  patientId: String
+}
+
+input CreateExternalAppointmentInput {
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
+  createPatientItemInput: CreatePatientItemInput!
+}
+
+input CreateExternalAppointmentItemInput {
+  isExternal: Boolean
+  paymentType: PaymentType!
+  insuranceCompany: String
+  membershipID: String
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
   serviceId: String!
   facilityId: String!
   providerId: String!
@@ -1512,7 +1534,6 @@ input CreateAppointmentInput {
 }
 
 input UpdateAppointmentInput {
-  isExternal: Boolean
   paymentType: PaymentType
   insuranceCompany: String
   membershipID: String
@@ -1524,7 +1545,8 @@ input UpdateAppointmentInput {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
-  scheduleDateTime: String
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
   serviceId: String
   facilityId: String
   providerId: String
@@ -1534,4 +1556,8 @@ input UpdateAppointmentInput {
 
 input RemoveAppointment {
   id: String!
+}
+
+input CancelAppointment {
+  token: String!
 }

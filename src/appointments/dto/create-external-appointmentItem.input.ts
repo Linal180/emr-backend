@@ -2,7 +2,10 @@ import { Field, InputType } from '@nestjs/graphql';
 import { PaymentType } from '../entities/appointment.entity';
 
 @InputType()
-export class CreateAppointmentInput {
+export class CreateExternalAppointmentItemInput {
+
+    @Field({ nullable: true })
+    isExternal: boolean;
   
     @Field(type => PaymentType)
     paymentType: PaymentType;
@@ -13,33 +16,9 @@ export class CreateAppointmentInput {
     @Field({ nullable: true })
     membershipID?: string;
 
-    @Field({ nullable: true })
-    reason?: string;
-  
-    @Field({ nullable: true })
-    notes?: string;
-  
-    @Field({ nullable: true })
-    employment?: boolean;
-  
-    @Field({ nullable: true })
-    autoAccident?: boolean;
-  
-    @Field({ nullable: true })
-    otherAccident?: boolean;
-  
-    @Field({ nullable: true })
-    otherPartyResponsible?: boolean;
-  
-    @Field({ nullable: true })
-    primaryInsurance?: string;
-  
-    @Field({ nullable: true })
-    secondaryInsurance?: string;
-  
     @Field({ nullable: false })
     scheduleStartDateTime?: string;
-
+  
     @Field({ nullable: false })
     scheduleEndDateTime?: string;
   
@@ -54,4 +33,5 @@ export class CreateAppointmentInput {
   
     @Field({ nullable: true })
     patientId: string;
+    
 }

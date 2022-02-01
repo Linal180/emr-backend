@@ -12,3 +12,9 @@ export class GetAppointment extends PickType(UpdateAppointmentInput, ['id'] as c
 
 @InputType()
 export class RemoveAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }
+
+@InputType()
+export class CancelAppointment {
+  @Field()
+  token: string
+ }
