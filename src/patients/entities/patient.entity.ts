@@ -8,6 +8,18 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, One
 import { DoctorPatient } from './doctorPatient.entity';
 import { Employer } from './employer.entity';
 
+export enum COMMUNICATIONTYPE {
+  PHONE = "phone",
+  VOICE_MESSAGE = "Voice message",
+  MESSAGE = "Message",
+  EMAIL = "email"
+}
+
+registerEnumType(COMMUNICATIONTYPE, {
+  name: "COMMUNICATIONTYPE",
+  description: "The patient's communication method assigned",
+});
+
 export enum RACE {
   WHITE = "White",
   BLACK_AFRICAN_AMERICAN = "Black or African American",
@@ -21,6 +33,7 @@ registerEnumType(RACE, {
   name: "RACE",
   description: "The user race assigned",
 });
+
 
 export enum REGDepartment {
   HOSPITAL = "hospital",
@@ -213,6 +226,14 @@ export class Patient {
   @Field(type => PrimaryDepartment)
   primaryDepartment: PrimaryDepartment
 
+  @Column({
+    type: "enum",
+    enum: COMMUNICATIONTYPE,
+    default: COMMUNICATIONTYPE.PHONE
+  })
+  @Field(type => COMMUNICATIONTYPE)
+  preferredCommunicationMethod: COMMUNICATIONTYPE
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   registrationDate: Date;
@@ -224,6 +245,14 @@ export class Patient {
   @Column({ nullable: true, default: false })
   @Field()
   privacyNotice: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field()
+  phonePermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field()
+  voiceCallPermission: boolean;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -244,6 +273,10 @@ export class Patient {
   @Column({ nullable: true })
   @Field({ nullable: true })
   language: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  pharmacy: string;
 
   @Column({
     type: "enum",

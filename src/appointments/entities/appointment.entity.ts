@@ -15,6 +15,16 @@ registerEnumType(PaymentType, {
   description: "The patient payment type assigned",
 });
 
+export enum APPOINTMENTSTATUS {
+  CANCELLED = "cancelled",
+  INITIATED = "initiated",
+}
+
+registerEnumType(APPOINTMENTSTATUS, {
+  name: "APPOINTMENTSTATUS",
+  description: "The patient appointment status type assigned",
+});
+
 
 @Entity({ name: 'Appointments' })
 @ObjectType()
@@ -35,6 +45,18 @@ export class Appointment {
   @Field(type => PaymentType)
   paymentType: PaymentType;
 
+  @Column({
+    type: "enum",
+    enum: APPOINTMENTSTATUS,
+    default: APPOINTMENTSTATUS.INITIATED
+  })
+  @Field(type => APPOINTMENTSTATUS)
+  status: APPOINTMENTSTATUS;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  appointmentCancelReason: string;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   insuranceCompany: string;
@@ -50,6 +72,10 @@ export class Appointment {
   @Column({ nullable: true })
   @Field({ nullable: true })
   notes: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  token: string
 
   @Column({ nullable: true , default: false})
   @Field({ nullable: true })
@@ -75,9 +101,13 @@ export class Appointment {
   @Field({ nullable: true })
   secondaryInsurance: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz' })
   @Field()
-  scheduleDateTime: string;
+  scheduleStartDateTime: string;
+
+  @Column({ type: 'timestamptz' })
+  @Field()
+  scheduleEndDateTime: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

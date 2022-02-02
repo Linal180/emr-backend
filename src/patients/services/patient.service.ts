@@ -11,6 +11,8 @@ import { Connection, Repository } from 'typeorm';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreatePatientInput } from '../dto/create-patient.input';
+import { CreatePatientItemInput } from '../dto/create-patientItem.input ';
+import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
@@ -138,7 +140,7 @@ export class PatientService {
       await queryRunner.release();
     }
   }
-
+  
   /**
    * Updates patient provider
    * @param updatePatientProvider 
@@ -179,6 +181,23 @@ export class PatientService {
       await queryRunner.release();
     }
   }
+
+  /**
+   * Patients info
+   * @param patientInfoInput 
+   * @returns info 
+   */
+  async patientInfo(patientInfoInput: PatientInfoInput): Promise<Patient> {
+    //get patient info
+    const patientInstance = await this.patientRepository.findOne(patientInfoInput.patientInfoItemInput.id)
+    //create patient contact 
+    const contact = await this.contactService.createContact(patientInfoInput.createContactInput)
+    //create patient emergency contact 
+    const emergencyContact = await this.contactService.createContact(patientInfoInput.createEmergencyContactInput)
+    patientInstance.contacts = [contact, emergencyContact]
+    return await this.patientRepository.save(patientInstance)
+  }
+
   /**
    * Finds all patients
    * @param patientInput 
@@ -229,6 +248,27 @@ export class PatientService {
    */
   async getUsualProvider(id: string): Promise<Patient> {
     return await this.patientRepository.findOne(id);
+  }
+
+  /**
+   * Adds patient
+   * @param createPatientItemInput 
+   * @returns patient 
+   */
+  async addPatient(createPatientItemInput: CreatePatientItemInput): Promise<Patient> {
+    const patientInstance =  this.patientRepository.create(createPatientItemInput)
+    const doctor = await this.doctorService.findOne(createPatientItemInput.usualProviderId)
+    //creating doctorPatient Instance 
+    const doctorPatientInstance = await this.doctorPatientRepository.create({
+      doctorId: doctor.id,
+      currentProvider: true, 
+    })
+    doctorPatientInstance.doctor = doctor
+    //adding usual provider with patient
+    patientInstance.doctorPatients = [doctorPatientInstance]
+    const patient = await this.patientRepository.save(patientInstance)
+    await this.doctorPatientRepository.save(doctorPatientInstance)
+    return patient 
   }
 
   /**

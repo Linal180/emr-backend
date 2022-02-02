@@ -2,16 +2,19 @@ import { ConflictException, HttpStatus, Injectable, InternalServerErrorException
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
+import { createToken } from 'src/lib/helper';
+import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
-import { RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
-import { Appointment } from '../entities/appointment.entity';
+import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
+import { CancelAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -20,7 +23,9 @@ export class AppointmentService {
     private appointmentRepository: Repository<Appointment>,
     private readonly paginationService: PaginationService,
     private readonly doctorService: DoctorService,
+    private readonly connection: Connection,
     private readonly patientService: PatientService,
+    private readonly mailerService: MailerService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService
   ) { }
@@ -31,12 +36,16 @@ export class AppointmentService {
    * @returns appointment 
    */
   async createAppointment(createAppointmentInput: CreateAppointmentInput): Promise<Appointment> {
+     //Transaction start
+     const queryRunner = this.connection.createQueryRunner();
+     await queryRunner.connect();
+     await queryRunner.startTransaction();
     try {
       //fetch already exiting appointment
       const appointmentObj = await this.findAppointment(createAppointmentInput.providerId, createAppointmentInput.patientId)
       if(!appointmentObj){
       //creating appointment
-      const appointmentInstance = this.appointmentRepository.create(createAppointmentInput)
+      const appointmentInstance = this.appointmentRepository.create({...createAppointmentInput, isExternal: true})
       //associate provider 
       if(createAppointmentInput.providerId){
       const provider = await this.doctorService.findOne(createAppointmentInput.providerId)
@@ -58,16 +67,61 @@ export class AppointmentService {
         appointmentInstance.appointmentType = service
       }
       const appointment = await this.appointmentRepository.save(appointmentInstance);
+      await queryRunner.commitTransaction();
       return appointment
     }
     throw new ConflictException({
       status: HttpStatus.CONFLICT,
       error: 'Your appointment with this provider already exists',
     });
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+  } catch (error) {
+    await queryRunner.rollbackTransaction();
+    throw new InternalServerErrorException(error);
+  } finally {
+    await queryRunner.release();
   }
+}
+  async createExternalAppointmentInput(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Appointment> {
+     //Transaction start
+     const queryRunner = this.connection.createQueryRunner();
+     await queryRunner.connect();
+     await queryRunner.startTransaction();
+    try {
+       //create patient 
+       const patientInstance = await this.patientService.addPatient(createExternalAppointmentInput.createPatientItemInput)
+       const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true})
+       if(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId){
+        const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
+        appointmentInstance.provider = provider
+        }
+        //associate patient
+        if(patientInstance && patientInstance.id){
+          appointmentInstance.patient = patientInstance
+        }
+        //associate facility 
+        if(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId){
+          const facility = await this.facilityService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId)
+          appointmentInstance.facility = facility
+        }
+        //associate service 
+        if(createExternalAppointmentInput.createExternalAppointmentItemInput.serviceId){
+          const service = await this.servicesService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.serviceId)
+          appointmentInstance.appointmentType = service
+        }
+        //custom token creation
+        const token = createToken();
+        appointmentInstance.token = token;
+        const appointment = await this.appointmentRepository.save(appointmentInstance);
+        this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName+' '+patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id)
+        await queryRunner.commitTransaction();
+        return appointment
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        throw new InternalServerErrorException(error);
+      } finally {
+        await queryRunner.release();
+      }
+    }
 
   /**
    * Finds all appointments
@@ -95,6 +149,11 @@ export class AppointmentService {
    */
   async findOne(id: string): Promise<Appointment> {
     return await this.appointmentRepository.findOne(id);
+  }
+
+
+  async findAppointmentByProviderId(id: string): Promise<Appointment[]> {
+    return await this.appointmentRepository.find({providerId: id})
   }
 
   /**
@@ -148,6 +207,30 @@ export class AppointmentService {
   async removeAppointment({ id }: RemoveAppointment) {
     try {
       await this.appointmentRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Cancels appointment
+   * @param token 
+   */
+  async cancelAppointment(cancelAppointment: CancelAppointment) {
+    try {
+      const appointment = await this.appointmentRepository.findOne({ 
+        where: {
+          token: cancelAppointment.token
+        }
+      })
+      if(appointment){
+        return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '', reason: cancelAppointment.reason})
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Appointment cancelled or not found',
+      });
+  
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

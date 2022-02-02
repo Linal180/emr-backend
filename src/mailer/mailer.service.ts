@@ -24,7 +24,8 @@ export class MailerService {
     "updateDone": this.configService.get('REQUEST_INITIATED'),
     "requestApproved": this.configService.get('REQUEST_APPROVED'),
     "updateNeeded": this.configService.get('REQUEST_UPDATE_NEEDED'),
-    "updateDeclined": this.configService.get('REQUEST_UPDATE_DECLINED')
+    "updateDeclined": this.configService.get('REQUEST_UPDATE_DECLINED'),
+    "appointmentConfirmation": this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID')
   })[templateName]
 
   /**
@@ -43,6 +44,31 @@ export class MailerService {
       dynamicTemplateData: {
         fullName,
         resetPasswordURL: url
+      }
+    };
+    try {
+      await this.sgMail.send(msg);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
+  async sendAppointmentConfirmationsEmail(email: string, fullName: string, slotStartTime: string, token: string, id: string) {
+    const portalAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
+    const url = `${portalAppBaseUrl}/cancel-appointment?token=${token}`
+    const moreInfo = `${portalAppBaseUrl}/update-Info?id=${id}`
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+        slotStartTime,
+        cancelAppointment: url,
+        moreInfo: moreInfo
       }
     };
     try {

@@ -1,14 +1,13 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { Type } from 'class-transformer';
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class CreateScheduleInput {
 
   @Field({ nullable: false })
-  startAt: Date;
+  startAt: string;
 
   @Field({ nullable: false })
-  endAt: Date;
+  endAt: string;
 
   @Field({ nullable: true })
   recurringEndDate: Date;
