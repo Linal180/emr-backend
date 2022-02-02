@@ -112,7 +112,7 @@ export class AppointmentService {
         const token = createToken();
         appointmentInstance.token = token;
         const appointment = await this.appointmentRepository.save(appointmentInstance);
-        this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName+' '+patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token)
+        this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName+' '+patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id)
         await queryRunner.commitTransaction();
         return appointment
       } catch (error) {

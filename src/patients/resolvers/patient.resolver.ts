@@ -5,6 +5,7 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
 import { CreatePatientInput } from '../dto/create-patient.input';
+import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
@@ -27,6 +28,14 @@ export class PatientResolver {
     return {
       patient: await this.patientService.createPatient(createPatientInput),
       response: { status: 200, message: 'Patient created successfully' }
+    };
+  }
+
+  @Mutation(() => PatientPayload)
+  async patientInfo(@Args('patientInfoInput') patientInfoInput: PatientInfoInput) {
+    return {
+      patient: await this.patientService.patientInfo(patientInfoInput),
+      response: { status: 200, message: 'Patient info added successfully' }
     };
   }
 

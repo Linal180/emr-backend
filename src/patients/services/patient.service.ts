@@ -12,6 +12,7 @@ import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { CreatePatientItemInput } from '../dto/create-patientItem.input ';
+import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
@@ -180,6 +181,23 @@ export class PatientService {
       await queryRunner.release();
     }
   }
+
+  /**
+   * Patients info
+   * @param patientInfoInput 
+   * @returns info 
+   */
+  async patientInfo(patientInfoInput: PatientInfoInput): Promise<Patient> {
+    //get patient info
+    const patientInstance = await this.patientRepository.findOne(patientInfoInput.patientInfoItemInput.id)
+    //create patient contact 
+    const contact = await this.contactService.createContact(patientInfoInput.createContactInput)
+    //create patient emergency contact 
+    const emergencyContact = await this.contactService.createContact(patientInfoInput.createEmergencyContactInput)
+    patientInstance.contacts = [contact, emergencyContact]
+    return await this.patientRepository.save(patientInstance)
+  }
+
   /**
    * Finds all patients
    * @param patientInput 

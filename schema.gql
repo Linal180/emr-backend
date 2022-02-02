@@ -165,14 +165,18 @@ type Patient {
   dob: String
   registrationDepartment: REGDepartment!
   primaryDepartment: PrimaryDepartment!
+  preferredCommunicationMethod: COMMUNICATIONTYPE!
   registrationDate: DateTime!
   deceasedDate: DateTime!
   privacyNotice: Boolean!
+  phonePermission: Boolean!
+  voiceCallPermission: Boolean!
   releaseOfInfoBill: Boolean!
   callToConsent: Boolean!
   medicationHistoryAuthority: Boolean!
   patientNote: String
   language: String
+  pharmacy: String
   race: RACE
   ethnicity: ETHNICITY
   maritialStatus: MARITIALSTATUS
@@ -219,6 +223,14 @@ enum PrimaryDepartment {
   HOSPITAL
   LAB
   CLINIC
+}
+
+"""The patient's communication method assigned"""
+enum COMMUNICATIONTYPE {
+  PHONE
+  VOICE_MESSAGE
+  MESSAGE
+  EMAIL
 }
 
 """
@@ -871,6 +883,7 @@ type Mutation {
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
+  patientInfo(patientInfoInput: PatientInfoInput!): PatientPayload!
   updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
@@ -1354,6 +1367,7 @@ input CreatePatientItemInput {
   firstNameUsed: String
   prefferedName: String
   previousFirstName: String
+  pharmacy: String
   usualProviderId: String
   previouslastName: String
   motherMaidenName: String
@@ -1367,9 +1381,12 @@ input CreatePatientItemInput {
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  voiceCallPermission: Boolean
+  phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
   language: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE
   race: RACE
   ethnicity: ETHNICITY
   maritialStatus: MARITIALSTATUS
@@ -1397,6 +1414,25 @@ input CreateEmployerInput {
   patientId: String
 }
 
+input PatientInfoInput {
+  patientInfoItemInput: PatientInfoItemInput!
+  createContactInput: CreateContactInput!
+  createEmergencyContactInput: CreateContactInput!
+}
+
+input PatientInfoItemInput {
+  pharmacy: String
+  ssn: String
+  voiceCallPermission: Boolean
+  phonePermission: Boolean
+  language: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  id: String!
+}
+
 input UpdatePatientInput {
   updatePatientItemInput: UpdatePatientItemInput!
   updateContactInput: UpdateContactInput!
@@ -1416,6 +1452,7 @@ input UpdatePatientItemInput {
   firstNameUsed: String
   prefferedName: String
   previousFirstName: String
+  pharmacy: String
   usualProviderId: String
   previouslastName: String
   motherMaidenName: String
@@ -1429,9 +1466,12 @@ input UpdatePatientItemInput {
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  voiceCallPermission: Boolean
+  phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
   language: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE
   race: RACE
   ethnicity: ETHNICITY
   maritialStatus: MARITIALSTATUS
