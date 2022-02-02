@@ -1,6 +1,18 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { ScheduleServices } from 'src/providers/entities/scheduleServices.entity';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Facility } from './facility.entity';
+
+export enum ServiceType {
+  INTERNAL = "internal",
+  EXTERNAL = "external"
+}
+
+registerEnumType(ServiceType, {
+  name: "ServiceType",
+  description: "The service type assigned type",
+});
 
 @Entity({ name: 'Services' })
 @ObjectType()
@@ -12,6 +24,14 @@ export class Service {
   @Column({ nullable: false })
   @Field({ nullable: false })
   name: string;
+
+  @Column({
+    type: "enum",
+    enum: ServiceType,
+    default: ServiceType.EXTERNAL
+  })
+  @Field(type => ServiceType)
+  serviceType: ServiceType;
 
   @Column({ nullable: false })
   @Field({ nullable: false })
@@ -32,6 +52,13 @@ export class Service {
   @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
+
+  @OneToMany(() => Appointment, appointment => appointment.appointmentType, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  appointments: Appointment[];
+
+  @OneToMany(() => ScheduleServices, scheduleService => scheduleService.schedule, {onDelete: "CASCADE"})
+  @Field(type => [ScheduleServices], { nullable: true })
+  scheduleServices: ScheduleServices[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

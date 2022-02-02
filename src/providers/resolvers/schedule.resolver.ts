@@ -1,5 +1,6 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Service } from 'src/facilities/entities/services.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
@@ -7,9 +8,11 @@ import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulePayload } from '../dto/schedule-payload.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
 import { GetDoctorSchedule, GetSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { Schedule } from '../entities/schedule.entity';
+import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ScheduleService } from '../services/schedule.service';
 
-@Resolver('Schedule')
+@Resolver(() => Schedule)
 export class ScheduleResolver {
   constructor(private readonly scheduleService: ScheduleService) { }
 
@@ -54,12 +57,20 @@ export class ScheduleResolver {
 
   @Query(returns => SchedulePayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  @SetMetadata('roles', ['admin', 'super-admin'])
   async getSchedule(@Args('getSchedule') getSchedule: GetSchedule): Promise<SchedulePayload> {
     return {
       schedule: await this.scheduleService.findOne(getSchedule.id),
       response: { status: 200, message: 'Schedule fetched successfully' }
     };
+  }
+
+  @ResolveField((returns) => [Service])
+  async scheduleServices(@Parent() schedule: Schedule): Promise<ScheduleServices[]> {
+    if (schedule) {
+      const scheduleService = await this.scheduleService.getScheduleService(schedule.id);
+      return scheduleService;
+    }
   }
 
   @Query(returns => SchedulesPayload)

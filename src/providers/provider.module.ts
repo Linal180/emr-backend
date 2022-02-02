@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppointmentModule } from 'src/appointments/appointment.module';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { PatientModule } from 'src/patients/patient.module';
@@ -8,6 +9,7 @@ import { BillingAddress } from './entities/billing-address.entity';
 import { Contact } from './entities/contact.entity';
 import { Doctor } from './entities/doctor.entity';
 import { Schedule } from './entities/schedule.entity';
+import { ScheduleServices } from './entities/scheduleServices.entity';
 import { Staff } from './entities/staff.entity';
 import { ContactResolver } from './resolvers/contact.resolver';
 import { DoctorResolver } from './resolvers/doctor.resolver';
@@ -21,11 +23,12 @@ import { StaffService } from './services/staff.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress, Schedule]),
+    TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress, Schedule,ScheduleServices]),
     PaginationModule,
     forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),
-    forwardRef(() => UsersModule)
+    forwardRef(() => UsersModule),
+    forwardRef(() => AppointmentModule)
   ],
   providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService, DoctorResolver, DoctorService, ScheduleResolver, ScheduleService],
   exports: [ContactService, StaffService, ScheduleService, TypeOrmModule, BillingAddressService, DoctorService]

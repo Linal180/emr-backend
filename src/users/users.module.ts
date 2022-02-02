@@ -30,9 +30,9 @@ import { UsersService } from "./users.service";
     }),
     MailerModule,
     PaginationModule,
-    FacilityModule,
-    ProviderModule,
-    PatientModule
+    forwardRef(() => FacilityModule),
+    forwardRef(() => ProviderModule),
+    forwardRef(() => PatientModule)
   ],
   providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
   controllers: [UsersController],

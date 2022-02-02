@@ -59,21 +59,6 @@ enum UserStatus {
   ACTIVE
 }
 
-type Schedule {
-  id: String!
-  startAt: DateTime!
-  endAt: DateTime!
-  recurringEndDate: DateTime
-  doctor: Doctor
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type Doctor {
   id: String!
   firstName: String
@@ -141,6 +126,179 @@ enum SsnType {
   MEDICAID
 }
 
+type DoctorPatient {
+  id: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Employer {
+  id: String!
+  name: String
+  email: String
+  phone: String
+  mobile: String
+  industry: String
+  usualOccupation: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Patient {
+  id: String!
+  suffix: String
+  email: String
+  firstName: String
+  middleName: String
+  lastName: String
+  firstNameUsed: String
+  prefferedName: String
+  previousFirstName: String
+  previouslastName: String
+  motherMaidenName: String
+  ssn: String
+  gender: GENDERIDENTITY!
+  dob: String
+  registrationDepartment: REGDepartment!
+  primaryDepartment: PrimaryDepartment!
+  preferredCommunicationMethod: COMMUNICATIONTYPE!
+  registrationDate: DateTime!
+  deceasedDate: DateTime!
+  privacyNotice: Boolean!
+  phonePermission: Boolean!
+  voiceCallPermission: Boolean!
+  releaseOfInfoBill: Boolean!
+  callToConsent: Boolean!
+  medicationHistoryAuthority: Boolean!
+  patientNote: String
+  language: String
+  pharmacy: String
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  sexualOrientation: SEXUALORIENTATION
+  genderIdentity: GENDERIDENTITY
+  sexAtBirth: GENDERIDENTITY
+  pronouns: PRONOUNS
+  homeBound: HOMEBOUND
+  holdStatement: HOLDSTATEMENT
+  statementDelivereOnline: Boolean!
+  statementNote: String!
+  statementNoteDateFrom: String!
+  statementNoteDateTo: String!
+  facilityId: String
+  attachments: [Attachment!]
+  contacts: [Contact!]
+  facility: Facility
+  user: User
+  doctorPatients: [DoctorPatient!]
+  employer: [Employer!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The patient's sexual orientation type assigned"""
+enum GENDERIDENTITY {
+  MALE
+  FEMALE
+  TRANSGENDER_MALE
+  TRANSGENDER_FEMALE
+  NOT_EXCLUSIVE
+  NONE
+}
+
+"""The facility Registration Department type assigned type"""
+enum REGDepartment {
+  HOSPITAL
+  LAB
+  CLINIC
+}
+
+"""The facility Primary Department type assigned type"""
+enum PrimaryDepartment {
+  HOSPITAL
+  LAB
+  CLINIC
+}
+
+"""The patient's communication method assigned"""
+enum COMMUNICATIONTYPE {
+  PHONE
+  VOICE_MESSAGE
+  MESSAGE
+  EMAIL
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""The user race assigned"""
+enum RACE {
+  WHITE
+  BLACK_AFRICAN_AMERICAN
+  ASIAN
+  AMERICAN_INDIAN_ALASKA_NATIVE
+  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
+  OTHER
+}
+
+"""The patient's ethnicity type assigned"""
+enum ETHNICITY {
+  NONE
+  CENTERAL_AMERICAN
+  CENTERAL_AMERICAN_INDIAN
+}
+
+"""The patient's maritial status type assigned"""
+enum MARITIALSTATUS {
+  SINGLE
+  MARIED
+  WIDOWED
+  SEPARATED
+  DIVORCED
+}
+
+"""The patient's sexual orientation type assigned"""
+enum SEXUALORIENTATION {
+  HOMOSEXUAL
+  HETEROSEXUAL
+  BISEXUAL
+  DONT_KNOW
+  NONE
+}
+
+"""The patient's pronouns type assigned"""
+enum PRONOUNS {
+  HE
+  SHE
+  NONE
+}
+
+"""The patient's homebound type assigned"""
+enum HOMEBOUND {
+  YES
+  NO
+}
+
+"""The patient's hold statement type assigned"""
+enum HOLDSTATEMENT {
+  NONE
+  BAD_ADDRESS
+  NO_FORW_ADDRESS
+  BANKRUPTCY
+  CLAIM_CANCELED
+  INCORRECT_GURANTOR
+  PATIENT_DEASEASED
+  ACCOUNT_TOO_LONG
+  PRACTICE_REQUEST
+}
+
 type Contact {
   id: String!
   email: String
@@ -169,6 +327,7 @@ type Contact {
   facilityId: String
   facility: Facility
   doctor: Doctor
+  schedule: [Schedule!]
   userId: String
   createdAt: String!
   updatedAt: String!
@@ -238,150 +397,88 @@ enum ContactType {
   GUARANDOR
 }
 
-type Employer {
+type Schedule {
   id: String!
-  name: String
-  email: String
-  phone: String
-  mobile: String
-  industry: String
-  usualOccupation: String
+  startAt: String!
+  endAt: String!
+  recurringEndDate: DateTime
+  doctor: Doctor
+  location: Contact
+  scheduleServices: [ScheduleServices!]
   createdAt: String!
   updatedAt: String!
 }
 
-type Patient {
+type ScheduleServices {
   id: String!
-  suffix: String
-  email: String
-  firstName: String
-  middleName: String
-  lastName: String
-  firstNameUsed: String
-  prefferedName: String
-  previousFirstName: String
-  previouslastName: String
-  motherMaidenName: String
-  ssn: String
-  gender: GENDERIDENTITY!
-  dob: String
-  registrationDepartment: REGDepartment!
-  primaryDepartment: PrimaryDepartment!
-  registrationDate: DateTime!
-  deceasedDate: DateTime!
-  privacyNotice: Boolean!
-  releaseOfInfoBill: Boolean!
-  callToConsent: Boolean!
-  medicationHistoryAuthority: Boolean!
-  patientNote: String
-  language: String
-  race: RACE
-  ethnicity: ETHNICITY
-  maritialStatus: MARITIALSTATUS
-  sexualOrientation: SEXUALORIENTATION
-  genderIdentity: GENDERIDENTITY
-  sexAtBirth: GENDERIDENTITY
-  pronouns: PRONOUNS
-  homeBound: HOMEBOUND
-  holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean!
-  statementNote: String!
-  statementNoteDateFrom: String!
-  statementNoteDateTo: String!
+  serviceId: String
+  scheduleId: String
+  service: Service
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Service {
+  id: String!
+  name: String!
+  serviceType: ServiceType!
+  duration: String!
+  price: String!
+  isActive: Boolean
   facilityId: String
-  attachments: [Attachment!]
-  contacts: [Contact!]
   facility: Facility
-  user: User
-  usualProvider: [Doctor]
-  employer: [Employer!]
-  createdAt: String!
-  updatedAt: String!
+  scheduleServices: [ScheduleServices!]
+  createdAt: String
+  updatedAt: String
 }
 
-"""The patient's sexual orientation type assigned"""
-enum GENDERIDENTITY {
-  MALE
-  FEMALE
-  TRANSGENDER_MALE
-  TRANSGENDER_FEMALE
-  NOT_EXCLUSIVE
-  NONE
+"""The service type assigned type"""
+enum ServiceType {
+  INTERNAL
+  EXTERNAL
 }
 
-"""The facility Registration Department type assigned type"""
-enum REGDepartment {
-  HOSPITAL
-  LAB
-  CLINIC
+type Appointment {
+  id: String!
+  isExternal: Boolean
+  paymentType: PaymentType!
+  status: APPOINTMENTSTATUS!
+  appointmentCancelReason: String
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  token: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
+  providerId: String
+  patientId: String
+  facilityId: String
+  appointmentTypeId: String
+  appointmentType: Service
+  facility: Facility
+  provider: Doctor
+  patient: Patient
+  createdAt: String
+  updatedAt: String
 }
 
-"""The facility Primary Department type assigned type"""
-enum PrimaryDepartment {
-  HOSPITAL
-  LAB
-  CLINIC
+"""The patient payment type assigned"""
+enum PaymentType {
+  SELF
+  INSURANCE
 }
 
-"""The user race assigned"""
-enum RACE {
-  WHITE
-  BLACK_AFRICAN_AMERICAN
-  ASIAN
-  AMERICAN_INDIAN_ALASKA_NATIVE
-  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
-  OTHER
-}
-
-"""The patient's ethnicity type assigned"""
-enum ETHNICITY {
-  NONE
-  CENTERAL_AMERICAN
-  CENTERAL_AMERICAN_INDIAN
-}
-
-"""The patient's maritial status type assigned"""
-enum MARITIALSTATUS {
-  SINGLE
-  MARIED
-  WIDOWED
-  SEPARATED
-  DIVORCED
-}
-
-"""The patient's sexual orientation type assigned"""
-enum SEXUALORIENTATION {
-  HOMOSEXUAL
-  HETEROSEXUAL
-  BISEXUAL
-  DONT_KNOW
-  NONE
-}
-
-"""The patient's pronouns type assigned"""
-enum PRONOUNS {
-  HE
-  SHE
-  NONE
-}
-
-"""The patient's homebound type assigned"""
-enum HOMEBOUND {
-  YES
-  NO
-}
-
-"""The patient's hold statement type assigned"""
-enum HOLDSTATEMENT {
-  NONE
-  BAD_ADDRESS
-  NO_FORW_ADDRESS
-  BANKRUPTCY
-  CLAIM_CANCELED
-  INCORRECT_GURANTOR
-  PATIENT_DEASEASED
-  ACCOUNT_TOO_LONG
-  PRACTICE_REQUEST
+"""The patient appointment status type assigned"""
+enum APPOINTMENTSTATUS {
+  CANCELLED
+  INITIATED
 }
 
 type Staff {
@@ -407,18 +504,6 @@ enum Gender {
   MALE
   FEMALE
   OTHER
-}
-
-type Service {
-  id: String!
-  name: String!
-  duration: String!
-  price: String!
-  isActive: Boolean
-  facilityId: String
-  facility: Facility
-  createdAt: String
-  updatedAt: String
 }
 
 type Facility {
@@ -529,6 +614,32 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type AccessUserPayload {
+  access_token: String
+  roles: [Role!]
+  response: ResponsePayload
+}
+
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  response: ResponsePayload
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+}
+
+type UsersPayload {
+  response: ResponsePayload
+  users: [User]
+  pagination: PaginationPayload
+}
+
 type PatientPayload {
   response: ResponsePayload
   patient: Patient
@@ -607,29 +718,14 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
-type AccessUserPayload {
-  access_token: String
-  roles: [Role!]
+type AppointmentPayload {
   response: ResponsePayload
+  appointment: Appointment
 }
 
-type ForgotPasswordPayload {
+type AppointmentsPayload {
   response: ResponsePayload
-}
-
-type UserPayload {
-  user: User
-  response: ResponsePayload
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
-}
-
-type UsersPayload {
-  response: ResponsePayload
-  users: [User]
+  appointments: [Appointment]
   pagination: PaginationPayload
 }
 
@@ -657,6 +753,8 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
+  findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
+  getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
 }
 
 input UsersInput {
@@ -750,6 +848,14 @@ input GetMedia {
   id: String
 }
 
+input AppointmentInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetAppointment {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -785,12 +891,18 @@ type Mutation {
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
+  patientInfo(patientInfoInput: PatientInfoInput!): PatientPayload!
   updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
+  createAppointment(createAppointmentInput: CreateAppointmentInput!): AppointmentPayload!
+  createExternalAppointment(createExternalAppointmentInput: CreateExternalAppointmentInput!): AppointmentPayload!
+  updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
+  removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
+  cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
 }
 
 input LoginUserInput {
@@ -1028,6 +1140,9 @@ input CreateServiceInput {
   price: String!
   facilityId: String!
   isActive: Boolean
+
+  """Service type"""
+  serviceType: ServiceType
 }
 
 input UpdateServiceInput {
@@ -1036,6 +1151,9 @@ input UpdateServiceInput {
   price: String
   facilityId: String
   isActive: Boolean
+
+  """Service type"""
+  serviceType: ServiceType
   id: String!
 }
 
@@ -1115,7 +1233,7 @@ input CreateDoctorItemInput {
   roleType: UserRole
   adminId: String
   timeZone: String
-  facilityId: String
+  facilityId: String!
   providerIntials: String
   degreeCredentials: String
 
@@ -1216,17 +1334,21 @@ input DisableDoctor {
 }
 
 input CreateScheduleInput {
-  startAt: DateTime!
-  endAt: DateTime!
+  startAt: String!
+  endAt: String!
   recurringEndDate: DateTime
   doctorId: String!
+  locationId: String!
+  servicesIds: [String!]!
 }
 
 input UpdateScheduleInput {
-  startAt: DateTime
-  endAt: DateTime
+  startAt: String
+  endAt: String
   recurringEndDate: DateTime
   doctorId: String
+  locationId: String
+  servicesIds: [String!]
   id: String!
 }
 
@@ -1253,6 +1375,7 @@ input CreatePatientItemInput {
   firstNameUsed: String
   prefferedName: String
   previousFirstName: String
+  pharmacy: String
   usualProviderId: String
   previouslastName: String
   motherMaidenName: String
@@ -1266,9 +1389,12 @@ input CreatePatientItemInput {
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  voiceCallPermission: Boolean
+  phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
   language: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE
   race: RACE
   ethnicity: ETHNICITY
   maritialStatus: MARITIALSTATUS
@@ -1296,6 +1422,25 @@ input CreateEmployerInput {
   patientId: String
 }
 
+input PatientInfoInput {
+  patientInfoItemInput: PatientInfoItemInput!
+  createContactInput: CreateContactInput!
+  createEmergencyContactInput: CreateContactInput!
+}
+
+input PatientInfoItemInput {
+  pharmacy: String
+  ssn: String
+  voiceCallPermission: Boolean
+  phonePermission: Boolean
+  language: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  id: String!
+}
+
 input UpdatePatientInput {
   updatePatientItemInput: UpdatePatientItemInput!
   updateContactInput: UpdateContactInput!
@@ -1315,6 +1460,7 @@ input UpdatePatientItemInput {
   firstNameUsed: String
   prefferedName: String
   previousFirstName: String
+  pharmacy: String
   usualProviderId: String
   previouslastName: String
   motherMaidenName: String
@@ -1328,9 +1474,12 @@ input UpdatePatientItemInput {
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  voiceCallPermission: Boolean
+  phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
   language: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE
   race: RACE
   ethnicity: ETHNICITY
   maritialStatus: MARITIALSTATUS
@@ -1392,4 +1541,72 @@ input UpdateAttachmentInput {
   description: String
   url: String
   id: String
+}
+
+input CreateAppointmentInput {
+  paymentType: PaymentType!
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
+  serviceId: String!
+  facilityId: String!
+  providerId: String!
+  patientId: String
+}
+
+input CreateExternalAppointmentInput {
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
+  createPatientItemInput: CreatePatientItemInput!
+}
+
+input CreateExternalAppointmentItemInput {
+  isExternal: Boolean
+  paymentType: PaymentType!
+  insuranceCompany: String
+  membershipID: String
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
+  serviceId: String!
+  facilityId: String!
+  providerId: String!
+  patientId: String
+}
+
+input UpdateAppointmentInput {
+  paymentType: PaymentType
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
+  serviceId: String
+  facilityId: String
+  providerId: String
+  patientId: String
+  id: String!
+}
+
+input RemoveAppointment {
+  id: String!
+}
+
+input CancelAppointment {
+  token: String!
+  reason: String!
 }

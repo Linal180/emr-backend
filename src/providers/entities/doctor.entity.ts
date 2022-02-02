@@ -1,8 +1,9 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
+import { DoctorPatient } from 'src/patients/entities/doctorPatient.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { BillingAddress } from './billing-address.entity';
 import { Contact } from './contact.entity';
 import { Schedule } from './schedule.entity';
@@ -215,12 +216,15 @@ export class Doctor {
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
 
-  @ManyToMany(type => Patient, patient => patient.usualProvider)
-  patients: Patient[];
+  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.patient)
+  doctorPatients: DoctorPatient[];
 
   @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Schedule], { nullable: true })
   schedule: Schedule[];
+
+  @OneToMany(() => Appointment, appointment => appointment.provider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  appointments: Appointment[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

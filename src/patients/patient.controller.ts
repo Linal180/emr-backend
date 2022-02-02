@@ -12,8 +12,7 @@ import {File} from '../aws/dto/file-input.dto'
 export class PatientController {
   constructor(private readonly patientService: PatientService) { }
 
-  @UseGuards(JwtAuthRestFulGuard, RestFulRoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
@@ -28,16 +27,12 @@ export class PatientController {
     }
   }
 
-  @UseGuards(JwtAuthRestFulGuard, RestFulRoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
   @Delete('image/:id')
   async remove(@Param('id') id: string) {
     await this.patientService.removePatientMedia(id)
     return { status: 200, message: 'Patient attachment deleted successfully' }
   }
 
-  @UseGuards(JwtAuthRestFulGuard, RestFulRoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('image/update')
   @UseInterceptors(FileInterceptor('file', {
@@ -51,8 +46,6 @@ export class PatientController {
     }
   }
 
-  @UseGuards(JwtAuthRestFulGuard, RestFulRoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
   @Get('image/:id')
   async getMedia(@Param('id') id: string) {
     const preSignedUrl = await this.patientService.getPatientMedia(id)

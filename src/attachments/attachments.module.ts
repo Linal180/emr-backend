@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AwsModule } from 'src/aws/aws.module';
 import { UsersModule } from 'src/users/users.module';
@@ -12,7 +12,7 @@ import { Attachment } from './entities/attachment.entity';
     TypeOrmModule.forFeature([Attachment]),
     AwsModule,
     UtilsModule,
-    UsersModule
+    forwardRef(() => UsersModule)
   ],
   providers: [AttachmentsService, AttachmentsResolver],
   exports: [AttachmentsService],

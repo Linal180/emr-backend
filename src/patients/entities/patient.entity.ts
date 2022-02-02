@@ -1,11 +1,24 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { DoctorPatient } from './doctorPatient.entity';
 import { Employer } from './employer.entity';
+
+export enum COMMUNICATIONTYPE {
+  PHONE = "phone",
+  VOICE_MESSAGE = "Voice message",
+  MESSAGE = "Message",
+  EMAIL = "email"
+}
+
+registerEnumType(COMMUNICATIONTYPE, {
+  name: "COMMUNICATIONTYPE",
+  description: "The patient's communication method assigned",
+});
 
 export enum RACE {
   WHITE = "White",
@@ -20,6 +33,7 @@ registerEnumType(RACE, {
   name: "RACE",
   description: "The user race assigned",
 });
+
 
 export enum REGDepartment {
   HOSPITAL = "hospital",
@@ -212,6 +226,14 @@ export class Patient {
   @Field(type => PrimaryDepartment)
   primaryDepartment: PrimaryDepartment
 
+  @Column({
+    type: "enum",
+    enum: COMMUNICATIONTYPE,
+    default: COMMUNICATIONTYPE.PHONE
+  })
+  @Field(type => COMMUNICATIONTYPE)
+  preferredCommunicationMethod: COMMUNICATIONTYPE
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   registrationDate: Date;
@@ -223,6 +245,14 @@ export class Patient {
   @Column({ nullable: true, default: false })
   @Field()
   privacyNotice: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field()
+  phonePermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field()
+  voiceCallPermission: boolean;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -243,6 +273,10 @@ export class Patient {
   @Column({ nullable: true })
   @Field({ nullable: true })
   language: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  pharmacy: string;
 
   @Column({
     type: "enum",
@@ -347,16 +381,18 @@ export class Patient {
   @ManyToOne(() => Facility, facility => facility.patients, {eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
-  
+
   @OneToOne(() => User, {eager: true})
   @JoinColumn()
   @Field(type => User, { nullable: true })
   user: User;
 
-  @Field(type => [Doctor], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Doctor, doctor => doctor.patients, {lazy: true})
-  @JoinTable({ name: 'DoctorPatients' })
-  usualProvider: Doctor[];
+  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.doctor, {onDelete: "CASCADE"})
+  @Field(type => [DoctorPatient], { nullable: true })
+  doctorPatients: DoctorPatient[];
+
+  @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  appointments: Appointment[];
   
   @OneToMany(() => Employer, employer => employer.patient, {eager: true, onDelete: "CASCADE"})
   @Field(type => [Employer], { nullable: true })

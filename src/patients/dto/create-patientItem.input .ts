@@ -1,6 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { UserRole } from 'src/users/entities/role.entity';
-import { ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, PrimaryDepartment, PRONOUNS, RACE, REGDepartment, SEXUALORIENTATION } from '../entities/patient.entity';
+import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, PrimaryDepartment, PRONOUNS, RACE, REGDepartment, SEXUALORIENTATION } from '../entities/patient.entity';
 
 @InputType()
 export class CreatePatientItemInput {
@@ -28,6 +27,9 @@ export class CreatePatientItemInput {
 
   @Field({ nullable: true })
   previousFirstName: string;
+
+  @Field({ nullable: true })
+  pharmacy: string;
 
   @Field({ nullable: true })
   usualProviderId: string;
@@ -69,6 +71,12 @@ export class CreatePatientItemInput {
   callToConsent: boolean;
 
   @Field({ nullable: true })
+  voiceCallPermission: boolean;
+
+  @Field({ nullable: true })
+  phonePermission: boolean;
+
+  @Field({ nullable: true })
   medicationHistoryAuthority: boolean;
 
   @Field({ nullable: true })
@@ -76,6 +84,9 @@ export class CreatePatientItemInput {
 
   @Field({ nullable: true })
   language: string;
+  
+  @Field(type => COMMUNICATIONTYPE, { nullable: true })
+  preferredCommunicationMethod: COMMUNICATIONTYPE
 
   @Field(type => RACE, { nullable: true })
   race: RACE
