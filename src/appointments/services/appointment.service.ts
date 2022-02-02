@@ -13,8 +13,8 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
-import { Appointment } from '../entities/appointment.entity';
+import { CancelAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -151,6 +151,11 @@ export class AppointmentService {
     return await this.appointmentRepository.findOne(id);
   }
 
+
+  async findAppointmentByProviderId(id: string): Promise<Appointment[]> {
+    return await this.appointmentRepository.find({providerId: id})
+  }
+
   /**
    * Finds appointment
    * @param providerId 
@@ -211,9 +216,21 @@ export class AppointmentService {
    * Cancels appointment
    * @param token 
    */
-  async cancelAppointment(token: string) {
+  async cancelAppointment(cancelAppointment: CancelAppointment) {
     try {
-      await this.appointmentRepository.delete({token})
+      const appointment = await this.appointmentRepository.findOne({ 
+        where: {
+          token: cancelAppointment.token
+        }
+      })
+      if(appointment){
+        return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '', reason: cancelAppointment.reason})
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Appointment cancelled or not found',
+      });
+  
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

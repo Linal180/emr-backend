@@ -17,4 +17,7 @@ export class RemoveAppointment extends PickType(UpdateAppointmentInput, ['id'] a
 export class CancelAppointment {
   @Field()
   token: string
+
+  @Field()
+  reason: string
  }

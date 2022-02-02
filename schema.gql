@@ -399,8 +399,8 @@ enum ContactType {
 
 type Schedule {
   id: String!
-  startAt: DateTime!
-  endAt: DateTime!
+  startAt: String!
+  endAt: String!
   recurringEndDate: DateTime
   doctor: Doctor
   location: Contact
@@ -442,6 +442,8 @@ type Appointment {
   id: String!
   isExternal: Boolean
   paymentType: PaymentType!
+  status: APPOINTMENTSTATUS!
+  appointmentCancelReason: String
   insuranceCompany: String
   membershipID: String
   reason: String
@@ -471,6 +473,12 @@ type Appointment {
 enum PaymentType {
   SELF
   INSURANCE
+}
+
+"""The patient appointment status type assigned"""
+enum APPOINTMENTSTATUS {
+  CANCELLED
+  INITIATED
 }
 
 type Staff {
@@ -1326,8 +1334,8 @@ input DisableDoctor {
 }
 
 input CreateScheduleInput {
-  startAt: DateTime!
-  endAt: DateTime!
+  startAt: String!
+  endAt: String!
   recurringEndDate: DateTime
   doctorId: String!
   locationId: String!
@@ -1335,8 +1343,8 @@ input CreateScheduleInput {
 }
 
 input UpdateScheduleInput {
-  startAt: DateTime
-  endAt: DateTime
+  startAt: String
+  endAt: String
   recurringEndDate: DateTime
   doctorId: String
   locationId: String
@@ -1600,4 +1608,5 @@ input RemoveAppointment {
 
 input CancelAppointment {
   token: String!
+  reason: String!
 }

@@ -1,5 +1,7 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { scheduled } from 'rxjs';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { Service } from 'src/facilities/entities/services.entity';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -29,6 +31,7 @@ export class ScheduleService {
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
     private readonly servicesService: ServicesService,
+    private readonly appointmentService: AppointmentService
   ) { }
 
   /**
@@ -150,12 +153,15 @@ export class ScheduleService {
    * @returns schedule 
    */
   async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
+    //fetch doctor's booked appointment
+    const appointment = await this.appointmentService.findAppointmentByProviderId(id)
     try {
       const schedules = await this.scheduleRepository.find({
         where: {
           doctor: id
         }
       })
+     
       return { schedules };
     } catch (error) {
       throw new InternalServerErrorException(error);

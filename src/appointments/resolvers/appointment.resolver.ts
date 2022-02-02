@@ -126,7 +126,7 @@ export class AppointmentResolver {
 
   @Mutation(() => AppointmentPayload)
   async cancelAppointment(@Args('cancelAppointment') cancelAppointment: CancelAppointment) {
-    await this.appointmentService.cancelAppointment(cancelAppointment.token);
+    await this.appointmentService.cancelAppointment(cancelAppointment);
     return { response: { status: 200, message: 'Appointment cancelled successfully' } };
   }
 }

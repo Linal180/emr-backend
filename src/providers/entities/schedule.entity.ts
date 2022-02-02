@@ -13,11 +13,11 @@ export class Schedule {
 
   @Column({ type: 'timestamptz' })
   @Field()
-  startAt: Date;
+  startAt: string;
 
   @Column({ type: 'timestamptz' })
   @Field()
-  endAt: Date;
+  endAt: string;
 
   @Column({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

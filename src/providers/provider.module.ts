@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppointmentModule } from 'src/appointments/appointment.module';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { PatientModule } from 'src/patients/patient.module';
@@ -26,7 +27,8 @@ import { StaffService } from './services/staff.service';
     PaginationModule,
     forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),
-    forwardRef(() => UsersModule)
+    forwardRef(() => UsersModule),
+    forwardRef(() => AppointmentModule)
   ],
   providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService, DoctorResolver, DoctorService, ScheduleResolver, ScheduleService],
   exports: [ContactService, StaffService, ScheduleService, TypeOrmModule, BillingAddressService, DoctorService]
