@@ -51,4 +51,14 @@ export class UtilsService {
     return result;
   }
 
+  /**
+   * Converts tz
+   * @param date 
+   * @param tzString 
+   * @returns  
+   */
+  async convertTZ(date, tzString) {
+    return  new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
+  }
+
 }

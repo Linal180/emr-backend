@@ -830,6 +830,8 @@ input GetSchedule {
 
 input GetDoctorSchedule {
   id: String!
+  offset: Float!
+  currentDate: String!
 }
 
 input PatientInput {

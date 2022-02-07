@@ -1,10 +1,11 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { scheduled } from 'rxjs';
+import * as moment from "moment";
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { Service } from 'src/facilities/entities/services.entity';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
@@ -15,6 +16,7 @@ import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ContactService } from './contact.service';
 import { DoctorService } from './doctor.service';
+
 
 @Injectable()
 export class ScheduleService {
@@ -31,7 +33,8 @@ export class ScheduleService {
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
     private readonly servicesService: ServicesService,
-    private readonly appointmentService: AppointmentService
+    private readonly appointmentService: AppointmentService,
+    private readonly utilsService: UtilsService
   ) { }
 
   /**
@@ -154,27 +157,20 @@ export class ScheduleService {
    * @param getDoctorSchedule 
    * @returns schedule 
    */
-  async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
+  async getDoctorSchedule(getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
+
+    const utc_start_date_minus_offset = moment(new Date(getDoctorSchedule.currentDate)).startOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();
+    const utc_end_date_minus_offset = moment(new Date (getDoctorSchedule.currentDate)).endOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();    
+    console.log("utc_start_date_minus_offset",utc_start_date_minus_offset);
+    console.log("utc_end_date_minus_offset",utc_end_date_minus_offset);
     //fetch doctor's booked appointment
-    const appointment = await this.appointmentService.findAppointmentByProviderId(id)
-    console.log("appointment",appointment);
+    const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSchedule)
     try {
       const schedules = await this.scheduleRepository.find({
         where: {
-          doctor: id
+          doctor: getDoctorSchedule.id
         }
       })
-      if(schedules){
-        schedules.map(item => {
-          if(appointment){
-            appointment.map(appointmentItem => {
-              console.log("typeof", appointmentItem.scheduleStartDateTime);
-              console.log("typeof", item.startAt);
-            })
-          }
-        })
-      }
-      console.log("schedules",schedules);
       return { schedules };
     } catch (error) {
       throw new InternalServerErrorException(error);

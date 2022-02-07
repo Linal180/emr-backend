@@ -6,6 +6,7 @@ import { createToken } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
+import { GetDoctorSchedule } from 'src/providers/dto/update-schedule.input';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { Connection, Repository } from 'typeorm';
 import AppointmentInput from '../dto/appointment-input.dto';
@@ -152,8 +153,8 @@ export class AppointmentService {
   }
 
 
-  async findAppointmentByProviderId(id: string): Promise<Appointment[]> {
-    return await this.appointmentRepository.find({providerId: id})
+  async findAppointmentByProviderId(getDoctorSchedule: GetDoctorSchedule): Promise<Appointment[]> {
+    return await this.appointmentRepository.find({providerId: getDoctorSchedule.id})
   }
 
   /**
