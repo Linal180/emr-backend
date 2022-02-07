@@ -88,7 +88,7 @@ export class AppointmentService {
      await queryRunner.startTransaction();
     try {
        //create patient 
-       const patientInstance = await this.patientService.addPatient(createExternalAppointmentInput.createPatientItemInput)
+       const patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
        const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true})
        if(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId){
         const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)

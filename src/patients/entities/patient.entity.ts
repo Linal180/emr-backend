@@ -164,6 +164,10 @@ export class Patient {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  patientRecord: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   firstName: string;
 
   @Column({ nullable: true })
