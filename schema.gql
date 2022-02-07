@@ -152,6 +152,7 @@ type Patient {
   id: String!
   suffix: String
   email: String
+  patientRecord: String
   firstName: String
   middleName: String
   lastName: String
@@ -1370,6 +1371,7 @@ input CreatePatientItemInput {
   suffix: String
   email: String
   firstName: String
+  patientRecord: String
   middleName: String
   lastName: String
   firstNameUsed: String
@@ -1455,6 +1457,7 @@ input UpdatePatientItemInput {
   suffix: String
   email: String
   firstName: String
+  patientRecord: String
   middleName: String
   lastName: String
   firstNameUsed: String
@@ -1566,6 +1569,7 @@ input CreateAppointmentInput {
 input CreateExternalAppointmentInput {
   createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
   createPatientItemInput: CreatePatientItemInput!
+  createGuardianContactInput: CreateContactInput!
 }
 
 input CreateExternalAppointmentItemInput {

@@ -1,6 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { CreateContactInput } from 'src/providers/dto/create-contact.input';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { CreateEmployerInput } from './create-employer.input';
 import { CreatePatientItemInput } from './create-patientItem.input ';
 

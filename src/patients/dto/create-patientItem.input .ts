@@ -14,6 +14,9 @@ export class CreatePatientItemInput {
   firstName: string;
 
   @Field({ nullable: true })
+  patientRecord: string;
+
+  @Field({ nullable: true })
   middleName: string;
 
   @Field({ nullable: true })
