@@ -16,6 +16,9 @@ export class GetDoctorSchedule extends PickType(UpdateScheduleInput, ['id'] as c
   offset: number
 
   @Field()
+  serviceId: string
+
+  @Field()
   currentDate: string
  }
 
