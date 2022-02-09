@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from "moment";
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { Service } from 'src/facilities/entities/services.entity';
 import { ServicesService } from 'src/facilities/services/services.service';
@@ -195,12 +196,11 @@ export class ScheduleService {
    * @param getDoctorSchedule 
    * @returns schedule 
    */
-  async getDoctorSchedule(getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
+  async getDoctorSlots(getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
     const uTcStartDateOffset = moment(new Date(getDoctorSchedule.currentDate)).startOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();
     const uTcEndDateOffset = moment(new Date (getDoctorSchedule.currentDate)).endOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();
     console.log("uTcStartDateOffset",uTcStartDateOffset);
     console.log("uTcEndDateOffset",uTcEndDateOffset);
-        
     //fetch doctor's booked appointment 
     const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSchedule,uTcStartDateOffset,uTcEndDateOffset)
     // console.log("appointment",appointment);
@@ -208,16 +208,56 @@ export class ScheduleService {
       const schedules = await this.getDoctorsTodaySchedule(getDoctorSchedule.id, uTcStartDateOffset, uTcEndDateOffset)
       const newSchedule = await this.getScheduleServices(schedules, getDoctorSchedule.serviceId)
       const duration = parseInt(await(await this.servicesService.findOne(getDoctorSchedule.serviceId)).duration)
+      //get doctor's remaining time 
+      const remainingAvailability = await this.RemainingAvailability(newSchedule,appointment,duration)
       //subtract the appointment time from doctor's schedule
       const slots = await this.getTimeStops(newSchedule, duration)
-      const remainingSlots = await this.getRemainingSlots(newSchedule, slots)
-      
-      return { schedules };
+      // console.log("slots",slots);
+      const remainingSlots = await this.getRemainingSlots(slots, appointment)
+      // console.log("remainingSlots",remainingSlots);
+      return remainingSlots;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  } 
+
+  /**
+   * Remaining availability
+   * @param schedule 
+   * @param appointment 
+   */
+  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number){ // in progress
+    const x = {
+      nextSlot: 30,
+      breakTime: appointment,
+      startTime: schedule[0].startAt,
+      endTime: schedule[0].endAt,
+    };
+    var slotTime = moment(x.startTime, "HH:mm");
+    var endTime = moment(x.endTime, "HH:mm");
+    let times = [];
+    while (slotTime < endTime)
+    {
+      if (!await this.isInBreak(slotTime, x.breakTime)) {
+        times.push(slotTime.format("HH:mm"));
+      }
+      slotTime = slotTime.add(x.nextSlot, 'minutes');
+    }
+    console.log("Time slots: ", times);
   }
 
+  /**
+   * Determines whether in break is
+   * @param slotTime 
+   * @param breakTimes 
+   * @returns  
+   */
+  async isInBreak(slotTime, breakTimes) {
+    return breakTimes.some((br) => {
+      console.log("br",slotTime);
+      return slotTime >= moment(br.scheduleStartDateTime, "HH:mm") && slotTime < moment(br.scheduleEndDateTime, "HH:mm");
+    });
+  }
 
   /**
    * Gets time stops
@@ -225,10 +265,19 @@ export class ScheduleService {
    * @param duration 
    * @returns  
    */
-  async getRemainingSlots(schedule: Schedule[], slots: string[]){
-    console.log("schedule",schedule)
-    console.log("slots",slots)
-    return;
+  async getRemainingSlots(slots, appointment: Appointment[]){
+    const bookedSlots = []
+    appointment.map(appointmentItem => {
+      const startTime = moment(appointmentItem.scheduleStartDateTime).format();
+      const endTime = moment(appointmentItem.scheduleEndDateTime).format();
+      slots.map(slotsItem => {
+        if(slotsItem.startTime >= startTime && slotsItem.endTime <= endTime){
+          bookedSlots.push(slotsItem)
+        } 
+      })
+    })  
+    const remainingSlots = slots.filter(o1 => !bookedSlots.some(o2 => o1.startTime === o2.startTime));
+    return remainingSlots;
   }
 
   async getTimeStops(schedule: Schedule[], duration: number){

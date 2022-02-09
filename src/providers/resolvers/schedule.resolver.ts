@@ -4,6 +4,7 @@ import { Service } from 'src/facilities/entities/services.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
+import { DoctorSchedulePayload } from '../dto/doctor-slots-payload.dto';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulePayload } from '../dto/schedule-payload.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
@@ -73,14 +74,14 @@ export class ScheduleResolver {
     }
   }
 
-  @Query(returns => SchedulesPayload)
+  @Query(returns => DoctorSchedulePayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
-  async getDoctorSchedules(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
-    const schedules = await this.scheduleService.getDoctorSchedule(getDoctorSchedule)
+  async getDoctorSchedules(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule) {
+    const slots = await this.scheduleService.getDoctorSlots(getDoctorSchedule)
     return {
-      ...schedules,
-      response: { status: 200, message: 'Doctor Schedule fetched successfully' }
+      slots,
+      response: { status: 200, message: 'Doctor Schedule slots fetched successfully' }
     };
   }
 

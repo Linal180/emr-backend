@@ -676,6 +676,16 @@ type DoctorPayload {
   response: ResponsePayload
 }
 
+type Slots {
+  startTime: String
+  endTime: String
+}
+
+type DoctorSchedulePayload {
+  response: ResponsePayload
+  slots: [Slots!]
+}
+
 type SchedulePayload {
   schedule: Schedule
   response: ResponsePayload
@@ -750,7 +760,7 @@ type Query {
   getDoctor(getDoctor: GetDoctor!): DoctorPayload!
   findAllSchedules(scheduleInput: ScheduleInput!): SchedulesPayload!
   getSchedule(getSchedule: GetSchedule!): SchedulePayload!
-  getDoctorSchedules(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
+  getDoctorSchedules(getDoctorSchedule: GetDoctorSchedule!): DoctorSchedulePayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
