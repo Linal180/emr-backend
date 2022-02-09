@@ -114,6 +114,8 @@ export class ScheduleService {
         const location = await this.contactService.findOne(updateScheduleInput.locationId)
         scheduleInstance.location = location
       }
+      scheduleInstance.startAt = updateScheduleInput.startAt;
+      scheduleInstance.endAt = updateScheduleInput.endAt;
       const schedule =  await this.scheduleRepository.save(scheduleInstance);
       if(updateScheduleInput.servicesIds){
         await this.scheduleServicesRepository.delete({ scheduleId: scheduleInstance.id})
@@ -155,13 +157,24 @@ export class ScheduleService {
   async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
     //fetch doctor's booked appointment
     const appointment = await this.appointmentService.findAppointmentByProviderId(id)
+    console.log("appointment",appointment);
     try {
       const schedules = await this.scheduleRepository.find({
         where: {
           doctor: id
         }
       })
-     
+      if(schedules){
+        schedules.map(item => {
+          if(appointment){
+            appointment.map(appointmentItem => {
+              console.log("typeof", appointmentItem.scheduleStartDateTime);
+              console.log("typeof", item.startAt);
+            })
+          }
+        })
+      }
+      console.log("schedules",schedules);
       return { schedules };
     } catch (error) {
       throw new InternalServerErrorException(error);

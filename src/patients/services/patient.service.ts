@@ -1,5 +1,6 @@
 import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-external-appointment.input';
 import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
@@ -7,6 +8,7 @@ import { PaginationService } from 'src/pagination/pagination.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/users.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
@@ -41,6 +43,7 @@ export class PatientService {
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
     private readonly attachmentsService: AttachmentsService,
+    private readonly utilsService: UtilsService,
   ) { }
 
   /**
@@ -56,6 +59,7 @@ export class PatientService {
     try {
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
+      patientInstance.patientRecord = await this.utilsService.generateString(10);
       //get facility 
       const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
       patientInstance.facility = facility
@@ -255,9 +259,10 @@ export class PatientService {
    * @param createPatientItemInput 
    * @returns patient 
    */
-  async addPatient(createPatientItemInput: CreatePatientItemInput): Promise<Patient> {
-    const patientInstance =  this.patientRepository.create(createPatientItemInput)
-    const doctor = await this.doctorService.findOne(createPatientItemInput.usualProviderId)
+  async addPatient(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Patient> {
+    const patientInstance =  this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
+    patientInstance.patientRecord = await this.utilsService.generateString(10);
+    const doctor = await this.doctorService.findOne(createExternalAppointmentInput.createPatientItemInput.usualProviderId)
     //creating doctorPatient Instance 
     const doctorPatientInstance = await this.doctorPatientRepository.create({
       doctorId: doctor.id,
@@ -266,6 +271,8 @@ export class PatientService {
     doctorPatientInstance.doctor = doctor
     //adding usual provider with patient
     patientInstance.doctorPatients = [doctorPatientInstance]
+    const guardianContact = await this.contactService.createContact(createExternalAppointmentInput.createGuardianContactInput)
+    patientInstance.contacts = [guardianContact]
     const patient = await this.patientRepository.save(patientInstance)
     await this.doctorPatientRepository.save(doctorPatientInstance)
     return patient 
