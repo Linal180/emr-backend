@@ -424,6 +424,7 @@ type Service {
   name: String!
   serviceType: ServiceType!
   duration: String!
+  color: String
   price: String!
   isActive: Boolean
   facilityId: String
@@ -675,6 +676,16 @@ type DoctorPayload {
   response: ResponsePayload
 }
 
+type Slots {
+  startTime: String
+  endTime: String
+}
+
+type DoctorSchedulePayload {
+  response: ResponsePayload
+  slots: [Slots!]
+}
+
 type SchedulePayload {
   schedule: Schedule
   response: ResponsePayload
@@ -749,13 +760,14 @@ type Query {
   getDoctor(getDoctor: GetDoctor!): DoctorPayload!
   findAllSchedules(scheduleInput: ScheduleInput!): SchedulesPayload!
   getSchedule(getSchedule: GetSchedule!): SchedulePayload!
-  getDoctorSchedules(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
+  getDoctorSchedules(getDoctorSchedule: GetDoctorSchedule!): DoctorSchedulePayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
+  getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
 }
 
 input UsersInput {
@@ -830,6 +842,9 @@ input GetSchedule {
 
 input GetDoctorSchedule {
   id: String!
+  offset: Float!
+  serviceId: String!
+  currentDate: String!
 }
 
 input PatientInput {
@@ -855,6 +870,10 @@ input AppointmentInput {
 
 input GetAppointment {
   id: String!
+}
+
+input GetDoctorAppointment {
+  doctorId: String!
 }
 
 type Mutation {
@@ -1139,6 +1158,7 @@ input CreateServiceInput {
   name: String!
   duration: String!
   price: String!
+  color: String!
   facilityId: String!
   isActive: Boolean
 
@@ -1150,6 +1170,7 @@ input UpdateServiceInput {
   name: String
   duration: String
   price: String
+  color: String
   facilityId: String
   isActive: Boolean
 

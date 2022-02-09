@@ -26,6 +26,7 @@ export default () => {
       username: "postgres",
       password: "password",
       database: "emr-pro",
+      timezone: 'Z',
       migrationsRun: true,
       logging: true,
       migrations: ["dist/migrations/*{.ts,.js}"],

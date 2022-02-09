@@ -14,6 +14,9 @@ export class CreateServiceInput {
   price: string;
 
   @Field({ nullable: false })
+  color: string;
+
+  @Field({ nullable: false })
   facilityId: string;
 
   @Field({ nullable: true })

@@ -11,7 +11,16 @@ export class UpdateScheduleInput extends PartialType(CreateScheduleInput) {
 export class GetSchedule extends PickType(UpdateScheduleInput, ['id'] as const) { }
 
 @InputType()
-export class GetDoctorSchedule extends PickType(UpdateScheduleInput, ['id'] as const) { }
+export class GetDoctorSchedule extends PickType(UpdateScheduleInput, ['id'] as const) {
+  @Field()
+  offset: number
+
+  @Field()
+  serviceId: string
+
+  @Field()
+  currentDate: string
+ }
 
 @InputType()
 export class RemoveSchedule extends PickType(UpdateScheduleInput, ['id'] as const) { }

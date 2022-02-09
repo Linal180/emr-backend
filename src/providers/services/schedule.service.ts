@@ -1,11 +1,13 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { scheduled } from 'rxjs';
+import * as moment from "moment";
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { Service } from 'src/facilities/entities/services.entity';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { PaginationService } from 'src/pagination/pagination.service';
-import { Connection, Repository } from 'typeorm';
+import { UtilsService } from 'src/util/utils.service';
+import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
 import ScheduleInput from '../dto/schedule-input.dto';
@@ -15,6 +17,7 @@ import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ContactService } from './contact.service';
 import { DoctorService } from './doctor.service';
+
 
 @Injectable()
 export class ScheduleService {
@@ -31,7 +34,8 @@ export class ScheduleService {
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
     private readonly servicesService: ServicesService,
-    private readonly appointmentService: AppointmentService
+    private readonly appointmentService: AppointmentService,
+    private readonly utilsService: UtilsService
   ) { }
 
   /**
@@ -149,36 +153,169 @@ export class ScheduleService {
       })
   }
 
+  /**
+   * Gets doctors schedule
+   * @param doctorId 
+   * @param uTcStartDateOffset 
+   * @param uTcEndDateOffset 
+   * @returns doctors schedule 
+   */
+  async getDoctorsTodaySchedule(doctorId: string, uTcStartDateOffset: Date ,uTcEndDateOffset: Date ): Promise<Schedule[]> {
+    return await this.scheduleRepository.find({
+      where: {
+        doctor: doctorId,
+        startAt: MoreThanOrEqual(uTcStartDateOffset),
+        endAt: LessThanOrEqual(uTcEndDateOffset),
+      },
+      order: {createdAt: "ASC"}
+    })
+  }
+
+  /**
+   * Gets schedule services
+   * @param schedules 
+   * @param serviceId 
+   * @returns  
+   */
+  async getScheduleServices (schedules: Schedule[], serviceId: string){
+    const result = []
+    await Promise.all(
+      schedules.map(async (item) => {
+      const scheduleItem = await this.getScheduleService(item.id)
+      const isServiceExist = await this.checkService(scheduleItem, serviceId)
+      if(isServiceExist){
+        item.scheduleServices = scheduleItem
+        result.push(item)
+      }
+     })
+    );
+    return result;
+  }
    /**
    * getDoctorSchedule schedule
    * @param getDoctorSchedule 
    * @returns schedule 
    */
-  async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
-    //fetch doctor's booked appointment
-    const appointment = await this.appointmentService.findAppointmentByProviderId(id)
-    console.log("appointment",appointment);
+  async getDoctorSlots(getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
+    const uTcStartDateOffset = moment(new Date(getDoctorSchedule.currentDate)).startOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();
+    const uTcEndDateOffset = moment(new Date (getDoctorSchedule.currentDate)).endOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();
+    console.log("uTcStartDateOffset",uTcStartDateOffset);
+    console.log("uTcEndDateOffset",uTcEndDateOffset);
+    //fetch doctor's booked appointment 
+    const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSchedule,uTcStartDateOffset,uTcEndDateOffset)
+    // console.log("appointment",appointment);
     try {
-      const schedules = await this.scheduleRepository.find({
-        where: {
-          doctor: id
-        }
-      })
-      if(schedules){
-        schedules.map(item => {
-          if(appointment){
-            appointment.map(appointmentItem => {
-              console.log("typeof", appointmentItem.scheduleStartDateTime);
-              console.log("typeof", item.startAt);
-            })
-          }
-        })
-      }
-      console.log("schedules",schedules);
-      return { schedules };
+      const schedules = await this.getDoctorsTodaySchedule(getDoctorSchedule.id, uTcStartDateOffset, uTcEndDateOffset)
+      const newSchedule = await this.getScheduleServices(schedules, getDoctorSchedule.serviceId)
+      const duration = parseInt(await(await this.servicesService.findOne(getDoctorSchedule.serviceId)).duration)
+      //get doctor's remaining time 
+      const remainingAvailability = await this.RemainingAvailability(newSchedule,appointment,duration)
+      //subtract the appointment time from doctor's schedule
+      const slots = await this.getTimeStops(newSchedule, duration)
+      // console.log("slots",slots);
+      const remainingSlots = await this.getRemainingSlots(slots, appointment)
+      // console.log("remainingSlots",remainingSlots);
+      return remainingSlots;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  } 
+
+  /**
+   * Remaining availability
+   * @param schedule 
+   * @param appointment 
+   */
+  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number){ // in progress
+    const x = {
+      nextSlot: 30,
+      breakTime: appointment,
+      startTime: schedule[0].startAt,
+      endTime: schedule[0].endAt,
+    };
+    var slotTime = moment(x.startTime, "HH:mm");
+    var endTime = moment(x.endTime, "HH:mm");
+    let times = [];
+    while (slotTime < endTime)
+    {
+      if (!await this.isInBreak(slotTime, x.breakTime)) {
+        times.push(slotTime.format("HH:mm"));
+      }
+      slotTime = slotTime.add(x.nextSlot, 'minutes');
+    }
+    console.log("Time slots: ", times);
+  }
+
+  /**
+   * Determines whether in break is
+   * @param slotTime 
+   * @param breakTimes 
+   * @returns  
+   */
+  async isInBreak(slotTime, breakTimes) {
+    return breakTimes.some((br) => {
+      console.log("br",slotTime);
+      return slotTime >= moment(br.scheduleStartDateTime, "HH:mm") && slotTime < moment(br.scheduleEndDateTime, "HH:mm");
+    });
+  }
+
+  /**
+   * Gets time stops
+   * @param schedule 
+   * @param duration 
+   * @returns  
+   */
+  async getRemainingSlots(slots, appointment: Appointment[]){
+    const bookedSlots = []
+    appointment.map(appointmentItem => {
+      const startTime = moment(appointmentItem.scheduleStartDateTime).format();
+      const endTime = moment(appointmentItem.scheduleEndDateTime).format();
+      slots.map(slotsItem => {
+        if(slotsItem.startTime >= startTime && slotsItem.endTime <= endTime){
+          bookedSlots.push(slotsItem)
+        } 
+      })
+    })  
+    const remainingSlots = slots.filter(o1 => !bookedSlots.some(o2 => o1.startTime === o2.startTime));
+    return remainingSlots;
+  }
+
+  async getTimeStops(schedule: Schedule[], duration: number){
+    const timeStops = [];
+    if(schedule){
+      schedule.map(item => {
+        const startTime = moment(item.startAt);
+        const endTime = moment(item.endAt);
+        if( endTime.isBefore(startTime) ){
+          endTime.add(1, 'day');
+        }
+        while(startTime < endTime){
+          timeStops.push({
+            startTime: moment(startTime).format(),
+            endTime: moment(startTime).add(duration, 'minutes').format()
+          });
+          startTime.add(duration, 'minutes');
+        }
+        return timeStops;
+      })
+    }
+    return timeStops;
+  }
+
+  /**
+   * Checks service
+   * @param scheduleItem 
+   * @param serviceId 
+   * @returns  
+   */
+  async checkService(scheduleItem: ScheduleServices[], serviceId: string){
+    for (let index = 0; index < scheduleItem.length; index++) {
+      const element = scheduleItem[index];
+      if(element.serviceId === serviceId){
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

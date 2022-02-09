@@ -19,7 +19,7 @@ export class ScheduleServices {
   @Field({ nullable: true })
   scheduleId: string;
   
-  @ManyToOne(() => Service, service => service.scheduleServices)
+  @ManyToOne(() => Service, service => service.scheduleServices, {eager: true})
   @Field(type => Service, { nullable: true })
   service: Service;
   

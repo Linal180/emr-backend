@@ -6,14 +6,15 @@ import { createToken } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
+import { GetDoctorSchedule } from 'src/providers/dto/update-schedule.input';
 import { DoctorService } from 'src/providers/services/doctor.service';
-import { Connection, Repository } from 'typeorm';
+import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
@@ -152,8 +153,15 @@ export class AppointmentService {
   }
 
 
-  async findAppointmentByProviderId(id: string): Promise<Appointment[]> {
-    return await this.appointmentRepository.find({providerId: id})
+  async findAppointmentByProviderId(getDoctorSchedule: GetDoctorSchedule,utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
+    return await this.appointmentRepository.find({
+      where: {
+        scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
+        scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
+        providerId: getDoctorSchedule.id,
+
+      }
+    })
   }
 
   /**
@@ -179,6 +187,21 @@ export class AppointmentService {
     const appointment = await this.findOne(id);
     if (appointment) {
       return { appointment }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Appointment not found',
+    });
+  }
+
+  async getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment): Promise<Appointment[]> {
+    const appointment = await this.appointmentRepository.find({
+      where: {
+        providerId: getDoctorAppointment.doctorId
+      }
+    })
+    if (appointment) {
+      return appointment
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
