@@ -12,7 +12,7 @@ import { FacilityService } from '../../facilities/services/facility.service';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { GetDoctorSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { GetDoctorSchedule, GetDoctorSlots, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
 import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ContactService } from './contact.service';
@@ -139,6 +139,25 @@ export class ScheduleService {
     }
   }
 
+   /**
+   * getDoctorSchedule schedule
+   * @param getDoctorSchedule 
+   * @returns schedule  
+   */
+    async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
+      try {
+        const schedules = await this.scheduleRepository.find({
+          where: {
+            doctor: id
+          }
+        })
+        return { schedules };
+      } catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+  
+
   /**
    * Gets schedule service
    * @param id 
@@ -196,18 +215,18 @@ export class ScheduleService {
    * @param getDoctorSchedule 
    * @returns schedule 
    */
-  async getDoctorSlots(getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
-    const uTcStartDateOffset = moment(new Date(getDoctorSchedule.currentDate)).startOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();
-    const uTcEndDateOffset = moment(new Date (getDoctorSchedule.currentDate)).endOf('day').utc().subtract(getDoctorSchedule.offset, 'hours').toDate();
+  async getDoctorSlots(getDoctorSlots: GetDoctorSlots): Promise<SchedulesPayload> {
+    const uTcStartDateOffset = moment(new Date(getDoctorSlots.currentDate)).startOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
+    const uTcEndDateOffset = moment(new Date (getDoctorSlots.currentDate)).endOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
     console.log("uTcStartDateOffset",uTcStartDateOffset);
     console.log("uTcEndDateOffset",uTcEndDateOffset);
     //fetch doctor's booked appointment 
-    const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSchedule,uTcStartDateOffset,uTcEndDateOffset)
+    const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSlots,uTcStartDateOffset,uTcEndDateOffset)
     // console.log("appointment",appointment);
     try {
-      const schedules = await this.getDoctorsTodaySchedule(getDoctorSchedule.id, uTcStartDateOffset, uTcEndDateOffset)
-      const newSchedule = await this.getScheduleServices(schedules, getDoctorSchedule.serviceId)
-      const duration = parseInt(await(await this.servicesService.findOne(getDoctorSchedule.serviceId)).duration)
+      const schedules = await this.getDoctorsTodaySchedule(getDoctorSlots.id, uTcStartDateOffset, uTcEndDateOffset)
+      const newSchedule = await this.getScheduleServices(schedules, getDoctorSlots.serviceId)
+      const duration = parseInt(await(await this.servicesService.findOne(getDoctorSlots.serviceId)).duration)
       //get doctor's remaining time 
       const remainingAvailability = await this.RemainingAvailability(newSchedule,appointment,duration)
       //subtract the appointment time from doctor's schedule

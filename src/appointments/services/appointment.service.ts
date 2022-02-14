@@ -6,7 +6,7 @@ import { createToken } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
-import { GetDoctorSchedule } from 'src/providers/dto/update-schedule.input';
+import { GetDoctorSchedule, GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import AppointmentInput from '../dto/appointment-input.dto';
@@ -152,13 +152,19 @@ export class AppointmentService {
     return await this.appointmentRepository.findOne(id);
   }
 
-
-  async findAppointmentByProviderId(getDoctorSchedule: GetDoctorSchedule,utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
+  /**
+   * Finds appointment by provider id
+   * @param getDoctorSlots 
+   * @param utc_start_date_minus_offset 
+   * @param utc_end_date_minus_offset 
+   * @returns appointment by provider id 
+   */
+  async findAppointmentByProviderId(getDoctorSlots: GetDoctorSlots,utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
     return await this.appointmentRepository.find({
       where: {
         scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
         scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
-        providerId: getDoctorSchedule.id,
+        providerId: getDoctorSlots.id,
 
       }
     })
