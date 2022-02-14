@@ -38,6 +38,7 @@ export class ServiceResolver {
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['super-admin'])
   async findAllServices(@Args('serviceInput') serviceInput: ServiceInput): Promise<ServicesPayload> {
+    console.log("findAllServices");
     const services = await this.servicesService.findAllServices(serviceInput)
     if (services) {
       return {
