@@ -7,6 +7,7 @@ export class PaginatedEntityInput {
   status?: UserStatus
   userId?: string
   to?: string
+  isActive?: boolean
   from?: string
   dueToday?: boolean
   facilityId?: string
