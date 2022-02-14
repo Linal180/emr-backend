@@ -1,11 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { ResponsePayload, ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
-import { Slots } from './slots-payload.dto';
+import { Schedule } from '../entities/schedule.entity';
 
 @ObjectType()
-export class DoctorSlotsPayload extends ResponsePayloadResponse {
-    @Field(type=> [Slots], { nullable: true })
-    slots: Slots[];
+export class DoctorSchedulePayload extends ResponsePayloadResponse {
+    @Field(type=> [Schedule], { nullable: true })
+    schedule: Schedule[];
 
     @Field({ nullable: true })
     response?: ResponsePayload
