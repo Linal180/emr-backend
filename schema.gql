@@ -821,7 +821,7 @@ input ContactInput {
 }
 
 input GetContact {
-  id: String!
+  id: String
 }
 
 input DoctorInput {
@@ -1128,7 +1128,7 @@ input UpdateContactInput {
   facilityId: String
   patientId: String
   employerName: String
-  id: String!
+  id: String
 }
 
 input UpdateBillingAddressInput {
@@ -1239,7 +1239,7 @@ input DisableStaff {
 }
 
 input RemoveContact {
-  id: String!
+  id: String
 }
 
 input CreateDoctorInput {
@@ -1536,7 +1536,7 @@ input UpdateEmployerItemInput {
   industry: String
   usualOccupation: String
   patientId: String
-  id: String!
+  id: String
 }
 
 input UpdatePatientProvider {
