@@ -83,7 +83,11 @@ export class EmployerService {
    */
   async updateEmployer(updateEmployerItemInput: UpdateEmployerItemInput): Promise<Employer> {
     try {
-      return await this.utilsService.updateEntityManager(Employer, updateEmployerItemInput.id, updateEmployerItemInput, this.employerRepository)
+      if(updateEmployerItemInput.id){
+        return await this.employerRepository.save(updateEmployerItemInput)
+        }
+        const employerInstance = this.employerRepository.create(updateEmployerItemInput)
+        return await this.employerRepository.save(employerInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
