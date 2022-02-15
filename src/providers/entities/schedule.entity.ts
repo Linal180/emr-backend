@@ -31,7 +31,7 @@ export class Schedule {
   @Field(type => Contact, { nullable: true })
   location: Contact;
 
-  @OneToMany(() => ScheduleServices, scheduleService => scheduleService.service, {onDelete: "CASCADE"})
+  @OneToMany(() => ScheduleServices, scheduleService => scheduleService.service, { onDelete: "CASCADE"})
   @Field(type => [ScheduleServices], { nullable: true })
   scheduleServices: ScheduleServices[];
 

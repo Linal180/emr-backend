@@ -58,7 +58,7 @@ export class DoctorResolver {
   @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
   async getDoctor(@Args('getDoctor') getDoctor: GetDoctor): Promise<DoctorPayload> {
     return {
-      doctor: await this.doctorService.findOne(getDoctor.id),
+      doctor: await this.doctorService.getDoctor(getDoctor.id),
       response: { status: 200, message: 'Doctor fetched successfully' }
     };
   }

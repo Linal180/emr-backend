@@ -42,13 +42,23 @@ export class UtilsService {
    * @returns  
    */
   async generateString(length) {
-    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
+    const charactersLength = characters.length-2;
+    for ( let i = 0; i < 2; i++ ) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-    return result;
+    return result+Math.floor(100000 + Math.random() * 9000);
+  }
+
+  /**
+   * Converts tz
+   * @param date 
+   * @param tzString 
+   * @returns  
+   */
+  async convertTZ(date, tzString) {
+    return  new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
   }
 
 }

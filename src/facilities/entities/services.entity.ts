@@ -37,6 +37,10 @@ export class Service {
   @Field({ nullable: false })
   duration: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  color: string;
+
   @Column({ nullable: false })
   @Field({ nullable: false })
   price: string;
@@ -56,7 +60,7 @@ export class Service {
   @OneToMany(() => Appointment, appointment => appointment.appointmentType, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   appointments: Appointment[];
 
-  @OneToMany(() => ScheduleServices, scheduleService => scheduleService.schedule, {onDelete: "CASCADE"})
+  @OneToMany(() => ScheduleServices, scheduleService => scheduleService.schedule, { onDelete: "CASCADE"})
   @Field(type => [ScheduleServices], { nullable: true })
   scheduleServices: ScheduleServices[];
 

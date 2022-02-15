@@ -95,6 +95,21 @@ export class StaffService {
     return await this.staffRepository.findOne(id);
   }
 
+  /**
+   * Gets staff
+   * @param id 
+   * @returns staff 
+   */
+  async getStaff(id: string): Promise<Staff> {
+    const staff =  await this.findOne(id);
+    if(staff){
+      return staff
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Staff not found or disabled',
+    });
+  }
 
   /**
    * Finds oneby username

@@ -136,12 +136,12 @@ export class PaginationService {
       requestType,
       MembershipPlan,
       isPrivate,
+      isActive,
       currentPhaseId,
       from,
       dueToday,
       facilityId,
       phychType,
-
       ageGroupId,
       categoryId,
       category,
@@ -169,6 +169,9 @@ export class PaginationService {
         }),
         ...(primaryContact != null && {
           primaryContact
+        }),
+        ...(isActive != null && {
+          isActive
         }),
         ...(isPrivate && {
           isPrivate: Not(isPrivate)

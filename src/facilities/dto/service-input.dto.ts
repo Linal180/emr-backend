@@ -7,6 +7,9 @@ export default class ServiceInput {
     @Field({ nullable: true })
     facilityId?: string
 
+    @Field({ nullable: true})
+    isActive?: boolean
+
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }

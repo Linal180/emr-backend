@@ -110,7 +110,18 @@ export class DoctorService {
    * @returns one 
    */
   async findOne(id: string): Promise<Doctor> {
-    return await this.doctorRepository.findOne(id);
+    const doctor =  await this.doctorRepository.findOne(id);
+    if(doctor){
+      return doctor
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Doctor not found or disabled',
+    });
+  }
+
+  async getDoctor(id: string): Promise<Doctor> {
+    return await this.findOne(id);
   }
 
   /**

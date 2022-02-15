@@ -13,7 +13,6 @@ import { Connection, Repository } from 'typeorm';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreatePatientInput } from '../dto/create-patient.input';
-import { CreatePatientItemInput } from '../dto/create-patientItem.input ';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
@@ -59,7 +58,7 @@ export class PatientService {
     try {
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
-      patientInstance.patientRecord = await this.utilsService.generateString(10);
+      patientInstance.patientRecord = await this.utilsService.generateString(8);
       //get facility 
       const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
       patientInstance.facility = facility

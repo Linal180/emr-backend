@@ -1,6 +1,6 @@
 import { PatientAttachmentsPayload } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
-import { EntitySubscriberInterface, EventSubscriber, Connection } from 'typeorm';
+import { Connection, EntitySubscriberInterface, EventSubscriber } from 'typeorm';
 import { AttachmentsService } from "../attachments/attachments.service";
 import { Patient } from './entities/patient.entity';
 
@@ -16,6 +16,7 @@ export class PatientSubscriber implements EntitySubscriberInterface<Patient> {
 
   async afterLoad(entity: PatientAttachmentsPayload): Promise<PatientAttachmentsPayload> {
     const attachments = await this.attachmentsService.findAttachments(entity.id, AttachmentType.PATIENT)
+    console.log("attachments",attachments);
     entity.attachments = attachments
     return entity;
   }

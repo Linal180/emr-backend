@@ -4,10 +4,12 @@ import { Service } from 'src/facilities/entities/services.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
+import { DoctorSchedulePayload } from '../dto/doctor-schedule-payload.dto';
+import { DoctorSlotsPayload } from '../dto/doctor-slots-payload.dto';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulePayload } from '../dto/schedule-payload.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { GetDoctorSchedule, GetSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { GetDoctorSchedule, GetDoctorSlots, GetSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
 import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ScheduleService } from '../services/schedule.service';
@@ -76,11 +78,22 @@ export class ScheduleResolver {
   @Query(returns => SchedulesPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
-  async getDoctorSchedules(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule): Promise<SchedulesPayload> {
-    const schedules = await this.scheduleService.getDoctorSchedule(getDoctorSchedule)
+  async getDoctorSchedule(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule) {
+    const schedule = await this.scheduleService.getDoctorSchedule(getDoctorSchedule)
     return {
-      ...schedules,
+      ...schedule,
       response: { status: 200, message: 'Doctor Schedule fetched successfully' }
+    };
+  }
+
+  @Query(returns => DoctorSlotsPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  async getDoctorSlots(@Args('getDoctorSlots') getDoctorSlots: GetDoctorSlots) {
+    const slots = await this.scheduleService.getDoctorSlots(getDoctorSlots)
+    return {
+      slots,
+      response: { status: 200, message: 'Doctor Schedule slots fetched successfully' }
     };
   }
 

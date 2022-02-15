@@ -424,6 +424,7 @@ type Service {
   name: String!
   serviceType: ServiceType!
   duration: String!
+  color: String
   price: String!
   isActive: Boolean
   facilityId: String
@@ -675,6 +676,16 @@ type DoctorPayload {
   response: ResponsePayload
 }
 
+type Slots {
+  startTime: String
+  endTime: String
+}
+
+type DoctorSlotsPayload {
+  response: ResponsePayload
+  slots: [Slots!]
+}
+
 type SchedulePayload {
   schedule: Schedule
   response: ResponsePayload
@@ -749,13 +760,15 @@ type Query {
   getDoctor(getDoctor: GetDoctor!): DoctorPayload!
   findAllSchedules(scheduleInput: ScheduleInput!): SchedulesPayload!
   getSchedule(getSchedule: GetSchedule!): SchedulePayload!
-  getDoctorSchedules(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
+  getDoctorSchedule(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
+  getDoctorSlots(getDoctorSlots: GetDoctorSlots!): DoctorSlotsPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
+  getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
 }
 
 input UsersInput {
@@ -784,6 +797,7 @@ input GetFacility {
 
 input ServiceInput {
   facilityId: String
+  isActive: Boolean
   paginationOptions: PaginationInput!
 }
 
@@ -807,7 +821,7 @@ input ContactInput {
 }
 
 input GetContact {
-  id: String!
+  id: String
 }
 
 input DoctorInput {
@@ -830,6 +844,13 @@ input GetSchedule {
 
 input GetDoctorSchedule {
   id: String!
+}
+
+input GetDoctorSlots {
+  id: String!
+  offset: Float!
+  serviceId: String!
+  currentDate: String!
 }
 
 input PatientInput {
@@ -855,6 +876,10 @@ input AppointmentInput {
 
 input GetAppointment {
   id: String!
+}
+
+input GetDoctorAppointment {
+  doctorId: String!
 }
 
 type Mutation {
@@ -1103,7 +1128,7 @@ input UpdateContactInput {
   facilityId: String
   patientId: String
   employerName: String
-  id: String!
+  id: String
 }
 
 input UpdateBillingAddressInput {
@@ -1139,6 +1164,7 @@ input CreateServiceInput {
   name: String!
   duration: String!
   price: String!
+  color: String!
   facilityId: String!
   isActive: Boolean
 
@@ -1150,6 +1176,7 @@ input UpdateServiceInput {
   name: String
   duration: String
   price: String
+  color: String
   facilityId: String
   isActive: Boolean
 
@@ -1212,7 +1239,7 @@ input DisableStaff {
 }
 
 input RemoveContact {
-  id: String!
+  id: String
 }
 
 input CreateDoctorInput {
@@ -1509,7 +1536,7 @@ input UpdateEmployerItemInput {
   industry: String
   usualOccupation: String
   patientId: String
-  id: String!
+  id: String
 }
 
 input UpdatePatientProvider {

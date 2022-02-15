@@ -1,10 +1,10 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from '../../facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
+import { FacilityService } from '../../facilities/services/facility.service';
 import ContactInput from '../dto/contact-input.dto';
 import { ContactsPayload } from '../dto/contacts-payload.dto';
 import { CreateContactInput } from '../dto/create-contact.input';
@@ -54,7 +54,11 @@ export class ContactService {
    */
   async updateContact(updateContactInput: UpdateContactInput): Promise<Contact> {
     try {
+      if(updateContactInput.id){
       return await this.contactRepository.save(updateContactInput)
+      }
+      const contactInstance = this.contactRepository.create(updateContactInput)
+     return await this.contactRepository.save(contactInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
