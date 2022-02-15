@@ -16,6 +16,7 @@ export class PatientSubscriber implements EntitySubscriberInterface<Patient> {
 
   async afterLoad(entity: PatientAttachmentsPayload): Promise<PatientAttachmentsPayload> {
     const attachments = await this.attachmentsService.findAttachments(entity.id, AttachmentType.PATIENT)
+    console.log("attachments",attachments);
     entity.attachments = attachments
     return entity;
   }
