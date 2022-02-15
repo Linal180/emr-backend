@@ -96,6 +96,18 @@ export class StaffService {
   }
 
 
+  async getStaff(id: string): Promise<Staff> {
+    const staff =  await this.findOne(id);
+    if(staff){
+      return staff
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Staff not found or disabled',
+    });
+  }
+
+
   /**
    * Finds oneby username
    * @param username 

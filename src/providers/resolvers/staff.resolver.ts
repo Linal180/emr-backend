@@ -57,7 +57,7 @@ export class StaffResolver {
   @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
   async getStaff(@Args('getStaff') getStaff: GetStaff): Promise<StaffPayload> {
     return {
-      staff: await this.staffService.findOne(getStaff.id),
+      staff: await this.staffService.getStaff(getStaff.id),
       response: { status: 200, message: 'Staff fetched successfully' }
     };
   }
