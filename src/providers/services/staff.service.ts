@@ -95,7 +95,11 @@ export class StaffService {
     return await this.staffRepository.findOne(id);
   }
 
-
+  /**
+   * Gets staff
+   * @param id 
+   * @returns staff 
+   */
   async getStaff(id: string): Promise<Staff> {
     const staff =  await this.findOne(id);
     if(staff){
@@ -106,7 +110,6 @@ export class StaffService {
       error: 'Staff not found or disabled',
     });
   }
-
 
   /**
    * Finds oneby username
