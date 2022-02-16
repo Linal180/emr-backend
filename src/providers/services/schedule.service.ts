@@ -158,7 +158,6 @@ export class ScheduleService {
       }
     }
   
-
   /**
    * Gets schedule service
    * @param id 
@@ -217,27 +216,16 @@ export class ScheduleService {
    * @returns schedule 
    */
   async getDoctorSlots(getDoctorSlots: GetDoctorSlots): Promise<DoctorSlotsPayload> {
-    const uTcStartDateOffset = moment(new Date(getDoctorSlots.currentDate)).startOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
-    const uTcEndDateOffset = moment(new Date (getDoctorSlots.currentDate)).endOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
-    console.log("uTcStartDateOffset",uTcStartDateOffset);
-    console.log("uTcEndDateOffset",uTcEndDateOffset);
-    //fetch doctor's booked appointment 
-    const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSlots,uTcStartDateOffset,uTcEndDateOffset)
-    // console.log("appointment",appointment);
     try {
+      const uTcStartDateOffset = moment(new Date(getDoctorSlots.currentDate)).startOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
+      const uTcEndDateOffset = moment(new Date (getDoctorSlots.currentDate)).endOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
+      //fetch doctor's booked appointment 
+      const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSlots,uTcStartDateOffset,uTcEndDateOffset)
       const schedules = await this.getDoctorsTodaySchedule(getDoctorSlots.id, uTcStartDateOffset, uTcEndDateOffset)
-      // console.log("schedules",schedules);
       const newSchedule = await this.getScheduleServices(schedules, getDoctorSlots.serviceId)
-      // console.log("newSchedule",newSchedule);
       const duration = parseInt(await(await this.servicesService.findOne(getDoctorSlots.serviceId)).duration)
       //get doctor's remaining time 
       const slots = await this.RemainingAvailability(newSchedule,appointment,duration)
-      // console.log("slots",slots);
-      //subtract the appointment time from doctor's schedule
-      // const slots = await this.getTimeStops(newSchedule, duration)
-      // console.log("slots",slots);
-      // const remainingSlots = await this.getRemainingSlots(slots, appointment)
-      // console.log("remainingSlots",remainingSlots);
       return slots;
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -250,24 +238,18 @@ export class ScheduleService {
    * @param appointment 
    */
   async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<DoctorSlotsPayload>{ // in progress
-    // console.log("appointment",appointment);
-    console.log("schedule",schedule);
-    // console.log("duration",duration);
     let times = [];
     times = await Promise.all(schedule.map(async (item) => {
       let slotTime = moment(item.startAt);
       let endTime = moment(item.endAt);
       while (slotTime < endTime){
         const flag = await this.isInBreak(slotTime, appointment)
-        console.log("flag",flag);
         if (!flag) {
-          console.log("IF");
           times.push({
             startTime: slotTime.format(),
             endTime: moment(slotTime.format()).add(duration, 'minutes').format()
           });
         }
-        console.log("ELSE");
         slotTime = slotTime.add(duration, 'minutes');
       }
       return times
@@ -282,55 +264,10 @@ export class ScheduleService {
    * @returns  
    */
   async isInBreak(slotTime, appointment) {
-    console.log("slotTime",slotTime.unix())
     return appointment.some(appointmentItem => {
       const flag = slotTime.unix() >= moment(appointmentItem.scheduleStartDateTime).unix() && slotTime.unix() < moment(appointmentItem.scheduleEndDateTime).unix();
-      console.log("flag--------------------",flag);
       return flag
     });
-  }
-
-  /**
-   * Gets time stops
-   * @param schedule 
-   * @param duration 
-   * @returns  
-   */
-  async getRemainingSlots(slots, appointment: Appointment[]){
-    const bookedSlots = []
-    appointment.map(appointmentItem => {
-      const startTime = moment(appointmentItem.scheduleStartDateTime).format();
-      const endTime = moment(appointmentItem.scheduleEndDateTime).format();
-      slots.map(slotsItem => {
-        if(slotsItem.startTime >= startTime && slotsItem.endTime <= endTime){
-          bookedSlots.push(slotsItem)
-        } 
-      })
-    })  
-    const remainingSlots = slots.filter(o1 => !bookedSlots.some(o2 => o1.startTime === o2.startTime));
-    return remainingSlots;
-  }
-
-  async getTimeStops(schedule: Schedule[], duration: number){
-    const timeStops = [];
-    if(schedule){
-      schedule.map(item => {
-        const startTime = moment(item.startAt);
-        const endTime = moment(item.endAt);
-        if( endTime.isBefore(startTime) ){
-          endTime.add(1, 'day');
-        }
-        while(startTime < endTime){
-          timeStops.push({
-            startTime: moment(startTime).format(),
-            endTime: moment(startTime).add(duration, 'minutes').format()
-          });
-          startTime.add(duration, 'minutes');
-        }
-        return timeStops;
-      })
-    }
-    return timeStops;
   }
 
   /**
