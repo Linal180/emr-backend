@@ -1,12 +1,13 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
+import { Practice } from 'src/practice/entities/practice.entity';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Service } from './services.entity';
 
 export enum PracticeType {
@@ -61,9 +62,9 @@ export class Facility {
   @Column({
     type: "enum",
     enum: PracticeType,
-    default: PracticeType.HOSPITAL
+    nullable: true,
   })
-  @Field(type => PracticeType)
+  @Field(type => PracticeType, {nullable: true})
   practiceType: PracticeType
 
   @Column({ nullable: true })
@@ -143,6 +144,10 @@ export class Facility {
   @OneToMany(() => Service, service => service.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Service], { nullable: true })
   services: Service[];
+
+  @ManyToOne(() => Practice, practice => practice.facilities, { onDelete: 'CASCADE' })
+  @Field(type => Practice, { nullable: true })
+  practice: Practice;
 
   @OneToMany(() => BillingAddress, billingAddress => billingAddress.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [BillingAddress], { nullable: true })

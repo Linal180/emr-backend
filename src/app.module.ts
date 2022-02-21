@@ -12,6 +12,7 @@ import { DatabaseConfig } from './database.config';
 import { FacilityModule } from './facilities/facility.module';
 import { MailerModule } from './mailer/mailer.module';
 import { PaginationModule } from './pagination/pagination.module';
+import { PracticeModule } from './practice/practice.module';
 import { ProviderModule } from './providers/provider.module';
 import { UsersModule } from './users/users.module';
 import { UtilsModule } from './util/utils.module';
@@ -23,6 +24,7 @@ import { UtilsModule } from './util/utils.module';
     MailerModule,
     PaginationModule,
     ProviderModule,
+    PracticeModule,
     AwsModule,
     AttachmentsModule,
     AppointmentModule,
