@@ -6,6 +6,7 @@ type Attachment {
   id: String!
   type: AttachmentType!
   typeId: String!
+  title: String
   key: String
   url: String
   createdAt: String!
