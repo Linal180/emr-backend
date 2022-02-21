@@ -29,6 +29,10 @@ export class Attachment {
   @Field()
   typeId: string;
 
+  @Column({nullable: true})
+  @Field({nullable: true})
+  title: string;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   key: string;

@@ -6,6 +6,7 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateFacilityInput } from '../dto/create-facility.input';
+import { CreateFacilityItemInput } from '../dto/create-facilityItem.input ';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
 import FacilityInput from '../dto/facility-input.dto';
 import { FacilityPayload } from '../dto/facility-payload.dto';
@@ -35,11 +36,15 @@ export class FacilityService {
       //creating facility
       const facilityInstance = this.facilityRepository.create(createFacilityInput.createFacilityItemInput)
       //adding contact
+      if(createFacilityInput.createContactInput){
       const contact = await this.contactService.createContact(createFacilityInput.createContactInput)
       facilityInstance.contacts = [contact];
+      }
       //adding billing address details
+      if(createFacilityInput.createBillingAddressInput){
       const billingAddress = await this.billingAddressService.createBillingAddress(createFacilityInput.createBillingAddressInput)
       facilityInstance.billingAddress = [billingAddress]
+      }
       const facility = await this.facilityRepository.save(facilityInstance);
       return facility
     } catch (error) {
@@ -81,6 +86,17 @@ export class FacilityService {
       status: HttpStatus.NOT_FOUND,
       error: 'Facility not found',
     });
+  }
+
+  async addFacility(createFacilityItemInput: CreateFacilityItemInput): Promise<Facility> {
+    try {
+      //adding new facility
+      const facilityInstance = this.facilityRepository.create(createFacilityItemInput)
+      const facility = await this.facilityRepository.save(facilityInstance);
+      return facility
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
