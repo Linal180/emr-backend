@@ -10,6 +10,7 @@ import { CreateStaffInput } from '../dto/create-staff.input';
 import StaffInput from '../dto/staff-input.dto';
 import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
 import { Staff } from '../entities/staff.entity';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 
 @Injectable()
 export class StaffService {
@@ -66,6 +67,24 @@ export class StaffService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
+    try {
+      // register staff as user 
+      const user = await this.usersService.create(registerUserInput)
+      //get facility 
+      const facility = await this.facilityService.findOne(facilityId)
+      // Staff Creation
+      const staffInstance = this.staffRepository.create(registerUserInput)
+      staffInstance.user = user;
+      staffInstance.facility = facility;
+      staffInstance.facilityId = facility.id
+      return await this.staffRepository.save(staffInstance)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
 
   /**
    * Finds all staff

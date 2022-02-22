@@ -146,7 +146,8 @@ export class UsersService {
           error: 'Can not assign this role to user',
         });
       }
-      const user = await this.findById(updateRoleInput.id);
+      const user = await this.findUserById(updateRoleInput.id);
+      console.log(":user",user)
       if (user) {
         const fetchdRoles = await getConnection()
           .getRepository(Role)

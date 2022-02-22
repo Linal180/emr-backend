@@ -563,6 +563,21 @@ enum PracticeType {
 """The facility service code type assigned"""
 enum ServiceCode {
   AMBULANCE_41
+  PHARMACY_01
+  TELEHEALTH_02
+  TELEHEALTH_OTHER_THAN_PATIENT_HOME_02
+  SCHOOL_03
+  TRIBAL_07
+  TRIBAL_08
+  PRISON_09
+  PRISON_10
+  TELEHEALTH_10
+  OFFICE_11
+  HOME_12
+  MOBILE_UNIT_15
+  TEMPORARY_LoOGOING_16
+  WALK_IN_RETAIL_HEALTH_CLINIC
+  PLACE_OF_EMPLOYMENT_18
   AMBULANCE_42
   AMBULANCE_24
   ASSISTED_LIVING_13
@@ -991,6 +1006,7 @@ input RegisterUserInput {
   facilityId: String
   phone: String
   zipCode: String
+  isAdmin: Boolean
 }
 
 input ForgotPasswordInput {
@@ -1030,6 +1046,7 @@ input UpdateUserInput {
   facilityId: String
   phone: String
   zipCode: String
+  isAdmin: Boolean
   id: String!
   emailVerified: Boolean
 }
