@@ -1,7 +1,12 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { StaffService } from 'src/providers/services/staff.service';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
+import { UserRole } from 'src/users/entities/role.entity';
 import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
@@ -20,6 +25,8 @@ export class PracticeService {
     private readonly paginationService: PaginationService,
     private readonly usersService: UsersService,
     private readonly facilityService: FacilityService,
+    private readonly doctorService: DoctorService,
+    private readonly staffService: StaffService,
     private readonly utilsService: UtilsService,
   ) { }
 
@@ -30,17 +37,35 @@ export class PracticeService {
    */
   async createPractice(createPracticeInput: CreatePracticeInput): Promise<Practice> {
     try {
+      //check if already user exists
+      const user = await this.usersService.findOneByEmail(createPracticeInput.registerUserInput.email)
+      if(user){
+        throw new ConflictException({ 
+          status: HttpStatus.CONFLICT,
+          error: 'User associated with this email already exists',
+        });
+      }
       //creating practice
       const practiceInstance = this.practiceRepository.create(createPracticeInput.createFacilityItemInput)
       //create a facility 
-      if(createPracticeInput.createFacilityItemInput){
       const facility  = await this.facilityService.addFacility(createPracticeInput.createFacilityItemInput)
       practiceInstance.facilities = [facility]
-      }
       //save the practice
       const practice = await this.practiceRepository.save(practiceInstance)
-      //create a user based on its role under this facility
-      await this.usersService.create(createPracticeInput.registerUserInput)
+      //create a user or provider based on its role type under this facility
+      if(createPracticeInput.registerUserInput.roleType === UserRole.DOCTOR){
+          const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
+          const doctor = await this.doctorService.addDoctor(registerUserInput, facility.id)
+          if(createPracticeInput.registerUserInput.isAdmin){
+             await this.usersService.updateRole({id: doctor.user.id, roles: [UserRole.ADMIN,registerUserInput.roleType]})
+          }
+      }else if(createPracticeInput.registerUserInput.roleType === UserRole.BILLING || UserRole.STAFF || UserRole.NURSE || UserRole.DOCTOR_ASSISTANT ){
+          const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
+          const staff = await this.staffService.addStaff(registerUserInput, facility.id)
+           if(createPracticeInput.registerUserInput.isAdmin){
+            await this.usersService.updateRole({id: staff.user.id, roles: [UserRole.ADMIN, registerUserInput.roleType]})
+          }
+      }
       return practice
     } catch (error) {
       throw new InternalServerErrorException(error);

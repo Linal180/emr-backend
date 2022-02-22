@@ -125,6 +125,8 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
   async registerUser(@Args('user') registerUserInput: RegisterUserInput): Promise<UserPayload> {
     return {
       user: await this.usersService.create(registerUserInput),
