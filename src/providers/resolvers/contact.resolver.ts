@@ -34,8 +34,8 @@ export class ContactResolver {
   }
 
   @Query(returns => ContactsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['super-admin', 'admin'])
   async findAllContacts(@Args('contactInput') contactInput: ContactInput): Promise<ContactsPayload> {
     contactInput.primaryContact = false;
     const contacts = await this.contactService.findAllContacts(contactInput)

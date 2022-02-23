@@ -88,8 +88,8 @@ export class PatientResolver {
   }
 
   @Query(returns => PatientPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin'])
   async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
     const patients = await this.patientService.GetPatient(getPatient.id)
     return {
