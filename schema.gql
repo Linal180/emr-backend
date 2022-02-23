@@ -346,7 +346,6 @@ type Doctor {
   speciality: Speciality
   dob: String
   ssn: String
-  ssnType: SsnType
   taxonomyCode: String
   deaNumber: String
   deaActiveDate: String!
@@ -389,14 +388,6 @@ enum Speciality {
   PEDIATRIC_DERMATOLOGY
   NEUROLOGY
   GASTROENTEROLOGY
-}
-
-"""The doctor's SsnType"""
-enum SsnType {
-  OASDI
-  TANF
-  MEDICARE
-  MEDICAID
 }
 
 type Schedule {
@@ -1347,9 +1338,6 @@ input CreateDoctorItemInput {
   speciality: Speciality
   dob: String
   ssn: String
-
-  """Doctor ssn type"""
-  ssnType: SsnType
   taxonomyCode: String
   deaNumber: String
   deaActiveDate: String
@@ -1402,9 +1390,6 @@ input UpdateDoctorItemInput {
   speciality: Speciality
   dob: String
   ssn: String
-
-  """Doctor ssn type"""
-  ssnType: SsnType
   taxonomyCode: String
   deaNumber: String
   deaActiveDate: String

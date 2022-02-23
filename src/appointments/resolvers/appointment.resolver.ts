@@ -106,8 +106,8 @@ export class AppointmentResolver {
   }
 
   @Query(returns => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin'])
   async getAppointment(@Args('getAppointment') getAppointment: GetAppointment): Promise<AppointmentPayload> {
     const appointment = await this.appointmentService.getAppointment(getAppointment.id)
     return {

@@ -87,8 +87,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => DoctorSlotsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
   async getDoctorSlots(@Args('getDoctorSlots') getDoctorSlots: GetDoctorSlots) {
     const slots = await this.scheduleService.getDoctorSlots(getDoctorSlots)
     return {
