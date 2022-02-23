@@ -15,9 +15,6 @@ export class CreateScheduleInput {
   @Field({ nullable: false })
   doctorId: string;
 
-  @Field({ nullable: false })
-  locationId: string;
-
   @Field(type => [String],{ nullable: false })
   servicesIds: string[];
 

@@ -57,11 +57,6 @@ export class ScheduleService {
         const doctor = await this.doctorService.findOne(createScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
       }
-      //fetch location/contact of facility
-      if (createScheduleInput.locationId) {
-        const location = await this.contactService.findOne(createScheduleInput.locationId)
-        scheduleInstance.location = location
-      }
       const schedule =  await this.scheduleRepository.save(scheduleInstance);
       if(createScheduleInput.servicesIds){
         const services = await this.servicesService.findByIds(createScheduleInput.servicesIds)
@@ -113,11 +108,6 @@ export class ScheduleService {
       if (updateScheduleInput.doctorId) {
         const doctor = await this.doctorService.findOne(updateScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
-      }
-      //fetch location/contact of facility
-      if (updateScheduleInput.locationId) {
-        const location = await this.contactService.findOne(updateScheduleInput.locationId)
-        scheduleInstance.location = location
       }
       scheduleInstance.startAt = updateScheduleInput.startAt;
       scheduleInstance.endAt = updateScheduleInput.endAt;
