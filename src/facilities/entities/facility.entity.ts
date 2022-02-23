@@ -149,7 +149,7 @@ export class Facility {
   appointments: Appointment[];
 
   @Field(() => [User], { nullable: true })
-  @OneToMany(() => User, user => user.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @OneToMany(() => User, user => user.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   user: User[];
 
   @OneToMany(() => Contact, contact => contact.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
