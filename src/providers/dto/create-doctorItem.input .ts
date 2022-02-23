@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { UserRole } from 'src/users/entities/role.entity';
-import { Speciality, SsnType } from '../entities/doctor.entity';
+import { Speciality } from '../entities/doctor.entity';
 
 @InputType()
 export class CreateDoctorItemInput {
@@ -52,9 +52,6 @@ export class CreateDoctorItemInput {
 
   @Field({ nullable: true })
   ssn: string;
-
-  @Field(type => SsnType, { description: 'Doctor ssn type', nullable: true })
-  ssnType: SsnType;
 
   @Field({ nullable: true })
   taxonomyCode: string;

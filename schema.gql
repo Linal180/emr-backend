@@ -20,6 +20,103 @@ enum AttachmentType {
   lab
 }
 
+type Contact {
+  id: String!
+  email: String
+  name: String
+  firstName: String
+  lastName: String
+  middleName: String
+  suffix: String
+  phone: String
+  mobile: String
+  pager: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  color: String
+  primaryContact: Boolean
+  ssn: String
+  employerName: String
+  serviceCode: ServiceCodes!
+  relationship: RelationshipType
+  contactType: ContactType
+  facilityId: String
+  facility: Facility
+  doctor: Doctor
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The facility service code type assigned"""
+enum ServiceCodes {
+  AMBULANCE_41
+  AMBULANCE_42
+  AMBULANCE_24
+  ASSISTED_LIVING_13
+  BIRTHING_CENTER_25
+  COMMUNITY_MENTAL_HEALTH_CENTER_53
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
+  CUSTODIAL_CARE_FACILITY_33
+  EMERGENCY_ROOM_23
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
+  GROUP_HOME_14
+  HOMELESS_SHELTER_04
+  HOSPICE_34
+  INDEPENDENT_CLINIC_49
+  INDEPENDENT_LABORATORY_81
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
+}
+
+"""The user's relationship assigned"""
+enum RelationshipType {
+  SELF
+  SPOUSE
+  CHILD
+  CHILD_MOTHER_INSURANCE
+  CHILD_FATHER_INSURANCE
+  OTHER
+  GRANDPARENT
+  GRANDCHILD
+  NEPHEW_NIECE
+  FOSTHER_CHILD
+  WARD
+  STEPSON_STEPDAUGHTER
+  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE
+  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE
+  EMPLOYEE
+  UNKNOWN
+  HANDICAPPED_DEPENDENT
+  SPONSORED_DEPENDENT
+  DEPENDENT_OF_MINOR_DEPENDENT
+  SIGNIFICANT_OTHER
+  MOTHER
+  FATHER
+  EMANCIPATED_MINOR
+  ORGAN_DONOR
+  CADAVER_DONOR
+  INJURED_PLAINTIIFF
+  LIFE_PARTNER
+}
+
+"""The user's contact type assigned"""
+enum ContactType {
+  SELF
+  EMERGENCY
+  NEXT_OF_KIN
+  CHILD_MOTHER_INSURANCE
+  GUARDIAN
+  GUARANDOR
+}
+
 type Role {
   id: String!
   role: UserRole!
@@ -59,83 +156,6 @@ type User {
 enum UserStatus {
   DEACTIVATED
   ACTIVE
-}
-
-type Doctor {
-  id: String!
-  firstName: String
-  middleName: String
-  lastName: String
-  prefix: String
-  suffix: String
-  email: String
-  providerIntials: String
-  degreeCredentials: String
-  timeZone: String
-  speciality: Speciality
-  dob: String
-  ssn: String
-  ssnType: SsnType
-  taxonomyCode: String
-  deaNumber: String
-  deaActiveDate: String!
-  deaTermDate: String!
-  languagesSpoken: String
-  taxId: String
-  npi: String
-  upin: String
-  emcProviderId: String
-  billingFacility: String
-  medicareGrpNumber: String
-  medicaidGrpNumber: String
-  meammographyCertNumber: String
-  campusGrpNumber: String
-  blueShildNumber: String
-  taxIdStuff: String
-  specialityLicense: String
-  anesthesiaLicense: String
-  dpsCtpNumber: String
-  stateLicense: String
-  licenseActiveDate: String
-  licenseTermDate: String
-  prescriptiveAuthNumber: String
-  facilityId: String
-  user: User
-  facility: Facility
-  contacts: [Contact!]
-  billingAddress: [BillingAddress!]
-  schedule: [Schedule!]
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The doctor's speciality"""
-enum Speciality {
-  PHYSICIAN_ASSISTANT
-  PHARMACIST
-  PERIODONTICS
-  PEDIATRIC_DENTIST
-  PEDIATRIC_DERMATOLOGY
-  NEUROLOGY
-  GASTROENTEROLOGY
-}
-
-"""The doctor's SsnType"""
-enum SsnType {
-  OASDI
-  TANF
-  MEDICARE
-  MEDICAID
-}
-
-type DoctorPatient {
-  id: String!
-  doctorId: String
-  patientId: String
-  currentProvider: Boolean
-  doctor: Doctor
-  createdAt: String!
-  updatedAt: String!
 }
 
 type Employer {
@@ -302,102 +322,72 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
-type Contact {
+type DoctorPatient {
   id: String!
-  email: String
-  name: String
-  firstName: String
-  lastName: String
-  middleName: String
-  suffix: String
-  phone: String
-  mobile: String
-  pager: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  color: String
-  primaryContact: Boolean
-  ssn: String
-  employerName: String
-  serviceCode: ServiceCodes!
-  relationship: RelationshipType
-  contactType: ContactType
-  facilityId: String
-  facility: Facility
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
   doctor: Doctor
-  schedule: [Schedule!]
-  userId: String
   createdAt: String!
   updatedAt: String!
 }
 
-"""The facility service code type assigned"""
-enum ServiceCodes {
-  AMBULANCE_41
-  AMBULANCE_42
-  AMBULANCE_24
-  ASSISTED_LIVING_13
-  BIRTHING_CENTER_25
-  COMMUNITY_MENTAL_HEALTH_CENTER_53
-  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
-  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
-  CUSTODIAL_CARE_FACILITY_33
-  EMERGENCY_ROOM_23
-  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
-  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
-  GROUP_HOME_14
-  HOMELESS_SHELTER_04
-  HOSPICE_34
-  INDEPENDENT_CLINIC_49
-  INDEPENDENT_LABORATORY_81
-  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
-  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
+type Doctor {
+  id: String!
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  providerIntials: String
+  degreeCredentials: String
+  timeZone: String
+  speciality: Speciality
+  dob: String
+  ssn: String
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String!
+  deaTermDate: String!
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+  facilityId: String
+  user: User
+  facility: Facility
+  contacts: [Contact!]
+  billingAddress: [BillingAddress!]
+  schedule: [Schedule!]
+  createdAt: String!
+  updatedAt: String!
 }
 
-"""The user's relationship assigned"""
-enum RelationshipType {
-  SELF
-  SPOUSE
-  CHILD
-  CHILD_MOTHER_INSURANCE
-  CHILD_FATHER_INSURANCE
-  OTHER
-  GRANDPARENT
-  GRANDCHILD
-  NEPHEW_NIECE
-  FOSTHER_CHILD
-  WARD
-  STEPSON_STEPDAUGHTER
-  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE
-  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE
-  EMPLOYEE
-  UNKNOWN
-  HANDICAPPED_DEPENDENT
-  SPONSORED_DEPENDENT
-  DEPENDENT_OF_MINOR_DEPENDENT
-  SIGNIFICANT_OTHER
-  MOTHER
-  FATHER
-  EMANCIPATED_MINOR
-  ORGAN_DONOR
-  CADAVER_DONOR
-  INJURED_PLAINTIIFF
-  LIFE_PARTNER
-}
-
-"""The user's contact type assigned"""
-enum ContactType {
-  SELF
-  EMERGENCY
-  NEXT_OF_KIN
-  CHILD_MOTHER_INSURANCE
-  GUARDIAN
-  GUARANDOR
+"""The doctor's speciality"""
+enum Speciality {
+  PHYSICIAN_ASSISTANT
+  PHARMACIST
+  PERIODONTICS
+  PEDIATRIC_DENTIST
+  PEDIATRIC_DERMATOLOGY
+  NEUROLOGY
+  GASTROENTEROLOGY
 }
 
 type Schedule {
@@ -406,7 +396,6 @@ type Schedule {
   endAt: String!
   recurringEndDate: DateTime
   doctor: Doctor
-  location: Contact
   scheduleServices: [ScheduleServices!]
   createdAt: String!
   updatedAt: String!
@@ -578,6 +567,24 @@ enum ServiceCode {
   TEMPORARY_LoOGOING_16
   WALK_IN_RETAIL_HEALTH_CLINIC
   PLACE_OF_EMPLOYMENT_18
+  OFF_CAMPUS_OUTPATIENT_HOSPITAL_19
+  URGENT_CARE_20
+  INPATIENT_HOSPITAL_21
+  OUTPATIENT_HOSPITAL_22
+  EMERGENCY_ROOM_HOSPITAL_23
+  AMBULATORY_SURGICAL_CENTER_24
+  MILITARY_TREATMENT_FACILITY_26
+  SKILLED_NURSING_FACILITY_31
+  NURSING_FACILITY_32
+  AMBULANCE_LAND_41
+  INPATIENT_PSYCHIATRIC_FACILITY_51
+  PSYCHIATRIC_FACILITY_PARTIAL_HOSPITILIZATION_52
+  INTERMEDIATE_CARE_FACILITY_MENTALLY_RETARDED_54
+  RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENMT_FACILITY_55
+  PSYCHIATRIC_RESIDENTIAL_TREATMENT_CENTER_56
+  NON_RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENT_FACILITY_57
+  NON_RESIDENTIAL_OPIOID_TREATMENT_FACILITY_58
+  MASS_IMMUNIZATION_CENTER_60
   AMBULANCE_42
   AMBULANCE_24
   ASSISTED_LIVING_13
@@ -588,6 +595,8 @@ enum ServiceCode {
   CUSTODIAL_CARE_FACILITY_33
   EMERGENCY_ROOM_23
   END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
+  STATE_OR_LOCAL_PUBLIC_HEALTH_CLINIC_71
+  RURAL_HEALTH_CLINIC_72
   FEDERALLY_QUALIFIED_HEALTH_CENTER_50
   GROUP_HOME_14
   HOMELESS_SHELTER_04
@@ -1329,9 +1338,6 @@ input CreateDoctorItemInput {
   speciality: Speciality
   dob: String
   ssn: String
-
-  """Doctor ssn type"""
-  ssnType: SsnType
   taxonomyCode: String
   deaNumber: String
   deaActiveDate: String
@@ -1384,9 +1390,6 @@ input UpdateDoctorItemInput {
   speciality: Speciality
   dob: String
   ssn: String
-
-  """Doctor ssn type"""
-  ssnType: SsnType
   taxonomyCode: String
   deaNumber: String
   deaActiveDate: String
@@ -1426,7 +1429,6 @@ input CreateScheduleInput {
   endAt: String!
   recurringEndDate: DateTime
   doctorId: String!
-  locationId: String!
   servicesIds: [String!]!
 }
 
@@ -1435,7 +1437,6 @@ input UpdateScheduleInput {
   endAt: String
   recurringEndDate: DateTime
   doctorId: String
-  locationId: String
   servicesIds: [String!]
   id: String!
 }

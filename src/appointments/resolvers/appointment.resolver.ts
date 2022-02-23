@@ -38,8 +38,8 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard)
+  // @SetMetadata('roles', ['super-admin', 'admin'])
   async createExternalAppointment(@Args('createExternalAppointmentInput') createExternalAppointmentInput: CreateExternalAppointmentInput) {
     return {
       appointment: await this.appointmentService.createExternalAppointmentInput(createExternalAppointmentInput),
@@ -106,8 +106,8 @@ export class AppointmentResolver {
   }
 
   @Query(returns => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin'])
   async getAppointment(@Args('getAppointment') getAppointment: GetAppointment): Promise<AppointmentPayload> {
     const appointment = await this.appointmentService.getAppointment(getAppointment.id)
     return {

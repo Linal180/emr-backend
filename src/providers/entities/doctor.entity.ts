@@ -24,17 +24,6 @@ registerEnumType(Speciality, {
   description: "The doctor's speciality",
 });
 
-export enum SsnType {
-  OASDI = "OASDI",
-  TANF = "Tanf",
-  MEDICARE = "Medicare",
-  MEDICAID = "medicaid"
-}
-
-registerEnumType(SsnType, {
-  name: "SsnType",
-  description: "The doctor's SsnType",
-});
 
 @Entity({ name: 'Doctors' })
 @ObjectType()
@@ -94,14 +83,6 @@ export class Doctor {
   @Column({ nullable: true })
   @Field({ nullable: true })
   ssn: string;
-
-  @Column({
-    type: "enum",
-    enum: SsnType,
-    default: SsnType.MEDICAID
-  })
-  @Field(type => SsnType, { nullable: true })
-  ssnType: SsnType
 
   @Column({ nullable: true })
   @Field({ nullable: true })

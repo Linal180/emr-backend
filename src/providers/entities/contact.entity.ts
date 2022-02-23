@@ -1,9 +1,8 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Doctor } from './doctor.entity';
-import { Schedule } from './schedule.entity';
 
 export enum ServiceCodes {
   AMBULANCE_41 = "AMBULANCE - LAND [41]",
@@ -207,10 +206,6 @@ export class Contact {
 
   @ManyToOne(() => Patient, patient => patient.contacts, { onDelete: 'CASCADE' })
   patient: Patient;
-
-  @OneToMany(() => Schedule, schedule => schedule.location, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
-  @Field(type => [Schedule], { nullable: true })
-  schedule: Schedule[];
 
   @Column({ nullable: true })
   @Field({ nullable: true })

@@ -66,8 +66,8 @@ export class FacilityResolver {
   }
 
   @Query(returns => FacilityPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin'])
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
     const facilitity = await this.facilityService.GetFacility(getFacility.id)
     return {
