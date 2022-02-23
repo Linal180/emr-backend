@@ -1,12 +1,13 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
+import { Practice } from 'src/practice/entities/practice.entity';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Service } from './services.entity';
 
 export enum PracticeType {
@@ -22,6 +23,21 @@ registerEnumType(PracticeType, {
 
 export enum ServiceCode {
   AMBULANCE_41 = "AMBULANCE - LAND [41]",
+  PHARMACY_01 = "Pharmacy [01]",
+  TELEHEALTH_02 = "Telehealth [02]",
+  TELEHEALTH_OTHER_THAN_PATIENT_HOME_02 = "Telehealth Provided Other than in Patient's Home [02]",
+  SCHOOL_03 = "School [03]",
+  TRIBAL_07 = "Tribal 638 Free-standing Facility [07]",
+  TRIBAL_08 = " Tribal 638 Provider-based Facility [08]",
+  PRISON_09 = " Prison/Correctional Facility [09]",
+  PRISON_10 = "Prison/Correctional Facility [10]",
+  TELEHEALTH_10 = "Telehealth Provided in Patient's Home [10]",
+  OFFICE_11 = "Office [11]",
+  HOME_12 = "Home [12]",
+  MOBILE_UNIT_15 = "Mobile Unit [15]",
+  TEMPORARY_LoOGOING_16 = "Temporary Lodging [16]",
+  WALK_IN_RETAIL_HEALTH_CLINIC = "Walk-in Retail Health Clinic [17]",
+  PLACE_OF_EMPLOYMENT_18 = "18-Place of Employment",
   AMBULANCE_42 = "AMBULANCE - AIR OR WATER [42]",
   AMBULANCE_24 = "AMBULATORY SURGICAL CENTER [24]",
   ASSISTED_LIVING_13 = "ASSISTED LIVING [13]",
@@ -61,9 +77,9 @@ export class Facility {
   @Column({
     type: "enum",
     enum: PracticeType,
-    default: PracticeType.HOSPITAL
+    nullable: true,
   })
-  @Field(type => PracticeType)
+  @Field(type => PracticeType, {nullable: true})
   practiceType: PracticeType
 
   @Column({ nullable: true })
@@ -133,7 +149,7 @@ export class Facility {
   appointments: Appointment[];
 
   @Field(() => [User], { nullable: true })
-  @OneToMany(() => User, user => user.facility, { eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @OneToMany(() => User, user => user.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   user: User[];
 
   @OneToMany(() => Contact, contact => contact.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
@@ -143,6 +159,10 @@ export class Facility {
   @OneToMany(() => Service, service => service.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [Service], { nullable: true })
   services: Service[];
+
+  @ManyToOne(() => Practice, practice => practice.facilities, { onDelete: 'CASCADE' })
+  @Field(type => Practice, { nullable: true })
+  practice: Practice;
 
   @OneToMany(() => BillingAddress, billingAddress => billingAddress.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [BillingAddress], { nullable: true })

@@ -12,6 +12,9 @@ import { DisableDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
+import { CreateDoctorItemInput } from '../dto/create-doctorItem.input ';
+import { CreatePracticeDoctorInput } from '../dto/create-practice-doctor.input';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 
 @Injectable()
 export class DoctorService {
@@ -51,11 +54,15 @@ export class DoctorService {
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
       //adding contact
+      if(createDoctorInput.createContactInput){
       const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
       doctorInstance.contacts = [contact]
+      }
       //adding billing address details
+      if(createDoctorInput.createBillingAddressInput){
       const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
       doctorInstance.billingAddress = [billingAddress]
+      }
       const doctor = await queryRunner.manager.save(doctorInstance);
       await queryRunner.commitTransaction();
       return doctor
@@ -80,6 +87,23 @@ export class DoctorService {
       //updating billing details
       await this.billingAddressService.updateBillingAddress(updateDoctorInput.updateBillingAddressInput)
       return doctor
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async addDoctor(registerUserInput: RegisterUserInput, facilityId: string): Promise<Doctor> {
+    try {
+      // register doctor as user -
+      const user = await this.usersService.create(registerUserInput)
+      //get facility 
+      const facility = await this.facilityService.findOne(facilityId)
+      // Doctor Creation
+      const doctorInstance = this.doctorRepository.create(registerUserInput)
+      doctorInstance.user = user;
+      doctorInstance.facility = facility;
+      doctorInstance.facilityId = facility.id
+      return await this.doctorRepository.save(doctorInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

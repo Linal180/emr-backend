@@ -59,7 +59,7 @@ export class MailerService {
   async sendAppointmentConfirmationsEmail(email: string, fullName: string, slotStartTime: string, token: string, id: string) {
     const portalAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
     const url = `${portalAppBaseUrl}/cancel-appointment?token=${token}`
-    const moreInfo = `${portalAppBaseUrl}/update-Info?id=${id}`
+    const moreInfo = `${portalAppBaseUrl}/patient-information/${id}`
     const msg = {
       to: email,
       from: this.configService.get('FROM_EMAIL'),

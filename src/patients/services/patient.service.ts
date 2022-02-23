@@ -226,13 +226,15 @@ export class PatientService {
    * @returns provider 
    */
   async usualProvider(id: string): Promise<DoctorPatient[]> {
-    return await this.doctorPatientRepository.find({
+    const usualProvider = await this.doctorPatientRepository.find({
       where: {
         patientId: id
       },
       order: { createdAt: "ASC" },
       relations: ["doctor"]
     })
+    console.log("usualProvider",usualProvider);
+    return usualProvider
   }
 
   /**
@@ -261,18 +263,21 @@ export class PatientService {
   async addPatient(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Patient> {
     const patientInstance =  this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
     patientInstance.patientRecord = await this.utilsService.generateString(10);
-    const doctor = await this.doctorService.findOne(createExternalAppointmentInput.createPatientItemInput.usualProviderId)
+    const usualProvider = await this.doctorService.findOne(createExternalAppointmentInput.createPatientItemInput.usualProviderId)
     //creating doctorPatient Instance 
     const doctorPatientInstance = await this.doctorPatientRepository.create({
-      doctorId: doctor.id,
+      doctorId: usualProvider.id,
       currentProvider: true, 
     })
-    doctorPatientInstance.doctor = doctor
+    doctorPatientInstance.doctor = usualProvider
+    doctorPatientInstance.doctorId = usualProvider.id
     //adding usual provider with patient
     patientInstance.doctorPatients = [doctorPatientInstance]
     const guardianContact = await this.contactService.createContact(createExternalAppointmentInput.createGuardianContactInput)
     patientInstance.contacts = [guardianContact]
     const patient = await this.patientRepository.save(patientInstance)
+    doctorPatientInstance.patient = patient
+    doctorPatientInstance.patientId = patient.id
     await this.doctorPatientRepository.save(doctorPatientInstance)
     return patient 
   }
@@ -284,6 +289,7 @@ export class PatientService {
    */
   async GetPatient(id: string): Promise<PatientPayload> {
     const patient = await this.findOne(id);
+    console.log("patient",patient);
     if (patient) {
       return { patient }
     }

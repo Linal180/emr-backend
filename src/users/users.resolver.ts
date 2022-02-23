@@ -63,6 +63,7 @@ export class UsersResolver {
   @UseGuards(JwtAuthGraphQLGuard)
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email)
+    console.log("userFound",userFound);
     if (!userFound) {
       throw new UnauthorizedException({
         status: HttpStatus.UNAUTHORIZED,
@@ -125,6 +126,8 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
   async registerUser(@Args('user') registerUserInput: RegisterUserInput): Promise<UserPayload> {
     return {
       user: await this.usersService.create(registerUserInput),

@@ -6,6 +6,7 @@ type Attachment {
   id: String!
   type: AttachmentType!
   typeId: String!
+  title: String
   key: String
   url: String
   createdAt: String!
@@ -31,6 +32,7 @@ enum UserRole {
   SUPER_ADMIN
   ADMIN
   DOCTOR
+  DOCTOR_ASSISTANT
   PATIENT
   NURSE
   BILLING
@@ -47,7 +49,7 @@ type User {
   userId: String!
   token: String
   userType: String!
-  facility: [Facility!]
+  facility: Facility
   roles: [Role]
   createdAt: String!
   updatedAt: String!
@@ -483,6 +485,22 @@ enum APPOINTMENTSTATUS {
   INITIATED
 }
 
+type Practice {
+  id: String!
+  name: String!
+  phone: String
+  fax: String
+  practiceId: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  facilities: [Facility!]
+  createdAt: String
+  updatedAt: String
+}
+
 type Staff {
   id: String!
   firstName: String!
@@ -511,7 +529,7 @@ enum Gender {
 type Facility {
   id: String!
   name: String!
-  practiceType: PracticeType!
+  practiceType: PracticeType
   code: String
   cliaIdNumber: String
   federalTaxId: String
@@ -529,6 +547,7 @@ type Facility {
   user: [User!]
   contacts: [Contact!]
   services: [Service!]
+  practice: Practice
   billingAddress: [BillingAddress!]
   createdAt: String
   updatedAt: String
@@ -544,6 +563,21 @@ enum PracticeType {
 """The facility service code type assigned"""
 enum ServiceCode {
   AMBULANCE_41
+  PHARMACY_01
+  TELEHEALTH_02
+  TELEHEALTH_OTHER_THAN_PATIENT_HOME_02
+  SCHOOL_03
+  TRIBAL_07
+  TRIBAL_08
+  PRISON_09
+  PRISON_10
+  TELEHEALTH_10
+  OFFICE_11
+  HOME_12
+  MOBILE_UNIT_15
+  TEMPORARY_LoOGOING_16
+  WALK_IN_RETAIL_HEALTH_CLINIC
+  PLACE_OF_EMPLOYMENT_18
   AMBULANCE_42
   AMBULANCE_24
   ASSISTED_LIVING_13
@@ -741,6 +775,17 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type PracticePayload {
+  response: ResponsePayload
+  practice: Practice
+}
+
+type PracticesPayload {
+  response: ResponsePayload
+  practices: [Practice]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -769,6 +814,8 @@ type Query {
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  findAllPractices(facilityInput: PracticeInput!): PracticesPayload!
+  getPractice(getPractice: GetPractice!): PracticePayload!
 }
 
 input UsersInput {
@@ -882,6 +929,14 @@ input GetDoctorAppointment {
   doctorId: String!
 }
 
+input PracticeInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetPractice {
+  id: String
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -929,6 +984,9 @@ type Mutation {
   updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
+  createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
+  updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
+  removePractice(removePractice: RemovePractice!): PracticePayload!
 }
 
 input LoginUserInput {
@@ -948,6 +1006,7 @@ input RegisterUserInput {
   facilityId: String
   phone: String
   zipCode: String
+  isAdmin: Boolean
 }
 
 input ForgotPasswordInput {
@@ -987,6 +1046,7 @@ input UpdateUserInput {
   facilityId: String
   phone: String
   zipCode: String
+  isAdmin: Boolean
   id: String!
   emailVerified: Boolean
 }
@@ -1640,4 +1700,37 @@ input RemoveAppointment {
 input CancelAppointment {
   token: String!
   reason: String!
+}
+
+input CreatePracticeInput {
+  createFacilityItemInput: CreateFacilityItemInput
+  registerUserInput: RegisterUserInput
+  createPracticeItemInput: CreatePracticeItemInput
+}
+
+input CreatePracticeItemInput {
+  name: String
+  phone: String
+  fax: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+}
+
+input UpdatePracticeInput {
+  name: String
+  phone: String
+  fax: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  id: String
+}
+
+input RemovePractice {
+  id: String
 }

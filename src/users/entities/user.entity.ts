@@ -59,8 +59,8 @@ export class User {
   @Field()
   userType: string;
 
-  @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
-  @Field(type => [Facility], { nullable: true })
+  @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
+  @Field(type => Facility, { nullable: true })
   facility: Facility;
 
   @Field(type => [Role], { nullable: 'itemsAndList' })
