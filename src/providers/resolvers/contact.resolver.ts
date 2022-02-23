@@ -70,5 +70,4 @@ export class ContactResolver {
     await this.contactService.removeContact(removeContact);
     return { response: { status: 200, message: 'Contact Deleted' } };
   }
-
 }

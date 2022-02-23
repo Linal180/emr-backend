@@ -26,11 +26,7 @@ export class Schedule {
   @ManyToOne(() => Doctor, doctor => doctor.contacts, { onDelete: 'CASCADE' })
   @Field(type => Doctor, { nullable: true })
   doctor: Doctor;
-
-  @ManyToOne(() => Contact, contact => contact.schedule, { onDelete: 'CASCADE', eager: true })
-  @Field(type => Contact, { nullable: true })
-  location: Contact;
-
+  
   @OneToMany(() => ScheduleServices, scheduleService => scheduleService.service, { onDelete: "CASCADE"})
   @Field(type => [ScheduleServices], { nullable: true })
   scheduleServices: ScheduleServices[];
