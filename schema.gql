@@ -519,14 +519,11 @@ type Facility {
   id: String!
   name: String!
   practiceType: PracticeType
-  code: String
   cliaIdNumber: String
   federalTaxId: String
   isPrivate: Boolean
-  revenueCode: String
   color: String
   tamxonomyCode: String
-  insurancePlanType: String
   timeZone: String
   mammographyCertificationNumber: String
   npi: String
@@ -1080,14 +1077,11 @@ input CreateFacilityItemInput {
 
   """Service Code type"""
   serviceCode: ServiceCode
-  code: String
   cliaIdNumber: String
   timeZone: String
   federalTaxId: String
-  revenueCode: String
   color: String
   tamxonomyCode: String
-  insurancePlanType: String
   mammographyCertificationNumber: String
   npi: String
 }
@@ -1156,14 +1150,11 @@ input UpdateFacilityItemInput {
 
   """Service Code type"""
   serviceCode: ServiceCode
-  code: String
   cliaIdNumber: String
   timeZone: String
   federalTaxId: String
-  revenueCode: String
   color: String
   tamxonomyCode: String
-  insurancePlanType: String
   mammographyCertificationNumber: String
   npi: String
   id: String!

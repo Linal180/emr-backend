@@ -104,10 +104,6 @@ export class Facility {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  code: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   cliaIdNumber: string;
 
   @Column({ nullable: true })
@@ -120,19 +116,11 @@ export class Facility {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  revenueCode: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   color: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   tamxonomyCode: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  insurancePlanType: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
