@@ -3,7 +3,9 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import {Transactions} from '../../payment/entity/payment.entity'
 
 export enum PaymentType {
   SELF = "self",
@@ -148,5 +150,10 @@ export class Appointment {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+
+  @OneToOne(()=> Transactions)
+  @JoinTable()
+  transaction: Transactions;
 
 }

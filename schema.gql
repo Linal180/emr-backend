@@ -20,6 +20,13 @@ enum AttachmentType {
   lab
 }
 
+type Transactions {
+  id: String!
+  transactionId: String!
+  createdAt: String
+  updatedAt: String
+}
+
 type Contact {
   id: String!
   email: String
@@ -222,6 +229,7 @@ type Patient {
   employer: [Employer!]
   createdAt: String!
   updatedAt: String!
+  transaction: Transactions
 }
 
 """The patient's sexual orientation type assigned"""
@@ -377,6 +385,7 @@ type Doctor {
   schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
+  transaction: Transactions
 }
 
 """The doctor's speciality"""
@@ -540,6 +549,7 @@ type Facility {
   billingAddress: [BillingAddress!]
   createdAt: String
   updatedAt: String
+  transaction: Transactions
 }
 
 """The facility practice type assigned type"""

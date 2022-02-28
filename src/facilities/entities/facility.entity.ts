@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
+import { Transactions } from 'src/payment/entity/payment.entity';
 import { Practice } from 'src/practice/entities/practice.entity';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
@@ -195,5 +196,9 @@ export class Facility {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+  @ManyToOne(() => Transactions, transaction => transaction.id)
+  @Field(type => Transactions, { nullable: true })
+  transaction: Transactions;
 
 }

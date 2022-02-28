@@ -16,6 +16,7 @@ import { PracticeModule } from './practice/practice.module';
 import { ProviderModule } from './providers/provider.module';
 import { UsersModule } from './users/users.module';
 import { UtilsModule } from './util/utils.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UtilsModule } from './util/utils.module';
       imports: [ConfigModule],
       useClass: DatabaseConfig
     }),
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
