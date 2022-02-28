@@ -805,6 +805,10 @@ type PracticesPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -835,6 +839,7 @@ type Query {
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
   findAllPractices(facilityInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
+  getToken: BraintreePayload!
 }
 
 input UsersInput {
