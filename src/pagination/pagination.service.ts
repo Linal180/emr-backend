@@ -141,6 +141,7 @@ export class PaginationService {
       from,
       dueToday,
       facilityId,
+      practiceId,
       phychType,
       ageGroupId,
       categoryId,
@@ -163,6 +164,9 @@ export class PaginationService {
         }),
         ...(facilityId && {
           facilityId
+        }),
+        ...(practiceId && {
+          practiceId: practiceId
         }),
         ...(status != null && {
           status
@@ -187,6 +191,8 @@ export class PaginationService {
         }),
       }
     };
+
+    console.log("whereOptions",whereOptions);
     // Assigned to User
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status

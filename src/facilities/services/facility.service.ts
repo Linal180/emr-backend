@@ -60,12 +60,13 @@ export class FacilityService {
   async findAllFacilities(facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     try {
       facilityInput.isPrivate = true;
+      console.log("facilityInput",facilityInput);
       const paginationResponse = await this.paginationService.willPaginate<Facility>(this.facilityRepository, facilityInput)
       return {
         pagination: {
           ...paginationResponse
         },
-        facility: paginationResponse.data,
+        facilities: paginationResponse.data,
       }
     } catch (error) {
       throw new InternalServerErrorException(error);

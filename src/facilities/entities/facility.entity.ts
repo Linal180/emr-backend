@@ -134,6 +134,10 @@ export class Facility {
   @Field({ nullable: true })
   npi: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
+
   @Column({
     type: "enum",
     enum: ServiceCode,
