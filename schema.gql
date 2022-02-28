@@ -527,6 +527,7 @@ type Facility {
   timeZone: String
   mammographyCertificationNumber: String
   npi: String
+  practiceId: String
   serviceCode: ServiceCode!
   staff: [Staff!]
   doctors: [Doctor!]
@@ -750,7 +751,7 @@ type StaffPayload {
 
 type FacilitiesPayload {
   response: ResponsePayload
-  facility: [Facility]
+  facilities: [Facility]
   pagination: PaginationPayload
 }
 
@@ -841,6 +842,7 @@ input GetUser {
 
 input FacilityInput {
   isPrivate: Boolean
+  practiceId: String
   paginationOptions: PaginationInput!
 }
 

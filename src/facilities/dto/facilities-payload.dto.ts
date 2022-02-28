@@ -6,7 +6,7 @@ import { Facility } from '../entities/facility.entity';
 @ObjectType()
 export class FacilitiesPayload extends ResponsePayloadResponse {
     @Field(type => [Facility], { nullable: 'itemsAndList' })
-    facility: Facility[];
+    facilities: Facility[];
 
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
