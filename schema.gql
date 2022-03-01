@@ -1210,7 +1210,7 @@ input UpdateBillingAddressInput {
   userId: String
   doctorId: String
   facilityId: String
-  id: String!
+  id: String
 }
 
 input UpdateFacilityTimeZoneInput {
