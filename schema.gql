@@ -495,8 +495,8 @@ type Staff {
   firstName: String!
   lastName: String!
   email: String!
-  username: String!
-  dob: String!
+  username: String
+  dob: String
   phone: String
   primaryProvider: String
   facilityId: String
