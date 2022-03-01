@@ -124,8 +124,8 @@ export class FacilityService {
       const contact = await this.contactService.updateContact(updateFacilityInput.updateContactInput)
       facilityInstance.contacts = [contact]
       //updating billing details
-      await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
-      facilityInstance.contacts = [contact]
+      const billingAddress = await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
+      facilityInstance.billingAddress = [billingAddress]
       const facility = await this.facilityRepository.save(facilityInstance)
       return facility
     } catch (error) {
