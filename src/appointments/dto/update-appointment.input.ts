@@ -8,6 +8,15 @@ export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) 
 }
 
 @InputType()
+export class UpdateAppointmentPayStatus {
+  @Field()
+  id: string;
+  
+  @Field()
+  paymentStatus: string;
+}
+
+@InputType()
 export class GetAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }
 
 @InputType()

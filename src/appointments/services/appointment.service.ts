@@ -14,7 +14,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentInput, UpdateAppointmentPayStatus } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
@@ -37,6 +37,8 @@ export class AppointmentService {
    * @returns appointment 
    */
   async createAppointment(createAppointmentInput: CreateAppointmentInput): Promise<Appointment> {
+
+    console.log('createAppointmentInput >> ',createAppointmentInput)
      //Transaction start
      const queryRunner = this.connection.createQueryRunner();
      await queryRunner.connect();
@@ -46,7 +48,7 @@ export class AppointmentService {
       const appointmentObj = await this.findAppointment(createAppointmentInput.providerId, createAppointmentInput.patientId)
       if(!appointmentObj){
       //creating appointment
-      const appointmentInstance = this.appointmentRepository.create({...createAppointmentInput, isExternal: true})
+      const appointmentInstance = await this.appointmentRepository.create({...createAppointmentInput, isExternal: true})
       //associate provider 
       if(createAppointmentInput.providerId){
       const provider = await this.doctorService.findOne(createAppointmentInput.providerId)
@@ -263,5 +265,9 @@ export class AppointmentService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async updateAppointmentPaymentStatus(updateAppointmentPayStatus: UpdateAppointmentPayStatus){
+    this.appointmentRepository.save(updateAppointmentPayStatus)
   }
 }

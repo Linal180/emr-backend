@@ -23,6 +23,14 @@ enum AttachmentType {
 type Transactions {
   id: String!
   transactionId: String!
+  patientId: String!
+  doctorId: String!
+  facilityId: String!
+  appointmentId: String!
+  patient: [Patient!]
+  doctor: [Doctor!]
+  facility: [Facility!]
+  appointment: Appointment
   createdAt: String
   updatedAt: String
 }
@@ -469,6 +477,7 @@ type Appointment {
   patient: Patient
   createdAt: String
   updatedAt: String
+  paymentStatus: String!
 }
 
 """The patient payment type assigned"""
@@ -809,6 +818,10 @@ type BraintreePayload {
   clientToken: String!
 }
 
+type BraintreeChargePayload {
+  success: Boolean!
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1011,6 +1024,7 @@ type Mutation {
   createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
   updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
   removePractice(removePractice: RemovePractice!): PracticePayload!
+  chargePayment(paymentInput: PaymentInput!): BraintreeChargePayload!
 }
 
 input LoginUserInput {
@@ -1667,6 +1681,7 @@ input CreateAppointmentInput {
   facilityId: String!
   providerId: String!
   patientId: String
+  paymentStatus: String
 }
 
 input CreateExternalAppointmentInput {
@@ -1706,6 +1721,7 @@ input UpdateAppointmentInput {
   facilityId: String
   providerId: String
   patientId: String
+  paymentStatus: String
   id: String!
 }
 
@@ -1749,4 +1765,27 @@ input UpdatePracticeInput {
 
 input RemovePractice {
   id: String
+}
+
+input PaymentInput {
+  paymentType: PaymentType!
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
+  serviceId: String!
+  facilityId: String!
+  providerId: String!
+  patientId: String
+  paymentStatus: String
+  clientIntent: String!
+  amount: String!
 }

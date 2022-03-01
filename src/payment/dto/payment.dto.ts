@@ -7,3 +7,10 @@ export class BraintreePayload {
     clientToken: string;
     success: boolean;
 }
+
+
+@ObjectType()
+export class BraintreeChargePayload {
+    @Field()
+    success: boolean
+}

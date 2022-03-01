@@ -1,19 +1,19 @@
-import { Resolver,Query, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { PaymentService } from './payment.service';
-import { BraintreePayload } from './dto/payment.dto';
+import { BraintreeChargePayload, BraintreePayload } from './dto/payment.dto';
+import { PaymentInput } from './dto/payment.input';
 
 @Resolver()
 export class PaymentResolver {
+  constructor(private readonly paymentService: PaymentService) {}
 
-    constructor(private readonly paymentService: PaymentService){}
+  @Query(() => BraintreePayload)
+  async getToken(): Promise<BraintreePayload> {
+    return await this.paymentService.getToken();
+  }
 
-    @Query(()=> BraintreePayload)
-    async getToken():Promise<BraintreePayload>{
-       return await this.paymentService.getToken()
-    }
-
-    @Mutation()
-    async chargePayment(){
-    
-    }
+  @Mutation(() => BraintreeChargePayload)
+  async chargePayment(@Args('paymentInput') paymentInput: PaymentInput): Promise<any> {
+    return await this.paymentService.charge(paymentInput);
+  }
 }
