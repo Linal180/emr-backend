@@ -71,7 +71,7 @@ export class StaffService {
   async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
     try {
       // register staff as user 
-      const user = await this.usersService.create(registerUserInput)
+      const user = await this.usersService.create({...registerUserInput, facilityId})
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Staff Creation
