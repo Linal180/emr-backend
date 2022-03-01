@@ -4,7 +4,6 @@ import { ContactType, RelationshipType, ServiceCodes } from '../entities/contact
 @InputType()
 export class CreateContactInput {
 
-
   @Field({ nullable: true })
   name?: string;
 

@@ -42,7 +42,11 @@ export class BillingAddressService {
    */
   async updateBillingAddress(updateBillingAddressInput: UpdateBillingAddressInput): Promise<BillingAddress> {
     try {
-      return await this.billingAddressRepository.save(updateBillingAddressInput)
+      if(updateBillingAddressInput.id){
+        return await this.billingAddressRepository.save(updateBillingAddressInput)
+      }
+      const billingAddressInstance = this.billingAddressRepository.create(updateBillingAddressInput)
+      return await this.billingAddressRepository.save(billingAddressInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
