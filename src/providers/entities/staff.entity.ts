@@ -34,11 +34,11 @@ export class Staff {
   email: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   username: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   dob: string;
 
   @Column({ nullable: true })
