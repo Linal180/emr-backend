@@ -19,11 +19,11 @@ export class ScheduleServices {
   @Field({ nullable: true })
   scheduleId: string;
   
-  @ManyToOne(() => Service, service => service.scheduleServices, {eager: true})
+  @ManyToOne(() => Service, service => service.scheduleServices, {onUpdate: 'CASCADE', onDelete: "CASCADE" , eager: true})
   @Field(type => Service, { nullable: true })
   service: Service;
   
-  @ManyToOne(() => Schedule, schedule => schedule.scheduleServices, {onDelete: "CASCADE"})
+  @ManyToOne(() => Schedule, schedule => schedule.scheduleServices, {onUpdate: 'CASCADE', onDelete: "CASCADE" })
   schedule: Schedule;
 
   @CreateDateColumn({ type: 'timestamptz' })
