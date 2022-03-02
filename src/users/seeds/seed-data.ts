@@ -14,7 +14,10 @@ export const RolesData = [
     { role: UserRole.NURSE },
     { role: UserRole.PATIENT },
     { role: UserRole.BILLING },
-    { role: UserRole.STAFF }
+    { role: UserRole.STAFF },
+    { role: UserRole.NURSE_PRACTITIONER },
+    { role: UserRole.OFFICE_MANAGER },
+    { role: UserRole.DOCTOR_ASSISTANT }
 ];
 
 export const UsersData = [
