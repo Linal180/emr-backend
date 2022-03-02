@@ -21,6 +21,9 @@ export class CreateFacilityItemInput {
   @Field({ nullable: true })
   timeZone?: string;
 
+  @Field({ nullable: false })
+  practiceId: string;
+
   @Field({ nullable: true })
   federalTaxId?: string
 

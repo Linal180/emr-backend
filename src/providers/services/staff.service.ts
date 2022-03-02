@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -18,8 +18,10 @@ export class StaffService {
     @InjectRepository(Staff)
     private staffRepository: Repository<Staff>,
     private readonly paginationService: PaginationService,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly connection: Connection,
+    @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService,
   ) { }

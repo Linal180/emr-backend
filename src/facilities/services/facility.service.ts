@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { PracticeService } from 'src/practice/practice.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -22,19 +23,23 @@ export class FacilityService {
     private facilityRepository: Repository<Facility>,
     private readonly paginationService: PaginationService,
     private readonly contactService: ContactService,
-    private readonly billingAddressService: BillingAddressService,
-    private readonly utilsService: UtilsService,
+    private readonly practiceService: PracticeService,
+    private readonly billingAddressService: BillingAddressService
   ) { }
 
-  /**
+  /** 
    * Creates facility
    * @param createFacilityInput 
    * @returns facility 
    */
   async createFacility(createFacilityInput: CreateFacilityInput): Promise<Facility> {
     try {
+      //get practice
+      const practice = await this.practiceService.findOne(createFacilityInput.createFacilityItemInput.practiceId)
       //creating facility
       const facilityInstance = this.facilityRepository.create(createFacilityInput.createFacilityItemInput)
+      facilityInstance.practice = practice;
+      facilityInstance.practiceId = practice.id;
       //adding contact
       if(createFacilityInput.createContactInput){
       const contact = await this.contactService.createContact(createFacilityInput.createContactInput)
