@@ -13,7 +13,7 @@ export enum UserStatus {
 registerEnumType(UserStatus, {
   name: "UserStatus",
   description: "The user status",
-});
+}); 
 
 @Entity({ name: 'Users' })
 @ObjectType()

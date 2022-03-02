@@ -1081,7 +1081,7 @@ input CreateFacilityItemInput {
   serviceCode: ServiceCode
   cliaIdNumber: String
   timeZone: String
-  practiceId: String!
+  practiceId: String
   federalTaxId: String
   color: String
   tamxonomyCode: String
