@@ -23,7 +23,7 @@ import { StaffService } from './services/staff.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress, Schedule,ScheduleServices]),
+    TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress, Schedule, ScheduleServices]),
     PaginationModule,
     forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),

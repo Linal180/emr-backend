@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PaginationModule } from 'src/pagination/pagination.module';
+import { PracticeModule } from 'src/practice/practice.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { UsersModule } from 'src/users/users.module';
 import { Facility } from './entities/facility.entity';
@@ -15,6 +16,7 @@ import { ServicesService } from './services/services.service';
     TypeOrmModule.forFeature([Facility, Service]),
     forwardRef(() => UsersModule),
     PaginationModule,
+    PracticeModule,
     forwardRef(() => ProviderModule)
   ],
   providers: [FacilityResolver, FacilityService, ServiceResolver, ServicesService],

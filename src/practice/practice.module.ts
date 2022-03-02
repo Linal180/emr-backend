@@ -10,10 +10,10 @@ import { PracticeService } from './practice.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Practice]),
-    forwardRef(() => UsersModule),
     PaginationModule,
+    UsersModule,
     ProviderModule,
-    FacilityModule,
+    forwardRef(() => FacilityModule),
     forwardRef(() => ProviderModule)
   ],
   providers: [PracticeResolver, PracticeService],
