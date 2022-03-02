@@ -60,7 +60,7 @@ export class PracticeService {
           if(createPracticeInput.registerUserInput.isAdmin){
              await this.usersService.updateRole({id: doctor.user.id, roles: [UserRole.ADMIN,registerUserInput.roleType]})
           }
-      }else if(createPracticeInput.registerUserInput.roleType === UserRole.BILLING || UserRole.STAFF || UserRole.NURSE || UserRole.DOCTOR_ASSISTANT ){
+      }else{
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
           const staff = await this.staffService.addStaff(registerUserInput, facility.id)
            if(createPracticeInput.registerUserInput.isAdmin){
