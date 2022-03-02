@@ -3,7 +3,7 @@ import { Facility } from "src/facilities/entities/facility.entity";
 import { Connection, getRepository } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import { createPasswordHash } from '../../lib/helper';
-import { Role } from '../entities/role.entity';
+import { Role, UserRole } from '../entities/role.entity';
 import { User } from '../entities/user.entity';
 import { FacilityData, RolesData, UsersData } from './seed-data';
 
@@ -25,6 +25,22 @@ export class CreateUsers implements Seeder {
       if (!roles.length) {
         roles = getRepository(Role).create(RolesData)
         roles = await queryRunner.manager.save(roles);
+      }
+
+      let officeManager = await getRepository(Role).findOne({role: UserRole.OFFICE_MANAGER})
+      if(!officeManager){
+        const officeManagerInstance = getRepository(Role).create({role: UserRole.OFFICE_MANAGER})
+        await queryRunner.manager.save(officeManagerInstance);
+      }
+      let nursePractitioner = await getRepository(Role).findOne({role: UserRole.NURSE_PRACTITIONER})
+      if(!nursePractitioner){
+        const nursePractitionerInstance = getRepository(Role).create({role: UserRole.NURSE_PRACTITIONER})
+        await queryRunner.manager.save(nursePractitionerInstance);
+      }
+      let doctorAssistant = await getRepository(Role).findOne({role: UserRole.DOCTOR_ASSISTANT})
+      if(!doctorAssistant){
+        const doctorAssistantInstance = getRepository(Role).create({role: UserRole.DOCTOR_ASSISTANT})
+        await queryRunner.manager.save(doctorAssistantInstance);
       }
       //Add Users
       const users = await getRepository(User).find();
