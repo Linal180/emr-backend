@@ -130,6 +130,8 @@ enum UserRole {
   ADMIN
   DOCTOR
   DOCTOR_ASSISTANT
+  NURSE_PRACTITIONER
+  OFFICE_MANAGER
   PATIENT
   NURSE
   BILLING
@@ -1081,7 +1083,7 @@ input CreateFacilityItemInput {
   serviceCode: ServiceCode
   cliaIdNumber: String
   timeZone: String
-  practiceId: String!
+  practiceId: String
   federalTaxId: String
   color: String
   tamxonomyCode: String

@@ -2,13 +2,11 @@ import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, Internal
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
-import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UserRole } from 'src/users/entities/role.entity';
 import { UsersService } from 'src/users/users.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreatePracticeInput } from './dto/create-practice.input';
 import PracticeInput from './dto/practice-input.dto';
