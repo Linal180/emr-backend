@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -23,11 +23,12 @@ export class PracticeService {
     @InjectRepository(Practice)
     private practiceRepository: Repository<Practice>,
     private readonly paginationService: PaginationService,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly doctorService: DoctorService,
-    private readonly staffService: StaffService,
-    private readonly utilsService: UtilsService,
+    private readonly staffService: StaffService
   ) { }
 
   /**
@@ -46,7 +47,7 @@ export class PracticeService {
         });
       }
       //creating practice
-      const practiceInstance = this.practiceRepository.create(createPracticeInput.createFacilityItemInput)
+      const practiceInstance = this.practiceRepository.create(createPracticeInput.createPracticeItemInput)
       //create a facility 
       const facility  = await this.facilityService.addFacility(createPracticeInput.createFacilityItemInput)
       practiceInstance.facilities = [facility]
@@ -59,7 +60,7 @@ export class PracticeService {
           if(createPracticeInput.registerUserInput.isAdmin){
              await this.usersService.updateRole({id: doctor.user.id, roles: [UserRole.ADMIN,registerUserInput.roleType]})
           }
-      }else if(createPracticeInput.registerUserInput.roleType === UserRole.BILLING || UserRole.STAFF || UserRole.NURSE || UserRole.DOCTOR_ASSISTANT ){
+      }else{
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
           const staff = await this.staffService.addStaff(registerUserInput, facility.id)
            if(createPracticeInput.registerUserInput.isAdmin){

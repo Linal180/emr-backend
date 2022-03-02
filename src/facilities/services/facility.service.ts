@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { PracticeService } from 'src/practice/practice.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -22,19 +23,23 @@ export class FacilityService {
     private facilityRepository: Repository<Facility>,
     private readonly paginationService: PaginationService,
     private readonly contactService: ContactService,
-    private readonly billingAddressService: BillingAddressService,
-    private readonly utilsService: UtilsService,
+    private readonly practiceService: PracticeService,
+    private readonly billingAddressService: BillingAddressService
   ) { }
 
-  /**
+  /** 
    * Creates facility
    * @param createFacilityInput 
    * @returns facility 
    */
   async createFacility(createFacilityInput: CreateFacilityInput): Promise<Facility> {
     try {
+      //get practice
+      const practice = await this.practiceService.findOne(createFacilityInput.createFacilityItemInput.practiceId)
       //creating facility
       const facilityInstance = this.facilityRepository.create(createFacilityInput.createFacilityItemInput)
+      facilityInstance.practice = practice;
+      facilityInstance.practiceId = practice.id;
       //adding contact
       if(createFacilityInput.createContactInput){
       const contact = await this.contactService.createContact(createFacilityInput.createContactInput)
@@ -60,12 +65,13 @@ export class FacilityService {
   async findAllFacilities(facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     try {
       facilityInput.isPrivate = true;
+      console.log("facilityInput",facilityInput);
       const paginationResponse = await this.paginationService.willPaginate<Facility>(this.facilityRepository, facilityInput)
       return {
         pagination: {
           ...paginationResponse
         },
-        facility: paginationResponse.data,
+        facilities: paginationResponse.data,
       }
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -118,11 +124,14 @@ export class FacilityService {
    */
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
-      const facility = await this.facilityRepository.save(updateFacilityInput.updateFacilityItemInput)
+      const facilityInstance = await this.findOne(updateFacilityInput.updateFacilityItemInput.id)
       //updating contact details
-      await this.contactService.updateContact(updateFacilityInput.updateContactInput)
+      const contact = await this.contactService.updateContact(updateFacilityInput.updateContactInput)
+      facilityInstance.contacts = [contact]
       //updating billing details
-      await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
+      const billingAddress = await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
+      facilityInstance.billingAddress = [billingAddress]
+      const facility = await this.facilityRepository.save(facilityInstance)
       return facility
     } catch (error) {
       throw new InternalServerErrorException(error);

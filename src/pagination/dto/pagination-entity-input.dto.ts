@@ -9,6 +9,7 @@ export class PaginatedEntityInput {
   to?: string
   isActive?: boolean
   from?: string
+  practiceId?: string
   dueToday?: boolean
   facilityId?: string
   phychType?: string

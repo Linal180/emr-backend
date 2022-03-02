@@ -6,6 +6,9 @@ export default class FacilityInput {
     @Field({ nullable: true })
     isPrivate?: boolean
 
+    @Field({ nullable: true })
+    practiceId?: string
+
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }

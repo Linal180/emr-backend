@@ -16,28 +16,22 @@ export class CreateFacilityItemInput {
   serviceCode?: ServiceCode;
 
   @Field({ nullable: true })
-  code?: string;
-
-  @Field({ nullable: true })
   cliaIdNumber?: string;
 
   @Field({ nullable: true })
   timeZone?: string;
 
   @Field({ nullable: true })
-  federalTaxId?: string;
+  practiceId?: string;
 
   @Field({ nullable: true })
-  revenueCode?: string;
+  federalTaxId?: string
 
   @Field({ nullable: true })
   color?: string;
 
   @Field({ nullable: true })
   tamxonomyCode?: string;
-
-  @Field({ nullable: true })
-  insurancePlanType?: string;
 
   @Field({ nullable: true })
   mammographyCertificationNumber?: string;

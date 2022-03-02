@@ -48,7 +48,7 @@ export class FacilityResolver {
 
   @Query(returns => FacilitiesPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin', 'admin'])
   async findAllFacility(@Args('facilityInput') facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     const facilities = await this.facilityService.findAllFacilities(facilityInput)
     if (facilities) {
