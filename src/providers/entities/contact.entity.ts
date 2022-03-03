@@ -162,6 +162,10 @@ export class Contact {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  locationLink: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   ssn: string;
 
   @Column({ nullable: true })

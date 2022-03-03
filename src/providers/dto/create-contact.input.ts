@@ -59,6 +59,9 @@ export class CreateContactInput {
   address2?: string;
 
   @Field({ nullable: true })
+  locationLink?: string 
+
+  @Field({ nullable: true })
   zipCode?: string;
 
   @Field({ nullable: true })
