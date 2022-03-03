@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
 import { PracticeService } from 'src/practice/practice.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
@@ -94,10 +95,15 @@ export class FacilityService {
     });
   }
 
-  async addFacility(createFacilityItemInput: CreateFacilityItemInput): Promise<Facility> {
+  async addFacility(createPracticeInput: CreatePracticeInput): Promise<Facility> {
     try {
       //adding new facility
-      const facilityInstance = this.facilityRepository.create(createFacilityItemInput)
+      const facilityInstance = this.facilityRepository.create({...createPracticeInput.createFacilityItemInput,isPrimary: true})
+        //adding contact
+        if(createPracticeInput.createContactInput){
+          const contact = await this.contactService.createContact(createPracticeInput.createContactInput)
+          facilityInstance.contacts = [contact];
+        }
       const facility = await this.facilityRepository.save(facilityInstance);
       return facility
     } catch (error) {

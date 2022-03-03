@@ -114,6 +114,10 @@ export class Facility {
   @Field({ nullable: true })
   isPrivate: boolean;
 
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  isPrimary: boolean;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   color: string;

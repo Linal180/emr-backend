@@ -47,7 +47,7 @@ export class PracticeService {
       //creating practice
       const practiceInstance = this.practiceRepository.create(createPracticeInput.createPracticeItemInput)
       //create a facility 
-      const facility  = await this.facilityService.addFacility(createPracticeInput.createFacilityItemInput)
+      const facility  = await this.facilityService.addFacility(createPracticeInput)
       practiceInstance.facilities = [facility]
       //save the practice
       const practice = await this.practiceRepository.save(practiceInstance)
