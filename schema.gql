@@ -445,6 +445,7 @@ type Facility {
   cliaIdNumber: String
   federalTaxId: String
   isPrivate: Boolean
+  isPrimary: Boolean
   color: String
   tamxonomyCode: String
   timeZone: String
@@ -1084,6 +1085,7 @@ input CreateFacilityItemInput {
   cliaIdNumber: String
   timeZone: String
   practiceId: String
+  isPrimary: Boolean = true
   federalTaxId: String
   color: String
   tamxonomyCode: String
@@ -1158,6 +1160,7 @@ input UpdateFacilityItemInput {
   cliaIdNumber: String
   timeZone: String
   practiceId: String
+  isPrimary: Boolean = true
   federalTaxId: String
   color: String
   tamxonomyCode: String
@@ -1633,6 +1636,7 @@ input UpdateAttachmentInput {
 
 input CreatePracticeInput {
   createFacilityItemInput: CreateFacilityItemInput
+  createContactInput: CreateContactInput
   registerUserInput: RegisterUserInput
   createPracticeItemInput: CreatePracticeItemInput
 }
