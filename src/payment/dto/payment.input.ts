@@ -1,13 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { CreateAppointmentInput } from '../../appointments/dto/create-appointment.input';
+import { CreateExternalAppointmentInput } from '../../appointments/dto/create-external-appointment.input';
 
 @InputType()
-export class PaymentInput extends CreateAppointmentInput {
+export class PaymentInput extends CreateExternalAppointmentInput {
   @Field()
   clientIntent: string;
 
-  @Field()
-  amount: string;
+ 
 }
 
 @InputType()

@@ -149,8 +149,8 @@ export class Appointment {
   @Field({ nullable: true })
   updatedAt: string;
 
-  @Column()
-  @Field()
+  @Column({nullable: true})
+  @Field({nullable: true})
   paymentStatus: string;
 
 }

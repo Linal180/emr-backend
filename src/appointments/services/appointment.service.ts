@@ -16,6 +16,7 @@ import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentInput, UpdateAppointmentPayStatus } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
+import { Service } from '../../facilities/entities/services.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -37,8 +38,6 @@ export class AppointmentService {
    * @returns appointment 
    */
   async createAppointment(createAppointmentInput: CreateAppointmentInput): Promise<Appointment> {
-
-    console.log('createAppointmentInput >> ',createAppointmentInput)
      //Transaction start
      const queryRunner = this.connection.createQueryRunner();
      await queryRunner.connect();
@@ -92,7 +91,7 @@ export class AppointmentService {
     try {
        //create patient 
        const patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
-       const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true})
+       const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true,paymentStatus: createExternalAppointmentInput.createExternalAppointmentItemInput.paymentStatus})
        if(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId){
         const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
         appointmentInstance.provider = provider
@@ -123,6 +122,14 @@ export class AppointmentService {
         throw new InternalServerErrorException(error);
       } finally {
         await queryRunner.release();
+      }
+    }
+
+    async getAmount(id:string):Promise<Service>{
+      try {
+        return await this.servicesService.findOne(id)
+      } catch (error) {
+        throw new InternalServerErrorException(error)
       }
     }
 

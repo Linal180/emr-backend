@@ -14,3 +14,9 @@ export class BraintreeChargePayload {
     @Field()
     success: boolean
 }
+
+@ObjectType()
+export class ServicePayload {
+    @Field()
+    price: string
+}

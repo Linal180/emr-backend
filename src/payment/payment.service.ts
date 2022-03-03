@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
 import { AppointmentService } from '../appointments/services/appointment.service';
@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { BraintreePayload } from './dto/payment.dto';
 import { CreateTransactionInputs, PaymentInput } from './dto/payment.input';
 import { Transactions } from './entity/payment.entity';
+import { Appointment } from '../appointments/entities/appointment.entity';
 
 @Injectable()
 export class PaymentService {
@@ -52,21 +53,28 @@ export class PaymentService {
     return data;
   }
 
-  async charge(req: PaymentInput) {
-    const { amount, clientIntent } = req;
+  async charge(req: PaymentInput): Promise<Appointment> {
+    const {
+      clientIntent,
+      createExternalAppointmentItemInput: { serviceId },
+    } = req;
     try {
+      const { price } = await this.appointmentService.getAmount(serviceId);
       const brainTrans = await this.gateway.transaction.sale({
-        amount: amount,
+        amount: price,
         paymentMethodNonce: clientIntent,
       });
-
-     
+      console.log("transaction>>>",brainTrans)
 
       if (brainTrans?.success) {
-        const appointment = await this.appointmentService.createAppointment({
-          ...req,
-          paymentStatus: 'paid',
-        });
+        const appointment =
+          await this.appointmentService.createExternalAppointmentInput({
+            createExternalAppointmentItemInput: {
+              ...req.createExternalAppointmentItemInput,
+              paymentStatus: 'paid',
+            },
+            ...req,
+          });
 
         if (appointment?.id) {
           const data = {
@@ -76,11 +84,9 @@ export class PaymentService {
             patientId: appointment?.patientId,
             appointmentId: appointment?.id,
           };
-          const transaction = this.create(data);
+          await this.create(data);
 
-          return {
-            message: 'Appointment created Successfully',
-          };
+          return appointment;
         } else {
           const refunded = await this.refund(brainTrans?.transaction?.id);
           if (refunded?.success) {
@@ -89,13 +95,20 @@ export class PaymentService {
             );
           }
         }
-      }
-      else{
+      } else {
         throw new Error(brainTrans?.message);
       }
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  async paypalCheckout() {
+    this.gateway.transaction.sale({
+      amount: '',
+      paymentMethodNonce: '',
+      orderId: '',
+    });
   }
 
   async create(data: CreateTransactionInputs) {

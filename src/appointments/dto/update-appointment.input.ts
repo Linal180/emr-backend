@@ -12,7 +12,7 @@ export class UpdateAppointmentPayStatus {
   @Field()
   id: string;
   
-  @Field()
+  @Field({nullable: true})
   paymentStatus: string;
 }
 
