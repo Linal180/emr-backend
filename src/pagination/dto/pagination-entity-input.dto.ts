@@ -7,6 +7,7 @@ export class PaginatedEntityInput {
   status?: UserStatus
   userId?: string
   to?: string
+  appointmentNumber?: string
   isActive?: boolean
   from?: string
   practiceId?: string

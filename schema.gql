@@ -940,6 +940,7 @@ input GetPractice {
 
 input AppointmentInput {
   paginationOptions: PaginationInput!
+  appointmentNumber: String
 }
 
 input GetAppointment {
