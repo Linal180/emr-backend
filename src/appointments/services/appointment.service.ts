@@ -153,12 +153,12 @@ export class AppointmentService {
       const facilityLocationLink = facility.contacts.filter(function(item){return item.primaryContact})
       if(IsBooked){
       return await this.utilsService.smsNotification({
-        to: currentContact[0].phone,
+        to: [currentContact[0].phone],
         body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr."+" "+provider.firstName+" "+provider.lastName} on location ${facilityLocationLink[0].locationLink}`
       });
     }else {
       return await this.utilsService.smsNotification({
-        to: currentContact[0].phone,
+        to: [currentContact[0].phone],
         body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr."+" "+provider.lastName} on location ${facilityLocationLink[0].locationLink}`
       });
     }
@@ -307,7 +307,7 @@ export class AppointmentService {
         const provider = await this.doctorService.findOne(appointment.providerId)
         const facility = await this.facilityService.findOne(appointment.facilityId)
         if(patient.phonePermission){
-            this.triggerSmsNotification(appointment, provider, patient, facility, false)
+            // this.triggerSmsNotification(appointment, provider, patient, facility, false)
         }
         return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '',reason: cancelAppointment.reason})
       }

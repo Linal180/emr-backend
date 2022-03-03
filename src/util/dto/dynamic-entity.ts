@@ -5,7 +5,7 @@ export interface DynamicClassEntity<T> {
 }
 export class TwilioInput{
   @Field()
-  to: string
+  to: string[]
 
   @Field()
   body: string

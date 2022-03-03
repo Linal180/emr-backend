@@ -58,12 +58,11 @@ export class UtilsService {
    * @param twilioInput 
    */
   async smsNotification(twilioInput: TwilioInput) {
-     await client.messages.create({
+     return await client.messages.create({
        body: twilioInput.body,
        from: process.env.TWILIO_PHONE_NUMBER,
        to: twilioInput.to
      });
-     return
   }
   /**
    * Converts tz
