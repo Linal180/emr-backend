@@ -5,10 +5,8 @@ import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
 import { PracticeService } from 'src/practice/practice.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateFacilityInput } from '../dto/create-facility.input';
-import { CreateFacilityItemInput } from '../dto/create-facilityItem.input ';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
 import FacilityInput from '../dto/facility-input.dto';
 import { FacilityPayload } from '../dto/facility-payload.dto';
@@ -101,7 +99,7 @@ export class FacilityService {
       const facilityInstance = this.facilityRepository.create({...createPracticeInput.createFacilityItemInput,isPrimary: true})
         //adding contact
         if(createPracticeInput.createContactInput){
-          const contact = await this.contactService.createContact(createPracticeInput.createContactInput)
+          const contact = await this.contactService.createContact({...createPracticeInput.createContactInput, primaryContact: true})
           facilityInstance.contacts = [contact];
         }
       const facility = await this.facilityRepository.save(facilityInstance);

@@ -1085,7 +1085,6 @@ input CreateFacilityItemInput {
   cliaIdNumber: String
   timeZone: String
   practiceId: String
-  isPrimary: Boolean = true
   federalTaxId: String
   color: String
   tamxonomyCode: String
@@ -1160,7 +1159,6 @@ input UpdateFacilityItemInput {
   cliaIdNumber: String
   timeZone: String
   practiceId: String
-  isPrimary: Boolean = true
   federalTaxId: String
   color: String
   tamxonomyCode: String
