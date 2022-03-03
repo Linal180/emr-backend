@@ -24,9 +24,6 @@ export class CreateFacilityItemInput {
   @Field({ nullable: true })
   practiceId?: string;
 
-  @Field({nullable: true, defaultValue: true})
-  isPrimary?: boolean
-
   @Field({ nullable: true })
   federalTaxId?: string
 
