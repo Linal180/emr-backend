@@ -1,7 +1,9 @@
+require('dotenv').config();
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { getConnection, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { DynamicClassEntity } from './dto/dynamic-entity';
+import { DynamicClassEntity, TwilioInput } from './dto/dynamic-entity';
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 @Injectable()
 export class UtilsService {
@@ -51,6 +53,18 @@ export class UtilsService {
     return result+Math.floor(100000 + Math.random() * 9000);
   }
 
+  /**
+   * Sms notification
+   * @param twilioInput 
+   */
+  async smsNotification(twilioInput: TwilioInput) {
+     await client.messages.create({
+       body: twilioInput.body,
+       from: process.env.TWILIO_PHONE_NUMBER,
+       to: twilioInput.to
+     });
+     return
+  }
   /**
    * Converts tz
    * @param date 

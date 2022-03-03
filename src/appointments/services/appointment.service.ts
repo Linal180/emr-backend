@@ -6,8 +6,9 @@ import { createToken } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
-import { GetDoctorSchedule, GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
+import { GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
 import { DoctorService } from 'src/providers/services/doctor.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
@@ -27,6 +28,7 @@ export class AppointmentService {
     private readonly connection: Connection,
     private readonly patientService: PatientService,
     private readonly mailerService: MailerService,
+    private readonly utilsService: UtilsService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService
   ) { }
