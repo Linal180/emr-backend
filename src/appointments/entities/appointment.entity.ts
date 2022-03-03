@@ -77,6 +77,10 @@ export class Appointment {
   @Field({ nullable: true })
   token: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  appointmentNumber: string
+
   @Column({ nullable: true , default: false})
   @Field({ nullable: true })
   employment: boolean;

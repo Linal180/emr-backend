@@ -55,6 +55,7 @@ type Contact {
   country: String
   color: String
   primaryContact: Boolean
+  locationLink: String
   ssn: String
   employerName: String
   serviceCode: ServiceCodes!
@@ -145,6 +146,8 @@ enum UserRole {
   ADMIN
   DOCTOR
   DOCTOR_ASSISTANT
+  NURSE_PRACTITIONER
+  OFFICE_MANAGER
   PATIENT
   NURSE
   BILLING
@@ -171,6 +174,16 @@ type User {
 enum UserStatus {
   DEACTIVATED
   ACTIVE
+}
+
+type DoctorPatient {
+  id: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Employer {
@@ -338,73 +351,68 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
-type DoctorPatient {
+type Practice {
   id: String!
-  doctorId: String
-  patientId: String
-  currentProvider: Boolean
+  name: String!
+  phone: String
+  fax: String
+  practiceId: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  facilities: [Facility!]
+  createdAt: String
+  updatedAt: String
+}
+
+type BillingAddress {
+  id: String!
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  federalTaxId: String
+  bankAccount: String
+  checkPayableTo: String
+  facility: Facility
   doctor: Doctor
+  userId: String
   createdAt: String!
   updatedAt: String!
 }
 
-type Doctor {
+type Staff {
   id: String!
-  firstName: String
-  middleName: String
-  lastName: String
-  prefix: String
-  suffix: String
-  email: String
-  providerIntials: String
-  degreeCredentials: String
-  timeZone: String
-  speciality: Speciality
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String
   dob: String
-  ssn: String
-  taxonomyCode: String
-  deaNumber: String
-  deaActiveDate: String!
-  deaTermDate: String!
-  languagesSpoken: String
-  taxId: String
-  npi: String
-  upin: String
-  emcProviderId: String
-  billingFacility: String
-  medicareGrpNumber: String
-  medicaidGrpNumber: String
-  meammographyCertNumber: String
-  campusGrpNumber: String
-  blueShildNumber: String
-  taxIdStuff: String
-  specialityLicense: String
-  anesthesiaLicense: String
-  dpsCtpNumber: String
-  stateLicense: String
-  licenseActiveDate: String
-  licenseTermDate: String
-  prescriptiveAuthNumber: String
+  phone: String
+  primaryProvider: String
   facilityId: String
+  mobile: String
+  gender: Gender!
   user: User
   facility: Facility
-  contacts: [Contact!]
-  billingAddress: [BillingAddress!]
-  schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
 }
 
-"""The doctor's speciality"""
-enum Speciality {
-  PHYSICIAN_ASSISTANT
-  PHARMACIST
-  PERIODONTICS
-  PEDIATRIC_DENTIST
-  PEDIATRIC_DERMATOLOGY
-  NEUROLOGY
-  GASTROENTEROLOGY
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
 }
 
 type Schedule {
@@ -537,17 +545,16 @@ type Facility {
   id: String!
   name: String!
   practiceType: PracticeType
-  code: String
   cliaIdNumber: String
   federalTaxId: String
   isPrivate: Boolean
-  revenueCode: String
+  isPrimary: Boolean
   color: String
   tamxonomyCode: String
-  insurancePlanType: String
   timeZone: String
   mammographyCertificationNumber: String
   npi: String
+  practiceId: String
   serviceCode: ServiceCode!
   staff: [Staff!]
   doctors: [Doctor!]
@@ -626,26 +633,106 @@ enum ServiceCode {
   INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
 }
 
-type BillingAddress {
+type Appointment {
   id: String!
-  email: String
-  phone: String
-  mobile: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  federalTaxId: String
-  bankAccount: String
-  checkPayableTo: String
+  isExternal: Boolean
+  paymentType: PaymentType!
+  status: APPOINTMENTSTATUS!
+  appointmentCancelReason: String
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  token: String
+  appointmentNumber: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String!
+  scheduleEndDateTime: String!
+  providerId: String
+  patientId: String
+  facilityId: String
+  appointmentTypeId: String
+  appointmentType: Service
   facility: Facility
-  doctor: Doctor
-  userId: String
+  provider: Doctor
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient payment type assigned"""
+enum PaymentType {
+  SELF
+  INSURANCE
+}
+
+"""The patient appointment status type assigned"""
+enum APPOINTMENTSTATUS {
+  CANCELLED
+  INITIATED
+}
+
+type Doctor {
+  id: String!
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  providerIntials: String
+  degreeCredentials: String
+  timeZone: String
+  speciality: Speciality
+  dob: String
+  ssn: String
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String!
+  deaTermDate: String!
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+  facilityId: String
+  user: User
+  facility: Facility
+  contacts: [Contact!]
+  billingAddress: [BillingAddress!]
+  schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
+}
+
+"""The doctor's speciality"""
+enum Speciality {
+  PHYSICIAN_ASSISTANT
+  PHARMACIST
+  PERIODONTICS
+  PEDIATRIC_DENTIST
+  PEDIATRIC_DERMATOLOGY
+  NEUROLOGY
+  GASTROENTEROLOGY
 }
 
 type ResponsePayload {
@@ -770,9 +857,20 @@ type StaffPayload {
   response: ResponsePayload
 }
 
+type PracticePayload {
+  response: ResponsePayload
+  practice: Practice
+}
+
+type PracticesPayload {
+  response: ResponsePayload
+  practices: [Practice]
+  pagination: PaginationPayload
+}
+
 type FacilitiesPayload {
   response: ResponsePayload
-  facility: [Facility]
+  facilities: [Facility]
   pagination: PaginationPayload
 }
 
@@ -843,6 +941,8 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
+  findAllPractices(facilityInput: PracticeInput!): PracticesPayload!
+  getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
@@ -868,6 +968,7 @@ input GetUser {
 
 input FacilityInput {
   isPrivate: Boolean
+  practiceId: String
   paginationOptions: PaginationInput!
 }
 
@@ -950,8 +1051,17 @@ input GetMedia {
   id: String
 }
 
+input PracticeInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetPractice {
+  id: String
+}
+
 input AppointmentInput {
   paginationOptions: PaginationInput!
+  appointmentNumber: String
 }
 
 input GetAppointment {
@@ -960,14 +1070,6 @@ input GetAppointment {
 
 input GetDoctorAppointment {
   doctorId: String!
-}
-
-input PracticeInput {
-  paginationOptions: PaginationInput!
-}
-
-input GetPractice {
-  id: String
 }
 
 type Mutation {
@@ -1012,6 +1114,9 @@ type Mutation {
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
+  createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
+  updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
+  removePractice(removePractice: RemovePractice!): PracticePayload!
   createAppointment(createAppointmentInput: CreateAppointmentInput!): AppointmentPayload!
   createExternalAppointment(createExternalAppointmentInput: CreateExternalAppointmentInput!): AppointmentPayload!
   updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
@@ -1105,14 +1210,12 @@ input CreateFacilityItemInput {
 
   """Service Code type"""
   serviceCode: ServiceCode
-  code: String
   cliaIdNumber: String
   timeZone: String
+  practiceId: String
   federalTaxId: String
-  revenueCode: String
   color: String
   tamxonomyCode: String
-  insurancePlanType: String
   mammographyCertificationNumber: String
   npi: String
 }
@@ -1136,6 +1239,7 @@ input CreateContactInput {
   primaryContact: Boolean = true
   address: String
   address2: String
+  locationLink: String
   zipCode: String
   city: String
   state: String
@@ -1181,14 +1285,12 @@ input UpdateFacilityItemInput {
 
   """Service Code type"""
   serviceCode: ServiceCode
-  code: String
   cliaIdNumber: String
   timeZone: String
+  practiceId: String
   federalTaxId: String
-  revenueCode: String
   color: String
   tamxonomyCode: String
-  insurancePlanType: String
   mammographyCertificationNumber: String
   npi: String
   id: String!
@@ -1213,6 +1315,7 @@ input UpdateContactInput {
   primaryContact: Boolean = true
   address: String
   address2: String
+  locationLink: String
   zipCode: String
   city: String
   state: String
@@ -1242,7 +1345,7 @@ input UpdateBillingAddressInput {
   userId: String
   doctorId: String
   facilityId: String
-  id: String!
+  id: String
 }
 
 input UpdateFacilityTimeZoneInput {
@@ -1656,6 +1759,40 @@ input UpdateAttachmentInput {
   subTitle: String
   description: String
   url: String
+  id: String
+}
+
+input CreatePracticeInput {
+  createFacilityItemInput: CreateFacilityItemInput
+  createContactInput: CreateContactInput
+  registerUserInput: RegisterUserInput
+  createPracticeItemInput: CreatePracticeItemInput
+}
+
+input CreatePracticeItemInput {
+  name: String
+  phone: String
+  fax: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+}
+
+input UpdatePracticeInput {
+  name: String
+  phone: String
+  fax: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  id: String
+}
+
+input RemovePractice {
   id: String
 }
 

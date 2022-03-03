@@ -70,7 +70,7 @@ export class PatientResolver {
 
   @Query(returns => PatientsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin','admin'])
   async findAllPatient(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
     const patients = await this.patientService.findAllPatients(patientInput)
     if (patients) {

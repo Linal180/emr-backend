@@ -105,10 +105,6 @@ export class Facility {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  code: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   cliaIdNumber: string;
 
   @Column({ nullable: true })
@@ -119,9 +115,9 @@ export class Facility {
   @Field({ nullable: true })
   isPrivate: boolean;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: false })
   @Field({ nullable: true })
-  revenueCode: string;
+  isPrimary: boolean;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -130,10 +126,6 @@ export class Facility {
   @Column({ nullable: true })
   @Field({ nullable: true })
   tamxonomyCode: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  insurancePlanType: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -146,6 +138,10 @@ export class Facility {
   @Column({ nullable: true })
   @Field({ nullable: true })
   npi: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
 
   @Column({
     type: "enum",

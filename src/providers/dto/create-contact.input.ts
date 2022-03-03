@@ -4,7 +4,6 @@ import { ContactType, RelationshipType, ServiceCodes } from '../entities/contact
 @InputType()
 export class CreateContactInput {
 
-
   @Field({ nullable: true })
   name?: string;
 
@@ -58,6 +57,9 @@ export class CreateContactInput {
 
   @Field({ nullable: true })
   address2?: string;
+
+  @Field({ nullable: true })
+  locationLink?: string 
 
   @Field({ nullable: true })
   zipCode?: string;

@@ -60,7 +60,7 @@ export class AppointmentResolver {
 
   @Query(returns => AppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin','admin'])
   async findAllAppointments(@Args('appointmentInput') appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     const appointments = await this.appointmentService.findAllAppointments(appointmentInput)
     if (appointments) {

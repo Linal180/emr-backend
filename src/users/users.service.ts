@@ -147,7 +147,6 @@ export class UsersService {
         });
       }
       const user = await this.findUserById(updateRoleInput.id);
-      console.log(":user",user)
       if (user) {
         const fetchdRoles = await getConnection()
           .getRepository(Role)

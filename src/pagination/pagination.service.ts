@@ -139,8 +139,10 @@ export class PaginationService {
       isActive,
       currentPhaseId,
       from,
+      appointmentNumber,
       dueToday,
       facilityId,
+      practiceId,
       phychType,
       ageGroupId,
       categoryId,
@@ -164,6 +166,9 @@ export class PaginationService {
         ...(facilityId && {
           facilityId
         }),
+        ...(practiceId && {
+          practiceId: practiceId
+        }),
         ...(status != null && {
           status
         }),
@@ -182,11 +187,15 @@ export class PaginationService {
         ...(currentPhaseId && {
           phaseId: currentPhaseId
         }),
+        ...(appointmentNumber && {
+          appointmentNumber: appointmentNumber
+        }),
         ...(dueToday && {
           dueDate: Equal(new Date().toISOString().split('T')[0])
         }),
       }
     };
+
     // Assigned to User
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status
