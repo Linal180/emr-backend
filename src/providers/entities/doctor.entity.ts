@@ -180,7 +180,7 @@ export class Doctor {
   @Field({ nullable: true })
   facilityId: string;
 
-  @OneToOne(() => User, { eager: true })
+  @OneToOne(() => User)
   @JoinColumn()
   @Field(type => User, { nullable: true })
   user: User;
@@ -193,7 +193,7 @@ export class Doctor {
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
-  @OneToMany(() => BillingAddress, billingAddress => billingAddress.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => BillingAddress, billingAddress => billingAddress.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
 
