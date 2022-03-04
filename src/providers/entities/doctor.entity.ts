@@ -180,7 +180,7 @@ export class Doctor {
   @Field({ nullable: true })
   facilityId: string;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, { eager: true })
   @JoinColumn()
   @Field(type => User, { nullable: true })
   user: User;
