@@ -208,7 +208,14 @@ export class UsersService {
    * @returns one user
    */
   async findOne(email: string): Promise<User> {
-    return await this.usersRepository.findOne({ email: email, status: UserStatus.ACTIVE });
+    const user = await this.usersRepository.findOne({ email: email, status: UserStatus.ACTIVE });
+    if(!user){
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'User not found',
+      });
+    }
+    return user;
   }
 
   /**

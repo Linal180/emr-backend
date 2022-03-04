@@ -1,13 +1,17 @@
 import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Facility } from 'src/facilities/entities/facility.entity';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { createToken } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
-import { GetDoctorSchedule, GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
+import { GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
@@ -27,6 +31,7 @@ export class AppointmentService {
     private readonly connection: Connection,
     private readonly patientService: PatientService,
     private readonly mailerService: MailerService,
+    private readonly utilsService: UtilsService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService
   ) { }
@@ -43,23 +48,25 @@ export class AppointmentService {
      await queryRunner.startTransaction();
     try {
       //fetch already exiting appointment
+      const appointmentNumber = await this.utilsService.generateString(8)
       const appointmentObj = await this.findAppointment(createAppointmentInput.providerId, createAppointmentInput.patientId)
       if(!appointmentObj){
       //creating appointment
-      const appointmentInstance = this.appointmentRepository.create({...createAppointmentInput, isExternal: true})
+      const token = createToken();
+      const appointmentInstance = this.appointmentRepository.create({...createAppointmentInput, isExternal: true, token, appointmentNumber})
       //associate provider 
-      if(createAppointmentInput.providerId){
       const provider = await this.doctorService.findOne(createAppointmentInput.providerId)
+      if(createAppointmentInput.providerId){
       appointmentInstance.provider = provider
       }
       //associate patient
+      const patient = await this.patientService.findOne(createAppointmentInput.patientId)
       if(createAppointmentInput.patientId){
-        const patient = await this.patientService.findOne(createAppointmentInput.patientId)
         appointmentInstance.patient = patient
       }
       //associate facility 
+      const facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
       if(createAppointmentInput.facilityId){
-        const facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
         appointmentInstance.facility = facility
       }
       //associate service 
@@ -69,6 +76,10 @@ export class AppointmentService {
       }
       const appointment = await this.appointmentRepository.save(appointmentInstance);
       await queryRunner.commitTransaction();
+      console.log("patient.phonePermission",patient.phonePermission);
+      if(patient.phonePermission){
+        //  this.triggerSmsNotification(appointment, provider, patient, facility, true)
+      }
       return appointment
     }
     throw new ConflictException({
@@ -89,10 +100,11 @@ export class AppointmentService {
      await queryRunner.startTransaction();
     try {
        //create patient 
+       const appointmentNumber = await this.utilsService.generateString(8)
        const patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
-       const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true})
+       const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true, appointmentNumber})
+       const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
        if(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId){
-        const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
         appointmentInstance.provider = provider
         }
         //associate patient
@@ -100,8 +112,8 @@ export class AppointmentService {
           appointmentInstance.patient = patientInstance
         }
         //associate facility 
+        const facility = await this.facilityService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId)
         if(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId){
-          const facility = await this.facilityService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId)
           appointmentInstance.facility = facility
         }
         //associate service 
@@ -115,6 +127,9 @@ export class AppointmentService {
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName+' '+patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id)
         await queryRunner.commitTransaction();
+        if(patientInstance.phonePermission){
+          // this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
+        }
         return appointment
       } catch (error) {
         await queryRunner.rollbackTransaction();
@@ -124,6 +139,30 @@ export class AppointmentService {
       }
     }
 
+    /**
+     * Triggers sms notification
+     * @param appointment 
+     * @param provider 
+     * @param patient 
+     * @param facility 
+     * @param IsBooked 
+     * @returns  
+     */
+    async triggerSmsNotification(appointment: Appointment, provider: Doctor, patient: Patient, facility: Facility, IsBooked: boolean){
+      const currentContact = patient.contacts.filter(function(item){return item.primaryContact})
+      const facilityLocationLink = facility.contacts.filter(function(item){return item.primaryContact})
+      if(IsBooked){
+      return await this.utilsService.smsNotification({
+        to: [currentContact[0].phone],
+        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr."+" "+provider.firstName+" "+provider.lastName} on location ${facilityLocationLink[0].locationLink}`
+      });
+    }else {
+      return await this.utilsService.smsNotification({
+        to: [currentContact[0].phone],
+        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr."+" "+provider.lastName} on location ${facilityLocationLink[0].locationLink}`
+      });
+    }
+    }
   /**
    * Finds all appointments
    * @param appointmentInput 
@@ -150,6 +189,21 @@ export class AppointmentService {
    */
   async findOne(id: string): Promise<Appointment> {
     return await this.appointmentRepository.findOne(id);
+  }
+
+  async findByToken(token: string): Promise<Appointment> {
+    const appointment =  await this.appointmentRepository.findOne({
+      where: {
+        token: token
+      }
+    });
+    if(appointment){
+      return appointment
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Appointment not found',
+    });
   }
 
   /**
@@ -247,13 +301,15 @@ export class AppointmentService {
    */
   async cancelAppointment(cancelAppointment: CancelAppointment) {
     try {
-      const appointment = await this.appointmentRepository.findOne({ 
-        where: {
-          token: cancelAppointment.token
-        }
-      })
+      const appointment = await this.findByToken(cancelAppointment.token)
       if(appointment){
-        return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '', reason: cancelAppointment.reason})
+        const patient = await this.patientService.findOne(appointment.patientId)
+        const provider = await this.doctorService.findOne(appointment.providerId)
+        const facility = await this.facilityService.findOne(appointment.facilityId)
+        if(patient.phonePermission){
+            // this.triggerSmsNotification(appointment, provider, patient, facility, false)
+        }
+        return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '',reason: cancelAppointment.reason})
       }
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,

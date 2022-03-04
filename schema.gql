@@ -40,6 +40,7 @@ type Contact {
   country: String
   color: String
   primaryContact: Boolean
+  locationLink: String
   ssn: String
   employerName: String
   serviceCode: ServiceCodes!
@@ -445,6 +446,7 @@ type Facility {
   cliaIdNumber: String
   federalTaxId: String
   isPrivate: Boolean
+  isPrimary: Boolean
   color: String
   tamxonomyCode: String
   timeZone: String
@@ -539,6 +541,7 @@ type Appointment {
   reason: String
   notes: String
   token: String
+  appointmentNumber: String
   employment: Boolean
   autoAccident: Boolean
   otherAccident: Boolean
@@ -937,6 +940,7 @@ input GetPractice {
 
 input AppointmentInput {
   paginationOptions: PaginationInput!
+  appointmentNumber: String
 }
 
 input GetAppointment {
@@ -1110,6 +1114,7 @@ input CreateContactInput {
   primaryContact: Boolean = true
   address: String
   address2: String
+  locationLink: String
   zipCode: String
   city: String
   state: String
@@ -1185,6 +1190,7 @@ input UpdateContactInput {
   primaryContact: Boolean = true
   address: String
   address2: String
+  locationLink: String
   zipCode: String
   city: String
   state: String
@@ -1633,6 +1639,7 @@ input UpdateAttachmentInput {
 
 input CreatePracticeInput {
   createFacilityItemInput: CreateFacilityItemInput
+  createContactInput: CreateContactInput
   registerUserInput: RegisterUserInput
   createPracticeItemInput: CreatePracticeItemInput
 }
