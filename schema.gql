@@ -405,7 +405,6 @@ type Staff {
   facility: Facility
   createdAt: String!
   updatedAt: String!
-  transaction: Transactions
 }
 
 """The user gender assigned"""
@@ -578,6 +577,7 @@ type Appointment {
   patient: Patient
   createdAt: String
   updatedAt: String
+  paymentStatus: String
 }
 
 """The patient payment type assigned"""
@@ -637,6 +637,7 @@ type Doctor {
   schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
+  transaction: Transactions
 }
 
 """The doctor's speciality"""
@@ -816,17 +817,6 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
-type PracticePayload {
-  response: ResponsePayload
-  practice: Practice
-}
-
-type PracticesPayload {
-  response: ResponsePayload
-  practices: [Practice]
-  pagination: PaginationPayload
-}
-
 type BraintreePayload {
   clientToken: String!
 }
@@ -861,6 +851,7 @@ type Query {
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  getToken: BraintreePayload!
 }
 
 input UsersInput {
@@ -1034,10 +1025,8 @@ type Mutation {
   updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
-  createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
-  updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
-  removePractice(removePractice: RemovePractice!): PracticePayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
+  chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
 }
 
 input LoginUserInput {
@@ -1778,42 +1767,19 @@ input CancelAppointment {
   reason: String!
 }
 
-input CreatePracticeInput {
-  createFacilityItemInput: CreateFacilityItemInput
-  registerUserInput: RegisterUserInput
-  createPracticeItemInput: CreatePracticeItemInput
-}
-
-input CreatePracticeItemInput {
-  name: String
-  phone: String
-  fax: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-}
-
-input UpdatePracticeInput {
-  name: String
-  phone: String
-  fax: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  id: String
-}
-
-input RemovePractice {
-  id: String
-}
-
 input PaymentInput {
   createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
   createPatientItemInput: CreatePatientItemInput!
   createGuardianContactInput: CreateContactInput!
   clientIntent: String!
+  client: String!
+}
+
+input PaymentInputsAfterAppointment {
+  clientIntent: String!
+  price: String!
+  providerId: String!
+  facilityId: String!
+  patientId: String!
+  appointmentId: String!
 }

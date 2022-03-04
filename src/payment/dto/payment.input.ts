@@ -6,7 +6,28 @@ export class PaymentInput extends CreateExternalAppointmentInput {
   @Field()
   clientIntent: string;
 
- 
+  @Field()
+  client: string;
+}
+@InputType()
+export class PaymentInputsAfterAppointment {
+  @Field()
+  clientIntent: string;
+
+  @Field()
+  price: string;
+
+  @Field()
+  providerId: string;
+
+  @Field()
+  facilityId: string;
+
+  @Field()
+  patientId: string;
+
+  @Field()
+  appointmentId: string;
 }
 
 @InputType()

@@ -4,7 +4,11 @@ import { BraintreeGateway, Environment } from 'braintree';
 import { AppointmentService } from '../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
 import { BraintreePayload } from './dto/payment.dto';
-import { CreateTransactionInputs, PaymentInput } from './dto/payment.input';
+import {
+  CreateTransactionInputs,
+  PaymentInput,
+  PaymentInputsAfterAppointment,
+} from './dto/payment.input';
 import { Transactions } from './entity/payment.entity';
 import { Appointment } from '../appointments/entities/appointment.entity';
 
@@ -53,7 +57,31 @@ export class PaymentService {
     return data;
   }
 
-  async charge(req: PaymentInput): Promise<Appointment> {
+  async chargeAfter(req: PaymentInputsAfterAppointment): Promise<any> {
+    const { clientIntent, price } = req;
+    try {
+      const brainTrans = await this.gateway.transaction.sale({
+        amount: price,
+        paymentMethodNonce: clientIntent,
+      });
+
+      const data = {
+        transactionId: brainTrans?.transaction?.id,
+        doctorId: req?.providerId,
+        facilityId: req?.facilityId,
+        patientId: req?.patientId,
+        appointmentId: req?.appointmentId,
+      };
+      await this.create(data);
+      return {
+        message: 'Payment charge succssfully.',
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async chargeBefore(req: PaymentInput): Promise<Appointment> {
     const {
       clientIntent,
       createExternalAppointmentItemInput: { serviceId },
@@ -64,7 +92,6 @@ export class PaymentService {
         amount: price,
         paymentMethodNonce: clientIntent,
       });
-      console.log("transaction>>>",brainTrans)
 
       if (brainTrans?.success) {
         const appointment =
