@@ -196,7 +196,6 @@ export class PaginationService {
       }
     };
 
-    console.log("whereOptions",whereOptions);
     // Assigned to User
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status

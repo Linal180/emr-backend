@@ -463,6 +463,7 @@ type Facility {
   cliaIdNumber: String
   federalTaxId: String
   isPrivate: Boolean
+  isPrimary: Boolean
   color: String
   tamxonomyCode: String
   timeZone: String
@@ -558,6 +559,7 @@ type Appointment {
   reason: String
   notes: String
   token: String
+  appointmentNumber: String
   employment: Boolean
   autoAccident: Boolean
   otherAccident: Boolean
