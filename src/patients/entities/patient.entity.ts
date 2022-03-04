@@ -386,7 +386,7 @@ export class Patient {
   @Field(type => Facility, { nullable: true })
   facility: Facility;
 
-  @OneToOne(() => User, {eager: true})
+  @OneToOne(() => User)
   @JoinColumn()
   @Field(type => User, { nullable: true })
   user: User;

@@ -46,7 +46,7 @@ export class Practice {
   @Field({ nullable: true })
   champus: string;
 
-  @OneToMany(() => Facility, facility => facility.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => Facility, facility => facility.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Facility], { nullable: true })
   facilities: Facility[];
 
