@@ -18,7 +18,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
@@ -219,7 +219,6 @@ export class AppointmentService {
         scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
         scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
         providerId: getDoctorSlots.id,
-
       }
     })
   }
@@ -277,6 +276,20 @@ export class AppointmentService {
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
       const appointment = await this.appointmentRepository.save(updateAppointmentInput)
+      return appointment
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Updates appointment billing status
+   * @param updateAppointmentBillingStatusInput 
+   * @returns appointment billing status 
+   */
+  async updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput): Promise<Appointment> {
+    try {
+      const appointment = await this.appointmentRepository.save(updateAppointmentBillingStatusInput)
       return appointment
     } catch (error) {
       throw new InternalServerErrorException(error);
