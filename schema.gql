@@ -456,91 +456,6 @@ enum ServiceType {
   EXTERNAL
 }
 
-type Appointment {
-  id: String!
-  isExternal: Boolean
-  paymentType: PaymentType!
-  status: APPOINTMENTSTATUS!
-  appointmentCancelReason: String
-  insuranceCompany: String
-  membershipID: String
-  reason: String
-  notes: String
-  token: String
-  employment: Boolean
-  autoAccident: Boolean
-  otherAccident: Boolean
-  otherPartyResponsible: Boolean
-  primaryInsurance: String
-  secondaryInsurance: String
-  scheduleStartDateTime: String!
-  scheduleEndDateTime: String!
-  providerId: String
-  patientId: String
-  facilityId: String
-  appointmentTypeId: String
-  appointmentType: Service
-  facility: Facility
-  provider: Doctor
-  patient: Patient
-  createdAt: String
-  updatedAt: String
-  paymentStatus: String
-}
-
-"""The patient payment type assigned"""
-enum PaymentType {
-  SELF
-  INSURANCE
-}
-
-"""The patient appointment status type assigned"""
-enum APPOINTMENTSTATUS {
-  CANCELLED
-  INITIATED
-}
-
-type Practice {
-  id: String!
-  name: String!
-  phone: String
-  fax: String
-  practiceId: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  facilities: [Facility!]
-  createdAt: String
-  updatedAt: String
-}
-
-type Staff {
-  id: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-  username: String!
-  dob: String!
-  phone: String
-  primaryProvider: String
-  facilityId: String
-  mobile: String
-  gender: Gender!
-  user: User
-  facility: Facility
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user gender assigned"""
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-}
-
 type Facility {
   id: String!
   name: String!
@@ -548,7 +463,6 @@ type Facility {
   cliaIdNumber: String
   federalTaxId: String
   isPrivate: Boolean
-  isPrimary: Boolean
   color: String
   tamxonomyCode: String
   timeZone: String
@@ -644,7 +558,6 @@ type Appointment {
   reason: String
   notes: String
   token: String
-  appointmentNumber: String
   employment: Boolean
   autoAccident: Boolean
   otherAccident: Boolean
@@ -946,9 +859,6 @@ type Query {
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
-  findAllPractices(facilityInput: PracticeInput!): PracticesPayload!
-  getPractice(getPractice: GetPractice!): PracticePayload!
-  getToken: BraintreePayload!
 }
 
 input UsersInput {
