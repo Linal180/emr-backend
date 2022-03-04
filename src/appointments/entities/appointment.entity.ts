@@ -15,6 +15,16 @@ registerEnumType(PaymentType, {
   description: "The patient payment type assigned",
 });
 
+export enum BillingStatus {
+  PAID = "paid",
+  DUE = "due",
+}
+
+registerEnumType(BillingStatus, {
+  name: "BillingStatus",
+  description: "The patient billing status assigned",
+});
+
 export enum APPOINTMENTSTATUS {
   CANCELLED = "cancelled",
   INITIATED = "initiated",
@@ -52,6 +62,14 @@ export class Appointment {
   })
   @Field(type => APPOINTMENTSTATUS)
   status: APPOINTMENTSTATUS;
+
+  @Column({
+    type: "enum",
+    enum: BillingStatus,
+    default: BillingStatus.DUE
+  })
+  @Field(type => BillingStatus)
+  billingStatus: BillingStatus;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
