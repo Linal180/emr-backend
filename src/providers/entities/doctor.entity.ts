@@ -193,7 +193,7 @@ export class Doctor {
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
-  @OneToMany(() => BillingAddress, billingAddress => billingAddress.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @OneToMany(() => BillingAddress, billingAddress => billingAddress.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
 
