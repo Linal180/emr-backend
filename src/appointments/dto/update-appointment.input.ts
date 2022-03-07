@@ -5,6 +5,9 @@ import { CreateAppointmentInput } from './create-appointment.input';
 export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) {
   @Field()
   id: string;
+
+  @Field({nullable: true})
+  paymentStatus?: string;
 }
 
 @InputType()

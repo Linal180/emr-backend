@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
 import { AppointmentService } from '../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
-import { BraintreePayload } from './dto/payment.dto';
+import {  BraintreePayload } from './dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
@@ -57,25 +57,35 @@ export class PaymentService {
     return data;
   }
 
-  async chargeAfter(req: PaymentInputsAfterAppointment): Promise<any> {
-    const { clientIntent, price } = req;
+  async chargeAfter(req: PaymentInputsAfterAppointment): Promise<Appointment> {
+    const { clientIntent, price, appointmentId } = req;
     try {
       const brainTrans = await this.gateway.transaction.sale({
         amount: price,
         paymentMethodNonce: clientIntent,
       });
+      if (brainTrans?.success) {
+        console.log('brain transaction>>>', brainTrans);
+        const updatedAppointment =
+          await this.appointmentService.updateAppointment({
+            id: appointmentId,
+            paymentStatus: 'paid',
+          });
+        console.log('updated appointment>>>', updatedAppointment);
 
-      const data = {
-        transactionId: brainTrans?.transaction?.id,
-        doctorId: req?.providerId,
-        facilityId: req?.facilityId,
-        patientId: req?.patientId,
-        appointmentId: req?.appointmentId,
-      };
-      await this.create(data);
-      return {
-        message: 'Payment charge succssfully.',
-      };
+        const data = {
+          transactionId: brainTrans?.transaction?.id,
+          doctorId: req?.providerId,
+          facilityId: req?.facilityId,
+          patientId: req?.patientId,
+          appointmentId: req?.appointmentId,
+        };
+        const trans = await this.create(data);
+        console.log('transaction >>>', trans);
+        return updatedAppointment;
+      } else {
+        throw new InternalServerErrorException(brainTrans?.message);
+      }
     } catch (error) {
       throw new Error(error);
     }
@@ -140,7 +150,9 @@ export class PaymentService {
 
   async create(data: CreateTransactionInputs) {
     try {
-      return await this.transactionRepo.create(data);
+      const transaction = await this.transactionRepo.create(data);
+      const saved = await this.transactionRepo.save(transaction);
+      return saved;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

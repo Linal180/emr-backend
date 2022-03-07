@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { Appointment } from "src/appointments/entities/appointment.entity";
 
 
 @ObjectType()
@@ -10,9 +11,10 @@ export class BraintreePayload {
 
 
 @ObjectType()
-export class BraintreeChargePayload {
+export class BraintreeChargePayload extends Appointment {
     @Field()
-    success: boolean
+    success?: boolean;
+   
 }
 
 @ObjectType()

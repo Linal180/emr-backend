@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { PaymentService } from './payment.service';
-import {  BraintreePayload } from './dto/payment.dto';
+import {  BraintreeChargePayload, BraintreePayload } from './dto/payment.dto';
 import { PaymentInput, PaymentInputsAfterAppointment } from './dto/payment.input';
 import { Appointment } from '../appointments/entities/appointment.entity';
 import { AppointmentPayload } from '../appointments/dto/appointment-payload.dto';
