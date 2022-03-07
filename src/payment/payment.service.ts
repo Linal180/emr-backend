@@ -84,7 +84,7 @@ export class PaymentService {
         console.log('transaction >>>', trans);
         return updatedAppointment;
       } else {
-        throw new InternalServerErrorException(brainTrans?.message);
+        throw new InternalServerErrorException({message: brainTrans?.message});
       }
     } catch (error) {
       throw new Error(error);

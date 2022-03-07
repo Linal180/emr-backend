@@ -15,11 +15,19 @@ export class PaymentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  async chargePayment(@Args('paymentInput') paymentInput: PaymentInput): Promise<Appointment> {
-    return await this.paymentService.chargeBefore(paymentInput);
+  async chargePayment(@Args('paymentInput') paymentInput: PaymentInput): Promise<AppointmentPayload> {
+    return  {
+      appointment: await this.paymentService.chargeBefore(paymentInput),
+      response: { status: 200, message: 'Appointment updated successfully' }
+    };
+    
+    
   }
   @Mutation(() => AppointmentPayload)
-  async chargeAfterAppointment(@Args('paymentInput') paymentInput: PaymentInputsAfterAppointment): Promise<Appointment> {
-    return await this.paymentService.chargeAfter(paymentInput);
+  async chargeAfterAppointment(@Args('paymentInput') paymentInput: PaymentInputsAfterAppointment): Promise<AppointmentPayload> {
+    return {
+      appointment: await this.paymentService.chargeAfter(paymentInput),
+      response: { status: 200, message: 'Appointment updated successfully' }
+    };
   }
 }
