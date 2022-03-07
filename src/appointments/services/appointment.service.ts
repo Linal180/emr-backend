@@ -255,9 +255,9 @@ export class AppointmentService {
 
   async getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment): Promise<Appointment[]> {
     const appointment = await this.appointmentRepository.find({
-      where: {
-        providerId: getDoctorAppointment.doctorId
-      }
+      where:[ 
+        {providerId: getDoctorAppointment.doctorId, status: APPOINTMENTSTATUS.INITIATED }
+      ]
     })
     if (appointment) {
       return appointment
