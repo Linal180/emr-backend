@@ -26,8 +26,8 @@ export class AttachmentsResolver {
   }
 
   @Mutation(returns => AttachmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['super-admin', 'admin'])
   async createAttachmentData(@Args('createAttachmentInput') createAttachmentInput: CreateAttachmentInput) {
     const attachment = await this.attachmentsService.createAttachmentData(createAttachmentInput);
     return {
@@ -37,8 +37,8 @@ export class AttachmentsResolver {
   }
 
   @Mutation(returns => AttachmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', ['super-admin', 'admin'])
   async removeAttachmentData(@Args('removeAttachment') removeAttachment: RemoveAttachment) {
     await this.attachmentsService.removeAttachmentData(removeAttachment.id);
     return {
