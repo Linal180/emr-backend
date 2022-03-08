@@ -284,8 +284,7 @@ export class AppointmentService {
    */
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
-      const appointment = await this.appointmentRepository.save(updateAppointmentInput)
-      return appointment
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, updateAppointmentInput, this.appointmentRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -298,8 +297,7 @@ export class AppointmentService {
    */
   async updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput): Promise<Appointment> {
     try {
-      const appointment = await this.appointmentRepository.save(updateAppointmentBillingStatusInput)
-      return appointment
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentBillingStatusInput.id, updateAppointmentBillingStatusInput, this.appointmentRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
