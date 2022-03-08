@@ -566,8 +566,8 @@ type Appointment {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
-  scheduleStartDateTime: String!
-  scheduleEndDateTime: String!
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
   providerId: String
   patientId: String
   facilityId: String
