@@ -552,6 +552,7 @@ type Appointment {
   isExternal: Boolean
   paymentType: PaymentType!
   status: APPOINTMENTSTATUS!
+  billingStatus: BillingStatus!
   appointmentCancelReason: String
   insuranceCompany: String
   membershipID: String
@@ -590,6 +591,12 @@ enum PaymentType {
 enum APPOINTMENTSTATUS {
   CANCELLED
   INITIATED
+}
+
+"""The patient billing status assigned"""
+enum BillingStatus {
+  PAID
+  DUE
 }
 
 type Doctor {
@@ -1023,6 +1030,7 @@ type Mutation {
   createAppointment(createAppointmentInput: CreateAppointmentInput!): AppointmentPayload!
   createExternalAppointment(createExternalAppointmentInput: CreateExternalAppointmentInput!): AppointmentPayload!
   updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
+  updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
@@ -1699,6 +1707,7 @@ input RemovePractice {
 
 input CreateAppointmentInput {
   paymentType: PaymentType!
+  billingStatus: BillingStatus!
   insuranceCompany: String
   membershipID: String
   reason: String
@@ -1726,6 +1735,7 @@ input CreateExternalAppointmentInput {
 input CreateExternalAppointmentItemInput {
   isExternal: Boolean
   paymentType: PaymentType!
+  billingStatus: BillingStatus!
   insuranceCompany: String
   membershipID: String
   scheduleStartDateTime: String!
@@ -1739,6 +1749,7 @@ input CreateExternalAppointmentItemInput {
 
 input UpdateAppointmentInput {
   paymentType: PaymentType
+  billingStatus: BillingStatus
   insuranceCompany: String
   membershipID: String
   reason: String
@@ -1757,6 +1768,11 @@ input UpdateAppointmentInput {
   patientId: String
   id: String!
   paymentStatus: String
+}
+
+input UpdateAppointmentBillingStatusInput {
+  id: String!
+  billingStatus: String!
 }
 
 input RemoveAppointment {

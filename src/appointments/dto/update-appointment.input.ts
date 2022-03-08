@@ -1,4 +1,5 @@
 import { Field, InputType, PartialType, PickType } from '@nestjs/graphql';
+import { BillingStatus } from '../entities/appointment.entity';
 import { CreateAppointmentInput } from './create-appointment.input';
 
 @InputType()
@@ -18,6 +19,16 @@ export class UpdateAppointmentPayStatus {
   @Field({nullable: true})
   paymentStatus: string;
 }
+
+@InputType()
+export class UpdateAppointmentBillingStatusInput {
+  @Field()
+  id: string;
+
+  @Field({nullable: false})
+  billingStatus: BillingStatus
+}
+
 
 @InputType()
 export class GetAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }

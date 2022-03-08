@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { PaymentType } from '../entities/appointment.entity';
+import { BillingStatus, PaymentType } from '../entities/appointment.entity';
 
 @InputType()
 export class CreateExternalAppointmentItemInput {
@@ -9,6 +9,9 @@ export class CreateExternalAppointmentItemInput {
   
     @Field(type => PaymentType)
     paymentType: PaymentType;
+
+    @Field(type => BillingStatus,{ nullable: false })
+    billingStatus?: BillingStatus;
   
     @Field({ nullable: true })
     insuranceCompany?: string;

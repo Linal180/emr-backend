@@ -173,7 +173,7 @@ export class Facility {
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
-  @OneToMany(() => Service, service => service.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => Service, service => service.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Service], { nullable: true })
   services: Service[];
 

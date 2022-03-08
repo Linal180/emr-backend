@@ -18,7 +18,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentInput, UpdateAppointmentPayStatus } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput,UpdateAppointmentPayStatus } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 import { Service } from '../../facilities/entities/services.entity';
 
@@ -228,7 +228,6 @@ export class AppointmentService {
         scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
         scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
         providerId: getDoctorSlots.id,
-
       }
     })
   }
@@ -265,9 +264,9 @@ export class AppointmentService {
 
   async getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment): Promise<Appointment[]> {
     const appointment = await this.appointmentRepository.find({
-      where: {
-        providerId: getDoctorAppointment.doctorId
-      }
+      where:[ 
+        {providerId: getDoctorAppointment.doctorId, status: APPOINTMENTSTATUS.INITIATED }
+      ]
     })
     if (appointment) {
       return appointment
@@ -286,6 +285,20 @@ export class AppointmentService {
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
       const appointment = await this.appointmentRepository.save(updateAppointmentInput)
+      return appointment
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Updates appointment billing status
+   * @param updateAppointmentBillingStatusInput 
+   * @returns appointment billing status 
+   */
+  async updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput): Promise<Appointment> {
+    try {
+      const appointment = await this.appointmentRepository.save(updateAppointmentBillingStatusInput)
       return appointment
     } catch (error) {
       throw new InternalServerErrorException(error);
