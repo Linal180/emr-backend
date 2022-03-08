@@ -10,7 +10,7 @@ import {
   PaymentInputsAfterAppointment,
 } from './dto/payment.input';
 import { Transactions } from './entity/payment.entity';
-import { Appointment } from '../appointments/entities/appointment.entity';
+import { Appointment, BillingStatus } from '../appointments/entities/appointment.entity';
 
 @Injectable()
 export class PaymentService {
@@ -67,9 +67,9 @@ export class PaymentService {
       if (brainTrans?.success) {
         console.log('brain transaction>>>', brainTrans);
         const updatedAppointment =
-          await this.appointmentService.updateAppointment({
+          await this.appointmentService.updateAppointmentBillingStatus({
             id: appointmentId,
-            paymentStatus: 'paid',
+            billingStatus: BillingStatus.PAID,
           });
         console.log('updated appointment>>>', updatedAppointment);
 
