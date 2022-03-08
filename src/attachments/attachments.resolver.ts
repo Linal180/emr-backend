@@ -15,8 +15,8 @@ export class AttachmentsResolver {
   constructor(private readonly attachmentsService: AttachmentsService) { }
 
   @Query(returns => AttachmentsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', [ 'admin', 'super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('roles', [ 'admin', 'super-admin'])
   async getAttachments(@Args('getAttachment') getAttachment: GetAttachment): Promise<AttachmentsPayload> {
     const attachments = await this.attachmentsService.findAttachmentsById(getAttachment.typeId)
     return {
