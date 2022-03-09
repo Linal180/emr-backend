@@ -124,11 +124,11 @@ export class Appointment {
   secondaryInsurance: string;
 
   @Column({ type: 'timestamptz' })
-  @Field()
+  @Field({nullable: true})
   scheduleStartDateTime: string;
 
   @Column({ type: 'timestamptz' })
-  @Field()
+  @Field({nullable: true})
   scheduleEndDateTime: string;
 
   @Column({ nullable: true })
@@ -170,5 +170,9 @@ export class Appointment {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  paymentStatus: string;
 
 }

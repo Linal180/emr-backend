@@ -36,5 +36,8 @@ export class CreateExternalAppointmentItemInput {
   
     @Field({ nullable: true })
     patientId: string;
+
+    @Field({ nullable: true })
+    paymentStatus: string;
     
 }

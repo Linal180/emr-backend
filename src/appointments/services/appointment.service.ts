@@ -18,8 +18,9 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput,UpdateAppointmentPayStatus } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
+import { Service } from '../../facilities/entities/services.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -135,6 +136,14 @@ export class AppointmentService {
         throw new InternalServerErrorException(error);
       } finally {
         await queryRunner.release();
+      }
+    }
+
+    async getAmount(id:string):Promise<Service>{
+      try {
+        return await this.servicesService.findOne(id)
+      } catch (error) {
+        throw new InternalServerErrorException(error)
       }
     }
 
@@ -329,5 +338,9 @@ export class AppointmentService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async updateAppointmentPaymentStatus(updateAppointmentPayStatus: UpdateAppointmentPayStatus){
+    this.appointmentRepository.save(updateAppointmentPayStatus)
   }
 }

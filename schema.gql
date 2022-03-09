@@ -20,6 +20,21 @@ enum AttachmentType {
   lab
 }
 
+type Transactions {
+  id: String!
+  transactionId: String!
+  patientId: String!
+  doctorId: String!
+  facilityId: String!
+  appointmentId: String!
+  patient: [Patient!]
+  doctor: [Doctor!]
+  facility: [Facility!]
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+}
+
 type Contact {
   id: String!
   email: String
@@ -235,6 +250,7 @@ type Patient {
   employer: [Employer!]
   createdAt: String!
   updatedAt: String!
+  transaction: Transactions
 }
 
 """The patient's sexual orientation type assigned"""
@@ -463,6 +479,7 @@ type Facility {
   billingAddress: [BillingAddress!]
   createdAt: String
   updatedAt: String
+  transaction: Transactions
 }
 
 """The facility practice type assigned type"""
@@ -549,8 +566,8 @@ type Appointment {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
-  scheduleStartDateTime: String!
-  scheduleEndDateTime: String!
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
   providerId: String
   patientId: String
   facilityId: String
@@ -561,6 +578,7 @@ type Appointment {
   patient: Patient
   createdAt: String
   updatedAt: String
+  paymentStatus: String
 }
 
 """The patient payment type assigned"""
@@ -626,6 +644,7 @@ type Doctor {
   schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
+  transaction: Transactions
 }
 
 """The doctor's speciality"""
@@ -805,6 +824,10 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -835,6 +858,7 @@ type Query {
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  getToken: BraintreePayload!
 }
 
 input UsersInput {
@@ -1009,6 +1033,8 @@ type Mutation {
   updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
+  chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
+  chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
 }
 
 input LoginUserInput {
@@ -1718,6 +1744,7 @@ input CreateExternalAppointmentItemInput {
   facilityId: String!
   providerId: String!
   patientId: String
+  paymentStatus: String
 }
 
 input UpdateAppointmentInput {
@@ -1740,6 +1767,7 @@ input UpdateAppointmentInput {
   providerId: String
   patientId: String
   id: String!
+  paymentStatus: String
 }
 
 input UpdateAppointmentBillingStatusInput {
@@ -1754,4 +1782,21 @@ input RemoveAppointment {
 input CancelAppointment {
   token: String!
   reason: String!
+}
+
+input PaymentInput {
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
+  createPatientItemInput: CreatePatientItemInput!
+  createGuardianContactInput: CreateContactInput!
+  clientIntent: String!
+  client: String!
+}
+
+input PaymentInputsAfterAppointment {
+  clientIntent: String!
+  price: String!
+  providerId: String!
+  facilityId: String!
+  patientId: String!
+  appointmentId: String!
 }
