@@ -421,7 +421,6 @@ export class UsersService {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
         const isInvite = false;
         this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
-        delete user.roles
         await this.usersRepository.save(user);
         return user
       }
