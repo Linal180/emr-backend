@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FacilityService } from 'src/facilities/services/facility.service';
@@ -8,17 +8,19 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
+import { PaymentService } from 'src/payment/payment.service';
 import { GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Service } from '../../facilities/entities/services.entity';
 import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentPayStatus, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
@@ -33,7 +35,9 @@ export class AppointmentService {
     private readonly mailerService: MailerService,
     private readonly utilsService: UtilsService,
     private readonly facilityService: FacilityService,
-    private readonly servicesService: ServicesService
+    private readonly servicesService: ServicesService,
+    @Inject(forwardRef(() => PaymentService))
+    private readonly paymentService: PaymentService
   ) { }
 
   /**
@@ -76,9 +80,8 @@ export class AppointmentService {
       }
       const appointment = await this.appointmentRepository.save(appointmentInstance);
       await queryRunner.commitTransaction();
-      console.log("patient.phonePermission",patient.phonePermission);
       if(patient.phonePermission){
-        //  this.triggerSmsNotification(appointment, provider, patient, facility, true)
+         this.triggerSmsNotification(appointment, provider, patient, facility, true)
       }
       return appointment
     }
@@ -128,7 +131,7 @@ export class AppointmentService {
         this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName+' '+patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id)
         await queryRunner.commitTransaction();
         if(patientInstance.phonePermission){
-          // this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
+          this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
         }
         return appointment
       } catch (error) {
@@ -136,6 +139,14 @@ export class AppointmentService {
         throw new InternalServerErrorException(error);
       } finally {
         await queryRunner.release();
+      }
+    }
+
+    async getAmount(id:string):Promise<Service>{
+      try {
+        return await this.servicesService.findOne(id)
+      } catch (error) {
+        throw new InternalServerErrorException(error)
       }
     }
 
@@ -232,7 +243,7 @@ export class AppointmentService {
   async findAppointment(providerId: string, patientId: string){
     return  await this.appointmentRepository.findOne({
       where : [
-          {patientId : patientId, providerId: providerId} 
+          {patientId : patientId, providerId: providerId, status: APPOINTMENTSTATUS.INITIATED}
       ]
     });
   }
@@ -255,9 +266,9 @@ export class AppointmentService {
 
   async getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment): Promise<Appointment[]> {
     const appointment = await this.appointmentRepository.find({
-      where: {
-        providerId: getDoctorAppointment.doctorId
-      }
+      where:[ 
+        {providerId: getDoctorAppointment.doctorId, status: APPOINTMENTSTATUS.INITIATED }
+      ]
     })
     if (appointment) {
       return appointment
@@ -275,8 +286,20 @@ export class AppointmentService {
    */
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
-      const appointment = await this.appointmentRepository.save(updateAppointmentInput)
-      return appointment
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, updateAppointmentInput, this.appointmentRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Updates appointment status
+   * @param updateAppointmentStatusInput 
+   * @returns appointment status 
+   */
+  async updateAppointmentStatus(updateAppointmentStatusInput: UpdateAppointmentStatusInput): Promise<Appointment> {
+    try {
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentStatusInput.id, updateAppointmentStatusInput, this.appointmentRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -289,8 +312,7 @@ export class AppointmentService {
    */
   async updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput): Promise<Appointment> {
     try {
-      const appointment = await this.appointmentRepository.save(updateAppointmentBillingStatusInput)
-      return appointment
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentBillingStatusInput.id, updateAppointmentBillingStatusInput, this.appointmentRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -320,8 +342,10 @@ export class AppointmentService {
         const provider = await this.doctorService.findOne(appointment.providerId)
         const facility = await this.facilityService.findOne(appointment.facilityId)
         if(patient.phonePermission){
-            // this.triggerSmsNotification(appointment, provider, patient, facility, false)
+            this.triggerSmsNotification(appointment, provider, patient, facility, false)
         }
+        const transaction = await this.paymentService.getTransactionByAppointmentId(appointment.id)
+        await this.paymentService.refund(transaction.transactionId,transaction.id)
         return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '',reason: cancelAppointment.reason})
       }
       throw new NotFoundException({
@@ -332,5 +356,9 @@ export class AppointmentService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async updateAppointmentPaymentStatus(updateAppointmentPayStatus: UpdateAppointmentPayStatus){
+    this.appointmentRepository.save(updateAppointmentPayStatus)
   }
 }
