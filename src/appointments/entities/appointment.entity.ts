@@ -170,4 +170,5 @@ export class Appointment {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
 }
