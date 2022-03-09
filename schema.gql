@@ -578,7 +578,6 @@ type Appointment {
   patient: Patient
   createdAt: String
   updatedAt: String
-  paymentStatus: String
 }
 
 """The patient payment type assigned"""
