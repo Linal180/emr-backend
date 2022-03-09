@@ -243,7 +243,7 @@ export class AppointmentService {
   async findAppointment(providerId: string, patientId: string){
     return  await this.appointmentRepository.findOne({
       where : [
-          {patientId : patientId, providerId: providerId} 
+          {patientId : patientId, providerId: providerId, status: APPOINTMENTSTATUS.INITIATED}
       ]
     });
   }
