@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
 import { AppointmentService } from '../appointments/services/appointment.service';
@@ -24,6 +24,7 @@ export class PaymentService {
   constructor(
     @InjectRepository(Transactions)
     private transactionRepo: Repository<Transactions>,
+    @Inject(forwardRef(() => AppointmentService))
     private appointmentService: AppointmentService
   ) {}
 
@@ -108,7 +109,7 @@ export class PaymentService {
           await this.appointmentService.createExternalAppointmentInput({
             createExternalAppointmentItemInput: {
               ...req.createExternalAppointmentItemInput,
-              paymentStatus: 'paid',
+              billingStatus: BillingStatus.PAID,
             },
             ...req,
           });
@@ -168,5 +169,13 @@ export class PaymentService {
 
   async getTransaction(id: string) {
     return await this.gateway.transaction.find(id);
+  }
+
+  async getTransactionByAppointmentId(id: string) {
+    return await this.transactionRepo.findOne({
+      where: {
+        appointmentId: id
+      }
+    });
   }
 }

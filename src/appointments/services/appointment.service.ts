@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FacilityService } from 'src/facilities/services/facility.service';
@@ -21,6 +21,7 @@ import { CreateExternalAppointmentInput } from '../dto/create-external-appointme
 import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput,UpdateAppointmentPayStatus } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 import { Service } from '../../facilities/entities/services.entity';
+import { PaymentService } from 'src/payment/payment.service';
 
 @Injectable()
 export class AppointmentService {
@@ -34,7 +35,9 @@ export class AppointmentService {
     private readonly mailerService: MailerService,
     private readonly utilsService: UtilsService,
     private readonly facilityService: FacilityService,
-    private readonly servicesService: ServicesService
+    private readonly servicesService: ServicesService,
+    @Inject(forwardRef(() => PaymentService))
+    private readonly paymentService: PaymentService
   ) { }
 
   /**
@@ -326,8 +329,10 @@ export class AppointmentService {
         const provider = await this.doctorService.findOne(appointment.providerId)
         const facility = await this.facilityService.findOne(appointment.facilityId)
         if(patient.phonePermission){
-            // this.triggerSmsNotification(appointment, provider, patient, facility, false)
+            this.triggerSmsNotification(appointment, provider, patient, facility, false)
         }
+        const transaction = await this.paymentService.getTransactionByAppointmentId(appointment.id)
+        await this.paymentService.refund(transaction.transactionId)
         return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '',reason: cancelAppointment.reason})
       }
       throw new NotFoundException({

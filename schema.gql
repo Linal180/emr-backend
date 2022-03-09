@@ -812,6 +812,10 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
@@ -821,10 +825,6 @@ type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
   pagination: PaginationPayload
-}
-
-type BraintreePayload {
-  clientToken: String!
 }
 
 type Query {
