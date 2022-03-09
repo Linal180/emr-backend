@@ -8,20 +8,20 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
+import { PaymentService } from 'src/payment/payment.service';
 import { GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Service } from '../../facilities/entities/services.entity';
 import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput,UpdateAppointmentPayStatus, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentPayStatus, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
-import { Service } from '../../facilities/entities/services.entity';
-import { PaymentService } from 'src/payment/payment.service';
 
 @Injectable()
 export class AppointmentService {
