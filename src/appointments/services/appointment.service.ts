@@ -76,9 +76,8 @@ export class AppointmentService {
       }
       const appointment = await this.appointmentRepository.save(appointmentInstance);
       await queryRunner.commitTransaction();
-      console.log("patient.phonePermission",patient.phonePermission);
       if(patient.phonePermission){
-        //  this.triggerSmsNotification(appointment, provider, patient, facility, true)
+         this.triggerSmsNotification(appointment, provider, patient, facility, true)
       }
       return appointment
     }
@@ -128,7 +127,7 @@ export class AppointmentService {
         this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName+' '+patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id)
         await queryRunner.commitTransaction();
         if(patientInstance.phonePermission){
-          // this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
+          this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
         }
         return appointment
       } catch (error) {
