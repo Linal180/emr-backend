@@ -2,6 +2,7 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { Transactions } from 'src/payment/entity/payment.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
@@ -410,4 +411,7 @@ export class Patient {
   @Field()
   updatedAt: string;
 
+  @ManyToOne(() => Transactions, transaction => transaction.id)
+  @Field(type => Transactions, { nullable: true })
+  transaction: Transactions;
 }

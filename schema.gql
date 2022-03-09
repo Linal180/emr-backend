@@ -20,6 +20,29 @@ enum AttachmentType {
   lab
 }
 
+type Transactions {
+  id: String!
+  transactionId: String!
+  patientId: String!
+  doctorId: String!
+  facilityId: String!
+  appointmentId: String!
+  patient: [Patient!]
+  doctor: [Doctor!]
+  facility: [Facility!]
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+  status: TRANSACTIONSTATUS!
+}
+
+"""The transaction payment status type assigned"""
+enum TRANSACTIONSTATUS {
+  REFUND
+  DUE
+  PAID
+}
+
 type Contact {
   id: String!
   email: String
@@ -235,6 +258,7 @@ type Patient {
   employer: [Employer!]
   createdAt: String!
   updatedAt: String!
+  transaction: Transactions
 }
 
 """The patient's sexual orientation type assigned"""
@@ -463,6 +487,7 @@ type Facility {
   billingAddress: [BillingAddress!]
   createdAt: String
   updatedAt: String
+  transaction: Transactions
 }
 
 """The facility practice type assigned type"""
@@ -549,8 +574,8 @@ type Appointment {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
-  scheduleStartDateTime: String!
-  scheduleEndDateTime: String!
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
   providerId: String
   patientId: String
   facilityId: String
@@ -573,6 +598,7 @@ enum PaymentType {
 enum APPOINTMENTSTATUS {
   CANCELLED
   INITIATED
+  COMPLETED
 }
 
 """The patient billing status assigned"""
@@ -626,6 +652,7 @@ type Doctor {
   schedule: [Schedule!]
   createdAt: String!
   updatedAt: String!
+  transaction: Transactions
 }
 
 """The doctor's speciality"""
@@ -794,6 +821,10 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
@@ -835,6 +866,7 @@ type Query {
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  getToken: BraintreePayload!
 }
 
 input UsersInput {
@@ -1007,8 +1039,11 @@ type Mutation {
   createExternalAppointment(createExternalAppointmentInput: CreateExternalAppointmentInput!): AppointmentPayload!
   updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
   updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!): AppointmentPayload!
+  updateAppointmentStatus(updateAppointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
+  chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
+  chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
 }
 
 input LoginUserInput {
@@ -1718,6 +1753,7 @@ input CreateExternalAppointmentItemInput {
   facilityId: String!
   providerId: String!
   patientId: String
+  paymentStatus: String
 }
 
 input UpdateAppointmentInput {
@@ -1740,11 +1776,35 @@ input UpdateAppointmentInput {
   providerId: String
   patientId: String
   id: String!
+  paymentStatus: String
 }
 
 input UpdateAppointmentBillingStatusInput {
   id: String!
   billingStatus: String!
+}
+
+input UpdateAppointmentStatusInput {
+  paymentType: PaymentType
+  billingStatus: BillingStatus
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
+  serviceId: String
+  facilityId: String
+  providerId: String
+  patientId: String
+  id: String!
+  status: String!
 }
 
 input RemoveAppointment {
@@ -1754,4 +1814,21 @@ input RemoveAppointment {
 input CancelAppointment {
   token: String!
   reason: String!
+}
+
+input PaymentInput {
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
+  createPatientItemInput: CreatePatientItemInput!
+  createGuardianContactInput: CreateContactInput!
+  clientIntent: String!
+  client: String!
+}
+
+input PaymentInputsAfterAppointment {
+  clientIntent: String!
+  price: String!
+  providerId: String!
+  facilityId: String!
+  patientId: String!
+  appointmentId: String!
 }

@@ -57,4 +57,5 @@ export class CreateAppointmentInput {
   
     @Field({ nullable: true })
     patientId: string;
+    
 }

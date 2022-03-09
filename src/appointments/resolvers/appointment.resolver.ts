@@ -15,7 +15,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment } from '../entities/appointment.entity';
 import { AppointmentService } from '../services/appointment.service';
 
@@ -65,6 +65,16 @@ export class AppointmentResolver {
     return {
       appointment: await this.appointmentService.updateAppointmentBillingStatus(updateAppointmentBillingStatusInput),
       response: { status: 200, message: 'Appointment billing status updated successfully' }
+    };
+  }
+
+  @Mutation(() => AppointmentPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['admin', 'super-admin','nurse','staff'])
+  async updateAppointmentStatus(@Args('updateAppointmentStatusInput') updateAppointmentStatusInput: UpdateAppointmentStatusInput) {
+    return {
+      appointment: await this.appointmentService.updateAppointmentStatus(updateAppointmentStatusInput),
+      response: { status: 200, message: 'Appointment completion status updated successfully' }
     };
   }
 
