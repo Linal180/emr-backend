@@ -28,6 +28,7 @@ registerEnumType(BillingStatus, {
 export enum APPOINTMENTSTATUS {
   CANCELLED = "cancelled",
   INITIATED = "initiated",
+  COMPLETED = "completed"
 }
 
 registerEnumType(APPOINTMENTSTATUS, {

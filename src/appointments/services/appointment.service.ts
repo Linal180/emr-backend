@@ -18,7 +18,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput,UpdateAppointmentPayStatus } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput,UpdateAppointmentPayStatus, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 import { Service } from '../../facilities/entities/services.entity';
 import { PaymentService } from 'src/payment/payment.service';
@@ -287,6 +287,19 @@ export class AppointmentService {
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
       return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, updateAppointmentInput, this.appointmentRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Updates appointment status
+   * @param updateAppointmentStatusInput 
+   * @returns appointment status 
+   */
+  async updateAppointmentStatus(updateAppointmentStatusInput: UpdateAppointmentStatusInput): Promise<Appointment> {
+    try {
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentStatusInput.id, updateAppointmentStatusInput, this.appointmentRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
