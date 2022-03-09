@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Facility } from "src/facilities/entities/facility.entity";
 import { Doctor } from "src/providers/entities/doctor.entity";
 import {
@@ -13,6 +13,18 @@ import {
 } from "typeorm";
 import { Patient } from "../../patients/entities/patient.entity";
 import { Appointment } from "../../appointments/entities/appointment.entity";
+
+
+export enum TRANSACTIONSTATUS {
+  REFUND = "refund",
+  DUE = "due",
+  PAID = "paid"
+}
+
+registerEnumType(TRANSACTIONSTATUS, {
+  name: "TRANSACTIONSTATUS",
+  description: "The transaction payment status type assigned",
+});
 
 @Entity({ name: "Transactions" })
 @ObjectType()
@@ -65,4 +77,12 @@ export class Transactions {
   @UpdateDateColumn({ type: "timestamptz", nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+  @Column({
+    type: "enum",
+    enum: TRANSACTIONSTATUS,
+    default: TRANSACTIONSTATUS.DUE
+  })
+  @Field(type => TRANSACTIONSTATUS)
+  status: TRANSACTIONSTATUS;
 }

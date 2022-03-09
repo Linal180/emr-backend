@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { CreateExternalAppointmentInput } from '../../appointments/dto/create-external-appointment.input';
+import {TRANSACTIONSTATUS} from '../entity/payment.entity'
 
 @InputType()
 export class PaymentInput extends CreateExternalAppointmentInput {
@@ -9,6 +10,7 @@ export class PaymentInput extends CreateExternalAppointmentInput {
   @Field()
   client: string;
 }
+
 @InputType()
 export class PaymentInputsAfterAppointment {
   @Field()
@@ -46,4 +48,16 @@ export class CreateTransactionInputs {
 
   @Field({ nullable: false })
   appointmentId: string;
+
+  @Field(()=> TRANSACTIONSTATUS)
+  status: TRANSACTIONSTATUS;
+}
+
+@InputType()
+export class UpdatePaymentStatus{
+  @Field({ nullable: false })
+  transactionId: string;
+
+  @Field(()=> TRANSACTIONSTATUS)
+  status: TRANSACTIONSTATUS;
 }

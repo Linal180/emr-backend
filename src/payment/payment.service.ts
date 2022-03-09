@@ -1,16 +1,26 @@
-import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
 import { AppointmentService } from '../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
-import {  BraintreePayload } from './dto/payment.dto';
+import { BraintreePayload } from './dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
   PaymentInputsAfterAppointment,
+  UpdatePaymentStatus,
 } from './dto/payment.input';
-import { Transactions } from './entity/payment.entity';
-import { Appointment, BillingStatus } from '../appointments/entities/appointment.entity';
+import { Transactions, TRANSACTIONSTATUS } from './entity/payment.entity';
+import {
+  Appointment,
+  BillingStatus,
+} from '../appointments/entities/appointment.entity';
+import { UtilsService } from '../util/utils.service';
 
 @Injectable()
 export class PaymentService {
@@ -25,7 +35,8 @@ export class PaymentService {
     @InjectRepository(Transactions)
     private transactionRepo: Repository<Transactions>,
     @Inject(forwardRef(() => AppointmentService))
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private readonly utilsService: UtilsService
   ) {}
 
   async getToken(): Promise<BraintreePayload> {
@@ -80,12 +91,15 @@ export class PaymentService {
           facilityId: req?.facilityId,
           patientId: req?.patientId,
           appointmentId: req?.appointmentId,
+          status: TRANSACTIONSTATUS.PAID,
         };
         const trans = await this.create(data);
         console.log('transaction >>>', trans);
         return updatedAppointment;
       } else {
-        throw new InternalServerErrorException({message: brainTrans?.message});
+        throw new InternalServerErrorException({
+          message: brainTrans?.message,
+        });
       }
     } catch (error) {
       throw new Error(error);
@@ -121,12 +135,13 @@ export class PaymentService {
             facilityId: appointment?.facilityId,
             patientId: appointment?.patientId,
             appointmentId: appointment?.id,
+            status: TRANSACTIONSTATUS.PAID,
           };
           await this.create(data);
 
           return appointment;
         } else {
-          const refunded = await this.refund(brainTrans?.transaction?.id);
+          const refunded = await this.refund(brainTrans?.transaction?.id,appointment.id);
           if (refunded?.success) {
             throw new Error(
               'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
@@ -159,9 +174,19 @@ export class PaymentService {
     }
   }
 
-  async refund(id: string) {
+  async refund(transactionId: string,id: string) {
     try {
-      return await this.gateway.transaction.refund(id);
+      const refund = await this.gateway.transaction.void(transactionId);
+      if (refund?.success) {
+        this.updatePaymentStatus({
+          transactionId: id,
+          status: TRANSACTIONSTATUS.REFUND,
+        });
+      } else {
+        throw new Error('Amount is not refunded');
+      }
+      console.log('refund>>>>', refund);
+      return refund;
     } catch (error) {
       throw new Error(error);
     }
@@ -174,8 +199,21 @@ export class PaymentService {
   async getTransactionByAppointmentId(id: string) {
     return await this.transactionRepo.findOne({
       where: {
-        appointmentId: id
-      }
+        appointmentId: id,
+      },
     });
+  }
+
+  async updatePaymentStatus(updateAppointmentPayStatus: UpdatePaymentStatus) {
+    try {
+      return await this.utilsService.updateEntityManager(
+        Transactions,
+        updateAppointmentPayStatus.transactionId,
+        updateAppointmentPayStatus,
+        this.transactionRepo
+      );
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

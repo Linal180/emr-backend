@@ -36,7 +36,7 @@ export class MailerService {
    */
   async sendEmailForgotPassword(email: string, userId: string, fullName: string, isAdmin: boolean, token: string, isInvite: boolean) {
     const portalAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
-    const url = `${portalAppBaseUrl}/reset-password?token=${token}`
+    const url = isInvite ? `${portalAppBaseUrl}/set-password?token=${token}` : `${portalAppBaseUrl}/reset-password?token=${token}`
     const msg = {
       to: email,
       from: this.configService.get('FROM_EMAIL'),

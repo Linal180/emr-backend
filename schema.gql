@@ -33,6 +33,14 @@ type Transactions {
   appointment: Appointment
   createdAt: String
   updatedAt: String
+  status: TRANSACTIONSTATUS!
+}
+
+"""The transaction payment status type assigned"""
+enum TRANSACTIONSTATUS {
+  REFUND
+  DUE
+  PAID
 }
 
 type Contact {
