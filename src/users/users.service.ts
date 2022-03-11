@@ -68,9 +68,9 @@ export class UsersService {
         await this.saveUserId(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
         const isInvite = true;
-        if (registerUserInput.roleType != UserRole.PATIENT) {
-          this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
-        }
+        // if (registerUserInput.roleType != UserRole.PATIENT) {
+        this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
+        // }
         return user;
       }
       throw new NotFoundException({
@@ -209,7 +209,7 @@ export class UsersService {
    */
   async findOne(email: string): Promise<User> {
     const user = await this.usersRepository.findOne({ email: email, status: UserStatus.ACTIVE });
-    if(!user){
+    if (!user) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: 'User not found',
