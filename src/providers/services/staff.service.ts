@@ -47,6 +47,8 @@ export class StaffService {
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
       const staff = await queryRunner.manager.save(staffInstance);
+      const updatedUser = await this.usersService.saveUserId(staff.id, user);
+      console.log('updatedUser>>>', updatedUser)
       await queryRunner.commitTransaction();
       return staff
     } catch (error) {
@@ -73,7 +75,7 @@ export class StaffService {
   async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
     try {
       // register staff as user 
-      const user = await this.usersService.create({...registerUserInput, facilityId})
+      const user = await this.usersService.create({ ...registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Staff Creation
@@ -122,8 +124,8 @@ export class StaffService {
    * @returns staff 
    */
   async getStaff(id: string): Promise<Staff> {
-    const staff =  await this.findOne(id);
-    if(staff){
+    const staff = await this.findOne(id);
+    if (staff) {
       return staff
     }
     throw new NotFoundException({

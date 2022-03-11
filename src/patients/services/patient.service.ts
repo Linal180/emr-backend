@@ -59,6 +59,7 @@ export class PatientService {
     try {
       //create user against patient
       const user = await this.usersService.create({ ...createPatientInput.createPatientItemInput, password: "admin@123", roleType: UserRole.PATIENT })
+      console.log('User>>>', user)
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
       patientInstance.patientRecord = await this.utilsService.generateString(8);
@@ -96,6 +97,8 @@ export class PatientService {
       doctorPatientInstance.patientId = patient.id
       await queryRunner.commitTransaction();
       await this.doctorPatientRepository.save(doctorPatientInstance)
+      const updatedUser = await this.usersService.saveUserId(patient.id, user);
+      console.log('updatedUser>>>', updatedUser)
       return patient
     } catch (error) {
       await queryRunner.rollbackTransaction();
