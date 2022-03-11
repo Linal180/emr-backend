@@ -866,7 +866,7 @@ type Query {
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
-  getPatientAppointment(getDoctorAppointment: GetPatientAppointmentInput!): AppointmentsPayload!
+  getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
 }
 

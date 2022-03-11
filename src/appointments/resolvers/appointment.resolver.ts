@@ -153,7 +153,7 @@ export class AppointmentResolver {
   @Query(returns => AppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin','patient'])
-  async getPatientAppointment(@Args('getDoctorAppointment') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<AppointmentsPayload> {
+  async getPatientAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<AppointmentsPayload> {
     return {
       appointments: await this.appointmentService.getPatientAppointment(getPatientAppointmentInput),
       response: { status: 200, message: 'Appointment fetched successfully' }
