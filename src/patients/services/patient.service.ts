@@ -265,7 +265,7 @@ export class PatientService {
   /**
    * Adds patient
    * @param createPatientItemInput 
-   * @returns patient 
+   * @returns patient k
    */
   async addPatient(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Patient> {
     const patientInstance = this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
@@ -305,6 +305,17 @@ export class PatientService {
       error: 'Patient not found',
     });
   }
+  
+  async GetPatientByEmail(email: string): Promise<PatientPayload> {
+      const patient = await this.patientRepository.findOne({email: email});
+      if (patient) {
+        return { patient }
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    }
 
   /**
    * Removes patient

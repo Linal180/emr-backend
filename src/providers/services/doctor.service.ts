@@ -46,7 +46,6 @@ export class DoctorService {
     try {
       // register doctor as user -
       const user = await this.usersService.create(createDoctorInput.createDoctorItemInput)
-      console.log('User>>>', user)
       //get facility 
       const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
       // Doctor Creation
@@ -66,7 +65,6 @@ export class DoctorService {
       }
       const doctor = await queryRunner.manager.save(doctorInstance);
       const updatedUser = await this.usersService.saveUserId(doctor.id, user);
-      console.log('updatedUser>>>', updatedUser)
       await queryRunner.commitTransaction();
       return doctor
     } catch (error) {
