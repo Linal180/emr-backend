@@ -64,13 +64,13 @@ export class UsersService {
         //setting role type & custom userId
         userInstance.userType = role.role
         const user = await this.usersRepository.save(userInstance);
-        //saving userId in user
-        await this.saveUserId(user.id, userInstance)
         // SEND EMAIL TO USER FOR RESET PASSWORD
         const isInvite = true;
-        // if (registerUserInput.roleType != UserRole.PATIENT) {
-        this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
-        // }
+        let isAdmin = false
+        if(registerUserInput.roleType === UserRole.PATIENT){
+           isAdmin = true
+        }
+        this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, isAdmin, token, isInvite)
         return user;
       }
       throw new NotFoundException({

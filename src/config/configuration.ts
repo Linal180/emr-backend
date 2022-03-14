@@ -44,8 +44,8 @@ export default () => {
     PORT: parseInt(process.env.PORT, 10) || 3001,
     JWT_SECRET: process.env.JWT_SECRET || "secret",
     JWT_EXPIRY: process.env.JWT_EXPIRY || "24h",
-    PORTAL_APP_BASE_URL:
-      process.env.PORTAL_APP_BASE_URL || "http://localhost:3000",
+    PATIENT_PORTAL_APP_BASE_URL:
+      process.env.PATIENT_PORTAL_APP_BASE_URL || "http://localhost:3001",
     ADMIN_APP_BASE_URL:
       process.env.PORTAL_APP_BASE_URL || "http://localhost:3000",
     SENDGRID_API_KEY:
