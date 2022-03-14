@@ -51,7 +51,7 @@ export class UsersService {
             error: 'User already exists with this email',
           });
         }
-        // User Creation
+        // User Creationa
         const userInstance = this.usersRepository.create({ ...registerUserInput, email: registerUserInput.email.trim().toLowerCase() })
         const role = await this.rolesRepository.findOne({ role: registerUserInput.roleType });
         userInstance.roles = [role]

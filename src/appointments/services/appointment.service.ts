@@ -104,7 +104,13 @@ export class AppointmentService {
     try {
        //create patient 
        const appointmentNumber = await this.utilsService.generateString(8)
-       const patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
+       const patient = await this.patientService.GetPatientByEmail(createExternalAppointmentInput.createPatientItemInput.email)
+       let patientInstance;
+       if(!patient){
+        patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
+       }else{
+       patientInstance = patient;
+       }
        const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true, appointmentNumber})
        const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
        if(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId){
