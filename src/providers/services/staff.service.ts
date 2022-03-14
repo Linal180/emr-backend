@@ -47,8 +47,7 @@ export class StaffService {
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
       const staff = await queryRunner.manager.save(staffInstance);
-      const updatedUser = await this.usersService.saveUserId(staff.id, user);
-      console.log('updatedUser>>>', updatedUser)
+      await this.usersService.saveUserId(staff.id, user);
       await queryRunner.commitTransaction();
       return staff
     } catch (error) {
