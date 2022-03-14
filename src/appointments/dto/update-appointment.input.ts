@@ -48,6 +48,12 @@ export class GetDoctorAppointment {
   doctorId: string
  }
 
+ @InputType()
+export class GetPatientAppointmentInput {
+  @Field()
+  patientId: string
+ }
+
 @InputType()
 export class RemoveAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }
 

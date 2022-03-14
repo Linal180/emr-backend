@@ -46,6 +46,7 @@ export class DoctorService {
     try {
       // register doctor as user -
       const user = await this.usersService.create(createDoctorInput.createDoctorItemInput)
+      console.log('User>>>', user)
       //get facility 
       const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
       // Doctor Creation
@@ -54,16 +55,18 @@ export class DoctorService {
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
       //adding contact
-      if(createDoctorInput.createContactInput){
-      const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
-      doctorInstance.contacts = [contact]
+      if (createDoctorInput.createContactInput) {
+        const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
+        doctorInstance.contacts = [contact]
       }
       //adding billing address details
-      if(createDoctorInput.createBillingAddressInput){
-      const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
-      doctorInstance.billingAddress = [billingAddress]
+      if (createDoctorInput.createBillingAddressInput) {
+        const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
+        doctorInstance.billingAddress = [billingAddress]
       }
       const doctor = await queryRunner.manager.save(doctorInstance);
+      const updatedUser = await this.usersService.saveUserId(doctor.id, user);
+      console.log('updatedUser>>>', updatedUser)
       await queryRunner.commitTransaction();
       return doctor
     } catch (error) {
@@ -95,7 +98,7 @@ export class DoctorService {
   async addDoctor(registerUserInput: RegisterUserInput, facilityId: string): Promise<Doctor> {
     try {
       // register doctor as user 
-      const user = await this.usersService.create({...registerUserInput, facilityId})
+      const user = await this.usersService.create({ ...registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Doctor Creation    
@@ -134,8 +137,8 @@ export class DoctorService {
    * @returns one 
    */
   async findOne(id: string): Promise<Doctor> {
-    const doctor =  await this.doctorRepository.findOne(id);
-    if(doctor){
+    const doctor = await this.doctorRepository.findOne(id);
+    if (doctor) {
       return doctor
     }
     throw new NotFoundException({

@@ -111,7 +111,7 @@ export class UsersResolver {
     const user = await this.usersService.findOne(email.trim().toLowerCase())
     if (user) {
       if (user.emailVerified) {
-        return this.usersService.createToken(user, password);
+        return await this.usersService.createToken(user, password);
       }
       throw new ForbiddenException({
         status: HttpStatus.FORBIDDEN,
