@@ -7,6 +7,7 @@ import RoleGuard from 'src/users/auth/role.guard';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
+import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
@@ -46,6 +47,16 @@ export class PatientResolver {
     return {
       patient: await this.patientService.updatePatient(updatePatientInput),
       response: { status: 200, message: 'Patient updated successfully' }
+    };
+  }
+
+  @Mutation(() => PatientPayload)
+  // @UseGuards(JwtAuthGraphQLGuard)
+  // @SetMetadata('roles', ['admin', 'super-admin'])
+  async sendInviteToPatient(@Args('patientInviteInput') patientInviteInput: PatientInviteInput) {
+    return {
+      patient: await this.patientService.sendInviteToPatient(patientInviteInput),
+      response: { status: 200, message: 'Invite sent to patient successfully' }
     };
   }
 

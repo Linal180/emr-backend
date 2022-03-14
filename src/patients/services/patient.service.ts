@@ -12,9 +12,11 @@ import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
+import { UserRole } from '../../users/entities/role.entity';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
+import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
@@ -23,7 +25,6 @@ import { RemovePatient } from '../dto/update-patientItem.input';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Patient } from '../entities/patient.entity';
 import { EmployerService } from './employer.service';
-import { UserRole } from '../../users/entities/role.entity'
 
 @Injectable()
 export class PatientService {
@@ -97,8 +98,7 @@ export class PatientService {
       doctorPatientInstance.patientId = patient.id
       await queryRunner.commitTransaction();
       await this.doctorPatientRepository.save(doctorPatientInstance)
-      const updatedUser = await this.usersService.saveUserId(patient.id, user);
-      console.log('updatedUser>>>', updatedUser)
+      await this.usersService.saveUserId(patient.id, user);
       return patient
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -148,6 +148,30 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  /**
+   * Sends invite to patient
+   * @param patientInviteInput 
+   * @returns invite to patient 
+   */
+  async sendInviteToPatient(patientInviteInput: PatientInviteInput): Promise<Patient> {
+    try {
+      const patientInstance = await this.findOne(patientInviteInput.id)
+      //user registration input
+      if (patientInstance) {
+        const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: UserRole.PATIENT, adminId: patientInviteInput.adminId})
+        patientInstance.user = user
+       return await this.patientRepository.save(patientInstance)
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -240,7 +264,6 @@ export class PatientService {
       order: { createdAt: "ASC" },
       relations: ["doctor"]
     })
-    console.log("usualProvider", usualProvider);
     return usualProvider
   }
 

@@ -64,7 +64,7 @@ export class DoctorService {
         doctorInstance.billingAddress = [billingAddress]
       }
       const doctor = await queryRunner.manager.save(doctorInstance);
-      const updatedUser = await this.usersService.saveUserId(doctor.id, user);
+      await this.usersService.saveUserId(doctor.id, user);
       await queryRunner.commitTransaction();
       return doctor
     } catch (error) {
