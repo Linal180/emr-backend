@@ -71,6 +71,12 @@ export class StaffService {
     }
   }
 
+  /**
+   * Adds staff
+   * @param registerUserInput 
+   * @param facilityId 
+   * @returns staff 
+   */
   async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
     try {
       // register staff as user 
@@ -163,6 +169,10 @@ export class StaffService {
     }
   }
 
+  /**
+   * Disables staff
+   * @param { id } 
+   */
   async disableStaff({ id }: DisableStaff) {
     try {
       await this.usersService.deactivateUser(id)
