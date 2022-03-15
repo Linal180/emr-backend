@@ -981,6 +981,8 @@ input GetPractice {
 input AppointmentInput {
   paginationOptions: PaginationInput!
   appointmentNumber: String
+  appointmentStatus: String
+  patientId: String
 }
 
 input GetAppointment {
