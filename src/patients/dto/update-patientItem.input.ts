@@ -8,6 +8,12 @@ export class UpdatePatientItemInput extends PartialType(CreatePatientItemInput) 
 }
 
 @InputType()
+export class UpdatePatientProfileItemInput extends PickType(CreatePatientItemInput, ['firstName','lastName'] as const) {
+  @Field()
+  id: string;
+}
+
+@InputType()
 export class GetPatient extends PickType(UpdatePatientItemInput, ['id'] as const) { }
 
 @InputType()

@@ -19,6 +19,7 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
@@ -59,8 +60,7 @@ export class PatientService {
     await queryRunner.startTransaction();
     try {
       //create user against patient
-      const user = await this.usersService.create({ ...createPatientInput.createPatientItemInput, password: "admin@123", roleType: UserRole.PATIENT })
-      console.log('User>>>', user)
+      const user = await this.usersService.create({ ...createPatientInput.createPatientItemInput, password: await this.utilsService.generateString(8), roleType: UserRole.PATIENT })
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
       patientInstance.patientRecord = await this.utilsService.generateString(8);
@@ -120,7 +120,7 @@ export class PatientService {
     await queryRunner.startTransaction();
     try {
       //save patient basic info
-      await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
+      await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, updatePatientInput.updatePatientItemInput, this.patientRepository)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
@@ -148,6 +148,31 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  /**
+   * Updates patient profile
+   * @param updatePatientProfileInput 
+   * @returns patient profile 
+   */
+  async updatePatientProfile(updatePatientProfileInput: UpdatePatientProfileInput): Promise<Patient> {
+    try {
+      const patientInstance = await this.findOne(updatePatientProfileInput.updatePatientProfileItemInput.id)
+      //user registration input
+      if (patientInstance) {
+          await this.utilsService.updateEntityManager(Patient, updatePatientProfileInput.updatePatientProfileItemInput.id, updatePatientProfileInput.updatePatientProfileItemInput, this.patientRepository)
+          const contact = await this.contactService.updateContact(updatePatientProfileInput.updateContactInput)
+          patientInstance.contacts.push(contact)
+          return await this.patientRepository.save(patientInstance)
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -319,7 +344,6 @@ export class PatientService {
    */
   async GetPatient(id: string): Promise<PatientPayload> {
     const patient = await this.findOne(id);
-    console.log("patient", patient);
     if (patient) {
       return { patient }
     }

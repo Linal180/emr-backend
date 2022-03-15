@@ -1,9 +1,11 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from '../../facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/users.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
+import { FacilityService } from '../../facilities/services/facility.service';
 import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
 import { CreateDoctorInput } from '../dto/create-doctor.input';
 import DoctorInput from '../dto/doctor-input.dto';
@@ -12,9 +14,6 @@ import { DisableDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
-import { CreateDoctorItemInput } from '../dto/create-doctorItem.input ';
-import { CreatePracticeDoctorInput } from '../dto/create-practice-doctor.input';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 
 @Injectable()
 export class DoctorService {
@@ -30,7 +29,8 @@ export class DoctorService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly utilsService: UtilsService
   ) { }
 
   /**
@@ -82,7 +82,7 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const doctor = await this.doctorRepository.save(updateDoctorInput.updateDoctorItemInput)
+      const doctor = await this.utilsService.updateEntityManager(Doctor, updateDoctorInput.updateDoctorItemInput.id, updateDoctorInput.updateDoctorItemInput, this.doctorRepository)
       //updating contact details
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
