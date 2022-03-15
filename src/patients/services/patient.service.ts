@@ -151,6 +151,11 @@ export class PatientService {
     }
   }
 
+  /**
+   * Updates patient profile
+   * @param updatePatientProfileInput 
+   * @returns patient profile 
+   */
   async updatePatientProfile(updatePatientProfileInput: UpdatePatientProfileInput): Promise<Patient> {
     try {
       const patientInstance = await this.findOne(updatePatientProfileInput.updatePatientProfileItemInput.id)
