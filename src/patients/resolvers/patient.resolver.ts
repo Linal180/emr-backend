@@ -10,6 +10,7 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
@@ -47,6 +48,17 @@ export class PatientResolver {
     return {
       patient: await this.patientService.updatePatient(updatePatientInput),
       response: { status: 200, message: 'Patient updated successfully' }
+    };
+  }
+
+
+  @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['patient'])
+  async updatePatientProfile(@Args('updatePatientProfileInput') updatePatientProfileInput: UpdatePatientProfileInput) {
+    return {
+      patient: await this.patientService.updatePatientProfile(updatePatientProfileInput),
+      response: { status: 200, message: 'Patient profile updated successfully' }
     };
   }
 

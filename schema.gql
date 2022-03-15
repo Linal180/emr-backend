@@ -1032,6 +1032,7 @@ type Mutation {
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
   patientInfo(patientInfoInput: PatientInfoInput!): PatientPayload!
   updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
+  updatePatientProfile(updatePatientProfileInput: UpdatePatientProfileInput!): PatientPayload!
   sendInviteToPatient(patientInviteInput: PatientInviteInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
@@ -1649,6 +1650,17 @@ input UpdateEmployerItemInput {
   usualOccupation: String
   patientId: String
   id: String
+}
+
+input UpdatePatientProfileInput {
+  updatePatientProfileItemInput: UpdatePatientProfileItemInput!
+  updateContactInput: UpdateContactInput!
+}
+
+input UpdatePatientProfileItemInput {
+  firstName: String
+  lastName: String
+  id: String!
 }
 
 input PatientInviteInput {

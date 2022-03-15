@@ -19,6 +19,7 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
@@ -147,6 +148,26 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async updatePatientProfile(updatePatientProfileInput: UpdatePatientProfileInput): Promise<Patient> {
+    try {
+      const patientInstance = await this.findOne(updatePatientProfileInput.updatePatientProfileItemInput.id)
+      //user registration input
+      if (patientInstance) {
+          await this.utilsService.updateEntityManager(Patient, updatePatientProfileInput.updatePatientProfileItemInput.id, updatePatientProfileInput.updatePatientProfileItemInput, this.patientRepository)
+          const contact = await this.contactService.updateContact(updatePatientProfileInput.updateContactInput)
+          patientInstance.contacts.push(contact)
+          return await this.patientRepository.save(patientInstance)
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
