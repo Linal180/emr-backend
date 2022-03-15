@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Json } from 'aws-sdk/clients/robomaker';
+import { FormType } from '../entities/form.entity';
 
 @InputType()
 export class CreateFormInput {
@@ -8,7 +9,7 @@ export class CreateFormInput {
   name: string;
 
   @Field({ nullable: false })
-  type: string;
+  type: FormType;
 
   @Field({ nullable: true })
   facilityId: string;

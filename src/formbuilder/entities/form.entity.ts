@@ -1,7 +1,18 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Json } from 'aws-sdk/clients/robomaker';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
+export enum FormType {
+  APPOINTMENT = "Appointment",
+  DOCTOR = "Doctor",
+  PATIENT = "Patient",
+  STAFF = "Staff"
+}
+
+registerEnumType(FormType, {
+  name: "FormType",
+  description: "The form's types",
+});
 
 @Entity({ name: 'Forms' })
 @ObjectType()
@@ -14,9 +25,13 @@ export class Form {
   @Field({ nullable: false })
   name: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
-  type: string;
+  @Column({
+    type: "enum",
+    enum: FormType,
+    default: FormType.APPOINTMENT
+  })
+  @Field(type => FormType)
+  type: FormType
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -26,7 +41,7 @@ export class Form {
   @Field({ nullable: false })
   layout: Json;
 
-  @Column({ nullable: true, default: true })
+  @Column({ nullable: true, default: false })
   @Field({ nullable: true })
   isSystemForm: boolean;
 

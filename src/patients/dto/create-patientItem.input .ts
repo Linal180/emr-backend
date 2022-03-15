@@ -35,7 +35,7 @@ export class CreatePatientItemInput {
   pharmacy: string;
 
   @Field({ nullable: true })
-  usualProviderId: string;
+  usualProviderId?: string;
 
   @Field({ nullable: true })
   previouslastName: string;
@@ -131,7 +131,7 @@ export class CreatePatientItemInput {
   statementNoteDateTo: string;
 
   @Field({ nullable: true })
-  adminId: string;
+  adminId?: string;
 
   @Field({ nullable: false })
   facilityId: string;
