@@ -59,8 +59,7 @@ export class PatientService {
     await queryRunner.startTransaction();
     try {
       //create user against patient
-      const user = await this.usersService.create({ ...createPatientInput.createPatientItemInput, password: "admin@123", roleType: UserRole.PATIENT })
-      console.log('User>>>', user)
+      const user = await this.usersService.create({ ...createPatientInput.createPatientItemInput, password: await this.utilsService.generateString(8), roleType: UserRole.PATIENT })
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
       patientInstance.patientRecord = await this.utilsService.generateString(8);
@@ -120,7 +119,7 @@ export class PatientService {
     await queryRunner.startTransaction();
     try {
       //save patient basic info
-      await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
+      await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, updatePatientInput.updatePatientItemInput, this.patientRepository)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
@@ -319,7 +318,6 @@ export class PatientService {
    */
   async GetPatient(id: string): Promise<PatientPayload> {
     const patient = await this.findOne(id);
-    console.log("patient", patient);
     if (patient) {
       return { patient }
     }
