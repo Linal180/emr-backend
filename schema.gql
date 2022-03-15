@@ -20,6 +20,32 @@ enum AttachmentType {
   lab
 }
 
+type Invoice {
+  id: String!
+  transactionId: String!
+  generatedBy: String!
+  billingType: BILLING_TYPE!
+  paymentMethod: String!
+  status: STATUS!
+  amount: String!
+  createdAt: String
+  updatedAt: String
+  transction: Transactions
+}
+
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
+}
+
 type Transactions {
   id: String!
   transactionId: String!
@@ -34,6 +60,7 @@ type Transactions {
   createdAt: String
   updatedAt: String
   status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
 }
 
 """The transaction payment status type assigned"""
@@ -830,6 +857,11 @@ type AppointmentPayload {
   appointment: Appointment
 }
 
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
 type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
@@ -1049,6 +1081,7 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
+  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
 }
 
 input LoginUserInput {
@@ -1818,4 +1851,13 @@ input PaymentInputsAfterAppointment {
   facilityId: String!
   patientId: String!
   appointmentId: String!
+}
+
+input CreateInvoiceInputs {
+  transactionId: String!
+  generatedBy: String!
+  billingType: BILLING_TYPE!
+  paymentMethod: String!
+  status: STATUS!
+  amount: String!
 }

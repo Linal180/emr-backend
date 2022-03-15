@@ -8,7 +8,7 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
-import { PaymentService } from 'src/payment/payment.service';
+import { PaymentService } from 'src/payment/services/payment.service';
 import { GetDoctorSlots } from 'src/providers/dto/update-schedule.input';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';

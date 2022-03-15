@@ -6,21 +6,21 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
-import { AppointmentService } from '../appointments/services/appointment.service';
+import { AppointmentService } from '../../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
-import { BraintreePayload } from './dto/payment.dto';
+import { BraintreePayload } from '../dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
   PaymentInputsAfterAppointment,
   UpdatePaymentStatus,
-} from './dto/payment.input';
-import { Transactions, TRANSACTIONSTATUS } from './entity/payment.entity';
+} from '../dto/payment.input';
+import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
 import {
   Appointment,
   BillingStatus,
-} from '../appointments/entities/appointment.entity';
-import { UtilsService } from '../util/utils.service';
+} from '../../appointments/entities/appointment.entity';
+import { UtilsService } from '../../util/utils.service';
 
 @Injectable()
 export class PaymentService {
