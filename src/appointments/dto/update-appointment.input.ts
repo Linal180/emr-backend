@@ -21,15 +21,6 @@ export class UpdateAppointmentStatusInput extends PartialType(CreateAppointmentI
 }
 
 @InputType()
-export class UpdateAppointmentPayStatus {
-  @Field()
-  id: string;
-  
-  @Field({nullable: true})
-  paymentStatus: string;
-}
-
-@InputType()
 export class UpdateAppointmentBillingStatusInput {
   @Field()
   id: string;
