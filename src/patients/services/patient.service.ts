@@ -358,10 +358,6 @@ export class PatientService {
       if (patient) {
         return { patient }
       }
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'Patient not found',
-      });
     }
 
   /**
