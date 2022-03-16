@@ -139,7 +139,7 @@ export class ScheduleService {
       try {
         const schedules = await this.scheduleRepository.find({
           where: {
-            doctorId: id
+            doctor: id
           }
         })
         return { schedules };
@@ -227,7 +227,7 @@ export class ScheduleService {
    * @param schedule 
    * @param appointment 
    */
-  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<DoctorSlotsPayload>{ // in progress
+  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<DoctorSlotsPayload>{ 
     let times = [];
     times = await Promise.all(schedule.map(async (item) => {
       let slotTime = moment(item.startAt);
@@ -317,13 +317,13 @@ export class ScheduleService {
           error: 'Schedule not found',
         });
       }
-      const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctorId, currentDate: ""}, schedule.startAt, schedule.endAt)
-      if(appointmentExist.length){
-        throw new ConflictException({
-          status: HttpStatus.CONFLICT,
-          error: 'Appointment already booked with this schedule, can not delete it.',
-        });
-      }
+      // const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctor.id, currentDate: ""}, schedule.startAt, schedule.endAt)
+      // if(appointmentExist.length){
+      //   throw new ConflictException({
+      //     status: HttpStatus.CONFLICT,
+      //     error: 'Appointment already booked with this schedule, can not delete it.',
+      //   });
+      // }
      await this.scheduleRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
