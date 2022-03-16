@@ -57,7 +57,7 @@ export class ScheduleService {
         const doctor = await this.doctorService.findOne(createScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
       }
-      const schedule =  await this.scheduleRepository.save(scheduleInstance);
+      const schedule = await this.scheduleRepository.save(scheduleInstance);
       if(createScheduleInput.servicesIds){
         const services = await this.servicesService.findByIds(createScheduleInput.servicesIds)
         const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
