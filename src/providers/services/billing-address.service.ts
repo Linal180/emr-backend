@@ -45,7 +45,7 @@ export class BillingAddressService {
   async updateBillingAddress(updateBillingAddressInput: UpdateBillingAddressInput): Promise<BillingAddress> {
     try {
       if(updateBillingAddressInput.id){
-        return await this.utilsService.updateEntityManager(BillingAddress, updateBillingAddressInput.id, updateBillingAddressInput, this.billingAddressRepository)
+        return await this.billingAddressRepository.save({...updateBillingAddressInput})
       }
       const billingAddressInstance = this.billingAddressRepository.create(updateBillingAddressInput)
       return await this.billingAddressRepository.save(billingAddressInstance)
