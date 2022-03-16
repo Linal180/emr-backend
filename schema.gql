@@ -428,7 +428,6 @@ type Schedule {
   startAt: String!
   endAt: String!
   recurringEndDate: DateTime
-  doctorId: String
   doctor: Doctor
   scheduleServices: [ScheduleServices!]
   createdAt: String!
