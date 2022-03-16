@@ -38,18 +38,18 @@ export class Invoice {
 
   @Column({ nullable: false })
   @Field({ nullable: false })
-  transactionId: string;
+  paymentTransactionId: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   generatedBy: string;
 
   @Column({ enum: BILLING_TYPE, default: BILLING_TYPE.SELF_PAY, type: 'enum' })
   @Field(() => BILLING_TYPE)
   billingType: BILLING_TYPE;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   paymentMethod: string;
 
   @Column({ enum: STATUS, default: STATUS.PENDING, type: 'enum' })

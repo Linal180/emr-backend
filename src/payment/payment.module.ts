@@ -16,5 +16,5 @@ import { AppointmentModule } from '../appointments/appointment.module';
   ],
   providers: [PaymentService, PaymentResolver, InvoiceResolver, InvoiceService],
   exports: [PaymentService],
-})
+})  
 export class PaymentModule {}

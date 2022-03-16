@@ -21,6 +21,8 @@ import {
   BillingStatus,
 } from '../../appointments/entities/appointment.entity';
 import { UtilsService } from '../../util/utils.service';
+import { InvoiceService } from './invoice.service';
+import { BILLING_TYPE, STATUS } from '../entity/invoice.entity';
 
 @Injectable()
 export class PaymentService {
@@ -36,7 +38,9 @@ export class PaymentService {
     private transactionRepo: Repository<Transactions>,
     @Inject(forwardRef(() => AppointmentService))
     private appointmentService: AppointmentService,
-    private readonly utilsService: UtilsService
+    private readonly utilsService: UtilsService,
+    @Inject(forwardRef(() => InvoiceService))
+    private readonly invoiceService: InvoiceService
   ) {}
 
   async getToken(): Promise<BraintreePayload> {
@@ -95,6 +99,14 @@ export class PaymentService {
         };
         const trans = await this.create(data);
         console.log('transaction >>>', trans);
+        const createInvoiceInputs ={
+          paymentTransactionId: trans.transactionId,
+          billingType: BILLING_TYPE.SELF_PAY,
+          paymentMethod: brainTrans.transaction.creditCard.cardType ?? 'PayPal',
+          status: STATUS.PAID,
+          amount: brainTrans.transaction.amount,
+        }
+        this.invoiceService.createExternalInvoice(createInvoiceInputs)
         return updatedAppointment;
       } else {
         throw new InternalServerErrorException({
@@ -194,6 +206,19 @@ export class PaymentService {
 
   async getTransaction(id: string) {
     return await this.gateway.transaction.find(id);
+  }
+
+  async getPaymentTransactionByBraintreeTransactionId(id: string){
+    try { 
+    return await this.transactionRepo.findOneOrFail({
+        where: {
+          transactionId: id
+        }
+      })
+    } catch (error) {
+      throw new Error(error);
+      
+    }
   }
 
   async getTransactionByAppointmentId(id: string) {

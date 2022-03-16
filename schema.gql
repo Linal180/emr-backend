@@ -22,10 +22,10 @@ enum AttachmentType {
 
 type Invoice {
   id: String!
-  transactionId: String!
-  generatedBy: String!
+  paymentTransactionId: String!
+  generatedBy: String
   billingType: BILLING_TYPE!
-  paymentMethod: String!
+  paymentMethod: String
   status: STATUS!
   amount: String!
   createdAt: String
@@ -866,38 +866,6 @@ type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
   pagination: PaginationPayload
-}
-
-type FormElement {
-  id: String!
-  placeholder: String!
-  defaultValue: String
-  required: Boolean
-  errorMsg: String!
-  position: String!
-  tableName: String!
-  columnName: String!
-  fieldId: String!
-  element: Element
-  createdAt: String
-  updatedAt: String
-}
-
-type Element {
-  id: String!
-  type: ElementType!
-  createdAt: String
-  updatedAt: String
-}
-
-"""The form's element types"""
-enum ElementType {
-  TEXT
-  NUMBER
-  DROPDOWN
-  RADIO
-  DATE
-  FILE
 }
 
 type Query {
@@ -1900,8 +1868,8 @@ input PaymentInputsAfterAppointment {
 }
 
 input CreateInvoiceInputs {
-  transactionId: String!
-  generatedBy: String!
+  paymentTransactionId: String!
+  generatedBy: String
   billingType: BILLING_TYPE!
   paymentMethod: String!
   status: STATUS!
