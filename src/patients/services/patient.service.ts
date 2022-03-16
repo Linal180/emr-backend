@@ -409,6 +409,18 @@ export class PatientService {
   }
 
   /**
+   * Updates patient invite
+   * @param id 
+   * @returns patient invite 
+   */
+  async updatePatientInvite(id: string ): Promise<Patient>{
+    try {
+      return await this.utilsService.updateEntityManager(Patient, id, {inviteAccepted: true}, this.patientRepository)
+    }catch(error){
+      throw new InternalServerErrorException(error);
+    }
+  }
+  /**
   * Updates patient media
   * @param file 
   * @param updateAttachmentMediaInput 

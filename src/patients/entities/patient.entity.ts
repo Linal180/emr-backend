@@ -360,6 +360,10 @@ export class Patient {
   @Field()
   statementDelivereOnline: boolean;
 
+  @Column({ nullable: true, default: false })
+  @Field({nullable: true})
+  inviteAccepted: boolean;
+
   @Column({ nullable: true })
   @Field()
   statementNote: string;
