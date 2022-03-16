@@ -1,7 +1,6 @@
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from "moment";
-import { scheduled } from 'rxjs';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { Service } from 'src/facilities/entities/services.entity';
