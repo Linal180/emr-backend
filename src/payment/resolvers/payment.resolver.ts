@@ -4,6 +4,7 @@ import { PaymentService } from '../services/payment.service';
 import { BraintreePayload } from '../dto/payment.dto';
 import { PaymentInput, PaymentInputsAfterAppointment } from '../dto/payment.input';
 import { AppointmentPayload } from '../../appointments/dto/appointment-payload.dto';
+import { Transactions } from '../entity/payment.entity';
 //resolver
 @Resolver()
 export class PaymentResolver {
@@ -28,5 +29,12 @@ export class PaymentResolver {
       appointment: await this.paymentService.chargeAfter(paymentInput),
       response: { status: 200, message: 'Appointment updated successfully' }
     };
+  }
+
+  //get all transactions
+
+  @Mutation(()=> [Transactions])
+  async getAllTransactions():Promise<Transactions[]> {
+    return await this.paymentService.getAll();
   }
 }

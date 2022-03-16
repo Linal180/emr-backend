@@ -9,15 +9,8 @@ import { PaymentService } from './payment.service';
 //service
 @Injectable()
 export class InvoiceService {
-  constructor(
-    @InjectRepository(Invoice)
-    private invoiceRepo: Repository<Invoice>,
-    @Inject(forwardRef(() => PaymentService))
-    private transactionService: PaymentService
-  ) {}
-
-  //create invoice
-
+  constructor(@InjectRepository(Invoice) private invoiceRepo: Repository<Invoice>, @Inject(forwardRef(() => PaymentService)) private transactionService: PaymentService) { }
+  //create  invoice
   async create(createInvoiceInputs: CreateInvoiceInputs): Promise<any> {
     try {
       const invoice = await this.invoiceRepo.create(createInvoiceInputs);
@@ -27,26 +20,26 @@ export class InvoiceService {
       throw new InternalServerErrorException(error);
     }
   }
-
-  async createExternalInvoice(
-    createInvoiceInputs: CreateInvoiceInputs
-  ): Promise<InvoicePayload> {
+  //create external invoice
+  async createExternalInvoice(createInvoiceInputs: CreateInvoiceInputs): Promise<InvoicePayload> {
     try {
       const invoice = await this.invoiceRepo.create(createInvoiceInputs);
-      const transaction =
-        await this.transactionService.getPaymentTransactionByBraintreeTransactionId(
-          createInvoiceInputs.paymentTransactionId
-        );
+      const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
       invoice.transction = transaction;
-      console.log('invoice ===> ', invoice);
       const updatedInvoice = await this.invoiceRepo.save(invoice);
-      return { invoice: updatedInvoice };
+      return { invoice: updatedInvoice, response: { status: 200, message: "OK" } };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
-
-  async getInvoices() {
-   return await this.invoiceRepo.find();
+  //get all invoices
+  async getInvoices(id: string): Promise<Invoice[]> {
+    try {
+      return await this.invoiceRepo.find({
+       
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

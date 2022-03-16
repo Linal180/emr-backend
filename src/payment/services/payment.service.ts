@@ -81,13 +81,13 @@ export class PaymentService {
         paymentMethodNonce: clientIntent,
       });
       if (brainTrans?.success) {
-        console.log('brain transaction>>>', brainTrans);
+       
         const updatedAppointment =
           await this.appointmentService.updateAppointmentBillingStatus({
             id: appointmentId,
             billingStatus: BillingStatus.PAID,
           });
-        console.log('updated appointment>>>', updatedAppointment);
+      
 
         const data = {
           transactionId: brainTrans?.transaction?.id,
@@ -98,7 +98,7 @@ export class PaymentService {
           status: TRANSACTIONSTATUS.PAID,
         };
         const trans = await this.create(data);
-        console.log('transaction >>>', trans);
+      
         const createInvoiceInputs ={
           paymentTransactionId: trans.transactionId,
           billingType: BILLING_TYPE.SELF_PAY,
@@ -106,7 +106,7 @@ export class PaymentService {
           status: STATUS.PAID,
           amount: brainTrans.transaction.amount,
         }
-        this.invoiceService.createExternalInvoice(createInvoiceInputs)
+        await this.invoiceService.createExternalInvoice(createInvoiceInputs)
         return updatedAppointment;
       } else {
         throw new InternalServerErrorException({
@@ -212,7 +212,7 @@ export class PaymentService {
     try { 
     return await this.transactionRepo.findOneOrFail({
         where: {
-          transactionId: id
+        transactionId: id
         }
       })
     } catch (error) {
@@ -241,4 +241,15 @@ export class PaymentService {
       throw new Error(error);
     }
   }
+
+  //get all transactions
+
+ async getAll() {
+   try {
+     return await this.transactionRepo.find()
+   } catch (error) {
+     throw new Error(error);
+     
+   }
+ }
 }
