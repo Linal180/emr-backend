@@ -64,6 +64,7 @@ export class UsersService {
         //setting role type & custom userId
         userInstance.userType = role.role
         const user = await this.usersRepository.save(userInstance);
+        await this.saveUserId(user.id, user);
         // SEND EMAIL TO USER FOR RESET PASSWORD
         const isInvite = true;
         let isAdmin = false
