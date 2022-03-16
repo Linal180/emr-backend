@@ -1,14 +1,14 @@
 {
   "name": "api",
-  "engines": {
-    "version": "0.0.1",
-    "node": "16.13.2"
-  },
   "npm": "8.1.2",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "version": "0.0.1",
+    "node": "16.13.2"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
