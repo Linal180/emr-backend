@@ -1,9 +1,5 @@
 {
   "name": "api",
-  "engines": {
-    "version": "0.0.1",
-    "node": "16.13.2"
-  },
   "npm": "8.1.2",
   "description": "",
   "author": "",
