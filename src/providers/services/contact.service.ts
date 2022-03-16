@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
 import { UsersService } from 'src/users/users.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import ContactInput from '../dto/contact-input.dto';
@@ -20,6 +21,7 @@ export class ContactService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
+    private readonly utilsService: UtilsService,
   ) { }
 
   /**
@@ -55,10 +57,10 @@ export class ContactService {
   async updateContact(updateContactInput: UpdateContactInput): Promise<Contact> {
     try {
       if(updateContactInput.id){
-      return await this.contactRepository.save(updateContactInput)
+        return await this.utilsService.updateEntityManager(Contact, updateContactInput.id, updateContactInput, this.contactRepository)
       }
       const contactInstance = this.contactRepository.create(updateContactInput)
-     return await this.contactRepository.save(contactInstance)
+      return await this.contactRepository.save(contactInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

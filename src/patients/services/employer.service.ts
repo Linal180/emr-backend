@@ -84,7 +84,7 @@ export class EmployerService {
   async updateEmployer(updateEmployerItemInput: UpdateEmployerItemInput): Promise<Employer> {
     try {
       if(updateEmployerItemInput.id){
-        return await this.employerRepository.save(updateEmployerItemInput)
+        return await this.utilsService.updateEntityManager(Employer, updateEmployerItemInput.id, updateEmployerItemInput, this.employerRepository)
         }
         const employerInstance = this.employerRepository.create(updateEmployerItemInput)
         return await this.employerRepository.save(employerInstance)

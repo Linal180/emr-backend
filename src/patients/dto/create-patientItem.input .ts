@@ -35,7 +35,7 @@ export class CreatePatientItemInput {
   pharmacy: string;
 
   @Field({ nullable: true })
-  usualProviderId: string;
+  usualProviderId?: string;
 
   @Field({ nullable: true })
   previouslastName: string;
@@ -65,13 +65,16 @@ export class CreatePatientItemInput {
   deceasedDate: string;
 
   @Field({ nullable: true })
-  privacyNotice: boolean;
+  privacyNotice: boolean; 
 
   @Field({ nullable: true })
   releaseOfInfoBill: boolean;
 
   @Field({ nullable: true })
   callToConsent: boolean;
+
+  @Field({ nullable: true })
+  inviteAccepted?: boolean;
 
   @Field({ nullable: true })
   voiceCallPermission: boolean;
@@ -131,7 +134,7 @@ export class CreatePatientItemInput {
   statementNoteDateTo: string;
 
   @Field({ nullable: true })
-  adminId: string;
+  adminId?: string;
 
   @Field({ nullable: false })
   facilityId: string;

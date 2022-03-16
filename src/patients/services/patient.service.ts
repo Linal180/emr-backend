@@ -12,11 +12,14 @@ import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
+import { UserRole } from '../../users/entities/role.entity';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
+import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
@@ -56,6 +59,8 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      //create user against patient
+      const user = await this.usersService.create({ ...createPatientInput.createPatientItemInput, password: await this.utilsService.generateString(8), roleType: UserRole.PATIENT })
       //create patient 
       const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
       patientInstance.patientRecord = await this.utilsService.generateString(8);
@@ -67,7 +72,7 @@ export class PatientService {
       //creating doctorPatient Instance 
       const doctorPatientInstance = await this.doctorPatientRepository.create({
         doctorId: doctor.id,
-        currentProvider: true, 
+        currentProvider: true,
       })
       doctorPatientInstance.doctor = doctor
       doctorPatientInstance.doctorId = doctor.id
@@ -87,11 +92,13 @@ export class PatientService {
       const employerContact = await this.employerService.createEmployer(createPatientInput.createEmployerInput)
       patientInstance.employer = [employerContact]
       patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
+      patientInstance.user = user;
       const patient = await queryRunner.manager.save(patientInstance);
       doctorPatientInstance.patient = patient
       doctorPatientInstance.patientId = patient.id
       await queryRunner.commitTransaction();
       await this.doctorPatientRepository.save(doctorPatientInstance)
+      await this.usersService.saveUserId(patient.id, user);
       return patient
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -113,7 +120,7 @@ export class PatientService {
     await queryRunner.startTransaction();
     try {
       //save patient basic info
-      await this.patientRepository.save(updatePatientInput.updatePatientItemInput)
+      await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, updatePatientInput.updatePatientItemInput, this.patientRepository)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
@@ -143,7 +150,56 @@ export class PatientService {
       await queryRunner.release();
     }
   }
-  
+
+  /**
+   * Updates patient profile
+   * @param updatePatientProfileInput 
+   * @returns patient profile 
+   */
+  async updatePatientProfile(updatePatientProfileInput: UpdatePatientProfileInput): Promise<Patient> {
+    try {
+      const patientInstance = await this.findOne(updatePatientProfileInput.updatePatientProfileItemInput.id)
+      //user registration input
+      if (patientInstance) {
+          await this.utilsService.updateEntityManager(Patient, updatePatientProfileInput.updatePatientProfileItemInput.id, updatePatientProfileInput.updatePatientProfileItemInput, this.patientRepository)
+          const contact = await this.contactService.updateContact(updatePatientProfileInput.updateContactInput)
+          patientInstance.contacts.push(contact)
+          return await this.patientRepository.save({...patientInstance,...updatePatientProfileInput.updatePatientProfileItemInput })
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Sends invite to patient
+   * @param patientInviteInput 
+   * @returns invite to patient 
+   */
+  async sendInviteToPatient(patientInviteInput: PatientInviteInput): Promise<Patient> {
+    try {
+      const patientInstance = await this.findOne(patientInviteInput.id)
+      //user registration input
+      if (patientInstance) {
+        const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: UserRole.PATIENT, adminId: patientInviteInput.adminId})
+        patientInstance.user = user
+       return await this.patientRepository.save(patientInstance)
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   /**
    * Updates patient provider
    * @param updatePatientProvider 
@@ -157,21 +213,21 @@ export class PatientService {
     try {
       //get patient
       const patient = await this.findOne(updatePatientProvider.patientId)
-      if(patient){
-      //get previous Provider of patient
-      const previousProvider = await this.doctorPatientRepository.findOne({where: [{ doctorId: updatePatientProvider.providerId ,patientId: updatePatientProvider.patientId, currentProvider: true }]})
-      if(previousProvider){
+      if (patient) {
+        //get previous Provider of patient
+        const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ doctorId: updatePatientProvider.providerId, patientId: updatePatientProvider.patientId, currentProvider: true }] })
+        if (previousProvider) {
+          return patient
+        }
+        //get currentProvider
+        const currentProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: updatePatientProvider.patientId, currentProvider: true }] })
+        if (currentProvider) {
+          await this.doctorPatientRepository.save({ id: currentProvider.id, currentProvider: false })
+        }
+        const doctorPatientInstance = await this.doctorPatientRepository.create({ doctorId: updatePatientProvider.providerId, currentProvider: true, patientId: updatePatientProvider.patientId })
+        await queryRunner.manager.save(doctorPatientInstance);
+        await queryRunner.commitTransaction();
         return patient
-      }
-      //get currentProvider
-      const currentProvider = await this.doctorPatientRepository.findOne({where: [{patientId: updatePatientProvider.patientId, currentProvider: true }]})
-      if(currentProvider){
-        await this.doctorPatientRepository.save({id: currentProvider.id, currentProvider: false})
-      }
-      const doctorPatientInstance = await this.doctorPatientRepository.create({doctorId: updatePatientProvider.providerId,currentProvider: true, patientId: updatePatientProvider.patientId})
-      await queryRunner.manager.save(doctorPatientInstance);
-      await queryRunner.commitTransaction();  
-      return patient
       }
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
@@ -233,7 +289,6 @@ export class PatientService {
       order: { createdAt: "ASC" },
       relations: ["doctor"]
     })
-    console.log("usualProvider",usualProvider);
     return usualProvider
   }
 
@@ -258,16 +313,16 @@ export class PatientService {
   /**
    * Adds patient
    * @param createPatientItemInput 
-   * @returns patient 
+   * @returns patient k
    */
   async addPatient(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Patient> {
-    const patientInstance =  this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
+    const patientInstance = this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
     patientInstance.patientRecord = await this.utilsService.generateString(10);
     const usualProvider = await this.doctorService.findOne(createExternalAppointmentInput.createPatientItemInput.usualProviderId)
     //creating doctorPatient Instance 
     const doctorPatientInstance = await this.doctorPatientRepository.create({
       doctorId: usualProvider.id,
-      currentProvider: true, 
+      currentProvider: true,
     })
     doctorPatientInstance.doctor = usualProvider
     doctorPatientInstance.doctorId = usualProvider.id
@@ -279,7 +334,7 @@ export class PatientService {
     doctorPatientInstance.patient = patient
     doctorPatientInstance.patientId = patient.id
     await this.doctorPatientRepository.save(doctorPatientInstance)
-    return patient 
+    return patient
   }
 
   /**
@@ -289,7 +344,6 @@ export class PatientService {
    */
   async GetPatient(id: string): Promise<PatientPayload> {
     const patient = await this.findOne(id);
-    console.log("patient",patient);
     if (patient) {
       return { patient }
     }
@@ -299,6 +353,17 @@ export class PatientService {
     });
   }
   
+  async GetPatientByEmail(email: string): Promise<PatientPayload> {
+      const patient = await this.patientRepository.findOne({email: email});
+      if (patient) {
+        return { patient }
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    }
+
   /**
    * Removes patient
    * @param { id } 
@@ -325,7 +390,7 @@ export class PatientService {
    * @param updateAttachmentMediaInput 
    * @returns request media 
    */
-   async uploadPatientMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PatientPayload> {
+  async uploadPatientMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PatientPayload> {
     try {
       updateAttachmentMediaInput.type = AttachmentType.PATIENT;
       const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
@@ -343,56 +408,68 @@ export class PatientService {
     }
   }
 
-   /**
-   * Updates patient media
-   * @param file 
-   * @param updateAttachmentMediaInput 
-   * @returns patient media 
+  /**
+   * Updates patient invite
+   * @param id 
+   * @returns patient invite 
    */
-    async updatePatientMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PatientPayload> {
-      try {
-        updateAttachmentMediaInput.type = AttachmentType.PATIENT
-        const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
-        const patient = await this.patientRepository.findOne(updateAttachmentMediaInput.typeId)
-        if (attachment) {
-          return { patient }
-        }
-        throw new PreconditionFailedException({
-          status: HttpStatus.PRECONDITION_FAILED,
-          error: 'Could not create or upload media',
-        });
-      }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+  async updatePatientInvite(id: string ): Promise<Patient>{
+    try {
+      return await this.utilsService.updateEntityManager(Patient, id, {inviteAccepted: true}, this.patientRepository)
+    }catch(error){
+      throw new InternalServerErrorException(error);
     }
+  }
+  /**
+  * Updates patient media
+  * @param file 
+  * @param updateAttachmentMediaInput 
+  * @returns patient media 
+  */
+  async updatePatientMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PatientPayload> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.PATIENT
+      const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+      const patient = await this.patientRepository.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { patient }
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
-    /**
-   * Removes patient media
+  /**
+ * Removes patient media
+ * @param id 
+ * @returns  
+ */
+  async removePatientMedia(id: string) {
+    try {
+      return await this.attachmentsService.removeMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Gets patient media
    * @param id 
    * @returns  
    */
-     async removePatientMedia(id: string) {
-      try {
-        return await this.attachmentsService.removeMedia(id)
-      }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+  async getPatientMedia(id: string) {
+    try {
+      return await this.attachmentsService.getMedia(id)
     }
-
-    /**
-     * Gets patient media
-     * @param id 
-     * @returns  
-     */
-    async getPatientMedia(id: string) {
-      try {
-        return await this.attachmentsService.getMedia(id)
-      }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+    catch (error) {
+      throw new InternalServerErrorException(error);
     }
+  }
 
 }

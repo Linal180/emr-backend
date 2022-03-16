@@ -47,6 +47,7 @@ export class StaffService {
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
       const staff = await queryRunner.manager.save(staffInstance);
+      await this.usersService.saveUserId(staff.id, user);
       await queryRunner.commitTransaction();
       return staff
     } catch (error) {
@@ -70,10 +71,16 @@ export class StaffService {
     }
   }
 
+  /**
+   * Adds staff
+   * @param registerUserInput 
+   * @param facilityId 
+   * @returns staff 
+   */
   async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
     try {
       // register staff as user 
-      const user = await this.usersService.create({...registerUserInput, facilityId})
+      const user = await this.usersService.create({ ...registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Staff Creation
@@ -81,7 +88,9 @@ export class StaffService {
       staffInstance.user = user;
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
-      return await this.staffRepository.save(staffInstance)
+      const staff =  await this.staffRepository.save(staffInstance)
+      await this.usersService.saveUserId(staff.id, user);
+      return staff
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -122,8 +131,8 @@ export class StaffService {
    * @returns staff 
    */
   async getStaff(id: string): Promise<Staff> {
-    const staff =  await this.findOne(id);
-    if(staff){
+    const staff = await this.findOne(id);
+    if (staff) {
       return staff
     }
     throw new NotFoundException({
@@ -162,6 +171,10 @@ export class StaffService {
     }
   }
 
+  /**
+   * Disables staff
+   * @param { id } 
+   */
   async disableStaff({ id }: DisableStaff) {
     try {
       await this.usersService.deactivateUser(id)

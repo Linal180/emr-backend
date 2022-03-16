@@ -18,6 +18,7 @@ import { UsersPayload } from './dto/users-payload.dto';
 import { Role, UserRole } from './entities/role.entity';
 import { UserLog } from './entities/user-logs.entity';
 import { User, UserStatus } from './entities/user.entity';
+import { PatientService } from 'src/patients/services/patient.service';
 
 @Injectable()
 export class UsersService {
@@ -32,7 +33,8 @@ export class UsersService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
+    private readonly patientService: PatientService
   ) { }
 
   /**
@@ -51,7 +53,7 @@ export class UsersService {
             error: 'User already exists with this email',
           });
         }
-        // User Creation
+        // User Creationa
         const userInstance = this.usersRepository.create({ ...registerUserInput, email: registerUserInput.email.trim().toLowerCase() })
         const role = await this.rolesRepository.findOne({ role: registerUserInput.roleType });
         userInstance.roles = [role]
@@ -64,13 +66,14 @@ export class UsersService {
         //setting role type & custom userId
         userInstance.userType = role.role
         const user = await this.usersRepository.save(userInstance);
-        //saving userId in user
-        await this.saveUserId(user.id, userInstance)
+        await this.saveUserId(user.id, user);
         // SEND EMAIL TO USER FOR RESET PASSWORD
         const isInvite = true;
-        if (registerUserInput.roleType != UserRole.PATIENT) {
-          this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
+        let isAdmin = false
+        if(registerUserInput.roleType === UserRole.PATIENT){
+           isAdmin = true
         }
+        this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, isAdmin, token, isInvite)
         return user;
       }
       throw new NotFoundException({
@@ -209,7 +212,7 @@ export class UsersService {
    */
   async findOne(email: string): Promise<User> {
     const user = await this.usersRepository.findOne({ email: email, status: UserStatus.ACTIVE });
-    if(!user){
+    if (!user) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: 'User not found',
@@ -466,6 +469,7 @@ export class UsersService {
         user.password = password;
         user.emailVerified = true
         const updatedUser = await this.usersRepository.save(user);
+        this.patientService.updatePatientInvite(user.userId)
         return updatedUser;
       }
       return undefined;
