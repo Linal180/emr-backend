@@ -1,6 +1,6 @@
 export default () => {
   let database: any;
-  let redis: any;
+  // let redis: any;
   if (process.env.NODE_ENV === "production") {
     database = {
       type: process.env.DATABASE_TYPE || "postgres",
@@ -13,11 +13,11 @@ export default () => {
       migrations: ["dist/migrations/*{.ts,.js}"],
       entities: ["dist/**/*.entity{.ts,.js}"],
     };
-    redis = {
-      socket: {
-        url: process.env.REDIS_URL || "redis://localhost:",
-      },
-    };
+    // redis = {
+    //   socket: {
+    //     url: process.env.REDIS_URL || "redis://localhost:",
+    //   },
+    // };
   } else {
     database = {
       host: process.env.DATABASE_HOST || "localhost",
@@ -32,12 +32,12 @@ export default () => {
       migrations: ["dist/migrations/*{.ts,.js}"],
       entities: ["dist/**/*.entity{.ts,.js}"],
     };
-    redis = {
-      socket: {
-        host: process.env.REDIS_HOST || "127.0.0.1",
-        port: 6379,
-      },
-    };
+    // redis = {
+    //   socket: {
+    //     host: process.env.REDIS_HOST || "127.0.0.1",
+    //     port: 6379,
+    //   },
+    // };
   }
 
   return {
@@ -63,7 +63,7 @@ export default () => {
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID || "ACe835bd46c85a40b950674c1af03c6b24",
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN || "29a1c82e5053986e3a8d82dbd75a72c9",
     TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER || "+16065955458",
-    redis,
+    // redis,
     VERIFY_EMAIL_TEMPLATE_ID:
       process.env.VERIFY_EMAIL_TEMPLATE_ID ||
       "d-0923bc5b5cdb44f9993128a14bbbedd9",
