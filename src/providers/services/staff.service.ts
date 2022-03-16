@@ -88,7 +88,9 @@ export class StaffService {
       staffInstance.user = user;
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
-      return await this.staffRepository.save(staffInstance)
+      const staff =  await this.staffRepository.save(staffInstance)
+      await this.usersService.saveUserId(staff.id, user);
+      return staff
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

@@ -82,7 +82,7 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const doctor = await this.utilsService.updateEntityManager(Doctor, updateDoctorInput.updateDoctorItemInput.id, updateDoctorInput.updateDoctorItemInput, this.doctorRepository)
+      const doctor = await this.doctorRepository.save({...updateDoctorInput.updateDoctorItemInput})
       //updating contact details
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
@@ -104,7 +104,9 @@ export class DoctorService {
       doctorInstance.user = user;
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
-      return await this.doctorRepository.save(doctorInstance)
+      const doctor = await this.doctorRepository.save(doctorInstance)
+      await this.usersService.saveUserId(doctor.id, user);
+      return doctor
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

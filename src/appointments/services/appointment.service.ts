@@ -67,6 +67,7 @@ export class AppointmentService {
       const patient = await this.patientService.findOne(createAppointmentInput.patientId)
       if(createAppointmentInput.patientId){
         appointmentInstance.patient = patient
+        appointmentInstance.patientId = patient.id
       }
       //associate facility 
       const facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
@@ -119,6 +120,7 @@ export class AppointmentService {
         //associate patient
         if(patientInstance && patientInstance.id){
           appointmentInstance.patient = patientInstance
+          appointmentInstance.patientId = patientInstance.id
         }
         //associate facility 
         const facility = await this.facilityService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId)

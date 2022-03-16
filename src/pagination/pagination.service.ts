@@ -139,12 +139,13 @@ export class PaginationService {
       isActive,
       currentPhaseId,
       from,
+      patientId,
       appointmentNumber,
       dueToday,
       facilityId,
       practiceId,
       phychType,
-      ageGroupId,
+      appointmentStatus,
       categoryId,
       category,
       paginationOptions: { page, limit: take } } = paginationInput || {}
@@ -154,8 +155,8 @@ export class PaginationService {
         ...(phychType && {
           phychType
         }),
-        ...(ageGroupId && {
-          ageGroupId
+        ...(patientId && {
+          patientId
         }),
         ...(categoryId && {
           categoryId
@@ -168,6 +169,9 @@ export class PaginationService {
         }),
         ...(practiceId && {
           practiceId: practiceId
+        }),
+        ...(appointmentStatus && {
+          status: appointmentStatus
         }),
         ...(status != null && {
           status
@@ -196,6 +200,7 @@ export class PaginationService {
       }
     };
 
+    console.log("whereOptions",whereOptions)
     // Assigned to User
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status
