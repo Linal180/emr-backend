@@ -18,6 +18,7 @@ import { UsersPayload } from './dto/users-payload.dto';
 import { Role, UserRole } from './entities/role.entity';
 import { UserLog } from './entities/user-logs.entity';
 import { User, UserStatus } from './entities/user.entity';
+import { PatientService } from 'src/patients/services/patient.service';
 
 @Injectable()
 export class UsersService {
@@ -32,7 +33,8 @@ export class UsersService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
+    private readonly patientService: PatientService
   ) { }
 
   /**
@@ -467,6 +469,7 @@ export class UsersService {
         user.password = password;
         user.emailVerified = true
         const updatedUser = await this.usersRepository.save(user);
+        this.patientService.updatePatientInvite(user.userId)
         return updatedUser;
       }
       return undefined;
