@@ -104,7 +104,9 @@ export class DoctorService {
       doctorInstance.user = user;
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
-      return await this.doctorRepository.save(doctorInstance)
+      const doctor = await this.doctorRepository.save(doctorInstance)
+      await this.usersService.saveUserId(doctor.id, user);
+      return doctor
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
