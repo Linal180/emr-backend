@@ -65,7 +65,7 @@ export class CreatePatientItemInput {
   deceasedDate: string;
 
   @Field({ nullable: true })
-  privacyNotice: boolean;
+  privacyNotice: boolean; 
 
   @Field({ nullable: true })
   releaseOfInfoBill: boolean;
