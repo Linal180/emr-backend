@@ -273,6 +273,7 @@ type Patient {
   homeBound: HOMEBOUND
   holdStatement: HOLDSTATEMENT
   statementDelivereOnline: Boolean!
+  inviteAccepted: Boolean
   statementNote: String!
   statementNoteDateFrom: String!
   statementNoteDateTo: String!
@@ -1566,6 +1567,7 @@ input CreatePatientItemInput {
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  inviteAccepted: Boolean
   voiceCallPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean
@@ -1652,6 +1654,7 @@ input UpdatePatientItemInput {
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  inviteAccepted: Boolean
   voiceCallPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean

@@ -20,7 +20,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentPayStatus, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
@@ -72,7 +72,7 @@ export class AppointmentService {
       //associate facility 
       const facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
       if(createAppointmentInput.facilityId){
-        appointmentInstance.facility = facility
+        appointmentInstance.facility = facility 
       }
       //associate service 
       if(createAppointmentInput.serviceId){
@@ -110,7 +110,7 @@ export class AppointmentService {
        if(!patient){
         patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
        }else{
-       patientInstance = patient;
+       patientInstance = patient.patient;
        }
        const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true, appointmentNumber})
        const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
@@ -364,10 +364,6 @@ export class AppointmentService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-  }
-
-  async updateAppointmentPaymentStatus(updateAppointmentPayStatus: UpdateAppointmentPayStatus){
-    this.appointmentRepository.save(updateAppointmentPayStatus)
   }
 
   async getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput): Promise<Appointment[]> {

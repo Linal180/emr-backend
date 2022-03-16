@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from "moment";
 import { Appointment } from 'src/appointments/entities/appointment.entity';
@@ -57,7 +57,7 @@ export class ScheduleService {
         const doctor = await this.doctorService.findOne(createScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
       }
-      const schedule =  await this.scheduleRepository.save(scheduleInstance);
+      const schedule = await this.scheduleRepository.save(scheduleInstance);
       if(createScheduleInput.servicesIds){
         const services = await this.servicesService.findByIds(createScheduleInput.servicesIds)
         const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
@@ -227,7 +227,7 @@ export class ScheduleService {
    * @param schedule 
    * @param appointment 
    */
-  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<DoctorSlotsPayload>{ // in progress
+  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<DoctorSlotsPayload>{ 
     let times = [];
     times = await Promise.all(schedule.map(async (item) => {
       let slotTime = moment(item.startAt);
@@ -310,7 +310,21 @@ export class ScheduleService {
    */
   async removeSchedule({ id }: RemoveSchedule) {
     try {
-      await this.scheduleRepository.delete(id)
+      const schedule = await this.findOne(id)
+      if(!schedule){
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Schedule not found',
+        });
+      }
+      // const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctor.id, currentDate: ""}, schedule.startAt, schedule.endAt)
+      // if(appointmentExist.length){
+      //   throw new ConflictException({
+      //     status: HttpStatus.CONFLICT,
+      //     error: 'Appointment already booked with this schedule, can not delete it.',
+      //   });
+      // }
+     await this.scheduleRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
