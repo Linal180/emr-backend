@@ -82,7 +82,8 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const doctor = await this.utilsService.updateEntityManager(Doctor, updateDoctorInput.updateDoctorItemInput.id, updateDoctorInput.updateDoctorItemInput, this.doctorRepository)
+      const doctor = await this.doctorRepository.save({...updateDoctorInput.updateDoctorItemInput})
+      // const doctor = await this.utilsService.updateEntityManager(Doctor, updateDoctorInput.updateDoctorItemInput.id, updateDoctorInput.updateDoctorItemInput, this.doctorRepository)
       //updating contact details
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
