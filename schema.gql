@@ -428,6 +428,7 @@ type Schedule {
   startAt: String!
   endAt: String!
   recurringEndDate: DateTime
+  doctorId: String
   doctor: Doctor
   scheduleServices: [ScheduleServices!]
   createdAt: String!
@@ -835,38 +836,6 @@ type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
   pagination: PaginationPayload
-}
-
-type FormElement {
-  id: String!
-  placeholder: String!
-  defaultValue: String
-  required: Boolean
-  errorMsg: String!
-  position: String!
-  tableName: String!
-  columnName: String!
-  fieldId: String!
-  element: Element
-  createdAt: String
-  updatedAt: String
-}
-
-type Element {
-  id: String!
-  type: ElementType!
-  createdAt: String
-  updatedAt: String
-}
-
-"""The form's element types"""
-enum ElementType {
-  TEXT
-  NUMBER
-  DROPDOWN
-  RADIO
-  DATE
-  FILE
 }
 
 type Query {

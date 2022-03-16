@@ -23,6 +23,10 @@ export class Schedule {
   @Field({ nullable: true })
   recurringEndDate: Date;
 
+  @Column({nullable: true })
+  @Field({ nullable: true })
+  doctorId: string;
+
   @ManyToOne(() => Doctor, doctor => doctor.contacts, { onDelete: 'CASCADE' })
   @Field(type => Doctor, { nullable: true })
   doctor: Doctor;
