@@ -282,14 +282,20 @@ export class PatientService {
    * @returns provider 
    */
   async usualProvider(id: string): Promise<DoctorPatient[]> {
-    const usualProvider = await this.doctorPatientRepository.find({
-      where: {
-        patientId: id
-      },
-      order: { createdAt: "ASC" },
-      relations: ["doctor"]
-    })
-    return usualProvider
+    try{
+      const usualProvider = await this.doctorPatientRepository.find({
+        where: {
+          patientId: id
+        },
+        order: { createdAt: "ASC" },
+        relations: ["doctor"]
+      })
+      return usualProvider
+    }
+     catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+    
   }
 
   /**
