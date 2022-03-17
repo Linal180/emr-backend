@@ -141,7 +141,7 @@ export class ScheduleService {
       try {
         const schedules = await this.scheduleRepository.find({
           where: {
-            doctor: id
+            doctorId: id
           }
         })
         return { schedules };
