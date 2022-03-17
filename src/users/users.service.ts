@@ -53,7 +53,7 @@ export class UsersService {
             error: 'User already exists with this email',
           });
         }
-        // User Creationa
+        // User Creation
         const userInstance = this.usersRepository.create({ ...registerUserInput, email: registerUserInput.email.trim().toLowerCase() })
         const role = await this.rolesRepository.findOne({ role: registerUserInput.roleType });
         userInstance.roles = [role]
@@ -70,11 +70,9 @@ export class UsersService {
         // SEND EMAIL TO USER FOR RESET PASSWORD
         let isInvite = 'INVITATION_TEMPLATE_ID';
         let isAdmin = false
-        if(registerUserInput.roleType === UserRole.PATIENT){
-           isAdmin = true
-           isInvite = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
+        if(registerUserInput.roleType !== UserRole.PATIENT){
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, user.email, '', isAdmin, token, isInvite)
         }
-        this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, isAdmin, token, isInvite)
         return user;
       }
       throw new NotFoundException({
@@ -432,7 +430,7 @@ export class UsersService {
       if (user) {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
         const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
-        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '',isAdmin, token, isInvite)
         delete user.roles
         await this.usersRepository.save(user);
         return user

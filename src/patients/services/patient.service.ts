@@ -12,6 +12,7 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
+import { threadId } from 'worker_threads';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { UserRole } from '../../users/entities/role.entity';
@@ -182,22 +183,25 @@ export class PatientService {
    */
   async sendInviteToPatient(patientInviteInput: PatientInviteInput): Promise<Patient> {
     try {
-      const patientInstance = await this.findOne(patientInviteInput.id)
+      const patientInstance  = await this.findOne(patientInviteInput.id)
+      const patientProviders = await this.usualProvider(patientInstance.id)
+      const usualProvider = patientProviders.find((item) => item.currentProvider)
       //user registration input
       if(patientInstance && patientInstance.email) {
+        const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
         if(!userAlreadyExist){
          const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: UserRole.PATIENT, adminId: patientInviteInput.adminId})
          patientInstance.user = user
          const patient =  await this.patientRepository.save(patientInstance)
          await this.usersService.saveUserId(patient.id, user);
+         this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.id, patientInstance.firstName +' '+ patientInstance.lastName, usualProvider.doctor.firstName + " "+usualProvider.doctor.lastName,  true, user.token, inviteTemplateId)
          return patient
         }else{
           const token = createToken();
           userAlreadyExist.token = token;
           await this.usersService.save(userAlreadyExist);
-          const isInvite = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
-          this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.email, userAlreadyExist.id, true, token, isInvite)
+          this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.id, patientInstance.firstName +' '+ patientInstance.lastName, usualProvider.doctor.firstName + " "+usualProvider.doctor.lastName, true, token, inviteTemplateId)
           return patientInstance
         }
       }else if(patientInstance && !patientInstance.email) {
