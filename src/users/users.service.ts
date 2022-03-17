@@ -68,10 +68,11 @@ export class UsersService {
         const user = await this.usersRepository.save(userInstance);
         await this.saveUserId(user.id, user);
         // SEND EMAIL TO USER FOR RESET PASSWORD
-        const isInvite = true;
+        let isInvite = 'INVITATION_TEMPLATE_ID';
         let isAdmin = false
         if(registerUserInput.roleType === UserRole.PATIENT){
            isAdmin = true
+           isInvite = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
         }
         this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, isAdmin, token, isInvite)
         return user;
@@ -134,6 +135,14 @@ export class UsersService {
     }
   }
 
+  /**
+   * Saves users service
+   * @param user 
+   * @returns save 
+   */
+  async save(user: User): Promise<User>{
+    return await this.usersRepository.save(user)
+  }
   /**
    * Updates role
    * @param updateRoleInput 
@@ -422,7 +431,7 @@ export class UsersService {
       const roles = user.roles.map(u => u.role);
       if (user) {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
-        const isInvite = false;
+        const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
         this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
         delete user.roles
         await this.usersRepository.save(user);

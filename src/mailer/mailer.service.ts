@@ -25,7 +25,8 @@ export class MailerService {
     "requestApproved": this.configService.get('REQUEST_APPROVED'),
     "updateNeeded": this.configService.get('REQUEST_UPDATE_NEEDED'),
     "updateDeclined": this.configService.get('REQUEST_UPDATE_DECLINED'),
-    "appointmentConfirmation": this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID')
+    "appointmentConfirmation": this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID'),
+    "patientPortalInvitation": this.configService.get("PATIENT_PORTAL_INVITATION_TEMPLATE_ID")
   })[templateName]
 
   /**
@@ -34,13 +35,21 @@ export class MailerService {
    * @param userId 
    * @param fullName 
    */
-  async sendEmailForgotPassword(email: string, userId: string, fullName: string, isAdmin: boolean, token: string, isInvite: boolean) {
+  async sendEmailForgotPassword(email: string, userId: string, fullName: string, isAdmin: boolean, token: string, isInvite: string) {
     const portalAppBaseUrl = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') :  this.configService.get('ADMIN_APP_BASE_URL')
+    let templateId = ''
+    if(isInvite === 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID'){
+      templateId = this.configService.get('PATIENT_PORTAL_INVITATION_TEMPLATE_ID')
+    }else if(isInvite === 'INVITATION_TEMPLATE_ID'){
+      templateId = this.configService.get('INVITATION_TEMPLATE_ID')
+    }else if(isInvite === 'FORGOT_PASSWORD_TEMPLATE_ID'){
+      templateId = this.configService.get('FORGOT_PASSWORD_TEMPLATE_ID')
+    }
     const url = isInvite ? `${portalAppBaseUrl}/set-password?token=${token}` : `${portalAppBaseUrl}/reset-password?token=${token}`
     const msg = {
       to: email,
       from: this.configService.get('FROM_EMAIL'),
-      templateId: isInvite ? this.configService.get('INVITATION_TEMPLATE_ID') : this.configService.get('FORGOT_PASSWORD_TEMPLATE_ID'),
+      templateId: templateId,
       dynamicTemplateData: {
         fullName,
         resetPasswordURL: url
