@@ -127,7 +127,10 @@ export class FacilityService {
    */
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
+      //get practice
+      const practice = await this.practiceService.findOne(updateFacilityInput.updateFacilityItemInput.practiceId)
       const facilityInstance = await this.findOne(updateFacilityInput.updateFacilityItemInput.id)
+      facilityInstance.practice = practice;
       //updating contact details
       const contact = await this.contactService.updateContact(updateFacilityInput.updateContactInput)
       facilityInstance.contacts = [contact]
