@@ -56,6 +56,7 @@ export class ScheduleService {
       if (createScheduleInput.doctorId) {
         const doctor = await this.doctorService.findOne(createScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
+        scheduleInstance.doctorId = doctor.id
       }
       const schedule = await this.scheduleRepository.save(scheduleInstance);
       if(createScheduleInput.servicesIds){
@@ -108,6 +109,7 @@ export class ScheduleService {
       if (updateScheduleInput.doctorId) {
         const doctor = await this.doctorService.findOne(updateScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
+        scheduleInstance.doctorId = doctor.id
       }
       scheduleInstance.startAt = updateScheduleInput.startAt;
       scheduleInstance.endAt = updateScheduleInput.endAt;
@@ -317,6 +319,7 @@ export class ScheduleService {
           error: 'Schedule not found',
         });
       }
+      if(schedule.doctorId){
       const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctorId, currentDate: ""}, schedule.startAt, schedule.endAt)
       if(appointmentExist.length){
         throw new ConflictException({
@@ -324,6 +327,7 @@ export class ScheduleService {
           error: 'Appointment already booked with this schedule, can not delete it.',
         });
       }
+    }
      await this.scheduleRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
