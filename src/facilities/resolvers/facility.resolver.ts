@@ -78,7 +78,7 @@ export class FacilityResolver {
 
   @Mutation(() => FacilityPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin','admin'])
   async removeFacility(@Args('removeFacility') removeFacility: RemoveFacility) {
     await this.facilityService.removeFacility(removeFacility);
     return { response: { status: 200, message: 'Facility Deleted' } };
