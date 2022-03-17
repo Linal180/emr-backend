@@ -184,7 +184,7 @@ export class PatientService {
     try {
       const patientInstance = await this.findOne(patientInviteInput.id)
       //user registration input
-      if (patientInstance) {
+      if(patientInstance && patientInstance.email) {
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
         if(!userAlreadyExist){
          const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: UserRole.PATIENT, adminId: patientInviteInput.adminId})
@@ -200,6 +200,11 @@ export class PatientService {
           this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.email, userAlreadyExist.id, true, token, isInvite)
           return patientInstance
         }
+      }else if(patientInstance && !patientInstance.email) {
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Patient does not have email',
+        });
       }
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
