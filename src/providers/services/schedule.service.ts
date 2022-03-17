@@ -172,7 +172,7 @@ export class ScheduleService {
   async getDoctorsTodaySchedule(doctorId: string, uTcStartDateOffset: Date ,uTcEndDateOffset: Date ): Promise<Schedule[]> {
     return await this.scheduleRepository.find({
       where: {
-        doctor: doctorId,
+        doctorId: doctorId,
         startAt: MoreThanOrEqual(uTcStartDateOffset),
         endAt: LessThanOrEqual(uTcEndDateOffset),
       },
@@ -317,13 +317,13 @@ export class ScheduleService {
           error: 'Schedule not found',
         });
       }
-      // const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctor.id, currentDate: ""}, schedule.startAt, schedule.endAt)
-      // if(appointmentExist.length){
-      //   throw new ConflictException({
-      //     status: HttpStatus.CONFLICT,
-      //     error: 'Appointment already booked with this schedule, can not delete it.',
-      //   });
-      // }
+      const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctorId, currentDate: ""}, schedule.startAt, schedule.endAt)
+      if(appointmentExist.length){
+        throw new ConflictException({
+          status: HttpStatus.CONFLICT,
+          error: 'Appointment already booked with this schedule, can not delete it.',
+        });
+      }
      await this.scheduleRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
