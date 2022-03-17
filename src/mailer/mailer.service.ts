@@ -35,7 +35,7 @@ export class MailerService {
    * @param userId 
    * @param fullName 
    */
-  async sendEmailForgotPassword(email: string, userId: string, fullName: string, isAdmin: boolean, token: string, isInvite: string) {
+  async sendEmailForgotPassword(email: string, userId: string, fullName: string, providerName: string, isAdmin: boolean, token: string, isInvite: string) {
     const portalAppBaseUrl = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') :  this.configService.get('ADMIN_APP_BASE_URL')
     let templateId = ''
     if(isInvite === 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID'){
@@ -52,6 +52,7 @@ export class MailerService {
       templateId: templateId,
       dynamicTemplateData: {
         fullName,
+        providerName,
         resetPasswordURL: url
       }
     };
