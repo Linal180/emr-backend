@@ -63,6 +63,15 @@ export class InvoiceInputs {
   paginationOptions: PaginationInput
 }
 
+@InputType()
+export class InvoiceStatusInputs{
+  @Field(() => STATUS)
+  status: STATUS;
+
+  @Field()
+  id: string;
+}
+
 export class TransactionInputs {
   id: string;
   transactionId: string;

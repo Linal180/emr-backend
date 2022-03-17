@@ -2,7 +2,7 @@ import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 //user imports
 import { InvoiceService } from '../services/invoice.service';
-import { CreateInvoiceInputs, CreateExternalInvoiceInputs, InvoiceInputs } from '../dto/invoice.input';
+import { CreateInvoiceInputs, CreateExternalInvoiceInputs, InvoiceInputs,InvoiceStatusInputs } from '../dto/invoice.input';
 import { InvoicePayload, InvoicesPayload } from '../dto/invoice.dto';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 //resolver
@@ -27,5 +27,11 @@ export class InvoiceResolver {
   async getAllInvoices(@Args('invoiceInput') invoiceInput: InvoiceInputs): Promise<InvoicesPayload> {
     // @CurrentUser() user: User
     return await this.invoiceService.getInvoices(invoiceInput)
+  }
+
+  //update invoice status
+  @Mutation(()=>InvoicePayload )
+  async updateInvoiceStatus(@Args('invoiceStatusInputs') invoiceStatusInputs:InvoiceStatusInputs): Promise<InvoicePayload> {
+    return await this.invoiceService.updateStatus(invoiceStatusInputs)
   }
 }

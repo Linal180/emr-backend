@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 //user imports
 import { Invoice } from '../entity/invoice.entity';
-import { CreateInvoiceInputs ,CreateExternalInvoiceInputs, InvoiceInputs} from '../dto/invoice.input';
+import { CreateInvoiceInputs ,CreateExternalInvoiceInputs, InvoiceInputs, InvoiceStatusInputs} from '../dto/invoice.input';
 import { InvoicePayload,InvoicesPayload } from '../dto/invoice.dto';
 import { PaymentService } from './payment.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -56,6 +56,16 @@ export class InvoiceService {
   }
 
   //update invoice status
+
+  async updateStatus( invoiceStatusInputs:InvoiceStatusInputs):Promise<InvoicePayload> {
+    try {
+      return { invoice: await  this.utilService.updateEntityManager(Invoice, invoiceStatusInputs.id, invoiceStatusInputs, this.invoiceRepo)}
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+      
+    }
+  
+  }
 
   //get all invoices against facility
 

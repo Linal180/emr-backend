@@ -1108,6 +1108,7 @@ type Mutation {
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionPayload!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
+  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
 }
 
 input LoginUserInput {
@@ -1915,4 +1916,9 @@ input CreateExternalInvoiceInputs {
   paymentMethod: String!
   status: STATUS!
   amount: String!
+}
+
+input InvoiceStatusInputs {
+  status: STATUS!
+  id: String!
 }
