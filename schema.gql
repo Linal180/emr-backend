@@ -22,7 +22,9 @@ enum AttachmentType {
 
 type Invoice {
   id: String!
-  paymentTransactionId: String!
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
   generatedBy: String
   billingType: BILLING_TYPE!
   paymentMethod: String
@@ -853,6 +855,12 @@ type BraintreePayload {
   clientToken: String!
 }
 
+type TransactionPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
@@ -861,6 +869,12 @@ type AppointmentPayload {
 type InvoicePayload {
   response: ResponsePayload
   invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
 }
 
 type AppointmentsPayload {
@@ -901,7 +915,7 @@ type Query {
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
-  getAllInvoices: [Invoice!]!
+  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
 }
 
 input UsersInput {
@@ -1031,6 +1045,11 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input InvoiceInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -1086,9 +1105,9 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
-  getAllTransactions: [Transactions!]!
+  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionPayload!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
-  createExternalInvoice(createExternalInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
+  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
 }
 
 input LoginUserInput {
@@ -1873,8 +1892,24 @@ input PaymentInputsAfterAppointment {
   appointmentId: String!
 }
 
+input GetAllTransactionsInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 input CreateInvoiceInputs {
+  paymentTransactionId: String
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+}
+
+input CreateExternalInvoiceInputs {
   paymentTransactionId: String!
+  facilityId: String!
   generatedBy: String
   billingType: BILLING_TYPE!
   paymentMethod: String!

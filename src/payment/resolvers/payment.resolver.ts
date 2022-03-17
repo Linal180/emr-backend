@@ -1,10 +1,9 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 //user imports
 import { PaymentService } from '../services/payment.service';
-import { BraintreePayload } from '../dto/payment.dto';
-import { PaymentInput, PaymentInputsAfterAppointment } from '../dto/payment.input';
+import { BraintreePayload, TransactionPayload } from '../dto/payment.dto';
+import { GetAllTransactionsInputs, PaymentInput, PaymentInputsAfterAppointment } from '../dto/payment.input';
 import { AppointmentPayload } from '../../appointments/dto/appointment-payload.dto';
-import { Transactions } from '../entity/payment.entity';
 //resolver
 @Resolver()
 export class PaymentResolver {
@@ -33,8 +32,8 @@ export class PaymentResolver {
 
   //get all transactions
 
-  @Mutation(()=> [Transactions])
-  async getAllTransactions():Promise<Transactions[]> {
-    return await this.paymentService.getAll();
+  @Mutation(()=> TransactionPayload)
+  async getAllTransactions(@Args('transactionInputs') transactionInputs: GetAllTransactionsInputs):Promise<TransactionPayload> {
+    return await this.paymentService.getAll(transactionInputs);
   }
 }

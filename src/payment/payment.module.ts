@@ -8,11 +8,15 @@ import { InvoiceService } from './services/invoice.service';
 import { Transactions } from './entity/payment.entity';
 import { Invoice } from './entity/invoice.entity';
 import { AppointmentModule } from '../appointments/appointment.module';
+import { PaginationModule } from 'src/pagination/pagination.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Transactions, Invoice]),
     forwardRef(() => AppointmentModule),
+    PaginationModule,
+    UsersModule
   ],
   providers: [PaymentService, PaymentResolver, InvoiceResolver, InvoiceService],
   exports: [PaymentService],

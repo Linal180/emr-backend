@@ -1,13 +1,10 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 //user imports
 import { InvoiceService } from '../services/invoice.service';
-import { CreateInvoiceInputs } from '../dto/invoice.input';
-import { InvoicePayload } from '../dto/invoice.dto';
-import { Invoice } from '../entity/invoice.entity';
-import { SetMetadata, UseGuards } from '@nestjs/common';
+import { CreateInvoiceInputs, CreateExternalInvoiceInputs, InvoiceInputs } from '../dto/invoice.input';
+import { InvoicePayload, InvoicesPayload } from '../dto/invoice.dto';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import { CurrentUser } from 'src/customDecorators/current-user.decorator';
-import { User } from 'src/users/entities/user.entity';
 //resolver
 @Resolver()
 export class InvoiceResolver {
@@ -19,15 +16,16 @@ export class InvoiceResolver {
   }
   //create external invoice
   @Mutation(() => InvoicePayload)
-  async createExternalInvoice(@Args('createExternalInvoiceInputs') createInvoiceInputs: CreateInvoiceInputs): Promise<InvoicePayload> {
+  async createExternalInvoice(@Args('createExternalInvoiceInputs') createInvoiceInputs: CreateExternalInvoiceInputs): Promise<InvoicePayload> {
     return await this.invoiceService.createExternalInvoice(createInvoiceInputs)
   }
   //get all invoices
-  @Query(() => [Invoice])
-  // @UseGuards(JwtAuthGraphQLGuard)
+
+  @UseGuards(JwtAuthGraphQLGuard)
   // @SetMetadata('roles', ['admin', 'super-admin'])
-  async getAllInvoices():Promise<Invoice[]> {
+  @Query(() => InvoicesPayload)
+  async getAllInvoices(@Args('invoiceInput') invoiceInput: InvoiceInputs): Promise<InvoicesPayload> {
     // @CurrentUser() user: User
-    return await this.invoiceService.getInvoices('8fb54bb9-640d-4f09-b671-9e63631254cf')
+    return await this.invoiceService.getInvoices(invoiceInput)
   }
 }

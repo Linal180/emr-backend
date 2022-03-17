@@ -36,8 +36,16 @@ export class Invoice {
   @Field()
   id: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column()
+  @Field()
+  invoiceNo: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   paymentTransactionId: string;
 
   @Column({ nullable: true })
