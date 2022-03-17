@@ -137,7 +137,7 @@ export class FacilityService {
       //updating billing details
       const billingAddress = await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
       facilityInstance.billingAddress = [billingAddress]
-      const facility = await this.facilityRepository.save(facilityInstance)
+      const facility = await this.facilityRepository.save({...facilityInstance, ...updateFacilityInput})
       return facility
     } catch (error) {
       throw new InternalServerErrorException(error);
