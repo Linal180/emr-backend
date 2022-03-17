@@ -188,7 +188,9 @@ export class PatientService {
       if (patientInstance) {
         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: UserRole.PATIENT, adminId: patientInviteInput.adminId})
         patientInstance.user = user
-       return await this.patientRepository.save(patientInstance)
+       const patient =  await this.patientRepository.save(patientInstance)
+       await this.usersService.saveUserId(patient.id, user);
+       return patient
       }
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
@@ -282,14 +284,20 @@ export class PatientService {
    * @returns provider 
    */
   async usualProvider(id: string): Promise<DoctorPatient[]> {
-    const usualProvider = await this.doctorPatientRepository.find({
-      where: {
-        patientId: id
-      },
-      order: { createdAt: "ASC" },
-      relations: ["doctor"]
-    })
-    return usualProvider
+    try{
+      const usualProvider = await this.doctorPatientRepository.find({
+        where: {
+          patientId: id
+        },
+        order: { createdAt: "ASC" },
+        relations: ["doctor"]
+      })
+      return usualProvider
+    }
+     catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+    
   }
 
   /**
@@ -358,10 +366,6 @@ export class PatientService {
       if (patient) {
         return { patient }
       }
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'Patient not found',
-      });
     }
 
   /**
