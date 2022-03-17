@@ -5,6 +5,7 @@ import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
 import { PracticeService } from 'src/practice/practice.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateFacilityInput } from '../dto/create-facility.input';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
@@ -23,7 +24,8 @@ export class FacilityService {
     private readonly paginationService: PaginationService,
     private readonly contactService: ContactService,
     private readonly practiceService: PracticeService,
-    private readonly billingAddressService: BillingAddressService
+    private readonly billingAddressService: BillingAddressService,
+    private readonly utilsService: UtilsService
   ) { }
 
   /** 
@@ -127,6 +129,8 @@ export class FacilityService {
    */
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
+      //update facility 
+       await this.utilsService.updateEntityManager(Facility, updateFacilityInput.updateFacilityItemInput.id, updateFacilityInput.updateFacilityItemInput, this.facilityRepository)
       //get practice
       const practice = await this.practiceService.findOne(updateFacilityInput.updateFacilityItemInput.practiceId)
       const facilityInstance = await this.findOne(updateFacilityInput.updateFacilityItemInput.id)
@@ -137,7 +141,7 @@ export class FacilityService {
       //updating billing details
       const billingAddress = await this.billingAddressService.updateBillingAddress(updateFacilityInput.updateBillingAddressInput)
       facilityInstance.billingAddress = [billingAddress]
-      const facility = await this.facilityRepository.save({...facilityInstance, ...updateFacilityInput})
+      const facility = await this.facilityRepository.save(facilityInstance)
       return facility
     } catch (error) {
       throw new InternalServerErrorException(error);
