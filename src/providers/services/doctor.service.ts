@@ -4,7 +4,7 @@ import { PaginationService } from 'src/pagination/pagination.service';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Connection, Repository } from 'typeorm';
+import { Connection, In, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
 import { CreateDoctorInput } from '../dto/create-doctor.input';
@@ -147,10 +147,30 @@ export class DoctorService {
     });
   }
 
+
+  /**
+   * Gets doctor
+   * @param id 
+   * @returns doctor 
+   */
   async getDoctor(id: string): Promise<Doctor> {
     return await this.findOne(id);
   }
 
+
+  /**
+   * Gets doctors
+   * @param providerIds 
+   * @returns doctors 
+   */
+  async getDoctors(providerIds: string[]): Promise<Doctor[]>{
+    return await this.doctorRepository.find({
+      where: {
+        id: In(providerIds)
+      }
+    });
+  }
+  
   /**
    * Finds one
    * @param id 

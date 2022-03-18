@@ -35,29 +35,6 @@ registerEnumType(RACE, {
   description: "The user race assigned",
 });
 
-
-export enum REGDepartment {
-  HOSPITAL = "hospital",
-  LAB = "lab",
-  CLINIC = "clinic",
-}
-
-registerEnumType(REGDepartment, {
-  name: "REGDepartment",
-  description: "The facility Registration Department type assigned type",
-});
-
-export enum PrimaryDepartment {
-  HOSPITAL = "hospital",
-  LAB = "lab",
-  CLINIC = "clinic",
-}
-
-registerEnumType(PrimaryDepartment, {
-  name: "PrimaryDepartment",
-  description: "The facility Primary Department type assigned type",
-});
-
 export enum ETHNICITY {
   NONE = "none",
   CENTERAL_AMERICAN = "centeral American",
@@ -217,35 +194,19 @@ export class Patient {
 
   @Column({
     type: "enum",
-    enum: REGDepartment,
-    default: REGDepartment.HOSPITAL
-  })
-  @Field(type => REGDepartment)
-  registrationDepartment: REGDepartment
-
-  @Column({
-    type: "enum",
-    enum: PrimaryDepartment,
-    default: PrimaryDepartment.HOSPITAL
-  })
-  @Field(type => PrimaryDepartment)
-  primaryDepartment: PrimaryDepartment
-
-  @Column({
-    type: "enum",
     enum: COMMUNICATIONTYPE,
     default: COMMUNICATIONTYPE.PHONE
   })
   @Field(type => COMMUNICATIONTYPE)
   preferredCommunicationMethod: COMMUNICATIONTYPE
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Column({ nullable: true })
   @Field()
-  registrationDate: Date;
+  registrationDate: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Column({ nullable: true })
   @Field()
-  deceasedDate: Date;
+  deceasedDate: string;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -368,11 +329,11 @@ export class Patient {
   @Field()
   statementNote: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Column({ nullable: true })
   @Field()
   statementNoteDateFrom: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Column({ nullable: true })
   @Field()
   statementNoteDateTo: string;
 
