@@ -37,10 +37,11 @@ export class UsersService {
     private readonly patientService: PatientService
   ) { }
 
+
   /**
    * Creates users service
    * @param registerUserInput 
-   * @returns created user
+   * @returns create 
    */
   async create(registerUserInput: RegisterUserInput): Promise<User> {
     try {
