@@ -19,7 +19,6 @@ import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ContactService } from './contact.service';
 import { DoctorService } from './doctor.service';
 
-
 @Injectable()
 export class ScheduleService {
   constructor(

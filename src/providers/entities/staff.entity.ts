@@ -1,7 +1,8 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Doctor } from './doctor.entity';
 
 export enum Gender {
   MALE = "male",
@@ -47,10 +48,6 @@ export class Staff {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  primaryProvider: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   facilityId: string;
 
   @Column({ nullable: true })
@@ -73,6 +70,9 @@ export class Staff {
   @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
+
+  @ManyToMany(type => Doctor, doctor => doctor.staff)
+  providers: Doctor[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

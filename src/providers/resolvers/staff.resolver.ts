@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
@@ -37,10 +37,10 @@ export class StaffResolver {
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['super-admin', 'admin'])
   async findAllStaff(@Args('staffInput') staffInput: StaffInput): Promise<AllStaffPayload> {
-    const allstaff = await this.staffService.findAllStaff(staffInput)
-    if (allstaff) {
+    const staffs = await this.staffService.findAllStaff(staffInput)
+    if (staffs) {
       return {
-        ...allstaff,
+        ...staffs,
         response: {
           message: "OK", status: 200,
         }
