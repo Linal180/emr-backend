@@ -1,5 +1,4 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { UserRole } from 'src/users/entities/role.entity';
 import { Speciality } from '../entities/doctor.entity';
 
 @InputType()
@@ -26,8 +25,8 @@ export class CreateDoctorItemInput {
   @Field({ nullable: true })
   password: string;
 
-  @Field(type => UserRole, { description: 'Send doctor Type from the ENUM - Sign-up', nullable: true })
-  roleType?: UserRole;
+  @Field({ description: 'Send doctor Type from the string - Sign-up', nullable: true })
+  roleType?: string;
 
   @Field({ nullable: true })
   adminId?: string;

@@ -143,23 +143,9 @@ enum ContactType {
 
 type Role {
   id: String!
-  role: UserRole!
+  role: String
   createdAt: String!
   updatedAt: String!
-}
-
-"""The user role assigned"""
-enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  DOCTOR
-  DOCTOR_ASSISTANT
-  NURSE_PRACTITIONER
-  OFFICE_MANAGER
-  PATIENT
-  NURSE
-  BILLING
-  STAFF
 }
 
 type User {
@@ -682,6 +668,17 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+  pagination: PaginationPayload
+}
+
+type RolePayload {
+  response: ResponsePayload
+  role: Role
+}
+
 type AccessUserPayload {
   access_token: String
   roles: [Role!]
@@ -695,11 +692,6 @@ type ForgotPasswordPayload {
 type UserPayload {
   user: User
   response: ResponsePayload
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
 }
 
 type UsersPayload {
@@ -829,6 +821,8 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  getAllRoles(roleInput: RoleInput!): RolesPayload!
+  getRole(getRole: GetRole!): RolePayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
   findAllServices(serviceInput: ServiceInput!): ServicesPayload!
@@ -858,7 +852,7 @@ type Query {
 
 input UsersInput {
   status: UserStatus
-  role: UserRole
+  role: String
   paginationOptions: PaginationInput!
 }
 
@@ -869,6 +863,14 @@ input PaginationInput {
 
 input GetUser {
   id: String!
+}
+
+input RoleInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetRole {
+  id: String
 }
 
 input FacilityInput {
@@ -995,7 +997,9 @@ type Mutation {
   removeUser(userIdInput: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
-  updateRole(user: UpdateRoleInput!): UserPayload!
+  updateRole(updateRoleItemInput: UpdateRoleItemInput!): RolePayload!
+  createRole(roleItemInput: RoleItemInput!): RolePayload!
+  removeRole(removeRole: RemoveRole!): RolePayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
   updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput!): FacilityPayload!
@@ -1051,8 +1055,8 @@ input RegisterUserInput {
   password: String!
   email: String!
 
-  """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """string type role - Sign-up"""
+  roleType: String
   adminId: String
   facilityId: String
   phone: String
@@ -1102,9 +1106,17 @@ input UpdateUserInput {
   emailVerified: Boolean
 }
 
-input UpdateRoleInput {
-  id: String!
-  roles: [UserRole!]!
+input UpdateRoleItemInput {
+  role: String
+  id: String
+}
+
+input RoleItemInput {
+  role: String!
+}
+
+input RemoveRole {
+  id: String
 }
 
 input CreateFacilityInput {
@@ -1317,7 +1329,7 @@ input CreateStaffItemInput {
   gender: Gender
 
   """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  roleType: String
   adminId: String
   facilityId: String
 }
@@ -1341,7 +1353,7 @@ input UpdateStaffItemInput {
   gender: Gender
 
   """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  roleType: String
   adminId: String
   facilityId: String
   id: String!
@@ -1374,8 +1386,8 @@ input CreateDoctorItemInput {
   email: String!
   password: String
 
-  """Send doctor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """Send doctor Type from the string - Sign-up"""
+  roleType: String
   adminId: String
   timeZone: String
   facilityId: String!
@@ -1426,8 +1438,8 @@ input UpdateDoctorItemInput {
   email: String
   password: String
 
-  """Send doctor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """Send doctor Type from the string - Sign-up"""
+  roleType: String
   adminId: String
   timeZone: String
   facilityId: String

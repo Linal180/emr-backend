@@ -12,10 +12,12 @@ import { JwtStrategy } from "./auth/jwt.strategy";
 import { Role } from "./entities/role.entity";
 import { UserLog } from "./entities/user-logs.entity";
 import { User } from "./entities/user.entity";
+import { RoleResolver } from "./resolvers/roles.resolver";
+import { UsersResolver } from "./resolvers/users.resolver";
+import { RolesService } from "./services/roles.service";
+import { UsersService } from "./services/users.service";
 import { UserSubscriber } from "./subscribers/user.subscriber";
 import { UsersController } from "./users.controller";
-import { UsersResolver } from "./users.resolver";
-import { UsersService } from "./users.service";
 
 @Module({
   imports: [
@@ -34,8 +36,8 @@ import { UsersService } from "./users.service";
     forwardRef(() => ProviderModule),
     forwardRef(() => PatientModule)
   ],
-  providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
+  providers: [UsersService, UsersResolver, RoleResolver, RolesService, JwtStrategy, UserSubscriber],
   controllers: [UsersController],
-  exports: [UsersService, TypeOrmModule],
+  exports: [UsersService, TypeOrmModule, RolesService],
 })
 export class UsersModule { }

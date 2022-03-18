@@ -2,7 +2,7 @@ import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorExceptio
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
