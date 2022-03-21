@@ -222,11 +222,9 @@ type Patient {
   ssn: String
   gender: GENDERIDENTITY!
   dob: String
-  registrationDepartment: REGDepartment!
-  primaryDepartment: PrimaryDepartment!
   preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: DateTime!
-  deceasedDate: DateTime!
+  registrationDate: String!
+  deceasedDate: String!
   privacyNotice: Boolean!
   phonePermission: Boolean!
   voiceCallPermission: Boolean!
@@ -246,6 +244,7 @@ type Patient {
   homeBound: HOMEBOUND
   holdStatement: HOLDSTATEMENT
   statementDelivereOnline: Boolean!
+  inviteAccepted: Boolean
   statementNote: String!
   statementNoteDateFrom: String!
   statementNoteDateTo: String!
@@ -271,20 +270,6 @@ enum GENDERIDENTITY {
   NONE
 }
 
-"""The facility Registration Department type assigned type"""
-enum REGDepartment {
-  HOSPITAL
-  LAB
-  CLINIC
-}
-
-"""The facility Primary Department type assigned type"""
-enum PrimaryDepartment {
-  HOSPITAL
-  LAB
-  CLINIC
-}
-
 """The patient's communication method assigned"""
 enum COMMUNICATIONTYPE {
   PHONE
@@ -292,11 +277,6 @@ enum COMMUNICATIONTYPE {
   MESSAGE
   EMAIL
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 """The user race assigned"""
 enum RACE {
@@ -405,7 +385,6 @@ type Staff {
   username: String
   dob: String
   phone: String
-  primaryProvider: String
   facilityId: String
   mobile: String
   gender: Gender!
@@ -427,11 +406,17 @@ type Schedule {
   startAt: String!
   endAt: String!
   recurringEndDate: DateTime
+  doctorId: String
   doctor: Doctor
   scheduleServices: [ScheduleServices!]
   createdAt: String!
   updatedAt: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type ScheduleServices {
   id: String!
@@ -650,6 +635,7 @@ type Doctor {
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
   schedule: [Schedule!]
+  staff: [Staff]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
@@ -821,13 +807,13 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
-type BraintreePayload {
-  clientToken: String!
-}
-
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
+}
+
+type BraintreePayload {
+  clientToken: String!
 }
 
 type AppointmentsPayload {
@@ -866,6 +852,7 @@ type Query {
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
 }
 
@@ -980,6 +967,8 @@ input GetPractice {
 input AppointmentInput {
   paginationOptions: PaginationInput!
   appointmentNumber: String
+  appointmentStatus: String
+  patientId: String
 }
 
 input GetAppointment {
@@ -988,6 +977,10 @@ input GetAppointment {
 
 input GetDoctorAppointment {
   doctorId: String!
+}
+
+input GetPatientAppointmentInput {
+  patientId: String!
 }
 
 type Mutation {
@@ -1027,6 +1020,8 @@ type Mutation {
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
   patientInfo(patientInfoInput: PatientInfoInput!): PatientPayload!
   updatePatient(updatePatientInput: UpdatePatientInput!): PatientPayload!
+  updatePatientProfile(updatePatientProfileInput: UpdatePatientProfileInput!): PatientPayload!
+  sendInviteToPatient(patientInviteInput: PatientInviteInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
@@ -1039,7 +1034,6 @@ type Mutation {
   createExternalAppointment(createExternalAppointmentInput: CreateExternalAppointmentInput!): AppointmentPayload!
   updateAppointment(updateAppointmentInput: UpdateAppointmentInput!): AppointmentPayload!
   updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!): AppointmentPayload!
-  updateAppointmentStatus(updateAppointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
@@ -1305,13 +1299,17 @@ input RemoveService {
 }
 
 input CreateStaffInput {
+  staffInput: CreateStaffItemInput!
+  providers: [String!]
+}
+
+input CreateStaffItemInput {
   firstName: String!
   lastName: String!
   email: String!
   username: String!
   password: String!
   phone: String
-  primaryProvider: String
   mobile: String
   dob: String
 
@@ -1325,13 +1323,17 @@ input CreateStaffInput {
 }
 
 input UpdateStaffInput {
+  updateStaffItemInput: UpdateStaffItemInput!
+  providers: [String!]!
+}
+
+input UpdateStaffItemInput {
   firstName: String
   lastName: String
   email: String
   username: String
   password: String
   phone: String
-  primaryProvider: String
   mobile: String
   dob: String
 
@@ -1518,13 +1520,14 @@ input CreatePatientItemInput {
   ssn: String
   dob: String
   gender: GENDERIDENTITY
-  registrationDepartment: REGDepartment
-  primaryDepartment: PrimaryDepartment
+  registrationDepartment: String
+  primaryDepartment: String
   registrationDate: String
   deceasedDate: String
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  inviteAccepted: Boolean
   voiceCallPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean
@@ -1604,13 +1607,14 @@ input UpdatePatientItemInput {
   ssn: String
   dob: String
   gender: GENDERIDENTITY
-  registrationDepartment: REGDepartment
-  primaryDepartment: PrimaryDepartment
+  registrationDepartment: String
+  primaryDepartment: String
   registrationDate: String
   deceasedDate: String
   privacyNotice: Boolean
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
+  inviteAccepted: Boolean
   voiceCallPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean
@@ -1644,6 +1648,22 @@ input UpdateEmployerItemInput {
   usualOccupation: String
   patientId: String
   id: String
+}
+
+input UpdatePatientProfileInput {
+  updatePatientProfileItemInput: UpdatePatientProfileItemInput!
+  updateContactInput: UpdateContactInput!
+}
+
+input UpdatePatientProfileItemInput {
+  firstName: String
+  lastName: String
+  id: String!
+}
+
+input PatientInviteInput {
+  id: String!
+  adminId: String!
 }
 
 input UpdatePatientProvider {
@@ -1782,29 +1802,6 @@ input UpdateAppointmentInput {
 input UpdateAppointmentBillingStatusInput {
   id: String!
   billingStatus: String!
-}
-
-input UpdateAppointmentStatusInput {
-  paymentType: PaymentType
-  billingStatus: BillingStatus
-  insuranceCompany: String
-  membershipID: String
-  reason: String
-  notes: String
-  employment: Boolean
-  autoAccident: Boolean
-  otherAccident: Boolean
-  otherPartyResponsible: Boolean
-  primaryInsurance: String
-  secondaryInsurance: String
-  scheduleStartDateTime: String
-  scheduleEndDateTime: String
-  serviceId: String
-  facilityId: String
-  providerId: String
-  patientId: String
-  id: String!
-  status: String!
 }
 
 input RemoveAppointment {

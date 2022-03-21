@@ -10,3 +10,4 @@ export class PatientPayload extends ResponsePayloadResponse {
     @Field({ nullable: true })
     response?: ResponsePayload
 }
+

@@ -15,7 +15,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetAppointment, GetDoctorAppointment, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput } from '../dto/update-appointment.input';
 import { Appointment } from '../entities/appointment.entity';
 import { AppointmentService } from '../services/appointment.service';
 
@@ -68,19 +68,9 @@ export class AppointmentResolver {
     };
   }
 
-  @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin','nurse','staff'])
-  async updateAppointmentStatus(@Args('updateAppointmentStatusInput') updateAppointmentStatusInput: UpdateAppointmentStatusInput) {
-    return {
-      appointment: await this.appointmentService.updateAppointmentStatus(updateAppointmentStatusInput),
-      response: { status: 200, message: 'Appointment completion status updated successfully' }
-    };
-  }
-
   @Query(returns => AppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
+  @SetMetadata('roles', ['super-admin','admin','patient'])
   async findAllAppointments(@Args('appointmentInput') appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     const appointments = await this.appointmentService.findAllAppointments(appointmentInput)
     if (appointments) {
@@ -158,5 +148,15 @@ export class AppointmentResolver {
   async cancelAppointment(@Args('cancelAppointment') cancelAppointment: CancelAppointment) {
     await this.appointmentService.cancelAppointment(cancelAppointment);
     return { response: { status: 200, message: 'Appointment cancelled successfully' } };
+  }
+
+  @Query(returns => AppointmentsPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['admin', 'super-admin','patient'])
+  async getPatientAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<AppointmentsPayload> {
+    return {
+      appointments: await this.appointmentService.getPatientAppointment(getPatientAppointmentInput),
+      response: { status: 200, message: 'Appointment fetched successfully' }
+    };
   }
 }

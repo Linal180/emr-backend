@@ -1,16 +1,17 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from '../../facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
+import { FacilityService } from '../../facilities/services/facility.service';
 import { AllStaffPayload } from '../dto/all-staff-payload.dto';
 import { CreateStaffInput } from '../dto/create-staff.input';
 import StaffInput from '../dto/staff-input.dto';
 import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
 import { Staff } from '../entities/staff.entity';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
+import { DoctorService } from './doctor.service';
 
 @Injectable()
 export class StaffService {
@@ -24,6 +25,7 @@ export class StaffService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService,
+    private readonly doctorService: DoctorService
   ) { }
 
   /**
@@ -38,15 +40,18 @@ export class StaffService {
     await queryRunner.startTransaction();
     try {
       // register staff as user 
-      const user = await this.usersService.create(createStaffInput)
+      const user = await this.usersService.create(createStaffInput.staffInput)
       //get facility 
-      const facility = await this.facilityService.findOne(createStaffInput.facilityId)
+      const facility = await this.facilityService.findOne(createStaffInput.staffInput.facilityId)
       // Staff Creation
-      const staffInstance = this.staffRepository.create(createStaffInput)
+      const providers = await this.doctorService.getDoctors(createStaffInput.providers)
+      const staffInstance = this.staffRepository.create(createStaffInput.staffInput)
+      staffInstance.providers = providers
       staffInstance.user = user;
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
       const staff = await queryRunner.manager.save(staffInstance);
+      await this.usersService.saveUserId(staff.id, user);
       await queryRunner.commitTransaction();
       return staff
     } catch (error) {
@@ -64,16 +69,33 @@ export class StaffService {
    */
   async updateStaff(updateStaffInput: UpdateStaffInput): Promise<Staff> {
     try {
-      return await this.utilsService.updateEntityManager(Staff, updateStaffInput.id, updateStaffInput, this.staffRepository)
-    } catch (error) {
+       await this.utilsService.updateEntityManager(Staff, updateStaffInput.updateStaffItemInput.id, updateStaffInput.updateStaffItemInput, this.staffRepository)
+       const staffInstance = await this.findOne(updateStaffInput.updateStaffItemInput.id)
+       if(!staffInstance){
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Staff not found or disabled',
+        });
+       }
+      // get providers
+      const providers = await this.doctorService.getDoctors(updateStaffInput.providers)
+      staffInstance.providers = providers
+      return this.staffRepository.save(staffInstance)
+      } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
+  /**
+   * Adds staff
+   * @param registerUserInput 
+   * @param facilityId 
+   * @returns staff 
+   */
   async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
     try {
       // register staff as user 
-      const user = await this.usersService.create({...registerUserInput, facilityId})
+      const user = await this.usersService.create({ ...registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Staff Creation
@@ -81,7 +103,9 @@ export class StaffService {
       staffInstance.user = user;
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
-      return await this.staffRepository.save(staffInstance)
+      const staff =  await this.staffRepository.save(staffInstance)
+      await this.usersService.saveUserId(staff.id, user);
+      return staff
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -122,8 +146,8 @@ export class StaffService {
    * @returns staff 
    */
   async getStaff(id: string): Promise<Staff> {
-    const staff =  await this.findOne(id);
-    if(staff){
+    const staff = await this.findOne(id);
+    if (staff) {
       return staff
     }
     throw new NotFoundException({
@@ -162,6 +186,10 @@ export class StaffService {
     }
   }
 
+  /**
+   * Disables staff
+   * @param { id } 
+   */
   async disableStaff({ id }: DisableStaff) {
     try {
       await this.usersService.deactivateUser(id)

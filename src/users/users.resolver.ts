@@ -111,7 +111,7 @@ export class UsersResolver {
     const user = await this.usersService.findOne(email.trim().toLowerCase())
     if (user) {
       if (user.emailVerified) {
-        return this.usersService.createToken(user, password);
+        return await this.usersService.createToken(user, password);
       }
       throw new ForbiddenException({
         status: HttpStatus.FORBIDDEN,
@@ -184,7 +184,7 @@ export class UsersResolver {
   async updatePassword(@Args('updatePasswordInput') updatePasswordInput: UpdatePasswordInput): Promise<UserPayload> {
     const user = await this.usersService.updatePassword(updatePasswordInput)
     if (user) {
-      return { user, response: { status: 200, message: "Password updated successfully", name: "updatePassword succesfully" } }
+      return { user, response: { status: 200, message: "Password updated successfully", name: "updatePassword successfully" } }
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,

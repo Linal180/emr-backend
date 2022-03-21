@@ -20,7 +20,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetDoctorAppointment, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentPayStatus, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetDoctorAppointment, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS } from '../entities/appointment.entity';
 
 @Injectable()
@@ -67,11 +67,12 @@ export class AppointmentService {
       const patient = await this.patientService.findOne(createAppointmentInput.patientId)
       if(createAppointmentInput.patientId){
         appointmentInstance.patient = patient
+        appointmentInstance.patientId = patient.id
       }
       //associate facility 
       const facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
       if(createAppointmentInput.facilityId){
-        appointmentInstance.facility = facility
+        appointmentInstance.facility = facility 
       }
       //associate service 
       if(createAppointmentInput.serviceId){
@@ -104,7 +105,13 @@ export class AppointmentService {
     try {
        //create patient 
        const appointmentNumber = await this.utilsService.generateString(8)
-       const patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
+       const patient = await this.patientService.GetPatientByEmail(createExternalAppointmentInput.createPatientItemInput.email)
+       let patientInstance;
+       if(!patient){
+        patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
+       }else{
+       patientInstance = patient.patient;
+       }
        const appointmentInstance = this.appointmentRepository.create({...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true, appointmentNumber})
        const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
        if(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId){
@@ -113,6 +120,7 @@ export class AppointmentService {
         //associate patient
         if(patientInstance && patientInstance.id){
           appointmentInstance.patient = patientInstance
+          appointmentInstance.patientId = patientInstance.id
         }
         //associate facility 
         const facility = await this.facilityService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId)
@@ -358,7 +366,18 @@ export class AppointmentService {
     }
   }
 
-  async updateAppointmentPaymentStatus(updateAppointmentPayStatus: UpdateAppointmentPayStatus){
-    this.appointmentRepository.save(updateAppointmentPayStatus)
+  async getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput): Promise<Appointment[]> {
+    const appointment = await this.appointmentRepository.find({
+      where:[ 
+        {patientId: getPatientAppointmentInput.patientId }
+      ]
+    })
+    if (appointment) {
+      return appointment
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Appointment not found',
+    });
   }
 }

@@ -18,6 +18,7 @@ import { UsersPayload } from './dto/users-payload.dto';
 import { Role, UserRole } from './entities/role.entity';
 import { UserLog } from './entities/user-logs.entity';
 import { User, UserStatus } from './entities/user.entity';
+import { PatientService } from 'src/patients/services/patient.service';
 
 @Injectable()
 export class UsersService {
@@ -32,13 +33,15 @@ export class UsersService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
+    private readonly patientService: PatientService
   ) { }
+
 
   /**
    * Creates users service
    * @param registerUserInput 
-   * @returns created user
+   * @returns create 
    */
   async create(registerUserInput: RegisterUserInput): Promise<User> {
     try {
@@ -64,12 +67,12 @@ export class UsersService {
         //setting role type & custom userId
         userInstance.userType = role.role
         const user = await this.usersRepository.save(userInstance);
-        //saving userId in user
-        await this.saveUserId(user.id, userInstance)
+        await this.saveUserId(user.id, user);
         // SEND EMAIL TO USER FOR RESET PASSWORD
-        const isInvite = true;
-        if (registerUserInput.roleType != UserRole.PATIENT) {
-          this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, user.emailVerified, token, isInvite)
+        let isInvite = 'INVITATION_TEMPLATE_ID';
+        let isAdmin = false
+        if(registerUserInput.roleType !== UserRole.PATIENT){
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, user.email, '', isAdmin, token, isInvite)
         }
         return user;
       }
@@ -131,6 +134,14 @@ export class UsersService {
     }
   }
 
+  /**
+   * Saves users service
+   * @param user 
+   * @returns save 
+   */
+  async save(user: User): Promise<User>{
+    return await this.usersRepository.save(user)
+  }
   /**
    * Updates role
    * @param updateRoleInput 
@@ -209,7 +220,7 @@ export class UsersService {
    */
   async findOne(email: string): Promise<User> {
     const user = await this.usersRepository.findOne({ email: email, status: UserStatus.ACTIVE });
-    if(!user){
+    if (!user) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: 'User not found',
@@ -419,8 +430,9 @@ export class UsersService {
       const roles = user.roles.map(u => u.role);
       if (user) {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
-        const isInvite = false;
-        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
+        const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '',isAdmin, token, isInvite)
+        delete user.roles
         await this.usersRepository.save(user);
         return user
       }
@@ -465,6 +477,7 @@ export class UsersService {
         user.password = password;
         user.emailVerified = true
         const updatedUser = await this.usersRepository.save(user);
+        this.patientService.updatePatientInvite(user.userId)
         return updatedUser;
       }
       return undefined;

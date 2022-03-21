@@ -44,8 +44,8 @@ export default () => {
     PORT: parseInt(process.env.PORT, 10) || 3001,
     JWT_SECRET: process.env.JWT_SECRET || "secret",
     JWT_EXPIRY: process.env.JWT_EXPIRY || "24h",
-    PORTAL_APP_BASE_URL:
-      process.env.PORTAL_APP_BASE_URL || "http://localhost:3000",
+    PATIENT_PORTAL_APP_BASE_URL:
+      process.env.PATIENT_PORTAL_APP_BASE_URL || "http://localhost:3001",
     ADMIN_APP_BASE_URL:
       process.env.PORTAL_APP_BASE_URL || "http://localhost:3000",
     SENDGRID_API_KEY:
@@ -58,6 +58,7 @@ export default () => {
     REQUEST_UPDATE_NEEDED: process.env.REQUEST_UPDATE_NEEDED || "d-80fb471a2ddc4d2bbf4305a164ff7164",
     REQUEST_UPDATE_DECLINED: process.env.REQUEST_UPDATE_DECLINED || "d-6343679f0f5448eaacdc0cb0a3ba4edc",
     INVITATION_TEMPLATE_ID: process.env.FORGOT_PASSWORD_TEMPLATE_ID || "d-c40af5d836ec4f029f9f9da1f9a06515",
+    PATIENT_PORTAL_INVITATION_TEMPLATE_ID: process.env.PATIENT_PORTAL_INVITATION_TEMPLATE_ID || "d-0454982d8ec141849f5603a06fdf7b71",
     FORGOT_PASSWORD_TEMPLATE_ID: process.env.FORGOT_PASSWORD_TEMPLATE_ID || "d-56e7f1e73ce1456cb5cf89bec7aa3fb3",
     APPOINTMENT_CONFIRMATION_TEMPLATE_ID: process.env.APPOINTMENT_CONFIRMATION_TEMPLATE_ID || "d-8f94685c66f6469fa154ee80fe8845c4",
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID || "ACe835bd46c85a40b950674c1af03c6b24",

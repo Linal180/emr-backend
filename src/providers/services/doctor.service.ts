@@ -1,9 +1,11 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from '../../facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/users.service';
-import { Connection, Repository } from 'typeorm';
+import { UtilsService } from 'src/util/utils.service';
+import { Connection, In, Repository } from 'typeorm';
+import { FacilityService } from '../../facilities/services/facility.service';
 import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
 import { CreateDoctorInput } from '../dto/create-doctor.input';
 import DoctorInput from '../dto/doctor-input.dto';
@@ -12,9 +14,6 @@ import { DisableDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
-import { CreateDoctorItemInput } from '../dto/create-doctorItem.input ';
-import { CreatePracticeDoctorInput } from '../dto/create-practice-doctor.input';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 
 @Injectable()
 export class DoctorService {
@@ -30,7 +29,8 @@ export class DoctorService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly utilsService: UtilsService
   ) { }
 
   /**
@@ -54,16 +54,17 @@ export class DoctorService {
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
       //adding contact
-      if(createDoctorInput.createContactInput){
-      const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
-      doctorInstance.contacts = [contact]
+      if (createDoctorInput.createContactInput) {
+        const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
+        doctorInstance.contacts = [contact]
       }
       //adding billing address details
-      if(createDoctorInput.createBillingAddressInput){
-      const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
-      doctorInstance.billingAddress = [billingAddress]
+      if (createDoctorInput.createBillingAddressInput) {
+        const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
+        doctorInstance.billingAddress = [billingAddress]
       }
       const doctor = await queryRunner.manager.save(doctorInstance);
+      await this.usersService.saveUserId(doctor.id, user);
       await queryRunner.commitTransaction();
       return doctor
     } catch (error) {
@@ -81,7 +82,7 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const doctor = await this.doctorRepository.save(updateDoctorInput.updateDoctorItemInput)
+      const doctor = await this.doctorRepository.save({...updateDoctorInput.updateDoctorItemInput})
       //updating contact details
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
@@ -95,7 +96,7 @@ export class DoctorService {
   async addDoctor(registerUserInput: RegisterUserInput, facilityId: string): Promise<Doctor> {
     try {
       // register doctor as user 
-      const user = await this.usersService.create({...registerUserInput, facilityId})
+      const user = await this.usersService.create({ ...registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Doctor Creation    
@@ -103,7 +104,9 @@ export class DoctorService {
       doctorInstance.user = user;
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
-      return await this.doctorRepository.save(doctorInstance)
+      const doctor = await this.doctorRepository.save(doctorInstance)
+      await this.usersService.saveUserId(doctor.id, user);
+      return doctor
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -134,8 +137,8 @@ export class DoctorService {
    * @returns one 
    */
   async findOne(id: string): Promise<Doctor> {
-    const doctor =  await this.doctorRepository.findOne(id);
-    if(doctor){
+    const doctor = await this.doctorRepository.findOne(id);
+    if (doctor) {
       return doctor
     }
     throw new NotFoundException({
@@ -144,10 +147,30 @@ export class DoctorService {
     });
   }
 
+
+  /**
+   * Gets doctor
+   * @param id 
+   * @returns doctor 
+   */
   async getDoctor(id: string): Promise<Doctor> {
     return await this.findOne(id);
   }
 
+
+  /**
+   * Gets doctors
+   * @param providerIds 
+   * @returns doctors 
+   */
+  async getDoctors(providerIds: string[]): Promise<Doctor[]>{
+    return await this.doctorRepository.find({
+      where: {
+        id: In(providerIds)
+      }
+    });
+  }
+  
   /**
    * Finds one
    * @param id 
