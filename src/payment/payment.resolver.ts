@@ -1,9 +1,8 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { PaymentService } from './payment.service';
-import {  BraintreeChargePayload, BraintreePayload } from './dto/payment.dto';
-import { PaymentInput, PaymentInputsAfterAppointment } from './dto/payment.input';
-import { Appointment } from '../appointments/entities/appointment.entity';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AppointmentPayload } from '../appointments/dto/appointment-payload.dto';
+import { BraintreePayload } from './dto/payment.dto';
+import { PaymentInput, PaymentInputsAfterAppointment } from './dto/payment.input';
+import { PaymentService } from './payment.service';
 
 @Resolver()
 export class PaymentResolver {

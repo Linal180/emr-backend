@@ -4,10 +4,11 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { DoctorPatient } from 'src/patients/entities/doctorPatient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { BillingAddress } from './billing-address.entity';
 import { Contact } from './contact.entity';
 import { Schedule } from './schedule.entity';
+import { Staff } from './staff.entity';
 
 
 export enum Speciality {
@@ -165,11 +166,11 @@ export class Doctor {
   @Field({ nullable: true })
   stateLicense: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Column({ nullable: true })
   @Field({ nullable: true })
   licenseActiveDate: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Column({ nullable: true })
   @Field({ nullable: true })
   licenseTermDate: string;
 
@@ -207,6 +208,11 @@ export class Doctor {
 
   @OneToMany(() => Appointment, appointment => appointment.provider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   appointments: Appointment[];
+  
+  @Field(type => [Staff], { nullable: 'itemsAndList' })
+  @ManyToMany(type => Staff, staff => staff.providers, { eager: true })
+  @JoinTable({ name: 'doctorStaff' })
+  staff: Staff[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

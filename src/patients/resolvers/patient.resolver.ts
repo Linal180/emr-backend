@@ -84,7 +84,6 @@ export class PatientResolver {
 
   @ResolveField((returns) => [Doctor])
   async doctorPatients(@Parent() patient: Patient): Promise<DoctorPatient[]> {
-    console.log("patient",patient);
     if (patient) {
       const provider = await this.patientService.usualProvider(patient.id);
       return provider;

@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, PrimaryDepartment, PRONOUNS, RACE, REGDepartment, SEXUALORIENTATION } from '../entities/patient.entity';
+import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, PRONOUNS, RACE, SEXUALORIENTATION } from '../entities/patient.entity';
 
 @InputType()
 export class CreatePatientItemInput {
@@ -52,11 +52,11 @@ export class CreatePatientItemInput {
   @Field(type => GENDERIDENTITY, { nullable: true })
   gender: GENDERIDENTITY
 
-  @Field(type => REGDepartment, { nullable: true })
-  registrationDepartment: REGDepartment
+  @Field({ nullable: true })
+  registrationDepartment: string
 
-  @Field(type => PrimaryDepartment, { nullable: true })
-  primaryDepartment: PrimaryDepartment
+  @Field({ nullable: true })
+  primaryDepartment: string
 
   @Field({ nullable: true, })
   registrationDate: string;
@@ -65,13 +65,16 @@ export class CreatePatientItemInput {
   deceasedDate: string;
 
   @Field({ nullable: true })
-  privacyNotice: boolean;
+  privacyNotice: boolean; 
 
   @Field({ nullable: true })
   releaseOfInfoBill: boolean;
 
   @Field({ nullable: true })
   callToConsent: boolean;
+
+  @Field({ nullable: true })
+  inviteAccepted?: boolean;
 
   @Field({ nullable: true })
   voiceCallPermission: boolean;

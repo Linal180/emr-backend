@@ -177,7 +177,7 @@ export class Facility {
   @Field(type => [Service], { nullable: true })
   services: Service[];
 
-  @ManyToOne(() => Practice, practice => practice.facilities, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Practice, practice => practice.facilities, { eager: true, onDelete: 'CASCADE' })
   @Field(type => Practice, { nullable: true })
   practice: Practice;
 
