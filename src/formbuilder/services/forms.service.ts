@@ -7,7 +7,7 @@ import { CreateFormInput } from '../dto/create-form.input';
 import FormInput from '../dto/form-input.dto';
 import { FormPayload } from '../dto/form-payload.dto';
 import { FormsPayload } from '../dto/forms-payload.dto';
-import { RemoveForm, UpdateFormInput } from '../dto/update-form.input';
+import {  RemoveForm, UpdateFormInput } from '../dto/update-form.input';
 import { Form } from '../entities/form.entity';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class FormsService {
   async createForm(createFormInput: CreateFormInput): Promise<Form> {
     try {
       // creating form
-      const formInstance = this.formsRepository.create(createFormInput)
+      const formInstance = this.formsRepository.create({ ...createFormInput, layout: JSON.stringify(createFormInput.layout) })
       //saving form
       return await this.formsRepository.save(formInstance);
     } catch (error) {
@@ -42,7 +42,7 @@ export class FormsService {
    */
   async updateForm(updateFormInput: UpdateFormInput): Promise<Form> {
     try {
-      return await this.utilsService.updateEntityManager(Form, updateFormInput.id, updateFormInput, this.formsRepository)
+      return await this.utilsService.updateEntityManager(Form, updateFormInput.id, { ...updateFormInput, layout: JSON.stringify(updateFormInput?.layout) }, this.formsRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -67,33 +67,33 @@ export class FormsService {
     }
   }
 
-    /**
-   * Gets form
-   * @param id 
-   * @returns form 
+  /**
+ * Gets form
+ * @param id 
+ * @returns form 
+ */
+  async getForm(id: string): Promise<FormPayload> {
+    const form = await this.findOne(id);
+    if (form) {
+      return { form }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Form not found',
+    });
+  }
+
+  /**
+   * Removes form
+   * @param { id } 
    */
-     async getForm(id: string): Promise<FormPayload> {
-      const form = await this.findOne(id);
-      if (form) {
-        return { form }
-      }
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'Form not found',
-      });
+  async removeForm({ id }: RemoveForm) {
+    try {
+      await this.formsRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
-  
-    /**
-     * Removes form
-     * @param { id } 
-     */
-    async removeForm({ id }: RemoveForm) {
-      try {
-        await this.formsRepository.delete(id)
-      } catch (error) {
-        throw new InternalServerErrorException(error);
-      }
-    }
+  }
 
   /**
    * Finds one
@@ -116,4 +116,5 @@ export class FormsService {
       }
     });
   }
+
 }

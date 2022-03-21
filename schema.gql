@@ -822,6 +822,26 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type Form {
+  id: String!
+  name: String!
+  type: FormType!
+  facilityId: String
+  layout: String!
+  isSystemForm: Boolean
+  formElements: [FormElement!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The form's types"""
+enum FormType {
+  APPOINTMENT
+  DOCTOR
+  PATIENT
+  STAFF
+}
+
 type FormElement {
   id: String!
   placeholder: String!
@@ -852,6 +872,17 @@ enum ElementType {
   RADIO
   DATE
   FILE
+}
+
+type FormPayload {
+  response: ResponsePayload
+  form: Form
+}
+
+type FormsPayload {
+  response: ResponsePayload
+  forms: [Form]
+  pagination: PaginationPayload
 }
 
 type Query {
@@ -886,6 +917,8 @@ type Query {
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
+  findAllForms(formInput: FormInput!): FormsPayload!
+  getForm(getForm: GetForm!): FormPayload!
 }
 
 input UsersInput {
@@ -1015,6 +1048,15 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input FormInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetForm {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -1070,6 +1112,9 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
+  createForm(createFormInput: CreateFormInput!): FormPayload!
+  updateForm(updateFormInput: UpdateFormInput!): FormPayload!
+  removeForm(removeForm: RemoveForm!): FormPayload!
 }
 
 input LoginUserInput {
@@ -1860,4 +1905,30 @@ input PaymentInputsAfterAppointment {
   facilityId: String!
   patientId: String!
   appointmentId: String!
+}
+
+input CreateFormInput {
+  name: String!
+  type: FormType!
+  facilityId: String
+  layout: JSON!
+  isSystemForm: Boolean
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+input UpdateFormInput {
+  name: String
+  type: FormType
+  facilityId: String
+  layout: JSON
+  isSystemForm: Boolean
+  id: String!
+}
+
+input RemoveForm {
+  id: String!
 }

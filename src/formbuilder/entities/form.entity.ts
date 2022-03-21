@@ -1,5 +1,4 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Json } from 'aws-sdk/clients/robomaker';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { FormElement } from './form-elements.entity';
 
@@ -38,15 +37,15 @@ export class Form {
   @Field({ nullable: true })
   facilityId: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: "text" })
   @Field({ nullable: false })
-  layout: Json;
+  layout: string;
 
   @Column({ nullable: true, default: false })
   @Field({ nullable: true })
   isSystemForm: boolean;
 
-  @OneToMany(() => FormElement, formElement => formElement.element, {onDelete: "CASCADE"})
+  @OneToMany(() => FormElement, formElement => formElement.element, { onDelete: "CASCADE" })
   @Field(type => [FormElement], { nullable: true })
   formElements: FormElement[];
 
