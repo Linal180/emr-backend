@@ -2,10 +2,11 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { FacilityService } from '../facilities/services/facility.service';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { PatientService } from 'src/patients/services/patient.service';
 import { getConnection, Not, Repository } from 'typeorm';
+import { FacilityService } from '../facilities/services/facility.service';
 import { createToken } from '../lib/helper';
 import { AccessUserPayload } from './dto/access-user.dto';
 import { RegisterUserInput } from './dto/register-user-input.dto';
@@ -18,7 +19,6 @@ import { UsersPayload } from './dto/users-payload.dto';
 import { Role, UserRole } from './entities/role.entity';
 import { UserLog } from './entities/user-logs.entity';
 import { User, UserStatus } from './entities/user.entity';
-import { PatientService } from 'src/patients/services/patient.service';
 
 @Injectable()
 export class UsersService {
