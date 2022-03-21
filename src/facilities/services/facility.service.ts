@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
@@ -22,6 +22,7 @@ export class FacilityService {
     @InjectRepository(Facility)
     private facilityRepository: Repository<Facility>,
     private readonly paginationService: PaginationService,
+    @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
     private readonly practiceService: PracticeService,
     private readonly billingAddressService: BillingAddressService,
