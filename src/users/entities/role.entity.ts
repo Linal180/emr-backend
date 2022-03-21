@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Permission } from './permissions.entity';
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { RolePermission } from './rolePermissions.entity';
 import { User } from './user.entity';
 
 
@@ -22,10 +22,8 @@ export class Role {
   @ManyToMany(type => User, user => user.roles)
   users: User[];
 
-  @Field(type => [Permission], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Permission, permission => permission.roles, { eager: true })
-  @JoinTable({ name: 'RolePermission' })
-  permissions: Permission[];
+  @OneToMany(() => RolePermission, rolePermission => rolePermission.permission)
+  rolePermissions: RolePermission[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

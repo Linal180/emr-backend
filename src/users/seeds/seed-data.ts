@@ -82,4 +82,11 @@ export const PermissionData = [
     { name: 'getStaff'  , moduleType: 'Staff' },
     { name: 'removeStaff'  , moduleType: 'Staff' },
     { name: 'disableStaff'  , moduleType: 'Staff' },
+    { name: 'createSchedule'  , moduleType: 'Schedule' },
+    { name: 'updateSchedule'  , moduleType: 'Schedule' },
+    { name: 'findAllSchedules'  , moduleType: 'Schedules' },
+    { name: 'getDoctorSchedule'  , moduleType: 'Schedule' },
+    { name: 'getDoctorSlots'  , moduleType: 'Schedule' },
+    { name: 'removeSchedule'  , moduleType: 'Schedule' },
+    
 ];

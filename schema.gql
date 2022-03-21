@@ -146,6 +146,15 @@ type Permission {
   name: String
   moduleType: String
   status: Boolean
+  rolePermissions: [RolePermission!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type RolePermission {
+  id: String!
+  isMutable: Boolean
+  permission: Permission
   createdAt: String!
   updatedAt: String!
 }
@@ -154,7 +163,6 @@ type Role {
   id: String!
   role: String
   customRole: Boolean
-  permissions: [Permission]
   createdAt: String!
   updatedAt: String!
 }
