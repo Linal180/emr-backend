@@ -12,7 +12,7 @@ export class RoleResolver {
 
   @Mutation(() => RolePayload)
   @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin','admin'])
   async createRole(@Args('roleItemInput') roleItemInput: RoleItemInput) {
     return {
       role: await this.rolesService.createRole(roleItemInput),

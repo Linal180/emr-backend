@@ -1,11 +1,13 @@
 import { Field, InputType, PartialType, PickType } from '@nestjs/graphql';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
-import { Role } from '../entities/role.entity';
 
 @InputType()
 export class RoleItemInput {
   @Field({ nullable: false })
   role: string;
+
+  @Field({ nullable: false, defaultValue: true })
+  customRole?: boolean;
 }
 
 @InputType()
