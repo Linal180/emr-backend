@@ -23,8 +23,8 @@
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
   },
   "engines": {
-  "node": "^14.19.0",
-  "npm": "^6.14.16"
+  "node": "^16.13.2",
+  "npm": "^8.1.2"
   },
   "dependencies": {
     "@nestjs/common": "^8.2.5",
