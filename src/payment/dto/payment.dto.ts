@@ -14,7 +14,6 @@ export class BraintreePayload {
 export class BraintreeChargePayload extends Appointment {
     @Field()
     success?: boolean;
-   
 }
 
 @ObjectType()

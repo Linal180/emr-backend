@@ -2,25 +2,25 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  InternalServerErrorException,
+  InternalServerErrorException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
-import { AppointmentService } from '../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
+import {
+  Appointment,
+  BillingStatus
+} from '../appointments/entities/appointment.entity';
+import { AppointmentService } from '../appointments/services/appointment.service';
+import { UtilsService } from '../util/utils.service';
 import { BraintreePayload } from './dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
   PaymentInputsAfterAppointment,
-  UpdatePaymentStatus,
+  UpdatePaymentStatus
 } from './dto/payment.input';
 import { Transactions, TRANSACTIONSTATUS } from './entity/payment.entity';
-import {
-  Appointment,
-  BillingStatus,
-} from '../appointments/entities/appointment.entity';
-import { UtilsService } from '../util/utils.service';
 
 @Injectable()
 export class PaymentService {
