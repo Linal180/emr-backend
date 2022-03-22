@@ -837,6 +837,39 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type FormElement {
+  id: String!
+  placeholder: String
+  defaultValue: String
+  required: Boolean
+  errorMsg: String
+  name: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  sectionId: String!
+  element: Element
+  createdAt: String
+  updatedAt: String
+}
+
+type Element {
+  id: String!
+  type: ElementType!
+  createdAt: String
+  updatedAt: String
+}
+
+"""The form's element types"""
+enum ElementType {
+  TEXT
+  NUMBER
+  DROPDOWN
+  RADIO
+  DATE
+  FILE
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
