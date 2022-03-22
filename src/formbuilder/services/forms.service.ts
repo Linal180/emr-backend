@@ -7,8 +7,9 @@ import { CreateFormInput } from '../dto/create-form.input';
 import FormInput from '../dto/form-input.dto';
 import { FormPayload } from '../dto/form-payload.dto';
 import { FormsPayload } from '../dto/forms-payload.dto';
-import {  RemoveForm, UpdateFormInput } from '../dto/update-form.input';
+import { RemoveForm, UpdateFormInput } from '../dto/update-form.input';
 import { Form } from '../entities/form.entity';
+import { FormElementsService } from './form-elements.service'
 
 @Injectable()
 export class FormsService {
@@ -17,6 +18,7 @@ export class FormsService {
     private formsRepository: Repository<Form>,
     private readonly paginationService: PaginationService,
     private readonly utilsService: UtilsService,
+    private readonly formElementsService: FormElementsService
   ) { }
 
   /**
@@ -27,8 +29,17 @@ export class FormsService {
   async createForm(createFormInput: CreateFormInput): Promise<Form> {
     try {
       // creating form
-      const formInstance = this.formsRepository.create({ ...createFormInput, layout: JSON.stringify(createFormInput.layout) })
+      const formInstance = await this.formsRepository.create({ ...createFormInput, layout: JSON.stringify(createFormInput.layout) });
+      let elements = [];
+      createFormInput?.layout?.sections?.map(async (item, index) => {
+        elements[index] = await this.formElementsService.createBulk(item.fields, item.id)
+      })
+
+      // createFormInput?.layout?.sections
       //saving form
+
+      formInstance.formElements= elements?.length > 0 ? elements : []
+
       return await this.formsRepository.save(formInstance);
     } catch (error) {
       throw new InternalServerErrorException(error);

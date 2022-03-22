@@ -6,6 +6,7 @@ import { Element } from './entities/element.entity';
 import { FormElement } from './entities/form-elements.entity';
 import { Form } from './entities/form.entity';
 import { FormResolver } from './resolvers/forms.resolver';
+import { FormElementsService } from './services/form-elements.service';
 import { FormsService } from './services/forms.service';
 
 @Module({
@@ -14,7 +15,7 @@ import { FormsService } from './services/forms.service';
     forwardRef(() => UsersModule),
     PaginationModule
   ],
-  providers: [FormResolver, FormsService],
+  providers: [FormResolver, FormsService, FormElementsService],
   exports: [FormsService, TypeOrmModule],
 })
 export class FormBuilderModule { }

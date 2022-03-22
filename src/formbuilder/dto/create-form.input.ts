@@ -12,31 +12,53 @@ export class LayoutJSONInputType {
 export class SectionsInputs {
   @Field()
   id: string;
+
   @Field(() => Int)
   col: number;
-  @Field(() => [FieldsInputs])
+
+  @Field(() => [FieldsInputs], { nullable: true })
   fields: FieldsInputs[]
 }
 
 
 @InputType()
 export class FieldsInputs {
-  @Field()
-  content: string;
+
+  @Field({ nullable: true })
+  label: string;
+
   @Field()
   name: string;
+
   @Field()
   type: string;
-  @Field()
+
+  @Field({ nullable: true })
   css: string;
+
   @Field(() => Int)
   column: number;
-  @Field()
+
+  @Field({ nullable: true })
   placeholder: string;
-  @Field(() => Boolean)
+
+  @Field({ nullable: true })
+  defaultValue: string;
+
+  @Field({ nullable: true })
   required: boolean;
-  @Field()
-  id: string;
+
+  @Field({ nullable: true })
+  errorMsg: string;
+
+  @Field({ nullable: true })
+  tableName: string;
+
+  @Field({ nullable: true })
+  columnName: string;
+
+  @Field({ nullable: false })
+  fieldId: string;
 }
 @InputType()
 export class CreateFormInput {
@@ -50,8 +72,8 @@ export class CreateFormInput {
   @Field({ nullable: true })
   facilityId: string;
 
-  @Field(() => JSON, { nullable: false })
-  layout: object;
+  @Field(() => LayoutJSONInputType, { nullable: false })
+  layout: LayoutJSONInputType;
 
   @Field({ nullable: true })
   isSystemForm: boolean;

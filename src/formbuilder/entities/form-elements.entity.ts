@@ -11,8 +11,8 @@ export class FormElement {
   @Field()
   id: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   placeholder: string;
 
   @Column({ nullable: true })
@@ -23,27 +23,31 @@ export class FormElement {
   @Field({ nullable: true })
   required: boolean;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   errorMsg: string;
 
   @Column({ nullable: false })
   @Field({ nullable: false })
-  position: string;
+  name: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   tableName: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   columnName: string;
 
   @Column({ nullable: false })
   @Field({ nullable: false })
   fieldId: string;
 
-  @ManyToOne(() => Form, form => form.formElements, {onDelete: "CASCADE"})
+  @Column({ nullable: false })
+  @Field({ nullable: false })
+  sectionId: string;
+
+  @ManyToOne(() => Form, form => form.formElements, { onDelete: "CASCADE" })
   form: Form;
 
   @ManyToOne(() => Element, element => element.formElement)
