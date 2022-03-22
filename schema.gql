@@ -1116,6 +1116,7 @@ type Mutation {
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
+  createElement(inputs: ElementInputs!): Element!
 }
 
 input LoginUserInput {
@@ -1929,7 +1930,7 @@ input SectionsInputs {
 input FieldsInputs {
   label: String
   name: String!
-  type: String!
+  type: ElementType!
   css: String
   column: Int!
   placeholder: String
@@ -1952,4 +1953,8 @@ input UpdateFormInput {
 
 input RemoveForm {
   id: String!
+}
+
+input ElementInputs {
+  type: ElementType!
 }

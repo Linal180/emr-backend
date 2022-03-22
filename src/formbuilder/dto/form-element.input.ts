@@ -1,4 +1,5 @@
 import { Field, InputType } from "@nestjs/graphql";
+import { ElementType } from "../entities/element.entity";
 
 @InputType()
 export class FormElementInputs {
@@ -26,6 +27,9 @@ export class FormElementInputs {
 
   @Field({ nullable: false })
   name: string;
+
+  @Field(()=>ElementType)
+  type: ElementType
 
 }
 

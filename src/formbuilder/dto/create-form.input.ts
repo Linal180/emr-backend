@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import JSON from 'graphql-type-json'
+import { ElementType } from '../entities/element.entity';
 import { FormType } from '../entities/form.entity';
 
 
@@ -30,8 +30,8 @@ export class FieldsInputs {
   @Field()
   name: string;
 
-  @Field()
-  type: string;
+  @Field(()=>ElementType)
+  type: ElementType;
 
   @Field({ nullable: true })
   css: string;
