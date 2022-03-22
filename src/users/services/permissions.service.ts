@@ -1,0 +1,166 @@
+import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { UtilsService } from 'src/util/utils.service';
+import { In, Repository } from 'typeorm';
+import PermissionInput, { PermissionItemInput, RemovePermission, UpdatePermissionItemInput } from '../dto/permission-input.dto';
+import PermissionsPayload, { PermissionPayload } from '../dto/permissions-payload.dto';
+import { RolePermissionItemInput, UpdateRolePermissionItemInput } from '../dto/rolepermission-input.dto';
+import { Permission } from '../entities/permissions.entity';
+import { Role } from '../entities/role.entity';
+import { RolePermission } from '../entities/rolePermissions.entity';
+import { RolesService } from './roles.service';
+
+@Injectable()
+export class PermissionsService {
+  constructor(
+    @InjectRepository(Permission)
+    private permissionsRepository: Repository<Permission>,
+    @InjectRepository(RolePermission)
+    private rolePermissionRepository: Repository<RolePermission>,
+    private readonly paginationService: PaginationService,
+    private readonly utilsService: UtilsService,
+    private readonly rolesService: RolesService,
+  ) { }
+
+
+  async createPermission(permissionItemInput: PermissionItemInput): Promise<Permission> {
+    try {
+      //check name of permission for existing one
+      const permission = await this.permissionsRepository.findOne({name: permissionItemInput.name.trim().toLowerCase()})
+      if(permission){
+        throw new ForbiddenException({
+          status: HttpStatus.FORBIDDEN,
+          error: 'Permission already exists with this name',
+        });
+      }
+      // creating permission
+      const permissionInstance = this.permissionsRepository.create({...permissionItemInput, name: permissionItemInput.name.trim().toLowerCase()})
+      //saving permission
+     return await this.permissionsRepository.save(permissionInstance);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
+    try {
+      //check name of permission for existing one
+      const permissions = await this.findPermissions(rolePermissionItemInput.permissionsId)
+      //check name of role for existing one
+      const role = await this.rolesService.findOne(rolePermissionItemInput.roleId)
+      if(!role){
+          throw new NotFoundException({
+            status: HttpStatus.NOT_FOUND,
+            error: 'Role not found',
+          });
+        }
+      const rolePermissionPayload = await this.rolePermissionPayload(permissions, role)
+      //creating role permission
+      const rolePermissionInstance = await this.rolePermissionRepository.create(rolePermissionPayload)
+      await this.rolePermissionRepository.save(rolePermissionInstance)
+      return
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updatePermissionToRole(updateRolePermissionItemInput: UpdateRolePermissionItemInput) {
+    try {
+      //check name of permission for existing one
+      const permissions = await this.findPermissions(updateRolePermissionItemInput.permissionsId)
+      //check name of role for existing one
+      const role = await this.rolesService.findOne(updateRolePermissionItemInput.roleId)
+      if(!role){
+          throw new NotFoundException({
+            status: HttpStatus.NOT_FOUND,
+            error: 'Role not found',
+          });
+        }
+        const currentRolePermissions = await this.rolePermissionRepository.find({
+          where: {
+            roleId: role.id
+          }
+        })
+      const rolePermissionPayload = await this.rolePermissionPayload(permissions, role)
+      //creating role permission
+      const rolePermissionInstance = await this.rolePermissionRepository.create(rolePermissionPayload)
+      await this.rolePermissionRepository.save(rolePermissionInstance)
+      return
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async findPermissions(ids: string[]){
+    return await this.permissionsRepository.find({
+      where: {
+        id: In(ids)
+      }
+    })
+  }
+
+  async rolePermissionPayload(permissions: Permission[], role: Role){
+  return permissions.map((item)=>{
+    return {
+      permission:item,
+      role: role
+    }
+  })
+  }
+  async updatePermission(updatePermissionItemInput: UpdatePermissionItemInput): Promise<Permission> {
+    try {
+       //check name of role for existing one
+     const permission = await this.permissionsRepository.findOne({name: updatePermissionItemInput.name.trim().toLowerCase()})
+     if(permission && permission.id !=updatePermissionItemInput.id){
+       throw new ForbiddenException({
+         status: HttpStatus.FORBIDDEN,
+         error: 'Permission already exists with this name',
+       });
+     }
+      return await this.utilsService.updateEntityManager(Permission, updatePermissionItemInput.id, updatePermissionItemInput, this.permissionsRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  async findAllPermissions(permissionInput: PermissionInput): Promise<PermissionsPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Permission>(this.permissionsRepository, permissionInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        permissions: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async findOne(id: string): Promise<Permission> {
+    return await this.permissionsRepository.findOne(id);
+  }
+
+  async GetPermission(id: string): Promise<PermissionPayload> {
+    const permission = await this.findOne(id);
+    if (permission) {
+      return { permission }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Permission not found',
+    });
+  }
+
+
+  async removePermission({ id }: RemovePermission) {
+    try {
+      await this.permissionsRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+}

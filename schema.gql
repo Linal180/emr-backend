@@ -687,6 +687,17 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type PermissionsPayload {
+  response: ResponsePayload
+  permissions: [Permission]
+  pagination: PaginationPayload
+}
+
+type PermissionPayload {
+  response: ResponsePayload
+  permission: Permission
+}
+
 type RolesPayload {
   response: ResponsePayload
   roles: [Role]
@@ -840,6 +851,8 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  findAllPermissions(permissionInput: PermissionInput!): PermissionsPayload!
+  GetPermission(getPermission: GetPermission!): PermissionPayload!
   getAllRoles(roleInput: RoleInput!): RolesPayload!
   getRole(getRole: GetRole!): RolePayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
@@ -882,6 +895,14 @@ input PaginationInput {
 
 input GetUser {
   id: String!
+}
+
+input PermissionInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetPermission {
+  id: String
 }
 
 input RoleInput {
@@ -1017,6 +1038,11 @@ type Mutation {
   activateUser(user: UserIdInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
   updateRole(updateRoleItemInput: UpdateRoleItemInput!): RolePayload!
+  createPermission(permissionItemInput: PermissionItemInput!): PermissionPayload!
+  assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput!): PermissionPayload!
+  updatePermissionToRole(updateRolePermissionItemInput: UpdateRolePermissionItemInput!): PermissionPayload!
+  updatePermission(updatePermissionItemInput: UpdatePermissionItemInput!): PermissionPayload!
+  removePermission(removePermission: RemovePermission!): PermissionPayload!
   createRole(roleItemInput: RoleItemInput!): RolePayload!
   removeRole(removeRole: RemoveRole!): RolePayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
@@ -1128,6 +1154,34 @@ input UpdateUserInput {
 input UpdateRoleItemInput {
   role: String
   customRole: Boolean = true
+  id: String
+}
+
+input PermissionItemInput {
+  name: String!
+  moduleType: String!
+  roleId: String
+}
+
+input RolePermissionItemInput {
+  roleId: String!
+  permissionsId: [String!]
+}
+
+input UpdateRolePermissionItemInput {
+  roleId: String
+  permissionsId: [String!]
+  id: String
+}
+
+input UpdatePermissionItemInput {
+  name: String
+  moduleType: String
+  roleId: String
+  id: String
+}
+
+input RemovePermission {
   id: String
 }
 

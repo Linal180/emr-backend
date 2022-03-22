@@ -91,11 +91,11 @@ export class RolesService {
   }
 
   /**
-   * Gets service
+   * Gets role
    * @param id 
    * @returns service 
    */
-  async GetService(id: string): Promise<RolePayload> {
+  async getRole(id: string): Promise<RolePayload> {
     const role = await this.findOne(id);
     if (role) {
       return { role }

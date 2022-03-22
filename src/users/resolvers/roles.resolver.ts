@@ -53,7 +53,7 @@ export class RoleResolver {
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('roles', ['admin', 'super-admin'])
   async getRole(@Args('getRole') getRole: GetRole): Promise<RolePayload> {
-    const role = await this.rolesService.GetService(getRole.id)
+    const role = await this.rolesService.getRole(getRole.id)
     return {
       ...role,
       response: { status: 200, message: 'Role fetched successfully' }
