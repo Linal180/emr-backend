@@ -20,6 +20,34 @@ enum AttachmentType {
   lab
 }
 
+type Invoice {
+  id: String!
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  createdAt: String
+  updatedAt: String
+  transction: Transactions
+}
+
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
+}
+
 type Transactions {
   id: String!
   transactionId: String!
@@ -34,6 +62,7 @@ type Transactions {
   createdAt: String
   updatedAt: String
   status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
 }
 
 """The transaction payment status type assigned"""
@@ -807,13 +836,30 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
 }
 
-type BraintreePayload {
-  clientToken: String!
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
 }
 
 type AppointmentsPayload {
@@ -887,6 +933,7 @@ type Query {
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
+  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
 }
 
 input UsersInput {
@@ -1016,6 +1063,11 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input InvoiceInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
@@ -1071,6 +1123,10 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
+  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionPayload!
+  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
+  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
+  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
 }
 
 input LoginUserInput {
@@ -1861,4 +1917,34 @@ input PaymentInputsAfterAppointment {
   facilityId: String!
   patientId: String!
   appointmentId: String!
+}
+
+input GetAllTransactionsInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input CreateInvoiceInputs {
+  paymentTransactionId: String
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+}
+
+input CreateExternalInvoiceInputs {
+  paymentTransactionId: String!
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String!
+  status: STATUS!
+  amount: String!
+}
+
+input InvoiceStatusInputs {
+  status: STATUS!
+  id: String!
 }

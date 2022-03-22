@@ -1,6 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Facility } from "src/facilities/entities/facility.entity";
-import { Doctor } from "src/providers/entities/doctor.entity";
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
@@ -9,26 +7,30 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
-import { Appointment } from "../../appointments/entities/appointment.entity";
-import { Patient } from "../../patients/entities/patient.entity";
-
+  UpdateDateColumn,
+} from 'typeorm';
+//user imports
+import { Patient } from '../../patients/entities/patient.entity';
+import { Appointment } from '../../appointments/entities/appointment.entity';
+import { Facility } from '../../facilities/entities/facility.entity';
+import { Doctor } from '../../providers/entities/doctor.entity';
+import { Invoice } from './invoice.entity';
+//enums , constants
 export enum TRANSACTIONSTATUS {
-  REFUND = "refund",
-  DUE = "due",
-  PAID = "paid"
+  REFUND = 'refund',
+  DUE = 'due',
+  PAID = 'paid',
 }
-
+//register enums with graphql
 registerEnumType(TRANSACTIONSTATUS, {
-  name: "TRANSACTIONSTATUS",
-  description: "The transaction payment status type assigned",
+  name: 'TRANSACTIONSTATUS',
+  description: 'The transaction payment status type assigned',
 });
-
-@Entity({ name: "Transactions" })
+//entity
+@Entity({ name: 'Transactions' })
 @ObjectType()
 export class Transactions {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
 
@@ -69,19 +71,24 @@ export class Transactions {
   @Field(() => Appointment, { nullable: true })
   appointment: Appointment;
 
-  @CreateDateColumn({ type: "timestamptz", nullable: true })
+  @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   createdAt: string;
 
-  @UpdateDateColumn({ type: "timestamptz", nullable: true })
+  @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: TRANSACTIONSTATUS,
-    default: TRANSACTIONSTATUS.DUE
+    default: TRANSACTIONSTATUS.DUE,
   })
-  @Field(type => TRANSACTIONSTATUS)
+  @Field((type) => TRANSACTIONSTATUS)
   status: TRANSACTIONSTATUS;
+
+  @Field(() => [Invoice], { nullable: true })
+  @OneToMany(() => Invoice, (invoice) => invoice.id)
+  invoice: Invoice[];
+
 }

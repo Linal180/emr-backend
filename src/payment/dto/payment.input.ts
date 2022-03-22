@@ -1,6 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { CreateExternalAppointmentInput } from '../../appointments/dto/create-external-appointment.input';
 import {TRANSACTIONSTATUS} from '../entity/payment.entity'
+import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 
 @InputType()
 export class PaymentInput extends CreateExternalAppointmentInput {
@@ -60,4 +61,14 @@ export class UpdatePaymentStatus{
 
   @Field(()=> TRANSACTIONSTATUS)
   status: TRANSACTIONSTATUS;
+}
+
+@InputType()
+export class GetAllTransactionsInputs {
+
+  @Field({ nullable: true })
+  facilityId?: string
+
+  @Field(type => PaginationInput)
+  paginationOptions: PaginationInput
 }

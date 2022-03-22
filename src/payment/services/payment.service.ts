@@ -6,21 +6,25 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
+import { AppointmentService } from '../../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
-import {
-  Appointment,
-  BillingStatus
-} from '../appointments/entities/appointment.entity';
-import { AppointmentService } from '../appointments/services/appointment.service';
-import { UtilsService } from '../util/utils.service';
-import { BraintreePayload } from './dto/payment.dto';
+import { BraintreePayload, TransactionPayload } from '../dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
   PaymentInputsAfterAppointment,
-  UpdatePaymentStatus
-} from './dto/payment.input';
-import { Transactions, TRANSACTIONSTATUS } from './entity/payment.entity';
+  UpdatePaymentStatus,
+  GetAllTransactionsInputs
+} from '../dto/payment.input';
+import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
+import {
+  Appointment,
+  BillingStatus,
+} from '../../appointments/entities/appointment.entity';
+import { UtilsService } from '../../util/utils.service';
+import { InvoiceService } from './invoice.service';
+import { BILLING_TYPE, STATUS } from '../entity/invoice.entity';
+import { PaginationService } from 'src/pagination/pagination.service';
 
 @Injectable()
 export class PaymentService {
@@ -36,8 +40,11 @@ export class PaymentService {
     private transactionRepo: Repository<Transactions>,
     @Inject(forwardRef(() => AppointmentService))
     private appointmentService: AppointmentService,
-    private readonly utilsService: UtilsService
-  ) {}
+    private readonly utilsService: UtilsService,
+    @Inject(forwardRef(() => InvoiceService))
+    private readonly invoiceService: InvoiceService,
+    private readonly paginationService: PaginationService
+  ) { }
 
   async getToken(): Promise<BraintreePayload> {
     try {
@@ -77,14 +84,12 @@ export class PaymentService {
         paymentMethodNonce: clientIntent,
       });
       if (brainTrans?.success) {
-        console.log('brain transaction>>>', brainTrans);
+
         const updatedAppointment =
           await this.appointmentService.updateAppointmentBillingStatus({
             id: appointmentId,
             billingStatus: BillingStatus.PAID,
           });
-        console.log('updated appointment>>>', updatedAppointment);
-
         const data = {
           transactionId: brainTrans?.transaction?.id,
           doctorId: req?.providerId,
@@ -94,7 +99,16 @@ export class PaymentService {
           status: TRANSACTIONSTATUS.PAID,
         };
         const trans = await this.create(data);
-        console.log('transaction >>>', trans);
+
+        const createInvoiceInputs = {
+          paymentTransactionId: trans.transactionId,
+          billingType: BILLING_TYPE.SELF_PAY,
+          paymentMethod: brainTrans.transaction.creditCard.cardType ?? 'PayPal',
+          status: STATUS.PAID,
+          amount: brainTrans.transaction.amount,
+          facilityId: req?.facilityId,
+        }
+        await this.invoiceService.createExternalInvoice(createInvoiceInputs)
         return updatedAppointment;
       } else {
         throw new InternalServerErrorException({
@@ -141,7 +155,7 @@ export class PaymentService {
 
           return appointment;
         } else {
-          const refunded = await this.refund(brainTrans?.transaction?.id,appointment.id);
+          const refunded = await this.refund(brainTrans?.transaction?.id, appointment.id);
           if (refunded?.success) {
             throw new Error(
               'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
@@ -166,7 +180,7 @@ export class PaymentService {
 
   async create(data: CreateTransactionInputs) {
     try {
-      const transaction = await this.transactionRepo.create(data);
+      const transaction =  this.transactionRepo.create(data);
       const saved = await this.transactionRepo.save(transaction);
       return saved;
     } catch (error) {
@@ -174,7 +188,7 @@ export class PaymentService {
     }
   }
 
-  async refund(transactionId: string,id: string) {
+  async refund(transactionId: string, id: string) {
     try {
       const refund = await this.gateway.transaction.void(transactionId);
       if (refund?.success) {
@@ -185,7 +199,6 @@ export class PaymentService {
       } else {
         throw new Error('Amount is not refunded');
       }
-      console.log('refund>>>>', refund);
       return refund;
     } catch (error) {
       throw new Error(error);
@@ -194,6 +207,19 @@ export class PaymentService {
 
   async getTransaction(id: string) {
     return await this.gateway.transaction.find(id);
+  }
+
+  async getPaymentTransactionByBraintreeTransactionId(id: string) {
+    try {
+      return await this.transactionRepo.findOneOrFail({
+        where: {
+          transactionId: id
+        }
+      })
+    } catch (error) {
+      throw new Error(error);
+
+    }
   }
 
   async getTransactionByAppointmentId(id: string) {
@@ -216,4 +242,20 @@ export class PaymentService {
       throw new Error(error);
     }
   }
+
+  //get all transactions
+  async getAll(transactionInputs: GetAllTransactionsInputs): Promise<TransactionPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Transactions>(this.transactionRepo, transactionInputs)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        transactions: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
 }
