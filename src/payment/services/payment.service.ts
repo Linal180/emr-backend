@@ -2,7 +2,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  InternalServerErrorException,
+  InternalServerErrorException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';

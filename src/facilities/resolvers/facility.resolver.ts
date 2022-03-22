@@ -69,16 +69,16 @@ export class FacilityResolver {
   // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   // @SetMetadata('roles', ['admin', 'super-admin'])
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
-    const facilitity = await this.facilityService.GetFacility(getFacility.id)
+    const facility = await this.facilityService.GetFacility(getFacility.id)
     return {
-      ...facilitity,
+      ...facility,
       response: { status: 200, message: 'Facility fetched successfully' }
     };
   }
 
   @Mutation(() => FacilityPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @SetMetadata('roles', ['super-admin','admin'])
   async removeFacility(@Args('removeFacility') removeFacility: RemoveFacility) {
     await this.facilityService.removeFacility(removeFacility);
     return { response: { status: 200, message: 'Facility Deleted' } };

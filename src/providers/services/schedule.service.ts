@@ -19,7 +19,6 @@ import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ContactService } from './contact.service';
 import { DoctorService } from './doctor.service';
 
-
 @Injectable()
 export class ScheduleService {
   constructor(
@@ -56,6 +55,7 @@ export class ScheduleService {
       if (createScheduleInput.doctorId) {
         const doctor = await this.doctorService.findOne(createScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
+        scheduleInstance.doctorId = doctor.id
       }
       const schedule = await this.scheduleRepository.save(scheduleInstance);
       if(createScheduleInput.servicesIds){
@@ -108,6 +108,7 @@ export class ScheduleService {
       if (updateScheduleInput.doctorId) {
         const doctor = await this.doctorService.findOne(updateScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
+        scheduleInstance.doctorId = doctor.id
       }
       scheduleInstance.startAt = updateScheduleInput.startAt;
       scheduleInstance.endAt = updateScheduleInput.endAt;
@@ -139,7 +140,7 @@ export class ScheduleService {
       try {
         const schedules = await this.scheduleRepository.find({
           where: {
-            doctor: id
+            doctorId: id
           }
         })
         return { schedules };
@@ -172,7 +173,7 @@ export class ScheduleService {
   async getDoctorsTodaySchedule(doctorId: string, uTcStartDateOffset: Date ,uTcEndDateOffset: Date ): Promise<Schedule[]> {
     return await this.scheduleRepository.find({
       where: {
-        doctor: doctorId,
+        doctorId: doctorId,
         startAt: MoreThanOrEqual(uTcStartDateOffset),
         endAt: LessThanOrEqual(uTcEndDateOffset),
       },
@@ -317,13 +318,15 @@ export class ScheduleService {
           error: 'Schedule not found',
         });
       }
-      // const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctor.id, currentDate: ""}, schedule.startAt, schedule.endAt)
-      // if(appointmentExist.length){
-      //   throw new ConflictException({
-      //     status: HttpStatus.CONFLICT,
-      //     error: 'Appointment already booked with this schedule, can not delete it.',
-      //   });
-      // }
+      if(schedule.doctorId){
+      const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctorId, currentDate: ""}, schedule.startAt, schedule.endAt)
+      if(appointmentExist.length){
+        throw new ConflictException({
+          status: HttpStatus.CONFLICT,
+          error: 'Appointment already booked with this schedule, can not delete it.',
+        });
+      }
+    }
      await this.scheduleRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);

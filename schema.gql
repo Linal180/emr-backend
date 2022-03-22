@@ -251,11 +251,9 @@ type Patient {
   ssn: String
   gender: GENDERIDENTITY!
   dob: String
-  registrationDepartment: REGDepartment!
-  primaryDepartment: PrimaryDepartment!
   preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: DateTime!
-  deceasedDate: DateTime!
+  registrationDate: String!
+  deceasedDate: String!
   privacyNotice: Boolean!
   phonePermission: Boolean!
   voiceCallPermission: Boolean!
@@ -301,20 +299,6 @@ enum GENDERIDENTITY {
   NONE
 }
 
-"""The facility Registration Department type assigned type"""
-enum REGDepartment {
-  HOSPITAL
-  LAB
-  CLINIC
-}
-
-"""The facility Primary Department type assigned type"""
-enum PrimaryDepartment {
-  HOSPITAL
-  LAB
-  CLINIC
-}
-
 """The patient's communication method assigned"""
 enum COMMUNICATIONTYPE {
   PHONE
@@ -322,11 +306,6 @@ enum COMMUNICATIONTYPE {
   MESSAGE
   EMAIL
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 """The user race assigned"""
 enum RACE {
@@ -435,7 +414,6 @@ type Staff {
   username: String
   dob: String
   phone: String
-  primaryProvider: String
   facilityId: String
   mobile: String
   gender: Gender!
@@ -457,11 +435,17 @@ type Schedule {
   startAt: String!
   endAt: String!
   recurringEndDate: DateTime
+  doctorId: String
   doctor: Doctor
   scheduleServices: [ScheduleServices!]
   createdAt: String!
   updatedAt: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type ScheduleServices {
   id: String!
@@ -680,6 +664,7 @@ type Doctor {
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
   schedule: [Schedule!]
+  staff: [Staff]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
@@ -1403,13 +1388,17 @@ input RemoveService {
 }
 
 input CreateStaffInput {
+  staffInput: CreateStaffItemInput!
+  providers: [String!]
+}
+
+input CreateStaffItemInput {
   firstName: String!
   lastName: String!
   email: String!
   username: String!
   password: String!
   phone: String
-  primaryProvider: String
   mobile: String
   dob: String
 
@@ -1423,13 +1412,17 @@ input CreateStaffInput {
 }
 
 input UpdateStaffInput {
+  updateStaffItemInput: UpdateStaffItemInput!
+  providers: [String!]!
+}
+
+input UpdateStaffItemInput {
   firstName: String
   lastName: String
   email: String
   username: String
   password: String
   phone: String
-  primaryProvider: String
   mobile: String
   dob: String
 
@@ -1616,8 +1609,8 @@ input CreatePatientItemInput {
   ssn: String
   dob: String
   gender: GENDERIDENTITY
-  registrationDepartment: REGDepartment
-  primaryDepartment: PrimaryDepartment
+  registrationDepartment: String
+  primaryDepartment: String
   registrationDate: String
   deceasedDate: String
   privacyNotice: Boolean
@@ -1703,8 +1696,8 @@ input UpdatePatientItemInput {
   ssn: String
   dob: String
   gender: GENDERIDENTITY
-  registrationDepartment: REGDepartment
-  primaryDepartment: PrimaryDepartment
+  registrationDepartment: String
+  primaryDepartment: String
   registrationDate: String
   deceasedDate: String
   privacyNotice: Boolean

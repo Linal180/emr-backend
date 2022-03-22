@@ -2,10 +2,11 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { FacilityService } from '../facilities/services/facility.service';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { PatientService } from 'src/patients/services/patient.service';
 import { getConnection, Not, Repository } from 'typeorm';
+import { FacilityService } from '../facilities/services/facility.service';
 import { createToken } from '../lib/helper';
 import { AccessUserPayload } from './dto/access-user.dto';
 import { RegisterUserInput } from './dto/register-user-input.dto';
@@ -18,7 +19,6 @@ import { UsersPayload } from './dto/users-payload.dto';
 import { Role, UserRole } from './entities/role.entity';
 import { UserLog } from './entities/user-logs.entity';
 import { User, UserStatus } from './entities/user.entity';
-import { PatientService } from 'src/patients/services/patient.service';
 
 @Injectable()
 export class UsersService {
@@ -37,10 +37,11 @@ export class UsersService {
     private readonly patientService: PatientService
   ) { }
 
+
   /**
    * Creates users service
    * @param registerUserInput 
-   * @returns created user
+   * @returns create 
    */
   async create(registerUserInput: RegisterUserInput): Promise<User> {
     try {
@@ -53,7 +54,7 @@ export class UsersService {
             error: 'User already exists with this email',
           });
         }
-        // User Creationa
+        // User Creation
         const userInstance = this.usersRepository.create({ ...registerUserInput, email: registerUserInput.email.trim().toLowerCase() })
         const role = await this.rolesRepository.findOne({ role: registerUserInput.roleType });
         userInstance.roles = [role]
@@ -68,12 +69,11 @@ export class UsersService {
         const user = await this.usersRepository.save(userInstance);
         await this.saveUserId(user.id, user);
         // SEND EMAIL TO USER FOR RESET PASSWORD
-        const isInvite = true;
+        let isInvite = 'INVITATION_TEMPLATE_ID';
         let isAdmin = false
-        if(registerUserInput.roleType === UserRole.PATIENT){
-           isAdmin = true
+        if(registerUserInput.roleType !== UserRole.PATIENT){
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, user.email, '', isAdmin, token, isInvite)
         }
-        this.mailerService.sendEmailForgotPassword(user.email, user.email, user.id, isAdmin, token, isInvite)
         return user;
       }
       throw new NotFoundException({
@@ -134,6 +134,14 @@ export class UsersService {
     }
   }
 
+  /**
+   * Saves users service
+   * @param user 
+   * @returns save 
+   */
+  async save(user: User): Promise<User>{
+    return await this.usersRepository.save(user)
+  }
   /**
    * Updates role
    * @param updateRoleInput 
@@ -422,8 +430,8 @@ export class UsersService {
       const roles = user.roles.map(u => u.role);
       if (user) {
         const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
-        const isInvite = false;
-        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, isAdmin, token, isInvite)
+        const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '',isAdmin, token, isInvite)
         delete user.roles
         await this.usersRepository.save(user);
         return user
