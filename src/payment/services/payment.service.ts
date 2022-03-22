@@ -180,7 +180,7 @@ export class PaymentService {
 
   async create(data: CreateTransactionInputs) {
     try {
-      const transaction = await this.transactionRepo.create(data);
+      const transaction =  this.transactionRepo.create(data);
       const saved = await this.transactionRepo.save(transaction);
       return saved;
     } catch (error) {

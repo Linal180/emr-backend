@@ -15,7 +15,7 @@ export class InvoiceService {
   //create  invoice
   async create(createInvoiceInputs: CreateInvoiceInputs): Promise<Invoice> {
     try {
-      const invoice = await this.invoiceRepo.create(createInvoiceInputs);
+      const invoice =  this.invoiceRepo.create(createInvoiceInputs);
       const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
       invoice.transction = transaction;
       const invoiceNo = await this.utilService.generateInvoiceNo();
@@ -27,15 +27,14 @@ export class InvoiceService {
     }
   }
   //create external invoice
-  async createExternalInvoice(createInvoiceInputs: CreateExternalInvoiceInputs): Promise<InvoicePayload> {
+  async createExternalInvoice(createInvoiceInputs: CreateExternalInvoiceInputs): Promise<Invoice> {
     try {
-      const invoice = await this.invoiceRepo.create(createInvoiceInputs);
+      const invoice = this.invoiceRepo.create(createInvoiceInputs);
       const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
       const invoiceNo = await this.utilService.generateInvoiceNo();
       invoice.invoiceNo = invoiceNo;
       invoice.transction = transaction;
-      const updatedInvoice = await this.invoiceRepo.save(invoice);
-      return { invoice: updatedInvoice, response: { status: 200, message: "OK" } };
+      return await this.invoiceRepo.save(invoice);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -57,9 +56,9 @@ export class InvoiceService {
 
   //update invoice status
 
-  async updateStatus( invoiceStatusInputs:InvoiceStatusInputs):Promise<InvoicePayload> {
+  async updateStatus( invoiceStatusInputs:InvoiceStatusInputs):Promise<Invoice> {
     try {
-      return { invoice: await  this.utilService.updateEntityManager(Invoice, invoiceStatusInputs.id, invoiceStatusInputs, this.invoiceRepo)}
+      return await this.utilService.updateEntityManager(Invoice, invoiceStatusInputs.id, invoiceStatusInputs, this.invoiceRepo)
     } catch (error) {
       throw new InternalServerErrorException(error)
       
