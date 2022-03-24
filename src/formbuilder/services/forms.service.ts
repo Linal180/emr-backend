@@ -38,7 +38,7 @@ export class FormsService {
       // createFormInput?.layout?.sections
       //saving form
 
-      formInstance.formElements= elements?.length > 0 ? elements : []
+      formInstance.formElements = elements?.length > 0 ? elements : []
 
       return await this.formsRepository.save(formInstance);
     } catch (error) {

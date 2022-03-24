@@ -18,7 +18,7 @@ export class FormElementsService {
         private readonly elementService: ElementService
     ) { }
 
-    //create form element
+    //create form elements
     async create(inputs: CreateElementInputs) {
         try {
             const data = await this.formElementRepository.create(inputs);
