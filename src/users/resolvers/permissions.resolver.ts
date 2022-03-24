@@ -1,9 +1,10 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import PermissionGuard from '../auth/role.guard';
 import PermissionInput, { GetPermission, PermissionItemInput, RemovePermission, UpdatePermissionItemInput } from '../dto/permission-input.dto';
 import PermissionsPayload, { PermissionPayload } from '../dto/permissions-payload.dto';
-import { RolePermissionItemInput, UpdateRolePermissionItemInput } from '../dto/rolepermission-input.dto';
+import { RolePermissionItemInput } from '../dto/rolepermission-input.dto';
 import { Permission } from '../entities/permissions.entity';
 import { PermissionsService } from '../services/permissions.service';
 
@@ -12,8 +13,8 @@ export class PermissionResolver {
   constructor(private readonly permissionsService: PermissionsService) { }
 
   @Mutation(() => PermissionPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createPermission')
   async createPermission(@Args('permissionItemInput') permissionItemInput: PermissionItemInput) {
     return {
       permission: await this.permissionsService.createPermission(permissionItemInput),
@@ -22,28 +23,18 @@ export class PermissionResolver {
   }
 
   @Mutation(() => PermissionPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'assignPermissionToRole')
   async assignPermissionToRole(@Args('rolePermissionItemInput') rolePermissionItemInput: RolePermissionItemInput) {
     return {
       permission: await this.permissionsService.assignPermissionToRole(rolePermissionItemInput),
       response: { status: 200, message: 'Permission has been assigned to role successfully' }
     };
   }
-
+  
   @Mutation(() => PermissionPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
-  async updatePermissionToRole(@Args('updateRolePermissionItemInput') updateRolePermissionItemInput: UpdateRolePermissionItemInput) {
-    return {
-      permission: await this.permissionsService.updatePermissionToRole(updateRolePermissionItemInput),
-      response: { status: 200, message: 'Permission has been updated to role successfully' }
-    };
-  }
-
-  @Mutation(() => PermissionPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updatePermission')
   async updatePermission(@Args('updatePermissionItemInput') updatePermissionItemInput: UpdatePermissionItemInput) {
     return {
       permission: await this.permissionsService.updatePermission(updatePermissionItemInput),
@@ -52,8 +43,8 @@ export class PermissionResolver {
   }
 
   @Query(returns => PermissionsPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllPermissions')
   async findAllPermissions(@Args('permissionInput') permissionInput: PermissionInput): Promise<PermissionsPayload> {
     const permissions = await this.permissionsService.findAllPermissions(permissionInput)
     if (permissions) {
@@ -71,8 +62,8 @@ export class PermissionResolver {
   }
 
   @Query(returns => PermissionPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'GetPermission')
   async GetPermission(@Args('getPermission') getPermission: GetPermission): Promise<PermissionPayload> {
     const permission = await this.permissionsService.GetPermission(getPermission.id)
     return {
@@ -82,8 +73,8 @@ export class PermissionResolver {
   }
 
   @Mutation(() => PermissionPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removePermission')
   async removePermission(@Args('removePermission') removePermission: RemovePermission) {
     await this.permissionsService.removePermission(removePermission);
     return { response: { status: 200, message: 'Role Deleted' } };

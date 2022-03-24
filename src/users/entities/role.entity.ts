@@ -3,7 +3,6 @@ import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGenerat
 import { RolePermission } from './rolePermissions.entity';
 import { User } from './user.entity';
 
-
 @Entity({ name: 'Roles' })
 @ObjectType()
 export class Role {
@@ -20,17 +19,19 @@ export class Role {
   customRole: boolean
   
   @ManyToMany(type => User, user => user.roles)
+  @Field((type)=> User, {nullable: true})
   users: User[];
 
-  @OneToMany(() => RolePermission, rolePermission => rolePermission.permission)
+  @OneToMany(() => RolePermission, rolePermission => rolePermission.role, {eager: true})
+  @Field((type)=>[RolePermission], {nullable: true})
   rolePermissions: RolePermission[];
 
   @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Field({nullable: true})
   createdAt: string;
 
   @UpdateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Field({nullable: true})
   updatedAt: string;
 
 }

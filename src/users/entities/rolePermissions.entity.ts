@@ -15,11 +15,12 @@ export class RolePermission {
   @Field({nullable: true})
   isMutable: boolean
 
-  @ManyToOne(() => Permission, permission => permission.rolePermissions)
+  @ManyToOne(() => Permission, permission => permission.rolePermissions, {eager: true})
   @Field(type => Permission, { nullable: true })
   permission: Permission;
   
   @ManyToOne(() => Role, role => role.rolePermissions,{onDelete: "CASCADE"})
+  @Field(type => Role, { nullable: true })
   role: Role;
 
   @CreateDateColumn({ type: 'timestamptz' })

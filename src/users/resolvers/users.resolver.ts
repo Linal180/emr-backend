@@ -2,7 +2,7 @@ import { ForbiddenException, HttpStatus, NotFoundException, SetMetadata, Unautho
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { CurrentUser } from '../../customDecorators/current-user.decorator';
 import { CurrentUserInterface } from '../auth/dto/current-user.dto';
 import { AccessUserPayload } from '../dto/access-user.dto';
@@ -30,10 +30,9 @@ export class UsersResolver {
   ) { }
 
   // Queries 
-
   @Query(returns => UsersPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchAllUsers')
   async fetchAllUsers(@Args('userInput') usersInput: UsersInput): Promise<UsersPayload> {
     const users = await this.usersService.findAll(usersInput);
     if (users) {
@@ -45,24 +44,26 @@ export class UsersResolver {
   }
 
   @Query(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
+  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
   async fetchUser(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email);
     return { user: userFound, response: { status: 200, message: 'User Data' } }
   }
 
   @Query(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
+  @SetMetadata('name', 'getUser')
   async getUser(@Args('getUser') getUser: GetUser): Promise<UserPayload> {
     const userFound = await this.usersService.findUserById(getUser.id);
     return { user: userFound, response: { status: 200, message: 'User Data' } }
   }
 
   @Query(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
+  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email)
+    console.log("userFound",userFound);
+    console.log("userFound.roles[0].rolePermissions",userFound.roles[0].rolePermissions);
     if (!userFound) {
       throw new UnauthorizedException({
         status: HttpStatus.UNAUTHORIZED,
@@ -79,8 +80,8 @@ export class UsersResolver {
   }
 
   @Query(returns => RolesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchAllRoles')
   async fetchAllRoles(): Promise<RolesPayload> {
     const roles = await this.usersService.findAllRoles()
     if (roles) {
@@ -98,8 +99,8 @@ export class UsersResolver {
   }
 
   @Query(returns => UsersPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'searchUser')
   async searchUser(@Args('search') searchTerm: string): Promise<UsersPayload> {
     const users = await this.usersService.search(searchTerm);
     return { users, response: { status: 200, message: 'User Data fetched successfully' } }
@@ -125,8 +126,8 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'registerUser')
   async registerUser(@Args('user') registerUserInput: RegisterUserInput): Promise<UserPayload> {
     return {
       user: await this.usersService.create(registerUserInput),
@@ -193,40 +194,40 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'deactivateUser')
   async deactivateUser(@Args('user') { userId }: UserIdInput): Promise<UserPayload> {
     const user = await this.usersService.deactivateUser(userId);
     return { user, response: { status: 200, message: 'User Deactivated' } }
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeUser')
   async removeUser(@Args('userIdInput') userIdInput: UserIdInput) {
     await this.usersService.removeUser(userIdInput);
     return { response: { status: 200, message: 'User Deleted' } }
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'activateUser')
   async activateUser(@Args('user') { userId }: UserIdInput): Promise<UserPayload> {
     const user = await this.usersService.activateUser(userId);
     return { user, response: { status: 200, message: 'User Activated' } }
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'staff', 'doctor'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateUser')
   async updateUser(@Args('user') updateUserInput: UpdateUserInput): Promise<UserPayload> {
     const user = await this.usersService.update(updateUserInput);
     return { user, response: { status: 200, message: 'User Data updated successfully' } }
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateRole')
   async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
     const user = await this.usersService.updateRole(updateRoleInput);
     return { user, response: { status: 200, message: 'User Data updated successfully' } }

@@ -2,10 +2,10 @@ import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorExceptio
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
-import { In, Repository } from 'typeorm';
+import { getConnection, In, Repository } from 'typeorm';
 import PermissionInput, { PermissionItemInput, RemovePermission, UpdatePermissionItemInput } from '../dto/permission-input.dto';
 import PermissionsPayload, { PermissionPayload } from '../dto/permissions-payload.dto';
-import { RolePermissionItemInput, UpdateRolePermissionItemInput } from '../dto/rolepermission-input.dto';
+import { RolePermissionItemInput } from '../dto/rolepermission-input.dto';
 import { Permission } from '../entities/permissions.entity';
 import { Role } from '../entities/role.entity';
 import { RolePermission } from '../entities/rolePermissions.entity';
@@ -23,7 +23,11 @@ export class PermissionsService {
     private readonly rolesService: RolesService,
   ) { }
 
-
+  /**
+   * Creates permission
+   * @param permissionItemInput 
+   * @returns permission 
+   */
   async createPermission(permissionItemInput: PermissionItemInput): Promise<Permission> {
     try {
       //check name of permission for existing one
@@ -43,9 +47,13 @@ export class PermissionsService {
     }
   }
 
-
-async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
+ /**
+  * Assigns permission to role
+  * @param rolePermissionItemInput 
+  */
+ async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
     try {
+      await this.deleteExistingMutablePermission(rolePermissionItemInput.roleId)
       //check name of permission for existing one
       const permissions = await this.findPermissions(rolePermissionItemInput.permissionsId)
       //check name of role for existing one
@@ -66,33 +74,24 @@ async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
     }
   }
 
-  async updatePermissionToRole(updateRolePermissionItemInput: UpdateRolePermissionItemInput) {
-    try {
-      //check name of permission for existing one
-      const permissions = await this.findPermissions(updateRolePermissionItemInput.permissionsId)
-      //check name of role for existing one
-      const role = await this.rolesService.findOne(updateRolePermissionItemInput.roleId)
-      if(!role){
-          throw new NotFoundException({
-            status: HttpStatus.NOT_FOUND,
-            error: 'Role not found',
-          });
-        }
-        const currentRolePermissions = await this.rolePermissionRepository.find({
-          where: {
-            roleId: role.id
-          }
-        })
-      const rolePermissionPayload = await this.rolePermissionPayload(permissions, role)
-      //creating role permission
-      const rolePermissionInstance = await this.rolePermissionRepository.create(rolePermissionPayload)
-      await this.rolePermissionRepository.save(rolePermissionInstance)
-      return
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+  /**
+   * Deletes existing mutable permission
+   * @param roleId 
+   * @returns  
+   */
+  async deleteExistingMutablePermission(roleId: string){
+      return await getConnection().createQueryBuilder()
+      .delete().from(RolePermission)
+      .where("roleId = :roleId", { roleId: roleId })
+      .andWhere("isMutable = :isMutable", { isMutable: true })
+      .execute();
   }
 
+  /**
+   * Finds permissions
+   * @param ids 
+   * @returns  
+   */
   async findPermissions(ids: string[]){
     return await this.permissionsRepository.find({
       where: {
@@ -101,14 +100,37 @@ async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
     })
   }
 
-  async rolePermissionPayload(permissions: Permission[], role: Role){
-  return permissions.map((item)=>{
-    return {
-      permission:item,
-      role: role
-    }
-  })
+  async findPermissionsByRoleId(id: string){
+    return await this.rolePermissionRepository.find({
+      where: {
+        role: id
+      },
+      relations: ["permission"]
+    })
   }
+
+  /**
+   * Roles permission payload
+   * @param permissions 
+   * @param role 
+   * @returns  
+   */
+  async rolePermissionPayload(permissions: Permission[], role: Role){
+   return permissions.map((item)=>{
+     return {
+       permission:item,
+       permissionId: item.id,
+       role: role,
+       roleId: role.id
+     }
+   })
+  }
+
+  /**
+   * Updates permission
+   * @param updatePermissionItemInput 
+   * @returns permission 
+   */
   async updatePermission(updatePermissionItemInput: UpdatePermissionItemInput): Promise<Permission> {
     try {
        //check name of role for existing one
@@ -125,7 +147,11 @@ async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
     }
   }
 
-
+  /**
+   * Finds all permissions
+   * @param permissionInput 
+   * @returns all permissions 
+   */
   async findAllPermissions(permissionInput: PermissionInput): Promise<PermissionsPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Permission>(this.permissionsRepository, permissionInput)
@@ -140,10 +166,20 @@ async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
     }
   }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
   async findOne(id: string): Promise<Permission> {
     return await this.permissionsRepository.findOne(id);
   }
 
+  /**
+   * Gets permission
+   * @param id 
+   * @returns permission 
+   */
   async GetPermission(id: string): Promise<PermissionPayload> {
     const permission = await this.findOne(id);
     if (permission) {
@@ -155,7 +191,10 @@ async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
     });
   }
 
-
+  /**
+   * Removes permission
+   * @param { id } 
+   */
   async removePermission({ id }: RemovePermission) {
     try {
       await this.permissionsRepository.delete(id)

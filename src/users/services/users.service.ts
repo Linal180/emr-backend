@@ -154,8 +154,7 @@ export class UsersService {
   async updateRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
       const { roles } = updateRoleInput 
-      const allRoles = await this.findAllRoles()
-      const isSuperAdmin = roles.find((item) => item === (allRoles.find((item) => item.role === 'super-admin').role))
+      const isSuperAdmin = roles.includes("super-admin"); 
       if (isSuperAdmin) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
@@ -169,6 +168,7 @@ export class UsersService {
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
+          console.log("fetchdRoles",fetchdRoles);
         user.roles = fetchdRoles
         return await this.usersRepository.save(user);
       }
@@ -405,7 +405,8 @@ export class UsersService {
     const user = await this.findRolesByUserId(secret.sub)
     return {
       ...secret,
-      roles: user.roles.map(role => role.role)
+      // roles: user.roles.map(role => role.role)
+      roles: user.roles
     };
   }
 

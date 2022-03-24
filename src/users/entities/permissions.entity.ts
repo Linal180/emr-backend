@@ -2,7 +2,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { RolePermission } from './rolePermissions.entity';
 
-
 @Entity({ name: 'Permissions' })
 @ObjectType()
 export class Permission {
@@ -22,7 +21,7 @@ export class Permission {
   @Field({nullable: true})
   status: boolean
 
-  @OneToMany(() => RolePermission, rolePermission => rolePermission.role, {onDelete: "CASCADE"})
+  @OneToMany(() => RolePermission, rolePermission => rolePermission.permission, {onDelete: "CASCADE"})
   @Field(type => [RolePermission], { nullable: true })
   rolePermissions: RolePermission[];
 

@@ -2,9 +2,8 @@ import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/c
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Service } from 'src/facilities/entities/services.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
-import { DoctorSchedulePayload } from '../dto/doctor-schedule-payload.dto';
 import { DoctorSlotsPayload } from '../dto/doctor-slots-payload.dto';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulePayload } from '../dto/schedule-payload.dto';
@@ -19,8 +18,8 @@ export class ScheduleResolver {
   constructor(private readonly scheduleService: ScheduleService) { }
 
   @Mutation(() => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createSchedule')
   async createSchedule(@Args('createScheduleInput') createScheduleInput: CreateScheduleInput) {
     return {
       schedule: await this.scheduleService.createSchedule(createScheduleInput),
@@ -29,8 +28,8 @@ export class ScheduleResolver {
   }
 
   @Mutation(() => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateSchedule')
   async updateSchedule(@Args('updateScheduleInput') updateScheduleInput: UpdateScheduleInput) {
     return {
       schedule: await this.scheduleService.updateSchedule(updateScheduleInput),
@@ -39,8 +38,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => SchedulesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllSchedules')
   async findAllSchedules(@Args('scheduleInput') scheduleInput: ScheduleInput): Promise<SchedulesPayload> {
     const schedules = await this.scheduleService.findAllSchedule(scheduleInput)
     if (schedules) {
@@ -58,8 +57,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getSchedule')
   async getSchedule(@Args('getSchedule') getSchedule: GetSchedule): Promise<SchedulePayload> {
     return {
       schedule: await this.scheduleService.findOne(getSchedule.id),
@@ -76,8 +75,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => SchedulesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getDoctorSchedule')
   async getDoctorSchedule(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule) {
     const schedule = await this.scheduleService.getDoctorSchedule(getDoctorSchedule)
     return {
@@ -87,8 +86,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => DoctorSlotsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getDoctorSlots')
   async getDoctorSlots(@Args('getDoctorSlots') getDoctorSlots: GetDoctorSlots) {
     const slots = await this.scheduleService.getDoctorSlots(getDoctorSlots)
     return {
@@ -98,8 +97,8 @@ export class ScheduleResolver {
   }
 
   @Mutation(() => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeSchedule')
   async removeSchedule(@Args('removeSchedule') removeSchedule: RemoveSchedule) {
     await this.scheduleService.removeSchedule(removeSchedule);
     return { response: { status: 200, message: 'Schedule Deleted' } };
