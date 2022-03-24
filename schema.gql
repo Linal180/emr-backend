@@ -1036,6 +1036,7 @@ type Mutation {
   updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
+  updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
 }
@@ -1811,6 +1812,11 @@ input RemoveAppointment {
 input CancelAppointment {
   token: String!
   reason: String!
+}
+
+input UpdateAppointmentStatusInput {
+  id: String!
+  status: APPOINTMENTSTATUS!
 }
 
 input PaymentInput {
