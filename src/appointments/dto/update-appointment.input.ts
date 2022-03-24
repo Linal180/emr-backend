@@ -16,7 +16,7 @@ export class UpdateAppointmentStatusInput {
   @Field()
   id: string;
 
-  @Field({nullable: false})
+  @Field(()=>APPOINTMENTSTATUS,{nullable: false})
   status: APPOINTMENTSTATUS
 }
 
