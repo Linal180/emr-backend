@@ -223,8 +223,8 @@ type Patient {
   gender: GENDERIDENTITY!
   dob: String
   preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: String!
-  deceasedDate: String!
+  registrationDate: String
+  deceasedDate: String
   privacyNotice: Boolean!
   phonePermission: Boolean!
   voiceCallPermission: Boolean!
@@ -243,11 +243,11 @@ type Patient {
   pronouns: PRONOUNS
   homeBound: HOMEBOUND
   holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean!
+  statementDelivereOnline: Boolean
   inviteAccepted: Boolean
-  statementNote: String!
-  statementNoteDateFrom: String!
-  statementNoteDateTo: String!
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
   facilityId: String
   attachments: [Attachment!]
   contacts: [Contact!]
@@ -820,6 +820,25 @@ type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
   pagination: PaginationPayload
+}
+
+type RolePermission {
+  id: String!
+  isMutable: Boolean
+  permission: Permission
+  role: Role
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Permission {
+  id: String!
+  name: String
+  moduleType: String
+  status: Boolean
+  rolePermissions: [RolePermission!]
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Query {
