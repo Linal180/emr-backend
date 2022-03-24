@@ -1877,24 +1877,6 @@ input CancelAppointment {
 }
 
 input UpdateAppointmentStatusInput {
-  paymentType: PaymentType
-  billingStatus: BillingStatus
-  insuranceCompany: String
-  membershipID: String
-  reason: String
-  notes: String
-  employment: Boolean
-  autoAccident: Boolean
-  otherAccident: Boolean
-  otherPartyResponsible: Boolean
-  primaryInsurance: String
-  secondaryInsurance: String
-  scheduleStartDateTime: String
-  scheduleEndDateTime: String
-  serviceId: String
-  facilityId: String
-  providerId: String
-  patientId: String
   id: String!
   status: String!
 }
