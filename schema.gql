@@ -50,7 +50,7 @@ enum STATUS {
 
 type Transactions {
   id: String!
-  transactionId: String!
+  transactionId: String
   patientId: String!
   doctorId: String!
   facilityId: String!
@@ -840,9 +840,15 @@ type BraintreePayload {
   clientToken: String!
 }
 
-type TransactionPayload {
+type TransactionsPayload {
   response: ResponsePayload
   transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transaction: Transactions!
   pagination: PaginationPayload
 }
 
@@ -1089,9 +1095,9 @@ type Mutation {
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
-  chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
+  chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
-  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionPayload!
+  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
@@ -1894,11 +1900,13 @@ input UpdateAppointmentStatusInput {
 }
 
 input PaymentInput {
-  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
-  createPatientItemInput: CreatePatientItemInput!
-  createGuardianContactInput: CreateContactInput!
-  clientIntent: String!
-  client: String!
+  clientIntent: String
+  price: String!
+  providerId: String!
+  facilityId: String!
+  patientId: String!
+  appointmentId: String!
+  serviceId: String!
 }
 
 input PaymentInputsAfterAppointment {

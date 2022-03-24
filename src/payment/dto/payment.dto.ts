@@ -31,9 +31,9 @@ export class TransactionsPayload extends ResponsePayloadResponse {
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
 }
-
+@ObjectType()
 export class TransactionPayload extends ResponsePayloadResponse {
-    @Field(type => Transactions, { nullable: 'itemsAndList' })
+    @Field(type => Transactions)
     transaction: Transactions;
 
     @Field(type => PaginationPayload, { nullable: true })
