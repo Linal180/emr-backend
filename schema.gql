@@ -223,8 +223,8 @@ type Patient {
   gender: GENDERIDENTITY!
   dob: String
   preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: String!
-  deceasedDate: String!
+  registrationDate: String
+  deceasedDate: String
   privacyNotice: Boolean!
   phonePermission: Boolean!
   voiceCallPermission: Boolean!
@@ -243,11 +243,11 @@ type Patient {
   pronouns: PRONOUNS
   homeBound: HOMEBOUND
   holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean!
+  statementDelivereOnline: Boolean
   inviteAccepted: Boolean
-  statementNote: String!
-  statementNoteDateFrom: String!
-  statementNoteDateTo: String!
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
   facilityId: String
   attachments: [Attachment!]
   contacts: [Contact!]
@@ -822,6 +822,25 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type RolePermission {
+  id: String!
+  isMutable: Boolean
+  permission: Permission
+  role: Role
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Permission {
+  id: String!
+  name: String
+  moduleType: String
+  status: Boolean
+  rolePermissions: [RolePermission!]
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1036,6 +1055,7 @@ type Mutation {
   updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
+  updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
 }
@@ -1811,6 +1831,11 @@ input RemoveAppointment {
 input CancelAppointment {
   token: String!
   reason: String!
+}
+
+input UpdateAppointmentStatusInput {
+  id: String!
+  status: APPOINTMENTSTATUS!
 }
 
 input PaymentInput {
