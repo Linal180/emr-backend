@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
 import { AppointmentService } from '../../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
-import { BraintreePayload, TransactionPayload } from '../dto/payment.dto';
+import { BraintreePayload, TransactionPayload, TransactionsPayload } from '../dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
@@ -120,51 +120,60 @@ export class PaymentService {
     }
   }
 
-  async chargeBefore(req: PaymentInput): Promise<Appointment> {
+  async chargeBefore(req: PaymentInput): Promise<Transactions> {
     const {
       clientIntent,
-      createExternalAppointmentItemInput: { serviceId },
+      serviceId,
+      appointmentId,
+      providerId,
+      facilityId,
+      patientId
     } = req;
     try {
       const { price } = await this.appointmentService.getAmount(serviceId);
-      const brainTrans = await this.gateway.transaction.sale({
-        amount: price,
-        paymentMethodNonce: clientIntent,
-      });
-
-      if (brainTrans?.success) {
-        const appointment =
-          await this.appointmentService.createExternalAppointmentInput({
-            createExternalAppointmentItemInput: {
-              ...req.createExternalAppointmentItemInput,
-              billingStatus: BillingStatus.PAID,
-            },
-            ...req,
-          });
-
-        if (appointment?.id) {
-          const data = {
-            transactionId: brainTrans?.transaction?.id,
-            doctorId: appointment?.providerId,
-            facilityId: appointment?.facilityId,
-            patientId: appointment?.patientId,
-            appointmentId: appointment?.id,
-            status: TRANSACTIONSTATUS.PAID,
-          };
-          await this.create(data);
-
-          return appointment;
-        } else {
-          const refunded = await this.refund(brainTrans?.transaction?.id, appointment.id);
-          if (refunded?.success) {
-            throw new Error(
-              'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
-            );
+      if (clientIntent) {
+        const brainTrans = await this.gateway.transaction.sale({
+          amount: price,
+          paymentMethodNonce: clientIntent,
+        });
+        if (brainTrans?.success) {
+          if (appointmentId) {
+            const data = {
+              transactionId: brainTrans?.transaction?.id,
+              doctorId: providerId,
+              facilityId,
+              patientId,
+              appointmentId,
+              status: TRANSACTIONSTATUS.PAID,
+            };
+            return await this.create(data);
+          } else {
+            const refunded = await this.refund(brainTrans?.transaction?.id, appointmentId);
+            if (refunded?.success) {
+              throw new Error(
+                'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
+              );
+            }
           }
+        } else {
+          throw new Error(brainTrans?.message);
         }
-      } else {
-        throw new Error(brainTrans?.message);
       }
+      else {
+
+        const data = {
+          transactionId: null,
+          doctorId: providerId,
+          facilityId,
+          patientId,
+          appointmentId,
+          status: TRANSACTIONSTATUS.PAID,
+        };
+
+        return await this.create(data);
+      }
+
+
     } catch (error) {
       throw new Error(error);
     }
@@ -180,7 +189,7 @@ export class PaymentService {
 
   async create(data: CreateTransactionInputs) {
     try {
-      const transaction =  this.transactionRepo.create(data);
+      const transaction = this.transactionRepo.create(data);
       const saved = await this.transactionRepo.save(transaction);
       return saved;
     } catch (error) {
@@ -244,7 +253,7 @@ export class PaymentService {
   }
 
   //get all transactions
-  async getAll(transactionInputs: GetAllTransactionsInputs): Promise<TransactionPayload> {
+  async getAll(transactionInputs: GetAllTransactionsInputs): Promise<TransactionsPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Transactions>(this.transactionRepo, transactionInputs)
       return {

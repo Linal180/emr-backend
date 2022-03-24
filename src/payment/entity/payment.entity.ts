@@ -34,8 +34,8 @@ export class Transactions {
   @Field()
   id: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   transactionId: string;
 
   @Column({ nullable: false })
