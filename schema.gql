@@ -1878,7 +1878,7 @@ input CancelAppointment {
 
 input UpdateAppointmentStatusInput {
   id: String!
-  status: String!
+  status: APPOINTMENTSTATUS!
 }
 
 input PaymentInput {
