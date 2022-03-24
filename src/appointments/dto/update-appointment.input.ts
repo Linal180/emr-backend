@@ -12,7 +12,7 @@ export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) 
 }
 
 @InputType()
-export class UpdateAppointmentStatusInput extends PartialType(CreateAppointmentInput) {
+export class UpdateAppointmentStatusInput {
   @Field()
   id: string;
 
