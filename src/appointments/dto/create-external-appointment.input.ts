@@ -5,7 +5,6 @@ import { CreateExternalAppointmentItemInput } from './create-external-appointmen
 
 @InputType()
 export class CreateExternalAppointmentInput {
-    
     @Field()
     createExternalAppointmentItemInput: CreateExternalAppointmentItemInput
 
@@ -14,5 +13,4 @@ export class CreateExternalAppointmentInput {
 
     @Field(type => CreateContactInput)
     createGuardianContactInput?: CreateContactInput
-
 }

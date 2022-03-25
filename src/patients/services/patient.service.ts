@@ -184,7 +184,6 @@ export class PatientService {
       const patientInstance  = await this.findOne(patientInviteInput.id)
       const patientProviders = await this.usualProvider(patientInstance.id)
       const usualProvider = patientProviders.find((item) => item.currentProvider)
-
       //get patient role
       const allRoles = await this.usersService.findAllRoles()
       const patientRole = allRoles.find((item) => item.role === 'patient')
@@ -197,7 +196,7 @@ export class PatientService {
          patientInstance.user = user
          const patient =  await this.patientRepository.save(patientInstance)
          await this.usersService.saveUserId(patient.id, user);
-         this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.id, patientInstance.firstName +' '+ patientInstance.lastName, usualProvider.doctor.firstName + " "+usualProvider.doctor.lastName,  true, user.token, inviteTemplateId)
+         this.mailerService.sendEmailForgotPassword(user.email, user.id, patientInstance.firstName +' '+ patientInstance.lastName, usualProvider.doctor.firstName + " "+usualProvider.doctor.lastName,  true, user.token, inviteTemplateId)
          return patient
         }else{
           const token = createToken();

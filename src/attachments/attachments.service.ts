@@ -218,7 +218,8 @@ export class AttachmentsService {
       type,
       typeId,
       key: Key,
-      url: Location
+      url: Location,
+      attachmentName: Key.split("/").pop()
     }
   }
 }

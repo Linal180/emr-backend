@@ -1,12 +1,10 @@
-import { Controller, Post, Body, Param, Delete, UploadedFile, UseInterceptors, ClassSerializerInterceptor, UseGuards, SetMetadata, Get } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { mediaFilesFilter, mediaFilesInter } from '../lib/helper';
-import { JwtAuthRestFulGuard } from 'src/users/auth/jwt-auth-restful.guard';
-import RestFulRoleGuard from 'src/users/auth/roleRestful.guard';
-import { PatientService } from './services/patient.service';
-import { PatientPayload } from './dto/patient-payload.dto';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
-import {File} from '../aws/dto/file-input.dto'
+import { File } from '../aws/dto/file-input.dto';
+import { mediaFilesFilter, mediaFilesInter } from '../lib/helper';
+import { PatientPayload } from './dto/patient-payload.dto';
+import { PatientService } from './services/patient.service';
 
 @Controller('patients')
 export class PatientController {
