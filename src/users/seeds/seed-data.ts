@@ -10,7 +10,6 @@ export const RolesData = [
     { role: 'doctor', customRole: false },
     { role: 'nurse', customRole: false },
     { role: 'patient', customRole: false },
-    { role: 'patient', customRole: false },
     { role: 'staff' , customRole: false},
     { role: 'nurse_practitioner', customRole: false },
     { role: 'office_manager', customRole: false },
