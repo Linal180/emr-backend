@@ -13,6 +13,15 @@ export class CreateAttachmentInput {
 
   @Field({ nullable: true })
   subTitle?: string
+  
+  @Field({ nullable: true })
+  providerName?: string
+    
+  @Field({ nullable: true })
+  attachmentName?: string
+
+  @Field({ nullable: true })
+  comments?: string
 
   @Field({ nullable: true })
   description?: string

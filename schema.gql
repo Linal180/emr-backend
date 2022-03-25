@@ -8,6 +8,9 @@ type Attachment {
   typeId: String!
   title: String
   key: String
+  attachmentName: String
+  providerName: String
+  comments: String
   url: String
   createdAt: String!
   updatedAt: String!
@@ -1764,6 +1767,9 @@ input CreateAttachmentInput {
   typeId: String!
   title: String
   subTitle: String
+  providerName: String
+  attachmentName: String
+  comments: String
   description: String
   url: String
 }
@@ -1778,6 +1784,9 @@ input UpdateAttachmentInput {
   typeId: String
   title: String
   subTitle: String
+  providerName: String
+  attachmentName: String
+  comments: String
   description: String
   url: String
   id: String
