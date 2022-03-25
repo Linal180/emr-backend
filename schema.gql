@@ -273,195 +273,10 @@ type Schedule {
   updatedAt: String!
 }
 
-<<<<<<< HEAD
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-=======
-type Employer {
-  id: String!
-  name: String
-  email: String
-  phone: String
-  mobile: String
-  industry: String
-  usualOccupation: String
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Patient {
-  id: String!
-  suffix: String
-  email: String
-  patientRecord: String
-  firstName: String
-  middleName: String
-  lastName: String
-  firstNameUsed: String
-  prefferedName: String
-  previousFirstName: String
-  previouslastName: String
-  motherMaidenName: String
-  ssn: String
-  gender: GENDERIDENTITY!
-  dob: String
-  preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: String
-  deceasedDate: String
-  privacyNotice: Boolean!
-  phonePermission: Boolean!
-  voiceCallPermission: Boolean!
-  releaseOfInfoBill: Boolean!
-  callToConsent: Boolean!
-  medicationHistoryAuthority: Boolean!
-  patientNote: String
-  language: String
-  pharmacy: String
-  race: RACE
-  ethnicity: ETHNICITY
-  maritialStatus: MARITIALSTATUS
-  sexualOrientation: SEXUALORIENTATION
-  genderIdentity: GENDERIDENTITY
-  sexAtBirth: GENDERIDENTITY
-  pronouns: PRONOUNS
-  homeBound: HOMEBOUND
-  holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean
-  inviteAccepted: Boolean
-  statementNote: String
-  statementNoteDateFrom: String
-  statementNoteDateTo: String
-  facilityId: String
-  attachments: [Attachment!]
-  contacts: [Contact!]
-  facility: Facility
-  user: User
-  doctorPatients: [DoctorPatient!]
-  employer: [Employer!]
-  createdAt: String!
-  updatedAt: String!
-  transaction: Transactions
-}
-
-"""The patient's sexual orientation type assigned"""
-enum GENDERIDENTITY {
-  MALE
-  FEMALE
-  TRANSGENDER_MALE
-  TRANSGENDER_FEMALE
-  NOT_EXCLUSIVE
-  NONE
-}
-
-"""The patient's communication method assigned"""
-enum COMMUNICATIONTYPE {
-  PHONE
-  VOICE_MESSAGE
-  MESSAGE
-  EMAIL
-}
-
-"""The user race assigned"""
-enum RACE {
-  WHITE
-  BLACK_AFRICAN_AMERICAN
-  ASIAN
-  AMERICAN_INDIAN_ALASKA_NATIVE
-  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
-  OTHER
-}
-
-"""The patient's ethnicity type assigned"""
-enum ETHNICITY {
-  NONE
-  CENTERAL_AMERICAN
-  CENTERAL_AMERICAN_INDIAN
-}
-
-"""The patient's maritial status type assigned"""
-enum MARITIALSTATUS {
-  SINGLE
-  MARIED
-  WIDOWED
-  SEPARATED
-  DIVORCED
-}
-
-"""The patient's sexual orientation type assigned"""
-enum SEXUALORIENTATION {
-  HOMOSEXUAL
-  HETEROSEXUAL
-  BISEXUAL
-  DONT_KNOW
-  NONE
-}
-
-"""The patient's pronouns type assigned"""
-enum PRONOUNS {
-  HE
-  SHE
-  NONE
-}
-
-"""The patient's homebound type assigned"""
-enum HOMEBOUND {
-  YES
-  NO
-}
-
-"""The patient's hold statement type assigned"""
-enum HOLDSTATEMENT {
-  NONE
-  BAD_ADDRESS
-  NO_FORW_ADDRESS
-  BANKRUPTCY
-  CLAIM_CANCELED
-  INCORRECT_GURANTOR
-  PATIENT_DEASEASED
-  ACCOUNT_TOO_LONG
-  PRACTICE_REQUEST
-}
-
-type Practice {
-  id: String!
-  name: String!
-  phone: String
-  fax: String
-  practiceId: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  facilities: [Facility!]
-  createdAt: String
-  updatedAt: String
-}
-
-type BillingAddress {
-  id: String!
-  email: String
-  phone: String
-  mobile: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  federalTaxId: String
-  bankAccount: String
-  checkPayableTo: String
-  facility: Facility
-  doctor: Doctor
-  userId: String
-  createdAt: String!
-  updatedAt: String!
-}
->>>>>>> 895e9a1d4d7fc947bc36c871380707fbe182bd07
 
 type Staff {
   id: String!
@@ -759,8 +574,8 @@ type Patient {
   gender: GENDERIDENTITY!
   dob: String
   preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: String!
-  deceasedDate: String!
+  registrationDate: String
+  deceasedDate: String
   privacyNotice: Boolean!
   phonePermission: Boolean!
   voiceCallPermission: Boolean!
@@ -779,11 +594,11 @@ type Patient {
   pronouns: PRONOUNS
   homeBound: HOMEBOUND
   holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean!
+  statementDelivereOnline: Boolean
   inviteAccepted: Boolean
-  statementNote: String!
-  statementNoteDateFrom: String!
-  statementNoteDateTo: String!
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
   facilityId: String
   attachments: [Attachment!]
   contacts: [Contact!]
@@ -1030,25 +845,6 @@ type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
   pagination: PaginationPayload
-}
-
-type RolePermission {
-  id: String!
-  isMutable: Boolean
-  permission: Permission
-  role: Role
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Permission {
-  id: String!
-  name: String
-  moduleType: String
-  status: Boolean
-  rolePermissions: [RolePermission!]
-  createdAt: String!
-  updatedAt: String!
 }
 
 type Query {
