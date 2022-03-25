@@ -201,11 +201,11 @@ export class Patient {
   preferredCommunicationMethod: COMMUNICATIONTYPE
 
   @Column({ nullable: true })
-  @Field()
+  @Field({nullable: true})
   registrationDate: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({nullable: true})
   deceasedDate: string;
 
   @Column({ nullable: true, default: false })
@@ -318,7 +318,7 @@ export class Patient {
   holdStatement: HOLDSTATEMENT
 
   @Column({ nullable: true, default: false })
-  @Field()
+  @Field({nullable: true})
   statementDelivereOnline: boolean;
 
   @Column({ nullable: true, default: false })
@@ -326,15 +326,15 @@ export class Patient {
   inviteAccepted: boolean;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({nullable: true})
   statementNote: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({nullable: true})
   statementNoteDateFrom: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({nullable: true})
   statementNoteDateTo: string;
 
   @Column({ nullable: true })

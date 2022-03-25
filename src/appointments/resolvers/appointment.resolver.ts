@@ -15,7 +15,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointment, GetDoctorAppointment, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetAppointment, GetDoctorAppointment, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment } from '../entities/appointment.entity';
 import { AppointmentService } from '../services/appointment.service';
 
@@ -157,6 +157,16 @@ export class AppointmentResolver {
     return {
       appointments: await this.appointmentService.getPatientAppointment(getPatientAppointmentInput),
       response: { status: 200, message: 'Appointment fetched successfully' }
+    };
+  }
+
+  @Mutation(() => AppointmentPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['super-admin', 'admin'])
+  async updateAppointmentStatus(@Args('appointmentStatusInput') appointmentStatusInput: UpdateAppointmentStatusInput) {
+    return {
+      appointment: await this.appointmentService.updateAppointmentStatus(appointmentStatusInput),
+      response: { status: 200, message: 'Appointment created successfully' }
     };
   }
 }

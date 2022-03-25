@@ -87,5 +87,4 @@ export const PermissionData = [
     { name: 'getDoctorSchedule'  , moduleType: 'Schedule' },
     { name: 'getDoctorSlots'  , moduleType: 'Schedule' },
     { name: 'removeSchedule'  , moduleType: 'Schedule' },
-    
 ];
