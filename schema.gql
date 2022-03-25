@@ -874,22 +874,6 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
-type FormElement {
-  id: String!
-  placeholder: String
-  defaultValue: String
-  required: Boolean
-  errorMsg: String
-  name: String!
-  tableName: String
-  columnName: String
-  fieldId: String!
-  sectionId: String!
-  element: Element
-  createdAt: String
-  updatedAt: String
-}
-
 type Element {
   id: String!
   type: ElementType!
@@ -905,6 +889,22 @@ enum ElementType {
   RADIO
   DATE
   FILE
+}
+
+type FormElement {
+  id: String!
+  placeholder: String
+  defaultValue: String
+  required: Boolean
+  errorMsg: String
+  name: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  sectionId: String!
+  element: Element
+  createdAt: String
+  updatedAt: String
 }
 
 type Query {
