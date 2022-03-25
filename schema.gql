@@ -20,27 +20,117 @@ enum AttachmentType {
   lab
 }
 
-type Transactions {
-  id: String!
-  transactionId: String!
-  patientId: String!
-  doctorId: String!
-  facilityId: String!
-  appointmentId: String!
-  patient: [Patient!]
-  doctor: [Doctor!]
-  facility: [Facility!]
-  appointment: Appointment
-  createdAt: String
-  updatedAt: String
-  status: TRANSACTIONSTATUS!
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
 }
 
-"""The transaction payment status type assigned"""
-enum TRANSACTIONSTATUS {
-  REFUND
-  DUE
-  PAID
+type AttachmentPayload {
+  response: ResponsePayload
+  attachment: Attachment
+}
+
+type AttachmentMediaPayload {
+  response: ResponsePayload
+  preSignedUrl: String
+}
+
+type PaginationPayload {
+  page: Int
+  limit: Int
+  totalCount: Int
+  totalPages: Int
+}
+
+type AttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type DoctorPatient {
+  id: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Permission {
+  id: String!
+  name: String
+  moduleType: String
+  status: Boolean
+  rolePermissions: [RolePermission!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type RolePermission {
+  id: String!
+  isMutable: Boolean
+  permission: Permission
+  role: Role
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Role {
+  id: String!
+  role: String
+  customRole: Boolean
+  users: User
+  rolePermissions: [RolePermission!]
+  createdAt: String
+  updatedAt: String
+}
+
+type User {
+  id: String!
+  status: UserStatus!
+  emailVerified: Boolean!
+  email: String!
+  inviteSentAt: String!
+  inviteAcceptedAt: String!
+  userId: String!
+  token: String
+  userType: String!
+  facility: Facility
+  roles: [Role]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user status"""
+enum UserStatus {
+  DEACTIVATED
+  ACTIVE
+}
+
+type BillingAddress {
+  id: String!
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  federalTaxId: String
+  bankAccount: String
+  checkPayableTo: String
+  facility: Facility
+  doctor: Doctor
+  userId: String
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Contact {
@@ -141,57 +231,318 @@ enum ContactType {
   GUARANDOR
 }
 
-type Role {
+type Service {
   id: String!
-  role: UserRole!
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user role assigned"""
-enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  DOCTOR
-  DOCTOR_ASSISTANT
-  NURSE_PRACTITIONER
-  OFFICE_MANAGER
-  PATIENT
-  NURSE
-  BILLING
-  STAFF
-}
-
-type User {
-  id: String!
-  status: UserStatus!
-  emailVerified: Boolean!
-  email: String!
-  inviteSentAt: String!
-  inviteAcceptedAt: String!
-  userId: String!
-  token: String
-  userType: String!
+  name: String!
+  serviceType: ServiceType!
+  duration: String!
+  color: String
+  price: String!
+  isActive: Boolean
+  facilityId: String
   facility: Facility
-  roles: [Role]
-  createdAt: String!
-  updatedAt: String!
+  scheduleServices: [ScheduleServices!]
+  createdAt: String
+  updatedAt: String
 }
 
-"""The user status"""
-enum UserStatus {
-  DEACTIVATED
-  ACTIVE
+"""The service type assigned type"""
+enum ServiceType {
+  INTERNAL
+  EXTERNAL
 }
 
-type DoctorPatient {
+type ScheduleServices {
   id: String!
-  doctorId: String
-  patientId: String
-  currentProvider: Boolean
-  doctor: Doctor
+  serviceId: String
+  scheduleId: String
+  service: Service
   createdAt: String!
   updatedAt: String!
+}
+
+type Schedule {
+  id: String!
+  startAt: String!
+  endAt: String!
+  recurringEndDate: DateTime
+  doctorId: String
+  doctor: Doctor
+  scheduleServices: [ScheduleServices!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Staff {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String
+  dob: String
+  phone: String
+  facilityId: String
+  mobile: String
+  gender: Gender!
+  user: User
+  facility: Facility
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type Doctor {
+  id: String!
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  providerIntials: String
+  degreeCredentials: String
+  timeZone: String
+  speciality: Speciality
+  dob: String
+  ssn: String
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String!
+  deaTermDate: String!
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
+  facilityId: String
+  user: User
+  facility: Facility
+  contacts: [Contact!]
+  billingAddress: [BillingAddress!]
+  schedule: [Schedule!]
+  staff: [Staff]
+  createdAt: String!
+  updatedAt: String!
+  transaction: Transactions
+}
+
+"""The doctor's speciality"""
+enum Speciality {
+  PHYSICIAN_ASSISTANT
+  PHARMACIST
+  PERIODONTICS
+  PEDIATRIC_DENTIST
+  PEDIATRIC_DERMATOLOGY
+  NEUROLOGY
+  GASTROENTEROLOGY
+}
+
+type Transactions {
+  id: String!
+  transactionId: String!
+  patientId: String!
+  doctorId: String!
+  facilityId: String!
+  appointmentId: String!
+  patient: [Patient!]
+  doctor: [Doctor!]
+  facility: [Facility!]
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+  status: TRANSACTIONSTATUS!
+}
+
+"""The transaction payment status type assigned"""
+enum TRANSACTIONSTATUS {
+  REFUND
+  DUE
+  PAID
+}
+
+type Practice {
+  id: String!
+  name: String!
+  phone: String
+  fax: String
+  practiceId: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  facilities: [Facility!]
+  createdAt: String
+  updatedAt: String
+}
+
+type Facility {
+  id: String!
+  name: String!
+  practiceType: PracticeType
+  cliaIdNumber: String
+  federalTaxId: String
+  isPrivate: Boolean
+  isPrimary: Boolean
+  color: String
+  tamxonomyCode: String
+  timeZone: String
+  mammographyCertificationNumber: String
+  npi: String
+  practiceId: String
+  serviceCode: ServiceCode!
+  staff: [Staff!]
+  doctors: [Doctor!]
+  user: [User!]
+  contacts: [Contact!]
+  services: [Service!]
+  practice: Practice
+  billingAddress: [BillingAddress!]
+  createdAt: String
+  updatedAt: String
+  transaction: Transactions
+}
+
+"""The facility practice type assigned type"""
+enum PracticeType {
+  HOSPITAL
+  LAB
+  CLINIC
+}
+
+"""The facility service code type assigned"""
+enum ServiceCode {
+  AMBULANCE_41
+  PHARMACY_01
+  TELEHEALTH_02
+  TELEHEALTH_OTHER_THAN_PATIENT_HOME_02
+  SCHOOL_03
+  TRIBAL_07
+  TRIBAL_08
+  PRISON_09
+  PRISON_10
+  TELEHEALTH_10
+  OFFICE_11
+  HOME_12
+  MOBILE_UNIT_15
+  TEMPORARY_LoOGOING_16
+  WALK_IN_RETAIL_HEALTH_CLINIC
+  PLACE_OF_EMPLOYMENT_18
+  OFF_CAMPUS_OUTPATIENT_HOSPITAL_19
+  URGENT_CARE_20
+  INPATIENT_HOSPITAL_21
+  OUTPATIENT_HOSPITAL_22
+  EMERGENCY_ROOM_HOSPITAL_23
+  AMBULATORY_SURGICAL_CENTER_24
+  MILITARY_TREATMENT_FACILITY_26
+  SKILLED_NURSING_FACILITY_31
+  NURSING_FACILITY_32
+  AMBULANCE_LAND_41
+  INPATIENT_PSYCHIATRIC_FACILITY_51
+  PSYCHIATRIC_FACILITY_PARTIAL_HOSPITILIZATION_52
+  INTERMEDIATE_CARE_FACILITY_MENTALLY_RETARDED_54
+  RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENMT_FACILITY_55
+  PSYCHIATRIC_RESIDENTIAL_TREATMENT_CENTER_56
+  NON_RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENT_FACILITY_57
+  NON_RESIDENTIAL_OPIOID_TREATMENT_FACILITY_58
+  MASS_IMMUNIZATION_CENTER_60
+  AMBULANCE_42
+  AMBULANCE_24
+  ASSISTED_LIVING_13
+  BIRTHING_CENTER_25
+  COMMUNITY_MENTAL_HEALTH_CENTER_53
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
+  CUSTODIAL_CARE_FACILITY_33
+  EMERGENCY_ROOM_23
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
+  STATE_OR_LOCAL_PUBLIC_HEALTH_CLINIC_71
+  RURAL_HEALTH_CLINIC_72
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
+  GROUP_HOME_14
+  HOMELESS_SHELTER_04
+  HOSPICE_34
+  INDEPENDENT_CLINIC_49
+  INDEPENDENT_LABORATORY_81
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
+}
+
+type Appointment {
+  id: String!
+  isExternal: Boolean
+  paymentType: PaymentType!
+  status: APPOINTMENTSTATUS!
+  billingStatus: BillingStatus!
+  appointmentCancelReason: String
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  token: String
+  appointmentNumber: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
+  providerId: String
+  patientId: String
+  facilityId: String
+  appointmentTypeId: String
+  appointmentType: Service
+  facility: Facility
+  provider: Doctor
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient payment type assigned"""
+enum PaymentType {
+  SELF
+  INSURANCE
+}
+
+"""The patient appointment status type assigned"""
+enum APPOINTMENTSTATUS {
+  CANCELLED
+  INITIATED
+  COMPLETED
+}
+
+"""The patient billing status assigned"""
+enum BillingStatus {
+  PAID
+  DUE
 }
 
 type Employer {
@@ -339,347 +690,26 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
-type Practice {
-  id: String!
-  name: String!
-  phone: String
-  fax: String
-  practiceId: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  facilities: [Facility!]
-  createdAt: String
-  updatedAt: String
-}
-
-type BillingAddress {
-  id: String!
-  email: String
-  phone: String
-  mobile: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  federalTaxId: String
-  bankAccount: String
-  checkPayableTo: String
-  facility: Facility
-  doctor: Doctor
-  userId: String
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Staff {
-  id: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-  username: String
-  dob: String
-  phone: String
-  facilityId: String
-  mobile: String
-  gender: Gender!
-  user: User
-  facility: Facility
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user gender assigned"""
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-}
-
-type Schedule {
-  id: String!
-  startAt: String!
-  endAt: String!
-  recurringEndDate: DateTime
-  doctorId: String
-  doctor: Doctor
-  scheduleServices: [ScheduleServices!]
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type ScheduleServices {
-  id: String!
-  serviceId: String
-  scheduleId: String
-  service: Service
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Service {
-  id: String!
-  name: String!
-  serviceType: ServiceType!
-  duration: String!
-  color: String
-  price: String!
-  isActive: Boolean
-  facilityId: String
-  facility: Facility
-  scheduleServices: [ScheduleServices!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The service type assigned type"""
-enum ServiceType {
-  INTERNAL
-  EXTERNAL
-}
-
-type Facility {
-  id: String!
-  name: String!
-  practiceType: PracticeType
-  cliaIdNumber: String
-  federalTaxId: String
-  isPrivate: Boolean
-  isPrimary: Boolean
-  color: String
-  tamxonomyCode: String
-  timeZone: String
-  mammographyCertificationNumber: String
-  npi: String
-  practiceId: String
-  serviceCode: ServiceCode!
-  staff: [Staff!]
-  doctors: [Doctor!]
-  user: [User!]
-  contacts: [Contact!]
-  services: [Service!]
-  practice: Practice
-  billingAddress: [BillingAddress!]
-  createdAt: String
-  updatedAt: String
-  transaction: Transactions
-}
-
-"""The facility practice type assigned type"""
-enum PracticeType {
-  HOSPITAL
-  LAB
-  CLINIC
-}
-
-"""The facility service code type assigned"""
-enum ServiceCode {
-  AMBULANCE_41
-  PHARMACY_01
-  TELEHEALTH_02
-  TELEHEALTH_OTHER_THAN_PATIENT_HOME_02
-  SCHOOL_03
-  TRIBAL_07
-  TRIBAL_08
-  PRISON_09
-  PRISON_10
-  TELEHEALTH_10
-  OFFICE_11
-  HOME_12
-  MOBILE_UNIT_15
-  TEMPORARY_LoOGOING_16
-  WALK_IN_RETAIL_HEALTH_CLINIC
-  PLACE_OF_EMPLOYMENT_18
-  OFF_CAMPUS_OUTPATIENT_HOSPITAL_19
-  URGENT_CARE_20
-  INPATIENT_HOSPITAL_21
-  OUTPATIENT_HOSPITAL_22
-  EMERGENCY_ROOM_HOSPITAL_23
-  AMBULATORY_SURGICAL_CENTER_24
-  MILITARY_TREATMENT_FACILITY_26
-  SKILLED_NURSING_FACILITY_31
-  NURSING_FACILITY_32
-  AMBULANCE_LAND_41
-  INPATIENT_PSYCHIATRIC_FACILITY_51
-  PSYCHIATRIC_FACILITY_PARTIAL_HOSPITILIZATION_52
-  INTERMEDIATE_CARE_FACILITY_MENTALLY_RETARDED_54
-  RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENMT_FACILITY_55
-  PSYCHIATRIC_RESIDENTIAL_TREATMENT_CENTER_56
-  NON_RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENT_FACILITY_57
-  NON_RESIDENTIAL_OPIOID_TREATMENT_FACILITY_58
-  MASS_IMMUNIZATION_CENTER_60
-  AMBULANCE_42
-  AMBULANCE_24
-  ASSISTED_LIVING_13
-  BIRTHING_CENTER_25
-  COMMUNITY_MENTAL_HEALTH_CENTER_53
-  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
-  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
-  CUSTODIAL_CARE_FACILITY_33
-  EMERGENCY_ROOM_23
-  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
-  STATE_OR_LOCAL_PUBLIC_HEALTH_CLINIC_71
-  RURAL_HEALTH_CLINIC_72
-  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
-  GROUP_HOME_14
-  HOMELESS_SHELTER_04
-  HOSPICE_34
-  INDEPENDENT_CLINIC_49
-  INDEPENDENT_LABORATORY_81
-  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
-  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
-}
-
-type Appointment {
-  id: String!
-  isExternal: Boolean
-  paymentType: PaymentType!
-  status: APPOINTMENTSTATUS!
-  billingStatus: BillingStatus!
-  appointmentCancelReason: String
-  insuranceCompany: String
-  membershipID: String
-  reason: String
-  notes: String
-  token: String
-  appointmentNumber: String
-  employment: Boolean
-  autoAccident: Boolean
-  otherAccident: Boolean
-  otherPartyResponsible: Boolean
-  primaryInsurance: String
-  secondaryInsurance: String
-  scheduleStartDateTime: String
-  scheduleEndDateTime: String
-  providerId: String
-  patientId: String
-  facilityId: String
-  appointmentTypeId: String
-  appointmentType: Service
-  facility: Facility
-  provider: Doctor
-  patient: Patient
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient payment type assigned"""
-enum PaymentType {
-  SELF
-  INSURANCE
-}
-
-"""The patient appointment status type assigned"""
-enum APPOINTMENTSTATUS {
-  CANCELLED
-  INITIATED
-  COMPLETED
-}
-
-"""The patient billing status assigned"""
-enum BillingStatus {
-  PAID
-  DUE
-}
-
-type Doctor {
-  id: String!
-  firstName: String
-  middleName: String
-  lastName: String
-  prefix: String
-  suffix: String
-  email: String
-  providerIntials: String
-  degreeCredentials: String
-  timeZone: String
-  speciality: Speciality
-  dob: String
-  ssn: String
-  taxonomyCode: String
-  deaNumber: String
-  deaActiveDate: String!
-  deaTermDate: String!
-  languagesSpoken: String
-  taxId: String
-  npi: String
-  upin: String
-  emcProviderId: String
-  billingFacility: String
-  medicareGrpNumber: String
-  medicaidGrpNumber: String
-  meammographyCertNumber: String
-  campusGrpNumber: String
-  blueShildNumber: String
-  taxIdStuff: String
-  specialityLicense: String
-  anesthesiaLicense: String
-  dpsCtpNumber: String
-  stateLicense: String
-  licenseActiveDate: String
-  licenseTermDate: String
-  prescriptiveAuthNumber: String
-  facilityId: String
-  user: User
-  facility: Facility
-  contacts: [Contact!]
-  billingAddress: [BillingAddress!]
-  schedule: [Schedule!]
-  staff: [Staff]
-  createdAt: String!
-  updatedAt: String!
-  transaction: Transactions
-}
-
-"""The doctor's speciality"""
-enum Speciality {
-  PHYSICIAN_ASSISTANT
-  PHARMACIST
-  PERIODONTICS
-  PEDIATRIC_DENTIST
-  PEDIATRIC_DERMATOLOGY
-  NEUROLOGY
-  GASTROENTEROLOGY
-}
-
-type ResponsePayload {
-  status: Float
-  error: String
-  message: String
-  name: String
-}
-
-type AttachmentPayload {
+type PermissionsPayload {
   response: ResponsePayload
-  attachment: Attachment
-}
-
-type AttachmentMediaPayload {
-  response: ResponsePayload
-  preSignedUrl: String
-}
-
-type PaginationPayload {
-  page: Int
-  limit: Int
-  totalCount: Int
-  totalPages: Int
-}
-
-type AttachmentsPayload {
-  response: ResponsePayload
-  attachments: [Attachment]
+  permissions: [Permission]
   pagination: PaginationPayload
+}
+
+type PermissionPayload {
+  response: ResponsePayload
+  permission: Permission
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+  pagination: PaginationPayload
+}
+
+type RolePayload {
+  response: ResponsePayload
+  role: Role
 }
 
 type AccessUserPayload {
@@ -695,11 +725,6 @@ type ForgotPasswordPayload {
 type UserPayload {
   user: User
   response: ResponsePayload
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
 }
 
 type UsersPayload {
@@ -822,25 +847,6 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
-type RolePermission {
-  id: String!
-  isMutable: Boolean
-  permission: Permission
-  role: Role
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Permission {
-  id: String!
-  name: String
-  moduleType: String
-  status: Boolean
-  rolePermissions: [RolePermission!]
-  createdAt: String!
-  updatedAt: String!
-}
-
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -848,6 +854,10 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  findAllPermissions(permissionInput: PermissionInput!): PermissionsPayload!
+  GetPermission(getPermission: GetPermission!): PermissionPayload!
+  getAllRoles(roleInput: RoleInput!): RolesPayload!
+  getRole(getRole: GetRole!): RolePayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
   findAllServices(serviceInput: ServiceInput!): ServicesPayload!
@@ -877,7 +887,7 @@ type Query {
 
 input UsersInput {
   status: UserStatus
-  role: UserRole
+  role: String
   paginationOptions: PaginationInput!
 }
 
@@ -888,6 +898,22 @@ input PaginationInput {
 
 input GetUser {
   id: String!
+}
+
+input PermissionInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetPermission {
+  id: String
+}
+
+input RoleInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetRole {
+  id: String
 }
 
 input FacilityInput {
@@ -1015,6 +1041,12 @@ type Mutation {
   activateUser(user: UserIdInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
   updateRole(user: UpdateRoleInput!): UserPayload!
+  createPermission(permissionItemInput: PermissionItemInput!): PermissionPayload!
+  assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput!): PermissionPayload!
+  updatePermission(updatePermissionItemInput: UpdatePermissionItemInput!): PermissionPayload!
+  removePermission(removePermission: RemovePermission!): PermissionPayload!
+  createRole(roleItemInput: RoleItemInput!): RolePayload!
+  removeRole(removeRole: RemoveRole!): RolePayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
   updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput!): FacilityPayload!
@@ -1071,8 +1103,8 @@ input RegisterUserInput {
   password: String!
   email: String!
 
-  """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """string type role - Sign-up"""
+  roleType: String
   adminId: String
   facilityId: String
   phone: String
@@ -1124,7 +1156,38 @@ input UpdateUserInput {
 
 input UpdateRoleInput {
   id: String!
-  roles: [UserRole!]!
+  roles: [String!]!
+}
+
+input PermissionItemInput {
+  name: String!
+  moduleType: String!
+  roleId: String
+}
+
+input RolePermissionItemInput {
+  roleId: String!
+  permissionsId: [String!]
+}
+
+input UpdatePermissionItemInput {
+  name: String
+  moduleType: String
+  roleId: String
+  id: String
+}
+
+input RemovePermission {
+  id: String
+}
+
+input RoleItemInput {
+  role: String!
+  customRole: Boolean = true
+}
+
+input RemoveRole {
+  id: String
 }
 
 input CreateFacilityInput {
@@ -1337,7 +1400,7 @@ input CreateStaffItemInput {
   gender: Gender
 
   """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  roleType: String
   adminId: String
   facilityId: String
 }
@@ -1361,7 +1424,7 @@ input UpdateStaffItemInput {
   gender: Gender
 
   """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  roleType: String
   adminId: String
   facilityId: String
   id: String!
@@ -1394,8 +1457,8 @@ input CreateDoctorItemInput {
   email: String!
   password: String
 
-  """Send doctor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """Send doctor Type from the string - Sign-up"""
+  roleType: String
   adminId: String
   timeZone: String
   facilityId: String!
@@ -1446,8 +1509,8 @@ input UpdateDoctorItemInput {
   email: String
   password: String
 
-  """Send doctor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """Send doctor Type from the string - Sign-up"""
+  roleType: String
   adminId: String
   timeZone: String
   facilityId: String

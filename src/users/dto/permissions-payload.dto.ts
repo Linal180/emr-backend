@@ -1,30 +1,21 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
-import { Role } from '../entities/role.entity';
+import { Permission } from '../entities/permissions.entity';
 import { ResponsePayload, ResponsePayloadResponse } from './response-payload.dto';
 
 @ObjectType()
-export default class RolesPayload extends ResponsePayloadResponse {
-  @Field(type => [Role], { nullable: 'itemsAndList' })
-  roles: Role[]
+export default class PermissionsPayload extends ResponsePayloadResponse {
+  @Field(type => [Permission], { nullable: 'itemsAndList' })
+  permissions: Permission[]
 
   @Field(type => PaginationPayload, { nullable: true })
   pagination?: PaginationPayload
 }
 
 @ObjectType()
-export class RoleStates {
-  @Field()
-  role: string;
-
-  @Field()
-  action: string
-}
-
-@ObjectType()
-export class RolePayload extends ResponsePayloadResponse {
+export class PermissionPayload extends ResponsePayloadResponse {
     @Field({ nullable: true })
-    role: Role;
+    permission: Permission;
 
     @Field({ nullable: true })
     response?: ResponsePayload

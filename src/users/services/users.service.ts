@@ -6,19 +6,20 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { getConnection, Not, Repository } from 'typeorm';
-import { FacilityService } from '../facilities/services/facility.service';
-import { createToken } from '../lib/helper';
-import { AccessUserPayload } from './dto/access-user.dto';
-import { RegisterUserInput } from './dto/register-user-input.dto';
-import { UpdatePasswordInput } from './dto/update-password-input.dto';
-import { UpdateRoleInput } from './dto/update-role-input.dto';
-import { ResendVerificationEmail, UpdateUserInput } from './dto/update-user-input.dto';
-import { UserIdInput } from './dto/user-id-input.dto';
-import UsersInput from './dto/users-input.dto';
-import { UsersPayload } from './dto/users-payload.dto';
-import { Role, UserRole } from './entities/role.entity';
-import { UserLog } from './entities/user-logs.entity';
-import { User, UserStatus } from './entities/user.entity';
+import { FacilityService } from '../../facilities/services/facility.service';
+import { createToken } from '../../lib/helper';
+import { AccessUserPayload } from './../dto/access-user.dto';
+import { RegisterUserInput } from './../dto/register-user-input.dto';
+import { UpdatePasswordInput } from './../dto/update-password-input.dto';
+import { UpdateRoleInput } from './../dto/update-role-input.dto';
+import { ResendVerificationEmail, UpdateUserInput } from './../dto/update-user-input.dto';
+import { UserIdInput } from './../dto/user-id-input.dto';
+import UsersInput from './../dto/users-input.dto';
+import { UsersPayload } from './../dto/users-payload.dto';
+import { Role } from './../entities/role.entity';
+import { UserLog } from './../entities/user-logs.entity';
+import { User, UserStatus } from './../entities/user.entity';
+import { RolesService } from './roles.service';
 
 @Injectable()
 export class UsersService {
@@ -34,7 +35,8 @@ export class UsersService {
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
     private readonly mailerService: MailerService,
-    private readonly patientService: PatientService
+    private readonly patientService: PatientService,
+    private readonly rolesService: RolesService
   ) { }
 
 
@@ -71,7 +73,9 @@ export class UsersService {
         // SEND EMAIL TO USER FOR RESET PASSWORD
         let isInvite = 'INVITATION_TEMPLATE_ID';
         let isAdmin = false
-        if(registerUserInput.roleType !== UserRole.PATIENT){
+        const roles = await this.findAllRoles()
+        const patientRole = roles.find((item) => item.role === 'patient')
+        if(registerUserInput.roleType !== patientRole.role){
         this.mailerService.sendEmailForgotPassword(user.email, user.id, user.email, '', isAdmin, token, isInvite)
         }
         return user;
@@ -149,8 +153,8 @@ export class UsersService {
    */
   async updateRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
-      const { roles } = updateRoleInput
-      const isSuperAdmin = roles.find(item => item === UserRole.SUPER_ADMIN)
+      const { roles } = updateRoleInput 
+      const isSuperAdmin = roles.includes("super-admin"); 
       if (isSuperAdmin) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
@@ -164,6 +168,7 @@ export class UsersService {
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
+          console.log("fetchdRoles",fetchdRoles);
         user.roles = fetchdRoles
         return await this.usersRepository.save(user);
       }
@@ -298,8 +303,10 @@ export class UsersService {
   async deactivateUser(id: string): Promise<User> {
     try {
       const user = await this.findById(id);
+      const allRoles = await this.findAllRoles()
+      const superAdmin = allRoles.find((item) => item.role === 'super-admin')
       if (user) {
-        if ([UserRole.SUPER_ADMIN].every(i => user.roles.map(role => role.role).includes(i))) {
+        if ([superAdmin.role].every(i => user.roles.map(role => role.role).includes(i))) {
           throw new ForbiddenException({
             status: HttpStatus.FORBIDDEN,
             error: "Super Admin can't be deactivated",
@@ -398,7 +405,8 @@ export class UsersService {
     const user = await this.findRolesByUserId(secret.sub)
     return {
       ...secret,
-      roles: user.roles.map(role => role.role)
+      // roles: user.roles.map(role => role.role)
+      roles: user.roles
     };
   }
 
@@ -516,7 +524,7 @@ export class UsersService {
     try {
       return this.rolesRepository.find({
         where: {
-          role: Not(UserRole.SUPER_ADMIN)
+          role: Not('super-admin')
         }
       });
     } catch (error) {
@@ -530,12 +538,15 @@ export class UsersService {
    */
   async getAdmins(): Promise<Array<string>> {
     try {
+      const allRoles = await this.findAllRoles()
+      const admin = allRoles.find((item) => item.role === 'admin')
+      const superAdmin = allRoles.find((item) => item.role === 'super-admin')
       const users = await getConnection()
         .getRepository(User)
         .createQueryBuilder("users")
         .innerJoinAndSelect('users.roles', 'role')
-        .where('role.role = :roleType1', { roleType1: UserRole.ADMIN })
-        .orWhere('role.role = :roleType2', { roleType2: UserRole.SUPER_ADMIN })
+        .where('role.role = :roleType1', { roleType1: admin })
+        .orWhere('role.role = :roleType2', { roleType2: superAdmin })
         .getMany();
       return users.map(u => u.email);
     } catch (error) {
@@ -549,12 +560,15 @@ export class UsersService {
    */
   async getAdminIDS(): Promise<Array<string>> {
     try {
+      const allRoles = await this.findAllRoles()
+      const admin = allRoles.find((item) => item.role === 'admin')
+      const superAdmin = allRoles.find((item) => item.role === 'super-admin')
       const users = await getConnection()
         .getRepository(User)
         .createQueryBuilder("users")
         .innerJoinAndSelect('users.roles', 'role')
-        .where('role.role = :roleType1', { roleType1: UserRole.ADMIN })
-        .orWhere('role.role = :roleType2', { roleType2: UserRole.SUPER_ADMIN })
+        .where('role.role = :roleType1', { roleType1: admin })
+        .orWhere('role.role = :roleType2', { roleType2: superAdmin })
         .getMany();
       return users.map(u => u.id);
     } catch (error) {

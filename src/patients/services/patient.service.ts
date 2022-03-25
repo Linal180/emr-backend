@@ -9,13 +9,11 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Connection, Repository } from 'typeorm';
-import { threadId } from 'worker_threads';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
-import { UserRole } from '../../users/entities/role.entity';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
@@ -186,12 +184,16 @@ export class PatientService {
       const patientInstance  = await this.findOne(patientInviteInput.id)
       const patientProviders = await this.usualProvider(patientInstance.id)
       const usualProvider = patientProviders.find((item) => item.currentProvider)
+
+      //get patient role
+      const allRoles = await this.usersService.findAllRoles()
+      const patientRole = allRoles.find((item) => item.role === 'patient')
       //user registration input
       if(patientInstance && patientInstance.email) {
         const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
         if(!userAlreadyExist){
-         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: UserRole.PATIENT, adminId: patientInviteInput.adminId})
+         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId})
          patientInstance.user = user
          const patient =  await this.patientRepository.save(patientInstance)
          await this.usersService.saveUserId(patient.id, user);

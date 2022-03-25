@@ -9,17 +9,23 @@ import { PaginationModule } from "src/pagination/pagination.module";
 import { PatientModule } from "src/patients/patient.module";
 import { ProviderModule } from "src/providers/provider.module";
 import { JwtStrategy } from "./auth/jwt.strategy";
+import { Permission } from "./entities/permissions.entity";
 import { Role } from "./entities/role.entity";
+import { RolePermission } from "./entities/rolePermissions.entity";
 import { UserLog } from "./entities/user-logs.entity";
 import { User } from "./entities/user.entity";
+import { PermissionResolver } from "./resolvers/permissions.resolver";
+import { RoleResolver } from "./resolvers/roles.resolver";
+import { UsersResolver } from "./resolvers/users.resolver";
+import { PermissionsService } from "./services/permissions.service";
+import { RolesService } from "./services/roles.service";
+import { UsersService } from "./services/users.service";
 import { UserSubscriber } from "./subscribers/user.subscriber";
 import { UsersController } from "./users.controller";
-import { UsersResolver } from "./users.resolver";
-import { UsersService } from "./users.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role, UserLog]),
+    TypeOrmModule.forFeature([User, Role, Permission, RolePermission, UserLog]),
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
@@ -34,8 +40,8 @@ import { UsersService } from "./users.service";
     forwardRef(() => ProviderModule),
     forwardRef(() => PatientModule)
   ],
-  providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
+  providers: [UsersService, UsersResolver,PermissionResolver, RoleResolver,PermissionsService, RolesService, JwtStrategy, UserSubscriber],
   controllers: [UsersController],
-  exports: [UsersService, TypeOrmModule],
+  exports: [UsersService, TypeOrmModule, RolesService],
 })
 export class UsersModule { }
