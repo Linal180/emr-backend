@@ -16,8 +16,10 @@ export class InvoiceService {
   async create(createInvoiceInputs: CreateInvoiceInputs): Promise<Invoice> {
     try {
       const invoice =  this.invoiceRepo.create(createInvoiceInputs);
-      const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
-      invoice.transction = transaction;
+      if(createInvoiceInputs.paymentTransactionId){
+        const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
+        invoice.transction = transaction;
+      }
       const invoiceNo = await this.utilService.generateInvoiceNo();
       invoice.invoiceNo = invoiceNo;
       const updatedInvoice = await this.invoiceRepo.save(invoice);
