@@ -8,7 +8,19 @@ export enum ElementType {
   DROPDOWN = "dropdown",
   RADIO = "radio",
   DATE = "date",
-  FILE = "file"
+  FILE = "file",
+  TIME= 'time',
+  SELECT= 'select',
+  // MULTI_SELECT:'multi_select',
+  CHECKBOX= 'checkbox',
+  TEL= 'tel',
+  EMAIL= 'email',
+  COLOR= 'color',
+  IMAGE= 'image',
+  MONTH= 'month',
+  PASSWORD= 'password',
+  URL= 'url',
+  WEEK= 'week',
 }
 
 registerEnumType(ElementType, {

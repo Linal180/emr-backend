@@ -10,13 +10,13 @@ export class LayoutJSONInputType {
 }
 @InputType()
 export class SectionsInputs {
-  @Field()
+  @Field({ nullable: false })
   id: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: false })
   col: number;
 
-  @Field(() => [FieldsInputs], { nullable: true })
+  @Field(() => [FieldsInputs])
   fields: FieldsInputs[]
 }
 
@@ -24,31 +24,31 @@ export class SectionsInputs {
 @InputType()
 export class FieldsInputs {
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   label: string;
 
-  @Field()
+  @Field({ nullable: false })
   name: string;
 
-  @Field(()=>ElementType)
+  @Field(() => ElementType)
   type: ElementType;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   css: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: false })
   column: number;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   placeholder: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   defaultValue: string;
 
-  @Field({ nullable: true })
+  @Field(() => Boolean, { nullable: false })
   required: boolean;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   errorMsg: string;
 
   @Field({ nullable: true })

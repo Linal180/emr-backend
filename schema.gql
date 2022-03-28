@@ -873,6 +873,17 @@ enum ElementType {
   RADIO
   DATE
   FILE
+  TIME
+  SELECT
+  CHECKBOX
+  TEL
+  EMAIL
+  COLOR
+  IMAGE
+  MONTH
+  PASSWORD
+  URL
+  WEEK
 }
 
 type FormPayload {
@@ -1924,19 +1935,19 @@ input LayoutJSONInputType {
 input SectionsInputs {
   id: String!
   col: Int!
-  fields: [FieldsInputs!]
+  fields: [FieldsInputs!]!
 }
 
 input FieldsInputs {
-  label: String
+  label: String!
   name: String!
   type: ElementType!
-  css: String
+  css: String!
   column: Int!
-  placeholder: String
-  defaultValue: String
-  required: Boolean
-  errorMsg: String
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
   tableName: String
   columnName: String
   fieldId: String!
