@@ -438,7 +438,11 @@ export class PatientService {
    */
   async updatePatientInvite(id: string ): Promise<Patient>{
     try {
+      const patient = await this.findOne(id)
+      if(patient){
       return await this.utilsService.updateEntityManager(Patient, id, {inviteAccepted: true}, this.patientRepository)
+      }
+      return
     }catch(error){
       throw new InternalServerErrorException(error);
     }

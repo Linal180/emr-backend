@@ -173,7 +173,7 @@ export class UsersResolver {
     const { token, password } = resetPasswordInput
     const user = await this.usersService.resetPassword(password, token)
     if (user) {
-      return { user, response: { status: 200, message: "Password reset successfully", name: "PasswordReset succesfully" } }
+      return { user, response: { status: 200, message: "Password reset successfully", name: "PasswordReset successfully" } }
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
