@@ -1,5 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
@@ -166,8 +166,7 @@ export class Appointment {
   patient: Patient;
 
   @Field(() => Invoice, { nullable: true })
-  @OneToOne(() => Invoice, (invoice) => invoice.id)
-  @JoinColumn()
+  @OneToOne(() => Invoice, (invoice) => invoice.appointment, { eager: true })
   invoice: Invoice;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

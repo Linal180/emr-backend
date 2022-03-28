@@ -88,7 +88,7 @@ export class Transactions {
   status: TRANSACTIONSTATUS;
 
   @Field(() => [Invoice], { nullable: true })
-  @OneToMany(() => Invoice, (invoice) => invoice.id)
+  @OneToMany(() => Invoice, (invoice) => invoice.transction)
   invoice: Invoice[];
 
 }

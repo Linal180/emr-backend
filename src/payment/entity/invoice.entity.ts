@@ -7,6 +7,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn
 } from 'typeorm';
 //user imports
 import { Transactions } from './payment.entity';
@@ -79,10 +80,11 @@ export class Invoice {
   updatedAt: string;
 
   @Field(() => Transactions, { nullable: true })
-  @ManyToOne(() => Transactions, (transaction) => transaction.id)
+  @ManyToOne(() => Transactions, (transaction) => transaction.appointment)
   transction: Transactions;
 
   @Field(() => Appointment, { nullable: true })
-  @OneToOne(() => Appointment, (appointment) => appointment.id)
+  @OneToOne(() => Appointment, (appointment) => appointment.invoice)
+  @JoinColumn()
   appointment: Appointment;
 }
