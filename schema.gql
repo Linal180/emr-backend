@@ -270,7 +270,9 @@ type Schedule {
   endAt: String!
   recurringEndDate: DateTime
   doctorId: String
+  facilityId: String
   doctor: Doctor
+  facility: Facility
   scheduleServices: [ScheduleServices!]
   createdAt: String!
   updatedAt: String!
@@ -426,6 +428,7 @@ type Facility {
   services: [Service!]
   practice: Practice
   billingAddress: [BillingAddress!]
+  schedule: [Schedule!]
   createdAt: String
   updatedAt: String
   transaction: Transactions
@@ -775,7 +778,7 @@ type Slots {
   endTime: String
 }
 
-type DoctorSlotsPayload {
+type SlotsPayload {
   response: ResponsePayload
   slots: [Slots!]
 }
@@ -874,7 +877,8 @@ type Query {
   findAllSchedules(scheduleInput: ScheduleInput!): SchedulesPayload!
   getSchedule(getSchedule: GetSchedule!): SchedulePayload!
   getDoctorSchedule(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
-  getDoctorSlots(getDoctorSlots: GetDoctorSlots!): DoctorSlotsPayload!
+  getFacilitySchedule(getFacilitySchedule: GetFacilitySchedule!): SchedulesPayload!
+  getSlots(getSlots: GetSlots!): SlotsPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
@@ -883,7 +887,7 @@ type Query {
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
-  getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
 }
@@ -969,6 +973,7 @@ input GetDoctor {
 
 input ScheduleInput {
   facilityId: String
+  doctorId: String
   paginationOptions: PaginationInput!
 }
 
@@ -980,8 +985,13 @@ input GetDoctorSchedule {
   id: String!
 }
 
-input GetDoctorSlots {
+input GetFacilitySchedule {
   id: String!
+}
+
+input GetSlots {
+  facilityId: String
+  providerId: String
   offset: Float!
   serviceId: String!
   currentDate: String!
@@ -1017,14 +1027,16 @@ input AppointmentInput {
   appointmentNumber: String
   appointmentStatus: String
   patientId: String
+  facilityId: String
 }
 
 input GetAppointment {
   id: String!
 }
 
-input GetDoctorAppointment {
-  doctorId: String!
+input GetAppointments {
+  doctorId: String
+  facilityId: String
 }
 
 input GetPatientAppointmentInput {
@@ -1562,7 +1574,8 @@ input CreateScheduleInput {
   startAt: String!
   endAt: String!
   recurringEndDate: DateTime
-  doctorId: String!
+  doctorId: String
+  facilityId: String
   servicesIds: [String!]!
 }
 
@@ -1571,6 +1584,7 @@ input UpdateScheduleInput {
   endAt: String
   recurringEndDate: DateTime
   doctorId: String
+  facilityId: String
   servicesIds: [String!]
   id: String!
 }
@@ -1842,8 +1856,8 @@ input CreateAppointmentInput {
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   serviceId: String!
-  facilityId: String!
-  providerId: String!
+  facilityId: String
+  providerId: String
   patientId: String
 }
 
@@ -1862,8 +1876,8 @@ input CreateExternalAppointmentItemInput {
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   serviceId: String!
-  facilityId: String!
-  providerId: String!
+  facilityId: String
+  providerId: String
   patientId: String
   paymentStatus: String
 }

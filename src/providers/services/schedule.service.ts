@@ -10,10 +10,10 @@ import { UtilsService } from 'src/util/utils.service';
 import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
-import { DoctorSlotsPayload } from '../dto/doctor-slots-payload.dto';
+import { SlotsPayload } from '../dto/doctor-slots-payload.dto';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { GetDoctorSchedule, GetDoctorSlots, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { GetDoctorSchedule, GetFacilitySchedule, GetSlots, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
 import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ContactService } from './contact.service';
@@ -30,6 +30,7 @@ export class ScheduleService {
     private readonly doctorService: DoctorService,
     private readonly connection: Connection,
     @Inject(forwardRef(() => FacilityService))
+    private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
@@ -51,11 +52,17 @@ export class ScheduleService {
     try {
       // create schedule
       const scheduleInstance = this.scheduleRepository.create(createScheduleInput)
-      //fetch user
+      //fetch doctor
       if (createScheduleInput.doctorId) {
         const doctor = await this.doctorService.findOne(createScheduleInput.doctorId)
         scheduleInstance.doctor = doctor
         scheduleInstance.doctorId = doctor.id
+      }
+       //fetch facility
+       if (createScheduleInput.facilityId) {
+        const facility = await this.facilityService.findOne(createScheduleInput.facilityId)
+        scheduleInstance.facility = facility
+        scheduleInstance.facilityId = facility.id
       }
       const schedule = await this.scheduleRepository.save(scheduleInstance);
       if(createScheduleInput.servicesIds){
@@ -110,6 +117,12 @@ export class ScheduleService {
         scheduleInstance.doctor = doctor
         scheduleInstance.doctorId = doctor.id
       }
+       //fetch facility
+       if (updateScheduleInput.facilityId) {
+        const facility = await this.facilityService.findOne(updateScheduleInput.facilityId)
+        scheduleInstance.facility = facility
+        scheduleInstance.facilityId = facility.id
+      }
       scheduleInstance.startAt = updateScheduleInput.startAt;
       scheduleInstance.endAt = updateScheduleInput.endAt;
       const schedule =  await this.scheduleRepository.save(scheduleInstance);
@@ -149,6 +162,25 @@ export class ScheduleService {
       }
     }
   
+
+  /**
+   * Gets facility schedule
+   * @param { id } 
+   * @returns facility schedule 
+   */
+  async getFacilitySchedule({ id }: GetFacilitySchedule): Promise<SchedulesPayload> {
+      try {
+        const schedules = await this.scheduleRepository.find({
+          where: {
+            facilityId: id
+          }
+        })
+        return { schedules };
+      } catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+    
   /**
    * Gets schedule service
    * @param id 
@@ -170,15 +202,27 @@ export class ScheduleService {
    * @param uTcEndDateOffset 
    * @returns doctors schedule 
    */
-  async getDoctorsTodaySchedule(doctorId: string, uTcStartDateOffset: Date ,uTcEndDateOffset: Date ): Promise<Schedule[]> {
-    return await this.scheduleRepository.find({
-      where: {
-        doctorId: doctorId,
-        startAt: MoreThanOrEqual(uTcStartDateOffset),
-        endAt: LessThanOrEqual(uTcEndDateOffset),
-      },
-      order: {createdAt: "ASC"}
-    })
+  async getDoctorsTodaySchedule(getSlots: GetSlots, uTcStartDateOffset: Date ,uTcEndDateOffset: Date ): Promise<Schedule[]> {
+    if(getSlots.facilityId){
+      return await this.scheduleRepository.find({
+        where: {
+          facilityId: getSlots.facilityId,
+          startAt: MoreThanOrEqual(uTcStartDateOffset),
+          endAt: LessThanOrEqual(uTcEndDateOffset),
+        },
+        order: {createdAt: "ASC"}
+      })
+    }else if(getSlots.providerId){
+      return await this.scheduleRepository.find({
+        where: {
+          doctorId: getSlots.providerId,
+          startAt: MoreThanOrEqual(uTcStartDateOffset),
+          endAt: LessThanOrEqual(uTcEndDateOffset),
+        },
+        order: {createdAt: "ASC"}
+      })
+    }
+    
   }
 
   /**
@@ -206,15 +250,15 @@ export class ScheduleService {
    * @param getDoctorSchedule 
    * @returns schedule 
    */
-  async getDoctorSlots(getDoctorSlots: GetDoctorSlots): Promise<DoctorSlotsPayload> {
+  async getDoctorSlots(getSlots: GetSlots): Promise<SlotsPayload> {
     try {
-      const uTcStartDateOffset = moment(new Date(getDoctorSlots.currentDate)).startOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
-      const uTcEndDateOffset = moment(new Date (getDoctorSlots.currentDate)).endOf('day').utc().subtract(getDoctorSlots.offset, 'hours').toDate();
+      const uTcStartDateOffset = moment(new Date(getSlots.currentDate)).startOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
+      const uTcEndDateOffset = moment(new Date (getSlots.currentDate)).endOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
       //fetch doctor's booked appointment 
-      const appointment = await this.appointmentService.findAppointmentByProviderId(getDoctorSlots,uTcStartDateOffset,uTcEndDateOffset)
-      const schedules = await this.getDoctorsTodaySchedule(getDoctorSlots.id, uTcStartDateOffset, uTcEndDateOffset)
-      const newSchedule = await this.getScheduleServices(schedules, getDoctorSlots.serviceId)
-      const duration = parseInt(await(await this.servicesService.findOne(getDoctorSlots.serviceId)).duration)
+      const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots,uTcStartDateOffset,uTcEndDateOffset)
+      const schedules = await this.getDoctorsTodaySchedule(getSlots, uTcStartDateOffset, uTcEndDateOffset)
+      const newSchedule = await this.getScheduleServices(schedules, getSlots.serviceId)
+      const duration = parseInt(await(await this.servicesService.findOne(getSlots.serviceId)).duration)
       //get doctor's remaining time 
       const slots = await this.RemainingAvailability(newSchedule,appointment,duration)
       return slots;
@@ -228,7 +272,7 @@ export class ScheduleService {
    * @param schedule 
    * @param appointment 
    */
-  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<DoctorSlotsPayload>{ 
+  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<SlotsPayload>{ 
     let times = [];
     times = await Promise.all(schedule.map(async (item) => {
       let slotTime = moment(item.startAt);
@@ -319,7 +363,7 @@ export class ScheduleService {
         });
       }
       if(schedule.doctorId){
-      const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', id: schedule.doctorId, currentDate: ""}, schedule.startAt, schedule.endAt)
+      const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', facilityId: '', providerId: schedule.doctorId, currentDate: ""}, schedule.startAt, schedule.endAt)
       if(appointmentExist.length){
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
