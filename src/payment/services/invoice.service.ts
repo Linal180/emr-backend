@@ -4,14 +4,15 @@ import { Repository } from 'typeorm';
 //user imports
 import { Invoice } from '../entity/invoice.entity';
 import { CreateInvoiceInputs, CreateExternalInvoiceInputs, InvoiceInputs, InvoiceStatusInputs } from '../dto/invoice.input';
-import { InvoicePayload, InvoicesPayload } from '../dto/invoice.dto';
+import { InvoicesPayload } from '../dto/invoice.dto';
 import { PaymentService } from './payment.service';
 import { UtilsService } from 'src/util/utils.service';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service'
 //service
 @Injectable()
 export class InvoiceService {
-  constructor(@InjectRepository(Invoice) private invoiceRepo: Repository<Invoice>, @Inject(forwardRef(() => PaymentService)) private transactionService: PaymentService, private utilService: UtilsService, private paginationService: PaginationService) { }
+  constructor(@InjectRepository(Invoice) private invoiceRepo: Repository<Invoice>, @Inject(forwardRef(() => PaymentService)) private transactionService: PaymentService, private utilService: UtilsService, private paginationService: PaginationService,@Inject(forwardRef(() => AppointmentService)) private appointmentService: AppointmentService) { }
   //create  invoice
   async create(createInvoiceInputs: CreateInvoiceInputs): Promise<Invoice> {
     try {
@@ -20,6 +21,8 @@ export class InvoiceService {
         const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
         invoice.transction = transaction;
       }
+      const appointment = await this.appointmentService.getAppointment(createInvoiceInputs.appointmentId)
+      invoice.appointment = appointment.appointment;
       const invoiceNo = await this.utilService.generateInvoiceNo();
       invoice.invoiceNo = invoiceNo;
       const updatedInvoice = await this.invoiceRepo.save(invoice);

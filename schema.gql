@@ -33,6 +33,7 @@ type Invoice {
   createdAt: String
   updatedAt: String
   transction: Transactions
+  appointment: Appointment
 }
 
 """The invoice payment type"""
@@ -598,6 +599,7 @@ type Appointment {
   facility: Facility
   provider: Doctor
   patient: Patient
+  invoice: Invoice
   createdAt: String
   updatedAt: String
 }
@@ -872,39 +874,6 @@ type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
   pagination: PaginationPayload
-}
-
-type Element {
-  id: String!
-  type: ElementType!
-  createdAt: String
-  updatedAt: String
-}
-
-"""The form's element types"""
-enum ElementType {
-  TEXT
-  NUMBER
-  DROPDOWN
-  RADIO
-  DATE
-  FILE
-}
-
-type FormElement {
-  id: String!
-  placeholder: String
-  defaultValue: String
-  required: Boolean
-  errorMsg: String
-  name: String!
-  tableName: String
-  columnName: String
-  fieldId: String!
-  sectionId: String!
-  element: Element
-  createdAt: String
-  updatedAt: String
 }
 
 type Query {
@@ -1946,6 +1915,7 @@ input CreateInvoiceInputs {
   paymentMethod: String
   status: STATUS!
   amount: String!
+  appointmentId: String!
 }
 
 input CreateExternalInvoiceInputs {

@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
 import { AppointmentService } from '../../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
-import { BraintreePayload, TransactionPayload, TransactionsPayload } from '../dto/payment.dto';
+import { BraintreePayload, TransactionsPayload } from '../dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
@@ -20,6 +20,7 @@ import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
 import {
   Appointment,
   BillingStatus,
+  APPOINTMENTSTATUS
 } from '../../appointments/entities/appointment.entity';
 import { UtilsService } from '../../util/utils.service';
 import { InvoiceService } from './invoice.service';
@@ -132,20 +133,12 @@ export class PaymentService {
     try {
       const { price } = await this.appointmentService.getAmount(serviceId);
       if (clientIntent) {
-        const brainTrans = await this.gateway.transaction.sale({
-          amount: price,
-          paymentMethodNonce: clientIntent,
-        });
+        const brainTrans = await this.gateway.transaction.sale({ amount: price, paymentMethodNonce: clientIntent });
         if (brainTrans?.success) {
           if (appointmentId) {
-            const data = {
-              transactionId: brainTrans?.transaction?.id,
-              doctorId: providerId,
-              facilityId,
-              patientId,
-              appointmentId,
-              status: TRANSACTIONSTATUS.PAID,
-            };
+            await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+            await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: APPOINTMENTSTATUS.COMPLETED });
+            const data = { transactionId: brainTrans?.transaction?.id, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
             return await this.create(data);
           } else {
             const refunded = await this.refund(brainTrans?.transaction?.id, appointmentId);
@@ -160,16 +153,9 @@ export class PaymentService {
         }
       }
       else {
-
-        const data = {
-          transactionId: null,
-          doctorId: providerId,
-          facilityId,
-          patientId,
-          appointmentId,
-          status: TRANSACTIONSTATUS.PAID,
-        };
-
+        await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+        await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: APPOINTMENTSTATUS.COMPLETED });
+        const data = { transactionId: null, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
         return await this.create(data);
       }
 

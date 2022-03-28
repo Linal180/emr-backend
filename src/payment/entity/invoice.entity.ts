@@ -4,11 +4,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 //user imports
 import { Transactions } from './payment.entity';
+import { Appointment } from '../../appointments/entities/appointment.entity';
 //constants or enums
 export enum BILLING_TYPE {
   SELF_PAY = 'self_pay',
@@ -79,4 +81,8 @@ export class Invoice {
   @Field(() => Transactions, { nullable: true })
   @ManyToOne(() => Transactions, (transaction) => transaction.id)
   transction: Transactions;
+
+  @Field(() => Appointment, { nullable: true })
+  @OneToOne(() => Appointment, (appointment) => appointment.id)
+  appointment: Appointment;
 }
