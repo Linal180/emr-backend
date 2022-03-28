@@ -485,7 +485,7 @@ export class UsersService {
         user.password = password;
         user.emailVerified = true
         const updatedUser = await this.usersRepository.save(user);
-        this.patientService.updatePatientInvite(user.userId)
+        await this.patientService.updatePatientInvite(user.userId)
         return updatedUser;
       }
       return undefined;
