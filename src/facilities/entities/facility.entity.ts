@@ -96,6 +96,14 @@ export class Facility {
   @Field()
   name: string;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  @Field({nullable: true})
+  startTime: string;
+
+  @Column({ type: 'timestamptz', nullable: true  })
+  @Field({nullable: true})
+  endTime: string;
+
   @Column({
     type: "enum",
     enum: PracticeType,

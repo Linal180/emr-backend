@@ -143,6 +143,7 @@ export class PaginationService {
       appointmentNumber,
       dueToday,
       facilityId,
+      role,
       doctorId,
       practiceId,
       phychType,
@@ -170,6 +171,9 @@ export class PaginationService {
         }),
         ...(doctorId && {
           doctorId
+        }),
+        ...(role && {
+          role: Not(role)
         }),
         ...(practiceId && {
           practiceId: practiceId

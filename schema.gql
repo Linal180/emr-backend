@@ -409,6 +409,8 @@ type Practice {
 type Facility {
   id: String!
   name: String!
+  startTime: String
+  endTime: String
   practiceType: PracticeType
   cliaIdNumber: String
   federalTaxId: String
@@ -916,6 +918,7 @@ input GetPermission {
 }
 
 input RoleInput {
+  role: String
   paginationOptions: PaginationInput!
 }
 
@@ -1228,6 +1231,8 @@ input CreateFacilityItemInput {
   tamxonomyCode: String
   mammographyCertificationNumber: String
   npi: String
+  startTime: String
+  endTime: String
 }
 
 input CreateContactInput {
@@ -1303,6 +1308,8 @@ input UpdateFacilityItemInput {
   tamxonomyCode: String
   mammographyCertificationNumber: String
   npi: String
+  startTime: String
+  endTime: String
   id: String!
 }
 
