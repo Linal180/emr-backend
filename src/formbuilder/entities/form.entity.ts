@@ -33,8 +33,8 @@ export class Form {
   @Field(type => FormType)
   type: FormType
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Column({ nullable: false })
+  @Field({ nullable: false })
   facilityId: string;
 
   @Column({ nullable: false, type: "text" })

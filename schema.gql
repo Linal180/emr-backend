@@ -826,7 +826,7 @@ type Form {
   id: String!
   name: String!
   type: FormType!
-  facilityId: String
+  facilityId: String!
   layout: String!
   isSystemForm: Boolean
   formElements: [FormElement!]
@@ -1923,7 +1923,7 @@ input PaymentInputsAfterAppointment {
 input CreateFormInput {
   name: String!
   type: FormType!
-  facilityId: String
+  facilityId: String!
   layout: LayoutJSONInputType!
   isSystemForm: Boolean
 }
