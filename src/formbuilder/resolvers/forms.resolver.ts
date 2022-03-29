@@ -69,6 +69,6 @@ export class FormResolver {
   @SetMetadata('roles', ['super-admin','admin'])
   async removeForm(@Args('removeForm') removeForm: RemoveForm) {
     await this.formsService.removeForm(removeForm);
-    return { response: { status: 200, message: 'Form Deleted' } };
+    return { response: { status: 200, message: 'Form Deleted successfully.' } };
   }
 }
