@@ -64,6 +64,15 @@ export class FormResolver {
     };
   }
 
+  @Query(returns => FormPayload)
+  async getPublicForm(@Args('getForm') getForm: GetForm): Promise<FormPayload> {
+    const form = await this.formsService.getForm(getForm.id)
+    return {
+      ...form,
+      response: { status: 200, message: 'Form fetched successfully' }
+    };
+  }
+
   @Mutation(() => FormPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['super-admin','admin'])

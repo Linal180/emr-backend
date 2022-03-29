@@ -986,6 +986,7 @@ type Query {
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
+  getPublicForm(getForm: GetForm!): FormPayload!
 }
 
 input UsersInput {
