@@ -64,6 +64,14 @@ export class UtilsService {
        to: twilioInput.to
      });
   }
+
+  async sendVerificationCode() {
+    const verificaton =  await client.verify
+    .services("VAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    .verifications.create({ to: "+923426851938", channel: "sms" })
+    .then((verification) => console.log("verification.status:",verification));
+    return verificaton;
+ }
   /**
    * Converts tz
    * @param date 

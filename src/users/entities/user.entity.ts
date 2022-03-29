@@ -32,6 +32,10 @@ export class User {
   @Field()
   emailVerified: boolean;
 
+  @Column({ nullable: true, default: false })
+  @Field()
+  isTwoFactorEnabled: boolean;
+
   @Column()
   password: string;
 

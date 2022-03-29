@@ -96,6 +96,7 @@ type User {
   id: String!
   status: UserStatus!
   emailVerified: Boolean!
+  isTwoFactorEnabled: Boolean!
   email: String!
   inviteSentAt: String!
   inviteAcceptedAt: String!
@@ -1057,6 +1058,7 @@ type Mutation {
   deactivateUser(user: UserIdInput!): UserPayload!
   removeUser(userIdInput: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
+  updateTwoFactorAuth(twoFactorInput: TwoFactorInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
   updateRole(user: UpdateRoleInput!): UserPayload!
   createPermission(permissionItemInput: PermissionItemInput!): PermissionPayload!
@@ -1157,6 +1159,11 @@ input UserIdInput {
   userId: String!
   adminId: String
   isEnabled: Boolean
+}
+
+input TwoFactorInput {
+  userId: String!
+  isTwoFactorEnabled: Boolean!
 }
 
 input UpdateUserInput {
