@@ -16,7 +16,7 @@ import { UsersModule } from 'src/users/users.module';
     TypeOrmModule.forFeature([Transactions, Invoice]),
     forwardRef(() => AppointmentModule),
     PaginationModule,
-    UsersModule
+    UsersModule,
   ],
   providers: [PaymentService, PaymentResolver, InvoiceResolver, InvoiceService],
   exports: [PaymentService],

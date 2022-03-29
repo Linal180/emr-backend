@@ -34,8 +34,8 @@ export class Transactions {
   @Field()
   id: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   transactionId: string;
 
   @Column({ nullable: false })
@@ -88,7 +88,7 @@ export class Transactions {
   status: TRANSACTIONSTATUS;
 
   @Field(() => [Invoice], { nullable: true })
-  @OneToMany(() => Invoice, (invoice) => invoice.id)
+  @OneToMany(() => Invoice, (invoice) => invoice.transction)
   invoice: Invoice[];
 
 }

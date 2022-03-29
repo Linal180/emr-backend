@@ -24,9 +24,17 @@ export class ServicePayload {
 }
 
 @ObjectType()
-export class TransactionPayload extends ResponsePayloadResponse {
+export class TransactionsPayload extends ResponsePayloadResponse {
     @Field(type => [Transactions], { nullable: 'itemsAndList' })
     transactions: Transactions[];
+
+    @Field(type => PaginationPayload, { nullable: true })
+    pagination?: PaginationPayload
+}
+@ObjectType()
+export class TransactionPayload extends ResponsePayloadResponse {
+    @Field(type => Transactions)
+    transaction: Transactions;
 
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload

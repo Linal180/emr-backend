@@ -26,6 +26,9 @@ export class CreateInvoiceInputs {
 
   @Field({ nullable: false })
   amount: string;
+
+  @Field({ nullable: false })
+  appointmentId: string;
 }
 
 @InputType()
