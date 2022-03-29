@@ -1,9 +1,10 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Invoice } from 'src/payment/entity/invoice.entity'
 
 export enum PaymentType {
   SELF = "self",
@@ -100,7 +101,7 @@ export class Appointment {
   @Field({ nullable: true })
   appointmentNumber: string
 
-  @Column({ nullable: true , default: false})
+  @Column({ nullable: true, default: false })
   @Field({ nullable: true })
   employment: boolean;
 
@@ -125,11 +126,11 @@ export class Appointment {
   secondaryInsurance: string;
 
   @Column({ type: 'timestamptz' })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   scheduleStartDateTime: string;
 
   @Column({ type: 'timestamptz' })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   scheduleEndDateTime: string;
 
   @Column({ nullable: true })
@@ -155,7 +156,7 @@ export class Appointment {
   @ManyToOne(() => Facility, facility => facility.appointments, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
-  
+
   @ManyToOne(() => Doctor, doctor => doctor.appointments, { onDelete: 'CASCADE' })
   @Field(type => Doctor, { nullable: true })
   provider: Doctor;
@@ -163,6 +164,10 @@ export class Appointment {
   @ManyToOne(() => Patient, patient => patient.appointments, { onDelete: 'CASCADE' })
   @Field(type => Patient, { nullable: true })
   patient: Patient;
+
+  @Field(() => Invoice, { nullable: true })
+  @OneToOne(() => Invoice, (invoice) => invoice.appointment, { eager: true })
+  invoice: Invoice;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

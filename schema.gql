@@ -20,9 +20,38 @@ enum AttachmentType {
   lab
 }
 
+type Invoice {
+  id: String!
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  createdAt: String
+  updatedAt: String
+  transction: Transactions
+  appointment: Appointment
+}
+
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
+}
+
 type Transactions {
   id: String!
-  transactionId: String!
+  transactionId: String
   patientId: String!
   doctorId: String!
   facilityId: String!
@@ -34,6 +63,7 @@ type Transactions {
   createdAt: String
   updatedAt: String
   status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
 }
 
 """The transaction payment status type assigned"""
@@ -569,6 +599,7 @@ type Appointment {
   facility: Facility
   provider: Doctor
   patient: Patient
+  invoice: Invoice
   createdAt: String
   updatedAt: String
 }
@@ -807,13 +838,36 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
+type TransactionsPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transaction: Transactions!
+  pagination: PaginationPayload
+}
+
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
 }
 
-type BraintreePayload {
-  clientToken: String!
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
 }
 
 type AppointmentsPayload {
@@ -929,6 +983,7 @@ type Query {
   getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
+  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
 }
@@ -1060,6 +1115,11 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input InvoiceInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 input FormInput {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -1122,8 +1182,13 @@ type Mutation {
   updateAppointmentBillingStatus(updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput!): AppointmentPayload!
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
-  chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
+  updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
+  chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
+  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
+  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
+  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
@@ -1903,12 +1968,19 @@ input CancelAppointment {
   reason: String!
 }
 
+input UpdateAppointmentStatusInput {
+  id: String!
+  status: APPOINTMENTSTATUS!
+}
+
 input PaymentInput {
-  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
-  createPatientItemInput: CreatePatientItemInput!
-  createGuardianContactInput: CreateContactInput!
-  clientIntent: String!
-  client: String!
+  clientIntent: String
+  price: String!
+  providerId: String!
+  facilityId: String!
+  patientId: String!
+  appointmentId: String!
+  serviceId: String!
 }
 
 input PaymentInputsAfterAppointment {
@@ -1918,6 +1990,37 @@ input PaymentInputsAfterAppointment {
   facilityId: String!
   patientId: String!
   appointmentId: String!
+}
+
+input GetAllTransactionsInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input CreateInvoiceInputs {
+  paymentTransactionId: String
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  appointmentId: String!
+}
+
+input CreateExternalInvoiceInputs {
+  paymentTransactionId: String!
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String!
+  status: STATUS!
+  amount: String!
+}
+
+input InvoiceStatusInputs {
+  status: STATUS!
+  id: String!
 }
 
 input CreateFormInput {
