@@ -876,12 +876,63 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type FormPayload {
+  response: ResponsePayload
+  form: Form
+}
+
+type FieldsTypes {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+}
+
+"""The form's element types"""
+enum ElementType {
+  TEXT
+  NUMBER
+  DROPDOWN
+  RADIO
+  DATE
+  FILE
+  TIME
+  SELECT
+  CHECKBOX
+  TEL
+  EMAIL
+  COLOR
+  IMAGE
+  MONTH
+  PASSWORD
+  URL
+  WEEK
+}
+
+type SectionsTypes {
+  id: String!
+  col: Int!
+  fields: [FieldsTypes!]!
+}
+
+type LayoutJSONType {
+  sections: [SectionsTypes!]!
+}
+
 type Form {
   id: String!
   name: String!
   type: FormType!
   facilityId: String!
-  layout: String!
+  layout: LayoutJSONType!
   isSystemForm: Boolean
   formElements: [FormElement!]
   createdAt: String
@@ -917,32 +968,6 @@ type Element {
   type: ElementType!
   createdAt: String
   updatedAt: String
-}
-
-"""The form's element types"""
-enum ElementType {
-  TEXT
-  NUMBER
-  DROPDOWN
-  RADIO
-  DATE
-  FILE
-  TIME
-  SELECT
-  CHECKBOX
-  TEL
-  EMAIL
-  COLOR
-  IMAGE
-  MONTH
-  PASSWORD
-  URL
-  WEEK
-}
-
-type FormPayload {
-  response: ResponsePayload
-  form: Form
 }
 
 type FormsPayload {

@@ -1,5 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { LayoutJSONType } from '../dto/form-payload.dto';
 import { FormElement } from './form-elements.entity';
 
 export enum FormType {
@@ -37,9 +38,9 @@ export class Form {
   @Field({ nullable: false })
   facilityId: string;
 
-  @Column({ nullable: false, type: "text" })
-  @Field({ nullable: false })
-  layout: string;
+  @Column({ nullable: false, type: "jsonb" })
+  @Field(() => LayoutJSONType, { nullable: false })
+  layout: LayoutJSONType;
 
   @Column({ nullable: true, default: false })
   @Field({ nullable: true })

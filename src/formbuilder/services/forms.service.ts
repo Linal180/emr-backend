@@ -29,7 +29,7 @@ export class FormsService {
   async createForm(createFormInput: CreateFormInput): Promise<Form> {
     try {
       // creating form
-      const formInstance = await this.formsRepository.create({ ...createFormInput, layout: JSON.stringify(createFormInput.layout) });
+      const formInstance = await this.formsRepository.create({ ...createFormInput, layout: createFormInput.layout });
       let elements = [];
       createFormInput?.layout?.sections?.map(async (item, index) => {
         elements[index] = await this.formElementsService.createBulk(item.fields, item.id)
@@ -49,7 +49,8 @@ export class FormsService {
    */
   async updateForm(updateFormInput: UpdateFormInput): Promise<Form> {
     try {
-      return await this.utilsService.updateEntityManager(Form, updateFormInput.id, { ...updateFormInput, layout: JSON.stringify(updateFormInput?.layout) }, this.formsRepository)
+      const form = await this.utilsService.updateEntityManager(Form, updateFormInput.id, { ...updateFormInput, layout: updateFormInput?.layout }, this.formsRepository)
+      return form
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
