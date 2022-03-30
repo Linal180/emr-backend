@@ -39,6 +39,18 @@ export class Attachment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  attachmentName: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  providerName: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  comments: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   url: string;
 
   @CreateDateColumn({ type: 'timestamptz' })

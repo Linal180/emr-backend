@@ -2,7 +2,7 @@ import { SetMetadata, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
+import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { AttachmentsService } from './attachments.service';
 import { AttachmentMediaPayload, AttachmentPayload } from './dto/attachment-payload.dto';
 import { AttachmentsPayload } from './dto/attachments-payload.dto';
@@ -15,8 +15,8 @@ export class AttachmentsResolver {
   constructor(private readonly attachmentsService: AttachmentsService) { }
 
   @Query(returns => AttachmentsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', [ 'admin', 'super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAttachments')
   async getAttachments(@Args('getAttachment') getAttachment: GetAttachment): Promise<AttachmentsPayload> {
     const attachments = await this.attachmentsService.findAttachmentsById(getAttachment.typeId)
     return {
@@ -26,8 +26,8 @@ export class AttachmentsResolver {
   }
 
   @Mutation(returns => AttachmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'createAttachmentData')
   async createAttachmentData(@Args('createAttachmentInput') createAttachmentInput: CreateAttachmentInput) {
     const attachment = await this.attachmentsService.createAttachmentData(createAttachmentInput);
     return {
@@ -37,8 +37,8 @@ export class AttachmentsResolver {
   }
 
   @Mutation(returns => AttachmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'removeAttachmentData')
   async removeAttachmentData(@Args('removeAttachment') removeAttachment: RemoveAttachment) {
     await this.attachmentsService.removeAttachmentData(removeAttachment.id);
     return {
@@ -47,8 +47,8 @@ export class AttachmentsResolver {
   }
 
   @Mutation(returns => AttachmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateAttachmentData')
   async updateAttachmentData(@Args('updateAttachmentInput') updateAttachmentInput: UpdateAttachmentInput) {
     const attachment = await this.attachmentsService.updateAttachmentData(updateAttachmentInput);
     return {
@@ -58,8 +58,8 @@ export class AttachmentsResolver {
   }
 
   @Query(returns => AttachmentMediaPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAttachment')
   async getAttachment(@Args('getMedia') getMedia: GetMedia) {
     const preSignedUrl = await this.attachmentsService.getMedia(getMedia.id);
     return {

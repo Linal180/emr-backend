@@ -12,8 +12,11 @@ export class CreateScheduleInput {
   @Field({ nullable: true })
   recurringEndDate: Date;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   doctorId: string;
+
+  @Field({ nullable: true })
+  facilityId: string;
 
   @Field(type => [String],{ nullable: false })
   servicesIds: string[];

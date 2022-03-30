@@ -5,8 +5,7 @@ import { PaginationService } from 'src/pagination/pagination.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
-import { UserRole } from 'src/users/entities/role.entity';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
 import { Repository } from 'typeorm';
 import { CreatePracticeInput } from './dto/create-practice.input';
 import PracticeInput from './dto/practice-input.dto';
@@ -51,18 +50,21 @@ export class PracticeService {
       practiceInstance.facilities = [facility]
       //save the practice
       const practice = await this.practiceRepository.save(practiceInstance)
+      const allRoles = await this.usersService.findAllRoles()
+      const doctorRole = allRoles.find((item) => item.role === 'doctor')
+      const adminRole = allRoles.find((item) => item.role === 'admin')
       //create a user or provider based on its role type under this facility
-      if(createPracticeInput.registerUserInput.roleType === UserRole.DOCTOR){
+      if(createPracticeInput.registerUserInput.roleType === doctorRole.role){
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
           const doctor = await this.doctorService.addDoctor(registerUserInput, facility.id)
           if(createPracticeInput.registerUserInput.isAdmin){
-             await this.usersService.updateRole({id: doctor.user.id, roles: [UserRole.ADMIN,registerUserInput.roleType]})
+             await this.usersService.updateUserRole({id: doctor.user.id, roles: [adminRole.role,registerUserInput.roleType]})
           }
       }else{
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
           const staff = await this.staffService.addStaff(registerUserInput, facility.id)
            if(createPracticeInput.registerUserInput.isAdmin){
-            await this.usersService.updateRole({id: staff.user.id, roles: [UserRole.ADMIN, registerUserInput.roleType]})
+            await this.usersService.updateUserRole({id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType]})
           }
       }
       return practice

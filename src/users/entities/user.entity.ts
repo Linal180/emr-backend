@@ -32,12 +32,20 @@ export class User {
   @Field()
   emailVerified: boolean;
 
+  @Column({ nullable: true, default: false })
+  @Field()
+  isTwoFactorEnabled: boolean;
+
   @Column()
   password: string;
 
   @Column()
   @Field()
   email: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  phone: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
