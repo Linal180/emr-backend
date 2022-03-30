@@ -352,8 +352,8 @@ export class AppointmentService {
         if(patient.phonePermission){
             this.triggerSmsNotification(appointment, provider, patient, facility, false)
         }
-        const transaction = await this.paymentService.getTransactionByAppointmentId(appointment.id)
-        await this.paymentService.refund(transaction.transactionId,transaction.id)
+        // const transaction = await this.paymentService.getTransactionByAppointmentId(appointment.id)
+        // await this.paymentService.refund(transaction.transactionId,transaction.id)
         return await this.appointmentRepository.save({id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '',reason: cancelAppointment.reason})
       }
       throw new NotFoundException({
