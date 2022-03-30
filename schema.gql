@@ -615,12 +615,22 @@ enum APPOINTMENTSTATUS {
   CANCELLED
   INITIATED
   COMPLETED
+  ARRIVED
+  CHECKED_IN
+  CHECKED_IN_ONLINE
+  IN_ROOM
+  IN_SESSION
+  CONFIRMED
+  NOT_CONFIRMED
+  RESCHEDULED
+  NO_SHOW
 }
 
 """The patient billing status assigned"""
 enum BillingStatus {
   PAID
   DUE
+  REFUND
 }
 
 type Doctor {
