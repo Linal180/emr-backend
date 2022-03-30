@@ -19,6 +19,7 @@ registerEnumType(PaymentType, {
 export enum BillingStatus {
   PAID = "paid",
   DUE = "due",
+  REFUND = 'refund'
 }
 
 registerEnumType(BillingStatus, {

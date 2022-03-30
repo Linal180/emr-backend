@@ -218,17 +218,11 @@ export class PaymentService {
   }
 
   async getTransactionByAppointmentId(id: string) {
-    try {
-      return await this.transactionRepo.findOne({
-        where: {
-          appointmentId: id,
-        },
-      });
-    } catch (error) {
-      throw new Error(error);
-      
-    }
-   
+    return await this.transactionRepo.findOne({
+      where: {
+        appointmentId: id,
+      },
+    });
   }
 
   async updatePaymentStatus(updateAppointmentPayStatus: UpdatePaymentStatus) {
