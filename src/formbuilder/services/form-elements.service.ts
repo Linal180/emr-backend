@@ -10,39 +10,46 @@ import { ElementService } from "./element.service";
 //service
 @Injectable()
 export class FormElementsService {
-    constructor(
-        @InjectRepository(FormElement)
-        private formElementRepository: Repository<FormElement>,
-        private readonly paginationService: PaginationService,
-        private readonly utilsService: UtilsService,
-        private readonly elementService: ElementService
-    ) { }
+	constructor(
+		@InjectRepository(FormElement)
+		private formElementRepository: Repository<FormElement>,
+		private readonly paginationService: PaginationService,
+		private readonly utilsService: UtilsService,
+		private readonly elementService: ElementService
+	) { }
 
-    //create form elements
-    async create(inputs: CreateElementInputs) {
-        try {
-            const data = await this.formElementRepository.create(inputs);
-            const element = await this.elementService.getByType({ type: inputs.type })
-            data.element = element;
-            console.log('data => ', data)
-            return await this.formElementRepository.save(data);
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
-    }
+	//create form elements
+	async create(inputs: CreateElementInputs) {
+		try {
+			const data = await this.formElementRepository.create(inputs);
+			const element = await this.elementService.getByType({ type: inputs.type })
+			data.element = element;
+			console.log('data => ', data)
+			return await this.formElementRepository.save(data);
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
 
+	//create fields in bulk
 
+	async createBulk(inputs: FormElementInputs[], id: string) {
+		try {
+			const elements = inputs?.map(async (item) => {
+				return await this.create({ ...item, sectionId: id })
+			});
+			return elements
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
 
-    //create fields in bulk
-
-    async createBulk(inputs: FormElementInputs[], id: string) {
-        try {
-            const elements = inputs?.map(async (item) => {
-                return await this.create({ ...item, sectionId: id })
-            });
-            return elements
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
-    }
+	//get all elements
+	async getAll() {
+		try {
+		return	await this.formElementRepository.find()
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
 }

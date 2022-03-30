@@ -1,15 +1,15 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {  Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
-import { In, Repository } from 'typeorm';
 import { CreateFormInput } from '../dto/create-form.input';
 import FormInput from '../dto/form-input.dto';
 import { FormPayload } from '../dto/form-payload.dto';
 import { FormsPayload } from '../dto/forms-payload.dto';
 import { RemoveForm, UpdateFormInput } from '../dto/update-form.input';
 import { Form } from '../entities/form.entity';
-import { FormElementsService } from './form-elements.service'
+import { FormElementsService } from './form-elements.service';
 
 @Injectable()
 export class FormsService {
@@ -34,12 +34,8 @@ export class FormsService {
       createFormInput?.layout?.sections?.map(async (item, index) => {
         elements[index] = await this.formElementsService.createBulk(item.fields, item.id)
       })
-
-      // createFormInput?.layout?.sections
       //saving form
-
       formInstance.formElements = elements?.length > 0 ? elements : []
-
       return await this.formsRepository.save(formInstance);
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -123,7 +119,7 @@ export class FormsService {
   async findByIds(servicesIds: string[]): Promise<Form[]> {
     return await this.formsRepository.find({
       where: {
-        id: In(servicesIds)
+        id: servicesIds
       }
     });
   }
