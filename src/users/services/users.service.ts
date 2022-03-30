@@ -154,7 +154,7 @@ export class UsersService {
    * @param updateRoleInput 
    * @returns role 
    */
-  async updateRole(updateRoleInput: UpdateRoleInput): Promise<User> {
+  async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
       const { roles } = updateRoleInput 
       const isSuperAdmin = roles.includes("super-admin"); 

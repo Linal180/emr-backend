@@ -26,10 +26,10 @@ export class GetFacilitySchedule {
 export class GetSlots  {
 
   @Field({nullable: true})
-  facilityId: string
+  facilityId?: string
 
   @Field({nullable: true})
-  providerId: string
+  providerId?: string
 
   @Field()
   offset: number

@@ -284,8 +284,8 @@ export class UsersResolver {
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updateRole')
-  async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
-    const user = await this.usersService.updateRole(updateRoleInput);
+  async updateUserRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
+    const user = await this.usersService.updateUserRole(updateRoleInput);
     return { user, response: { status: 200, message: 'User Data updated successfully' } }
   }
 }

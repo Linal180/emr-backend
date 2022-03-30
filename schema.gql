@@ -1063,12 +1063,13 @@ type Mutation {
   activateUser(user: UserIdInput!): UserPayload!
   update2FactorAuth(twoFactorInput: TwoFactorInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
-  updateRole(user: UpdateRoleInput!): UserPayload!
+  updateUserRole(user: UpdateRoleInput!): UserPayload!
   createPermission(permissionItemInput: PermissionItemInput!): PermissionPayload!
   assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput!): PermissionPayload!
   updatePermission(updatePermissionItemInput: UpdatePermissionItemInput!): PermissionPayload!
   removePermission(removePermission: RemovePermission!): PermissionPayload!
   createRole(roleItemInput: RoleItemInput!): RolePayload!
+  updateRole(updateRoleItemInput: UpdateRoleItemInput!): RolePayload!
   removeRole(removeRole: RemoveRole!): RolePayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
@@ -1222,6 +1223,12 @@ input RemovePermission {
 input RoleItemInput {
   role: String!
   customRole: Boolean = true
+}
+
+input UpdateRoleItemInput {
+  role: String
+  customRole: Boolean = true
+  id: String
 }
 
 input RemoveRole {
