@@ -23,74 +23,50 @@ enum AttachmentType {
   lab
 }
 
-type ResponsePayload {
-  status: Float
-  error: String
-  message: String
-  name: String
-}
-
-type AttachmentPayload {
-  response: ResponsePayload
-  attachment: Attachment
-}
-
-type AttachmentMediaPayload {
-  response: ResponsePayload
-  preSignedUrl: String
-}
-
-type PaginationPayload {
-  page: Int
-  limit: Int
-  totalCount: Int
-  totalPages: Int
-}
-
-type AttachmentsPayload {
-  response: ResponsePayload
-  attachments: [Attachment]
-  pagination: PaginationPayload
-}
-
-type DoctorPatient {
+type Invoice {
   id: String!
-  doctorId: String
-  patientId: String
-  currentProvider: Boolean
-  doctor: Doctor
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Permission {
-  id: String!
-  name: String
-  moduleType: String
-  status: Boolean
-  rolePermissions: [RolePermission!]
-  createdAt: String!
-  updatedAt: String!
-}
-
-type RolePermission {
-  id: String!
-  isMutable: Boolean
-  permission: Permission
-  role: Role
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Role {
-  id: String!
-  role: String
-  description: String
-  customRole: Boolean
-  users: User
-  rolePermissions: [RolePermission!]
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
   createdAt: String
   updatedAt: String
+  transction: Transactions
+  appointment: Appointment
+}
+
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
+}
+
+type Transactions {
+  id: String!
+  transactionId: String
+  patientId: String!
+  doctorId: String!
+  facilityId: String!
+  appointmentId: String!
+  patient: [Patient!]
+  doctor: [Doctor!]
+  facility: [Facility!]
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+  status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
 }
 
 type User {
@@ -614,12 +590,11 @@ type Patient {
   attachments: [Attachment!]
   contacts: [Contact!]
   facility: Facility
-  user: User
-  doctorPatients: [DoctorPatient!]
-  employer: [Employer!]
-  createdAt: String!
-  updatedAt: String!
-  transaction: Transactions
+  provider: Doctor
+  patient: Patient
+  invoice: Invoice
+  createdAt: String
+  updatedAt: String
 }
 
 """The patient's sexual orientation type assigned"""
@@ -632,22 +607,27 @@ enum GENDERIDENTITY {
   NONE
 }
 
-"""The patient's communication method assigned"""
-enum COMMUNICATIONTYPE {
-  PHONE
-  VOICE_MESSAGE
-  MESSAGE
-  EMAIL
+"""The patient appointment status type assigned"""
+enum APPOINTMENTSTATUS {
+  CANCELLED
+  INITIATED
+  COMPLETED
+  ARRIVED
+  CHECKED_IN
+  CHECKED_IN_ONLINE
+  IN_ROOM
+  IN_SESSION
+  CONFIRMED
+  NOT_CONFIRMED
+  RESCHEDULED
+  NO_SHOW
 }
 
-"""The user race assigned"""
-enum RACE {
-  WHITE
-  BLACK_AFRICAN_AMERICAN
-  ASIAN
-  AMERICAN_INDIAN_ALASKA_NATIVE
-  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
-  OTHER
+"""The patient billing status assigned"""
+enum BillingStatus {
+  PAID
+  DUE
+  REFUND
 }
 
 """The patient's ethnicity type assigned"""
@@ -843,13 +823,36 @@ type ServicesPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
+type TransactionsPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transaction: Transactions!
+  pagination: PaginationPayload
+}
+
 type AppointmentPayload {
   response: ResponsePayload
   appointment: Appointment
 }
 
-type BraintreePayload {
-  clientToken: String!
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
 }
 
 type AppointmentsPayload {
@@ -895,6 +898,7 @@ type Query {
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
+  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
 }
 
 input UsersInput {
@@ -1049,6 +1053,11 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input InvoiceInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -1113,8 +1122,12 @@ type Mutation {
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
-  chargePayment(paymentInput: PaymentInput!): AppointmentPayload!
+  chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
+  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
+  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
+  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
 }
 
 input LoginUserInput {
@@ -1962,11 +1975,13 @@ input UpdateAppointmentStatusInput {
 }
 
 input PaymentInput {
-  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput!
-  createPatientItemInput: CreatePatientItemInput!
-  createGuardianContactInput: CreateContactInput!
-  clientIntent: String!
-  client: String!
+  clientIntent: String
+  price: String!
+  providerId: String!
+  facilityId: String!
+  patientId: String!
+  appointmentId: String!
+  serviceId: String!
 }
 
 input PaymentInputsAfterAppointment {
@@ -1976,4 +1991,35 @@ input PaymentInputsAfterAppointment {
   facilityId: String!
   patientId: String!
   appointmentId: String!
+}
+
+input GetAllTransactionsInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input CreateInvoiceInputs {
+  paymentTransactionId: String
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  appointmentId: String!
+}
+
+input CreateExternalInvoiceInputs {
+  paymentTransactionId: String!
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String!
+  status: STATUS!
+  amount: String!
+}
+
+input InvoiceStatusInputs {
+  status: STATUS!
+  id: String!
 }

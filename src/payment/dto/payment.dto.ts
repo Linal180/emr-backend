@@ -1,7 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Appointment } from "src/appointments/entities/appointment.entity";
-
-
+import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
+import { ResponsePayloadResponse } from "src/users/dto/response-payload.dto";
+import {Transactions} from '../entity/payment.entity'
 @ObjectType()
 export class BraintreePayload {
     @Field()
@@ -20,4 +21,21 @@ export class BraintreeChargePayload extends Appointment {
 export class ServicePayload {
     @Field()
     price: string
+}
+
+@ObjectType()
+export class TransactionsPayload extends ResponsePayloadResponse {
+    @Field(type => [Transactions], { nullable: 'itemsAndList' })
+    transactions: Transactions[];
+
+    @Field(type => PaginationPayload, { nullable: true })
+    pagination?: PaginationPayload
+}
+@ObjectType()
+export class TransactionPayload extends ResponsePayloadResponse {
+    @Field(type => Transactions)
+    transaction: Transactions;
+
+    @Field(type => PaginationPayload, { nullable: true })
+    pagination?: PaginationPayload
 }

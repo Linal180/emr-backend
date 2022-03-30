@@ -96,4 +96,15 @@ export class UtilsService {
     return  new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
   }
 
+  //generate invoive #
+  async generateInvoiceNo() {
+    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    const charactersLength = characters.length-2;
+    for ( let i = 0; i < 3; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return `${result}-${Math.floor(100000000 + Math.random() * 9000)}`;
+  }
+
 }
