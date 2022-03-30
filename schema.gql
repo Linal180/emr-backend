@@ -23,50 +23,74 @@ enum AttachmentType {
   lab
 }
 
-type Invoice {
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type AttachmentPayload {
+  response: ResponsePayload
+  attachment: Attachment
+}
+
+type AttachmentMediaPayload {
+  response: ResponsePayload
+  preSignedUrl: String
+}
+
+type PaginationPayload {
+  page: Int
+  limit: Int
+  totalCount: Int
+  totalPages: Int
+}
+
+type AttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type DoctorPatient {
   id: String!
-  invoiceNo: String!
-  facilityId: String
-  paymentTransactionId: String
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String
-  status: STATUS!
-  amount: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Permission {
+  id: String!
+  name: String
+  moduleType: String
+  status: Boolean
+  rolePermissions: [RolePermission!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type RolePermission {
+  id: String!
+  isMutable: Boolean
+  permission: Permission
+  role: Role
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Role {
+  id: String!
+  role: String
+  description: String
+  customRole: Boolean
+  users: User
+  rolePermissions: [RolePermission!]
   createdAt: String
   updatedAt: String
-  transction: Transactions
-  appointment: Appointment
-}
-
-"""The invoice payment type"""
-enum BILLING_TYPE {
-  SELF_PAY
-  INSURANCE
-}
-
-"""The invoice status"""
-enum STATUS {
-  PAID
-  INSURANCE_CLAIM
-  PENDING
-}
-
-type Transactions {
-  id: String!
-  transactionId: String
-  patientId: String!
-  doctorId: String!
-  facilityId: String!
-  appointmentId: String!
-  patient: [Patient!]
-  doctor: [Doctor!]
-  facility: [Facility!]
-  appointment: Appointment
-  createdAt: String
-  updatedAt: String
-  status: TRANSACTIONSTATUS!
-  invoice: [Invoice!]
 }
 
 type User {
@@ -346,9 +370,38 @@ enum Speciality {
   GASTROENTEROLOGY
 }
 
+type Invoice {
+  id: String!
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  createdAt: String
+  updatedAt: String
+  transction: Transactions
+  appointment: Appointment
+}
+
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
+}
+
 type Transactions {
   id: String!
-  transactionId: String!
+  transactionId: String
   patientId: String!
   doctorId: String!
   facilityId: String!
@@ -360,6 +413,7 @@ type Transactions {
   createdAt: String
   updatedAt: String
   status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
 }
 
 """The transaction payment status type assigned"""
@@ -509,6 +563,7 @@ type Appointment {
   facility: Facility
   provider: Doctor
   patient: Patient
+  invoice: Invoice
   createdAt: String
   updatedAt: String
 }
@@ -524,12 +579,22 @@ enum APPOINTMENTSTATUS {
   CANCELLED
   INITIATED
   COMPLETED
+  ARRIVED
+  CHECKED_IN
+  CHECKED_IN_ONLINE
+  IN_ROOM
+  IN_SESSION
+  CONFIRMED
+  NOT_CONFIRMED
+  RESCHEDULED
+  NO_SHOW
 }
 
 """The patient billing status assigned"""
 enum BillingStatus {
   PAID
   DUE
+  REFUND
 }
 
 type Employer {
@@ -590,11 +655,12 @@ type Patient {
   attachments: [Attachment!]
   contacts: [Contact!]
   facility: Facility
-  provider: Doctor
-  patient: Patient
-  invoice: Invoice
-  createdAt: String
-  updatedAt: String
+  user: User
+  doctorPatients: [DoctorPatient!]
+  employer: [Employer!]
+  createdAt: String!
+  updatedAt: String!
+  transaction: Transactions
 }
 
 """The patient's sexual orientation type assigned"""
@@ -607,27 +673,22 @@ enum GENDERIDENTITY {
   NONE
 }
 
-"""The patient appointment status type assigned"""
-enum APPOINTMENTSTATUS {
-  CANCELLED
-  INITIATED
-  COMPLETED
-  ARRIVED
-  CHECKED_IN
-  CHECKED_IN_ONLINE
-  IN_ROOM
-  IN_SESSION
-  CONFIRMED
-  NOT_CONFIRMED
-  RESCHEDULED
-  NO_SHOW
+"""The patient's communication method assigned"""
+enum COMMUNICATIONTYPE {
+  PHONE
+  VOICE_MESSAGE
+  MESSAGE
+  EMAIL
 }
 
-"""The patient billing status assigned"""
-enum BillingStatus {
-  PAID
-  DUE
-  REFUND
+"""The user race assigned"""
+enum RACE {
+  WHITE
+  BLACK_AFRICAN_AMERICAN
+  ASIAN
+  AMERICAN_INDIAN_ALASKA_NATIVE
+  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
+  OTHER
 }
 
 """The patient's ethnicity type assigned"""
