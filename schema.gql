@@ -85,6 +85,7 @@ type RolePermission {
 type Role {
   id: String!
   role: String
+  description: String
   customRole: Boolean
   users: User
   rolePermissions: [RolePermission!]
@@ -1222,11 +1223,13 @@ input RemovePermission {
 
 input RoleItemInput {
   role: String!
+  description: String
   customRole: Boolean = true
 }
 
 input UpdateRoleItemInput {
   role: String
+  description: String
   customRole: Boolean = true
   id: String
 }

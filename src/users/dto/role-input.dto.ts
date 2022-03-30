@@ -6,6 +6,9 @@ export class RoleItemInput {
   @Field({ nullable: false })
   role: string;
 
+  @Field({ nullable: true })
+  description: string;
+
   @Field({ nullable: false, defaultValue: true })
   customRole?: boolean;
 }
