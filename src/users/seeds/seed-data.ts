@@ -5,15 +5,15 @@ export const FacilityData = [
     { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332", tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 }];
 
 export const RolesData = [
-    { role: 'super-admin', customRole: false },
-    { role: 'admin', customRole: false },
-    { role: 'doctor', customRole: false },
-    { role: 'nurse', customRole: false },
-    { role: 'patient', customRole: false },
-    { role: 'staff' , customRole: false},
-    { role: 'nurse_practitioner', customRole: false },
-    { role: 'office_manager', customRole: false },
-    { role: 'doctor_assistant', customRole: false }
+    { role: 'super-admin', customRole: false, description: "super admin has all permissions" },
+    { role: 'admin', customRole: false, description: "admin has all permissions of any practice"},
+    { role: 'doctor', customRole: false, description: "doctor has all permissions related to patients and their medical history" },
+    { role: 'nurse', customRole: false, description: "nurse has permissions" },
+    { role: 'patient', customRole: false,description: "patient has all permissions for patient portal" },
+    { role: 'staff' , customRole: false, description: "staff has permissions for staff members and lab records"},
+    { role: 'nurse_practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
+    { role: 'office_manager', customRole: false, description: "office manager has administrative permissions" },
+    { role: 'doctor_assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
 ];
 export const UsersData = [
     { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true },

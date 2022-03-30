@@ -14,6 +14,10 @@ export class Role {
   @Field({nullable: true})  
   role: string
 
+  @Column({nullable: true})
+  @Field({nullable: true})  
+  description: string
+
   @Column({nullable: true, default: true})
   @Field({nullable: true})
   customRole: boolean
