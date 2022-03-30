@@ -1,16 +1,24 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { PaymentService } from './payment.service';
-import { PaymentResolver } from './payment.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
+//user imports
+import { PaymentService } from './services/payment.service';
+import { PaymentResolver } from './resolvers/payment.resolver';
+import { InvoiceResolver } from './resolvers/invoice.resolver';
+import { InvoiceService } from './services/invoice.service';
 import { Transactions } from './entity/payment.entity';
-import {AppointmentModule} from '../appointments/appointment.module'
+import { Invoice } from './entity/invoice.entity';
+import { AppointmentModule } from '../appointments/appointment.module';
+import { PaginationModule } from 'src/pagination/pagination.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Transactions]),
-     forwardRef(() => AppointmentModule),
+    TypeOrmModule.forFeature([Transactions, Invoice]),
+    forwardRef(() => AppointmentModule),
+    PaginationModule,
+    UsersModule,
   ],
-  providers: [PaymentService, PaymentResolver],
-  exports: [PaymentService]
-})
+  providers: [PaymentService, PaymentResolver, InvoiceResolver, InvoiceService],
+  exports: [PaymentService],
+})  
 export class PaymentModule {}
