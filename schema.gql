@@ -881,6 +881,11 @@ type FormPayload {
   form: Form
 }
 
+type FieldOptionsType {
+  name: String!
+  value: String!
+}
+
 type FieldsTypes {
   label: String!
   name: String!
@@ -894,6 +899,7 @@ type FieldsTypes {
   tableName: String
   columnName: String
   fieldId: String!
+  options: [FieldOptionsType!]
 }
 
 """The form's element types"""
@@ -2080,6 +2086,12 @@ input FieldsInputs {
   tableName: String
   columnName: String
   fieldId: String!
+  options: [FieldOptionsInputType!]
+}
+
+input FieldOptionsInputType {
+  name: String!
+  value: String!
 }
 
 input UpdateFormInput {

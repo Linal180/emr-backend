@@ -20,6 +20,15 @@ export class SectionsInputs {
   fields: FieldsInputs[]
 }
 
+@InputType()
+export class FieldOptionsInputType {
+  @Field()
+  name: string;
+
+  @Field()
+  value: string;
+}
+
 
 @InputType()
 export class FieldsInputs {
@@ -59,6 +68,9 @@ export class FieldsInputs {
 
   @Field({ nullable: false })
   fieldId: string;
+
+  @Field(() => [FieldOptionsInputType], { nullable: true })
+  options?: FieldOptionsInputType[]
 }
 @InputType()
 export class CreateFormInput {

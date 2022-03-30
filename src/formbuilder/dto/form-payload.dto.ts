@@ -13,6 +13,15 @@ export class FormPayload extends ResponsePayloadResponse {
 }
 
 @ObjectType()
+export class FieldOptionsType {
+    @Field()
+    name: string;
+
+    @Field()
+    value: string;
+}
+
+@ObjectType()
 export class FieldsTypes {
 
     @Field({ nullable: false })
@@ -50,6 +59,9 @@ export class FieldsTypes {
 
     @Field({ nullable: false })
     fieldId: string;
+
+    @Field(() => [FieldOptionsType], { nullable: true })
+    options?: FieldOptionsType[]
 }
 @ObjectType()
 export class SectionsTypes {
