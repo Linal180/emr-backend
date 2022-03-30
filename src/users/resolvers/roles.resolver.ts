@@ -20,10 +20,9 @@ export class RoleResolver {
       response: { status: 200, message: 'Role created successfully' }
     };
   }
-
+  
   @Mutation(() => RolePayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
   async updateRole(@Args('updateRoleItemInput') updateRoleItemInput: UpdateRoleItemInput) {
     return {
       role: await this.rolesService.updateRole(updateRoleItemInput),
