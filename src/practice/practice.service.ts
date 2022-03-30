@@ -58,13 +58,13 @@ export class PracticeService {
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
           const doctor = await this.doctorService.addDoctor(registerUserInput, facility.id)
           if(createPracticeInput.registerUserInput.isAdmin){
-             await this.usersService.updateRole({id: doctor.user.id, roles: [adminRole.role,registerUserInput.roleType]})
+             await this.usersService.updateUserRole({id: doctor.user.id, roles: [adminRole.role,registerUserInput.roleType]})
           }
       }else{
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
           const staff = await this.staffService.addStaff(registerUserInput, facility.id)
            if(createPracticeInput.registerUserInput.isAdmin){
-            await this.usersService.updateRole({id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType]})
+            await this.usersService.updateUserRole({id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType]})
           }
       }
       return practice

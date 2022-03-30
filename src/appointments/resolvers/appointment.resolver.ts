@@ -14,7 +14,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointment, GetDoctorAppointment, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment } from '../entities/appointment.entity';
 import { AppointmentService } from '../services/appointment.service';
 
@@ -115,7 +115,7 @@ export class AppointmentResolver {
   }
 
   @Query(returns => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)s
   // @SetMetadata('name', 'getAppointment')
   async getAppointment(@Args('getAppointment') getAppointment: GetAppointment): Promise<AppointmentPayload> {
     const appointment = await this.appointmentService.getAppointment(getAppointment.id)
@@ -128,9 +128,9 @@ export class AppointmentResolver {
   @Query(returns => AppointmentsPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getDoctorAppointment')
-  async getDoctorAppointment(@Args('getDoctorAppointment') getDoctorAppointment: GetDoctorAppointment): Promise<AppointmentsPayload> {
+  async getAppointments(@Args('getAppointments') getAppointments: GetAppointments): Promise<AppointmentsPayload> {
     return {
-      appointments: await this.appointmentService.getDoctorAppointment(getDoctorAppointment),
+      appointments: await this.appointmentService.getAppointments(getAppointments),
       response: { status: 200, message: 'Appointment fetched successfully' }
     };
   }

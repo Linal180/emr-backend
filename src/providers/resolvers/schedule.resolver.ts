@@ -4,11 +4,11 @@ import { Service } from 'src/facilities/entities/services.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
-import { DoctorSlotsPayload } from '../dto/doctor-slots-payload.dto';
+import { SlotsPayload } from '../dto/doctor-slots-payload.dto';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulePayload } from '../dto/schedule-payload.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { GetDoctorSchedule, GetDoctorSlots, GetSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { GetDoctorSchedule, GetFacilitySchedule, GetSchedule, GetSlots, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
 import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ScheduleService } from '../services/schedule.service';
@@ -85,14 +85,26 @@ export class ScheduleResolver {
     };
   }
 
-  @Query(returns => DoctorSlotsPayload)
+
+  @Query(returns => SchedulesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getFacilitySchedule')
+  async getFacilitySchedule(@Args('getFacilitySchedule') getFacilitySchedule: GetFacilitySchedule) {
+    const schedule = await this.scheduleService.getFacilitySchedule(getFacilitySchedule)
+    return {
+      ...schedule,
+      response: { status: 200, message: 'Facility Schedule fetched successfully' }
+    };
+  }
+
+  @Query(returns => SlotsPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getDoctorSlots')
-  async getDoctorSlots(@Args('getDoctorSlots') getDoctorSlots: GetDoctorSlots) {
-    const slots = await this.scheduleService.getDoctorSlots(getDoctorSlots)
+  async getSlots(@Args('getSlots') getSlots: GetSlots) {
+    const slots = await this.scheduleService.getDoctorSlots(getSlots)
     return {
       slots,
-      response: { status: 200, message: 'Doctor Schedule slots fetched successfully' }
+      response: { status: 200, message: 'Schedule slots fetched successfully' }
     };
   }
 

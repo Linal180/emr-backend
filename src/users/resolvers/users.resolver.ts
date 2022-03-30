@@ -1,8 +1,9 @@
-import { ForbiddenException, HttpStatus, NotFoundException, SetMetadata, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, NotFoundException, PreconditionFailedException, SetMetadata, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
+import { UtilsService } from 'src/util/utils.service';
 import { CurrentUser } from '../../customDecorators/current-user.decorator';
 import { CurrentUserInterface } from '../auth/dto/current-user.dto';
 import { AccessUserPayload } from '../dto/access-user.dto';
@@ -13,12 +14,14 @@ import { RegisterUserInput } from '../dto/register-user-input.dto';
 import { UserPayload } from '../dto/register-user-payload.dto';
 import { ResetPasswordInput } from '../dto/reset-password-input.dto';
 import RolesPayload from '../dto/roles-payload.dto';
+import { TwoFactorInput } from '../dto/twoFactor-input.dto';
 import { UpdatePasswordInput } from '../dto/update-password-input.dto';
 import { UpdateRoleInput } from '../dto/update-role-input.dto';
 import { GetUser, ResendVerificationEmail, UpdateUserInput } from '../dto/update-user-input.dto';
 import { UserIdInput } from '../dto/user-id-input.dto';
 import UsersInput from '../dto/users-input.dto';
 import { UsersPayload } from '../dto/users-payload.dto';
+import { SeneOTPAgainInput, VerifyCodeInput } from '../dto/verify-code.dto';
 import { VerifyEmailInput } from '../dto/verify-email-input.dto';
 import { UsersService } from '../services/users.service';
 
@@ -26,7 +29,8 @@ import { UsersService } from '../services/users.service';
 @UseFilters(HttpExceptionFilterGql)
 export class UsersResolver {
   constructor(
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly utilsService: UtilsService,
   ) { }
 
   // Queries 
@@ -112,6 +116,9 @@ export class UsersResolver {
     const user = await this.usersService.findOne(email.trim().toLowerCase())
     if (user) {
       if (user.emailVerified) {
+        if(user.isTwoFactorEnabled){
+          await this.utilsService.sendVerificationCode(user.phone)
+        }
         return await this.usersService.createToken(user, password);
       }
       throw new ForbiddenException({
@@ -126,8 +133,49 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'registerUser')
+  async verifyOTP(@Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
+    const { id, otpCode } = verifyCodeInput
+    const user = await this.usersService.findUserById(id)
+    if(user){
+       const verifyOTP = await this.utilsService.verifyOTPCode(user.phone, otpCode)
+       if(verifyOTP){
+         return {
+          user: user,
+          response: { status: 200, message: 'OTP has been successfully verified.' }
+         }
+       }else {
+        throw new PreconditionFailedException({
+          status: HttpStatus.PRECONDITION_FAILED,
+          error: 'OTP code could not verify, Resend again',
+        });
+       }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'User not found',
+    });
+  }
+
+  @Mutation(returns => UserPayload)
+  async resentOTP(@Args('seneOTPAgainInput') seneOTPAgainInput: SeneOTPAgainInput): Promise<UserPayload> {
+    const { id } = seneOTPAgainInput
+    const user = await this.usersService.findUserById(id)
+    if(user){
+        await this.utilsService.sendVerificationCode(user.phone)
+        return {
+          user: null,
+          response: { status: 200, message: 'OTP has been sent again successfully.' }
+        }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'User not found',
+    });
+  }
+
+  @Mutation(returns => UserPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'registerUser')
   async registerUser(@Args('user') registerUserInput: RegisterUserInput): Promise<UserPayload> {
     return {
       user: await this.usersService.create(registerUserInput),
@@ -219,6 +267,14 @@ export class UsersResolver {
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateTwoFactorAuth')
+  async update2FactorAuth(@Args('twoFactorInput') twoFactorInput: TwoFactorInput): Promise<UserPayload> {
+    const user = await this.usersService.updateTwoFactorAuth(twoFactorInput);
+    return { user, response: { status: 200, message: 'User 2FA Updated' } }
+  }
+
+  @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updateUser')
   async updateUser(@Args('user') updateUserInput: UpdateUserInput): Promise<UserPayload> {
     const user = await this.usersService.update(updateUserInput);
@@ -228,8 +284,8 @@ export class UsersResolver {
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updateRole')
-  async updateRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
-    const user = await this.usersService.updateRole(updateRoleInput);
+  async updateUserRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
+    const user = await this.usersService.updateUserRole(updateRoleInput);
     return { user, response: { status: 200, message: 'User Data updated successfully' } }
   }
 }

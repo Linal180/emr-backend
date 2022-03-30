@@ -16,8 +16,21 @@ export class GetDoctorSchedule {
   id: string
  }
 
+@InputType()
+export class GetFacilitySchedule {
+   @Field()
+   id: string
+} 
+
  @InputType()
-export class GetDoctorSlots extends PickType(UpdateScheduleInput, ['id'] as const) {
+export class GetSlots  {
+
+  @Field({nullable: true})
+  facilityId?: string
+
+  @Field({nullable: true})
+  providerId?: string
+
   @Field()
   offset: number
 
@@ -27,6 +40,18 @@ export class GetDoctorSlots extends PickType(UpdateScheduleInput, ['id'] as cons
   @Field()
   currentDate: string
  }
+
+ @InputType()
+ export class GetFacilitySlots extends PickType(UpdateScheduleInput, ['id'] as const) {
+   @Field()
+   offset: number
+ 
+   @Field()
+   serviceId: string
+ 
+   @Field()
+   currentDate: string
+  }
 
 @InputType()
 export class RemoveSchedule extends PickType(UpdateScheduleInput, ['id'] as const) { }

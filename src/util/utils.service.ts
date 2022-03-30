@@ -1,5 +1,6 @@
 require('dotenv').config();
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { getConnection, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { DynamicClassEntity, TwilioInput } from './dto/dynamic-entity';
@@ -7,7 +8,9 @@ const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWI
 
 @Injectable()
 export class UtilsService {
-  constructor() { }
+  constructor(
+    private configService: ConfigService
+  ) { }
   /**
     * Updates entity manager
     * @template T 
@@ -64,6 +67,25 @@ export class UtilsService {
        to: twilioInput.to
      });
   }
+
+  async sendVerificationCode(phone: string) {
+    const verification = await client.verify
+    .services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
+    .verifications.create({ to: phone, channel: "sms" })
+    return verification;
+ }
+
+ async verifyOTPCode(phone: string, otpCode: string){
+  const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
+  .verificationChecks
+  .create({to: phone, code: otpCode})
+  if(verification.status === 'approved') {
+    return true
+  }else {
+    return false
+  }
+ }
+ 
   /**
    * Converts tz
    * @param date 

@@ -38,4 +38,11 @@ export class CreateFacilityItemInput {
 
   @Field({ nullable: true })
   npi?: string;
+
+  @Field({nullable: true})
+  startTime?: string;
+
+  @Field({nullable: true})
+  endTime?: string;
+
 }

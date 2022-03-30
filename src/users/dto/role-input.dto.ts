@@ -12,6 +12,10 @@ export class RoleItemInput {
 
 @InputType()
 export default class RoleInput {
+
+    @Field({nullable: true})
+    role?: string
+    
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }

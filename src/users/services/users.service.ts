@@ -5,9 +5,11 @@ import * as bcrypt from 'bcrypt';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
+import { UtilsService } from 'src/util/utils.service';
 import { getConnection, Not, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { createToken } from '../../lib/helper';
+import { TwoFactorInput } from '../dto/twoFactor-input.dto';
 import { AccessUserPayload } from './../dto/access-user.dto';
 import { RegisterUserInput } from './../dto/register-user-input.dto';
 import { UpdatePasswordInput } from './../dto/update-password-input.dto';
@@ -36,6 +38,7 @@ export class UsersService {
     private readonly paginationService: PaginationService,
     private readonly mailerService: MailerService,
     private readonly patientService: PatientService,
+    private readonly utilsService: UtilsService,
     private readonly rolesService: RolesService
   ) { }
 
@@ -151,7 +154,7 @@ export class UsersService {
    * @param updateRoleInput 
    * @returns role 
    */
-  async updateRole(updateRoleInput: UpdateRoleInput): Promise<User> {
+  async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
       const { roles } = updateRoleInput 
       const isSuperAdmin = roles.includes("super-admin"); 
@@ -334,6 +337,19 @@ export class UsersService {
       const user = await this.usersRepository.findOne({ id })
       user.status = UserStatus.ACTIVE;
       return await this.usersRepository.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Updates two factor auth
+   * @param twoFactorInput 
+   * @returns two factor auth 
+   */
+  async updateTwoFactorAuth(twoFactorInput: TwoFactorInput): Promise<User> {
+    try {
+      return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, twoFactorInput, this.usersRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

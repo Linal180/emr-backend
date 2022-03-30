@@ -96,7 +96,9 @@ type User {
   id: String!
   status: UserStatus!
   emailVerified: Boolean!
+  isTwoFactorEnabled: Boolean!
   email: String!
+  phone: String
   inviteSentAt: String!
   inviteAcceptedAt: String!
   userId: String!
@@ -270,7 +272,9 @@ type Schedule {
   endAt: String!
   recurringEndDate: DateTime
   doctorId: String
+  facilityId: String
   doctor: Doctor
+  facility: Facility
   scheduleServices: [ScheduleServices!]
   createdAt: String!
   updatedAt: String!
@@ -407,6 +411,8 @@ type Practice {
 type Facility {
   id: String!
   name: String!
+  startTime: String
+  endTime: String
   practiceType: PracticeType
   cliaIdNumber: String
   federalTaxId: String
@@ -426,6 +432,7 @@ type Facility {
   services: [Service!]
   practice: Practice
   billingAddress: [BillingAddress!]
+  schedule: [Schedule!]
   createdAt: String
   updatedAt: String
   transaction: Transactions
@@ -775,7 +782,7 @@ type Slots {
   endTime: String
 }
 
-type DoctorSlotsPayload {
+type SlotsPayload {
   response: ResponsePayload
   slots: [Slots!]
 }
@@ -874,7 +881,8 @@ type Query {
   findAllSchedules(scheduleInput: ScheduleInput!): SchedulesPayload!
   getSchedule(getSchedule: GetSchedule!): SchedulePayload!
   getDoctorSchedule(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
-  getDoctorSlots(getDoctorSlots: GetDoctorSlots!): DoctorSlotsPayload!
+  getFacilitySchedule(getFacilitySchedule: GetFacilitySchedule!): SchedulesPayload!
+  getSlots(getSlots: GetSlots!): SlotsPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
@@ -883,7 +891,7 @@ type Query {
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
-  getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
 }
@@ -912,6 +920,7 @@ input GetPermission {
 }
 
 input RoleInput {
+  role: String
   paginationOptions: PaginationInput!
 }
 
@@ -969,6 +978,7 @@ input GetDoctor {
 
 input ScheduleInput {
   facilityId: String
+  doctorId: String
   paginationOptions: PaginationInput!
 }
 
@@ -980,8 +990,13 @@ input GetDoctorSchedule {
   id: String!
 }
 
-input GetDoctorSlots {
+input GetFacilitySchedule {
   id: String!
+}
+
+input GetSlots {
+  facilityId: String
+  providerId: String
   offset: Float!
   serviceId: String!
   currentDate: String!
@@ -1017,14 +1032,16 @@ input AppointmentInput {
   appointmentNumber: String
   appointmentStatus: String
   patientId: String
+  facilityId: String
 }
 
 input GetAppointment {
   id: String!
 }
 
-input GetDoctorAppointment {
-  doctorId: String!
+input GetAppointments {
+  doctorId: String
+  facilityId: String
 }
 
 input GetPatientAppointmentInput {
@@ -1033,6 +1050,8 @@ input GetPatientAppointmentInput {
 
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
+  verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
+  resentOTP(seneOTPAgainInput: SeneOTPAgainInput!): UserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
   forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
   verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
@@ -1042,13 +1061,15 @@ type Mutation {
   deactivateUser(user: UserIdInput!): UserPayload!
   removeUser(userIdInput: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
+  update2FactorAuth(twoFactorInput: TwoFactorInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
-  updateRole(user: UpdateRoleInput!): UserPayload!
+  updateUserRole(user: UpdateRoleInput!): UserPayload!
   createPermission(permissionItemInput: PermissionItemInput!): PermissionPayload!
   assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput!): PermissionPayload!
   updatePermission(updatePermissionItemInput: UpdatePermissionItemInput!): PermissionPayload!
   removePermission(removePermission: RemovePermission!): PermissionPayload!
   createRole(roleItemInput: RoleItemInput!): RolePayload!
+  updateRole(updateRoleItemInput: UpdateRoleItemInput!): RolePayload!
   removeRole(removeRole: RemoveRole!): RolePayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
@@ -1100,6 +1121,15 @@ input LoginUserInput {
   password: String!
 }
 
+input VerifyCodeInput {
+  id: String!
+  otpCode: String!
+}
+
+input SeneOTPAgainInput {
+  id: String!
+}
+
 input RegisterUserInput {
   firstName: String
   lastName: String
@@ -1142,6 +1172,12 @@ input UserIdInput {
   userId: String!
   adminId: String
   isEnabled: Boolean
+}
+
+input TwoFactorInput {
+  userId: String!
+  phone: String
+  isTwoFactorEnabled: Boolean!
 }
 
 input UpdateUserInput {
@@ -1189,6 +1225,12 @@ input RoleItemInput {
   customRole: Boolean = true
 }
 
+input UpdateRoleItemInput {
+  role: String
+  customRole: Boolean = true
+  id: String
+}
+
 input RemoveRole {
   id: String
 }
@@ -1216,6 +1258,8 @@ input CreateFacilityItemInput {
   tamxonomyCode: String
   mammographyCertificationNumber: String
   npi: String
+  startTime: String
+  endTime: String
 }
 
 input CreateContactInput {
@@ -1291,6 +1335,8 @@ input UpdateFacilityItemInput {
   tamxonomyCode: String
   mammographyCertificationNumber: String
   npi: String
+  startTime: String
+  endTime: String
   id: String!
 }
 
@@ -1562,7 +1608,8 @@ input CreateScheduleInput {
   startAt: String!
   endAt: String!
   recurringEndDate: DateTime
-  doctorId: String!
+  doctorId: String
+  facilityId: String
   servicesIds: [String!]!
 }
 
@@ -1571,6 +1618,7 @@ input UpdateScheduleInput {
   endAt: String
   recurringEndDate: DateTime
   doctorId: String
+  facilityId: String
   servicesIds: [String!]
   id: String!
 }
@@ -1842,8 +1890,8 @@ input CreateAppointmentInput {
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   serviceId: String!
-  facilityId: String!
-  providerId: String!
+  facilityId: String
+  providerId: String
   patientId: String
 }
 
@@ -1862,8 +1910,8 @@ input CreateExternalAppointmentItemInput {
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   serviceId: String!
-  facilityId: String!
-  providerId: String!
+  facilityId: String
+  providerId: String
   patientId: String
   paymentStatus: String
 }
