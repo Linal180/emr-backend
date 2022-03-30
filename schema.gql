@@ -98,6 +98,7 @@ type User {
   emailVerified: Boolean!
   isTwoFactorEnabled: Boolean!
   email: String!
+  phone: String
   inviteSentAt: String!
   inviteAcceptedAt: String!
   userId: String!
@@ -1049,6 +1050,8 @@ input GetPatientAppointmentInput {
 
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
+  verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
+  resentOTP(seneOTPAgainInput: SeneOTPAgainInput!): UserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
   forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
   verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
@@ -1058,7 +1061,7 @@ type Mutation {
   deactivateUser(user: UserIdInput!): UserPayload!
   removeUser(userIdInput: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
-  updateTwoFactorAuth(twoFactorInput: TwoFactorInput!): UserPayload!
+  update2FactorAuth(twoFactorInput: TwoFactorInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
   updateRole(user: UpdateRoleInput!): UserPayload!
   createPermission(permissionItemInput: PermissionItemInput!): PermissionPayload!
@@ -1117,6 +1120,15 @@ input LoginUserInput {
   password: String!
 }
 
+input VerifyCodeInput {
+  id: String!
+  otpCode: String!
+}
+
+input SeneOTPAgainInput {
+  id: String!
+}
+
 input RegisterUserInput {
   firstName: String
   lastName: String
@@ -1163,6 +1175,7 @@ input UserIdInput {
 
 input TwoFactorInput {
   userId: String!
+  phone: String
   isTwoFactorEnabled: Boolean!
 }
 

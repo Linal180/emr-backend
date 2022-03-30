@@ -349,9 +349,7 @@ export class UsersService {
    */
   async updateTwoFactorAuth(twoFactorInput: TwoFactorInput): Promise<User> {
     try {
-      const user = await this.usersRepository.findOne(twoFactorInput.userId)
-      user.isTwoFactorEnabled = twoFactorInput.isTwoFactorEnabled;
-      return await this.usersRepository.save(user);
+      return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, twoFactorInput, this.usersRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

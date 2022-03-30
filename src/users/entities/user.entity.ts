@@ -43,6 +43,10 @@ export class User {
   @Field()
   email: string;
 
+  @Column({nullable: true})
+  @Field({nullable: true})
+  phone: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   inviteSentAt: string;
