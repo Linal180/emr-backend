@@ -1,10 +1,11 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Invoice } from 'src/payment/entity/invoice.entity'
+import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -178,6 +179,10 @@ export class Appointment {
   @Field(() => Invoice, { nullable: true })
   @OneToOne(() => Invoice, (invoice) => invoice.appointment, { eager: true })
   invoice: Invoice;
+
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)
+  @Field(type => [PatientProblems], { nullable: true })
+  patientProblem: PatientProblems[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

@@ -17,6 +17,7 @@ import { ProviderModule } from './providers/provider.module';
 import { UsersModule } from './users/users.module';
 import { UtilsModule } from './util/utils.module';
 import { PaymentModule } from './payment/payment.module';
+import { ProblemChartingModule } from './patientCharting/patientCharting.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PaymentModule } from './payment/payment.module';
     AwsModule,
     AttachmentsModule,
     AppointmentModule,
+    ProblemChartingModule,
     UtilsModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
