@@ -899,7 +899,8 @@ type FieldsTypes {
   tableName: String
   columnName: String
   fieldId: String!
-  options: [FieldOptionsType!]
+  options: [FieldOptionsType!]!
+  textArea: Boolean!
 }
 
 """The form's element types"""
@@ -2086,7 +2087,8 @@ input FieldsInputs {
   tableName: String
   columnName: String
   fieldId: String!
-  options: [FieldOptionsInputType!]
+  options: [FieldOptionsInputType!]!
+  textArea: Boolean!
 }
 
 input FieldOptionsInputType {

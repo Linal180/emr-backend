@@ -69,8 +69,11 @@ export class FieldsInputs {
   @Field({ nullable: false })
   fieldId: string;
 
-  @Field(() => [FieldOptionsInputType], { nullable: true })
-  options?: FieldOptionsInputType[]
+  @Field(() => [FieldOptionsInputType], { nullable: false })
+  options: FieldOptionsInputType[];
+
+  @Field(() => Boolean, { nullable: false })
+  textArea: boolean;
 }
 @InputType()
 export class CreateFormInput {

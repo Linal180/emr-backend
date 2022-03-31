@@ -60,8 +60,12 @@ export class FieldsTypes {
     @Field({ nullable: false })
     fieldId: string;
 
-    @Field(() => [FieldOptionsType], { nullable: true })
-    options?: FieldOptionsType[]
+    @Field(() => [FieldOptionsType], { nullable: false })
+    options: FieldOptionsType[];
+
+    @Field(() => Boolean, { nullable: false })
+    textArea: boolean;
+
 }
 @ObjectType()
 export class SectionsTypes {

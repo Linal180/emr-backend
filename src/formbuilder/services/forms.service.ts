@@ -1,4 +1,4 @@
-import {  Repository } from 'typeorm';
+import { Any, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -28,14 +28,16 @@ export class FormsService {
    */
   async createForm(createFormInput: CreateFormInput): Promise<Form> {
     try {
+      let elements = [];
       // creating form
       const formInstance = await this.formsRepository.create({ ...createFormInput, layout: createFormInput.layout });
-      let elements = [];
+      const createdForm = await this.formsRepository.save(formInstance);
+      //creating elements of form
       createFormInput?.layout?.sections?.map(async (item, index) => {
-        elements[index] = await this.formElementsService.createBulk(item.fields, item.id)
+        elements[index] = await this.formElementsService.createBulk(item.fields, item.id, createdForm)
       })
       //saving form
-      formInstance.formElements = elements?.length > 0 ? elements : []
+      createdForm.formElements = elements?.length > 0 ? elements : []
       return await this.formsRepository.save(formInstance);
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -49,7 +51,13 @@ export class FormsService {
    */
   async updateForm(updateFormInput: UpdateFormInput): Promise<Form> {
     try {
-      const form = await this.utilsService.updateEntityManager(Form, updateFormInput.id, { ...updateFormInput, layout: updateFormInput?.layout }, this.formsRepository)
+      const form = await this.utilsService.updateEntityManager(Form, updateFormInput.id, { ...updateFormInput, layout: updateFormInput?.layout }, this.formsRepository);
+      // const elements = await this.getFormElement(form.id);
+      // const elements  = updateFormInput?.layout?.sections?.map(async (item, index) => {
+      //  return await this.formElementsService.updateBulk(item.fields, item.id, form)
+      // })
+     const elements = await this.formElementsService.updateBulk(updateFormInput, form)
+      console.log('updatedElements => ', elements)
       return form
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -82,6 +90,8 @@ export class FormsService {
  */
   async getForm(id: string): Promise<FormPayload> {
     const form = await this.findOne(id);
+    const elements = await this.getFormElement(form.id);
+    form.formElements = elements
     if (form) {
       return { form }
     }
@@ -125,4 +135,7 @@ export class FormsService {
     });
   }
 
+  async getFormElement(id: string) {
+    return await this.formElementsService.getAllFormElements(id);
+  }
 }

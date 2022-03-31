@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, PartialType } from "@nestjs/graphql";
 import { ElementType } from "../entities/element.entity";
 
 @InputType()
@@ -28,7 +28,7 @@ export class FormElementInputs {
   @Field({ nullable: false })
   name: string;
 
-  @Field(()=>ElementType)
+  @Field(() => ElementType)
   type: ElementType
 
 }
@@ -37,4 +37,9 @@ export class FormElementInputs {
 export class CreateElementInputs extends FormElementInputs {
   @Field()
   sectionId: string
+}
+
+export class UpdateElementsInputs extends PartialType(FormElementInputs){
+
+  
 }

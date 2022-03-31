@@ -47,6 +47,10 @@ export class FormElement {
   @Field({ nullable: false })
   sectionId: string;
 
+  // @Column({ default: false })
+  // @Field(() => Boolean)
+  // isDeleted: boolean;
+
   @ManyToOne(() => Form, form => form.formElements, { onDelete: "CASCADE" })
   form: Form;
 

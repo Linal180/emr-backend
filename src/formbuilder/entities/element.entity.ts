@@ -11,7 +11,6 @@ export enum ElementType {
   FILE = "file",
   TIME= 'time',
   SELECT= 'select',
-  // MULTI_SELECT:'multi_select',
   CHECKBOX= 'checkbox',
   TEL= 'tel',
   EMAIL= 'email',
