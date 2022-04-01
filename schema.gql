@@ -965,6 +965,7 @@ type FormElement {
   columnName: String
   fieldId: String!
   sectionId: String!
+  isDeleted: Boolean!
   element: Element
   createdAt: String
   updatedAt: String

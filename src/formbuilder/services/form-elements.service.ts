@@ -20,7 +20,12 @@ export class FormElementsService {
     private readonly elementService: ElementService
   ) { }
 
-  //create form elements
+  /**
+   * Creates form elements service
+   * @param inputs 
+   * @param form 
+   * @returns  
+   */
   async create(inputs: CreateElementInputs, form: Form) {
     try {
       const data = this.formElementRepository.create(inputs);
@@ -33,8 +38,13 @@ export class FormElementsService {
     }
   }
 
-  //create fields in bulk
-
+  /**
+   * Creates bulk
+   * @param inputs 
+   * @param id 
+   * @param form 
+   * @returns  
+   */
   async createBulk(inputs: FormElementInputs[], id: string, form: Form) {
     try {
       const elements = inputs?.map(async (item) => {
@@ -46,7 +56,10 @@ export class FormElementsService {
     }
   }
 
-  //get all elements
+  /**
+   * Gets all
+   * @returns  
+   */
   async getAll() {
     try {
       return await this.formElementRepository.find()
@@ -55,7 +68,11 @@ export class FormElementsService {
     }
   }
 
-  //get all elements of a form 
+  /**
+   * Gets all form elements
+   * @param id 
+   * @returns  
+   */
   async getAllFormElements(id: string) {
     const elements = await this.formElementRepository.find({
       where: {
@@ -65,7 +82,13 @@ export class FormElementsService {
     return elements
   }
 
-  //update form element
+  
+  /**
+   * Updates form elements service
+   * @param inputs 
+   * @param id 
+   * @returns  
+   */
   async update(inputs: UpdateElementsInputs, id: string) {
     try {
       const { placeholder, errorMsg, required, name, defaultValue } = inputs;
@@ -76,7 +99,11 @@ export class FormElementsService {
     }
   }
 
-  //find element by field id
+  /**
+   * Gets elementby field id
+   * @param id 
+   * @returns  
+   */
   async getElementbyFieldId(id: string) {
     return await this.formElementRepository.findOne({
       where: {
@@ -85,34 +112,44 @@ export class FormElementsService {
     })
   }
 
-  //update or create element
-  async updateCreateElement(input: FormElementInputs, sectionId: string, form: Form) {
-    const ele = await this.getElementbyFieldId(input.fieldId);
-    if (ele) {
-      return await this.update(input, ele.id)
-    }
-    else {
-      return await this.create({ ...input, sectionId }, form)
-    }
-  }
-
-  //update in bulk
+  /**
+   * Updates bulk
+   * @param inputElements 
+   * @param form 
+   */
   async updateBulk(inputElements: UpdateFormInput, form: Form) {
     const { layout } = inputElements;
-    const { sections } = layout
-    const elements = Promise.all( sections?.map(async (item) => {
+    const { sections } = layout;
+    Promise.all(sections?.map(async (item) => {
       const { fields, id } = item
-      const fielditem = Promise.all(fields?.map(async (ele) => {
-        const element = await this.getElementbyFieldId(ele.fieldId);
-        if (element) {
-          return await this.update(ele, element.id)
-        }
-        else {
-          return await this.create({ ...ele, sectionId: id }, form)
-        }
-      }))
-      return fielditem
+      const oldFieldsForUpdate = form?.formElements?.filter((page1) => fields.some(page2 => page1.fieldId === page2.fieldId))
+      const oldFieldsForDelete = form?.formElements?.filter((page1) => !fields.some(page2 => page1.fieldId === page2.fieldId))
+      const newFields = fields?.filter((page1) => !form?.formElements.some(page2 => page1.fieldId === page2.fieldId))
+      const newFieldsForUpdate = fields?.filter((page1) => form?.formElements?.some(page2 => page1.fieldId === page2.fieldId))
+      oldFieldsForDelete?.map(async (field) => {
+        if (!field?.isDeleted) await this.del(field.id)
+      })
+      newFields?.map(async (field) => {
+        await this.create({ ...field, sectionId: id }, form)
+      })
+      newFieldsForUpdate?.map(async (field) => {
+        const element = oldFieldsForUpdate?.find((ele) => ele.fieldId === field.fieldId);
+        if (element) await this.update(field, element.id)
+      })
     }))
-    return elements;
+  }
+
+  /**
+   * Dels form elements service
+   * @param id 
+   * @returns  
+   */
+  async del(id: string) {
+    try {
+      return await this.utilsService.updateEntityManager(FormElement, id, { isDeleted: true }, this.formElementRepository);
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+
+    }
   }
 }
