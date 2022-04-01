@@ -58,11 +58,16 @@ export class PatientProblems {
   @Field({nullable: true})
   note: string;
 
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  patientId: string;
+
   @ManyToOne(() => ICDCodes, iCDCodes => iCDCodes.patientProblems)
   @Field(type => ICDCodes, { nullable: true })
   ICDCode: ICDCodes;
 
-  @ManyToOne(() => Patient, patient => patient.patientProblems,{onDelete: "CASCADE"})
+  @ManyToOne(() => Patient, patient => patient.patientProblems, {onDelete: "CASCADE"})
+  @Field(type => Patient,{nullable: true})
   patient: Patient;
 
   @ManyToOne(() => Doctor, doctor => doctor.patientProblem, { onDelete: 'CASCADE' })

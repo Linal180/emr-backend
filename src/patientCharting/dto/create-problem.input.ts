@@ -15,6 +15,9 @@ export class CreateProblemInput {
   @Field({nullable: true})
   staffId?: string
 
+  @Field({nullable: true})
+  appointmentId?: string
+
   @Field(type => ProblemType, {nullable: true})
   problemType?: ProblemType
     

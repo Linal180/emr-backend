@@ -1,12 +1,14 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { StaffService } from 'src/providers/services/staff.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateProblemInput } from '../dto/create-problem.input';
 import PatientProblemInput from '../dto/problem-input.dto';
-import { PatientProblemPayload } from '../dto/problem-payload.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { RemoveProblem, UpdateProblemInput } from '../dto/update-problem.input';
 import { ICDCodes } from '../entities/icdcodes.entity';
@@ -21,6 +23,9 @@ export class ProblemService {
     private patientProblemsRepository: Repository<PatientProblems>,
     private readonly paginationService: PaginationService,
     private readonly patientService: PatientService,
+    private readonly appointmentService: AppointmentService,
+    private readonly doctorService: DoctorService,
+    private readonly staffService: StaffService,
     private readonly utilsService: UtilsService
   ) { }
 
@@ -31,7 +36,23 @@ export class ProblemService {
       //get patient 
       const patient  = await this.patientService.findOne(createProblemInput.patientId)
       //adding patient problem
-      const patientProblem = this.patientProblemsRepository.create({...createProblemInput, ICDCode: icdCode, patient: patient})
+      const patientProblemInstance = this.patientProblemsRepository.create({...createProblemInput, ICDCode: icdCode, patient: patient})
+      //get appointments
+      if(createProblemInput.appointmentId){
+        const appointment = await this.appointmentService.findOne(createProblemInput.appointmentId)
+        patientProblemInstance.appointment = appointment
+      }
+      //get provider
+      if(createProblemInput.providerId){
+        const provider = await this.doctorService.findOne(createProblemInput.providerId)
+        patientProblemInstance.doctor = provider
+      }
+      //get staff
+       if(createProblemInput.staffId){
+        const staff = await this.staffService.findOne(createProblemInput.staffId)
+        patientProblemInstance.staff = staff
+      }
+      const patientProblem = await this.patientProblemsRepository.save(patientProblemInstance)
       return patientProblem
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -41,13 +62,11 @@ export class ProblemService {
 
   async updatePatientProblem(updateProblemInput: UpdateProblemInput): Promise<PatientProblems> {
     try {
- 
-      return 
+      return await this.utilsService.updateEntityManager(PatientProblems, updateProblemInput.id, updateProblemInput, this.patientProblemsRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
-
 
   async findAllPatientProblem(patientProblemInput: PatientProblemInput): Promise<PatientProblemsPayload> {
     try {
@@ -64,21 +83,18 @@ export class ProblemService {
   }
 
   async findOne(id: string): Promise<PatientProblems> {
-    const problem = await this.patientProblemsRepository.findOne(id);
-    if(problem){
-      return problem
+    const patientProblem = await this.patientProblemsRepository.findOne(id);
+    if(patientProblem){
+      return patientProblem
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
-      error: 'Problem not found',
+      error: 'Patient Problem not found',
     });
   }
 
-  async GetPatientProblem(id: string): Promise<PatientProblemPayload> {
-    const patientProblem = await this.findOne(id);
-    if (patientProblem) {
-      return { patientProblem }
-    }
+  async GetPatientProblem(id: string): Promise<PatientProblems> {
+    return await this.findOne(id);
   }
 
   async removePatientProblem({ id }: RemoveProblem) {

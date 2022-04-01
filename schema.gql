@@ -147,7 +147,9 @@ type PatientProblems {
   problemSeverity: ProblemSeverity!
   problemStartDate: String
   note: String
+  patientId: String
   ICDCode: ICDCodes
+  patient: Patient
   doctor: Doctor
   staff: Staff
   appointment: Appointment
@@ -961,6 +963,11 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type PatientProblemPayload {
+  response: ResponsePayload
+  patientProblem: PatientProblems
+}
+
 type PatientProblemsPayload {
   response: ResponsePayload
   patientProblems: [PatientProblems]
@@ -1006,7 +1013,7 @@ type Query {
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
-  getPatientProblem(getProblem: GetProblem!): PatientProblemsPayload!
+  getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
 }
 
 input UsersInput {
@@ -1171,7 +1178,7 @@ input PatientProblemInput {
   paginationOptions: PaginationInput!
 }
 
-input GetProblem {
+input GetPatientProblem {
   id: String!
 }
 
@@ -1245,9 +1252,9 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
-  addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemsPayload!
-  updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemsPayload!
-  removePatientProblem(removeProblem: RemoveProblem!): PatientProblemsPayload!
+  addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
+  updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
+  removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
 }
 
 input LoginUserInput {
@@ -2149,6 +2156,7 @@ input CreateProblemInput {
   patientId: String!
   providerId: String
   staffId: String
+  appointmentId: String
   problemType: ProblemType
   problemSeverity: ProblemSeverity
   problemStartDate: String
@@ -2156,15 +2164,12 @@ input CreateProblemInput {
 }
 
 input UpdateProblemInput {
-  icdCodeId: String
-  patientId: String
-  providerId: String
-  staffId: String
+  id: String!
+  appointmentId: String
   problemType: ProblemType
   problemSeverity: ProblemSeverity
   problemStartDate: String
   note: String
-  id: String!
 }
 
 input RemoveProblem {
