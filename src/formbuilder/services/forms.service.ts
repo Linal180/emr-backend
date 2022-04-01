@@ -28,17 +28,14 @@ export class FormsService {
    */
   async createForm(createFormInput: CreateFormInput): Promise<Form> {
     try {
-      let elements = [];
       // creating form
       const formInstance = await this.formsRepository.create({ ...createFormInput, layout: createFormInput.layout });
       const createdForm = await this.formsRepository.save(formInstance);
       //creating elements of form
-      createFormInput?.layout?.sections?.map(async (item, index) => {
-        elements[index] = await this.formElementsService.createBulk(item.fields, item.id, createdForm)
-      })
-      //saving form
-      createdForm.formElements = elements?.length > 0 ? elements : []
-      return await this.formsRepository.save(formInstance);
+      createFormInput?.layout?.sections?.map(async (item) => {
+        await this.formElementsService.createBulk(item.fields, item.id, createdForm)
+      });
+      return createdForm
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -52,12 +49,9 @@ export class FormsService {
   async updateForm(updateFormInput: UpdateFormInput): Promise<Form> {
     try {
       const form = await this.utilsService.updateEntityManager(Form, updateFormInput.id, { ...updateFormInput, layout: updateFormInput?.layout }, this.formsRepository);
-      // const elements = await this.getFormElement(form.id);
-      // const elements  = updateFormInput?.layout?.sections?.map(async (item, index) => {
-      //  return await this.formElementsService.updateBulk(item.fields, item.id, form)
-      // })
-     const elements = await this.formElementsService.updateBulk(updateFormInput, form)
-      console.log('updatedElements => ', elements)
+      const elements = await this.getFormElements(form.id);
+      form.formElements = elements;
+      await this.formElementsService.updateBulk(updateFormInput, form);
       return form
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -90,7 +84,7 @@ export class FormsService {
  */
   async getForm(id: string): Promise<FormPayload> {
     const form = await this.findOne(id);
-    const elements = await this.getFormElement(form.id);
+    const elements = await this.getFormElements(form.id);
     form.formElements = elements
     if (form) {
       return { form }
@@ -135,7 +129,12 @@ export class FormsService {
     });
   }
 
-  async getFormElement(id: string) {
+  /**
+   * Gets form elements
+   * @param id 
+   * @returns  
+   */
+  async getFormElements(id: string) {
     return await this.formElementsService.getAllFormElements(id);
   }
 }
