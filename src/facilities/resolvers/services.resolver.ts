@@ -1,7 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { CreateServiceInput } from '../dto/create-service.input';
 import ServiceInput from '../dto/service-input.dto';
 import { ServicePayload } from '../dto/service-payload.dto';
@@ -15,8 +15,8 @@ export class ServiceResolver {
   constructor(private readonly servicesService: ServicesService) { }
 
   @Mutation(() => ServicePayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createService')
   async createService(@Args('createServiceInput') createServiceInput: CreateServiceInput) {
     return {
       service: await this.servicesService.createService(createServiceInput),
@@ -25,8 +25,8 @@ export class ServiceResolver {
   }
 
   @Mutation(() => ServicePayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateService')
   async updateService(@Args('updateServiceInput') updateServiceInput: UpdateServiceInput) {
     return {
       service: await this.servicesService.updateService(updateServiceInput),
@@ -35,8 +35,8 @@ export class ServiceResolver {
   }
 
   @Query(returns => ServicesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllServices')
   async findAllServices(@Args('serviceInput') serviceInput: ServiceInput): Promise<ServicesPayload> {
     const services = await this.servicesService.findAllServices(serviceInput)
     if (services) {
@@ -54,8 +54,8 @@ export class ServiceResolver {
   }
 
   @Query(returns => ServicePayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getService')
   async getService(@Args('getService') getService: GetService): Promise<ServicePayload> {
     const service = await this.servicesService.GetService(getService.id)
     return {
@@ -65,8 +65,8 @@ export class ServiceResolver {
   }
 
   @Mutation(() => ServicePayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeService')
   async removeService(@Args('removeService') removeService: RemoveService) {
     await this.servicesService.removeService(removeService);
     return { response: { status: 200, message: 'Service Deleted' } };

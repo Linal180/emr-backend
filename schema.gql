@@ -8,6 +8,9 @@ type Attachment {
   typeId: String!
   title: String
   key: String
+  attachmentName: String
+  providerName: String
+  comments: String
   url: String
   createdAt: String!
   updatedAt: String!
@@ -20,57 +23,120 @@ enum AttachmentType {
   lab
 }
 
-type Invoice {
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type AttachmentPayload {
+  response: ResponsePayload
+  attachment: Attachment
+}
+
+type AttachmentMediaPayload {
+  response: ResponsePayload
+  preSignedUrl: String
+}
+
+type PaginationPayload {
+  page: Int
+  limit: Int
+  totalCount: Int
+  totalPages: Int
+}
+
+type AttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type DoctorPatient {
   id: String!
-  invoiceNo: String!
-  facilityId: String
-  paymentTransactionId: String
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String
-  status: STATUS!
-  amount: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Permission {
+  id: String!
+  name: String
+  moduleType: String
+  status: Boolean
+  rolePermissions: [RolePermission!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type RolePermission {
+  id: String!
+  isMutable: Boolean
+  permission: Permission
+  role: Role
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Role {
+  id: String!
+  role: String
+  description: String
+  customRole: Boolean
+  users: User
+  rolePermissions: [RolePermission!]
   createdAt: String
   updatedAt: String
-  transction: Transactions
-  appointment: Appointment
 }
 
-"""The invoice payment type"""
-enum BILLING_TYPE {
-  SELF_PAY
-  INSURANCE
-}
-
-"""The invoice status"""
-enum STATUS {
-  PAID
-  INSURANCE_CLAIM
-  PENDING
-}
-
-type Transactions {
+type User {
   id: String!
-  transactionId: String
-  patientId: String!
-  doctorId: String!
-  facilityId: String!
-  appointmentId: String!
-  patient: [Patient!]
-  doctor: [Doctor!]
-  facility: [Facility!]
-  appointment: Appointment
-  createdAt: String
-  updatedAt: String
-  status: TRANSACTIONSTATUS!
-  invoice: [Invoice!]
+  status: UserStatus!
+  emailVerified: Boolean!
+  isTwoFactorEnabled: Boolean!
+  email: String!
+  phone: String
+  inviteSentAt: String!
+  inviteAcceptedAt: String!
+  userId: String!
+  token: String
+  userType: String!
+  facility: Facility
+  roles: [Role]
+  createdAt: String!
+  updatedAt: String!
 }
 
-"""The transaction payment status type assigned"""
-enum TRANSACTIONSTATUS {
-  REFUND
-  DUE
-  PAID
+"""The user status"""
+enum UserStatus {
+  DEACTIVATED
+  ACTIVE
+}
+
+type BillingAddress {
+  id: String!
+  email: String
+  phone: String
+  mobile: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  federalTaxId: String
+  bankAccount: String
+  checkPayableTo: String
+  facility: Facility
+  doctor: Doctor
+  userId: String
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Contact {
@@ -171,241 +237,54 @@ enum ContactType {
   GUARANDOR
 }
 
-type Role {
-  id: String!
-  role: UserRole!
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user role assigned"""
-enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  DOCTOR
-  DOCTOR_ASSISTANT
-  NURSE_PRACTITIONER
-  OFFICE_MANAGER
-  PATIENT
-  NURSE
-  BILLING
-  STAFF
-}
-
-type User {
-  id: String!
-  status: UserStatus!
-  emailVerified: Boolean!
-  email: String!
-  inviteSentAt: String!
-  inviteAcceptedAt: String!
-  userId: String!
-  token: String
-  userType: String!
-  facility: Facility
-  roles: [Role]
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user status"""
-enum UserStatus {
-  DEACTIVATED
-  ACTIVE
-}
-
-type DoctorPatient {
-  id: String!
-  doctorId: String
-  patientId: String
-  currentProvider: Boolean
-  doctor: Doctor
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Employer {
-  id: String!
-  name: String
-  email: String
-  phone: String
-  mobile: String
-  industry: String
-  usualOccupation: String
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Patient {
-  id: String!
-  suffix: String
-  email: String
-  patientRecord: String
-  firstName: String
-  middleName: String
-  lastName: String
-  firstNameUsed: String
-  prefferedName: String
-  previousFirstName: String
-  previouslastName: String
-  motherMaidenName: String
-  ssn: String
-  gender: GENDERIDENTITY!
-  dob: String
-  preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: String!
-  deceasedDate: String!
-  privacyNotice: Boolean!
-  phonePermission: Boolean!
-  voiceCallPermission: Boolean!
-  releaseOfInfoBill: Boolean!
-  callToConsent: Boolean!
-  medicationHistoryAuthority: Boolean!
-  patientNote: String
-  language: String
-  pharmacy: String
-  race: RACE
-  ethnicity: ETHNICITY
-  maritialStatus: MARITIALSTATUS
-  sexualOrientation: SEXUALORIENTATION
-  genderIdentity: GENDERIDENTITY
-  sexAtBirth: GENDERIDENTITY
-  pronouns: PRONOUNS
-  homeBound: HOMEBOUND
-  holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean!
-  inviteAccepted: Boolean
-  statementNote: String!
-  statementNoteDateFrom: String!
-  statementNoteDateTo: String!
-  facilityId: String
-  attachments: [Attachment!]
-  contacts: [Contact!]
-  facility: Facility
-  user: User
-  doctorPatients: [DoctorPatient!]
-  employer: [Employer!]
-  createdAt: String!
-  updatedAt: String!
-  transaction: Transactions
-}
-
-"""The patient's sexual orientation type assigned"""
-enum GENDERIDENTITY {
-  MALE
-  FEMALE
-  TRANSGENDER_MALE
-  TRANSGENDER_FEMALE
-  NOT_EXCLUSIVE
-  NONE
-}
-
-"""The patient's communication method assigned"""
-enum COMMUNICATIONTYPE {
-  PHONE
-  VOICE_MESSAGE
-  MESSAGE
-  EMAIL
-}
-
-"""The user race assigned"""
-enum RACE {
-  WHITE
-  BLACK_AFRICAN_AMERICAN
-  ASIAN
-  AMERICAN_INDIAN_ALASKA_NATIVE
-  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
-  OTHER
-}
-
-"""The patient's ethnicity type assigned"""
-enum ETHNICITY {
-  NONE
-  CENTERAL_AMERICAN
-  CENTERAL_AMERICAN_INDIAN
-}
-
-"""The patient's maritial status type assigned"""
-enum MARITIALSTATUS {
-  SINGLE
-  MARIED
-  WIDOWED
-  SEPARATED
-  DIVORCED
-}
-
-"""The patient's sexual orientation type assigned"""
-enum SEXUALORIENTATION {
-  HOMOSEXUAL
-  HETEROSEXUAL
-  BISEXUAL
-  DONT_KNOW
-  NONE
-}
-
-"""The patient's pronouns type assigned"""
-enum PRONOUNS {
-  HE
-  SHE
-  NONE
-}
-
-"""The patient's homebound type assigned"""
-enum HOMEBOUND {
-  YES
-  NO
-}
-
-"""The patient's hold statement type assigned"""
-enum HOLDSTATEMENT {
-  NONE
-  BAD_ADDRESS
-  NO_FORW_ADDRESS
-  BANKRUPTCY
-  CLAIM_CANCELED
-  INCORRECT_GURANTOR
-  PATIENT_DEASEASED
-  ACCOUNT_TOO_LONG
-  PRACTICE_REQUEST
-}
-
-type Practice {
+type Service {
   id: String!
   name: String!
-  phone: String
-  fax: String
-  practiceId: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  facilities: [Facility!]
+  serviceType: ServiceType!
+  duration: String!
+  color: String
+  price: String!
+  isActive: Boolean
+  facilityId: String
+  facility: Facility
+  scheduleServices: [ScheduleServices!]
   createdAt: String
   updatedAt: String
 }
 
-type BillingAddress {
+"""The service type assigned type"""
+enum ServiceType {
+  INTERNAL
+  EXTERNAL
+}
+
+type ScheduleServices {
   id: String!
-  email: String
-  phone: String
-  mobile: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  federalTaxId: String
-  bankAccount: String
-  checkPayableTo: String
-  facility: Facility
-  doctor: Doctor
-  userId: String
+  serviceId: String
+  scheduleId: String
+  service: Service
   createdAt: String!
   updatedAt: String!
 }
+
+type Schedule {
+  id: String!
+  startAt: String!
+  endAt: String!
+  recurringEndDate: DateTime
+  doctorId: String
+  facilityId: String
+  doctor: Doctor
+  facility: Facility
+  scheduleServices: [ScheduleServices!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Staff {
   id: String!
@@ -431,56 +310,140 @@ enum Gender {
   OTHER
 }
 
-type Schedule {
+type Doctor {
   id: String!
-  startAt: String!
-  endAt: String!
-  recurringEndDate: DateTime
-  doctorId: String
-  doctor: Doctor
-  scheduleServices: [ScheduleServices!]
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type ScheduleServices {
-  id: String!
-  serviceId: String
-  scheduleId: String
-  service: Service
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Service {
-  id: String!
-  name: String!
-  serviceType: ServiceType!
-  duration: String!
-  color: String
-  price: String!
-  isActive: Boolean
+  firstName: String
+  middleName: String
+  lastName: String
+  prefix: String
+  suffix: String
+  email: String
+  providerIntials: String
+  degreeCredentials: String
+  timeZone: String
+  speciality: Speciality
+  dob: String
+  ssn: String
+  taxonomyCode: String
+  deaNumber: String
+  deaActiveDate: String!
+  deaTermDate: String!
+  languagesSpoken: String
+  taxId: String
+  npi: String
+  upin: String
+  emcProviderId: String
+  billingFacility: String
+  medicareGrpNumber: String
+  medicaidGrpNumber: String
+  meammographyCertNumber: String
+  campusGrpNumber: String
+  blueShildNumber: String
+  taxIdStuff: String
+  specialityLicense: String
+  anesthesiaLicense: String
+  dpsCtpNumber: String
+  stateLicense: String
+  licenseActiveDate: String
+  licenseTermDate: String
+  prescriptiveAuthNumber: String
   facilityId: String
+  user: User
   facility: Facility
-  scheduleServices: [ScheduleServices!]
+  contacts: [Contact!]
+  billingAddress: [BillingAddress!]
+  schedule: [Schedule!]
+  staff: [Staff]
+  createdAt: String!
+  updatedAt: String!
+  transaction: Transactions
+}
+
+"""The doctor's speciality"""
+enum Speciality {
+  PHYSICIAN_ASSISTANT
+  PHARMACIST
+  PERIODONTICS
+  PEDIATRIC_DENTIST
+  PEDIATRIC_DERMATOLOGY
+  NEUROLOGY
+  GASTROENTEROLOGY
+}
+
+type Invoice {
+  id: String!
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
   createdAt: String
   updatedAt: String
+  transction: Transactions
+  appointment: Appointment
 }
 
-"""The service type assigned type"""
-enum ServiceType {
-  INTERNAL
-  EXTERNAL
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
+}
+
+type Transactions {
+  id: String!
+  transactionId: String
+  patientId: String!
+  doctorId: String!
+  facilityId: String!
+  appointmentId: String!
+  patient: [Patient!]
+  doctor: [Doctor!]
+  facility: [Facility!]
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+  status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
+}
+
+"""The transaction payment status type assigned"""
+enum TRANSACTIONSTATUS {
+  REFUND
+  DUE
+  PAID
+}
+
+type Practice {
+  id: String!
+  name: String!
+  phone: String
+  fax: String
+  practiceId: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  facilities: [Facility!]
+  createdAt: String
+  updatedAt: String
 }
 
 type Facility {
   id: String!
   name: String!
+  startTime: String
+  endTime: String
   practiceType: PracticeType
   cliaIdNumber: String
   federalTaxId: String
@@ -500,6 +463,7 @@ type Facility {
   services: [Service!]
   practice: Practice
   billingAddress: [BillingAddress!]
+  schedule: [Schedule!]
   createdAt: String
   updatedAt: String
   transaction: Transactions
@@ -615,102 +579,189 @@ enum APPOINTMENTSTATUS {
   CANCELLED
   INITIATED
   COMPLETED
+  ARRIVED
+  CHECKED_IN
+  CHECKED_IN_ONLINE
+  IN_ROOM
+  IN_SESSION
+  CONFIRMED
+  NOT_CONFIRMED
+  RESCHEDULED
+  NO_SHOW
 }
 
 """The patient billing status assigned"""
 enum BillingStatus {
   PAID
   DUE
+  REFUND
 }
 
-type Doctor {
+type Employer {
   id: String!
+  name: String
+  email: String
+  phone: String
+  mobile: String
+  industry: String
+  usualOccupation: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Patient {
+  id: String!
+  suffix: String
+  email: String
+  patientRecord: String
   firstName: String
   middleName: String
   lastName: String
-  prefix: String
-  suffix: String
-  email: String
-  providerIntials: String
-  degreeCredentials: String
-  timeZone: String
-  speciality: Speciality
-  dob: String
+  firstNameUsed: String
+  prefferedName: String
+  previousFirstName: String
+  previouslastName: String
+  motherMaidenName: String
   ssn: String
-  taxonomyCode: String
-  deaNumber: String
-  deaActiveDate: String!
-  deaTermDate: String!
-  languagesSpoken: String
-  taxId: String
-  npi: String
-  upin: String
-  emcProviderId: String
-  billingFacility: String
-  medicareGrpNumber: String
-  medicaidGrpNumber: String
-  meammographyCertNumber: String
-  campusGrpNumber: String
-  blueShildNumber: String
-  taxIdStuff: String
-  specialityLicense: String
-  anesthesiaLicense: String
-  dpsCtpNumber: String
-  stateLicense: String
-  licenseActiveDate: String
-  licenseTermDate: String
-  prescriptiveAuthNumber: String
+  gender: GENDERIDENTITY!
+  dob: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE!
+  registrationDate: String
+  deceasedDate: String
+  privacyNotice: Boolean!
+  phonePermission: Boolean!
+  voiceCallPermission: Boolean!
+  releaseOfInfoBill: Boolean!
+  callToConsent: Boolean!
+  medicationHistoryAuthority: Boolean!
+  patientNote: String
+  language: String
+  pharmacy: String
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  sexualOrientation: SEXUALORIENTATION
+  genderIdentity: GENDERIDENTITY
+  sexAtBirth: GENDERIDENTITY
+  pronouns: PRONOUNS
+  homeBound: HOMEBOUND
+  holdStatement: HOLDSTATEMENT
+  statementDelivereOnline: Boolean
+  inviteAccepted: Boolean
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
   facilityId: String
-  user: User
-  facility: Facility
+  attachments: [Attachment!]
   contacts: [Contact!]
-  billingAddress: [BillingAddress!]
-  schedule: [Schedule!]
-  staff: [Staff]
+  facility: Facility
+  user: User
+  doctorPatients: [DoctorPatient!]
+  employer: [Employer!]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
 }
 
-"""The doctor's speciality"""
-enum Speciality {
-  PHYSICIAN_ASSISTANT
-  PHARMACIST
-  PERIODONTICS
-  PEDIATRIC_DENTIST
-  PEDIATRIC_DERMATOLOGY
-  NEUROLOGY
-  GASTROENTEROLOGY
+"""The patient's sexual orientation type assigned"""
+enum GENDERIDENTITY {
+  MALE
+  FEMALE
+  TRANSGENDER_MALE
+  TRANSGENDER_FEMALE
+  NOT_EXCLUSIVE
+  NONE
 }
 
-type ResponsePayload {
-  status: Float
-  error: String
-  message: String
-  name: String
+"""The patient's communication method assigned"""
+enum COMMUNICATIONTYPE {
+  PHONE
+  VOICE_MESSAGE
+  MESSAGE
+  EMAIL
 }
 
-type AttachmentPayload {
+"""The user race assigned"""
+enum RACE {
+  WHITE
+  BLACK_AFRICAN_AMERICAN
+  ASIAN
+  AMERICAN_INDIAN_ALASKA_NATIVE
+  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
+  OTHER
+}
+
+"""The patient's ethnicity type assigned"""
+enum ETHNICITY {
+  NONE
+  CENTERAL_AMERICAN
+  CENTERAL_AMERICAN_INDIAN
+}
+
+"""The patient's maritial status type assigned"""
+enum MARITIALSTATUS {
+  SINGLE
+  MARIED
+  WIDOWED
+  SEPARATED
+  DIVORCED
+}
+
+"""The patient's sexual orientation type assigned"""
+enum SEXUALORIENTATION {
+  HOMOSEXUAL
+  HETEROSEXUAL
+  BISEXUAL
+  DONT_KNOW
+  NONE
+}
+
+"""The patient's pronouns type assigned"""
+enum PRONOUNS {
+  HE
+  SHE
+  NONE
+}
+
+"""The patient's homebound type assigned"""
+enum HOMEBOUND {
+  YES
+  NO
+}
+
+"""The patient's hold statement type assigned"""
+enum HOLDSTATEMENT {
+  NONE
+  BAD_ADDRESS
+  NO_FORW_ADDRESS
+  BANKRUPTCY
+  CLAIM_CANCELED
+  INCORRECT_GURANTOR
+  PATIENT_DEASEASED
+  ACCOUNT_TOO_LONG
+  PRACTICE_REQUEST
+}
+
+type PermissionsPayload {
   response: ResponsePayload
-  attachment: Attachment
-}
-
-type AttachmentMediaPayload {
-  response: ResponsePayload
-  preSignedUrl: String
-}
-
-type PaginationPayload {
-  page: Int
-  limit: Int
-  totalCount: Int
-  totalPages: Int
-}
-
-type AttachmentsPayload {
-  response: ResponsePayload
-  attachments: [Attachment]
+  permissions: [Permission]
   pagination: PaginationPayload
+}
+
+type PermissionPayload {
+  response: ResponsePayload
+  permission: Permission
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+  pagination: PaginationPayload
+}
+
+type RolePayload {
+  response: ResponsePayload
+  role: Role
 }
 
 type AccessUserPayload {
@@ -726,11 +777,6 @@ type ForgotPasswordPayload {
 type UserPayload {
   user: User
   response: ResponsePayload
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
 }
 
 type UsersPayload {
@@ -778,7 +824,7 @@ type Slots {
   endTime: String
 }
 
-type DoctorSlotsPayload {
+type SlotsPayload {
   response: ResponsePayload
   slots: [Slots!]
 }
@@ -991,6 +1037,10 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  findAllPermissions(permissionInput: PermissionInput!): PermissionsPayload!
+  GetPermission(getPermission: GetPermission!): PermissionPayload!
+  getAllRoles(roleInput: RoleInput!): RolesPayload!
+  getRole(getRole: GetRole!): RolePayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
   findAllServices(serviceInput: ServiceInput!): ServicesPayload!
@@ -1004,7 +1054,8 @@ type Query {
   findAllSchedules(scheduleInput: ScheduleInput!): SchedulesPayload!
   getSchedule(getSchedule: GetSchedule!): SchedulePayload!
   getDoctorSchedule(getDoctorSchedule: GetDoctorSchedule!): SchedulesPayload!
-  getDoctorSlots(getDoctorSlots: GetDoctorSlots!): DoctorSlotsPayload!
+  getFacilitySchedule(getFacilitySchedule: GetFacilitySchedule!): SchedulesPayload!
+  getSlots(getSlots: GetSlots!): SlotsPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
@@ -1013,7 +1064,7 @@ type Query {
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
-  getDoctorAppointment(getDoctorAppointment: GetDoctorAppointment!): AppointmentsPayload!
+  getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
@@ -1024,7 +1075,7 @@ type Query {
 
 input UsersInput {
   status: UserStatus
-  role: UserRole
+  role: String
   paginationOptions: PaginationInput!
 }
 
@@ -1035,6 +1086,23 @@ input PaginationInput {
 
 input GetUser {
   id: String!
+}
+
+input PermissionInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetPermission {
+  id: String
+}
+
+input RoleInput {
+  role: String
+  paginationOptions: PaginationInput!
+}
+
+input GetRole {
+  id: String
 }
 
 input FacilityInput {
@@ -1087,6 +1155,7 @@ input GetDoctor {
 
 input ScheduleInput {
   facilityId: String
+  doctorId: String
   paginationOptions: PaginationInput!
 }
 
@@ -1098,8 +1167,13 @@ input GetDoctorSchedule {
   id: String!
 }
 
-input GetDoctorSlots {
+input GetFacilitySchedule {
   id: String!
+}
+
+input GetSlots {
+  facilityId: String
+  providerId: String
   offset: Float!
   serviceId: String!
   currentDate: String!
@@ -1135,14 +1209,16 @@ input AppointmentInput {
   appointmentNumber: String
   appointmentStatus: String
   patientId: String
+  facilityId: String
 }
 
 input GetAppointment {
   id: String!
 }
 
-input GetDoctorAppointment {
-  doctorId: String!
+input GetAppointments {
+  doctorId: String
+  facilityId: String
 }
 
 input GetPatientAppointmentInput {
@@ -1165,6 +1241,8 @@ input GetForm {
 
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
+  verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
+  resentOTP(seneOTPAgainInput: SeneOTPAgainInput!): UserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
   forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
   verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
@@ -1174,8 +1252,16 @@ type Mutation {
   deactivateUser(user: UserIdInput!): UserPayload!
   removeUser(userIdInput: UserIdInput!): UserPayload!
   activateUser(user: UserIdInput!): UserPayload!
+  update2FactorAuth(twoFactorInput: TwoFactorInput!): UserPayload!
   updateUser(user: UpdateUserInput!): UserPayload!
-  updateRole(user: UpdateRoleInput!): UserPayload!
+  updateUserRole(user: UpdateRoleInput!): UserPayload!
+  createPermission(permissionItemInput: PermissionItemInput!): PermissionPayload!
+  assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput!): PermissionPayload!
+  updatePermission(updatePermissionItemInput: UpdatePermissionItemInput!): PermissionPayload!
+  removePermission(removePermission: RemovePermission!): PermissionPayload!
+  createRole(roleItemInput: RoleItemInput!): RolePayload!
+  updateRole(updateRoleItemInput: UpdateRoleItemInput!): RolePayload!
+  removeRole(removeRole: RemoveRole!): RolePayload!
   createFacility(createFacilityInput: CreateFacilityInput!): FacilityPayload!
   updateFacility(updateFacilityInput: UpdateFacilityInput!): FacilityPayload!
   updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput!): FacilityPayload!
@@ -1234,14 +1320,23 @@ input LoginUserInput {
   password: String!
 }
 
+input VerifyCodeInput {
+  id: String!
+  otpCode: String!
+}
+
+input SeneOTPAgainInput {
+  id: String!
+}
+
 input RegisterUserInput {
   firstName: String
   lastName: String
   password: String!
   email: String!
 
-  """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """string type role - Sign-up"""
+  roleType: String
   adminId: String
   facilityId: String
   phone: String
@@ -1278,6 +1373,12 @@ input UserIdInput {
   isEnabled: Boolean
 }
 
+input TwoFactorInput {
+  userId: String!
+  phone: String
+  isTwoFactorEnabled: Boolean!
+}
+
 input UpdateUserInput {
   firstName: String
   lastName: String
@@ -1293,7 +1394,46 @@ input UpdateUserInput {
 
 input UpdateRoleInput {
   id: String!
-  roles: [UserRole!]!
+  roles: [String!]!
+}
+
+input PermissionItemInput {
+  name: String!
+  moduleType: String!
+  roleId: String
+}
+
+input RolePermissionItemInput {
+  roleId: String!
+  permissionsId: [String!]
+}
+
+input UpdatePermissionItemInput {
+  name: String
+  moduleType: String
+  roleId: String
+  id: String
+}
+
+input RemovePermission {
+  id: String
+}
+
+input RoleItemInput {
+  role: String!
+  description: String
+  customRole: Boolean = true
+}
+
+input UpdateRoleItemInput {
+  role: String
+  description: String
+  customRole: Boolean = true
+  id: String
+}
+
+input RemoveRole {
+  id: String
 }
 
 input CreateFacilityInput {
@@ -1319,6 +1459,8 @@ input CreateFacilityItemInput {
   tamxonomyCode: String
   mammographyCertificationNumber: String
   npi: String
+  startTime: String
+  endTime: String
 }
 
 input CreateContactInput {
@@ -1394,6 +1536,8 @@ input UpdateFacilityItemInput {
   tamxonomyCode: String
   mammographyCertificationNumber: String
   npi: String
+  startTime: String
+  endTime: String
   id: String!
 }
 
@@ -1506,7 +1650,7 @@ input CreateStaffItemInput {
   gender: Gender
 
   """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  roleType: String
   adminId: String
   facilityId: String
 }
@@ -1530,7 +1674,7 @@ input UpdateStaffItemInput {
   gender: Gender
 
   """Send Investor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  roleType: String
   adminId: String
   facilityId: String
   id: String!
@@ -1563,8 +1707,8 @@ input CreateDoctorItemInput {
   email: String!
   password: String
 
-  """Send doctor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """Send doctor Type from the string - Sign-up"""
+  roleType: String
   adminId: String
   timeZone: String
   facilityId: String!
@@ -1615,8 +1759,8 @@ input UpdateDoctorItemInput {
   email: String
   password: String
 
-  """Send doctor Type from the ENUM - Sign-up"""
-  roleType: UserRole
+  """Send doctor Type from the string - Sign-up"""
+  roleType: String
   adminId: String
   timeZone: String
   facilityId: String
@@ -1665,7 +1809,8 @@ input CreateScheduleInput {
   startAt: String!
   endAt: String!
   recurringEndDate: DateTime
-  doctorId: String!
+  doctorId: String
+  facilityId: String
   servicesIds: [String!]!
 }
 
@@ -1674,6 +1819,7 @@ input UpdateScheduleInput {
   endAt: String
   recurringEndDate: DateTime
   doctorId: String
+  facilityId: String
   servicesIds: [String!]
   id: String!
 }
@@ -1870,6 +2016,9 @@ input CreateAttachmentInput {
   typeId: String!
   title: String
   subTitle: String
+  providerName: String
+  attachmentName: String
+  comments: String
   description: String
   url: String
 }
@@ -1884,6 +2033,9 @@ input UpdateAttachmentInput {
   typeId: String
   title: String
   subTitle: String
+  providerName: String
+  attachmentName: String
+  comments: String
   description: String
   url: String
   id: String
@@ -1939,8 +2091,8 @@ input CreateAppointmentInput {
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   serviceId: String!
-  facilityId: String!
-  providerId: String!
+  facilityId: String
+  providerId: String
   patientId: String
 }
 
@@ -1959,8 +2111,8 @@ input CreateExternalAppointmentItemInput {
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   serviceId: String!
-  facilityId: String!
-  providerId: String!
+  facilityId: String
+  providerId: String
   patientId: String
   paymentStatus: String
 }

@@ -3,7 +3,7 @@ import { ResponsePayload, ResponsePayloadResponse } from '../../users/dto/respon
 import { Slots } from './slots-payload.dto';
 
 @ObjectType()
-export class DoctorSlotsPayload extends ResponsePayloadResponse {
+export class SlotsPayload extends ResponsePayloadResponse {
     @Field(type=> [Slots], { nullable: true })
     slots: Slots[];
 

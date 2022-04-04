@@ -16,6 +16,8 @@ export class PaginatedEntityInput {
   appointmentStatus?: APPOINTMENTSTATUS
   dueToday?: boolean
   facilityId?: string
+  doctorId?: string
+  role?: string
   phychType?: string
   ageGroupId?: string
   primaryContact?: boolean

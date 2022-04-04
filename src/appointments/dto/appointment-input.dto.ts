@@ -15,4 +15,7 @@ export default class AppointmentInput {
 
     @Field({nullable: true})
     patientId?: string
+
+    @Field({nullable: true})
+    facilityId?: string
 }

@@ -19,6 +19,7 @@ registerEnumType(PaymentType, {
 export enum BillingStatus {
   PAID = "paid",
   DUE = "due",
+  REFUND = 'refund'
 }
 
 registerEnumType(BillingStatus, {
@@ -29,7 +30,16 @@ registerEnumType(BillingStatus, {
 export enum APPOINTMENTSTATUS {
   CANCELLED = "cancelled",
   INITIATED = "initiated",
-  COMPLETED = "completed"
+  COMPLETED = "completed",
+  ARRIVED = 'arrived',
+	CHECKED_IN = 'checked_in',
+	CHECKED_IN_ONLINE = 'checked_in_online',
+  IN_ROOM = 'in_room',
+  IN_SESSION = 'in_session',
+  CONFIRMED = 'confirmed',
+  NOT_CONFIRMED = 'not_confirmed',
+	RESCHEDULED = 'rescheduled',
+  NO_SHOW = 'no_show'
 }
 
 registerEnumType(APPOINTMENTSTATUS, {

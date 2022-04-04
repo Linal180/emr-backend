@@ -1,7 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
 import { CreateDoctorInput } from '../dto/create-doctor.input';
 import DoctorInput from '../dto/doctor-input.dto';
@@ -15,8 +15,8 @@ export class DoctorResolver {
   constructor(private readonly doctorService: DoctorService) { }
 
   @Mutation(() => DoctorPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createDoctor')
   async createDoctor(@Args('createDoctorInput') createDoctorInput: CreateDoctorInput) {
     return {
       doctor: await this.doctorService.createDoctor(createDoctorInput),
@@ -25,8 +25,8 @@ export class DoctorResolver {
   }
 
   @Mutation(() => DoctorPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateDoctor')
   async updateDoctor(@Args('updateDoctorInput') updateDoctorInput: UpdateDoctorInput) {
     return {
       doctor: await this.doctorService.updateDoctor(updateDoctorInput),
@@ -35,8 +35,8 @@ export class DoctorResolver {
   }
 
   @Query(returns => AllDoctorPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllDoctor')
   async findAllDoctor(@Args('doctorInput') doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     const doctors = await this.doctorService.findAllDoctor(doctorInput)
     if (doctors) {
@@ -54,8 +54,8 @@ export class DoctorResolver {
   }
 
   @Query(returns => DoctorPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getDoctor')
   async getDoctor(@Args('getDoctor') getDoctor: GetDoctor): Promise<DoctorPayload> {
     return {
       doctor: await this.doctorService.getDoctor(getDoctor.id),
@@ -64,16 +64,16 @@ export class DoctorResolver {
   }
 
   @Mutation(() => DoctorPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeDoctor')
   async removeDoctor(@Args('removeDoctor') removeDoctor: RemoveDoctor) {
     await this.doctorService.removeDoctor(removeDoctor);
     return { response: { status: 200, message: 'Doctor Deleted' } };
   }
 
   @Mutation(() => DoctorPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'disableDoctor')
   async disableDoctor(@Args('disableDoctor') disableDoctor: DisableDoctor) {
     await this.doctorService.disableDoctor(disableDoctor);
     return { response: { status: 200, message: 'Doctor Disabled' } };

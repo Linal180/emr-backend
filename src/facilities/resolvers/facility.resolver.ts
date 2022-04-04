@@ -1,7 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
+import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreateFacilityInput } from '../dto/create-facility.input';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
 import FacilityInput from '../dto/facility-input.dto';
@@ -17,8 +17,8 @@ export class FacilityResolver {
   constructor(private readonly facilityService: FacilityService) { }
 
   @Mutation(() => FacilityPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createFacility')
   async createFacility(@Args('createFacilityInput') createFacilityInput: CreateFacilityInput) {
     return {
       facility: await this.facilityService.createFacility(createFacilityInput),
@@ -27,8 +27,8 @@ export class FacilityResolver {
   }
 
   @Mutation(() => FacilityPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateFacility')
   async updateFacility(@Args('updateFacilityInput') updateFacilityInput: UpdateFacilityInput) {
     return {
       facility: await this.facilityService.updateFacility(updateFacilityInput),
@@ -37,8 +37,8 @@ export class FacilityResolver {
   }
 
   @Mutation(() => FacilityPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateFacilityTimeZone')
   async updateFacilityTimeZone(@Args('updateFacilityTimeZoneInput') updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput) {
     return {
       facility: await this.facilityService.updateFacilityTimeZone(updateFacilityTimeZoneInput),
@@ -47,8 +47,8 @@ export class FacilityResolver {
   }
 
   @Query(returns => FacilitiesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllFacility')
   async findAllFacility(@Args('facilityInput') facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     const facilities = await this.facilityService.findAllFacilities(facilityInput)
     if (facilities) {
@@ -66,8 +66,8 @@ export class FacilityResolver {
   }
 
   @Query(returns => FacilityPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['admin', 'super-admin'])
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getFacility')
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
     const facility = await this.facilityService.GetFacility(getFacility.id)
     return {
@@ -77,8 +77,8 @@ export class FacilityResolver {
   }
 
   @Mutation(() => FacilityPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeFacility')
   async removeFacility(@Args('removeFacility') removeFacility: RemoveFacility) {
     await this.facilityService.removeFacility(removeFacility);
     return { response: { status: 200, message: 'Facility Deleted' } };
