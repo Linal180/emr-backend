@@ -16,7 +16,7 @@ export class FormResolver {
 
   @Mutation(() => FormPayload)
   @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
+  @SetMetadata('roles', ['super-admin', 'admin'])
   async createForm(@Args('createFormInput') createFormInput: CreateFormInput) {
     return {
       form: await this.formsService.createForm(createFormInput),
@@ -36,7 +36,7 @@ export class FormResolver {
 
   @Query(returns => FormsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
+  @SetMetadata('roles', ['super-admin', 'admin'])
   async findAllForms(@Args('formInput') formInput: FormInput): Promise<FormsPayload> {
     const forms = await this.formsService.findAllForms(formInput)
     if (forms) {
@@ -75,7 +75,7 @@ export class FormResolver {
 
   @Mutation(() => FormPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin','admin'])
+  @SetMetadata('roles', ['super-admin', 'admin'])
   async removeForm(@Args('removeForm') removeForm: RemoveForm) {
     await this.formsService.removeForm(removeForm);
     return { response: { status: 200, message: 'Form Deleted successfully.' } };

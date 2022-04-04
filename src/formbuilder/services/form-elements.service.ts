@@ -149,7 +149,6 @@ export class FormElementsService {
       return await this.utilsService.updateEntityManager(FormElement, id, { isDeleted: true }, this.formElementRepository);
     } catch (error) {
       throw new InternalServerErrorException(error)
-
     }
   }
 }

@@ -7,9 +7,9 @@ import { ElementInputs } from "../dto/element.input";
 //service
 @Injectable()
 export class ElementService {
-  
+
   constructor(@InjectRepository(Element) private elementRepository: Repository<Element>) { }
-  
+
   /**
    * Creates element service
    * @param inputs 
@@ -40,5 +40,5 @@ export class ElementService {
       throw new InternalServerErrorException(error);
     }
   }
-  
+
 }

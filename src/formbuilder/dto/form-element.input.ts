@@ -39,7 +39,4 @@ export class CreateElementInputs extends FormElementInputs {
   sectionId: string
 }
 
-export class UpdateElementsInputs extends PartialType(FormElementInputs){
-
-  
-}
+export class UpdateElementsInputs extends PartialType(FormElementInputs) { }
