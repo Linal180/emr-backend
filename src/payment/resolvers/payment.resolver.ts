@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 //user imports
 import { PaymentService } from '../services/payment.service';
 import { BraintreePayload, TransactionPayload, TransactionsPayload } from '../dto/payment.dto';
-import { GetAllTransactionsInputs, PaymentInput, PaymentInputsAfterAppointment } from '../dto/payment.input';
+import { ACHPaymentInputs, GetAllTransactionsInputs, PaymentInput, PaymentInputsAfterAppointment } from '../dto/payment.input';
 import { AppointmentPayload } from '../../appointments/dto/appointment-payload.dto';
 //resolver
 @Resolver()
@@ -35,5 +35,12 @@ export class PaymentResolver {
   @Mutation(()=> TransactionsPayload)
   async getAllTransactions(@Args('transactionInputs') transactionInputs: GetAllTransactionsInputs):Promise<TransactionsPayload> {
     return await this.paymentService.getAll(transactionInputs);
+  }
+
+  //ach payment 
+
+  @Mutation(()=> TransactionPayload)
+  async paymentByACH(@Args('achPaymentInputs') achPaymentInputs:ACHPaymentInputs) {
+    await this.paymentService.achPayment(achPaymentInputs)
   }
 }

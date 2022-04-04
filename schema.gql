@@ -1249,6 +1249,7 @@ type Mutation {
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  paymentByACH(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
@@ -2123,6 +2124,15 @@ input PaymentInputsAfterAppointment {
 input GetAllTransactionsInputs {
   facilityId: String
   paginationOptions: PaginationInput!
+}
+
+input ACHPaymentInputs {
+  firstName: String
+  lastName: String
+  bankName: String!
+  accountNo: Int!
+  routingNo: Int!
+  accountType: String!
 }
 
 input CreateInvoiceInputs {

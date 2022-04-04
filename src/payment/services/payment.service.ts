@@ -14,7 +14,8 @@ import {
   PaymentInput,
   PaymentInputsAfterAppointment,
   UpdatePaymentStatus,
-  GetAllTransactionsInputs
+  GetAllTransactionsInputs,
+  ACHPaymentInputs
 } from '../dto/payment.input';
 import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
 import {
@@ -251,6 +252,12 @@ export class PaymentService {
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  //ach payment
+
+  async achPayment(achPaymentInputs: ACHPaymentInputs) {
+    
   }
 
 }

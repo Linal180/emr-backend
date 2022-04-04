@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import { CreateExternalAppointmentInput } from '../../appointments/dto/create-external-appointment.input';
 import {TRANSACTIONSTATUS} from '../entity/payment.entity'
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
@@ -87,4 +87,27 @@ export class GetAllTransactionsInputs {
 
   @Field(type => PaginationInput)
   paginationOptions: PaginationInput
+}
+
+
+@InputType()
+export class ACHPaymentInputs {
+
+  @Field({ nullable: true })
+  firstName: string
+
+  @Field({ nullable: true })
+  lastName: string
+
+  @Field()
+  bankName: string
+
+  @Field(()=> Int)
+  accountNo: number
+
+  @Field(()=> Int)
+  routingNo: number
+
+  @Field()
+  accountType: string
 }
