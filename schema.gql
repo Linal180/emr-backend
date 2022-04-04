@@ -53,16 +53,6 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
-type DoctorPatient {
-  id: String!
-  doctorId: String
-  patientId: String
-  currentProvider: Boolean
-  doctor: Doctor
-  createdAt: String!
-  updatedAt: String!
-}
-
 type Permission {
   id: String!
   name: String
@@ -115,6 +105,78 @@ type User {
 enum UserStatus {
   DEACTIVATED
   ACTIVE
+}
+
+type Staff {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String
+  dob: String
+  phone: String
+  facilityId: String
+  mobile: String
+  gender: Gender!
+  user: User
+  facility: Facility
+  patientProblem: [PatientProblems!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type ICDCodes {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientProblems {
+  id: String!
+  problemType: ProblemType!
+  problemSeverity: ProblemSeverity!
+  problemStartDate: String
+  note: String
+  patientId: String
+  ICDCode: ICDCodes
+  patient: Patient
+  doctor: Doctor
+  staff: Staff
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's problem type assigned"""
+enum ProblemType {
+  ACTIVE
+  HISTORIC
+}
+
+"""The patient's problem severity type assigned"""
+enum ProblemSeverity {
+  CHRONIC
+  ACUTE
+}
+
+type DoctorPatient {
+  id: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
 }
 
 type BillingAddress {
@@ -286,30 +348,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Staff {
-  id: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-  username: String
-  dob: String
-  phone: String
-  facilityId: String
-  mobile: String
-  gender: Gender!
-  user: User
-  facility: Facility
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user gender assigned"""
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-}
-
 type Doctor {
   id: String!
   firstName: String
@@ -353,6 +391,7 @@ type Doctor {
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
   schedule: [Schedule!]
+  patientProblem: [PatientProblems!]
   staff: [Staff]
   createdAt: String!
   updatedAt: String!
@@ -564,6 +603,7 @@ type Appointment {
   provider: Doctor
   patient: Patient
   invoice: Invoice
+  patientProblem: [PatientProblems!]
   createdAt: String
   updatedAt: String
 }
@@ -657,6 +697,7 @@ type Patient {
   facility: Facility
   user: User
   doctorPatients: [DoctorPatient!]
+  patientProblems: [PatientProblems!]
   employer: [Employer!]
   createdAt: String!
   updatedAt: String!
@@ -922,6 +963,17 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type PatientProblemPayload {
+  response: ResponsePayload
+  patientProblem: PatientProblems
+}
+
+type PatientProblemsPayload {
+  response: ResponsePayload
+  patientProblems: [PatientProblems]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -960,6 +1012,8 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
+  getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
 }
 
 input UsersInput {
@@ -1119,6 +1173,15 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input PatientProblemInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientProblem {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -1189,6 +1252,9 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
+  updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
+  removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
 }
 
 input LoginUserInput {
@@ -2082,5 +2148,30 @@ input CreateExternalInvoiceInputs {
 
 input InvoiceStatusInputs {
   status: STATUS!
+  id: String!
+}
+
+input CreateProblemInput {
+  icdCodeId: String!
+  patientId: String!
+  providerId: String
+  staffId: String
+  appointmentId: String
+  problemType: ProblemType
+  problemSeverity: ProblemSeverity
+  problemStartDate: String
+  note: String
+}
+
+input UpdateProblemInput {
+  id: String!
+  appointmentId: String
+  problemType: ProblemType
+  problemSeverity: ProblemSeverity
+  problemStartDate: String
+  note: String
+}
+
+input RemoveProblem {
   id: String!
 }

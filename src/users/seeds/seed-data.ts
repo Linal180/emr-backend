@@ -18,7 +18,7 @@ export const RolesData = [
 export const UsersData = [
     { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true },
 ];
-
+ 
 export const PermissionData = [
     { name: 'fetchAllUsers' , moduleType: 'User'},
     { name: 'fetchUser' , moduleType: 'User'},
