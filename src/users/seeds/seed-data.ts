@@ -2,7 +2,11 @@ import { PracticeType, ServiceCode } from '../../facilities/entities/facility.en
 import { UserStatus } from '../entities/user.entity';
 
 export const FacilityData = [
-    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332", tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 }];
+    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", 
+    cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332",
+    tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 
+    }
+];
 
 export const RolesData = [
     { role: 'super-admin', customRole: false, description: "super admin has all permissions" },
@@ -16,7 +20,9 @@ export const RolesData = [
     { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
 ];
 export const UsersData = [
-    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true },
+    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, 
+      phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true 
+    },
 ];
  
 export const PermissionData = [
@@ -82,6 +88,8 @@ export const PermissionData = [
     { name: 'removeStaff'  , moduleType: 'Staff' },
     { name: 'disableStaff'  , moduleType: 'Staff' },
     { name: 'createSchedule'  , moduleType: 'Schedule' },
+    { name: 'getDoctorSchedule'  , moduleType: 'Schedule' },
+    { name: 'getFacilitySchedule'  , moduleType: 'Schedule' },
     { name: 'updateSchedule'  , moduleType: 'Schedule' },
     { name: 'findAllSchedules'  , moduleType: 'Schedule' },
     { name: 'getSchedule'  , moduleType: 'Schedule' },
