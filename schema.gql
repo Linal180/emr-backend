@@ -984,6 +984,7 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+<<<<<<< HEAD
 type IcdCodesPayload {
   response: ResponsePayload
   icdCodes: [ICDCodes]
@@ -1004,6 +1005,113 @@ type PatientProblemsPayload {
 type snoMedCodesPayload {
   response: ResponsePayload
   snoMedCodes: [SnoMedCodes]
+=======
+type FormPayload {
+  response: ResponsePayload
+  form: Form
+}
+
+type FieldOptionsType {
+  name: String!
+  value: String!
+}
+
+type FieldsTypes {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  options: [FieldOptionsType!]!
+  textArea: Boolean!
+}
+
+"""The form's element types"""
+enum ElementType {
+  TEXT
+  NUMBER
+  DROPDOWN
+  RADIO
+  DATE
+  FILE
+  TIME
+  SELECT
+  CHECKBOX
+  TEL
+  EMAIL
+  COLOR
+  IMAGE
+  MONTH
+  PASSWORD
+  URL
+  WEEK
+}
+
+type SectionsTypes {
+  id: String!
+  col: Int!
+  fields: [FieldsTypes!]!
+}
+
+type LayoutJSONType {
+  sections: [SectionsTypes!]!
+}
+
+type Form {
+  id: String!
+  name: String!
+  type: FormType!
+  facilityId: String!
+  layout: LayoutJSONType!
+  isSystemForm: Boolean
+  formElements: [FormElement!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The form's types"""
+enum FormType {
+  APPOINTMENT
+  DOCTOR
+  PATIENT
+  STAFF
+}
+
+type FormElement {
+  id: String!
+  placeholder: String
+  defaultValue: String
+  required: Boolean
+  errorMsg: String
+  name: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  sectionId: String!
+  isDeleted: Boolean!
+  element: Element
+  createdAt: String
+  updatedAt: String
+}
+
+type Element {
+  id: String!
+  type: ElementType!
+  createdAt: String
+  updatedAt: String
+}
+
+type FormsPayload {
+  response: ResponsePayload
+  forms: [Form]
+>>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
   pagination: PaginationPayload
 }
 
@@ -1045,10 +1153,16 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+<<<<<<< HEAD
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
+=======
+  findAllForms(formInput: FormInput!): FormsPayload!
+  getForm(getForm: GetForm!): FormPayload!
+  getPublicForm(getForm: GetForm!): FormPayload!
+>>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
 }
 
 input UsersInput {
@@ -1208,6 +1322,7 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+<<<<<<< HEAD
 input PatientProblemInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -1222,6 +1337,14 @@ input SearchSnoMedCodesInput {
 }
 
 input GetPatientProblem {
+=======
+input FormInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetForm {
+>>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
   id: String!
 }
 
@@ -1295,9 +1418,16 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+<<<<<<< HEAD
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
+=======
+  createForm(createFormInput: CreateFormInput!): FormPayload!
+  updateForm(updateFormInput: UpdateFormInput!): FormPayload!
+  removeForm(removeForm: RemoveForm!): FormPayload!
+  createElement(inputs: ElementInputs!): Element!
+>>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
 }
 
 input LoginUserInput {
@@ -2194,6 +2324,7 @@ input InvoiceStatusInputs {
   id: String!
 }
 
+<<<<<<< HEAD
 input CreateProblemInput {
   icdCodeId: String!
   snowMedCodeId: String
@@ -2219,3 +2350,61 @@ input UpdateProblemInput {
 input RemoveProblem {
   id: String!
 }
+=======
+input CreateFormInput {
+  name: String!
+  type: FormType!
+  facilityId: String!
+  layout: LayoutJSONInputType!
+  isSystemForm: Boolean
+}
+
+input LayoutJSONInputType {
+  sections: [SectionsInputs!]!
+}
+
+input SectionsInputs {
+  id: String!
+  col: Int!
+  fields: [FieldsInputs!]!
+}
+
+input FieldsInputs {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  options: [FieldOptionsInputType!]!
+  textArea: Boolean!
+}
+
+input FieldOptionsInputType {
+  name: String!
+  value: String!
+}
+
+input UpdateFormInput {
+  name: String
+  type: FormType
+  facilityId: String
+  layout: LayoutJSONInputType
+  isSystemForm: Boolean
+  id: String!
+}
+
+input RemoveForm {
+  id: String!
+}
+
+input ElementInputs {
+  type: ElementType!
+}
+>>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
