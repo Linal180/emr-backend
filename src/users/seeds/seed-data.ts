@@ -102,4 +102,10 @@ export const PermissionData = [
     { name: 'searchSnoMedCodeByIcdCodes'  , moduleType: 'Patient Charting' },
     { name: 'getPatientProblem'  , moduleType: 'Patient Charting' },
     { name: 'removePatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'createPermission'  , moduleType: 'Permissions' },
+    { name: 'assignPermissionToRole'  , moduleType: 'Permissions' },
+    { name: 'updatePermission'  , moduleType: 'Permissions' },
+    { name: 'findAllPermissions'  , moduleType: 'Permissions' },
+    { name: 'GetPermission'  , moduleType: 'Permissions' },
+    { name: 'removePermission'  , moduleType: 'Permissions' },
 ];

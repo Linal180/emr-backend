@@ -17,7 +17,6 @@ export class CreateICDCodes implements Seeder {
       let iCDCodes = await getRepository(ICDCodes).find();
       //limiting the seeder data 
       let iCDCodesDataLimited = iCDCodesData.slice(0, 1000)
-      console.log(":iCDCodesDataLimited",iCDCodesDataLimited.length)
       if (!iCDCodes.length) {
         iCDCodesDataLimited.map( async (item)=> {
           let icdCode = getRepository(ICDCodes).create(item)
@@ -28,7 +27,6 @@ export class CreateICDCodes implements Seeder {
         let snowMedCodeCheck = await getRepository(SnoMedCodes).find();
         //limiting the seeder data 
        let snowMedCodeLimited = snowMedCodeOne.slice(0, 1000)
-       console.log(":snowMedCodeLimited",snowMedCodeLimited.length)
         if (!snowMedCodeCheck.length) {
          //Add SnowMedCodes  
           snowMedCodeLimited.map( async (item)=> {
