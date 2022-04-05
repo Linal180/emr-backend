@@ -4,16 +4,7 @@ import { Factory, Seeder } from "typeorm-seeding";
 import { ICDCodes } from "../entities/icdcodes.entity";
 import { SnoMedCodes } from "../entities/snowmedCodes.entity";
 import { iCDCodesData } from './seed-data';
-import {snowMedCodeOne} from './snoMedCodeOne'
-import {snowMedCodeTwo} from './snowMedCodeTwo'
-import {snoMedCodeThree} from './snoMedCodeThree'
-import {snoMedCodeFour} from './snoMedCodeFour'
-import {snoMedCodeFive} from './snoMedCodeFive'
-import {snoMedCodeSix} from './snoMedCodeSix'
-import {snoMedCodeSeven} from './snoMedCodeSeven'
-import {snoMedCodeEight} from './snoMedCodeEight'
-import {snoMedCodeNine} from './snoMedCodeNine'
-import {snoMedCodeTen} from './snoMedCodeTen'
+import { snowMedCodeOne } from './snoMedCodeOne';
 
 @Injectable()
 export class CreateICDCodes implements Seeder {
@@ -26,6 +17,7 @@ export class CreateICDCodes implements Seeder {
       let iCDCodes = await getRepository(ICDCodes).find();
       //limiting the seeder data 
       let iCDCodesDataLimited = iCDCodesData.slice(0, 1000)
+      console.log(":iCDCodesDataLimited",iCDCodesDataLimited.length)
       if (!iCDCodes.length) {
         iCDCodesDataLimited.map( async (item)=> {
           let icdCode = getRepository(ICDCodes).create(item)
@@ -34,16 +26,19 @@ export class CreateICDCodes implements Seeder {
       }
         //Add SnowMedCodes  
         let snowMedCodeCheck = await getRepository(SnoMedCodes).find();
+        //limiting the seeder data 
+       let snowMedCodeLimited = snowMedCodeOne.slice(0, 1000)
+       console.log(":snowMedCodeLimited",snowMedCodeLimited.length)
         if (!snowMedCodeCheck.length) {
-       //Add SnowMedCodes  
-        snowMedCodeOne.map( async (item)=> {
+         //Add SnowMedCodes  
+          snowMedCodeLimited.map( async (item)=> {
            let snowMedCodes = getRepository(SnoMedCodes).create(item)
            snowMedCodes = await queryRunner.manager.save(snowMedCodes);
          })
-          snowMedCodeTwo.map( async (item)=> {
-            let snowMedCodes = getRepository(SnoMedCodes).create(item)
-            snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          })
+          // snowMedCodeTwo.map( async (item)=> {
+          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+          // })
           // snoMedCodeThree.map( async (item)=> {
           //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
           //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
