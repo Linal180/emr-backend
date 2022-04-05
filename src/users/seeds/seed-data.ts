@@ -11,9 +11,9 @@ export const RolesData = [
     { role: 'nurse', customRole: false, description: "nurse has permissions" },
     { role: 'patient', customRole: false,description: "patient has all permissions for patient portal" },
     { role: 'staff' , customRole: false, description: "staff has permissions for staff members and lab records"},
-    { role: 'nurse_practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
-    { role: 'office_manager', customRole: false, description: "office manager has administrative permissions" },
-    { role: 'doctor_assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
+    { role: 'nurse-practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
+    { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
+    { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
 ];
 export const UsersData = [
     { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true },
@@ -83,7 +83,7 @@ export const PermissionData = [
     { name: 'disableStaff'  , moduleType: 'Staff' },
     { name: 'createSchedule'  , moduleType: 'Schedule' },
     { name: 'updateSchedule'  , moduleType: 'Schedule' },
-    { name: 'findAllSchedules'  , moduleType: 'Schedules' },
+    { name: 'findAllSchedules'  , moduleType: 'Schedule' },
     { name: 'getSchedule'  , moduleType: 'Schedule' },
     { name: 'getSlots'  , moduleType: 'Schedule' },
     { name: 'removeSchedule'  , moduleType: 'Schedule' },

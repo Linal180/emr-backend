@@ -141,11 +141,13 @@ export class ProblemService {
    * @returns sno med code by icd codes 
    */
   async searchSnoMedCodeByIcdCodes(searchTerm: string): Promise<SnoMedCodes[]> {
-    const [first] = searchTerm.split(' ');
+    const [first, last] = searchTerm.split(' ');
     const result = await getConnection()
       .getRepository(SnoMedCodes)
       .createQueryBuilder("SnoMedCodes")
       .where('SnoMedCodes.mapTarget ILIKE :searchTerm', { searchTerm: `%${first}%` })
+      .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${last}%` })
+      .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getMany();
     return result;
   }
