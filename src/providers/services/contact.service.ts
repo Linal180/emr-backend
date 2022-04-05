@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@n
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';

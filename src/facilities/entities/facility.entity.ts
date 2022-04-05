@@ -6,6 +6,7 @@ import { Practice } from 'src/practice/entities/practice.entity';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Schedule } from 'src/providers/entities/schedule.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
@@ -94,6 +95,14 @@ export class Facility {
   @Column()
   @Field()
   name: string;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  @Field({nullable: true})
+  startTime: string;
+
+  @Column({ type: 'timestamptz', nullable: true  })
+  @Field({nullable: true})
+  endTime: string;
 
   @Column({
     type: "enum",
@@ -184,6 +193,10 @@ export class Facility {
   @OneToMany(() => BillingAddress, billingAddress => billingAddress.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
+
+  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @Field(type => [Schedule], { nullable: true })
+  schedule: Schedule[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

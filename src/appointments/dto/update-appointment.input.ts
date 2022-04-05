@@ -34,9 +34,12 @@ export class UpdateAppointmentBillingStatusInput {
 export class GetAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }
 
 @InputType()
-export class GetDoctorAppointment {
-  @Field()
+export class GetAppointments {
+  @Field({nullable: true})
   doctorId: string
+
+  @Field({nullable: true})
+  facilityId: string
  }
 
  @InputType()

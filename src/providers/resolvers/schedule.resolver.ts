@@ -2,14 +2,13 @@ import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/c
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Service } from 'src/facilities/entities/services.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import RoleGuard from 'src/users/auth/role.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { CreateScheduleInput } from '../dto/create-schedule.input';
-import { DoctorSchedulePayload } from '../dto/doctor-schedule-payload.dto';
-import { DoctorSlotsPayload } from '../dto/doctor-slots-payload.dto';
+import { SlotsPayload } from '../dto/doctor-slots-payload.dto';
 import ScheduleInput from '../dto/schedule-input.dto';
 import { SchedulePayload } from '../dto/schedule-payload.dto';
 import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { GetDoctorSchedule, GetDoctorSlots, GetSchedule, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { GetDoctorSchedule, GetFacilitySchedule, GetSchedule, GetSlots, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
 import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ScheduleService } from '../services/schedule.service';
@@ -19,8 +18,8 @@ export class ScheduleResolver {
   constructor(private readonly scheduleService: ScheduleService) { }
 
   @Mutation(() => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createSchedule')
   async createSchedule(@Args('createScheduleInput') createScheduleInput: CreateScheduleInput) {
     return {
       schedule: await this.scheduleService.createSchedule(createScheduleInput),
@@ -29,8 +28,8 @@ export class ScheduleResolver {
   }
 
   @Mutation(() => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateSchedule')
   async updateSchedule(@Args('updateScheduleInput') updateScheduleInput: UpdateScheduleInput) {
     return {
       schedule: await this.scheduleService.updateSchedule(updateScheduleInput),
@@ -39,8 +38,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => SchedulesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllSchedules')
   async findAllSchedules(@Args('scheduleInput') scheduleInput: ScheduleInput): Promise<SchedulesPayload> {
     const schedules = await this.scheduleService.findAllSchedule(scheduleInput)
     if (schedules) {
@@ -58,8 +57,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getSchedule')
   async getSchedule(@Args('getSchedule') getSchedule: GetSchedule): Promise<SchedulePayload> {
     return {
       schedule: await this.scheduleService.findOne(getSchedule.id),
@@ -76,8 +75,8 @@ export class ScheduleResolver {
   }
 
   @Query(returns => SchedulesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getDoctorSchedule')
   async getDoctorSchedule(@Args('getDoctorSchedule') getDoctorSchedule: GetDoctorSchedule) {
     const schedule = await this.scheduleService.getDoctorSchedule(getDoctorSchedule)
     return {
@@ -86,20 +85,32 @@ export class ScheduleResolver {
     };
   }
 
-  @Query(returns => DoctorSlotsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['admin', 'super-admin', 'admin'])
-  async getDoctorSlots(@Args('getDoctorSlots') getDoctorSlots: GetDoctorSlots) {
-    const slots = await this.scheduleService.getDoctorSlots(getDoctorSlots)
+
+  @Query(returns => SchedulesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getFacilitySchedule')
+  async getFacilitySchedule(@Args('getFacilitySchedule') getFacilitySchedule: GetFacilitySchedule) {
+    const schedule = await this.scheduleService.getFacilitySchedule(getFacilitySchedule)
+    return {
+      ...schedule,
+      response: { status: 200, message: 'Facility Schedule fetched successfully' }
+    };
+  }
+
+  @Query(returns => SlotsPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getSlots')
+  async getSlots(@Args('getSlots') getSlots: GetSlots) {
+    const slots = await this.scheduleService.getDoctorSlots(getSlots)
     return {
       slots,
-      response: { status: 200, message: 'Doctor Schedule slots fetched successfully' }
+      response: { status: 200, message: 'Schedule slots fetched successfully' }
     };
   }
 
   @Mutation(() => SchedulePayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeSchedule')
   async removeSchedule(@Args('removeSchedule') removeSchedule: RemoveSchedule) {
     await this.scheduleService.removeSchedule(removeSchedule);
     return { response: { status: 200, message: 'Schedule Deleted' } };

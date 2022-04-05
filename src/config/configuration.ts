@@ -23,9 +23,9 @@ export default () => {
       host: process.env.DATABASE_HOST || "localhost",
       port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
       type: process.env.DATABASE_TYPE || "postgres",
-      username: "postgres",
-      password: "password",
-      database: "emr-pro",
+      username: process.env.DATABASE_USERNAME || "postgres",
+      password: process.env.DATABASE_PASSWORD || "password",
+      database: process.env.DATABASE_NAME ||"emr-pro",
       timezone: 'Z',
       migrationsRun: true,
       logging: true,
@@ -64,6 +64,7 @@ export default () => {
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID || "ACe835bd46c85a40b950674c1af03c6b24",
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN || "29a1c82e5053986e3a8d82dbd75a72c9",
     TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER || "+16065955458",
+    TWILIO_OTP_SERVICE_SID: process.env.TWILIO_OTP_SERVICE_SID || "VAcb380afca6eb8e01c6f104369e14f067",
     redis,
     VERIFY_EMAIL_TEMPLATE_ID:
       process.env.VERIFY_EMAIL_TEMPLATE_ID ||

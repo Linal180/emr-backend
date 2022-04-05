@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RemoveBillingAddress, UpdateBillingAddressInput } from 'src/facilities/dto/update-billing-address.input';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateBillingAddressInput } from '../dto/create-billing-address.input';

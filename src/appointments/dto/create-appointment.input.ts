@@ -49,10 +49,10 @@ export class CreateAppointmentInput {
     @Field({ nullable: false })
     serviceId: string;
   
-    @Field({ nullable: false })
+    @Field({ nullable: true })
     facilityId: string;
     
-    @Field({ nullable: false })
+    @Field({ nullable: true })
     providerId: string;
   
     @Field({ nullable: true })
