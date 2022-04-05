@@ -122,8 +122,10 @@ export class PatientService {
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
+      if(updatePatientInput.updatePatientItemInput.facilityId){
       const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
       patientInstance.facility = facility
+      }
       //update patient contact 
       const contact = await this.contactService.updateContact(updatePatientInput.updateContactInput)
       //update patient emergency contact 
