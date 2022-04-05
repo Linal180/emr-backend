@@ -922,6 +922,114 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type FormPayload {
+  response: ResponsePayload
+  form: Form
+}
+
+type FieldOptionsType {
+  name: String!
+  value: String!
+}
+
+type FieldsTypes {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  options: [FieldOptionsType!]!
+  textArea: Boolean!
+}
+
+"""The form's element types"""
+enum ElementType {
+  TEXT
+  NUMBER
+  DROPDOWN
+  RADIO
+  DATE
+  FILE
+  TIME
+  SELECT
+  CHECKBOX
+  TEL
+  EMAIL
+  COLOR
+  IMAGE
+  MONTH
+  PASSWORD
+  URL
+  WEEK
+}
+
+type SectionsTypes {
+  id: String!
+  col: Int!
+  fields: [FieldsTypes!]!
+}
+
+type LayoutJSONType {
+  sections: [SectionsTypes!]!
+}
+
+type Form {
+  id: String!
+  name: String!
+  type: FormType!
+  facilityId: String!
+  layout: LayoutJSONType!
+  isSystemForm: Boolean
+  formElements: [FormElement!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The form's types"""
+enum FormType {
+  APPOINTMENT
+  DOCTOR
+  PATIENT
+  STAFF
+}
+
+type FormElement {
+  id: String!
+  placeholder: String
+  defaultValue: String
+  required: Boolean
+  errorMsg: String
+  name: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  sectionId: String!
+  isDeleted: Boolean!
+  element: Element
+  createdAt: String
+  updatedAt: String
+}
+
+type Element {
+  id: String!
+  type: ElementType!
+  createdAt: String
+  updatedAt: String
+}
+
+type FormsPayload {
+  response: ResponsePayload
+  forms: [Form]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -960,6 +1068,9 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  findAllForms(formInput: FormInput!): FormsPayload!
+  getForm(getForm: GetForm!): FormPayload!
+  getPublicForm(getForm: GetForm!): FormPayload!
 }
 
 input UsersInput {
@@ -1119,6 +1230,15 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input FormInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetForm {
+  id: String!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -1189,6 +1309,10 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createForm(createFormInput: CreateFormInput!): FormPayload!
+  updateForm(updateFormInput: UpdateFormInput!): FormPayload!
+  removeForm(removeForm: RemoveForm!): FormPayload!
+  createElement(inputs: ElementInputs!): Element!
 }
 
 input LoginUserInput {
@@ -2083,4 +2207,61 @@ input CreateExternalInvoiceInputs {
 input InvoiceStatusInputs {
   status: STATUS!
   id: String!
+}
+
+input CreateFormInput {
+  name: String!
+  type: FormType!
+  facilityId: String!
+  layout: LayoutJSONInputType!
+  isSystemForm: Boolean
+}
+
+input LayoutJSONInputType {
+  sections: [SectionsInputs!]!
+}
+
+input SectionsInputs {
+  id: String!
+  col: Int!
+  fields: [FieldsInputs!]!
+}
+
+input FieldsInputs {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  options: [FieldOptionsInputType!]!
+  textArea: Boolean!
+}
+
+input FieldOptionsInputType {
+  name: String!
+  value: String!
+}
+
+input UpdateFormInput {
+  name: String
+  type: FormType
+  facilityId: String
+  layout: LayoutJSONInputType
+  isSystemForm: Boolean
+  id: String!
+}
+
+input RemoveForm {
+  id: String!
+}
+
+input ElementInputs {
+  type: ElementType!
 }
