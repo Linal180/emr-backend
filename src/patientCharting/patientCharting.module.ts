@@ -7,12 +7,13 @@ import { ProviderModule } from 'src/providers/provider.module';
 import { UsersModule } from 'src/users/users.module';
 import { ICDCodes } from './entities/icdcodes.entity';
 import { PatientProblems } from './entities/patientProblems.entity';
+import { SnoMedCodes } from './entities/snowmedCodes.entity';
 import { ProblemResolver } from './resolvers/patientProblem.resolver';
 import { ProblemService } from './services/patientProblem.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ICDCodes, PatientProblems]),
+    TypeOrmModule.forFeature([ICDCodes, PatientProblems, SnoMedCodes]),
     forwardRef(() => UsersModule),
     PaginationModule,
     ProviderModule,

@@ -2,9 +2,9 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { PatientProblems } from './patientProblems.entity';
 
-@Entity({ name: 'SNOWMEDCODES' })
+@Entity({ name: 'SnoMedCodes' })
 @ObjectType()
-export class SNOWMEDCODE {
+export class SnoMedCodes {
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -19,7 +19,7 @@ export class SNOWMEDCODE {
 
   @Column({nullable: true})
   @Field({nullable: true})
-  active: boolean;
+  active: string;
 
   @Column({nullable: true})
   @Field({nullable: true})
@@ -60,6 +60,10 @@ export class SNOWMEDCODE {
   @Column({nullable: true})
   @Field({nullable: true})
   mapCategoryId: string;
+
+  @Field(() => [PatientProblems], { nullable: true })
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.snowMedCode, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  patientProblem: PatientProblems[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

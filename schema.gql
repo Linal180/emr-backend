@@ -141,6 +141,26 @@ type ICDCodes {
   updatedAt: String
 }
 
+type SnoMedCodes {
+  id: String!
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
+  createdAt: String
+  updatedAt: String
+}
+
 type PatientProblems {
   id: String!
   problemType: ProblemType!
@@ -153,6 +173,7 @@ type PatientProblems {
   doctor: Doctor
   staff: Staff
   appointment: Appointment
+  snowMedCode: SnoMedCodes
   createdAt: String
   updatedAt: String
 }
@@ -963,6 +984,12 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type IcdCodesPayload {
+  response: ResponsePayload
+  icdCodes: [ICDCodes]
+  pagination: PaginationPayload
+}
+
 type PatientProblemPayload {
   response: ResponsePayload
   patientProblem: PatientProblems
@@ -971,6 +998,12 @@ type PatientProblemPayload {
 type PatientProblemsPayload {
   response: ResponsePayload
   patientProblems: [PatientProblems]
+  pagination: PaginationPayload
+}
+
+type snoMedCodesPayload {
+  response: ResponsePayload
+  snoMedCodes: [SnoMedCodes]
   pagination: PaginationPayload
 }
 
@@ -1013,6 +1046,8 @@ type Query {
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
+  searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
+  searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
 }
 
@@ -1176,6 +1211,14 @@ input InvoiceInputs {
 input PatientProblemInput {
   patientId: String
   paginationOptions: PaginationInput!
+}
+
+input SearchIcdCodesInput {
+  searchTerm: String!
+}
+
+input SearchSnoMedCodesInput {
+  IcdCodes: String!
 }
 
 input GetPatientProblem {
@@ -2153,6 +2196,7 @@ input InvoiceStatusInputs {
 
 input CreateProblemInput {
   icdCodeId: String!
+  snowMedCodeId: String
   patientId: String!
   providerId: String
   staffId: String

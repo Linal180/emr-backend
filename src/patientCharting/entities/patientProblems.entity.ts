@@ -5,6 +5,7 @@ import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ICDCodes } from './icdcodes.entity';
+import { SnoMedCodes } from './snowmedCodes.entity';
 
 export enum ProblemType {
   ACTIVE = "active",
@@ -81,6 +82,10 @@ export class PatientProblems {
   @ManyToOne(() => Appointment, appointment => appointment.patientProblem, { onDelete: 'CASCADE' })
   @Field(type => Appointment, { nullable: true })
   appointment: Appointment;
+
+  @ManyToOne(() => SnoMedCodes, snowMedCodes => snowMedCodes.patientProblem, { eager: true, onDelete: 'CASCADE' })
+  @Field(type => SnoMedCodes, { nullable: true })
+  snowMedCode: SnoMedCodes; 
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

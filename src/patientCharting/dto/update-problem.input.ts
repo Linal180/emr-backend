@@ -28,3 +28,15 @@ export class GetPatientProblem extends PickType(UpdateProblemInput, ['id'] as co
 
 @InputType()
 export class RemoveProblem extends PickType(UpdateProblemInput, ['id'] as const) { }
+
+@InputType()
+export class SearchIcdCodesInput {
+  @Field()
+  searchTerm: string
+}
+
+@InputType()
+export class SearchSnoMedCodesInput {
+  @Field()
+  IcdCodes: string
+}

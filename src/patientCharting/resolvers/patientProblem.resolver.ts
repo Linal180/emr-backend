@@ -1,10 +1,14 @@
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { CreateProblemInput } from '../dto/create-problem.input';
+import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
 import PatientProblemInput from '../dto/problem-input.dto';
 import { PatientProblemPayload } from '../dto/problem-payload.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
-import { GetPatientProblem, RemoveProblem, UpdateProblemInput } from '../dto/update-problem.input';
+import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
+import { GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput } from '../dto/update-problem.input';
 import { PatientProblems } from '../entities/patientProblems.entity';
 import { ProblemService } from '../services/patientProblem.service';
 
@@ -13,8 +17,8 @@ export class ProblemResolver {
   constructor(private readonly problemService: ProblemService) { }
 
   @Mutation(() => PatientProblemPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'addPatientProblem')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'addPatientProblem')
   async addPatientProblem(@Args('createProblemInput') createProblemInput: CreateProblemInput) {
     return {
       patientProblem: await this.problemService.addPatientProblem(createProblemInput),
@@ -23,8 +27,8 @@ export class ProblemResolver {
   }
 
   @Mutation(() => PatientProblemPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updatePatientProblem')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updatePatientProblem')
   async updatePatientProblem(@Args('updateProblemInput') updateProblemInput: UpdateProblemInput) {
     return {
       patientProblem: await this.problemService.updatePatientProblem(updateProblemInput),
@@ -33,8 +37,8 @@ export class ProblemResolver {
   }
 
   @Query(returns => PatientProblemsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllPatientProblem')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllPatientProblem')
   async findAllPatientProblem(@Args('patientProblemInput') patientProblemInput: PatientProblemInput): Promise<PatientProblemsPayload> {
     const problems = await this.problemService.findAllPatientProblem(patientProblemInput)
     if (problems) {
@@ -51,9 +55,25 @@ export class ProblemResolver {
     });
   }
 
+  @Query(returns => IcdCodesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'searchIcdCodes')
+  async searchIcdCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
+    const icdCodes = await this.problemService.searchIcdCodes(searchIcdCodesInput.searchTerm);
+    return { icdCodes, response: { status: 200, message: 'ICD codes fetched successfully' } }
+  }
+
+  @Query(returns => snoMedCodesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'searchSnoMedCodeByIcdCodes')
+  async searchSnoMedCodeByIcdCodes(@Args('searchSnoMedCodesInput') searchSnoMedCodesInput: SearchSnoMedCodesInput): Promise<snoMedCodesPayload> {
+    const snoMedCodes = await this.problemService.searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput.IcdCodes);
+    return { snoMedCodes, response: { status: 200, message: 'SnoMedCode fetched successfully' } }
+  }
+
   @Query(returns => PatientProblemPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getPatientProblem')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientProblem')
   async getPatientProblem(@Args('getPatientProblem') getPatientProblem: GetPatientProblem): Promise<PatientProblemPayload> {
     const patientProblem = await this.problemService.GetPatientProblem(getPatientProblem.id)
     return {
@@ -63,8 +83,8 @@ export class ProblemResolver {
   }
 
   @Mutation(() => PatientProblemPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'removePatientProblem')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removePatientProblem')
   async removePatientProblem(@Args('removeProblem') removeProblem: RemoveProblem) {
     await this.problemService.removePatientProblem(removeProblem);
     return { response: { status: 200, message: 'Patient problem Deleted' } };
