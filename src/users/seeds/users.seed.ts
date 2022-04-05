@@ -124,7 +124,7 @@ export class CreateUsers implements Seeder {
       }
 
       //Add nursePractitioner role Permissions
-      let nursePractitionerRole = roles.find((item)=> item.role === 'nurse_practitioner')
+      let nursePractitionerRole = roles.find((item)=> item.role === 'nurse-practitioner')
       let nursePractitionerRolePermission = await getRepository(RolePermission).find({where: {role: nursePractitionerRole.id}})
       if(!nursePractitionerRolePermission.length){
       let nursePractitionerRolePermissionSet = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
@@ -141,7 +141,7 @@ export class CreateUsers implements Seeder {
       }
       
       //Add office manager role Permissions
-      let officeManagerRole = roles.find((item)=> item.role === 'office_manager')
+      let officeManagerRole = roles.find((item)=> item.role === 'office-manager')
       let officeManagerRolePermission = await getRepository(RolePermission).find({where: {role: officeManagerRole.id}})
       if(!officeManagerRolePermission.length){
       let officeManagerRolePermissionSet = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
@@ -158,7 +158,7 @@ export class CreateUsers implements Seeder {
       }
 
       //Add office doctor assistant Permissions
-      let doctorAssistantRole = roles.find((item)=> item.role === 'doctor_assistant')
+      let doctorAssistantRole = roles.find((item)=> item.role === 'doctor-assistant')
       let doctorAssistantRolePermission = await getRepository(RolePermission).find({where: {role: doctorAssistantRole.id}})
       if(!doctorAssistantRolePermission.length){
       let doctorAssistantRolePermissionSet = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',

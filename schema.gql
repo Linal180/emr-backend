@@ -984,28 +984,6 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
-<<<<<<< HEAD
-type IcdCodesPayload {
-  response: ResponsePayload
-  icdCodes: [ICDCodes]
-  pagination: PaginationPayload
-}
-
-type PatientProblemPayload {
-  response: ResponsePayload
-  patientProblem: PatientProblems
-}
-
-type PatientProblemsPayload {
-  response: ResponsePayload
-  patientProblems: [PatientProblems]
-  pagination: PaginationPayload
-}
-
-type snoMedCodesPayload {
-  response: ResponsePayload
-  snoMedCodes: [SnoMedCodes]
-=======
 type FormPayload {
   response: ResponsePayload
   form: Form
@@ -1111,7 +1089,29 @@ type Element {
 type FormsPayload {
   response: ResponsePayload
   forms: [Form]
->>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
+  pagination: PaginationPayload
+}
+
+type IcdCodesPayload {
+  response: ResponsePayload
+  icdCodes: [ICDCodes]
+  pagination: PaginationPayload
+}
+
+type PatientProblemPayload {
+  response: ResponsePayload
+  patientProblem: PatientProblems
+}
+
+type PatientProblemsPayload {
+  response: ResponsePayload
+  patientProblems: [PatientProblems]
+  pagination: PaginationPayload
+}
+
+type snoMedCodesPayload {
+  response: ResponsePayload
+  snoMedCodes: [SnoMedCodes]
   pagination: PaginationPayload
 }
 
@@ -1153,16 +1153,13 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
-<<<<<<< HEAD
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
-=======
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
->>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
 }
 
 input UsersInput {
@@ -1322,7 +1319,6 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
-<<<<<<< HEAD
 input PatientProblemInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -1337,14 +1333,15 @@ input SearchSnoMedCodesInput {
 }
 
 input GetPatientProblem {
-=======
+  id: String!
+}
+
 input FormInput {
   facilityId: String
   paginationOptions: PaginationInput!
 }
 
 input GetForm {
->>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
   id: String!
 }
 
@@ -1418,16 +1415,13 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
-<<<<<<< HEAD
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
-=======
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
   createElement(inputs: ElementInputs!): Element!
->>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
 }
 
 input LoginUserInput {
@@ -2324,7 +2318,6 @@ input InvoiceStatusInputs {
   id: String!
 }
 
-<<<<<<< HEAD
 input CreateProblemInput {
   icdCodeId: String!
   snowMedCodeId: String
@@ -2350,7 +2343,7 @@ input UpdateProblemInput {
 input RemoveProblem {
   id: String!
 }
-=======
+
 input CreateFormInput {
   name: String!
   type: FormType!
@@ -2407,4 +2400,3 @@ input RemoveForm {
 input ElementInputs {
   type: ElementType!
 }
->>>>>>> 81713608d6800670e5454347559b2a6199d52a9e
