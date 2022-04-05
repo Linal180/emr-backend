@@ -243,7 +243,7 @@ export class UsersService {
    * @returns one by email 
    */
   async findOneByEmail(email: string): Promise<User> {
-    return await this.usersRepository.findOne({ email: email });
+    return await this.usersRepository.findOne({ email: email.trim().toLowerCase() });
   }
 
   async saveUserId(id: string, userInstance: User): Promise<User> {

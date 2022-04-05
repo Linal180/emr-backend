@@ -106,5 +106,4 @@ export class UtilsService {
     }
     return `${result}-${Math.floor(100000000 + Math.random() * 9000)}`;
   }
-
 }

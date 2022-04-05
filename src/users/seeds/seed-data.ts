@@ -2,7 +2,11 @@ import { PracticeType, ServiceCode } from '../../facilities/entities/facility.en
 import { UserStatus } from '../entities/user.entity';
 
 export const FacilityData = [
-    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332", tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 }];
+    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", 
+    cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332",
+    tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 
+    }
+];
 
 export const RolesData = [
     { role: 'super-admin', customRole: false, description: "super admin has all permissions" },
@@ -11,14 +15,16 @@ export const RolesData = [
     { role: 'nurse', customRole: false, description: "nurse has permissions" },
     { role: 'patient', customRole: false,description: "patient has all permissions for patient portal" },
     { role: 'staff' , customRole: false, description: "staff has permissions for staff members and lab records"},
-    { role: 'nurse_practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
-    { role: 'office_manager', customRole: false, description: "office manager has administrative permissions" },
-    { role: 'doctor_assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
+    { role: 'nurse-practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
+    { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
+    { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
 ];
 export const UsersData = [
-    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true },
+    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, 
+      phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true 
+    },
 ];
-
+ 
 export const PermissionData = [
     { name: 'fetchAllUsers' , moduleType: 'User'},
     { name: 'fetchUser' , moduleType: 'User'},
@@ -28,7 +34,7 @@ export const PermissionData = [
     { name: 'deactivateUser' , moduleType: 'User'},
     { name: 'removeUser' , moduleType: 'User'},
     { name: 'updateUser' , moduleType: 'User'},
-    { name: 'updateRole' , moduleType: 'User'},
+    { name: 'updateUserRole' , moduleType: 'User'},
     { name: 'createRole' , moduleType: 'User'},
     { name: 'updateRole' , moduleType: 'User'},
     { name: 'getAllRoles' , moduleType: 'User'},
@@ -82,9 +88,18 @@ export const PermissionData = [
     { name: 'removeStaff'  , moduleType: 'Staff' },
     { name: 'disableStaff'  , moduleType: 'Staff' },
     { name: 'createSchedule'  , moduleType: 'Schedule' },
-    { name: 'updateSchedule'  , moduleType: 'Schedule' },
-    { name: 'findAllSchedules'  , moduleType: 'Schedules' },
     { name: 'getDoctorSchedule'  , moduleType: 'Schedule' },
-    { name: 'getDoctorSlots'  , moduleType: 'Schedule' },
+    { name: 'getFacilitySchedule'  , moduleType: 'Schedule' },
+    { name: 'updateSchedule'  , moduleType: 'Schedule' },
+    { name: 'findAllSchedules'  , moduleType: 'Schedule' },
+    { name: 'getSchedule'  , moduleType: 'Schedule' },
+    { name: 'getSlots'  , moduleType: 'Schedule' },
     { name: 'removeSchedule'  , moduleType: 'Schedule' },
+    { name: 'addPatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'updatePatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'findAllPatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'searchIcdCodes'  , moduleType: 'Patient Charting' },
+    { name: 'searchSnoMedCodeByIcdCodes'  , moduleType: 'Patient Charting' },
+    { name: 'getPatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'removePatientProblem'  , moduleType: 'Patient Charting' },
 ];

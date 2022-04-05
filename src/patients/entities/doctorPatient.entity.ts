@@ -37,5 +37,4 @@ export class DoctorPatient {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
-
 }

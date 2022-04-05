@@ -53,16 +53,6 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
-type DoctorPatient {
-  id: String!
-  doctorId: String
-  patientId: String
-  currentProvider: Boolean
-  doctor: Doctor
-  createdAt: String!
-  updatedAt: String!
-}
-
 type Permission {
   id: String!
   name: String
@@ -115,6 +105,99 @@ type User {
 enum UserStatus {
   DEACTIVATED
   ACTIVE
+}
+
+type Staff {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String
+  dob: String
+  phone: String
+  facilityId: String
+  mobile: String
+  gender: Gender!
+  user: User
+  facility: Facility
+  patientProblem: [PatientProblems!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type ICDCodes {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  createdAt: String
+  updatedAt: String
+}
+
+type SnoMedCodes {
+  id: String!
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientProblems {
+  id: String!
+  problemType: ProblemType!
+  problemSeverity: ProblemSeverity!
+  problemStartDate: String
+  note: String
+  patientId: String
+  ICDCode: ICDCodes
+  patient: Patient
+  doctor: Doctor
+  staff: Staff
+  appointment: Appointment
+  snowMedCode: SnoMedCodes
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's problem type assigned"""
+enum ProblemType {
+  ACTIVE
+  HISTORIC
+}
+
+"""The patient's problem severity type assigned"""
+enum ProblemSeverity {
+  CHRONIC
+  ACUTE
+}
+
+type DoctorPatient {
+  id: String!
+  doctorId: String
+  patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  createdAt: String!
+  updatedAt: String!
 }
 
 type BillingAddress {
@@ -286,30 +369,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Staff {
-  id: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-  username: String
-  dob: String
-  phone: String
-  facilityId: String
-  mobile: String
-  gender: Gender!
-  user: User
-  facility: Facility
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The user gender assigned"""
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-}
-
 type Doctor {
   id: String!
   firstName: String
@@ -353,6 +412,7 @@ type Doctor {
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
   schedule: [Schedule!]
+  patientProblem: [PatientProblems!]
   staff: [Staff]
   createdAt: String!
   updatedAt: String!
@@ -564,6 +624,7 @@ type Appointment {
   provider: Doctor
   patient: Patient
   invoice: Invoice
+  patientProblem: [PatientProblems!]
   createdAt: String
   updatedAt: String
 }
@@ -657,6 +718,7 @@ type Patient {
   facility: Facility
   user: User
   doctorPatients: [DoctorPatient!]
+  patientProblems: [PatientProblems!]
   employer: [Employer!]
   createdAt: String!
   updatedAt: String!
@@ -1030,6 +1092,29 @@ type FormsPayload {
   pagination: PaginationPayload
 }
 
+type IcdCodesPayload {
+  response: ResponsePayload
+  icdCodes: [ICDCodes]
+  pagination: PaginationPayload
+}
+
+type PatientProblemPayload {
+  response: ResponsePayload
+  patientProblem: PatientProblems
+}
+
+type PatientProblemsPayload {
+  response: ResponsePayload
+  patientProblems: [PatientProblems]
+  pagination: PaginationPayload
+}
+
+type snoMedCodesPayload {
+  response: ResponsePayload
+  snoMedCodes: [SnoMedCodes]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1068,6 +1153,10 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
+  searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
+  searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
+  getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -1230,6 +1319,23 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input PatientProblemInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input SearchIcdCodesInput {
+  searchTerm: String!
+}
+
+input SearchSnoMedCodesInput {
+  IcdCodes: String!
+}
+
+input GetPatientProblem {
+  id: String!
+}
+
 input FormInput {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -1309,6 +1415,9 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
+  updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
+  removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
@@ -2206,6 +2315,32 @@ input CreateExternalInvoiceInputs {
 
 input InvoiceStatusInputs {
   status: STATUS!
+  id: String!
+}
+
+input CreateProblemInput {
+  icdCodeId: String!
+  snowMedCodeId: String
+  patientId: String!
+  providerId: String
+  staffId: String
+  appointmentId: String
+  problemType: ProblemType
+  problemSeverity: ProblemSeverity
+  problemStartDate: String
+  note: String
+}
+
+input UpdateProblemInput {
+  id: String!
+  appointmentId: String
+  problemType: ProblemType
+  problemSeverity: ProblemSeverity
+  problemStartDate: String
+  note: String
+}
+
+input RemoveProblem {
   id: String!
 }
 
