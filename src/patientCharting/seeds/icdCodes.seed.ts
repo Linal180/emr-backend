@@ -18,7 +18,7 @@ export class CreateICDCodes implements Seeder {
       //limiting the seeder data 
       let iCDCodesDataLimited = iCDCodesData.slice(0, 1000)
       if (!iCDCodes.length) {
-        iCDCodesDataLimited.map( async (item)=> {
+        iCDCodesDataLimited.map( async (item)=> { 
           let icdCode = getRepository(ICDCodes).create(item)
           icdCode = await queryRunner.manager.save(icdCode);
         })

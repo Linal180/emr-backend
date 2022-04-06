@@ -184,6 +184,10 @@ export class Appointment {
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
 
+  // @OneToMany(() => PatientVitals, patientVitals => patientVitals.appointment)
+  // @Field(type => [PatientVitals], { nullable: true })
+  // patientVitals: PatientVitals[];
+
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   createdAt: string;
