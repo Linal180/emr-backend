@@ -133,12 +133,12 @@ export class PaginationService {
       primaryContact,
       userId,
       to,
-      requestType,
       MembershipPlan,
       isPrivate,
       isActive,
       currentPhaseId,
       from,
+      appointmentId,
       patientId,
       appointmentNumber,
       dueToday,
@@ -146,7 +146,6 @@ export class PaginationService {
       role,
       doctorId,
       practiceId,
-      phychType,
       appointmentStatus,
       categoryId,
       category,
@@ -154,11 +153,11 @@ export class PaginationService {
     const skip = (page - 1) * take;
     const whereOptions: WhereOptions = {
       where: {
-        ...(phychType && {
-          phychType
-        }),
         ...(patientId && {
           patientId
+        }),
+        ...(appointmentId && {
+          appointmentId
         }),
         ...(categoryId && {
           categoryId

@@ -46,7 +46,6 @@ export class VitalsService {
       }
       //save the vital in db
       const patientVital = await this.patientVitalsRepository.save(patientVitalInstance)
-      console.log("patientVital",patientVital);
       return patientVital
     } catch (error) {
       throw new InternalServerErrorException(error);

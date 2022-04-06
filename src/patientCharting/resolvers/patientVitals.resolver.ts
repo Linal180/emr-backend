@@ -30,7 +30,7 @@ export class VitalsResolver {
   async updatePatientVital(@Args('updateVitalInput') updateVitalInput: UpdateVitalInput) {
     return {
       patientVital: await this.vitalsService.updatePatientVital(updateVitalInput),
-      response: { status: 200, message: 'Problem updated successfully' }
+      response: { status: 200, message: 'Patient vital updated successfully' }
     };
   }
 

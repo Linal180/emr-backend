@@ -42,8 +42,6 @@ export class PatientResolver {
   }
 
   @Mutation(() => PatientPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updatePatient')
   async updatePatient(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
     return {
       patient: await this.patientService.updatePatient(updatePatientInput),
