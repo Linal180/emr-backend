@@ -147,6 +147,14 @@ export class PatientVitals {
   @Column({ nullable: true })
   @Field({nullable: true})
   vitalCreationDate: string;
+  
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  patientId: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  appointmentId: string;
 
   @ManyToOne(() => Appointment, appointment => appointment.patientProblem, { onDelete: 'CASCADE' })
   @Field(type => Appointment, { nullable: true })
