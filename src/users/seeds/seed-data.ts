@@ -108,4 +108,9 @@ export const PermissionData = [
     { name: 'findAllPermissions'  , moduleType: 'Permissions' },
     { name: 'GetPermission'  , moduleType: 'Permissions' },
     { name: 'removePermission'  , moduleType: 'Permissions' },
+    { name: 'addPatientVital'  , moduleType: 'Patient Charting' },
+    { name: 'updatePatientVital'  , moduleType: 'Patient Charting' },
+    { name: 'findAllPatientVitals'  , moduleType: 'Patient Charting' },
+    { name: 'getPatientVital'  , moduleType: 'Patient Charting' },
+    { name: 'removePatientVital'  , moduleType: 'Patient Charting' },
 ];

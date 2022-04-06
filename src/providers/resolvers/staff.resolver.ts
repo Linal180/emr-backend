@@ -53,8 +53,8 @@ export class StaffResolver {
   }
 
   @Query(returns => StaffPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getStaff')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getStaff')
   async getStaff(@Args('getStaff') getStaff: GetStaff): Promise<StaffPayload> {
     return {
       staff: await this.staffService.getStaff(getStaff.id),

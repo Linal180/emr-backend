@@ -3,47 +3,45 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { CreateVitalInput } from '../dto/create-vital.input';
-import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
-import PatientProblemInput from '../dto/problem-input.dto';
-import { PatientProblemsPayload } from '../dto/problems-payload.dto';
-import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
-import { GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput } from '../dto/update-problem.input';
+import { GetPatientVital, RemoveVital, UpdateVitalInput } from '../dto/update-vital.input';
+import PatientVitalInput from '../dto/vital-input.dto';
 import { PatientVitalPayload } from '../dto/vital-payload.dto';
+import { PatientVitalsPayload } from '../dto/vitals-payload.dto';
 import { PatientVitals } from '../entities/patientVitals.entity';
-import { ProblemService } from '../services/patientProblem.service';
+import { VitalsService } from '../services/patientVitals.service';
 
 @Resolver(() => PatientVitals)
 export class VitalsResolver {
-  constructor(private readonly problemService: ProblemService) { }
+  constructor(private readonly vitalsService:  VitalsService) { }
 
   @Mutation(() => PatientVitalPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'addPatientVital')
   async addPatientVital(@Args('createVitalInput') createVitalInput: CreateVitalInput) {
     return {
-      PatientVitals: await this.problemService.addPatientProblem(createVitalInput),
+      patientVital: await this.vitalsService.addPatientVital(createVitalInput),
       response: { status: 200, message: 'Patient Vital created successfully' }
     };
   }
 
   @Mutation(() => PatientVitalPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updatePatientProblem')
-  async updatePatientProblem(@Args('updateProblemInput') updateProblemInput: UpdateProblemInput) {
+  @SetMetadata('name', 'updatePatientVital')
+  async updatePatientVital(@Args('updateVitalInput') updateVitalInput: UpdateVitalInput) {
     return {
-      patientProblem: await this.problemService.updatePatientProblem(updateProblemInput),
+      patientVital: await this.vitalsService.updatePatientVital(updateVitalInput),
       response: { status: 200, message: 'Problem updated successfully' }
     };
   }
 
-  @Query(returns => PatientProblemsPayload)
+  @Query(returns => PatientVitalsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'findAllPatientProblem')
-  async findAllPatientProblem(@Args('patientProblemInput') patientProblemInput: PatientProblemInput): Promise<PatientProblemsPayload> {
-    const problems = await this.problemService.findAllPatientProblem(patientProblemInput)
-    if (problems) {
+  @SetMetadata('name', 'findAllPatientVitals')
+  async findAllPatientVitals(@Args('patientVitalInput') patientVitalInput: PatientVitalInput): Promise<PatientVitalsPayload> {
+    const patientVitals = await this.vitalsService.findAllPatientVitals(patientVitalInput)
+    if (patientVitals) {
       return {
-        ...problems,
+        ...patientVitals,
         response: {
           message: "OK", status: 200,
         }
@@ -51,42 +49,26 @@ export class VitalsResolver {
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
-      error: 'Facility not found',
+      error: 'Vitals not found',
     });
   }
 
-  @Query(returns => IcdCodesPayload)
+  @Query(returns => PatientVitalPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'searchIcdCodes')
-  async searchIcdCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
-    const icdCodes = await this.problemService.searchIcdCodes(searchIcdCodesInput.searchTerm);
-    return { icdCodes, response: { status: 200, message: 'ICD codes fetched successfully' } }
+  @SetMetadata('name', 'getPatientVital')
+  async getPatientVital(@Args('getPatientVital') getPatientVital: GetPatientVital): Promise<PatientVitalPayload> {
+    const patientVital = await this.vitalsService.GetPatientVital(getPatientVital.id)
+    return {
+      patientVital,
+      response: { status: 200, message: 'Patient vital fetched successfully' }
+    };
   }
-
-  @Query(returns => snoMedCodesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'searchSnoMedCodeByIcdCodes')
-  async searchSnoMedCodeByIcdCodes(@Args('searchSnoMedCodesInput') searchSnoMedCodesInput: SearchSnoMedCodesInput): Promise<snoMedCodesPayload> {
-    const snoMedCodes = await this.problemService.searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput.IcdCodes);
-    return { snoMedCodes, response: { status: 200, message: 'SnoMedCode fetched successfully' } }
-  }
-
-  // @Query(returns => PatientVitalPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getPatientProblem')
-  // async getPatientProblem(@Args('getPatientProblem') getPatientProblem: GetPatientProblem): Promise<PatientVitalPayload> {
-  //   const patientProblem = await this.problemService.GetPatientProblem(getPatientProblem.id)
-  //   return {
-  //     patientVital,
-  //     response: { status: 200, message: 'Patient problem fetched successfully' }
-  //   };
-  // }
 
   @Mutation(() => PatientVitalPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'removePatientProblem')
-  async removePatientProblem(@Args('removeProblem') removeProblem: RemoveProblem) {
-    await this.problemService.removePatientProblem(removeProblem);
-    return { response: { status: 200, message: 'Patient problem Deleted' } };
+  @SetMetadata('name', 'removePatientVital')
+  async removePatientVital(@Args('removeVital') removeVital: RemoveVital) {
+    await this.vitalsService.removePatientVital(removeVital);
+    return { response: { status: 200, message: 'Patient vital Deleted' } };
   }
 }

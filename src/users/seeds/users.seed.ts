@@ -55,7 +55,8 @@ export class CreateUsers implements Seeder {
       'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','updatePatientProvider','findAllPatient','getPatient','createPractice',
       'updatePractice','getPractice','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
       'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
-      'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole','updatePermission','findAllPermissions','GetPermission','removePermission']
+      'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
+      'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
       let adminPermissionList = permissions.filter(x => adminPermissionSet.find(y => (y === x.name)));
       let adminRolePermissions = await this.rolePermissionPayload(adminPermissionList, adminRole)
       let adminRolePermissionsRes = getRepository(RolePermission).create(adminRolePermissions)
@@ -71,7 +72,7 @@ export class CreateUsers implements Seeder {
             'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
             'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
             'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
-            'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem']
+            'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',,'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
       let doctorPermissionList = permissions.filter(x => doctorPermissionSet.find(y => (y === x.name)));
       let doctorRolePermissions = await this.rolePermissionPayload(doctorPermissionList, doctorRole)
       let doctorRolePermissionsRes = getRepository(RolePermission).create(doctorRolePermissions)
@@ -87,7 +88,7 @@ export class CreateUsers implements Seeder {
             'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
             'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
             'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
-            'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem']
+            'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
       let nursePermissionList = permissions.filter(x => nursePermissionSet.find(y => (y === x.name)));
       let nurseRolePermissions = await this.rolePermissionPayload(nursePermissionList, nurseRole)
       let nurseRolePermissionsRes = getRepository(RolePermission).create(nurseRolePermissions)
@@ -133,7 +134,7 @@ export class CreateUsers implements Seeder {
              'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
              'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
              'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
-             'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem']
+             'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
       let nursePractitionerRolePermissionList = permissions.filter(x => nursePractitionerRolePermissionSet.find(y => (y === x.name)));  
       let nursePractitionerRolePermissions = await this.rolePermissionPayload(nursePractitionerRolePermissionList, nursePractitionerRole)
       let nursePractitionerRolePermissionsRes = getRepository(RolePermission).create(nursePractitionerRolePermissions)
@@ -149,8 +150,8 @@ export class CreateUsers implements Seeder {
              'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
              'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
              'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
-             'findAllStaff','getStaff','removeStaff','disableStaff',
-             'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem']
+             'findAllStaff','getStaff','removeStaff','disableStaff','removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes',
+             'findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
       let officeManagerRolePermissionList =  permissions.filter(x => officeManagerRolePermissionSet.find(y => (y === x.name)));    
       let officeManagerRolePermissions = await this.rolePermissionPayload(officeManagerRolePermissionList, officeManagerRole)
       let officeManagerRolePermissionsRes = getRepository(RolePermission).create(officeManagerRolePermissions)
@@ -167,7 +168,8 @@ export class CreateUsers implements Seeder {
              'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
              'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
              'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
-             'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem']
+             'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',
+             'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
       let doctorAssistantRolePermissionList =  permissions.filter(x => doctorAssistantRolePermissionSet.find(y => (y === x.name)));  
       let doctorAssistantRolePermissions = await this.rolePermissionPayload(doctorAssistantRolePermissionList, doctorAssistantRole)
       let doctorAssistantRolePermissionsRes = getRepository(RolePermission).create(doctorAssistantRolePermissions)

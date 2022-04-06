@@ -166,13 +166,12 @@ export class UsersService {
       }
       const user = await this.findUserById(updateRoleInput.id);
       if (user) {
-        const fetchdRoles = await getConnection()
+        const fetchRoles = await getConnection()
           .getRepository(Role)
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
-          console.log("fetchdRoles",fetchdRoles);
-        user.roles = fetchdRoles
+        user.roles = fetchRoles
         return await this.usersRepository.save(user);
       }
       throw new NotFoundException({
