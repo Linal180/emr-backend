@@ -3,6 +3,7 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
+import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -372,6 +373,10 @@ export class Patient {
   @OneToMany(() => Employer, employer => employer.patient, {eager: true, onDelete: "CASCADE"})
   @Field(type => [Employer], { nullable: true })
   employer: Employer[];
+
+  @OneToMany(() => PatientVitals, patientVitals => patientVitals.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [PatientVitals], { nullable: true })
+  patientVitals: PatientVitals[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

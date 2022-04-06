@@ -53,6 +53,65 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type PatientVitals {
+  id: String!
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
+  patientTemperature: String
+  bloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+  appointment: Appointment
+  patient: Patient
+  addedBy: Staff
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's vital unit type assigned"""
+enum UnitType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's weight unit type assigned"""
+enum WeightType {
+  POUND
+  KG
+  POUND_OUNCE
+}
+
+"""The patient's head circumference unit type assigned"""
+enum HeadCircumferenceType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's temperature unit type assigned"""
+enum TempUnitType {
+  DEG_F
+  DEG_C
+}
+
+"""The patient's smoking status type assigned"""
+enum SmokingStatus {
+  NEVER_SMOCKED
+  CURRENT_EVERYDAY_SMOKER
+  CURRENT_SOMEDAY_SMOKER
+  FORMER_SMOKER
+  SMOKER_CURRENT_STATUS_UNKNOWN
+  UNKNOWN_IF_EVER_SMOKED
+}
+
 type Permission {
   id: String!
   name: String
@@ -121,6 +180,7 @@ type Staff {
   user: User
   facility: Facility
   patientProblem: [PatientProblems!]
+  patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
 }
@@ -625,6 +685,7 @@ type Appointment {
   patient: Patient
   invoice: Invoice
   patientProblem: [PatientProblems!]
+  patientVitals: [PatientVitals!]
   createdAt: String
   updatedAt: String
 }
@@ -720,6 +781,7 @@ type Patient {
   doctorPatients: [DoctorPatient!]
   patientProblems: [PatientProblems!]
   employer: [Employer!]
+  patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
@@ -1115,6 +1177,17 @@ type snoMedCodesPayload {
   pagination: PaginationPayload
 }
 
+type PatientVitalPayload {
+  response: ResponsePayload
+  patientVital: PatientVitals
+}
+
+type PatientVitalsPayload {
+  response: ResponsePayload
+  patientVitals: [PatientVitals]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1157,6 +1230,8 @@ type Query {
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
+  findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
+  getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -1336,6 +1411,15 @@ input GetPatientProblem {
   id: String!
 }
 
+input PatientVitalInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientVital {
+  id: String!
+}
+
 input FormInput {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -1418,6 +1502,9 @@ type Mutation {
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
+  addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
+  updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
+  removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
@@ -2341,6 +2428,53 @@ input UpdateProblemInput {
 }
 
 input RemoveProblem {
+  id: String!
+}
+
+input CreateVitalInput {
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
+  patientTemperature: String
+  bloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+  appointmentId: String
+  patientId: String!
+  staffId: String
+}
+
+input UpdateVitalInput {
+  unitType: UnitType
+  weightUnit: WeightType
+  headCircumference: HeadCircumferenceType
+  temperatureUnitType: TempUnitType
+  smokingStatus: SmokingStatus
+  patientTemperature: String
+  bloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+  appointmentId: String
+  patientId: String
+  staffId: String
+  id: String!
+}
+
+input RemoveVital {
   id: String!
 }
 
