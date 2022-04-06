@@ -231,18 +231,28 @@ export class ScheduleService {
    * @param serviceId 
    * @returns  
    */
-  async getScheduleServices (schedules: Schedule[], serviceId: string){
+   async getScheduleServices (schedules: Schedule[], getSlots: GetSlots){
     const result = []
+    if(getSlots.providerId){
     await Promise.all(
       schedules.map(async (item) => {
       const scheduleItem = await this.getScheduleService(item.id)
-      const isServiceExist = await this.checkService(scheduleItem, serviceId)
+      const isServiceExist = await this.checkService(scheduleItem, getSlots.serviceId)
       if(isServiceExist){
         item.scheduleServices = scheduleItem
         result.push(item)
       }
      })
     );
+    }else if(getSlots.facilityId){
+      await Promise.all(
+        schedules.map(async (item) => {
+        const scheduleItem = await this.getScheduleService(item.id)
+          item.scheduleServices = scheduleItem
+          result.push(item)
+       })
+      );
+    }
     return result;
   }
    /**
@@ -257,7 +267,7 @@ export class ScheduleService {
       //fetch doctor's booked appointment 
       const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots,uTcStartDateOffset,uTcEndDateOffset)
       const schedules = await this.getDoctorsTodaySchedule(getSlots, uTcStartDateOffset, uTcEndDateOffset)
-      const newSchedule = await this.getScheduleServices(schedules, getSlots.serviceId)
+      const newSchedule = await this.getScheduleServices(schedules, getSlots)
       const duration = parseInt(await(await this.servicesService.findOne(getSlots.serviceId)).duration)
       //get doctor's remaining time 
       const slots = await this.RemainingAvailability(newSchedule,appointment,duration)
