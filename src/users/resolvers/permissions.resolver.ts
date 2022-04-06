@@ -43,8 +43,8 @@ export class PermissionResolver {
   }
 
   @Query(returns => PermissionsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'findAllPermissions')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllPermissions')
   async findAllPermissions(@Args('permissionInput') permissionInput: PermissionInput): Promise<PermissionsPayload> {
     const permissions = await this.permissionsService.findAllPermissions(permissionInput)
     if (permissions) {

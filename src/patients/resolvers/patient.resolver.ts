@@ -107,7 +107,7 @@ export class PatientResolver {
     });
   }
 
-  @Query(returns => PatientPayload)
+  @Query(returns => PatientPayload)  
   async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
     const patients = await this.patientService.GetPatient(getPatient.id)
     return {
