@@ -6,6 +6,7 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Invoice } from 'src/payment/entity/invoice.entity'
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
+import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -184,9 +185,9 @@ export class Appointment {
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
 
-  // @OneToMany(() => PatientVitals, patientVitals => patientVitals.appointment)
-  // @Field(type => [PatientVitals], { nullable: true })
-  // patientVitals: PatientVitals[];
+  @OneToMany(() => PatientVitals, patientVitals => patientVitals.appointment)
+  @Field(type => [PatientVitals], { nullable: true })
+  patientVitals: PatientVitals[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
