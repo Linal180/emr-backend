@@ -70,6 +70,8 @@ type PatientVitals {
   PainRange: String
   patientHeadCircumference: String
   vitalCreationDate: String
+  patientId: String
+  appointmentId: String
   appointment: Appointment
   patient: Patient
   addedBy: Staff
@@ -1413,6 +1415,7 @@ input GetPatientProblem {
 
 input PatientVitalInput {
   patientId: String
+  appointmentId: String
   paginationOptions: PaginationInput!
 }
 
@@ -2453,11 +2456,12 @@ input CreateVitalInput {
 }
 
 input UpdateVitalInput {
-  unitType: UnitType
-  weightUnit: WeightType
-  headCircumference: HeadCircumferenceType
-  temperatureUnitType: TempUnitType
-  smokingStatus: SmokingStatus
+  id: String!
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
   patientTemperature: String
   bloodPressure: String
   respiratoryRate: String
@@ -2468,10 +2472,6 @@ input UpdateVitalInput {
   PainRange: String
   patientHeadCircumference: String
   vitalCreationDate: String
-  appointmentId: String
-  patientId: String
-  staffId: String
-  id: String!
 }
 
 input RemoveVital {

@@ -13,6 +13,7 @@ export class PaginatedEntityInput {
   from?: string
   practiceId?: string
   patientId?: string
+  appointmentId?: string
   appointmentStatus?: APPOINTMENTSTATUS
   dueToday?: boolean
   facilityId?: string
