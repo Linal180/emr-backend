@@ -10,7 +10,7 @@ import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
 import { GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput } from '../dto/update-problem.input';
 import { PatientProblems } from '../entities/patientProblems.entity';
-import { ProblemService } from '../services/patientProblem.service';
+import { ProblemService } from '../services/patientProblems.service';
 
 @Resolver(() => PatientProblems)
 export class ProblemResolver {
