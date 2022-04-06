@@ -81,7 +81,7 @@ export class PatientVitals {
     enum: WeightType,
     default: WeightType.POUND
   })
-  @Field(type => UnitType)
+  @Field(type => WeightType)
   weightUnit: WeightType
 
   @Column({

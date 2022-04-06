@@ -1,35 +1,60 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { ProblemSeverity, ProblemType } from '../entities/patientProblems.entity';
+import { HeadCircumferenceType, SmokingStatus, TempUnitType, UnitType, WeightType } from '../entities/patientVitals.entity';
 
 @InputType()
 export class CreateVitalInput {
-  @Field()
-  icdCodeId: string
+
+  @Field(type => UnitType)
+  unitType: UnitType
+
+  @Field(type => WeightType)
+  weightUnit: WeightType
+
+  @Field(type => HeadCircumferenceType)
+  headCircumference: HeadCircumferenceType
+
+  @Field(type => TempUnitType)
+  temperatureUnitType: TempUnitType
+
+  @Field(type => SmokingStatus)
+  smokingStatus: SmokingStatus
 
   @Field({nullable: true})
-  snowMedCodeId?: string
-
-  @Field()
-  patientId: string
+  patientTemperature: string;
 
   @Field({nullable: true})
-  providerId?: string
+  bloodPressure: string;
 
   @Field({nullable: true})
-  staffId?: string
+  respiratoryRate: string;
 
   @Field({nullable: true})
-  appointmentId?: string
-
-  @Field(type => ProblemType, {nullable: true})
-  problemType?: ProblemType
-    
-  @Field(type => ProblemSeverity, {nullable: true})
-  problemSeverity: ProblemSeverity
+  oxygenSaturation: string;
 
   @Field({nullable: true})
-  problemStartDate: string;
+  PatientHeight: string;
 
   @Field({nullable: true})
-  note: string;
+  PatientWeight: string;
+
+  @Field({nullable: true})
+  PatientBMI: string;
+
+  @Field({nullable: true})
+  PainRange: string;
+
+  @Field({nullable: true})
+  patientHeadCircumference: string;
+
+  @Field({nullable: true})
+  vitalCreationDate: string;
+
+  @Field({ nullable: true })
+  appointmentId?: string;
+
+  @Field({ nullable: false })
+  patientId: string;
+
+  @Field({ nullable: true })
+  staffId: string;
 }

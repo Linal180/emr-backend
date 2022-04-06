@@ -10,7 +10,9 @@ import { PatientProblems } from './entities/patientProblems.entity';
 import { PatientVitals } from './entities/patientVitals.entity';
 import { SnoMedCodes } from './entities/snowmedCodes.entity';
 import { ProblemResolver } from './resolvers/patientProblems.resolver';
-import { ProblemService } from './services/patientProblem.service';
+import { VitalsResolver } from './resolvers/patientVitals.resolver';
+import { ProblemService } from './services/patientProblems.service';
+import { VitalsService } from './services/patientVitals.service';
 
 @Module({
   imports: [
@@ -21,8 +23,8 @@ import { ProblemService } from './services/patientProblem.service';
     AppointmentModule,
     PatientModule,
   ],
-  providers: [ProblemResolver, ProblemService],
-  exports: [ProblemService, TypeOrmModule],
+  providers: [ProblemResolver, ProblemService, VitalsResolver, VitalsService],
+  exports: [ProblemService, VitalsService, TypeOrmModule],
 })
 export class ProblemChartingModule { }
 
