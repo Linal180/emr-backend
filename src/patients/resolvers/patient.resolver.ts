@@ -108,8 +108,6 @@ export class PatientResolver {
   }
 
   @Query(returns => PatientPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getPatient')
   async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
     const patients = await this.patientService.GetPatient(getPatient.id)
     return {
