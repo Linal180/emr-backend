@@ -13,7 +13,7 @@ export class CreatePracticeInput {
   @Field({nullable: true})
   createFacilityContactInput?: CreateContactInput
 
-  @Field({nullable: true})
+  @Field({nullable: true}) 
   createContactInput?: CreateContactInput
 
   @Field({nullable: true})
