@@ -66,8 +66,6 @@ export class FacilityResolver {
   }
 
   @Query(returns => FacilityPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getFacility')
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
     const facility = await this.facilityService.GetFacility(getFacility.id)
     return {

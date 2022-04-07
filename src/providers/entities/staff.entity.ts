@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
+import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Doctor } from './doctor.entity';
@@ -78,6 +79,10 @@ export class Staff {
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.staff, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
+
+  @OneToMany(() => PatientVitals, patientVitals => patientVitals.addedBy)
+  @Field(type => PatientVitals, { nullable: true })
+  patientVitals: PatientVitals;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

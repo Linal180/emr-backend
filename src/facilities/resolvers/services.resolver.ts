@@ -35,8 +35,6 @@ export class ServiceResolver {
   }
 
   @Query(returns => ServicesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllServices')
   async findAllServices(@Args('serviceInput') serviceInput: ServiceInput): Promise<ServicesPayload> {
     const services = await this.servicesService.findAllServices(serviceInput)
     if (services) {

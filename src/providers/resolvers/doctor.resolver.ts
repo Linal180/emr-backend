@@ -35,8 +35,6 @@ export class DoctorResolver {
   }
 
   @Query(returns => AllDoctorPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'findAllDoctor')
   async findAllDoctor(@Args('doctorInput') doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     const doctors = await this.doctorService.findAllDoctor(doctorInput)
     if (doctors) {

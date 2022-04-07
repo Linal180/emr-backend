@@ -98,8 +98,6 @@ export class ScheduleResolver {
   }
 
   @Query(returns => SlotsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getDoctorSlots')
   async getSlots(@Args('getSlots') getSlots: GetSlots) {
     const slots = await this.scheduleService.getDoctorSlots(getSlots)
     return {

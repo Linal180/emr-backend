@@ -4,11 +4,12 @@ export default () => {
   if (process.env.NODE_ENV === "production") {
     database = {
       type: process.env.DATABASE_TYPE || "postgres",
-      url: process.env.DATABASE_URL,
+      url:
+      process.env.DATABASE_URL || "postgres://fwphdjqkggapmx:dbcdc903a9f17b3186b96e4d6c3f10a7eb29e7a61d9da2c4ac0192a331dd4fb5@ec2-3-232-22-121.compute-1.amazonaws.com:5432/d9p4m19hkflote?sslmode=require",
       migrationsRun: true,
       ssl: {
-        rejectUnauthorized: false,
-      },
+      rejectUnauthorized: false,
+    },
       logging: true,
       migrations: ["dist/migrations/*{.ts,.js}"],
       entities: ["dist/**/*.entity{.ts,.js}"],
@@ -25,7 +26,7 @@ export default () => {
       type: process.env.DATABASE_TYPE || "postgres",
       username: process.env.DATABASE_USERNAME || "postgres",
       password: process.env.DATABASE_PASSWORD || "password",
-      database: process.env.DATABASE_NAME || "emr-pro",
+      database: process.env.DATABASE_NAME ||"emr-pro",
       timezone: 'Z',
       migrationsRun: true,
       logging: true,

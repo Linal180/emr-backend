@@ -2,7 +2,11 @@ import { PracticeType, ServiceCode } from '../../facilities/entities/facility.en
 import { UserStatus } from '../entities/user.entity';
 
 export const FacilityData = [
-    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332", tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 }];
+    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", 
+    cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332",
+    tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23 
+    }
+];
 
 export const RolesData = [
     { role: 'super-admin', customRole: false, description: "super admin has all permissions" },
@@ -11,12 +15,14 @@ export const RolesData = [
     { role: 'nurse', customRole: false, description: "nurse has permissions" },
     { role: 'patient', customRole: false,description: "patient has all permissions for patient portal" },
     { role: 'staff' , customRole: false, description: "staff has permissions for staff members and lab records"},
-    { role: 'nurse_practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
-    { role: 'office_manager', customRole: false, description: "office manager has administrative permissions" },
-    { role: 'doctor_assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
+    { role: 'nurse-practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
+    { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
+    { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
 ];
 export const UsersData = [
-    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true },
+    { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, 
+      phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true 
+    },
 ];
  
 export const PermissionData = [
@@ -28,7 +34,7 @@ export const PermissionData = [
     { name: 'deactivateUser' , moduleType: 'User'},
     { name: 'removeUser' , moduleType: 'User'},
     { name: 'updateUser' , moduleType: 'User'},
-    { name: 'updateRole' , moduleType: 'User'},
+    { name: 'updateUserRole' , moduleType: 'User'},
     { name: 'createRole' , moduleType: 'User'},
     { name: 'updateRole' , moduleType: 'User'},
     { name: 'getAllRoles' , moduleType: 'User'},
@@ -82,9 +88,89 @@ export const PermissionData = [
     { name: 'removeStaff'  , moduleType: 'Staff' },
     { name: 'disableStaff'  , moduleType: 'Staff' },
     { name: 'createSchedule'  , moduleType: 'Schedule' },
-    { name: 'updateSchedule'  , moduleType: 'Schedule' },
-    { name: 'findAllSchedules'  , moduleType: 'Schedules' },
     { name: 'getDoctorSchedule'  , moduleType: 'Schedule' },
-    { name: 'getDoctorSlots'  , moduleType: 'Schedule' },
+    { name: 'getFacilitySchedule'  , moduleType: 'Schedule' },
+    { name: 'updateSchedule'  , moduleType: 'Schedule' },
+    { name: 'findAllSchedules'  , moduleType: 'Schedule' },
+    { name: 'getSchedule'  , moduleType: 'Schedule' },
+    { name: 'getSlots'  , moduleType: 'Schedule' },
     { name: 'removeSchedule'  , moduleType: 'Schedule' },
+    { name: 'addPatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'updatePatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'findAllPatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'searchIcdCodes'  , moduleType: 'Patient Charting' },
+    { name: 'searchSnoMedCodeByIcdCodes'  , moduleType: 'Patient Charting' },   
+    { name: 'getPatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'removePatientProblem'  , moduleType: 'Patient Charting' },
+    { name: 'createPermission'  , moduleType: 'Permissions' },
+    { name: 'assignPermissionToRole'  , moduleType: 'Permissions' },
+    { name: 'updatePermission'  , moduleType: 'Permissions' },
+    { name: 'findAllPermissions'  , moduleType: 'Permissions' },
+    { name: 'GetPermission'  , moduleType: 'Permissions' },
+    { name: 'removePermission'  , moduleType: 'Permissions' },
+    { name: 'addPatientVital'  , moduleType: 'Patient Charting' },
+    { name: 'updatePatientVital'  , moduleType: 'Patient Charting' },
+    { name: 'findAllPatientVitals'  , moduleType: 'Patient Charting' },
+    { name: 'getPatientVital'  , moduleType: 'Patient Charting' },
+    { name: 'removePatientVital'  , moduleType: 'Patient Charting' },
 ];
+
+export const adminPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','updatePatientProvider','findAllPatient','getPatient','createPractice',
+'updatePractice','getPractice','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
+'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
+'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
+
+export const doctorPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
+'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',,'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
+
+export const nursePermissionsList = ['createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
+'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
+
+export const patientPermissionsList = ['createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule']
+
+export const staffPermissionsList = ['createPatient','updatePatient','patientInfo','updatePatientProfile',
+'findAllPatient','getPatient','createSchedule','updateSchedule','findAllSchedules','getSchedule',
+'getDoctorSlots','findAllDoctor','getDoctor','getStaff']
+
+export const practitionerNursePermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
+'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
+
+export const officeManagerPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes',
+'findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
+
+export const doctorAssistantPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
+'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',
+'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']

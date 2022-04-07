@@ -42,8 +42,6 @@ export class PatientResolver {
   }
 
   @Mutation(() => PatientPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updatePatient')
   async updatePatient(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
     return {
       patient: await this.patientService.updatePatient(updatePatientInput),
@@ -109,9 +107,7 @@ export class PatientResolver {
     });
   }
 
-  @Query(returns => PatientPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getPatient')
+  @Query(returns => PatientPayload)  
   async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
     const patients = await this.patientService.GetPatient(getPatient.id)
     return {

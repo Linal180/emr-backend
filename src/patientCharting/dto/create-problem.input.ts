@@ -6,6 +6,9 @@ export class CreateProblemInput {
   @Field()
   icdCodeId: string
 
+  @Field({nullable: true})
+  snowMedCodeId?: string
+
   @Field()
   patientId: string
 

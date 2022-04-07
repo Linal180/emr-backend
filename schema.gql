@@ -53,6 +53,67 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type PatientVitals {
+  id: String!
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
+  patientTemperature: String
+  bloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+  patientId: String
+  appointmentId: String
+  appointment: Appointment
+  patient: Patient
+  addedBy: Staff
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's vital unit type assigned"""
+enum UnitType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's weight unit type assigned"""
+enum WeightType {
+  POUND
+  KG
+  POUND_OUNCE
+}
+
+"""The patient's head circumference unit type assigned"""
+enum HeadCircumferenceType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's temperature unit type assigned"""
+enum TempUnitType {
+  DEG_F
+  DEG_C
+}
+
+"""The patient's smoking status type assigned"""
+enum SmokingStatus {
+  NEVER_SMOCKED
+  CURRENT_EVERYDAY_SMOKER
+  CURRENT_SOMEDAY_SMOKER
+  FORMER_SMOKER
+  SMOKER_CURRENT_STATUS_UNKNOWN
+  UNKNOWN_IF_EVER_SMOKED
+}
+
 type Permission {
   id: String!
   name: String
@@ -121,6 +182,7 @@ type Staff {
   user: User
   facility: Facility
   patientProblem: [PatientProblems!]
+  patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
 }
@@ -141,6 +203,26 @@ type ICDCodes {
   updatedAt: String
 }
 
+type SnoMedCodes {
+  id: String!
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
+  createdAt: String
+  updatedAt: String
+}
+
 type PatientProblems {
   id: String!
   problemType: ProblemType!
@@ -153,6 +235,7 @@ type PatientProblems {
   doctor: Doctor
   staff: Staff
   appointment: Appointment
+  snowMedCode: SnoMedCodes
   createdAt: String
   updatedAt: String
 }
@@ -604,6 +687,7 @@ type Appointment {
   patient: Patient
   invoice: Invoice
   patientProblem: [PatientProblems!]
+  patientVitals: [PatientVitals!]
   createdAt: String
   updatedAt: String
 }
@@ -699,6 +783,7 @@ type Patient {
   doctorPatients: [DoctorPatient!]
   patientProblems: [PatientProblems!]
   employer: [Employer!]
+  patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
@@ -963,6 +1048,120 @@ type AppointmentsPayload {
   pagination: PaginationPayload
 }
 
+type FormPayload {
+  response: ResponsePayload
+  form: Form
+}
+
+type FieldOptionsType {
+  name: String!
+  value: String!
+}
+
+type FieldsTypes {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  options: [FieldOptionsType!]!
+  textArea: Boolean!
+}
+
+"""The form's element types"""
+enum ElementType {
+  TEXT
+  NUMBER
+  DROPDOWN
+  RADIO
+  DATE
+  FILE
+  TIME
+  SELECT
+  CHECKBOX
+  TEL
+  EMAIL
+  COLOR
+  IMAGE
+  MONTH
+  PASSWORD
+  URL
+  WEEK
+}
+
+type SectionsTypes {
+  id: String!
+  col: Int!
+  fields: [FieldsTypes!]!
+}
+
+type LayoutJSONType {
+  sections: [SectionsTypes!]!
+}
+
+type Form {
+  id: String!
+  name: String!
+  type: FormType!
+  facilityId: String!
+  layout: LayoutJSONType!
+  isSystemForm: Boolean
+  formElements: [FormElement!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The form's types"""
+enum FormType {
+  APPOINTMENT
+  DOCTOR
+  PATIENT
+  STAFF
+}
+
+type FormElement {
+  id: String!
+  placeholder: String
+  defaultValue: String
+  required: Boolean
+  errorMsg: String
+  name: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  sectionId: String!
+  isDeleted: Boolean!
+  element: Element
+  createdAt: String
+  updatedAt: String
+}
+
+type Element {
+  id: String!
+  type: ElementType!
+  createdAt: String
+  updatedAt: String
+}
+
+type FormsPayload {
+  response: ResponsePayload
+  forms: [Form]
+  pagination: PaginationPayload
+}
+
+type IcdCodesPayload {
+  response: ResponsePayload
+  icdCodes: [ICDCodes]
+  pagination: PaginationPayload
+}
+
 type PatientProblemPayload {
   response: ResponsePayload
   patientProblem: PatientProblems
@@ -971,6 +1170,23 @@ type PatientProblemPayload {
 type PatientProblemsPayload {
   response: ResponsePayload
   patientProblems: [PatientProblems]
+  pagination: PaginationPayload
+}
+
+type snoMedCodesPayload {
+  response: ResponsePayload
+  snoMedCodes: [SnoMedCodes]
+  pagination: PaginationPayload
+}
+
+type PatientVitalPayload {
+  response: ResponsePayload
+  patientVital: PatientVitals
+}
+
+type PatientVitalsPayload {
+  response: ResponsePayload
+  patientVitals: [PatientVitals]
   pagination: PaginationPayload
 }
 
@@ -1013,7 +1229,14 @@ type Query {
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
+  searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
+  searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
+  findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
+  getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
+  findAllForms(formInput: FormInput!): FormsPayload!
+  getForm(getForm: GetForm!): FormPayload!
+  getPublicForm(getForm: GetForm!): FormPayload!
 }
 
 input UsersInput {
@@ -1178,7 +1401,34 @@ input PatientProblemInput {
   paginationOptions: PaginationInput!
 }
 
+input SearchIcdCodesInput {
+  searchTerm: String!
+}
+
+input SearchSnoMedCodesInput {
+  IcdCodes: String!
+}
+
 input GetPatientProblem {
+  id: String!
+}
+
+input PatientVitalInput {
+  patientId: String
+  appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientVital {
+  id: String!
+}
+
+input FormInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetForm {
   id: String!
 }
 
@@ -1256,6 +1506,13 @@ type Mutation {
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
+  addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
+  updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
+  removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  createForm(createFormInput: CreateFormInput!): FormPayload!
+  updateForm(updateFormInput: UpdateFormInput!): FormPayload!
+  removeForm(removeForm: RemoveForm!): FormPayload!
+  createElement(inputs: ElementInputs!): Element!
 }
 
 input LoginUserInput {
@@ -2163,6 +2420,7 @@ input InvoiceStatusInputs {
 
 input CreateProblemInput {
   icdCodeId: String!
+  snowMedCodeId: String
   patientId: String!
   providerId: String
   staffId: String
@@ -2184,4 +2442,105 @@ input UpdateProblemInput {
 
 input RemoveProblem {
   id: String!
+}
+
+input CreateVitalInput {
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
+  patientTemperature: String
+  bloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+  appointmentId: String
+  patientId: String!
+  staffId: String
+}
+
+input UpdateVitalInput {
+  id: String!
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
+  patientTemperature: String
+  bloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+}
+
+input RemoveVital {
+  id: String!
+}
+
+input CreateFormInput {
+  name: String!
+  type: FormType!
+  facilityId: String!
+  layout: LayoutJSONInputType!
+  isSystemForm: Boolean
+}
+
+input LayoutJSONInputType {
+  sections: [SectionsInputs!]!
+}
+
+input SectionsInputs {
+  id: String!
+  col: Int!
+  fields: [FieldsInputs!]!
+}
+
+input FieldsInputs {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  options: [FieldOptionsInputType!]!
+  textArea: Boolean!
+}
+
+input FieldOptionsInputType {
+  name: String!
+  value: String!
+}
+
+input UpdateFormInput {
+  name: String
+  type: FormType
+  facilityId: String
+  layout: LayoutJSONInputType
+  isSystemForm: Boolean
+  id: String!
+}
+
+input RemoveForm {
+  id: String!
+}
+
+input ElementInputs {
+  type: ElementType!
 }

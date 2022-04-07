@@ -166,13 +166,12 @@ export class UsersService {
       }
       const user = await this.findUserById(updateRoleInput.id);
       if (user) {
-        const fetchdRoles = await getConnection()
+        const fetchRoles = await getConnection()
           .getRepository(Role)
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
-          console.log("fetchdRoles",fetchdRoles);
-        user.roles = fetchdRoles
+        user.roles = fetchRoles
         return await this.usersRepository.save(user);
       }
       throw new NotFoundException({
@@ -243,7 +242,7 @@ export class UsersService {
    * @returns one by email 
    */
   async findOneByEmail(email: string): Promise<User> {
-    return await this.usersRepository.findOne({ email: email });
+    return await this.usersRepository.findOne({ email: email.trim().toLowerCase() });
   }
 
   async saveUserId(id: string, userInstance: User): Promise<User> {
