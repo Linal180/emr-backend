@@ -137,7 +137,7 @@ export class DoctorService {
    * @returns one 
    */
   async findOne(id: string): Promise<Doctor> {
-    const doctor = await this.doctorRepository.findOne(id);
+    const doctor = await this.doctorRepository.findOneOrFail(id);
     if (doctor) {
       return doctor
     }
