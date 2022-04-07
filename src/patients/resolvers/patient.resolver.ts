@@ -82,7 +82,7 @@ export class PatientResolver {
 
   @ResolveField((returns) => [Doctor])
   async doctorPatients(@Parent() patient: Patient): Promise<DoctorPatient[]> {
-    if (patient) {
+    if (patient && patient.id) {
       const provider = await this.patientService.usualProvider(patient.id);
       return provider;
     }

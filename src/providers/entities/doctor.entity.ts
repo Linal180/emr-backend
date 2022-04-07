@@ -95,12 +95,12 @@ export class Doctor {
   @Field({ nullable: true })
   deaNumber: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   deaActiveDate: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   deaTermDate: string;
 
   @Column({ nullable: true })
