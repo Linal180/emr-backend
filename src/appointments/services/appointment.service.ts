@@ -59,8 +59,9 @@ export class AppointmentService {
         const token = createToken();
         const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: true, token, appointmentNumber })
         //associate provider 
-        const provider = await this.doctorService.findOne(createAppointmentInput.providerId)
+        let provider
         if (createAppointmentInput.providerId) {
+          provider = await this.doctorService.findOne(createAppointmentInput.providerId)
           appointmentInstance.provider = provider
         }
         //associate patient
@@ -70,8 +71,9 @@ export class AppointmentService {
           appointmentInstance.patientId = patient.id
         }
         //associate facility 
-        const facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
+       let facility
         if (createAppointmentInput.facilityId) {
+          facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
           appointmentInstance.facility = facility
         }
         //associate service 
@@ -173,12 +175,12 @@ export class AppointmentService {
     if (IsBooked) {
       return await this.utilsService.smsNotification({
         to: [currentContact[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink}`
+        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink} at ${facility.name} facility`
       });
     } else {
       return await this.utilsService.smsNotification({
         to: [currentContact[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink}`
+        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink} at ${facility.name} facility`
       });
     }
   }
