@@ -83,7 +83,7 @@ export class PatientProblems {
   @Field(type => Appointment, { nullable: true })
   appointment: Appointment;
 
-  @ManyToOne(() => SnoMedCodes, snowMedCodes => snowMedCodes.patientProblem, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => SnoMedCodes, snowMedCodes => snowMedCodes.patientProblem, { onDelete: 'CASCADE' })
   @Field(type => SnoMedCodes, { nullable: true })
   snowMedCode: SnoMedCodes; 
 
