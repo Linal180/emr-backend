@@ -160,7 +160,7 @@ export class PatientVitals {
   @Field(type => Appointment, { nullable: true })
   appointment: Appointment;
 
-  @ManyToOne(() => Patient, patient => patient.patientVitals, {eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Patient, patient => patient.patientVitals, { onDelete: 'CASCADE' })
   @Field(type => Patient, { nullable: true })
   patient: Patient;
 
