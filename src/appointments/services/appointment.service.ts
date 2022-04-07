@@ -62,6 +62,7 @@ export class AppointmentService {
         let provider
         if (createAppointmentInput.providerId) {
           provider = await this.doctorService.findOne(createAppointmentInput.providerId)
+          appointmentInstance.providerId = provider.id
           appointmentInstance.provider = provider
         }
         //associate patient
@@ -71,7 +72,7 @@ export class AppointmentService {
           appointmentInstance.patientId = patient.id
         }
         //associate facility 
-       let facility
+        let facility
         if (createAppointmentInput.facilityId) {
           facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
           appointmentInstance.facility = facility

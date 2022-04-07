@@ -88,28 +88,28 @@ export class AppointmentResolver {
 
   @ResolveField((returns) => [Patient])
   async patient(@Parent() appointment: Appointment):  Promise<Patient>  {
-    if (appointment) {
+    if (appointment && appointment.patientId) {
       return await this.patientService.findOne(appointment.patientId);
     }
   }
 
   @ResolveField((returns) => [Doctor])
   async provider(@Parent() appointment: Appointment): Promise<Doctor> {
-    if (appointment) {
+    if (appointment && appointment.providerId) {
      return await this.doctorService.findOne(appointment.providerId);
     }
   }
 
   @ResolveField((returns) => [Facility])
   async facility(@Parent() appointment: Appointment): Promise<Facility> {
-    if (appointment) {
+    if (appointment && appointment.facilityId) {
      return await this.facilityService.findOne(appointment.facilityId);
     }
   }
 
   @ResolveField((returns) => [Service])
   async appointmentType(@Parent() appointment: Appointment): Promise<Service> {
-    if (appointment) {
+    if (appointment && appointment.appointmentTypeId) {
      return await this.servicesService.findOne(appointment.appointmentTypeId);
     }
   }
