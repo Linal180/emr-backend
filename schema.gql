@@ -2242,6 +2242,7 @@ input UpdateAttachmentInput {
 
 input CreatePracticeInput {
   createFacilityItemInput: CreateFacilityItemInput
+  createFacilityContactInput: CreateContactInput
   createContactInput: CreateContactInput
   registerUserInput: RegisterUserInput
   createPracticeItemInput: CreatePracticeItemInput
