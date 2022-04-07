@@ -203,7 +203,7 @@ export class Doctor {
   @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.patient)
   doctorPatients: DoctorPatient[];
 
-  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [Schedule], { nullable: true })
   schedule: Schedule[];
 
