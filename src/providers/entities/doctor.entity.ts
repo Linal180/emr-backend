@@ -207,7 +207,7 @@ export class Doctor {
   @Field(type => [Schedule], { nullable: true })
   schedule: Schedule[];
 
-  @OneToMany(() => PatientProblems, patientProblems => patientProblems.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
 
@@ -215,7 +215,7 @@ export class Doctor {
   appointments: Appointment[];
   
   @Field(type => [Staff], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Staff, staff => staff.providers, { eager: true })
+  @ManyToMany(type => Staff, staff => staff.providers)
   @JoinTable({ name: 'doctorStaff' })
   staff: Staff[];
 
