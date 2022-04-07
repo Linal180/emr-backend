@@ -78,8 +78,8 @@ export class AppointmentService {
           appointmentInstance.facility = facility
         }
         //associate service 
-        if (createAppointmentInput.serviceId) {
-          const service = await this.servicesService.findOne(createAppointmentInput.serviceId)
+        if (createAppointmentInput.appointmentTypeId) {
+          const service = await this.servicesService.findOne(createAppointmentInput.appointmentTypeId)
           appointmentInstance.appointmentType = service
         }
         const appointment = await this.appointmentRepository.save(appointmentInstance);
