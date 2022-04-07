@@ -1,6 +1,7 @@
 import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -93,15 +94,18 @@ export class DoctorService {
     }
   }
 
-  async addDoctor(registerUserInput: RegisterUserInput, facilityId: string): Promise<Doctor> {
+  async addDoctor(createPracticeInput: CreatePracticeInput, facilityId: string): Promise<Doctor> {
     try {
       // register doctor as user 
-      const user = await this.usersService.create({ ...registerUserInput, facilityId })
+      const user = await this.usersService.create({ ...createPracticeInput.registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
+      //get contact 
+      const contact = await this.contactService.createContact(createPracticeInput.createContactInput)
       // Doctor Creation    
-      const doctorInstance = this.doctorRepository.create(registerUserInput)
+      const doctorInstance = this.doctorRepository.create(createPracticeInput.registerUserInput)
       doctorInstance.user = user;
+      doctorInstance.contacts = [contact];
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
       const doctor = await this.doctorRepository.save(doctorInstance)
