@@ -21,11 +21,11 @@ export default () => {
     };
   } else {
     database = {
-      host: process.env.DATABASE_HOST || "localhost",
+      host: process.env.DATABASE_HOST || "ls-47a047cab644f437c55e363a98a2253745c53f64.c7pmtuahr2cl.us-east-1.rds.amazonaws.com",
       port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
       type: process.env.DATABASE_TYPE || "postgres",
-      username: process.env.DATABASE_USERNAME || "postgres",
-      password: process.env.DATABASE_PASSWORD || "password",
+      username: process.env.DATABASE_USERNAME || "emrbackend",
+      password: process.env.DATABASE_PASSWORD || "0P48e{$tqk]V?&GndWdI3]CHa)G;z9m{",
       database: process.env.DATABASE_NAME ||"emr-pro",
       timezone: 'Z',
       migrationsRun: true,
