@@ -447,8 +447,8 @@ type Doctor {
   ssn: String
   taxonomyCode: String
   deaNumber: String
-  deaActiveDate: String!
-  deaTermDate: String!
+  deaActiveDate: String
+  deaTermDate: String
   languagesSpoken: String
   taxId: String
   npi: String
@@ -2242,6 +2242,7 @@ input UpdateAttachmentInput {
 
 input CreatePracticeInput {
   createFacilityItemInput: CreateFacilityItemInput
+  createFacilityContactInput: CreateContactInput
   createContactInput: CreateContactInput
   registerUserInput: RegisterUserInput
   createPracticeItemInput: CreatePracticeItemInput
@@ -2289,7 +2290,7 @@ input CreateAppointmentInput {
   secondaryInsurance: String
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
-  serviceId: String!
+  appointmentTypeId: String!
   facilityId: String
   providerId: String
   patientId: String
@@ -2331,7 +2332,7 @@ input UpdateAppointmentInput {
   secondaryInsurance: String
   scheduleStartDateTime: String
   scheduleEndDateTime: String
-  serviceId: String
+  appointmentTypeId: String
   facilityId: String
   providerId: String
   patientId: String

@@ -101,7 +101,7 @@ export class FacilityService {
       const facilityInstance = this.facilityRepository.create({...createPracticeInput.createFacilityItemInput,isPrimary: true})
         //adding contact
         if(createPracticeInput.createContactInput){
-          const contact = await this.contactService.createContact({...createPracticeInput.createContactInput, primaryContact: true})
+          const contact = await this.contactService.createContact({...createPracticeInput.createFacilityContactInput, primaryContact: true})
           facilityInstance.contacts = [contact];
         }
       const facility = await this.facilityRepository.save(facilityInstance);

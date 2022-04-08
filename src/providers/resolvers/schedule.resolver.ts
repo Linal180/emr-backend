@@ -68,7 +68,7 @@ export class ScheduleResolver {
 
   @ResolveField((returns) => [Service])
   async scheduleServices(@Parent() schedule: Schedule): Promise<ScheduleServices[]> {
-    if (schedule) {
+    if (schedule && schedule.id) {
       const scheduleService = await this.scheduleService.getScheduleService(schedule.id);
       return scheduleService;
     }
