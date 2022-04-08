@@ -1,5 +1,12 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Practice } from 'src/practice/entities/practice.entity';
+import { PracticeService } from 'src/practice/practice.service';
+import { BillingAddress } from 'src/providers/entities/billing-address.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
+import { Schedule } from 'src/providers/entities/schedule.entity';
+import { BillingAddressService } from 'src/providers/services/billing-address.service';
+import { ContactService } from 'src/providers/services/contact.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreateFacilityInput } from '../dto/create-facility.input';
@@ -14,7 +21,10 @@ import { FacilityService } from '../services/facility.service';
 
 @Resolver(() => Facility)
 export class FacilityResolver {
-  constructor(private readonly facilityService: FacilityService) { }
+  constructor(private readonly facilityService: FacilityService,
+    private readonly contactService: ContactService,
+    private readonly billingAddressService: BillingAddressService,
+    private readonly practiceService: PracticeService) { }
 
   @Mutation(() => FacilityPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -44,6 +54,28 @@ export class FacilityResolver {
       facility: await this.facilityService.updateFacilityTimeZone(updateFacilityTimeZoneInput),
       response: { status: 200, message: 'Facility TimeZone updated successfully' }
     };
+  }
+
+
+  @ResolveField((returns) => [Contact])
+  async contacts(@Parent() facility: Facility): Promise<Contact[]> {
+    if (facility) {
+     return await this.contactService.findContactsByFacilityId(facility.id);
+    }
+  }
+
+  @ResolveField((returns) => [Practice])
+  async practice(@Parent() facility: Facility): Promise<Practice> {
+    if (facility && facility.practiceId) {
+     return await this.practiceService.findOne(facility.practiceId);
+    }
+  }
+
+  @ResolveField((returns) => [BillingAddress])
+  async billingAddress(@Parent() facility: Facility): Promise<BillingAddress[]> {
+    if (facility) {
+     return await this.billingAddressService.findBillingAddressByFacilityId(facility.id);
+    }
   }
 
   @Query(returns => FacilitiesPayload)

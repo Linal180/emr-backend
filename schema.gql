@@ -277,6 +277,7 @@ type BillingAddress {
   federalTaxId: String
   bankAccount: String
   checkPayableTo: String
+  facilityId: String
   facility: Facility
   doctor: Doctor
   userId: String
@@ -311,6 +312,7 @@ type Contact {
   relationship: RelationshipType
   contactType: ContactType
   facilityId: String
+  patientId: String
   facility: Facility
   doctor: Doctor
   userId: String
@@ -729,6 +731,8 @@ type Employer {
   mobile: String
   industry: String
   usualOccupation: String
+  patientId: String
+  patient: Patient
   createdAt: String!
   updatedAt: String!
 }
@@ -782,7 +786,7 @@ type Patient {
   user: User
   doctorPatients: [DoctorPatient!]
   patientProblems: [PatientProblems!]
-  employer: [Employer!]
+  employer: Employer
   patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!
