@@ -11,6 +11,9 @@ export class CreatePracticeInput {
   createFacilityItemInput: CreateFacilityItemInput
 
   @Field({nullable: true})
+  createFacilityContactInput?: CreateContactInput
+
+  @Field({nullable: true}) 
   createContactInput?: CreateContactInput
 
   @Field({nullable: true})
