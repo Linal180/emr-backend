@@ -13,10 +13,10 @@ export class PatientSubscriber implements EntitySubscriberInterface<Patient> {
   listenTo() {
     return Patient;
   }
-
-  async afterLoad(entity: PatientAttachmentsPayload): Promise<PatientAttachmentsPayload> {
-    const attachments = await this.attachmentsService.findAttachments(entity.id, AttachmentType.PATIENT)
-    entity.attachments = attachments
-    return entity;
-  }
+  //commented this afterLoad due to its inefficiency in case of more than 10 records, so used a resolve field for this in patient resolver
+  // async afterLoad(entity: PatientAttachmentsPayload): Promise<PatientAttachmentsPayload> {
+  //   const attachments = await this.attachmentsService.findAttachments(entity.id, AttachmentType.PATIENT)
+  //   entity.attachments = attachments
+  //   return entity;
+  // }
 }
