@@ -33,8 +33,12 @@ export class Employer {
   @Field({ nullable: true })
   usualOccupation: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientId: string;
+
   @ManyToOne(() => Patient, patient => patient.contacts, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  // @Field(type => Patient, { nullable: true })
+  @Field(type => Patient, { nullable: true })
   patient: Patient;
 
   @CreateDateColumn({ type: 'timestamptz' })

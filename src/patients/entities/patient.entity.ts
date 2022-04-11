@@ -346,11 +346,11 @@ export class Patient {
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
 
-  @OneToMany(() => Contact, contact => contact.patient, {eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
-  @ManyToOne(() => Facility, facility => facility.patients, {eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Facility, facility => facility.patients, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
 
@@ -368,10 +368,11 @@ export class Patient {
   patientProblems: PatientProblems[];
 
   @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [Appointment], { nullable: true })
   appointments: Appointment[];
   
-  @OneToMany(() => Employer, employer => employer.patient, {eager: true, onDelete: "CASCADE"})
-  @Field(type => [Employer], { nullable: true })
+  @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE"})
+  @Field(type => Employer, { nullable: true })
   employer: Employer[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })

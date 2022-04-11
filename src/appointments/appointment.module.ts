@@ -18,6 +18,7 @@ import { AppointmentService } from './services/appointment.service';
     PaginationModule,
     forwardRef(() => ProviderModule),
     PatientModule,
+    PaymentModule,
     MailerModule,
     FacilityModule,
     forwardRef(() => PaymentModule),

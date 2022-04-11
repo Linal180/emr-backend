@@ -161,6 +161,9 @@ export class Appointment {
   @Field({ nullable: true })
   appointmentTypeId: string;
 
+  @Field({ nullable: true })
+  invoiceId: string;
+
   @ManyToOne(() => Service, facilityService => facilityService.appointments, { onDelete: 'CASCADE' })
   @Field(type => Service, { nullable: true })
   appointmentType: Service;
@@ -178,7 +181,7 @@ export class Appointment {
   patient: Patient;
 
   @Field(() => Invoice, { nullable: true })
-  @OneToOne(() => Invoice, (invoice) => invoice.appointment, { eager: true })
+  @OneToOne(() => Invoice, (invoice) => invoice.appointment)
   invoice: Invoice;
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)

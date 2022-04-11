@@ -63,6 +63,19 @@ export class BillingAddressService {
   }
 
   /**
+   * Finds billing address by facility id
+   * @param id 
+   * @returns billing address by facility id 
+   */
+  async findBillingAddressByFacilityId(id: string): Promise<BillingAddress[]> {
+    return await this.billingAddressRepository.find({
+      where: {
+        facilityId: id  
+      }
+    });
+  }
+
+  /**
    * Removes billing address
    * @param { id } 
    */
