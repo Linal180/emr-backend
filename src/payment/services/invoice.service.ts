@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 //user imports
@@ -68,7 +68,22 @@ export class InvoiceService {
       throw new InternalServerErrorException(error)
 
     }
+  }
 
+  /**
+   * Finds invoice by appointment id
+   * @param id 
+   * @returns invoice by appointment id 
+   */
+  async findInvoiceByAppointmentId(id: string): Promise<Invoice> {
+    const invoice = await this.invoiceRepo.findOne({
+      where: {
+        appointmentId: id
+      }
+    });
+    if(invoice){
+      return invoice
+    }
   }
 
   //get all invoices against facility

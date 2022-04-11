@@ -95,6 +95,28 @@ export class ContactService {
   }
 
   /**
+   * Finds contacts by patient id
+   * @param id 
+   * @returns contacts by patient id 
+   */
+  async findContactsByPatientId(id: string): Promise<Contact[]> {
+    return await this.contactRepository.find({where: {
+      patientId: id
+    }});
+  }
+
+  /**
+   * Finds contacts by facility id
+   * @param id 
+   * @returns contacts by facility id 
+   */
+  async findContactsByFacilityId(id: string): Promise<Contact[]> {
+    return await this.contactRepository.find({where: {
+      facilityId: id
+    }});
+  }
+
+  /**
    * Removes contact
    * @param { id } 
    */

@@ -1,6 +1,12 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { Contact } from 'src/providers/entities/contact.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
+import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
@@ -15,13 +21,18 @@ import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput } from '../dto/update-patient.input';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
+import { Employer } from '../entities/employer.entity';
 import { Patient } from '../entities/patient.entity';
+import { EmployerService } from '../services/employer.service';
 import { PatientService } from '../services/patient.service';
 
 @Resolver(() => Patient)
 export class PatientResolver {
   constructor(private readonly patientService: PatientService,
-    private readonly doctorService: DoctorService) { }
+    private readonly attachmentsService: AttachmentsService,
+    private readonly employerService: EmployerService,
+    private readonly contactService: ContactService,
+    private readonly facilityService: FacilityService) { }
 
   @Mutation(() => PatientPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -85,6 +96,34 @@ export class PatientResolver {
     if (patient && patient.id) {
       const provider = await this.patientService.usualProvider(patient.id);
       return provider;
+    }
+  }
+
+  @ResolveField((returns) => [Facility])
+  async facility(@Parent() patient: Patient): Promise<Facility> {
+    if (patient && patient.facilityId) {
+     return await this.facilityService.findOne(patient.facilityId);
+    }
+  }
+
+  @ResolveField((returns) => [Employer])
+  async employer(@Parent() patient: Patient): Promise<Employer> {
+    if (patient) {
+     return await this.employerService.getEmployerByPatientId(patient.id);
+    }
+  }
+
+  @ResolveField((returns) => [Attachment])
+  async attachments(@Parent() patient: Patient): Promise<Attachment[]> {
+    if (patient) {
+     return await this.attachmentsService.findAttachments(patient.id, AttachmentType.PATIENT);
+    }
+  }
+
+  @ResolveField((returns) => [Contact])
+  async contacts(@Parent() patient: Patient): Promise<Contact[]> {
+    if (patient) {
+     return await this.contactService.findContactsByPatientId(patient.id);
     }
   }
 

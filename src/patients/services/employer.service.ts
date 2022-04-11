@@ -61,6 +61,17 @@ export class EmployerService {
   }
 
   /**
+   * Gets employer by patient id
+   * @param id 
+   * @returns employer by patient id 
+   */
+  async getEmployerByPatientId(id: string): Promise<Employer> {
+    return await this.employerRepository.findOne({where: {
+      patientId: id
+    }});
+  }
+
+  /**
    * Finds one
    * @param id 
    * @returns one 

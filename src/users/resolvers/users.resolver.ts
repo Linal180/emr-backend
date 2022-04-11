@@ -1,6 +1,7 @@
 import { ForbiddenException, HttpStatus, NotFoundException, PreconditionFailedException, SetMetadata, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
+import { FacilityService } from 'src/facilities/services/facility.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { UtilsService } from 'src/util/utils.service';
@@ -31,6 +32,7 @@ export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
+    private readonly facilityService: FacilityService,
   ) { }
 
   // Queries 
@@ -46,7 +48,7 @@ export class UsersResolver {
       }
     }
   }
-
+  
   @Query(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
   async fetchUser(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {

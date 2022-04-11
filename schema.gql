@@ -156,6 +156,7 @@ type User {
   userId: String!
   token: String
   userType: String!
+  facilityId: String
   facility: Facility
   roles: [Role]
   createdAt: String!
@@ -277,6 +278,7 @@ type BillingAddress {
   federalTaxId: String
   bankAccount: String
   checkPayableTo: String
+  facilityId: String
   facility: Facility
   doctor: Doctor
   userId: String
@@ -311,6 +313,8 @@ type Contact {
   relationship: RelationshipType
   contactType: ContactType
   facilityId: String
+  patientId: String
+  doctorId: String
   facility: Facility
   doctor: Doctor
   userId: String
@@ -502,6 +506,7 @@ type Invoice {
   paymentMethod: String
   status: STATUS!
   amount: String!
+  appointmentId: String
   createdAt: String
   updatedAt: String
   transction: Transactions
@@ -681,6 +686,7 @@ type Appointment {
   patientId: String
   facilityId: String
   appointmentTypeId: String
+  invoiceId: String
   appointmentType: Service
   facility: Facility
   provider: Doctor
@@ -729,6 +735,8 @@ type Employer {
   mobile: String
   industry: String
   usualOccupation: String
+  patientId: String
+  patient: Patient
   createdAt: String!
   updatedAt: String!
 }
@@ -782,7 +790,8 @@ type Patient {
   user: User
   doctorPatients: [DoctorPatient!]
   patientProblems: [PatientProblems!]
-  employer: [Employer!]
+  appointments: [Appointment!]
+  employer: Employer
   patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!

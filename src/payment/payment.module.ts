@@ -19,6 +19,6 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule,
   ],
   providers: [PaymentService, PaymentResolver, InvoiceResolver, InvoiceService],
-  exports: [PaymentService],
+  exports: [PaymentService,InvoiceService],
 })  
 export class PaymentModule {}
