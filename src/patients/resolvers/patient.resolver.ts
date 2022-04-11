@@ -1,5 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { Contact } from 'src/providers/entities/contact.entity';
@@ -27,7 +29,7 @@ import { PatientService } from '../services/patient.service';
 @Resolver(() => Patient)
 export class PatientResolver {
   constructor(private readonly patientService: PatientService,
-    private readonly doctorService: DoctorService,
+    private readonly attachmentsService: AttachmentsService,
     private readonly employerService: EmployerService,
     private readonly contactService: ContactService,
     private readonly facilityService: FacilityService) { }
@@ -108,6 +110,13 @@ export class PatientResolver {
   async employer(@Parent() patient: Patient): Promise<Employer> {
     if (patient) {
      return await this.employerService.getEmployerByPatientId(patient.id);
+    }
+  }
+
+  @ResolveField((returns) => [Attachment])
+  async attachments(@Parent() patient: Patient): Promise<Attachment[]> {
+    if (patient) {
+     return await this.attachmentsService.findAttachments(patient.id, AttachmentType.PATIENT);
     }
   }
 

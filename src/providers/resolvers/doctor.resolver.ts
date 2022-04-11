@@ -33,7 +33,7 @@ export class DoctorResolver {
       response: { status: 200, message: 'Doctor updated successfully' }
     };
   }
-
+  
   @Query(returns => AllDoctorPayload)
   async findAllDoctor(@Args('doctorInput') doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     const doctors = await this.doctorService.findAllDoctor(doctorInput)

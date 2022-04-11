@@ -204,6 +204,10 @@ export class Contact {
   @Field({ nullable: true })
   patientId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  doctorId: string;
+
   @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;

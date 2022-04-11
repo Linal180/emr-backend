@@ -368,6 +368,7 @@ export class Patient {
   patientProblems: PatientProblems[];
 
   @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [Appointment], { nullable: true })
   appointments: Appointment[];
   
   @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE"})

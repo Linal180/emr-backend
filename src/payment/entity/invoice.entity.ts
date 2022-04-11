@@ -71,6 +71,10 @@ export class Invoice {
   @Field({ nullable: false })
   amount: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  appointmentId: string;
+
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   createdAt: string;

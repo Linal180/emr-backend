@@ -6,6 +6,8 @@ import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
+import { Invoice } from 'src/payment/entity/invoice.entity';
+import { InvoiceService } from 'src/payment/services/invoice.service';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
@@ -23,6 +25,7 @@ export class AppointmentResolver {
   constructor(private readonly appointmentService: AppointmentService,
     private readonly patientService: PatientService,
     private readonly doctorService: DoctorService,
+    private readonly invoiceService: InvoiceService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService) { }
 
@@ -111,6 +114,13 @@ export class AppointmentResolver {
   async appointmentType(@Parent() appointment: Appointment): Promise<Service> {
     if (appointment && appointment.appointmentTypeId) {
      return await this.servicesService.findOne(appointment.appointmentTypeId);
+    }
+  }
+
+  @ResolveField((returns) => [Invoice]) 
+  async invoice(@Parent() appointment: Appointment): Promise<Invoice> {
+    if (appointment) {
+     return await this.invoiceService.findInvoiceByAppointmentId(appointment.id);
     }
   }
 
