@@ -17,7 +17,8 @@ export const RolesData = [
     { role: 'staff' , customRole: false, description: "staff has permissions for staff members and lab records"},
     { role: 'nurse-practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
     { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
-    { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" }
+    { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" },
+    { role: 'front-desk', customRole: false, description: "front desk assistant has partial permissions of admin" }
 ];
 export const UsersData = [
     { firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE, 
@@ -167,6 +168,15 @@ export const officeManagerPermissionsList = ['fetchAllUsers','fetchUser','getUse
 'findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
 
 export const doctorAssistantPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
+'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',
+'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital']
+
+export const frontDeskPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
 'findAllAppointments','getAppointment','getDoctorAppointment','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
 'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',

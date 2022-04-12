@@ -7,7 +7,7 @@ import { Permission } from "../entities/permissions.entity";
 import { Role } from '../entities/role.entity';
 import { RolePermission } from "../entities/rolePermissions.entity";
 import { User } from '../entities/user.entity';
-import { adminPermissionsList, doctorAssistantPermissionsList, doctorPermissionsList, FacilityData, nursePermissionsList, officeManagerPermissionsList, patientPermissionsList, PermissionData, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
+import { adminPermissionsList, doctorAssistantPermissionsList, doctorPermissionsList, FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList, patientPermissionsList, PermissionData, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
 
 @Injectable()
 export class CreateUsers implements Seeder {
@@ -121,6 +121,16 @@ export class CreateUsers implements Seeder {
       let doctorAssistantRolePermissions = await this.rolePermissionPayload(doctorAssistantRolePermissionList, doctorAssistantRole)
       let doctorAssistantRolePermissionsRes = getRepository(RolePermission).create(doctorAssistantRolePermissions)
       doctorAssistantRolePermissionsRes = await queryRunner.manager.save(doctorAssistantRolePermissionsRes);
+      }
+      
+      //Add front-desk assistant Permissions 
+      let frontDeskRole = roles.find((item)=> item.role === 'front-desk')
+      let frontDeskRolePermission = await getRepository(RolePermission).find({where: {role: frontDeskRole.id}})
+      if(!frontDeskRolePermission.length){
+      let frontDeskRolePermissionList =  permissions.filter(x => frontDeskPermissionsList.find(y => (y === x.name)));  
+      let frontDeskRolePermissions = await this.rolePermissionPayload(frontDeskRolePermissionList, frontDeskRole)
+      let frontDeskRolePermissionsPermissionsRes = getRepository(RolePermission).create(frontDeskRolePermissions)
+      frontDeskRolePermissionsPermissionsRes = await queryRunner.manager.save(frontDeskRolePermissionsPermissionsRes);
       }
       
       //Add Users
