@@ -6,7 +6,7 @@ export class TwoFactorInput {
   userId: string;
 
   @Field({nullable: true})
-  phone?: string;
+  password?: string;
 
   @Field()
   isTwoFactorEnabled: boolean;
