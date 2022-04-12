@@ -184,6 +184,10 @@ export class Doctor {
   @Field({ nullable: true })
   facilityId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
+
   @OneToOne(() => User, { eager: true })
   @JoinColumn()
   @Field(type => User, { nullable: true })

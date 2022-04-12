@@ -344,6 +344,10 @@ export class Patient {
   @Field({ nullable: true })
   facilityId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
+
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
 
