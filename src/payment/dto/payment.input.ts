@@ -1,11 +1,11 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { CreateExternalAppointmentInput } from '../../appointments/dto/create-external-appointment.input';
-import {TRANSACTIONSTATUS} from '../entity/payment.entity'
+import { TRANSACTIONSTATUS } from '../entity/payment.entity'
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 
 @InputType()
 export class PaymentInput {
-  @Field({nullable: true})
+  @Field({ nullable: true })
   clientIntent: string;
 
   @Field()
@@ -66,16 +66,16 @@ export class CreateTransactionInputs {
   @Field({ nullable: false })
   appointmentId: string;
 
-  @Field(()=> TRANSACTIONSTATUS)
+  @Field(() => TRANSACTIONSTATUS)
   status: TRANSACTIONSTATUS;
 }
 
 @InputType()
-export class UpdatePaymentStatus{
+export class UpdatePaymentStatus {
   @Field({ nullable: false })
   transactionId: string;
 
-  @Field(()=> TRANSACTIONSTATUS)
+  @Field(() => TRANSACTIONSTATUS)
   status: TRANSACTIONSTATUS;
 }
 
@@ -93,21 +93,22 @@ export class GetAllTransactionsInputs {
 @InputType()
 export class ACHPaymentInputs {
 
-  @Field({ nullable: true })
-  firstName: string
-
-  @Field({ nullable: true })
-  lastName: string
+  @Field()
+  token: string
 
   @Field()
-  bankName: string
-
-  @Field(()=> Int)
-  accountNo: number
-
-  @Field(()=> Int)
-  routingNo: number
+  firstName: string;
 
   @Field()
-  accountType: string
+  lastName: string;
+}
+
+@InputType()
+export class PaymentInputs {
+
+  @Field()
+  paymentMethodNonce: string;
+
+  @Field()
+  customerId: string;
 }

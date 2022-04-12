@@ -1499,7 +1499,9 @@ type Mutation {
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
-  paymentByACH(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
+  paymentByACH(achPaymentInputs: ACHPaymentInputs!): String!
+  getPlaidLinkToken(achPaymentInputs: ACHPaymentInputs!): String!
+  exchangePlaidToken(achPaymentInputs: ACHPaymentInputs!): String!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
@@ -2384,12 +2386,9 @@ input GetAllTransactionsInputs {
 }
 
 input ACHPaymentInputs {
-  firstName: String
-  lastName: String
-  bankName: String!
-  accountNo: Int!
-  routingNo: Int!
-  accountType: String!
+  token: String!
+  firstName: String!
+  lastName: String!
 }
 
 input CreateInvoiceInputs {

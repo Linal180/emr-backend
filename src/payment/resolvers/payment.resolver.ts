@@ -39,8 +39,20 @@ export class PaymentResolver {
 
   //ach payment 
 
-  @Mutation(()=> TransactionPayload)
+  @Mutation(()=> String)
   async paymentByACH(@Args('achPaymentInputs') achPaymentInputs:ACHPaymentInputs) {
-    await this.paymentService.achPayment(achPaymentInputs)
+   return await this.paymentService.achPayment(achPaymentInputs)
   }
+
+   //plaid token 
+   @Mutation(()=> String)
+   async getPlaidLinkToken(@Args('achPaymentInputs') achPaymentInputs:ACHPaymentInputs) {
+    return await this.paymentService.getPlaidLinkToken()
+   }
+
+    //plaid token exchange
+    @Mutation(()=> String)
+    async exchangePlaidToken(@Args('achPaymentInputs') achPaymentInputs:ACHPaymentInputs) {
+     return await this.paymentService.exchangePlaidToken()
+    }
 }

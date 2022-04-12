@@ -5,7 +5,8 @@ import {
   InternalServerErrorException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BraintreeGateway, Environment } from 'braintree';
+import { Configuration, CountryCode, PlaidApi, PlaidEnvironments, Products } from 'plaid';
+import { BraintreeGateway, Environment, PaymentMethodType } from 'braintree';
 import { AppointmentService } from '../../appointments/services/appointment.service';
 import { Repository } from 'typeorm';
 import { BraintreePayload, TransactionsPayload } from '../dto/payment.dto';
@@ -15,7 +16,8 @@ import {
   PaymentInputsAfterAppointment,
   UpdatePaymentStatus,
   GetAllTransactionsInputs,
-  ACHPaymentInputs
+  ACHPaymentInputs,
+  PaymentInputs
 } from '../dto/payment.input';
 import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
 import {
@@ -27,6 +29,20 @@ import { UtilsService } from '../../util/utils.service';
 import { InvoiceService } from './invoice.service';
 import { BILLING_TYPE, STATUS } from '../entity/invoice.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { braintreeACHPayment } from './braintree.service'
+
+
+const plaidConfig = new Configuration({
+  basePath: PlaidEnvironments.sandbox,
+  baseOptions: {
+    headers: {
+      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID || '624eabd33b17e100151c9748',
+      'PLAID-SECRET': process.env.PLAID_SECRET || '510b66326b3537ebcbd9188cd1b397',
+    },
+  },
+});
+
+
 
 @Injectable()
 export class PaymentService {
@@ -36,6 +52,8 @@ export class PaymentService {
     publicKey: process.env.BRAINTREE_PUBLIC_ID,
     privateKey: process.env.BRAINTREE_SECRET_ID,
   });
+
+  private plaidClient = new PlaidApi(plaidConfig);
 
   constructor(
     @InjectRepository(Transactions)
@@ -254,10 +272,117 @@ export class PaymentService {
     }
   }
 
+  //create braintree customer 
+
+  async createCustomer(input: ACHPaymentInputs) {
+    try {
+      const { firstName, lastName } = input || {}
+      const response = await this.gateway.customer.create({ firstName, lastName });
+      const { success, customer, message } = response;
+      if (success) {
+        const { id } = customer;
+        return id
+      }
+      else {
+        throw new InternalServerErrorException(message)
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+  //ach payment
+
+  async payment(inputs: PaymentInputs) {
+    try {
+      const data = await this.gateway.paymentMethod.create({
+        ...inputs,
+      })
+      const { success, message, } = data;
+      console.log('data => ', data)
+      if (success) {
+        const { paymentMethod } = data;
+        const { token } = paymentMethod;
+        if (token) {
+          const trans = await this.gateway.transaction.sale({
+            amount: "10.00",
+            paymentMethodToken: token,
+            options: {
+              submitForSettlement: true
+            }
+          })
+          console.log('updatedToken', trans)
+        }
+        return paymentMethod
+      }
+      else {
+        throw new InternalServerErrorException({ message })
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
   //ach payment
 
   async achPayment(achPaymentInputs: ACHPaymentInputs) {
-      
+    try {
+      const { token: paymentMethodNonce } = achPaymentInputs || {}
+      const customerId = await this.createCustomer(achPaymentInputs);
+      const response = await braintreeACHPayment({ paymentMethodNonce, customerId })
+
+      return "something went wrong"
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+
+  }
+
+  async creatPaymentNonce() {
+    try {
+      const token = await this.gateway.paymentMethodNonce.create('EQbAw5XbKpuvLLr8KxD1uqK3JzkaRVtXrWypy')
+      console.log('payment none response => ', token)
+    } catch (error) {
+      console.log('payment none error =>', error)
+    }
+  }
+
+  //
+
+  async getPlaidLinkToken() {
+    try {
+      const palidResponse = await this.plaidClient.linkTokenCreate({
+        client_name: "mmuhammad",
+        country_codes: [CountryCode.Us],
+        language: "en",
+        products: [Products.Transactions],
+        user: {
+          client_user_id: "1221ddss321212dss21"
+        }
+      });
+      const { data } = palidResponse;
+      const { link_token } = data
+
+      console.log('plaid token => ', link_token)
+      return link_token;
+    } catch (error) {
+      console.log('plaid error => ', error)
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async exchangePlaidToken() {
+    try {
+      const exchangePlaidResponse = await this.plaidClient.itemPublicTokenExchange({
+        public_token: "public-sandbox-32b676f6-5eea-4b1f-a275-29cd366cf82a"
+      });
+      this.creatPaymentNonce()
+      console.log('exchangePlaidResponse => ', exchangePlaidResponse)
+      return 'Plaid token is exchanged'
+    } catch (error) {
+
+    }
+
   }
 
 }
