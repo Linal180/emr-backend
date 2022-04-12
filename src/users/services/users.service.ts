@@ -348,7 +348,22 @@ export class UsersService {
    */
   async updateTwoFactorAuth(twoFactorInput: TwoFactorInput): Promise<User> {
     try {
-      return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, twoFactorInput, this.usersRepository)
+      const user = await this.findUserById(twoFactorInput.userId)
+      if(!user){
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'User not found or disabled',
+        });
+      }
+      const passwordMatch = await bcrypt.compare(twoFactorInput.password, user.password)
+      if (passwordMatch) {
+      return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, {isTwoFactorEnabled:twoFactorInput.isTwoFactorEnabled }, this.usersRepository)
+      }else{
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Password invalid',
+        });
+      }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

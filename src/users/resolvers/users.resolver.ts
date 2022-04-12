@@ -266,8 +266,8 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updateTwoFactorAuth')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateTwoFactorAuth')
   async update2FactorAuth(@Args('twoFactorInput') twoFactorInput: TwoFactorInput): Promise<UserPayload> {
     const user = await this.usersService.updateTwoFactorAuth(twoFactorInput);
     return { user, response: { status: 200, message: 'User 2FA Updated' } }
