@@ -57,6 +57,10 @@ export class Staff {
   @Field({ nullable: true })
   mobile: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
+
   @Column({
     type: "enum",
     enum: Gender,

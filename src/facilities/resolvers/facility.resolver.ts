@@ -4,7 +4,6 @@ import { Practice } from 'src/practice/entities/practice.entity';
 import { PracticeService } from 'src/practice/practice.service';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
-import { Schedule } from 'src/providers/entities/schedule.entity';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';

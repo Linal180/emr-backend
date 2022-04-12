@@ -7,6 +7,9 @@ export default class PatientInput {
     @Field({ nullable: true })
     facilityId?: string
 
+    @Field({ nullable: true })
+    practiceId?: string
+
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }

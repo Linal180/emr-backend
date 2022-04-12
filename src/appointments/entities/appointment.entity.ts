@@ -160,6 +160,10 @@ export class Appointment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  practiceId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   appointmentTypeId: string;
 
   @Field({ nullable: true })
@@ -192,7 +196,6 @@ export class Appointment {
   @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.appointment)
   @Field(type => [PatientAllergies], { nullable: true })
   patientAllergies: PatientAllergies[];
-
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.appointment)
   @Field(type => [PatientVitals], { nullable: true })
