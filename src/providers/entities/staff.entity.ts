@@ -1,5 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -76,9 +77,13 @@ export class Staff {
   @ManyToMany(type => Doctor, doctor => doctor.staff)
   providers: Doctor[];
 
-  @OneToMany(() => PatientProblems, patientProblems => patientProblems.staff, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.staff, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
+
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.staff, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @Field(type => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.addedBy)
   @Field(type => PatientVitals, { nullable: true })

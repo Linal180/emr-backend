@@ -53,6 +53,64 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type ICDCodes {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  createdAt: String
+  updatedAt: String
+}
+
+type SnoMedCodes {
+  id: String!
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientProblems {
+  id: String!
+  problemType: ProblemType!
+  problemSeverity: ProblemSeverity!
+  problemStartDate: String
+  note: String
+  patientId: String
+  ICDCode: ICDCodes
+  patient: Patient
+  doctor: Doctor
+  staff: Staff
+  appointment: Appointment
+  snowMedCode: SnoMedCodes
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's problem type assigned"""
+enum ProblemType {
+  ACTIVE
+  HISTORIC
+}
+
+"""The patient's problem severity type assigned"""
+enum ProblemSeverity {
+  CHRONIC
+  ACUTE
+}
+
 type PatientVitals {
   id: String!
   unitType: UnitType!
@@ -183,6 +241,7 @@ type Staff {
   user: User
   facility: Facility
   patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
   patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
@@ -195,62 +254,34 @@ enum Gender {
   OTHER
 }
 
-type ICDCodes {
+type PatientAllergies {
   id: String!
-  code: String!
-  description: String
-  version: String
-  createdAt: String
-  updatedAt: String
-}
-
-type SnoMedCodes {
-  id: String!
-  recordId: String
-  effectiveTime: String
-  active: String
-  moduleId: String
-  refsetId: String
-  referencedComponentId: String
-  mapGroup: String
-  mapPriority: String
-  mapRule: String
-  mapAdvice: String
-  mapTarget: String
-  correlationId: String
-  mapCategoryId: String
-  patientProblem: [PatientProblems!]
-  createdAt: String
-  updatedAt: String
-}
-
-type PatientProblems {
-  id: String!
-  problemType: ProblemType!
-  problemSeverity: ProblemSeverity!
-  problemStartDate: String
-  note: String
-  patientId: String
-  ICDCode: ICDCodes
+  allergySeverity: AllergySeverity!
+  allergyOnset: AllergyOnset!
+  allergyStartDate: String
+  comments: String
+  isActive: Boolean
   patient: Patient
   doctor: Doctor
   staff: Staff
   appointment: Appointment
-  snowMedCode: SnoMedCodes
   createdAt: String
   updatedAt: String
 }
 
-"""The patient's problem type assigned"""
-enum ProblemType {
-  ACTIVE
-  HISTORIC
+"""The patient's allergy severity type assigned"""
+enum AllergySeverity {
+  MILD
+  ACUTE
+  MODERATE
+  VERY_MILD
 }
 
-"""The patient's problem severity type assigned"""
-enum ProblemSeverity {
-  CHRONIC
-  ACUTE
+"""The patient's allergy onset type assigned"""
+enum AllergyOnset {
+  CHILDHOOD
+  ADULTHOOD
+  UNNKOWN
 }
 
 type DoctorPatient {
@@ -479,6 +510,7 @@ type Doctor {
   billingAddress: [BillingAddress!]
   schedule: [Schedule!]
   patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
   staff: [Staff]
   createdAt: String!
   updatedAt: String!
@@ -693,6 +725,7 @@ type Appointment {
   patient: Patient
   invoice: Invoice
   patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
   patientVitals: [PatientVitals!]
   createdAt: String
   updatedAt: String
@@ -789,6 +822,7 @@ type Patient {
   facility: Facility
   user: User
   doctorPatients: [DoctorPatient!]
+  patientAllergies: [PatientAllergies!]
   patientProblems: [PatientProblems!]
   appointments: [Appointment!]
   employer: Employer
@@ -1583,7 +1617,7 @@ input UserIdInput {
 
 input TwoFactorInput {
   userId: String!
-  phone: String
+  password: String
   isTwoFactorEnabled: Boolean!
 }
 

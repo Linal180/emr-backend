@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { DoctorPatient } from 'src/patients/entities/doctorPatient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
@@ -210,6 +211,10 @@ export class Doctor {
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
+
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @Field(type => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
 
   @OneToMany(() => Appointment, appointment => appointment.provider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   appointments: Appointment[];
