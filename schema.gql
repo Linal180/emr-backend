@@ -237,6 +237,7 @@ type Staff {
   phone: String
   facilityId: String
   mobile: String
+  practiceId: String
   gender: Gender!
   user: User
   facility: Facility
@@ -504,6 +505,7 @@ type Doctor {
   licenseTermDate: String
   prescriptiveAuthNumber: String
   facilityId: String
+  practiceId: String
   user: User
   facility: Facility
   contacts: [Contact!]
@@ -717,6 +719,7 @@ type Appointment {
   providerId: String
   patientId: String
   facilityId: String
+  practiceId: String
   appointmentTypeId: String
   invoiceId: String
   appointmentType: Service
@@ -817,6 +820,7 @@ type Patient {
   statementNoteDateFrom: String
   statementNoteDateTo: String
   facilityId: String
+  practiceId: String
   attachments: [Attachment!]
   contacts: [Contact!]
   facility: Facility
@@ -1336,6 +1340,7 @@ input GetService {
 
 input StaffInput {
   facilityId: String
+  practiceId: String
   paginationOptions: PaginationInput!
 }
 
@@ -1355,6 +1360,7 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  practiceId: String
   paginationOptions: PaginationInput!
 }
 
@@ -1390,6 +1396,7 @@ input GetSlots {
 
 input PatientInput {
   facilityId: String
+  practiceId: String
   paginationOptions: PaginationInput!
 }
 
@@ -1418,6 +1425,7 @@ input AppointmentInput {
   appointmentNumber: String
   appointmentStatus: String
   patientId: String
+  practiceId: String
   facilityId: String
 }
 
@@ -1895,6 +1903,7 @@ input CreateStaffItemInput {
   roleType: String
   adminId: String
   facilityId: String
+  practiceId: String!
 }
 
 input UpdateStaffInput {
@@ -1919,6 +1928,7 @@ input UpdateStaffItemInput {
   roleType: String
   adminId: String
   facilityId: String
+  practiceId: String
   id: String!
 }
 
@@ -1954,6 +1964,7 @@ input CreateDoctorItemInput {
   adminId: String
   timeZone: String
   facilityId: String!
+  practiceId: String!
   providerIntials: String
   degreeCredentials: String
 
@@ -2006,6 +2017,7 @@ input UpdateDoctorItemInput {
   adminId: String
   timeZone: String
   facilityId: String
+  practiceId: String
   providerIntials: String
   degreeCredentials: String
 
@@ -2126,6 +2138,7 @@ input CreatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String!
+  practiceId: String!
 }
 
 input CreateEmployerInput {
@@ -2213,6 +2226,7 @@ input UpdatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String
+  practiceId: String
   id: String!
 }
 
@@ -2337,6 +2351,7 @@ input CreateAppointmentInput {
   facilityId: String
   providerId: String
   patientId: String
+  practiceId: String
 }
 
 input CreateExternalAppointmentInput {
@@ -2357,6 +2372,7 @@ input CreateExternalAppointmentItemInput {
   facilityId: String
   providerId: String
   patientId: String
+  practiceId: String
   paymentStatus: String
 }
 
@@ -2379,6 +2395,7 @@ input UpdateAppointmentInput {
   facilityId: String
   providerId: String
   patientId: String
+  practiceId: String
   id: String!
   paymentStatus: String
 }
