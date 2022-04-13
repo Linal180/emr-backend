@@ -2,6 +2,7 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Facility } from 'src/facilities/entities/facility.entity';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
@@ -250,6 +251,11 @@ export class UsersService {
     return await this.usersRepository.save(userInstance);
   }
 
+  async updateFacility(facility: Facility, userInstance: User): Promise<User> {
+    userInstance.facility = facility
+    return await this.usersRepository.save(userInstance);
+  }
+
   /**
    * Finds User by id
    * @param id 
@@ -267,6 +273,11 @@ export class UsersService {
   async findUserById(id: string): Promise<User> {
     return await this.usersRepository.findOne(id);
   }
+
+  async findUserByUserId(id: string): Promise<User> {
+    return await this.usersRepository.findOne({userId: id});
+  }
+
 
   async findByToken(token: string): Promise<User> {
     return await this.usersRepository.findOne({ token: token });
