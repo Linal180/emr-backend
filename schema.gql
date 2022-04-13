@@ -1903,7 +1903,7 @@ input CreateStaffItemInput {
   roleType: String
   adminId: String
   facilityId: String
-  practiceId: String!
+  practiceId: String
 }
 
 input UpdateStaffInput {
@@ -1964,7 +1964,7 @@ input CreateDoctorItemInput {
   adminId: String
   timeZone: String
   facilityId: String!
-  practiceId: String!
+  practiceId: String
   providerIntials: String
   degreeCredentials: String
 
@@ -2138,7 +2138,7 @@ input CreatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String!
-  practiceId: String!
+  practiceId: String
 }
 
 input CreateEmployerInput {
