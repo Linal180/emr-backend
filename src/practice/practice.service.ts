@@ -56,13 +56,13 @@ export class PracticeService {
       //create a user or provider based on its role type under this facility
       if(createPracticeInput.registerUserInput.roleType === doctorRole.role){
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
-          const doctor = await this.doctorService.addDoctor(createPracticeInput, facility.id)
+          const doctor = await this.doctorService.addDoctor(createPracticeInput, facility.id, practice.id)
           if(createPracticeInput.registerUserInput.isAdmin){
              await this.usersService.updateUserRole({id: doctor.user.id, roles: [adminRole.role,registerUserInput.roleType]})
           }
       }else{
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
-          const staff = await this.staffService.addStaff(registerUserInput, facility.id)
+          const staff = await this.staffService.addStaff(registerUserInput, facility.id, practice.id)
            if(createPracticeInput.registerUserInput.isAdmin){
             await this.usersService.updateUserRole({id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType]})
           }

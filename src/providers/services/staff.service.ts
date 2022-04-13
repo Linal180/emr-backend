@@ -92,14 +92,14 @@ export class StaffService {
    * @param facilityId 
    * @returns staff 
    */
-  async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
+  async addStaff(registerUserInput: RegisterUserInput, facilityId: string, practiceId: string): Promise<Staff> {
     try {
       // register staff as user 
       const user = await this.usersService.create({ ...registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Staff Creation
-      const staffInstance = this.staffRepository.create(registerUserInput)
+      const staffInstance = this.staffRepository.create({...registerUserInput, practiceId})
       staffInstance.user = user;
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
