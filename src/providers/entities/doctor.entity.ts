@@ -20,7 +20,27 @@ export enum Speciality {
   PEDIATRIC_DENTIST = "Pediatric Dentist",
   PEDIATRIC_DERMATOLOGY = "Pediatric Dermatology",
   NEUROLOGY = "Neurology",
-  GASTROENTEROLOGY = "Gastroenterology"
+  GASTROENTEROLOGY = "Gastroenterology",
+  GENERAL_PRACTICE = "General Practice",
+  GENERAL_SURGERY = "General Surgery",
+  ALLERGY_OR_IMMUNOLOGY = 'Allergy/Immunology',
+  OTOLARYNGOLOGY = "Otolaryngology",
+  ANESTHESIOLOGY = "Anesthesiology",
+  CARDIOLOGY = 'Cardiology',
+  DERMATOLOGY = 'Dermatology',
+  FAMILY_PRACTICE = 'Family Practice',
+  INTERVENTIONAL_PAIN_MANAGEMENT = 'Interventional Pain Management',
+  INTERNAL_MEDICINE = 'Internal Medicine',
+  OSTEOPATHIC_MANIPULATIVE_THERAPY = 'Osteopathic Manipulative Therapy',
+  NEUROSURGERY = "Neurosurgery",
+  OPHTHALMOLOGY = "Ophthalmology",
+  OBSTETRICS_OR_GYNECOLOGY = 'Obstetrics/Gynecology',
+  ORAL_SURGERY = 'Oral Surgery',
+  ORTHOPEDIC_SURGERY = 'Orthopedic Surgery',
+  PATHOLOGY = 'Pathology',
+  PLASTIC_AND_RECONSTRUCTIVE_SURGERY = "Plastic and Reconstructive Surgery",
+  PHYSICAL_MEDICINE_AND_REHABILITATION = 'Physical Medicine and Rehabilitation',
+  PSYCHIATRY = 'Psychiatry'
 }
 
 registerEnumType(Speciality, {
