@@ -7,7 +7,6 @@ import { FacilityService } from 'src/facilities/services/facility.service';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { ContactService } from 'src/providers/services/contact.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreatePatientInput } from '../dto/create-patient.input';
