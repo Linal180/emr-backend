@@ -94,7 +94,7 @@ export class DoctorService {
     }
   }
 
-  async addDoctor(createPracticeInput: CreatePracticeInput, facilityId: string): Promise<Doctor> {
+  async addDoctor(createPracticeInput: CreatePracticeInput, facilityId: string, practiceId: string): Promise<Doctor> {
     try {
       // register doctor as user 
       const user = await this.usersService.create({ ...createPracticeInput.registerUserInput, facilityId })
@@ -103,7 +103,7 @@ export class DoctorService {
       //get contact 
       const contact = await this.contactService.createContact(createPracticeInput.createContactInput)
       // Doctor Creation    
-      const doctorInstance = this.doctorRepository.create(createPracticeInput.registerUserInput)
+      const doctorInstance = this.doctorRepository.create({...createPracticeInput.registerUserInput, practiceId})
       doctorInstance.user = user;
       doctorInstance.contacts = [contact];
       doctorInstance.facility = facility;
