@@ -117,7 +117,7 @@ export class UsersResolver {
     if (user) {
       if (user.emailVerified) {
         if(user.isTwoFactorEnabled){
-          await this.utilsService.sendVerificationCode(user.phone)
+           this.utilsService.sendVerificationCode(user.phone)
         }
         return await this.usersService.createToken(user, password);
       }
