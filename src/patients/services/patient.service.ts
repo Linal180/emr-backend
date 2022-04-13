@@ -117,14 +117,20 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+ 
       //save patient basic info
       await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, updatePatientInput.updatePatientItemInput, this.patientRepository)
+     
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
       if(updatePatientInput.updatePatientItemInput.facilityId){
       const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
       patientInstance.facility = facility
+       const user = await this.usersService.findUserByUserId(updatePatientInput.updatePatientItemInput.id)
+       if(user){
+          await this.usersService.updateFacility(facility, user)
+       }
       }
       //update patient contact 
       const contact = await this.contactService.updateContact(updatePatientInput.updateContactInput)
