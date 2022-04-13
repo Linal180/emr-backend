@@ -59,6 +59,6 @@ export class CreateAppointmentInput {
     patientId: string;
 
     @Field({ nullable: true })
-    practiceId: string;
+    practiceId?: string;
     
 }

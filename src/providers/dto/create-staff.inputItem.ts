@@ -40,6 +40,6 @@ export class CreateStaffItemInput {
   @Field({ nullable: true })
   facilityId?: string;
 
-  @Field({ nullable: false })
-  practiceId: string;
+  @Field({ nullable: true })
+  practiceId?: string;
 }
