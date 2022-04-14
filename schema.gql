@@ -1422,6 +1422,7 @@ input GetSlots {
 input PatientInput {
   facilityId: String
   searchString: String
+  patientRecord: String
   practiceId: String
   paginationOptions: PaginationInput!
 }
