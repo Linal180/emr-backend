@@ -188,19 +188,19 @@ export class PaginationService {
           doctorId
         }),
         ...(patientRecord && {
-          patientRecord
+          patientRecord: Raw(alias => `${alias} ILIKE '%${patientRecord}%'`),
         }),
         ...(role && {
           role: Not(role)
         }),
         ...(facilityName && {
-          name: (Raw(alias => `${alias} ILIKE '%${facilityName}%'`)),
+          name: Raw(alias => `${alias} ILIKE '%${facilityName}%'`),
         }),
         ...(practiceName && {
-          name: (Raw(alias => `${alias} ILIKE '%${practiceName}%'`)),
+          name: Raw(alias => `${alias} ILIKE '%${practiceName}%'`),
         }),
         ...(serviceName && {
-          name: (Raw(alias => `${alias} ILIKE '%${serviceName}%'`)),
+          name: Raw(alias => `${alias} ILIKE '%${serviceName}%'`),
         }),
         ...(practiceId && {
           practiceId: practiceId
