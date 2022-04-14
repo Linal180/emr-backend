@@ -7,6 +7,9 @@ export default class ServiceInput {
     @Field({ nullable: true })
     facilityId?: string
 
+    @Field({ nullable: true })
+    serviceName?: string
+
     @Field({ nullable: true})
     isActive?: boolean
 

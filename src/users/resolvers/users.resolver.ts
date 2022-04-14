@@ -239,7 +239,7 @@ export class UsersResolver {
       status: HttpStatus.NOT_FOUND,
       error: 'User not found',
     });
-  }
+  } 
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
