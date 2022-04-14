@@ -17,6 +17,9 @@ export default class AppointmentInput {
     patientId?: string
 
     @Field({nullable: true})
+    searchString?: string
+
+    @Field({nullable: true})
     practiceId?: string
 
     @Field({nullable: true})

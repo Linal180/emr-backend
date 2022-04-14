@@ -7,6 +7,9 @@ export class AccessUserPayload {
   @Field({ nullable: true })
   access_token?: string
 
+  @Field({nullable: true})
+  isTwoFactorEnabled?: boolean
+
   @Field(type => [Role], { nullable: true })
   roles: Role[]
 

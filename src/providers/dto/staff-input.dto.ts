@@ -9,6 +9,9 @@ export default class StaffInput {
     @Field({ nullable: true })
     practiceId?: string
 
+    @Field({ nullable: true })
+    searchString?: string
+
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }
