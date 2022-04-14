@@ -392,6 +392,7 @@ export class UsersService {
       return {
         access_token: this.jwtService.sign(payload),
         roles: user.roles,
+        isTwoFactorEnabled: user.isTwoFactorEnabled,
         response: {
           message: "OK", status: 200, name: "Token Created"
         }

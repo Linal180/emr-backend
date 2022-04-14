@@ -959,6 +959,7 @@ type RolePayload {
 
 type AccessUserPayload {
   access_token: String
+  isTwoFactorEnabled: Boolean
   roles: [Role!]
   response: ResponsePayload
 }
