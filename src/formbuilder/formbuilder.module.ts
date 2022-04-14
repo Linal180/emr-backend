@@ -10,14 +10,21 @@ import { FormElementsService } from './services/form-elements.service';
 import { FormsService } from './services/forms.service';
 import { ElementService } from './services/element.service';
 import { ElementResolver } from './resolvers/element.resolver'
+import { UserForms } from './entities/userforms.entity';
+import { UsersFormsElements } from './entities/userFormElements.entity';
+import { UserFormsService } from './services/userForms.service';
+import { UserFormResolver } from './resolvers/userForms.resolver';
+import { UserFormElementService } from './services/userFormElements.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Form, Element, FormElement]),
+    TypeOrmModule.forFeature([Form, Element, FormElement, UserForms, UsersFormsElements]),
     forwardRef(() => UsersModule),
     PaginationModule
   ],
-  providers: [FormResolver, ElementResolver, FormsService, FormElementsService, ElementService],
+  providers: [
+    FormResolver, ElementResolver, FormsService, FormElementsService,
+    ElementService, UserFormResolver, UserFormsService, UserFormElementService],
   exports: [FormsService, TypeOrmModule],
 })
 export class FormBuilderModule { }

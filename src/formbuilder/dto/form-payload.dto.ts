@@ -75,6 +75,9 @@ export class SectionsTypes {
     @Field(() => Int, { nullable: false })
     col: number;
 
+    @Field({ nullable: false })
+    name: string;
+
     @Field(() => [FieldsTypes])
     fields: FieldsTypes[]
 }

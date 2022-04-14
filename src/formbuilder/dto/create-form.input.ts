@@ -13,6 +13,9 @@ export class SectionsInputs {
   @Field({ nullable: false })
   id: string;
 
+  @Field({ nullable: false })
+  name: string;
+
   @Field(() => Int, { nullable: false })
   col: number;
 
