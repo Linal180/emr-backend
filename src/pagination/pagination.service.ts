@@ -155,6 +155,7 @@ export class PaginationService {
       serviceName,
       searchString,
       role,
+      patientRecord,
       doctorId,
       practiceId,
       appointmentStatus,
@@ -185,6 +186,9 @@ export class PaginationService {
         }),
         ...(doctorId && {
           doctorId
+        }),
+        ...(patientRecord && {
+          patientRecord
         }),
         ...(role && {
           role: Not(role)
