@@ -274,11 +274,20 @@ export class UsersService {
     return await this.usersRepository.findOne(id);
   }
 
+  /**
+   * Finds user by user id
+   * @param id 
+   * @returns user by user id 
+   */
   async findUserByUserId(id: string): Promise<User> {
     return await this.usersRepository.findOne({userId: id});
   }
 
-
+  /**
+   * Finds by token
+   * @param token 
+   * @returns by token 
+   */
   async findByToken(token: string): Promise<User> {
     return await this.usersRepository.findOne({ token: token });
   }
@@ -293,6 +302,11 @@ export class UsersService {
     await this.usersRepository.delete(user.id);
   }
 
+  /**
+   * Removes user
+   * @param userIdInput 
+   * @returns user 
+   */
   async removeUser(userIdInput: UserIdInput): Promise<void> {
     try {
       const admin = await this.findById(userIdInput.adminId)

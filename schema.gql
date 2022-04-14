@@ -1288,7 +1288,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
-  findAllPractices(facilityInput: PracticeInput!): PracticesPayload!
+  findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
@@ -1342,6 +1342,7 @@ input GetRole {
 input FacilityInput {
   isPrivate: Boolean
   practiceId: String
+  facilityName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1351,6 +1352,7 @@ input GetFacility {
 
 input ServiceInput {
   facilityId: String
+  serviceName: String
   isActive: Boolean
   paginationOptions: PaginationInput!
 }
@@ -1362,6 +1364,7 @@ input GetService {
 input StaffInput {
   facilityId: String
   practiceId: String
+  searchString: String
   paginationOptions: PaginationInput!
 }
 
@@ -1381,6 +1384,7 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  searchString: String
   practiceId: String
   paginationOptions: PaginationInput!
 }
@@ -1417,6 +1421,7 @@ input GetSlots {
 
 input PatientInput {
   facilityId: String
+  searchString: String
   practiceId: String
   paginationOptions: PaginationInput!
 }
@@ -1434,6 +1439,7 @@ input GetMedia {
 }
 
 input PracticeInput {
+  practiceName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1446,6 +1452,7 @@ input AppointmentInput {
   appointmentNumber: String
   appointmentStatus: String
   patientId: String
+  searchString: String
   practiceId: String
   facilityId: String
 }

@@ -1,6 +1,8 @@
 # compiled output
 /dist
 /node_modules
+/dev-configuration.ts
+/staging-configuration.ts
 # Logs
 logs
 *.log
