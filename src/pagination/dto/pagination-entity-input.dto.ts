@@ -36,6 +36,7 @@ export class PaginatedEntityInput {
   searchString?:string
   isPrivate?: boolean
   MembershipPlan?: string
+  patientRecord?: string
   username?: string
   currentPhaseId?: string
 }
