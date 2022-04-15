@@ -30,9 +30,13 @@ export class PaginatedEntityInput {
   relationField?: string
   requestType?: string
   requestStatus?: string
+  facilityName?:string
+  practiceName?:string
+  serviceName?:string
+  searchString?:string
   isPrivate?: boolean
   MembershipPlan?: string
+  patientRecord?: string
   username?: string
-  searchKey?: string
   currentPhaseId?: string
 }

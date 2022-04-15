@@ -111,7 +111,6 @@ export class StaffService {
     }
   }
 
-
   /**
    * Finds all staff
    * @param staffInput 
@@ -119,7 +118,8 @@ export class StaffService {
    */
   async findAllStaff(staffInput: StaffInput): Promise<AllStaffPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Staff>(this.staffRepository, staffInput)
+      const [first]  = staffInput.searchString ? staffInput.searchString.split(' ') : ''
+      const paginationResponse = await this.paginationService.willPaginate<Staff>(this.staffRepository, { ...staffInput, associatedTo: 'Staff', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse
