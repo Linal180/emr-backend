@@ -4,7 +4,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 export enum AttachmentType {
   PATIENT = "patient",
   DOCTOR = "doctor",
-  lab = "lab"
+  lab = "lab",
+  FORM_BUILDER = 'form builder'
 }
 
 registerEnumType(AttachmentType, {

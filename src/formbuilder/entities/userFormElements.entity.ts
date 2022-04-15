@@ -6,6 +6,7 @@ import { UserForms } from './userforms.entity';
 @Entity({ name: 'UsersFormsElements' })
 @ObjectType()
 export class UsersFormsElements {
+
     @PrimaryGeneratedColumn('uuid')
     @Field()
     id: string;
@@ -33,7 +34,6 @@ export class UsersFormsElements {
     @UpdateDateColumn({ type: 'timestamptz', nullable: true })
     @Field({ nullable: true })
     updatedAt: string;
-
 
     @Field(() => UserForms, { nullable: true })
     @ManyToOne(() => UserForms, userElement => userElement)

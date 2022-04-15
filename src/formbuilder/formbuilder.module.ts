@@ -15,17 +15,21 @@ import { UsersFormsElements } from './entities/userFormElements.entity';
 import { UserFormsService } from './services/userForms.service';
 import { UserFormResolver } from './resolvers/userForms.resolver';
 import { UserFormElementService } from './services/userFormElements.service';
+import { AttachmentsModule } from 'src/attachments/attachments.module';
+import { UserFormController } from './controllers/userFormBuilder.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Form, Element, FormElement, UserForms, UsersFormsElements]),
     forwardRef(() => UsersModule),
-    PaginationModule
+    PaginationModule,
+    AttachmentsModule
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,
     ElementService, UserFormResolver, UserFormsService, UserFormElementService],
   exports: [FormsService, TypeOrmModule],
+  controllers: [UserFormController]
 })
 export class FormBuilderModule { }
 

@@ -21,6 +21,7 @@ enum AttachmentType {
   PATIENT
   DOCTOR
   lab
+  FORM_BUILDER
 }
 
 type ResponsePayload {
@@ -1247,6 +1248,7 @@ type UserForms {
   StaffId: String
   FormId: String!
   SubmitterId: String
+  attachments: [Attachment!]
   createdAt: String
   updatedAt: String
   userFormElements: [UsersFormsElements!]
