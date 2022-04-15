@@ -405,6 +405,7 @@ export class UsersService {
       const payload = { email: user.email, sub: user.id };
       return {
         access_token: this.jwtService.sign(payload),
+        userId: user.id,
         roles: user.roles,
         isTwoFactorEnabled: user.isTwoFactorEnabled,
         response: {
