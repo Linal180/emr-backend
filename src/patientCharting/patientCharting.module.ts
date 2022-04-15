@@ -13,6 +13,7 @@ import { PatientVitals } from './entities/patientVitals.entity';
 import { Reactions } from './entities/reactions.entity';
 import { SnoMedCodes } from './entities/snowmedCodes.entity';
 import { PatientAllergiesResolver } from './resolvers/patientAllergies.resolver';
+import { ProblemResolver } from './resolvers/patientProblems.resolver';
 import { VitalsResolver } from './resolvers/patientVitals.resolver';
 import { PatientAllergiesService } from './services/patientAllergies.service';
 import { ProblemService } from './services/patientProblems.service';
@@ -28,7 +29,7 @@ import { ReactionsService } from './services/reactions.service';
     AppointmentModule,
     PatientModule,
   ],
-  providers: [PatientAllergiesService, PatientAllergiesResolver, ProblemService, VitalsResolver, VitalsService, PatientAllergiesService, ReactionsService],
+  providers: [PatientAllergiesService,ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver, VitalsService, PatientAllergiesService, ReactionsService],
   exports: [ProblemService, VitalsService,PatientAllergiesService, ReactionsService, TypeOrmModule],
 })
 export class ProblemChartingModule { }
