@@ -368,7 +368,7 @@ export class Patient {
   @Field(type => [DoctorPatient], { nullable: true })
   doctorPatients: DoctorPatient[];
 
-  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.doctor, {onDelete: "CASCADE"})
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.patient, {onDelete: "CASCADE"})
   @Field(type => [PatientAllergies], { nullable: true })
   patientAllergies: PatientAllergies[];
 

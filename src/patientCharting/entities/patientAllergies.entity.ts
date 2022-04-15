@@ -86,9 +86,9 @@ export class PatientAllergies {
   @Field({nullable: true})
   isActive: boolean;
 
-  // @ManyToOne(() => Allergies, allergies => allergies.patientAllergies)
-  // @Field(type => Allergies, { nullable: true })
-  // allergy: Allergies;
+  @ManyToOne(() => Allergies, allergies => allergies.patientAllergies)
+  @Field(type => Allergies, { nullable: true })
+  allergy: Allergies;
   
   @ManyToOne(() => Patient, patient => patient.patientAllergies,{onDelete: "CASCADE"})
   @Field(type => Patient, { nullable: true })

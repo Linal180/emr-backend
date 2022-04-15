@@ -255,6 +255,23 @@ enum Gender {
   OTHER
 }
 
+type Allergies {
+  id: String!
+  name: String!
+  allergyType: AllergyType!
+  drugAllergyTypes: String
+  patientAllergies: [PatientAllergies!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's allergy type assigned"""
+enum AllergyType {
+  DRUG
+  FOOD
+  ENVIRONMENT
+}
+
 type PatientAllergies {
   id: String!
   allergySeverity: AllergySeverity!
@@ -262,6 +279,7 @@ type PatientAllergies {
   allergyStartDate: String
   comments: String
   isActive: Boolean
+  allergy: Allergies
   patient: Patient
   doctor: Doctor
   staff: Staff
