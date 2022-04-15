@@ -21,8 +21,8 @@ export class Allergies {
   @Field()
   id: string
 
-  @Column()
-  @Field()
+  @Column({nullable: true})
+  @Field({nullable: true})
   name: string
 
   @Column({
