@@ -17,13 +17,15 @@ import { UserFormResolver } from './resolvers/userForms.resolver';
 import { UserFormElementService } from './services/userFormElements.service';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { UserFormController } from './controllers/userFormBuilder.controller';
+import { AwsModule } from 'src/aws/aws.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Form, Element, FormElement, UserForms, UsersFormsElements]),
     forwardRef(() => UsersModule),
     PaginationModule,
-    AttachmentsModule
+    AttachmentsModule,
+    AwsModule
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,

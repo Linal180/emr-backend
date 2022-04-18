@@ -25,3 +25,12 @@ export class UserFormsPayload {
     @Field({ nullable: true })
     response?: ResponsePayloadResponse
 }
+
+@ObjectType()
+export class FormAttachmentPayload {
+    @Field({ nullable: true })
+    attachment: String;
+
+    @Field({ nullable: true })
+    response?: ResponsePayloadResponse
+}

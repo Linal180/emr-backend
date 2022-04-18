@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { ManagedUpload } from "aws-sdk/clients/s3";
 //user import
 import { PaginationService } from "src/pagination/pagination.service";
 import { UtilsService } from "src/util/utils.service";
@@ -11,6 +12,7 @@ import { Attachment, AttachmentType } from "src/attachments/entities/attachment.
 import { AttachmentsService } from "src/attachments/attachments.service";
 import { UpdateAttachmentMediaInput } from "src/attachments/dto/update-attachment.input";
 import { File } from 'src/aws/dto/file-input.dto';
+import { AwsService } from 'src/aws/aws.service';
 
 
 @Injectable()
@@ -22,7 +24,8 @@ export class UserFormsService {
     private readonly paginationService: PaginationService,
     private readonly utilsService: UtilsService,
     private readonly userFormElementService: UserFormElementService,
-    private readonly attachmentsService: AttachmentsService
+    private readonly attachmentsService: AttachmentsService,
+    private readonly awsService: AwsService,
   ) { }
 
 
@@ -61,13 +64,15 @@ export class UserFormsService {
     }
   }
 
-  async uploadUserFormMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<Attachment> {
+  async uploadUserFormMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<String> {
     try {
       updateAttachmentMediaInput.type = AttachmentType.FORM_BUILDER;
-      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
       // const userForm = await this.findOne(updateAttachmentMediaInput.typeId)
-      if (attachment) {
-        return attachment
+      const attachment = await this.awsService.uploadFile(file, AttachmentType.FORM_BUILDER, updateAttachmentMediaInput.typeId);
+      const { Key } = attachment || {};
+      console.log('attachment', Key)
+      if (Key) {
+        return Key
       }
       throw new PreconditionFailedException({
         status: HttpStatus.PRECONDITION_FAILED,
