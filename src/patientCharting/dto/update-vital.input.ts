@@ -16,6 +16,7 @@ export class UpdateVitalInput{
   @Field(type => HeadCircumferenceType)
   headCircumference: HeadCircumferenceType
 
+  
   @Field(type => TempUnitType)
   temperatureUnitType: TempUnitType
 
