@@ -1,13 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Attachment } from 'src/attachments/entities/attachment.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { FormElement } from './form-elements.entity';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Form } from './form.entity';
 import { UsersFormsElements } from './userFormElements.entity';
 
 @Entity({ name: 'UsersForms' })
 @ObjectType()
 export class UserForms {
-  
+
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -32,9 +31,6 @@ export class UserForms {
   @Field({ nullable: true })
   SubmitterId: string;
 
-  @Field(() => [Attachment], { nullable: true })
-  attachments: Attachment[];
-
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   createdAt: string;
@@ -43,8 +39,9 @@ export class UserForms {
   @Field({ nullable: true })
   updatedAt: string;
 
-  @OneToMany(() => FormElement, formElement => formElement.form)
-  formElements: FormElement[];
+  @ManyToOne(() => Form, form => form)
+  @Field(() => Form, { nullable: true })
+  form: Form;
 
   @Field(() => [UsersFormsElements], { nullable: true })
   @OneToMany(() => UsersFormsElements, userElement => userElement)

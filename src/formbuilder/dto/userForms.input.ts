@@ -6,7 +6,10 @@ import { UserFormElementInputs } from "./userFormElements.input";
 @InputType()
 export class UserFormInput {
 
-    @Field(type => PaginationInput)
+    @Field()
+    FormId: string
+
+    @Field(() => PaginationInput)
     paginationOptions: PaginationInput
 
 }

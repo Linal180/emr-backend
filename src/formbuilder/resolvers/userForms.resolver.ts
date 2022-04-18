@@ -9,18 +9,21 @@ import { UserFormsService } from '../services/userForms.service'
 import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
 import { UsersFormsElements } from "../entities/userFormElements.entity";
 import { UserFormElementService } from "../services/userFormElements.service";
+import { FormsService } from "../services/forms.service";
+import { Form } from "../entities/form.entity";
 
 @Resolver(() => UserForms)
 
 export class UserFormResolver {
 
   constructor(private readonly userFormsService: UserFormsService,
-    private readonly userFormElementService: UserFormElementService
+    private readonly userFormElementService: UserFormElementService,
+    private readonly formService: FormsService,
   ) { }
 
   @Query(() => UserFormsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  // @SetMetadata('roles', ['super-admin', 'admin'])
 
   async findAllUsersForms(@Args('userFormInput') userFormInput: UserFormInput): Promise<UserFormsPayload> {
     const userForms = await this.userFormsService.getAll(userFormInput);
@@ -38,7 +41,6 @@ export class UserFormResolver {
 
   }
 
-
   @Mutation(() => UserFormPayload)
   async saveUserFormValues(@Args('createUserFormInput') createUserFormInput: CreateUserFormInput): Promise<UserFormPayload> {
     return {
@@ -47,11 +49,19 @@ export class UserFormResolver {
     };
   }
 
-
   @ResolveField(() => [UsersFormsElements])
   async userFormElements(@Parent() userForm: UserForms): Promise<UsersFormsElements[]> {
     if (userForm) {
       return await this.userFormElementService.getAllUserFormElements(userForm.FormId);
+    }
+  }
+
+  @ResolveField(() => [UsersFormsElements])
+  async form(@Parent() userForm: UserForms): Promise<Form> {
+    if (userForm) {
+      const newForm = await this.formService.getForm(userForm?.FormId);
+      const { form } = newForm || {}
+      return form
     }
   }
 
