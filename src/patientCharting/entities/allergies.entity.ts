@@ -1,5 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { PatientAllergies } from './patientAllergies.entity';
 
 export enum AllergyType {
   DRUG = "drug",
@@ -20,8 +21,8 @@ export class Allergies {
   @Field()
   id: string
 
-  @Column()
-  @Field()
+  @Column({nullable: true})
+  @Field({nullable: true})
   name: string
 
   @Column({
@@ -35,6 +36,10 @@ export class Allergies {
   @Column({nullable: true})
   @Field({nullable: true})
   drugAllergyTypes: string
+
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.allergy, {onDelete: "CASCADE"})
+  @Field(type => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

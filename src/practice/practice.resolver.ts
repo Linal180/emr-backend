@@ -4,7 +4,6 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreatePracticeInput } from './dto/create-practice.input';
 import PracticeInput from './dto/practice-input.dto';
-import FacilityInput from './dto/practice-input.dto';
 import { PracticePayload } from './dto/practice-payload.dto';
 import { PracticesPayload } from './dto/practices-payload.dto';
 import { GetPractice, RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
