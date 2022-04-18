@@ -66,6 +66,18 @@ export class PatientAllergies {
   @Field({nullable: true})
   isActive: boolean;
 
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  staffId: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  appointmentId: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  doctorId: string;
+
   @ManyToOne(() => Allergies, allergies => allergies.patientAllergies)
   @Field(type => Allergies, { nullable: true })
   allergy: Allergies;

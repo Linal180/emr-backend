@@ -30,7 +30,7 @@ import { ReactionsService } from './services/reactions.service';
     PatientModule,
   ],
   providers: [PatientAllergiesService,ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver, VitalsService, PatientAllergiesService, ReactionsService],
-  exports: [ProblemService, VitalsService,PatientAllergiesService, ReactionsService, TypeOrmModule],
+  exports: [ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule],
 })
 export class ProblemChartingModule { }
 

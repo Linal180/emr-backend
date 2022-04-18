@@ -7,10 +7,12 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
+import { PatientAllergiesPayload } from '../dto/allergiess-payload.dto';
+import PatientAllergyInput from '../dto/allergy-input.dto';
 import { CreatePatientAllergyInput } from '../dto/create-patient-allergy.input';
+import { RemovePatientAllergy, UpdateAllergyInput } from '../dto/update-allergy.input';
 import { Allergies } from '../entities/allergies.entity';
 import { PatientAllergies } from '../entities/patientAllergies.entity';
-import { Reactions } from '../entities/reactions.entity';
 import { ReactionsService } from './reactions.service';
 
 @Injectable()
@@ -29,7 +31,11 @@ export class PatientAllergiesService {
     private readonly utilsService: UtilsService
   ) { }
 
-
+  /**
+   * Adds patient allergy
+   * @param createPatientAllergyInput 
+   * @returns patient allergy 
+   */
   async addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput): Promise<PatientAllergies> {
     try {
       //get patient 
@@ -41,7 +47,7 @@ export class PatientAllergiesService {
        });
       }
       //get patient 
-      const allergy  = await this.patientService.findOne(createPatientAllergyInput.allergyId)
+      const allergy  = await this.allergiesRepository.findOne(createPatientAllergyInput.allergyId)
       if(!allergy){
         throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
@@ -76,62 +82,104 @@ export class PatientAllergiesService {
     }
   }
 
-  async patientReactionsPayload(reactions: Reactions[], patientAllergy: PatientAllergies){
-    return reactions.map((item)=>{
+  /**
+   * Updates patient allergy
+   * @param updateAllergyInput 
+   * @returns patient allergy 
+   */
+  async updatePatientAllergy(updateAllergyInput: UpdateAllergyInput): Promise<PatientAllergies> {
+    try {
+       await this.utilsService.updateEntityManager(PatientAllergies, updateAllergyInput.updatePatientAllergyInput.id, updateAllergyInput.updatePatientAllergyInput, this.patientAllergiesRepository)
+       //get allergy 
+       const allergy  = await this.allergiesRepository.findOne(updateAllergyInput.allergyId)
+       //adding patient allergy
+       const patientAllergyInstance  = await this.patientAllergiesRepository.findOne(updateAllergyInput.updatePatientAllergyInput.id)
+       if(!patientAllergyInstance){
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Patient allergy not found',
+         });
+       }
+       patientAllergyInstance.allergy = allergy
+       //get appointments
+       if(updateAllergyInput.appointmentId){
+         const appointment = await this.appointmentService.findOne(updateAllergyInput.appointmentId)
+         patientAllergyInstance.appointment = appointment
+       }
+       //get provider
+       if(updateAllergyInput.providerId){
+         const provider = await this.doctorService.findOne(updateAllergyInput.providerId)
+         patientAllergyInstance.doctor = provider
+       } 
+       //get staff
+        if(updateAllergyInput.staffId){
+         const staff = await this.staffService.findOne(updateAllergyInput.staffId)
+         patientAllergyInstance.staff = staff
+       }
+       const patientAllergyRes = await this.patientAllergiesRepository.save(patientAllergyInstance)
+       //create reactions 
+       const reactions = await this.reactionsService.getReactions(updateAllergyInput.reactionsIds)
+       patientAllergyRes.reactions = reactions
+       const patientAllergy = await this.patientAllergiesRepository.save(patientAllergyRes)
+       return patientAllergy
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds all patient allergies
+   * @param patientAllergyInput 
+   * @returns all patient allergies 
+   */
+  async findAllPatientAllergies(patientAllergyInput: PatientAllergyInput): Promise<PatientAllergiesPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<PatientAllergies>(this.patientAllergiesRepository, patientAllergyInput)
       return {
-        reactions:item,
-        reactionsId: item.id,
-        patientAllergies: patientAllergy,
-        patientAllergiesId: patientAllergy.id
+        pagination: {
+          ...paginationResponse
+        },
+        patientAllergies: paginationResponse.data,
       }
-    })
-   }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<PatientAllergies> {
+    const patientAllergy = await this.patientAllergiesRepository.findOne(id);
+    if(patientAllergy){
+      return patientAllergy
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Patient Allergy not found',
+    });
+  }
 
-  // async updatePatientProblem(updateProblemInput: UpdateProblemInput): Promise<PatientProblems> {
-  //   try {
-  //     return await this.utilsService.updateEntityManager(PatientProblems, updateProblemInput.id, updateProblemInput, this.patientProblemsRepository)
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
+  /**
+   * Gets patient allergy
+   * @param id 
+   * @returns patient allergy 
+   */
+  async GetPatientAllergy(id: string): Promise<PatientAllergies> {
+    return await this.findOne(id);
+  }
 
-  // async findAllPatientProblem(patientProblemInput: PatientProblemInput): Promise<PatientProblemsPayload> {
-  //   try {
-  //     const paginationResponse = await this.paginationService.willPaginate<PatientProblems>(this.patientProblemsRepository, patientProblemInput)
-  //     return {
-  //       pagination: {
-  //         ...paginationResponse
-  //       },
-  //       patientProblems: paginationResponse.data,
-  //     }
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
-
-
-  // async findOne(id: string): Promise<PatientProblems> {
-  //   const patientProblem = await this.patientProblemsRepository.findOne(id);
-  //   if(patientProblem){
-  //     return patientProblem
-  //   }
-  //   throw new NotFoundException({
-  //     status: HttpStatus.NOT_FOUND,
-  //     error: 'Patient Problem not found',
-  //   });
-  // }
-
-  // async GetPatientProblem(id: string): Promise<PatientProblems> {
-  //   return await this.findOne(id);
-  // }
-
-
-  // async removePatientProblem({ id }: RemoveProblem) {
-  //   try {
-  //     await this.patientAllergiesRepository.delete(id)
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
-  // }
+  /**
+   * Removes patient allergy
+   * @param { id } 
+   */
+  async removePatientAllergy({ id }: RemovePatientAllergy) {
+    try {
+      await this.patientAllergiesRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

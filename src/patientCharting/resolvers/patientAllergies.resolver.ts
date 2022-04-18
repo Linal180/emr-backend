@@ -1,23 +1,31 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Staff } from 'src/providers/entities/staff.entity';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { StaffService } from 'src/providers/services/staff.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
+import { PatientAllergiesPayload } from '../dto/allergiess-payload.dto';
+import PatientAllergyInput from '../dto/allergy-input.dto';
 import { CreatePatientAllergyInput } from '../dto/create-patient-allergy.input';
 import { PatientAllergyPayload } from '../dto/patient-allergy-payload.dto';
-import { GetPatientVital, RemoveVital, UpdateVitalInput } from '../dto/update-vital.input';
-import PatientVitalInput from '../dto/vital-input.dto';
-import { PatientVitalPayload } from '../dto/vital-payload.dto';
-import { PatientVitalsPayload } from '../dto/vitals-payload.dto';
+import { GetPatientAllergy, RemovePatientAllergy, UpdateAllergyInput } from '../dto/update-allergy.input';
 import { PatientAllergies } from '../entities/patientAllergies.entity';
 import { PatientAllergiesService } from '../services/patientAllergies.service';
 
 @Resolver(() => PatientAllergies)
 export class PatientAllergiesResolver {
-  constructor(private readonly patientAllergiesService:  PatientAllergiesService) { }
+  constructor(private readonly patientAllergiesService:  PatientAllergiesService,
+    private readonly staffService:  StaffService,
+    private readonly appointmentService:  AppointmentService,
+    private readonly doctorService:  DoctorService) { }
 
   @Mutation(() => PatientAllergyPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'addPatientAllergy')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'addPatientAllergy')
   async addPatientAllergy(@Args('createPatientAllergyInput') createPatientAllergyInput: CreatePatientAllergyInput) {
     return {
       patientAllergy: await this.patientAllergiesService.addPatientAllergy(createPatientAllergyInput),
@@ -25,51 +33,72 @@ export class PatientAllergiesResolver {
     };
   }
 
-  // @Mutation(() => PatientVitalPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updatePatientVital')
-  // async updatePatientVital(@Args('updateVitalInput') updateVitalInput: UpdateVitalInput) {
-  //   return {
-  //     patientVital: await this.vitalsService.updatePatientVital(updateVitalInput),
-  //     response: { status: 200, message: 'Patient vital updated successfully' }
-  //   };
-  // }
+  @Mutation(() => PatientAllergyPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updatePatientAllergy')
+  async updatePatientAllergy(@Args('updateAllergyInput') updateAllergyInput: UpdateAllergyInput) {
+    return {
+      patientAllergy: await this.patientAllergiesService.updatePatientAllergy(updateAllergyInput),
+      response: { status: 200, message: 'Patient allergy updated successfully' }
+    };
+  }
 
-  // @Query(returns => PatientVitalsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllPatientVitals')
-  // async findAllPatientVitals(@Args('patientVitalInput') patientVitalInput: PatientVitalInput): Promise<PatientVitalsPayload> {
-  //   const patientVitals = await this.vitalsService.findAllPatientVitals(patientVitalInput)
-  //   if (patientVitals) {
-  //     return {
-  //       ...patientVitals,
-  //       response: {
-  //         message: "OK", status: 200,
-  //       }
-  //     }
-  //   }
-  //   throw new NotFoundException({
-  //     status: HttpStatus.NOT_FOUND,
-  //     error: 'Vitals not found',
-  //   });
-  // }
+  @ResolveField((returns) => [Staff])
+  async staff(@Parent() patientAllergies: PatientAllergies):  Promise<Staff>  {
+    if (patientAllergies && patientAllergies.staffId) {
+      return await this.staffService.findOne(patientAllergies.staffId);
+    }
+  }
 
-  // @Query(returns => PatientVitalPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getPatientVital')
-  // async getPatientVital(@Args('getPatientVital') getPatientVital: GetPatientVital): Promise<PatientVitalPayload> {
-  //   const patientVital = await this.vitalsService.GetPatientVital(getPatientVital.id)
-  //   return {
-  //     patientVital,
-  //     response: { status: 200, message: 'Patient vital fetched successfully' }
-  //   };
-  // }
+  @ResolveField((returns) => [Appointment])
+  async appointment(@Parent() patientAllergies: PatientAllergies):  Promise<Appointment>  {
+    if (patientAllergies && patientAllergies.appointmentId) {
+      return await this.appointmentService.findOne(patientAllergies.appointmentId);
+    }
+  }
 
-  // @Mutation(() => PatientVitalPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'removePatientVital')
-  // async removePatientVital(@Args('removeVital') removeVital: RemoveVital) {
-  //   await this.vitalsService.removePatientVital(removeVital);
-  //   return { response: { status: 200, message: 'Patient vital Deleted' } };
-  // }
+  @ResolveField((returns) => [Doctor])
+  async doctor(@Parent() patientAllergies: PatientAllergies):  Promise<Doctor>  {
+    if (patientAllergies && patientAllergies.doctorId) {
+      return await this.doctorService.findOne(patientAllergies.doctorId);
+    }
+  }
+  
+  @Query(returns => PatientAllergiesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllPatientAllergies')
+  async findAllPatientAllergies(@Args('patientAllergyInput') patientAllergyInput: PatientAllergyInput): Promise<PatientAllergiesPayload> {
+    const patientAllergies = await this.patientAllergiesService.findAllPatientAllergies(patientAllergyInput)
+    if (patientAllergies) {
+      return {
+        ...patientAllergies,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Patient Allergies not found',
+    });
+  }
+
+  @Query(returns => PatientAllergyPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientAllergy')
+  async getPatientAllergy(@Args('getPatientAllergy') getPatientAllergy: GetPatientAllergy): Promise<PatientAllergyPayload> {
+    const patientAllergy = await this.patientAllergiesService.GetPatientAllergy(getPatientAllergy.id)
+    return {
+      patientAllergy,
+      response: { status: 200, message: 'Patient allergy fetched successfully' }
+    };
+  }
+
+  @Mutation(() => PatientAllergyPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removePatientAllergy')
+  async removePatientAllergy(@Args('removePatientAllergy') removePatientAllergy: RemovePatientAllergy) {
+    await this.patientAllergiesService.removePatientAllergy(removePatientAllergy);
+    return { response: { status: 200, message: 'Patient allergy deleted' } };
+  }
 }
