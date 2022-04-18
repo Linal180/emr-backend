@@ -84,6 +84,9 @@ export class CreateFormInput {
   @Field({ nullable: false })
   name: string;
 
+  @Field(() => Boolean, { nullable: true })
+  isActive: boolean;
+
   @Field(() => FormType, { nullable: false })
   type: FormType;
 

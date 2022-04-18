@@ -1182,6 +1182,7 @@ type Form {
   facilityId: String!
   layout: LayoutJSONType!
   isSystemForm: Boolean
+  isActive: Boolean
   formElements: [FormElement!]
   createdAt: String
   updatedAt: String
@@ -2616,6 +2617,7 @@ input RemoveVital {
 
 input CreateFormInput {
   name: String!
+  isActive: Boolean
   type: FormType!
   facilityId: String!
   layout: LayoutJSONInputType!
@@ -2657,6 +2659,7 @@ input FieldOptionsInputType {
 
 input UpdateFormInput {
   name: String
+  isActive: Boolean
   type: FormType
   facilityId: String
   layout: LayoutJSONInputType

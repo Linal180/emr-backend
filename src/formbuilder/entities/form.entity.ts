@@ -46,6 +46,10 @@ export class Form {
   @Field({ nullable: true })
   isSystemForm: boolean;
 
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
+  isActive: boolean;
+
   @OneToMany(() => FormElement, formElement => formElement.element, { onDelete: "CASCADE" })
   @Field(type => [FormElement], { nullable: true })
   formElements: FormElement[];
