@@ -255,6 +255,31 @@ enum Gender {
   OTHER
 }
 
+type Allergies {
+  id: String!
+  name: String
+  allergyType: AllergyType!
+  drugAllergyTypes: String
+  patientAllergies: [PatientAllergies!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's allergy type assigned"""
+enum AllergyType {
+  DRUG
+  FOOD
+  ENVIRONMENT
+}
+
+type Reactions {
+  id: String!
+  name: String!
+  patientAllergies: PatientAllergies
+  createdAt: String
+  updatedAt: String
+}
+
 type PatientAllergies {
   id: String!
   allergySeverity: AllergySeverity!
@@ -262,10 +287,15 @@ type PatientAllergies {
   allergyStartDate: String
   comments: String
   isActive: Boolean
+  staffId: String
+  appointmentId: String
+  doctorId: String
+  allergy: Allergies
   patient: Patient
   doctor: Doctor
   staff: Staff
   appointment: Appointment
+  reactions: [Reactions]
   createdAt: String
   updatedAt: String
 }
@@ -1225,6 +1255,17 @@ type FormsPayload {
   pagination: PaginationPayload
 }
 
+type PatientAllergiesPayload {
+  response: ResponsePayload
+  patientAllergies: [PatientAllergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
+}
+
 type IcdCodesPayload {
   response: ResponsePayload
   icdCodes: [ICDCodes]
@@ -1301,6 +1342,8 @@ type Query {
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
+  findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
+  getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
@@ -1494,6 +1537,16 @@ input GetPatientProblem {
   id: String!
 }
 
+input PatientAllergyInput {
+  patientId: String
+  appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientAllergy {
+  id: String!
+}
+
 input PatientVitalInput {
   patientId: String
   appointmentId: String
@@ -1554,7 +1607,7 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
-  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  createSchedule(createScheduleInput: [CreateScheduleInput!]!): SchedulePayload!
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
@@ -1586,6 +1639,9 @@ type Mutation {
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
+  addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput!): PatientAllergyPayload!
+  updatePatientAllergy(updateAllergyInput: UpdateAllergyInput!): PatientAllergyPayload!
+  removePatientAllergy(removePatientAllergy: RemovePatientAllergy!): PatientAllergyPayload!
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
@@ -2522,6 +2578,43 @@ input UpdateProblemInput {
 }
 
 input RemoveProblem {
+  id: String!
+}
+
+input CreatePatientAllergyInput {
+  appointmentId: String
+  patientId: String!
+  staffId: String
+  allergyId: String
+  providerId: String
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+  reactionsIds: [String!]!
+}
+
+input UpdateAllergyInput {
+  updatePatientAllergyInput: UpdatePatientAllergyInput!
+  reactionsIds: [String!]!
+  appointmentId: String
+  patientId: String
+  staffId: String
+  allergyId: String
+  providerId: String
+}
+
+input UpdatePatientAllergyInput {
+  id: String!
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+}
+
+input RemovePatientAllergy {
   id: String!
 }
 

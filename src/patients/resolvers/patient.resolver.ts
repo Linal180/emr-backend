@@ -71,8 +71,8 @@ export class PatientResolver {
   }
 
   @Mutation(() => PatientPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'sendInviteToPatient')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'sendInviteToPatient')
   async sendInviteToPatient(@Args('patientInviteInput') patientInviteInput: PatientInviteInput) {
     return {
       patient: await this.patientService.sendInviteToPatient(patientInviteInput),
