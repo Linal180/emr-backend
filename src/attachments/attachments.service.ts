@@ -38,9 +38,9 @@ export class AttachmentsService {
     const attachment = await this.createAttachment(updateAttachmentMediaInput)
     updateAttachmentMediaInput.id = attachment.id
     const attachments = await this.uploadMedia(file, updateAttachmentMediaInput)
-    await this.updateAttachmentMedia(attachments)
+    const attachmentData = await this.updateAttachmentMedia(attachments)
     if (attachments.url) {
-      return attachments
+      return attachmentData
     }
     throw new PreconditionFailedException({
       status: HttpStatus.PRECONDITION_FAILED,

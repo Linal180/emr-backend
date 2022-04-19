@@ -84,8 +84,6 @@ export class FormsService {
  */
   async getForm(id: string): Promise<FormPayload> {
     const form = await this.findOne(id);
-    const elements = await this.getFormElements(form.id);
-    form.formElements = elements
     if (form) {
       return { form }
     }
