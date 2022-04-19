@@ -1607,7 +1607,7 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
-  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  createSchedule(createScheduleInput: [CreateScheduleInput!]!): SchedulePayload!
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
