@@ -52,7 +52,7 @@ export class PracticeService {
       const practice = await this.practiceRepository.save(practiceInstance)
       const allRoles = await this.usersService.findAllRoles()
       const doctorRole = allRoles.find((item) => item.role === 'doctor')
-      const adminRole = allRoles.find((item) => item.role === 'admin')
+      const adminRole = allRoles.find((item) => item.role === 'practice-admin')
       //create a user or provider based on its role type under this facility
       if(createPracticeInput.registerUserInput.roleType === doctorRole.role){
           const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
