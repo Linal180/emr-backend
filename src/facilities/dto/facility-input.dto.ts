@@ -10,6 +10,9 @@ export default class FacilityInput {
     practiceId?: string
 
     @Field({ nullable: true })
+    singleFacilityId?: string
+
+    @Field({ nullable: true })
     facilityName?: string
 
     @Field(type => PaginationInput)

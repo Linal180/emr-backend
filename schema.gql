@@ -1386,6 +1386,7 @@ input GetRole {
 input FacilityInput {
   isPrivate: Boolean
   practiceId: String
+  singleFacilityId: String
   facilityName: String
   paginationOptions: PaginationInput!
 }
