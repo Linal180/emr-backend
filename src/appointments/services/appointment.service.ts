@@ -153,6 +153,11 @@ export class AppointmentService {
     }
   }
 
+  /**
+   * Gets amount
+   * @param id 
+   * @returns amount 
+   */
   async getAmount(id: string): Promise<Service> {
     try {
       return await this.servicesService.findOne(id)
