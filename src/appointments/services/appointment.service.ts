@@ -76,11 +76,13 @@ export class AppointmentService {
         if (createAppointmentInput.facilityId) {
           facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
           appointmentInstance.facility = facility
+          appointmentInstance.facilityId = facility.id
         }
         //associate service 
         if (createAppointmentInput.appointmentTypeId) {
           const service = await this.servicesService.findOne(createAppointmentInput.appointmentTypeId)
           appointmentInstance.appointmentType = service
+          appointmentInstance.appointmentTypeId = service.id
         }
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         await queryRunner.commitTransaction();
@@ -119,6 +121,7 @@ export class AppointmentService {
       const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
       if (createExternalAppointmentInput.createExternalAppointmentItemInput.providerId) {
         appointmentInstance.provider = provider
+        appointmentInstance.providerId = provider.id
       }
       //associate patient
       if (patientInstance && patientInstance.id) {
@@ -129,11 +132,13 @@ export class AppointmentService {
       const facility = await this.facilityService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId)
       if (createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId) {
         appointmentInstance.facility = facility
+        appointmentInstance.facilityId = facility.id
       }
       //associate service 
       if (createExternalAppointmentInput.createExternalAppointmentItemInput.serviceId) {
         const service = await this.servicesService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.serviceId)
         appointmentInstance.appointmentType = service
+        appointmentInstance.appointmentTypeId = service.id
       }
       //custom token creation
       const token = createToken();
@@ -192,7 +197,8 @@ export class AppointmentService {
    */
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, appointmentInput)
+      const [first]  = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
+      const paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: 'Appointment', relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse

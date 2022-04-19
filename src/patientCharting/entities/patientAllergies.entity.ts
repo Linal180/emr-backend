@@ -3,21 +3,9 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Allergies } from './allergies.entity';
-import { ICDCodes } from './icdcodes.entity';
-import { SnoMedCodes } from './snowmedCodes.entity';
-
-// export enum AllergyType {
-//   drug = "drug",
-//   FOOD = "food",
-//   ENVIRONMENT = "environment"
-// }
-
-// registerEnumType(AllergyType, {
-//   name: "AllergyType",
-//   description: "The patient's allergy type assigned",
-// });
+import { Reactions } from './reactions.entity';
 
 export enum AllergySeverity {
   MILD = "mild",
@@ -49,14 +37,6 @@ export class PatientAllergies {
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
-
-  // @Column({
-  //   type: "enum",
-  //   enum: AllergyType,
-  //   default: AllergyType.FOOD
-  // })
-  // @Field(type => AllergyType)
-  // allergyType: AllergyType
     
   @Column({
     type: "enum",
@@ -86,9 +66,21 @@ export class PatientAllergies {
   @Field({nullable: true})
   isActive: boolean;
 
-  // @ManyToOne(() => Allergies, allergies => allergies.patientAllergies)
-  // @Field(type => Allergies, { nullable: true })
-  // allergy: Allergies;
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  staffId: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  appointmentId: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  doctorId: string;
+
+  @ManyToOne(() => Allergies, allergies => allergies.patientAllergies)
+  @Field(type => Allergies, { nullable: true })
+  allergy: Allergies;
   
   @ManyToOne(() => Patient, patient => patient.patientAllergies,{onDelete: "CASCADE"})
   @Field(type => Patient, { nullable: true })
@@ -105,6 +97,11 @@ export class PatientAllergies {
   @ManyToOne(() => Appointment, appointment => appointment.patientAllergies, { onDelete: 'CASCADE' })
   @Field(type => Appointment, { nullable: true })
   appointment: Appointment;
+
+  @Field(type => [Reactions], { nullable: 'itemsAndList' })
+  @ManyToMany(type => Reactions, reactions => reactions.patientAllergies, { eager: true })
+  @JoinTable({ name: 'PatientAllergyReactions' })
+  reactions: Reactions[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

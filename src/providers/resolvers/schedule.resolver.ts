@@ -20,7 +20,7 @@ export class ScheduleResolver {
   @Mutation(() => SchedulePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'createSchedule')
-  async createSchedule(@Args('createScheduleInput') createScheduleInput: CreateScheduleInput) {
+    async createSchedule(@Args({ name: 'createScheduleInput', type: () => [CreateScheduleInput] }) createScheduleInput: CreateScheduleInput[]) {
     return {
       schedule: await this.scheduleService.createSchedule(createScheduleInput),
       response: { status: 200, message: 'Schedule created successfully' }
@@ -99,7 +99,7 @@ export class ScheduleResolver {
 
   @Query(returns => SlotsPayload)
   async getSlots(@Args('getSlots') getSlots: GetSlots) {
-    const slots = await this.scheduleService.getDoctorSlots(getSlots)
+    const slots = await this.scheduleService.getSlots(getSlots)
     return {
       slots,
       response: { status: 200, message: 'Schedule slots fetched successfully' }

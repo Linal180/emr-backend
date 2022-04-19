@@ -3,7 +3,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreatePracticeInput } from './dto/create-practice.input';
-import FacilityInput from './dto/practice-input.dto';
+import PracticeInput from './dto/practice-input.dto';
 import { PracticePayload } from './dto/practice-payload.dto';
 import { PracticesPayload } from './dto/practices-payload.dto';
 import { GetPractice, RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
@@ -38,8 +38,8 @@ export class PracticeResolver {
   @Query(returns => PracticesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllPractices')
-  async findAllPractices(@Args('facilityInput') facilityInput: FacilityInput): Promise<PracticesPayload> {
-    const practices = await this.practiceService.findAllPractices(facilityInput)
+  async findAllPractices(@Args('practiceInput') practiceInput: PracticeInput): Promise<PracticesPayload> {
+    const practices = await this.practiceService.findAllPractices(practiceInput)
     if (practices) {
       return {
         ...practices,

@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Between, Equal, FindConditions, FindManyOptions, FindOperator, JoinOptions, Not, ObjectLiteral, Repository, WhereExpressionBuilder } from "typeorm";
+import { Between, Equal, FindConditions, FindManyOptions, FindOperator, JoinOptions, Not, ObjectLiteral, Raw, Repository, WhereExpressionBuilder } from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
 
@@ -46,9 +46,10 @@ export class PaginationService {
       const { associatedTo, relationField, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
       let filterOption: FilterOptionsResponse = null;
-      if (associatedTo && relationField && associatedToField.columnValue) {
+      if (associatedTo && associatedToField.columnValue) {
         filterOption = this.getFilterOptions(paginationInput);
       }
+      console.log("filterOption",filterOption);
       const { paginationOptions: { page, limit } } = paginationInput || {};
       let query: FindManyOptions = null;
       if (filterOption) {
@@ -103,7 +104,8 @@ export class PaginationService {
    */
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
     const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
-    console.log("associatedToField", columnValue, columnName, columnName2);
+    console.log("associatedToField...", columnValue, columnName, columnName2);
+    console.log("relationField",relationField);
 
     const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
     let where = { str: {}, obj: {} }
@@ -118,7 +120,12 @@ export class PaginationService {
         obj: { data: `%${columnValue}%` }
       };
     }
-    return { join, where };
+    if(relationField){
+      return   { join, where };
+    }else{
+      console.log("ELSE");
+      return   { where };
+    }
   }
 
 
@@ -143,7 +150,13 @@ export class PaginationService {
       appointmentNumber,
       dueToday,
       facilityId,
+      singleFacilityId,
+      facilityName,
+      practiceName,
+      serviceName,
+      searchString,
       role,
+      patientRecord,
       doctorId,
       practiceId,
       appointmentStatus,
@@ -151,6 +164,10 @@ export class PaginationService {
       category,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
+
+    if(searchString){
+
+    }
     const whereOptions: WhereOptions = {
       where: {
         ...(patientId && {
@@ -168,11 +185,26 @@ export class PaginationService {
         ...(facilityId && {
           facilityId
         }),
+        ...(singleFacilityId && {
+          id: singleFacilityId
+        }),
         ...(doctorId && {
           doctorId
         }),
+        ...(patientRecord && {
+          patientRecord: Raw(alias => `${alias} ILIKE '%${patientRecord}%'`),
+        }),
         ...(role && {
           role: Not(role)
+        }),
+        ...(facilityName && {
+          name: Raw(alias => `${alias} ILIKE '%${facilityName}%'`),
+        }),
+        ...(practiceName && {
+          name: Raw(alias => `${alias} ILIKE '%${practiceName}%'`),
+        }),
+        ...(serviceName && {
+          name: Raw(alias => `${alias} ILIKE '%${serviceName}%'`),
         }),
         ...(practiceId && {
           practiceId: practiceId
@@ -206,6 +238,8 @@ export class PaginationService {
         }),
       }
     };
+    console.log("whereOptions",whereOptions);
+    
     // Assigned to User
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status

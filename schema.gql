@@ -256,6 +256,31 @@ enum Gender {
   OTHER
 }
 
+type Allergies {
+  id: String!
+  name: String
+  allergyType: AllergyType!
+  drugAllergyTypes: String
+  patientAllergies: [PatientAllergies!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's allergy type assigned"""
+enum AllergyType {
+  DRUG
+  FOOD
+  ENVIRONMENT
+}
+
+type Reactions {
+  id: String!
+  name: String!
+  patientAllergies: PatientAllergies
+  createdAt: String
+  updatedAt: String
+}
+
 type PatientAllergies {
   id: String!
   allergySeverity: AllergySeverity!
@@ -263,10 +288,15 @@ type PatientAllergies {
   allergyStartDate: String
   comments: String
   isActive: Boolean
+  staffId: String
+  appointmentId: String
+  doctorId: String
+  allergy: Allergies
   patient: Patient
   doctor: Doctor
   staff: Staff
   appointment: Appointment
+  reactions: [Reactions]
   createdAt: String
   updatedAt: String
 }
@@ -585,8 +615,8 @@ type Transactions {
   id: String!
   transactionId: String
   patientId: String!
-  doctorId: String!
-  facilityId: String!
+  doctorId: String
+  facilityId: String
   appointmentId: String!
   patient: [Patient!]
   doctor: [Doctor!]
@@ -960,6 +990,8 @@ type RolePayload {
 
 type AccessUserPayload {
   access_token: String
+  userId: String
+  isTwoFactorEnabled: Boolean
   roles: [Role!]
   response: ResponsePayload
 }
@@ -1274,6 +1306,17 @@ type UserFormsPayload {
   response: ResponsePayloadResponse
 }
 
+type PatientAllergiesPayload {
+  response: ResponsePayload
+  patientAllergies: [PatientAllergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
+}
+
 type IcdCodesPayload {
   response: ResponsePayload
   icdCodes: [ICDCodes]
@@ -1338,7 +1381,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
-  findAllPractices(facilityInput: PracticeInput!): PracticesPayload!
+  findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
@@ -1350,6 +1393,8 @@ type Query {
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
+  findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
+  getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
@@ -1393,6 +1438,8 @@ input GetRole {
 input FacilityInput {
   isPrivate: Boolean
   practiceId: String
+  singleFacilityId: String
+  facilityName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1402,6 +1449,7 @@ input GetFacility {
 
 input ServiceInput {
   facilityId: String
+  serviceName: String
   isActive: Boolean
   paginationOptions: PaginationInput!
 }
@@ -1413,6 +1461,7 @@ input GetService {
 input StaffInput {
   facilityId: String
   practiceId: String
+  searchString: String
   paginationOptions: PaginationInput!
 }
 
@@ -1432,6 +1481,7 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  searchString: String
   practiceId: String
   paginationOptions: PaginationInput!
 }
@@ -1468,6 +1518,8 @@ input GetSlots {
 
 input PatientInput {
   facilityId: String
+  searchString: String
+  patientRecord: String
   practiceId: String
   paginationOptions: PaginationInput!
 }
@@ -1485,6 +1537,7 @@ input GetMedia {
 }
 
 input PracticeInput {
+  practiceName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1497,6 +1550,7 @@ input AppointmentInput {
   appointmentNumber: String
   appointmentStatus: String
   patientId: String
+  searchString: String
   practiceId: String
   facilityId: String
 }
@@ -1533,6 +1587,16 @@ input SearchSnoMedCodesInput {
 }
 
 input GetPatientProblem {
+  id: String!
+}
+
+input PatientAllergyInput {
+  patientId: String
+  appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientAllergy {
   id: String!
 }
 
@@ -1601,7 +1665,7 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
-  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  createSchedule(createScheduleInput: [CreateScheduleInput!]!): SchedulePayload!
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
@@ -1633,6 +1697,9 @@ type Mutation {
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
+  addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput!): PatientAllergyPayload!
+  updatePatientAllergy(updateAllergyInput: UpdateAllergyInput!): PatientAllergyPayload!
+  removePatientAllergy(removePatientAllergy: RemovePatientAllergy!): PatientAllergyPayload!
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
@@ -2500,8 +2567,8 @@ input UpdateAppointmentStatusInput {
 input PaymentInput {
   clientIntent: String
   price: String!
-  providerId: String!
-  facilityId: String!
+  providerId: String
+  facilityId: String
   patientId: String!
   appointmentId: String!
   serviceId: String!
@@ -2510,8 +2577,8 @@ input PaymentInput {
 input PaymentInputsAfterAppointment {
   clientIntent: String!
   price: String!
-  providerId: String!
-  facilityId: String!
+  providerId: String
+  facilityId: String
   patientId: String!
   appointmentId: String!
 }
@@ -2570,6 +2637,43 @@ input UpdateProblemInput {
 }
 
 input RemoveProblem {
+  id: String!
+}
+
+input CreatePatientAllergyInput {
+  appointmentId: String
+  patientId: String!
+  staffId: String
+  allergyId: String
+  providerId: String
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+  reactionsIds: [String!]!
+}
+
+input UpdateAllergyInput {
+  updatePatientAllergyInput: UpdatePatientAllergyInput!
+  reactionsIds: [String!]!
+  appointmentId: String
+  patientId: String
+  staffId: String
+  allergyId: String
+  providerId: String
+}
+
+input UpdatePatientAllergyInput {
+  id: String!
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+}
+
+input RemovePatientAllergy {
   id: String!
 }
 
