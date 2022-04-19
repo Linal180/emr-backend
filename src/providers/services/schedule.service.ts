@@ -223,9 +223,8 @@ export class ScheduleService {
         order: {createdAt: "ASC"}
       })
     }
-    
   }
-  
+
   /**
    * Gets schedule services
    * @param schedules 
