@@ -614,8 +614,8 @@ type Transactions {
   id: String!
   transactionId: String
   patientId: String!
-  doctorId: String!
-  facilityId: String!
+  doctorId: String
+  facilityId: String
   appointmentId: String!
   patient: [Patient!]
   doctor: [Doctor!]
@@ -2508,8 +2508,8 @@ input UpdateAppointmentStatusInput {
 input PaymentInput {
   clientIntent: String
   price: String!
-  providerId: String!
-  facilityId: String!
+  providerId: String
+  facilityId: String
   patientId: String!
   appointmentId: String!
   serviceId: String!
@@ -2518,8 +2518,8 @@ input PaymentInput {
 input PaymentInputsAfterAppointment {
   clientIntent: String!
   price: String!
-  providerId: String!
-  facilityId: String!
+  providerId: String
+  facilityId: String
   patientId: String!
   appointmentId: String!
 }
