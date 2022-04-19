@@ -7,6 +7,7 @@ import { UtilsService } from "src/util/utils.service";
 import { UsersFormsElements } from '../entities/userFormElements.entity'
 import { UserFormInput } from "../dto/userForms.input";
 import { UserFormElementInputs } from "../dto/userFormElements.input";
+import { UserForms } from "../entities/userforms.entity";
 
 @Injectable()
 export class UserFormElementService {
@@ -19,10 +20,11 @@ export class UserFormElementService {
   ) { }
 
 
-  async createBulk(input: UserFormElementInputs[]): Promise<UsersFormsElements[]> {
+  async createBulk(input: UserFormElementInputs[], userForm: UserForms): Promise<UsersFormsElements[]> {
     try {
-      const userForm = this.userFormElementRepository.create(input);
-      return await this.userFormElementRepository.save(userForm)
+      const userFormElements = this.userFormElementRepository.create(input);
+      const newUserFormElements = userFormElements?.map((ele) => ({ ...ele, userForm }))
+      return await this.userFormElementRepository.save(newUserFormElements)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

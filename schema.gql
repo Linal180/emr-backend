@@ -1233,7 +1233,7 @@ type FormElement {
   required: Boolean
   errorMsg: String
   name: String!
-  tableName: String
+  label: String
   columnName: String
   fieldId: String!
   sectionId: String!
@@ -1269,7 +1269,7 @@ type UserFormPayload {
 }
 
 type UserFormsPayload {
-  userForms: [UserForms!]
+  form: UserForms
   pagination: PaginationPayload
   response: ResponsePayloadResponse
 }

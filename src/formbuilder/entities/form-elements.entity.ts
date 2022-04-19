@@ -32,7 +32,7 @@ export class FormElement {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  tableName: string;
+  label: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

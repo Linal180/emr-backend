@@ -29,19 +29,29 @@ export class UserFormsService {
   async create(input: CreateUserFormInput): Promise<UserForms> {
     try {
       const userForm = this.userFormsRepository.create({ ...input });
-      const userFormEles = input?.userFormElements?.map((ele) => ({ ...ele, UsersFormsId: input?.FormId }))
-      const formElements = await this.formService.getForm(input?.FormId)
-      const userFormElements = await this.userFormElementService.createBulk(userFormEles);
-      userForm.userFormElements = userFormElements;
-      userForm.form = formElements.form
-      return await this.userFormsRepository.save(userForm)
+      const form = await this.formService.getForm(input?.FormId)
+      userForm.form = form.form
+      const newUserForms = await this.userFormsRepository.save(userForm)
+      const userFormEles = input?.userFormElements?.map((ele) => ({ ...ele, UsersFormsId: newUserForms?.id }))
+      await this.userFormElementService.createBulk(userFormEles, userForm);
+      return newUserForms
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async get() {
-
+  async fetchAll(input: UserFormInput) {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<UserForms>(this.userFormsRepository, input)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        userForms: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async findOne(id: string): Promise<UserForms> {
@@ -68,7 +78,6 @@ export class UserFormsService {
       // const userForm = await this.findOne(updateAttachmentMediaInput.typeId)
       const attachment = await this.awsService.uploadFile(file, AttachmentType.FORM_BUILDER, updateAttachmentMediaInput.typeId);
       const { Key } = attachment || {};
-      console.log('attachment', Key)
       if (Key) {
         return Key
       }

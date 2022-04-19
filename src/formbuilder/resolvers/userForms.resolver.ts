@@ -21,26 +21,6 @@ export class UserFormResolver {
     private readonly formService: FormsService,
   ) { }
 
-  @Query(() => UserFormsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['super-admin', 'admin'])
-
-  async findAllUsersForms(@Args('userFormInput') userFormInput: UserFormInput): Promise<UserFormsPayload> {
-    const userForms = await this.userFormsService.getAll(userFormInput);
-    if (userForms) {
-      return {
-        ...userForms,
-        response: { status: 200, message: "Ok" }
-      }
-    }
-
-    throw new NotFoundException({
-      status: HttpStatus.NOT_FOUND,
-      error: 'User Forms not found',
-    });
-
-  }
-
   @Mutation(() => UserFormPayload)
   async saveUserFormValues(@Args('createUserFormInput') createUserFormInput: CreateUserFormInput): Promise<UserFormPayload> {
     return {
@@ -52,7 +32,7 @@ export class UserFormResolver {
   @ResolveField(() => [UsersFormsElements])
   async userFormElements(@Parent() userForm: UserForms): Promise<UsersFormsElements[]> {
     if (userForm) {
-      return await this.userFormElementService.getAllUserFormElements(userForm.FormId);
+      return await this.userFormElementService.getAllUserFormElements(userForm.id);
     }
   }
 

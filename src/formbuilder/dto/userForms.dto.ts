@@ -2,6 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 //user import
 import { ResponsePayloadResponse } from "src/customDecorators/response-payload.dto";
 import PaginationPayload from "src/pagination/dto/pagination-payload.dto";
+import { Form } from "../entities/form.entity";
 import { UserForms } from '../entities/userforms.entity'
 
 @ObjectType()
@@ -16,8 +17,8 @@ export class UserFormPayload {
 @ObjectType()
 export class UserFormsPayload {
 
-    @Field(() => [UserForms], { nullable: true })
-    userForms: UserForms[];
+    @Field(() => UserForms, { nullable: true })
+    form: Form;
 
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
