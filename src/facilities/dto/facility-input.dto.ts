@@ -14,4 +14,5 @@ export default class FacilityInput {
 
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
+    
 }
