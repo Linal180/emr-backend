@@ -13,6 +13,9 @@ export const braintreeACHPayment = async (inputs) => {
   try {
     const data = await gateway.paymentMethod.create({
       ...inputs,
+      options:{
+        usBankAccountVerificationMethod: braintree.UsBankAccountVerification.VerificationMethod.NetworkCheck  
+      }
     });
     const { success, message, usBankAccount } = data;
     console.log('data => ', data);
