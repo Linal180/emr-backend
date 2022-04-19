@@ -1269,7 +1269,7 @@ type UserFormPayload {
 }
 
 type UserFormsPayload {
-  form: UserForms
+  form: Form
   pagination: PaginationPayload
   response: ResponsePayloadResponse
 }

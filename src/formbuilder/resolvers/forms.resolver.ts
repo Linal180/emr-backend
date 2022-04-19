@@ -95,7 +95,7 @@ export class FormResolver {
 
   async findAllUsersForms(@Args('userFormInput') userFormInput: UserFormInput): Promise<UserFormsPayload> {
     const form = await this.formsService.findOne(userFormInput.FormId);
-    const userForms = await this.userFormsService.getAll(userFormInput);
+    const userForms = await this.userFormsService.getAll(userFormInput);   
     form.userForms = userForms.userForms
     if (userForms) {
       return {

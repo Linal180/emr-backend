@@ -17,7 +17,7 @@ export class UserFormPayload {
 @ObjectType()
 export class UserFormsPayload {
 
-    @Field(() => UserForms, { nullable: true })
+    @Field(() => Form, { nullable: true })
     form: Form;
 
     @Field(type => PaginationPayload, { nullable: true })
