@@ -150,6 +150,7 @@ export class PaginationService {
       appointmentNumber,
       dueToday,
       facilityId,
+      singleFacilityId,
       facilityName,
       practiceName,
       serviceName,
@@ -183,6 +184,9 @@ export class PaginationService {
         }),
         ...(facilityId && {
           facilityId
+        }),
+        ...(singleFacilityId && {
+          id: singleFacilityId
         }),
         ...(doctorId && {
           doctorId
