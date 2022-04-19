@@ -1,7 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { CreateExternalAppointmentInput } from '../../appointments/dto/create-external-appointment.input';
-import { TRANSACTIONSTATUS } from '../entity/payment.entity'
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
+import { TRANSACTIONSTATUS } from '../entity/payment.entity';
 
 @InputType()
 export class PaymentInput {
