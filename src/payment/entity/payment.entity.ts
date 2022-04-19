@@ -42,12 +42,12 @@ export class Transactions {
   @Field({ nullable: false })
   patientId: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   doctorId: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   facilityId: string;
 
   @Column({ nullable: false })
