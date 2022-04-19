@@ -11,3 +11,13 @@ export class AttachmentsPayload extends ResponsePayloadResponse {
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
 }
+
+
+@ObjectType()
+export class AttachmentPayload extends ResponsePayloadResponse {
+    @Field(type => Attachment, { nullable: true})
+    attachments: Attachment;
+
+    @Field(type => PaginationPayload, { nullable: true })
+    pagination?: PaginationPayload
+}

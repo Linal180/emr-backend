@@ -3,7 +3,6 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Up
 import { Element } from './element.entity';
 import { Form } from './form.entity';
 
-
 @Entity({ name: 'FormElements' })
 @ObjectType()
 export class FormElement {
@@ -33,7 +32,7 @@ export class FormElement {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  tableName: string;
+  label: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -55,7 +54,7 @@ export class FormElement {
   form: Form;
 
   @ManyToOne(() => Element, element => element.formElement)
-  @Field(type => Element, { nullable: true })
+  @Field(() => Element, { nullable: true })
   element: Element;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

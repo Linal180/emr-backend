@@ -21,6 +21,7 @@ enum AttachmentType {
   PATIENT
   DOCTOR
   lab
+  FORM_BUILDER
 }
 
 type ResponsePayload {
@@ -1198,11 +1199,41 @@ enum ElementType {
 type SectionsTypes {
   id: String!
   col: Int!
+  name: String!
   fields: [FieldsTypes!]!
 }
 
 type LayoutJSONType {
   sections: [SectionsTypes!]!
+}
+
+type ArrayOfStringsType {
+  name: String!
+  value: Boolean!
+}
+
+type UsersFormsElements {
+  id: String!
+  UsersFormsId: String!
+  FormsElementsId: String!
+  value: String
+  arrayOfStrings: [ArrayOfStringsType!]!
+  createdAt: String
+  updatedAt: String
+  userForm: UserForms
+}
+
+type UserForms {
+  id: String!
+  PatientId: String
+  DoctorId: String
+  StaffId: String
+  FormId: String!
+  SubmitterId: String
+  createdAt: String
+  updatedAt: String
+  form: Form
+  userFormElements: [UsersFormsElements!]
 }
 
 type Form {
@@ -1212,7 +1243,9 @@ type Form {
   facilityId: String!
   layout: LayoutJSONType!
   isSystemForm: Boolean
+  isActive: Boolean
   formElements: [FormElement!]
+  userForms: [UserForms!]
   createdAt: String
   updatedAt: String
 }
@@ -1232,7 +1265,7 @@ type FormElement {
   required: Boolean
   errorMsg: String
   name: String!
-  tableName: String
+  label: String
   columnName: String
   fieldId: String!
   sectionId: String!
@@ -1253,6 +1286,24 @@ type FormsPayload {
   response: ResponsePayload
   forms: [Form]
   pagination: PaginationPayload
+}
+
+type ResponsePayloadResponse {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type UserFormPayload {
+  userForm: UserForms
+  response: ResponsePayloadResponse
+}
+
+type UserFormsPayload {
+  form: Form
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
 type PatientAllergiesPayload {
@@ -1349,6 +1400,7 @@ type Query {
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
+  findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
 }
 
 input UsersInput {
@@ -1567,6 +1619,11 @@ input GetForm {
   id: String!
 }
 
+input UserFormInput {
+  FormId: String!
+  paginationOptions: PaginationInput!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -1650,6 +1707,7 @@ type Mutation {
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
   createElement(inputs: ElementInputs!): Element!
+  saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
 }
 
 input LoginUserInput {
@@ -2665,6 +2723,7 @@ input RemoveVital {
 
 input CreateFormInput {
   name: String!
+  isActive: Boolean
   type: FormType!
   facilityId: String!
   layout: LayoutJSONInputType!
@@ -2677,6 +2736,7 @@ input LayoutJSONInputType {
 
 input SectionsInputs {
   id: String!
+  name: String!
   col: Int!
   fields: [FieldsInputs!]!
 }
@@ -2705,6 +2765,7 @@ input FieldOptionsInputType {
 
 input UpdateFormInput {
   name: String
+  isActive: Boolean
   type: FormType
   facilityId: String
   layout: LayoutJSONInputType
@@ -2718,4 +2779,24 @@ input RemoveForm {
 
 input ElementInputs {
   type: ElementType!
+}
+
+input CreateUserFormInput {
+  PatientId: String
+  DoctorId: String
+  StaffId: String
+  FormId: String!
+  SubmitterId: String
+  userFormElements: [UserFormElementInputs!]!
+}
+
+input UserFormElementInputs {
+  FormsElementsId: String!
+  value: String!
+  arrayOfStrings: [ArrayOfStringsTypeInput!]!
+}
+
+input ArrayOfStringsTypeInput {
+  name: String!
+  value: Boolean!
 }
