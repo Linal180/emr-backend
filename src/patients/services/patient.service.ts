@@ -325,7 +325,6 @@ export class PatientService {
      catch (error) {
       throw new InternalServerErrorException(error);
     }
-    
   }
 
   /**
@@ -507,5 +506,4 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     }
   }
-
 }
