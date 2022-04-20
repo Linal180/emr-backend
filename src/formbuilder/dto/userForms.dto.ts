@@ -35,3 +35,12 @@ export class FormAttachmentPayload {
     @Field({ nullable: true })
     response?: ResponsePayloadResponse
 }
+
+@ObjectType()
+export class FormMediaPayload {
+    @Field({ nullable: true })
+    publicUrl: String;
+
+    @Field({ nullable: true })
+    response?: ResponsePayloadResponse
+}
