@@ -36,6 +36,11 @@ export class CreateUserFormInput {
     userFormElements: UserFormElementInputs[];
 }
 
+@InputType()
+export class GetPublicMediaInput { 
+    @Field()
+    url: string
 
-
-
+    @Field()
+    formId: string
+}
