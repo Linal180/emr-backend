@@ -2,8 +2,8 @@ import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from "@nestjs/c
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //user imports
 import RoleGuard from 'src/users/auth/role.guard';
-import { CreateUserFormInput, UserFormInput } from "../dto/userForms.input";
-import { UserFormPayload, UserFormsPayload } from "../dto/userForms.dto";
+import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
+import { FormAttachmentPayload, FormMediaPayload, UserFormPayload, UserFormsPayload } from "../dto/userForms.dto";
 import { UserForms } from '../entities/userforms.entity';
 import { UserFormsService } from '../services/userForms.service'
 import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
@@ -28,6 +28,16 @@ export class UserFormResolver {
       response: { status: 200, message: 'User Form Values are created successfully' }
     };
   }
+
+  @Mutation(() => FormMediaPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  async getFormPublicMediaUrl(@Args('getPublicMediaInput') getPublicMediaInput: GetPublicMediaInput): Promise<FormMediaPayload> {
+    return {
+      publicUrl: await this.userFormsService.getUploadMedia(getPublicMediaInput),
+      response: { status: 200, message: 'User Form Values are created successfully' }
+    };
+  }
+
 
   @ResolveField(() => [UsersFormsElements])
   async userFormElements(@Parent() userForm: UserForms): Promise<UsersFormsElements[]> {
