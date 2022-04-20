@@ -17,6 +17,7 @@ export class PaginatedEntityInput {
   appointmentStatus?: APPOINTMENTSTATUS
   dueToday?: boolean
   facilityId?: string
+  singleFacilityId?:string
   doctorId?: string
   role?: string
   phychType?: string
@@ -30,9 +31,14 @@ export class PaginatedEntityInput {
   relationField?: string
   requestType?: string
   requestStatus?: string
+  facilityName?:string
+  practiceName?:string
+  serviceName?:string
+  searchString?:string
   isPrivate?: boolean
   MembershipPlan?: string
+  patientRecord?: string
   username?: string
-  searchKey?: string
   currentPhaseId?: string
+  FormId?: string
 }

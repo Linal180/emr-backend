@@ -1,7 +1,8 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { Attachment } from 'src/attachments/entities/attachment.entity';
+import { Attachment } from '../../attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
@@ -343,14 +344,18 @@ export class Patient {
   @Field({ nullable: true })
   facilityId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
+
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
 
-  @OneToMany(() => Contact, contact => contact.patient, {eager: true, onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
-  @ManyToOne(() => Facility, facility => facility.patients, {eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Facility, facility => facility.patients, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
 
@@ -363,15 +368,20 @@ export class Patient {
   @Field(type => [DoctorPatient], { nullable: true })
   doctorPatients: DoctorPatient[];
 
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.patient, {onDelete: "CASCADE"})
+  @Field(type => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
+
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.patient, {onDelete: "CASCADE"})
   @Field(type => [PatientProblems], { nullable: true })
   patientProblems: PatientProblems[];
 
   @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [Appointment], { nullable: true })
   appointments: Appointment[];
   
-  @OneToMany(() => Employer, employer => employer.patient, {eager: true, onDelete: "CASCADE"})
-  @Field(type => [Employer], { nullable: true })
+  @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE"})
+  @Field(type => Employer, { nullable: true })
   employer: Employer[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })

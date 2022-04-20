@@ -38,6 +38,9 @@ export class CreateDoctorItemInput {
   facilityId?: string;
 
   @Field({ nullable: true })
+  practiceId?: string;
+
+  @Field({ nullable: true })
   providerIntials: string;
 
   @Field({ nullable: true })

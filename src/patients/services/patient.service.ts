@@ -117,14 +117,20 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+ 
       //save patient basic info
       await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, updatePatientInput.updatePatientItemInput, this.patientRepository)
+     
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
       if(updatePatientInput.updatePatientItemInput.facilityId){
       const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
       patientInstance.facility = facility
+       const user = await this.usersService.findUserByUserId(updatePatientInput.updatePatientItemInput.id)
+       if(user){
+          await this.usersService.updateFacility(facility, user)
+       }
       }
       //update patient contact 
       const contact = await this.contactService.updateContact(updatePatientInput.updateContactInput)
@@ -194,7 +200,7 @@ export class PatientService {
         const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
         if(!userAlreadyExist){
-         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId})
+         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId, facilityId: patientInstance.facilityId})
          patientInstance.user = user
          const patient =  await this.patientRepository.save(patientInstance)
          await this.usersService.saveUserId(patient.id, user);
@@ -287,7 +293,8 @@ export class PatientService {
    */
   async findAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, patientInput)
+      const [first]  = patientInput.searchString ? patientInput.searchString.split(' ') : ''
+      const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, { ...patientInput, associatedTo: 'Patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse
@@ -318,7 +325,6 @@ export class PatientService {
      catch (error) {
       throw new InternalServerErrorException(error);
     }
-    
   }
 
   /**
@@ -500,5 +506,4 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     }
   }
-
 }

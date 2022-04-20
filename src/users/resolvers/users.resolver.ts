@@ -1,6 +1,7 @@
 import { ForbiddenException, HttpStatus, NotFoundException, PreconditionFailedException, SetMetadata, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
+import { FacilityService } from 'src/facilities/services/facility.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { UtilsService } from 'src/util/utils.service';
@@ -31,6 +32,7 @@ export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
+    private readonly facilityService: FacilityService,
   ) { }
 
   // Queries 
@@ -46,7 +48,7 @@ export class UsersResolver {
       }
     }
   }
-
+  
   @Query(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
   async fetchUser(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
@@ -66,8 +68,6 @@ export class UsersResolver {
   @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email)
-    console.log("userFound",userFound);
-    console.log("userFound.roles[0].rolePermissions",userFound.roles[0].rolePermissions);
     if (!userFound) {
       throw new UnauthorizedException({
         status: HttpStatus.UNAUTHORIZED,
@@ -117,7 +117,7 @@ export class UsersResolver {
     if (user) {
       if (user.emailVerified) {
         if(user.isTwoFactorEnabled){
-          await this.utilsService.sendVerificationCode(user.phone)
+           this.utilsService.sendVerificationCode(user.phone)
         }
         return await this.usersService.createToken(user, password);
       }
@@ -239,7 +239,7 @@ export class UsersResolver {
       status: HttpStatus.NOT_FOUND,
       error: 'User not found',
     });
-  }
+  } 
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -266,8 +266,8 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updateTwoFactorAuth')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateTwoFactorAuth')
   async update2FactorAuth(@Args('twoFactorInput') twoFactorInput: TwoFactorInput): Promise<UserPayload> {
     const user = await this.usersService.updateTwoFactorAuth(twoFactorInput);
     return { user, response: { status: 200, message: 'User 2FA Updated' } }

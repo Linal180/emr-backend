@@ -59,8 +59,10 @@ export class AppointmentService {
         const token = createToken();
         const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: true, token, appointmentNumber })
         //associate provider 
-        const provider = await this.doctorService.findOne(createAppointmentInput.providerId)
+        let provider
         if (createAppointmentInput.providerId) {
+          provider = await this.doctorService.findOne(createAppointmentInput.providerId)
+          appointmentInstance.providerId = provider.id
           appointmentInstance.provider = provider
         }
         //associate patient
@@ -70,14 +72,17 @@ export class AppointmentService {
           appointmentInstance.patientId = patient.id
         }
         //associate facility 
-        const facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
+        let facility
         if (createAppointmentInput.facilityId) {
+          facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
           appointmentInstance.facility = facility
+          appointmentInstance.facilityId = facility.id
         }
         //associate service 
-        if (createAppointmentInput.serviceId) {
-          const service = await this.servicesService.findOne(createAppointmentInput.serviceId)
+        if (createAppointmentInput.appointmentTypeId) {
+          const service = await this.servicesService.findOne(createAppointmentInput.appointmentTypeId)
           appointmentInstance.appointmentType = service
+          appointmentInstance.appointmentTypeId = service.id
         }
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         await queryRunner.commitTransaction();
@@ -116,6 +121,7 @@ export class AppointmentService {
       const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
       if (createExternalAppointmentInput.createExternalAppointmentItemInput.providerId) {
         appointmentInstance.provider = provider
+        appointmentInstance.providerId = provider.id
       }
       //associate patient
       if (patientInstance && patientInstance.id) {
@@ -126,11 +132,13 @@ export class AppointmentService {
       const facility = await this.facilityService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId)
       if (createExternalAppointmentInput.createExternalAppointmentItemInput.facilityId) {
         appointmentInstance.facility = facility
+        appointmentInstance.facilityId = facility.id
       }
       //associate service 
       if (createExternalAppointmentInput.createExternalAppointmentItemInput.serviceId) {
         const service = await this.servicesService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.serviceId)
         appointmentInstance.appointmentType = service
+        appointmentInstance.appointmentTypeId = service.id
       }
       //custom token creation
       const token = createToken();
@@ -173,12 +181,12 @@ export class AppointmentService {
     if (IsBooked) {
       return await this.utilsService.smsNotification({
         to: [currentContact[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink}`
+        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink} at ${facility.name} facility`
       });
     } else {
       return await this.utilsService.smsNotification({
         to: [currentContact[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink}`
+        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink} at ${facility.name} facility`
       });
     }
   }
@@ -189,7 +197,8 @@ export class AppointmentService {
    */
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, appointmentInput)
+      const [first]  = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
+      const paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: 'Appointment', relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse

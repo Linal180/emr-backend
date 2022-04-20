@@ -13,6 +13,9 @@ export class SectionsInputs {
   @Field({ nullable: false })
   id: string;
 
+  @Field({ nullable: false })
+  name: string;
+
   @Field(() => Int, { nullable: false })
   col: number;
 
@@ -80,6 +83,9 @@ export class CreateFormInput {
 
   @Field({ nullable: false })
   name: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isActive: boolean;
 
   @Field(() => FormType, { nullable: false })
   type: FormType;

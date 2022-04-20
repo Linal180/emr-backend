@@ -12,6 +12,8 @@ export class FormPayload extends ResponsePayloadResponse {
     response?: ResponsePayload
 }
 
+
+
 @ObjectType()
 export class FieldOptionsType {
     @Field()
@@ -74,6 +76,9 @@ export class SectionsTypes {
 
     @Field(() => Int, { nullable: false })
     col: number;
+
+    @Field({ nullable: false })
+    name: string;
 
     @Field(() => [FieldsTypes])
     fields: FieldsTypes[]

@@ -22,3 +22,11 @@ export class CreateScheduleInput {
   servicesIds: string[];
 
 }
+
+// @InputType()
+// export class CreateScheduleItemsInput {
+
+//   @Field(type=> [CreateScheduleInput], { nullable: false })
+//   createScheduleInput: CreateScheduleInput[]
+
+// }

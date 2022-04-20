@@ -1,6 +1,7 @@
 import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
@@ -93,15 +94,18 @@ export class DoctorService {
     }
   }
 
-  async addDoctor(registerUserInput: RegisterUserInput, facilityId: string): Promise<Doctor> {
+  async addDoctor(createPracticeInput: CreatePracticeInput, facilityId: string, practiceId: string): Promise<Doctor> {
     try {
       // register doctor as user 
-      const user = await this.usersService.create({ ...registerUserInput, facilityId })
+      const user = await this.usersService.create({ ...createPracticeInput.registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
+      //get contact 
+      const contact = await this.contactService.createContact(createPracticeInput.createContactInput)
       // Doctor Creation    
-      const doctorInstance = this.doctorRepository.create(registerUserInput)
+      const doctorInstance = this.doctorRepository.create({...createPracticeInput.registerUserInput, practiceId})
       doctorInstance.user = user;
+      doctorInstance.contacts = [contact];
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
       const doctor = await this.doctorRepository.save(doctorInstance)
@@ -119,7 +123,8 @@ export class DoctorService {
    */
   async findAllDoctor(doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Doctor>(this.doctorRepository, doctorInput)
+      const [first]  = doctorInput.searchString ? doctorInput.searchString.split(' ') : ''
+      const paginationResponse = await this.paginationService.willPaginate<Doctor>(this.doctorRepository, { ...doctorInput, associatedTo: 'Doctor', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse
@@ -137,7 +142,7 @@ export class DoctorService {
    * @returns one 
    */
   async findOne(id: string): Promise<Doctor> {
-    const doctor = await this.doctorRepository.findOne(id);
+    const doctor = await this.doctorRepository.findOneOrFail(id);
     if (doctor) {
       return doctor
     }

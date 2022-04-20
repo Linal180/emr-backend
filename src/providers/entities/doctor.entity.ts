@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { DoctorPatient } from 'src/patients/entities/doctorPatient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
@@ -19,7 +20,27 @@ export enum Speciality {
   PEDIATRIC_DENTIST = "Pediatric Dentist",
   PEDIATRIC_DERMATOLOGY = "Pediatric Dermatology",
   NEUROLOGY = "Neurology",
-  GASTROENTEROLOGY = "Gastroenterology"
+  GASTROENTEROLOGY = "Gastroenterology",
+  GENERAL_PRACTICE = "General Practice",
+  GENERAL_SURGERY = "General Surgery",
+  ALLERGY_OR_IMMUNOLOGY = 'Allergy/Immunology',
+  OTOLARYNGOLOGY = "Otolaryngology",
+  ANESTHESIOLOGY = "Anesthesiology",
+  CARDIOLOGY = 'Cardiology',
+  DERMATOLOGY = 'Dermatology',
+  FAMILY_PRACTICE = 'Family Practice',
+  INTERVENTIONAL_PAIN_MANAGEMENT = 'Interventional Pain Management',
+  INTERNAL_MEDICINE = 'Internal Medicine',
+  OSTEOPATHIC_MANIPULATIVE_THERAPY = 'Osteopathic Manipulative Therapy',
+  NEUROSURGERY = "Neurosurgery",
+  OPHTHALMOLOGY = "Ophthalmology",
+  OBSTETRICS_OR_GYNECOLOGY = 'Obstetrics/Gynecology',
+  ORAL_SURGERY = 'Oral Surgery',
+  ORTHOPEDIC_SURGERY = 'Orthopedic Surgery',
+  PATHOLOGY = 'Pathology',
+  PLASTIC_AND_RECONSTRUCTIVE_SURGERY = "Plastic and Reconstructive Surgery",
+  PHYSICAL_MEDICINE_AND_REHABILITATION = 'Physical Medicine and Rehabilitation',
+  PSYCHIATRY = 'Psychiatry'
 }
 
 registerEnumType(Speciality, {
@@ -95,12 +116,12 @@ export class Doctor {
   @Field({ nullable: true })
   deaNumber: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   deaActiveDate: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   deaTermDate: string;
 
   @Column({ nullable: true })
@@ -183,6 +204,10 @@ export class Doctor {
   @Field({ nullable: true })
   facilityId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
+
   @OneToOne(() => User, { eager: true })
   @JoinColumn()
   @Field(type => User, { nullable: true })
@@ -203,19 +228,23 @@ export class Doctor {
   @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.patient)
   doctorPatients: DoctorPatient[];
 
-  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [Schedule], { nullable: true })
   schedule: Schedule[];
 
-  @OneToMany(() => PatientProblems, patientProblems => patientProblems.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
+
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @Field(type => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
 
   @OneToMany(() => Appointment, appointment => appointment.provider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   appointments: Appointment[];
   
   @Field(type => [Staff], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Staff, staff => staff.providers, { eager: true })
+  @ManyToMany(type => Staff, staff => staff.providers)
   @JoinTable({ name: 'doctorStaff' })
   staff: Staff[];
 

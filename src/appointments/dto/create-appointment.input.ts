@@ -47,7 +47,7 @@ export class CreateAppointmentInput {
     scheduleEndDateTime?: string;
   
     @Field({ nullable: false })
-    serviceId: string;
+    appointmentTypeId: string;
   
     @Field({ nullable: true })
     facilityId: string;
@@ -57,5 +57,8 @@ export class CreateAppointmentInput {
   
     @Field({ nullable: true })
     patientId: string;
+
+    @Field({ nullable: true })
+    practiceId?: string;
     
 }

@@ -2,6 +2,7 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Facility } from 'src/facilities/entities/facility.entity';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
@@ -250,6 +251,11 @@ export class UsersService {
     return await this.usersRepository.save(userInstance);
   }
 
+  async updateFacility(facility: Facility, userInstance: User): Promise<User> {
+    userInstance.facility = facility
+    return await this.usersRepository.save(userInstance);
+  }
+
   /**
    * Finds User by id
    * @param id 
@@ -268,6 +274,20 @@ export class UsersService {
     return await this.usersRepository.findOne(id);
   }
 
+  /**
+   * Finds user by user id
+   * @param id 
+   * @returns user by user id 
+   */
+  async findUserByUserId(id: string): Promise<User> {
+    return await this.usersRepository.findOne({userId: id});
+  }
+
+  /**
+   * Finds by token
+   * @param token 
+   * @returns by token 
+   */
   async findByToken(token: string): Promise<User> {
     return await this.usersRepository.findOne({ token: token });
   }
@@ -282,6 +302,11 @@ export class UsersService {
     await this.usersRepository.delete(user.id);
   }
 
+  /**
+   * Removes user
+   * @param userIdInput 
+   * @returns user 
+   */
   async removeUser(userIdInput: UserIdInput): Promise<void> {
     try {
       const admin = await this.findById(userIdInput.adminId)
@@ -348,7 +373,22 @@ export class UsersService {
    */
   async updateTwoFactorAuth(twoFactorInput: TwoFactorInput): Promise<User> {
     try {
-      return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, twoFactorInput, this.usersRepository)
+      const user = await this.findUserById(twoFactorInput.userId)
+      if(!user){
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'User not found or disabled',
+        });
+      }
+      const passwordMatch = await bcrypt.compare(twoFactorInput.password, user.password)
+      if (passwordMatch) {
+      return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, {isTwoFactorEnabled:twoFactorInput.isTwoFactorEnabled }, this.usersRepository)
+      }else{
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Password invalid',
+        });
+      }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -365,7 +405,9 @@ export class UsersService {
       const payload = { email: user.email, sub: user.id };
       return {
         access_token: this.jwtService.sign(payload),
+        userId: user.id,
         roles: user.roles,
+        isTwoFactorEnabled: user.isTwoFactorEnabled,
         response: {
           message: "OK", status: 200, name: "Token Created"
         }
@@ -452,7 +494,7 @@ export class UsersService {
       user.token = token;
       const roles = user.roles.map(u => u.role);
       if (user) {
-        const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
+        const isAdmin = roles.some(role => role.includes('patient'))
         const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
         this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '',isAdmin, token, isInvite)
         delete user.roles

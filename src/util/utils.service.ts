@@ -72,6 +72,7 @@ export class UtilsService {
     const verification = await client.verify
     .services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
     .verifications.create({ to: phone, channel: "sms" })
+    console.log("verification",verification);
     return verification;
  }
 

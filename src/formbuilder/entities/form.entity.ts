@@ -2,6 +2,7 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { LayoutJSONType } from '../dto/form-payload.dto';
 import { FormElement } from './form-elements.entity';
+import { UserForms } from './userforms.entity';
 
 export enum FormType {
   APPOINTMENT = "Appointment",
@@ -46,9 +47,17 @@ export class Form {
   @Field({ nullable: true })
   isSystemForm: boolean;
 
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
+  isActive: boolean;
+
   @OneToMany(() => FormElement, formElement => formElement.element, { onDelete: "CASCADE" })
   @Field(type => [FormElement], { nullable: true })
   formElements: FormElement[];
+
+  @OneToMany(() => UserForms, formElement => formElement.form)
+  @Field(type => [UserForms], { nullable: true })
+  userForms: UserForms[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

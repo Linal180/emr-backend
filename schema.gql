@@ -21,6 +21,7 @@ enum AttachmentType {
   PATIENT
   DOCTOR
   lab
+  FORM_BUILDER
 }
 
 type ResponsePayload {
@@ -51,6 +52,64 @@ type AttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
   pagination: PaginationPayload
+}
+
+type ICDCodes {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  createdAt: String
+  updatedAt: String
+}
+
+type SnoMedCodes {
+  id: String!
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientProblems {
+  id: String!
+  problemType: ProblemType!
+  problemSeverity: ProblemSeverity!
+  problemStartDate: String
+  note: String
+  patientId: String
+  ICDCode: ICDCodes
+  patient: Patient
+  doctor: Doctor
+  staff: Staff
+  appointment: Appointment
+  snowMedCode: SnoMedCodes
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's problem type assigned"""
+enum ProblemType {
+  ACTIVE
+  HISTORIC
+}
+
+"""The patient's problem severity type assigned"""
+enum ProblemSeverity {
+  CHRONIC
+  ACUTE
 }
 
 type PatientVitals {
@@ -156,6 +215,7 @@ type User {
   userId: String!
   token: String
   userType: String!
+  facilityId: String
   facility: Facility
   roles: [Role]
   createdAt: String!
@@ -178,10 +238,12 @@ type Staff {
   phone: String
   facilityId: String
   mobile: String
+  practiceId: String
   gender: Gender!
   user: User
   facility: Facility
   patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
   patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
@@ -194,62 +256,64 @@ enum Gender {
   OTHER
 }
 
-type ICDCodes {
+type Allergies {
   id: String!
-  code: String!
-  description: String
-  version: String
+  name: String
+  allergyType: AllergyType!
+  drugAllergyTypes: String
+  patientAllergies: [PatientAllergies!]
   createdAt: String
   updatedAt: String
 }
 
-type SnoMedCodes {
+"""The patient's allergy type assigned"""
+enum AllergyType {
+  DRUG
+  FOOD
+  ENVIRONMENT
+}
+
+type Reactions {
   id: String!
-  recordId: String
-  effectiveTime: String
-  active: String
-  moduleId: String
-  refsetId: String
-  referencedComponentId: String
-  mapGroup: String
-  mapPriority: String
-  mapRule: String
-  mapAdvice: String
-  mapTarget: String
-  correlationId: String
-  mapCategoryId: String
-  patientProblem: [PatientProblems!]
+  name: String!
+  patientAllergies: PatientAllergies
   createdAt: String
   updatedAt: String
 }
 
-type PatientProblems {
+type PatientAllergies {
   id: String!
-  problemType: ProblemType!
-  problemSeverity: ProblemSeverity!
-  problemStartDate: String
-  note: String
-  patientId: String
-  ICDCode: ICDCodes
+  allergySeverity: AllergySeverity!
+  allergyOnset: AllergyOnset!
+  allergyStartDate: String
+  comments: String
+  isActive: Boolean
+  staffId: String
+  appointmentId: String
+  doctorId: String
+  allergy: Allergies
   patient: Patient
   doctor: Doctor
   staff: Staff
   appointment: Appointment
-  snowMedCode: SnoMedCodes
+  reactions: [Reactions]
   createdAt: String
   updatedAt: String
 }
 
-"""The patient's problem type assigned"""
-enum ProblemType {
-  ACTIVE
-  HISTORIC
+"""The patient's allergy severity type assigned"""
+enum AllergySeverity {
+  MILD
+  ACUTE
+  MODERATE
+  VERY_MILD
 }
 
-"""The patient's problem severity type assigned"""
-enum ProblemSeverity {
-  CHRONIC
-  ACUTE
+"""The patient's allergy onset type assigned"""
+enum AllergyOnset {
+  CHILDHOOD
+  ADULTHOOD
+  UNNKOWN
 }
 
 type DoctorPatient {
@@ -277,6 +341,7 @@ type BillingAddress {
   federalTaxId: String
   bankAccount: String
   checkPayableTo: String
+  facilityId: String
   facility: Facility
   doctor: Doctor
   userId: String
@@ -311,6 +376,8 @@ type Contact {
   relationship: RelationshipType
   contactType: ContactType
   facilityId: String
+  patientId: String
+  doctorId: String
   facility: Facility
   doctor: Doctor
   userId: String
@@ -447,8 +514,8 @@ type Doctor {
   ssn: String
   taxonomyCode: String
   deaNumber: String
-  deaActiveDate: String!
-  deaTermDate: String!
+  deaActiveDate: String
+  deaTermDate: String
   languagesSpoken: String
   taxId: String
   npi: String
@@ -469,12 +536,14 @@ type Doctor {
   licenseTermDate: String
   prescriptiveAuthNumber: String
   facilityId: String
+  practiceId: String
   user: User
   facility: Facility
   contacts: [Contact!]
   billingAddress: [BillingAddress!]
   schedule: [Schedule!]
   patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
   staff: [Staff]
   createdAt: String!
   updatedAt: String!
@@ -490,6 +559,26 @@ enum Speciality {
   PEDIATRIC_DERMATOLOGY
   NEUROLOGY
   GASTROENTEROLOGY
+  GENERAL_PRACTICE
+  GENERAL_SURGERY
+  ALLERGY_OR_IMMUNOLOGY
+  OTOLARYNGOLOGY
+  ANESTHESIOLOGY
+  CARDIOLOGY
+  DERMATOLOGY
+  FAMILY_PRACTICE
+  INTERVENTIONAL_PAIN_MANAGEMENT
+  INTERNAL_MEDICINE
+  OSTEOPATHIC_MANIPULATIVE_THERAPY
+  NEUROSURGERY
+  OPHTHALMOLOGY
+  OBSTETRICS_OR_GYNECOLOGY
+  ORAL_SURGERY
+  ORTHOPEDIC_SURGERY
+  PATHOLOGY
+  PLASTIC_AND_RECONSTRUCTIVE_SURGERY
+  PHYSICAL_MEDICINE_AND_REHABILITATION
+  PSYCHIATRY
 }
 
 type Invoice {
@@ -502,6 +591,7 @@ type Invoice {
   paymentMethod: String
   status: STATUS!
   amount: String!
+  appointmentId: String
   createdAt: String
   updatedAt: String
   transction: Transactions
@@ -525,8 +615,8 @@ type Transactions {
   id: String!
   transactionId: String
   patientId: String!
-  doctorId: String!
-  facilityId: String!
+  doctorId: String
+  facilityId: String
   appointmentId: String!
   patient: [Patient!]
   doctor: [Doctor!]
@@ -680,13 +770,16 @@ type Appointment {
   providerId: String
   patientId: String
   facilityId: String
+  practiceId: String
   appointmentTypeId: String
+  invoiceId: String
   appointmentType: Service
   facility: Facility
   provider: Doctor
   patient: Patient
   invoice: Invoice
   patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
   patientVitals: [PatientVitals!]
   createdAt: String
   updatedAt: String
@@ -729,6 +822,8 @@ type Employer {
   mobile: String
   industry: String
   usualOccupation: String
+  patientId: String
+  patient: Patient
   createdAt: String!
   updatedAt: String!
 }
@@ -776,13 +871,16 @@ type Patient {
   statementNoteDateFrom: String
   statementNoteDateTo: String
   facilityId: String
+  practiceId: String
   attachments: [Attachment!]
   contacts: [Contact!]
   facility: Facility
   user: User
   doctorPatients: [DoctorPatient!]
+  patientAllergies: [PatientAllergies!]
   patientProblems: [PatientProblems!]
-  employer: [Employer!]
+  appointments: [Appointment!]
+  employer: Employer
   patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!
@@ -892,6 +990,8 @@ type RolePayload {
 
 type AccessUserPayload {
   access_token: String
+  userId: String
+  isTwoFactorEnabled: Boolean
   roles: [Role!]
   response: ResponsePayload
 }
@@ -1099,11 +1199,41 @@ enum ElementType {
 type SectionsTypes {
   id: String!
   col: Int!
+  name: String!
   fields: [FieldsTypes!]!
 }
 
 type LayoutJSONType {
   sections: [SectionsTypes!]!
+}
+
+type ArrayOfStringsType {
+  name: String!
+  value: Boolean!
+}
+
+type UsersFormsElements {
+  id: String!
+  UsersFormsId: String!
+  FormsElementsId: String!
+  value: String
+  arrayOfStrings: [ArrayOfStringsType!]!
+  createdAt: String
+  updatedAt: String
+  userForm: UserForms
+}
+
+type UserForms {
+  id: String!
+  PatientId: String
+  DoctorId: String
+  StaffId: String
+  FormId: String!
+  SubmitterId: String
+  createdAt: String
+  updatedAt: String
+  form: Form
+  userFormElements: [UsersFormsElements!]
 }
 
 type Form {
@@ -1113,7 +1243,9 @@ type Form {
   facilityId: String!
   layout: LayoutJSONType!
   isSystemForm: Boolean
+  isActive: Boolean
   formElements: [FormElement!]
+  userForms: [UserForms!]
   createdAt: String
   updatedAt: String
 }
@@ -1133,7 +1265,7 @@ type FormElement {
   required: Boolean
   errorMsg: String
   name: String!
-  tableName: String
+  label: String
   columnName: String
   fieldId: String!
   sectionId: String!
@@ -1154,6 +1286,35 @@ type FormsPayload {
   response: ResponsePayload
   forms: [Form]
   pagination: PaginationPayload
+}
+
+type ResponsePayloadResponse {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type UserFormPayload {
+  userForm: UserForms
+  response: ResponsePayloadResponse
+}
+
+type UserFormsPayload {
+  form: Form
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type PatientAllergiesPayload {
+  response: ResponsePayload
+  patientAllergies: [PatientAllergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
 }
 
 type IcdCodesPayload {
@@ -1220,7 +1381,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
-  findAllPractices(facilityInput: PracticeInput!): PracticesPayload!
+  findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
@@ -1232,11 +1393,14 @@ type Query {
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
+  findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
+  getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
+  findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
 }
 
 input UsersInput {
@@ -1274,6 +1438,8 @@ input GetRole {
 input FacilityInput {
   isPrivate: Boolean
   practiceId: String
+  singleFacilityId: String
+  facilityName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1283,6 +1449,7 @@ input GetFacility {
 
 input ServiceInput {
   facilityId: String
+  serviceName: String
   isActive: Boolean
   paginationOptions: PaginationInput!
 }
@@ -1293,6 +1460,8 @@ input GetService {
 
 input StaffInput {
   facilityId: String
+  practiceId: String
+  searchString: String
   paginationOptions: PaginationInput!
 }
 
@@ -1312,6 +1481,8 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  searchString: String
+  practiceId: String
   paginationOptions: PaginationInput!
 }
 
@@ -1347,6 +1518,9 @@ input GetSlots {
 
 input PatientInput {
   facilityId: String
+  searchString: String
+  patientRecord: String
+  practiceId: String
   paginationOptions: PaginationInput!
 }
 
@@ -1363,6 +1537,7 @@ input GetMedia {
 }
 
 input PracticeInput {
+  practiceName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1375,6 +1550,8 @@ input AppointmentInput {
   appointmentNumber: String
   appointmentStatus: String
   patientId: String
+  searchString: String
+  practiceId: String
   facilityId: String
 }
 
@@ -1413,6 +1590,16 @@ input GetPatientProblem {
   id: String!
 }
 
+input PatientAllergyInput {
+  patientId: String
+  appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientAllergy {
+  id: String!
+}
+
 input PatientVitalInput {
   patientId: String
   appointmentId: String
@@ -1430,6 +1617,11 @@ input FormInput {
 
 input GetForm {
   id: String!
+}
+
+input UserFormInput {
+  FormId: String!
+  paginationOptions: PaginationInput!
 }
 
 type Mutation {
@@ -1473,7 +1665,7 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
-  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  createSchedule(createScheduleInput: [CreateScheduleInput!]!): SchedulePayload!
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
@@ -1508,6 +1700,9 @@ type Mutation {
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
+  addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput!): PatientAllergyPayload!
+  updatePatientAllergy(updateAllergyInput: UpdateAllergyInput!): PatientAllergyPayload!
+  removePatientAllergy(removePatientAllergy: RemovePatientAllergy!): PatientAllergyPayload!
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
@@ -1515,6 +1710,7 @@ type Mutation {
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
   createElement(inputs: ElementInputs!): Element!
+  saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
 }
 
 input LoginUserInput {
@@ -1577,7 +1773,7 @@ input UserIdInput {
 
 input TwoFactorInput {
   userId: String!
-  phone: String
+  password: String
   isTwoFactorEnabled: Boolean!
 }
 
@@ -1855,6 +2051,7 @@ input CreateStaffItemInput {
   roleType: String
   adminId: String
   facilityId: String
+  practiceId: String
 }
 
 input UpdateStaffInput {
@@ -1879,6 +2076,7 @@ input UpdateStaffItemInput {
   roleType: String
   adminId: String
   facilityId: String
+  practiceId: String
   id: String!
 }
 
@@ -1914,6 +2112,7 @@ input CreateDoctorItemInput {
   adminId: String
   timeZone: String
   facilityId: String!
+  practiceId: String
   providerIntials: String
   degreeCredentials: String
 
@@ -1966,6 +2165,7 @@ input UpdateDoctorItemInput {
   adminId: String
   timeZone: String
   facilityId: String
+  practiceId: String
   providerIntials: String
   degreeCredentials: String
 
@@ -2086,6 +2286,7 @@ input CreatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String!
+  practiceId: String
 }
 
 input CreateEmployerInput {
@@ -2173,6 +2374,7 @@ input UpdatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String
+  practiceId: String
   id: String!
 }
 
@@ -2245,6 +2447,7 @@ input UpdateAttachmentInput {
 
 input CreatePracticeInput {
   createFacilityItemInput: CreateFacilityItemInput
+  createFacilityContactInput: CreateContactInput
   createContactInput: CreateContactInput
   registerUserInput: RegisterUserInput
   createPracticeItemInput: CreatePracticeItemInput
@@ -2292,10 +2495,11 @@ input CreateAppointmentInput {
   secondaryInsurance: String
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
-  serviceId: String!
+  appointmentTypeId: String!
   facilityId: String
   providerId: String
   patientId: String
+  practiceId: String
 }
 
 input CreateExternalAppointmentInput {
@@ -2316,6 +2520,7 @@ input CreateExternalAppointmentItemInput {
   facilityId: String
   providerId: String
   patientId: String
+  practiceId: String
   paymentStatus: String
 }
 
@@ -2334,10 +2539,11 @@ input UpdateAppointmentInput {
   secondaryInsurance: String
   scheduleStartDateTime: String
   scheduleEndDateTime: String
-  serviceId: String
+  appointmentTypeId: String
   facilityId: String
   providerId: String
   patientId: String
+  practiceId: String
   id: String!
   paymentStatus: String
 }
@@ -2364,8 +2570,8 @@ input UpdateAppointmentStatusInput {
 input PaymentInput {
   clientIntent: String
   price: String!
-  providerId: String!
-  facilityId: String!
+  providerId: String
+  facilityId: String
   patientId: String!
   appointmentId: String!
   serviceId: String!
@@ -2374,8 +2580,8 @@ input PaymentInput {
 input PaymentInputsAfterAppointment {
   clientIntent: String!
   price: String!
-  providerId: String!
-  facilityId: String!
+  providerId: String
+  facilityId: String
   patientId: String!
   appointmentId: String!
 }
@@ -2443,6 +2649,43 @@ input RemoveProblem {
   id: String!
 }
 
+input CreatePatientAllergyInput {
+  appointmentId: String
+  patientId: String!
+  staffId: String
+  allergyId: String
+  providerId: String
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+  reactionsIds: [String!]!
+}
+
+input UpdateAllergyInput {
+  updatePatientAllergyInput: UpdatePatientAllergyInput!
+  reactionsIds: [String!]!
+  appointmentId: String
+  patientId: String
+  staffId: String
+  allergyId: String
+  providerId: String
+}
+
+input UpdatePatientAllergyInput {
+  id: String!
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+}
+
+input RemovePatientAllergy {
+  id: String!
+}
+
 input CreateVitalInput {
   unitType: UnitType!
   weightUnit: WeightType!
@@ -2489,6 +2732,7 @@ input RemoveVital {
 
 input CreateFormInput {
   name: String!
+  isActive: Boolean
   type: FormType!
   facilityId: String!
   layout: LayoutJSONInputType!
@@ -2501,6 +2745,7 @@ input LayoutJSONInputType {
 
 input SectionsInputs {
   id: String!
+  name: String!
   col: Int!
   fields: [FieldsInputs!]!
 }
@@ -2529,6 +2774,7 @@ input FieldOptionsInputType {
 
 input UpdateFormInput {
   name: String
+  isActive: Boolean
   type: FormType
   facilityId: String
   layout: LayoutJSONInputType
@@ -2542,4 +2788,24 @@ input RemoveForm {
 
 input ElementInputs {
   type: ElementType!
+}
+
+input CreateUserFormInput {
+  PatientId: String
+  DoctorId: String
+  StaffId: String
+  FormId: String!
+  SubmitterId: String
+  userFormElements: [UserFormElementInputs!]!
+}
+
+input UserFormElementInputs {
+  FormsElementsId: String!
+  value: String!
+  arrayOfStrings: [ArrayOfStringsTypeInput!]!
+}
+
+input ArrayOfStringsTypeInput {
+  name: String!
+  value: Boolean!
 }

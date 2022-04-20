@@ -7,7 +7,7 @@ import { Permission } from "../entities/permissions.entity";
 import { Role } from '../entities/role.entity';
 import { RolePermission } from "../entities/rolePermissions.entity";
 import { User } from '../entities/user.entity';
-import { adminPermissionsList, doctorAssistantPermissionsList, doctorPermissionsList, FacilityData, nursePermissionsList, officeManagerPermissionsList, patientPermissionsList, PermissionData, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
+import { doctorAssistantPermissionsList, doctorPermissionsList, facilityAdminPermissionsList, FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList, patientPermissionsList, PermissionData, practiceAdminPermissionsList, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
 
 @Injectable()
 export class CreateUsers implements Seeder {
@@ -44,12 +44,22 @@ export class CreateUsers implements Seeder {
       superAdminRolePermissionsRes = await queryRunner.manager.save(superAdminRolePermissionsRes);
       }
 
-      //Add admin role Permissions
-      let adminRole = roles.find((item)=> item.role === 'admin')
-      let adminRolePermission =  await getRepository(RolePermission).find({where: {role: adminRole.id}});
-      if(!adminRolePermission.length){
-      let adminPermissionList = permissions.filter(x => adminPermissionsList.find(y => (y === x.name)));
-      let adminRolePermissions = await this.rolePermissionPayload(adminPermissionList, adminRole)
+      //Add practice admin role Permissions
+      let practiceAdminRole = roles.find((item)=> item.role === 'practice-admin')
+      let practiceAdminRolePermission =  await getRepository(RolePermission).find({where: {role: practiceAdminRole.id}});
+      if(!practiceAdminRolePermission.length){
+      let adminPermissionList = permissions.filter(x => practiceAdminPermissionsList.find(y => (y === x.name)));
+      let adminRolePermissions = await this.rolePermissionPayload(adminPermissionList, practiceAdminRole)
+      let adminRolePermissionsRes = getRepository(RolePermission).create(adminRolePermissions)
+      adminRolePermissionsRes = await queryRunner.manager.save(adminRolePermissionsRes);
+      }
+
+      //Add facility admin role Permissions
+      let facilityAdminRole = roles.find((item)=> item.role === 'facility-admin')
+      let facilityAdminRolePermission =  await getRepository(RolePermission).find({where: {role: facilityAdminRole.id}});
+      if(!facilityAdminRolePermission.length){
+      let adminPermissionList = permissions.filter(x => facilityAdminPermissionsList.find(y => (y === x.name)));
+      let adminRolePermissions = await this.rolePermissionPayload(adminPermissionList, facilityAdminRole)
       let adminRolePermissionsRes = getRepository(RolePermission).create(adminRolePermissions)
       adminRolePermissionsRes = await queryRunner.manager.save(adminRolePermissionsRes);
       }
@@ -121,6 +131,16 @@ export class CreateUsers implements Seeder {
       let doctorAssistantRolePermissions = await this.rolePermissionPayload(doctorAssistantRolePermissionList, doctorAssistantRole)
       let doctorAssistantRolePermissionsRes = getRepository(RolePermission).create(doctorAssistantRolePermissions)
       doctorAssistantRolePermissionsRes = await queryRunner.manager.save(doctorAssistantRolePermissionsRes);
+      }
+      
+      //Add front-desk assistant Permissions 
+      let frontDeskRole = roles.find((item)=> item.role === 'front-desk')
+      let frontDeskRolePermission = await getRepository(RolePermission).find({where: {role: frontDeskRole.id}})
+      if(!frontDeskRolePermission.length){
+      let frontDeskRolePermissionList =  permissions.filter(x => frontDeskPermissionsList.find(y => (y === x.name)));  
+      let frontDeskRolePermissions = await this.rolePermissionPayload(frontDeskRolePermissionList, frontDeskRole)
+      let frontDeskRolePermissionsPermissionsRes = getRepository(RolePermission).create(frontDeskRolePermissions)
+      frontDeskRolePermissionsPermissionsRes = await queryRunner.manager.save(frontDeskRolePermissionsPermissionsRes);
       }
       
       //Add Users

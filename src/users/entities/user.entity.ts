@@ -67,6 +67,10 @@ export class User {
   @Field()
   userType: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
   @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;

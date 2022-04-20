@@ -7,6 +7,7 @@ import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Invoice } from 'src/payment/entity/invoice.entity'
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -159,7 +160,14 @@ export class Appointment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  practiceId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   appointmentTypeId: string;
+
+  @Field({ nullable: true })
+  invoiceId: string;
 
   @ManyToOne(() => Service, facilityService => facilityService.appointments, { onDelete: 'CASCADE' })
   @Field(type => Service, { nullable: true })
@@ -178,12 +186,16 @@ export class Appointment {
   patient: Patient;
 
   @Field(() => Invoice, { nullable: true })
-  @OneToOne(() => Invoice, (invoice) => invoice.appointment, { eager: true })
+  @OneToOne(() => Invoice, (invoice) => invoice.appointment)
   invoice: Invoice;
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
+
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.appointment)
+  @Field(type => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.appointment)
   @Field(type => [PatientVitals], { nullable: true })

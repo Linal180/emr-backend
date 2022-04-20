@@ -1,7 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { CreateExternalAppointmentInput } from '../../appointments/dto/create-external-appointment.input';
-import { TRANSACTIONSTATUS } from '../entity/payment.entity'
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
+import { TRANSACTIONSTATUS } from '../entity/payment.entity';
 
 @InputType()
 export class PaymentInput {
@@ -11,10 +10,10 @@ export class PaymentInput {
   @Field()
   price: string;
 
-  @Field()
+  @Field({ nullable: true })
   providerId: string;
 
-  @Field()
+  @Field({ nullable: true })
   facilityId: string;
 
   @Field()
@@ -36,10 +35,10 @@ export class PaymentInputsAfterAppointment {
   @Field()
   price: string;
 
-  @Field()
+  @Field({ nullable: true })
   providerId: string;
 
-  @Field()
+  @Field({ nullable: true })
   facilityId: string;
 
   @Field()
@@ -57,10 +56,10 @@ export class CreateTransactionInputs {
   @Field({ nullable: false })
   patientId: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   doctorId: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   facilityId: string;
 
   @Field({ nullable: false })

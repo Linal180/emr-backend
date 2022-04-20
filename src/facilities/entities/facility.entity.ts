@@ -178,7 +178,7 @@ export class Facility {
   @OneToMany(() => User, user => user.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   user: User[];
 
-  @OneToMany(() => Contact, contact => contact.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => Contact, contact => contact.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
@@ -186,11 +186,11 @@ export class Facility {
   @Field(type => [Service], { nullable: true })
   services: Service[];
 
-  @ManyToOne(() => Practice, practice => practice.facilities, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Practice, practice => practice.facilities, { onDelete: 'CASCADE' })
   @Field(type => Practice, { nullable: true })
   practice: Practice;
 
-  @OneToMany(() => BillingAddress, billingAddress => billingAddress.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
+  @OneToMany(() => BillingAddress, billingAddress => billingAddress.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
 

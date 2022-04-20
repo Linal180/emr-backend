@@ -92,14 +92,14 @@ export class StaffService {
    * @param facilityId 
    * @returns staff 
    */
-  async addStaff(registerUserInput: RegisterUserInput, facilityId: string): Promise<Staff> {
+  async addStaff(registerUserInput: RegisterUserInput, facilityId: string, practiceId: string): Promise<Staff> {
     try {
       // register staff as user 
       const user = await this.usersService.create({ ...registerUserInput, facilityId })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Staff Creation
-      const staffInstance = this.staffRepository.create(registerUserInput)
+      const staffInstance = this.staffRepository.create({...registerUserInput, practiceId})
       staffInstance.user = user;
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
@@ -111,7 +111,6 @@ export class StaffService {
     }
   }
 
-
   /**
    * Finds all staff
    * @param staffInput 
@@ -119,7 +118,8 @@ export class StaffService {
    */
   async findAllStaff(staffInput: StaffInput): Promise<AllStaffPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Staff>(this.staffRepository, staffInput)
+      const [first]  = staffInput.searchString ? staffInput.searchString.split(' ') : ''
+      const paginationResponse = await this.paginationService.willPaginate<Staff>(this.staffRepository, { ...staffInput, associatedTo: 'Staff', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse

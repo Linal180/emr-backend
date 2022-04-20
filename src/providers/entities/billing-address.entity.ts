@@ -62,6 +62,10 @@ export class BillingAddress {
   @Field({ nullable: true })
   checkPayableTo: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
   @ManyToOne(() => Facility, facility => facility.contacts, { onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;

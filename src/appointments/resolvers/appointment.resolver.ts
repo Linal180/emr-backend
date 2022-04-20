@@ -6,9 +6,12 @@ import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
+import { Invoice } from 'src/payment/entity/invoice.entity';
+import { InvoiceService } from 'src/payment/services/invoice.service';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import AppointmentInput from '../dto/appointment-input.dto';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
@@ -23,12 +26,13 @@ export class AppointmentResolver {
   constructor(private readonly appointmentService: AppointmentService,
     private readonly patientService: PatientService,
     private readonly doctorService: DoctorService,
+    private readonly invoiceService: InvoiceService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService) { }
 
   @Mutation(() => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'removeAttachmentData')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createAppointment')
   async createAppointment(@Args('createAppointmentInput') createAppointmentInput: CreateAppointmentInput) {
     return {
       appointment: await this.appointmentService.createAppointment(createAppointmentInput),
@@ -37,8 +41,6 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'createExternalAppointment')
   async createExternalAppointment(@Args('createExternalAppointmentInput') createExternalAppointmentInput: CreateExternalAppointmentInput) {
     return {
       appointment: await this.appointmentService.createExternalAppointmentInput(createExternalAppointmentInput),
@@ -48,8 +50,8 @@ export class AppointmentResolver {
 
   
   @Mutation(() => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updateAppointment')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateAppointment')
   async updateAppointment(@Args('updateAppointmentInput') updateAppointmentInput: UpdateAppointmentInput) {
     return {
       appointment: await this.appointmentService.updateAppointment(updateAppointmentInput),
@@ -58,8 +60,8 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updateAppointmentBillingStatus')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateAppointmentBillingStatus')
   async updateAppointmentBillingStatus(@Args('updateAppointmentBillingStatusInput') updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput) {
     return {
       appointment: await this.appointmentService.updateAppointmentBillingStatus(updateAppointmentBillingStatusInput),
@@ -68,8 +70,8 @@ export class AppointmentResolver {
   }
 
   @Query(returns => AppointmentsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllAppointments')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllAppointments')
   async findAllAppointments(@Args('appointmentInput') appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     const appointments = await this.appointmentService.findAllAppointments(appointmentInput)
     if (appointments) {
@@ -88,34 +90,41 @@ export class AppointmentResolver {
 
   @ResolveField((returns) => [Patient])
   async patient(@Parent() appointment: Appointment):  Promise<Patient>  {
-    if (appointment) {
+    if (appointment && appointment.patientId) {
       return await this.patientService.findOne(appointment.patientId);
     }
   }
 
   @ResolveField((returns) => [Doctor])
   async provider(@Parent() appointment: Appointment): Promise<Doctor> {
-    if (appointment) {
+    if (appointment && appointment.providerId) {
      return await this.doctorService.findOne(appointment.providerId);
     }
   }
 
   @ResolveField((returns) => [Facility])
   async facility(@Parent() appointment: Appointment): Promise<Facility> {
-    if (appointment) {
+    if (appointment && appointment.facilityId) {
      return await this.facilityService.findOne(appointment.facilityId);
     }
   }
 
   @ResolveField((returns) => [Service])
   async appointmentType(@Parent() appointment: Appointment): Promise<Service> {
-    if (appointment) {
+    if (appointment && appointment.appointmentTypeId) {
      return await this.servicesService.findOne(appointment.appointmentTypeId);
     }
   }
 
+  @ResolveField((returns) => [Invoice]) 
+  async invoice(@Parent() appointment: Appointment): Promise<Invoice> {
+    if (appointment) {
+     return await this.invoiceService.findInvoiceByAppointmentId(appointment.id);
+    }
+  }
+
   @Query(returns => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)s
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getAppointment')
   async getAppointment(@Args('getAppointment') getAppointment: GetAppointment): Promise<AppointmentPayload> {
     const appointment = await this.appointmentService.getAppointment(getAppointment.id)
@@ -126,8 +135,8 @@ export class AppointmentResolver {
   }
 
   @Query(returns => AppointmentsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getDoctorAppointment')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getAppointments')
   async getAppointments(@Args('getAppointments') getAppointments: GetAppointments): Promise<AppointmentsPayload> {
     return {
       appointments: await this.appointmentService.getAppointments(getAppointments),
@@ -136,8 +145,8 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'removeAppointment')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeAppointment')
   async removeAppointment(@Args('removeAppointment') removeAppointment: RemoveAppointment) {
     await this.appointmentService.removeAppointment(removeAppointment);
     return { response: { status: 200, message: 'Appointment Deleted' } };
@@ -150,8 +159,8 @@ export class AppointmentResolver {
   }
 
   @Query(returns => AppointmentsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getPatientAppointment')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientAppointment')
   async getPatientAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<AppointmentsPayload> {
     return {
       appointments: await this.appointmentService.getPatientAppointment(getPatientAppointmentInput),
@@ -160,8 +169,8 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateAppointmentStatus')
   async updateAppointmentStatus(@Args('appointmentStatusInput') appointmentStatusInput: UpdateAppointmentStatusInput) {
     return {
       appointment: await this.appointmentService.updateAppointmentStatus(appointmentStatusInput),
