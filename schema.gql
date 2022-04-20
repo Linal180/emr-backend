@@ -1306,6 +1306,11 @@ type UserFormsPayload {
   response: ResponsePayloadResponse
 }
 
+type FormMediaPayload {
+  publicUrl: String
+  response: ResponsePayloadResponse
+}
+
 type PatientAllergiesPayload {
   response: ResponsePayload
   patientAllergies: [PatientAllergies]
@@ -1711,6 +1716,7 @@ type Mutation {
   removeForm(removeForm: RemoveForm!): FormPayload!
   createElement(inputs: ElementInputs!): Element!
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
+  getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
 }
 
 input LoginUserInput {
@@ -2808,4 +2814,9 @@ input UserFormElementInputs {
 input ArrayOfStringsTypeInput {
   name: String!
   value: Boolean!
+}
+
+input GetPublicMediaInput {
+  url: String!
+  formId: String!
 }
