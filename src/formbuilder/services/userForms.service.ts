@@ -1,10 +1,10 @@
-import { HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException } from "@nestjs/common";
+import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 //user import
 import { PaginationService } from "src/pagination/pagination.service";
 import { UserForms } from '../entities/userforms.entity'
-import { CreateUserFormInput, UserFormInput } from "../dto/userForms.input";
+import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
 import { UserFormElementService } from "./userFormElements.service";
 import { AttachmentType } from "src/attachments/entities/attachment.entity";
 import { UpdateAttachmentMediaInput } from "src/attachments/dto/update-attachment.input";
@@ -85,6 +85,31 @@ export class UserFormsService {
         status: HttpStatus.PRECONDITION_FAILED,
         error: 'Could not create or upload media',
       });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getUploadMedia({ url, formId }: GetPublicMediaInput): Promise<String> {
+    try {
+      if (url?.length > 0 && url.includes(`${AttachmentType.FORM_BUILDER}/${formId}`)) {
+        const attachment = await this.awsService.getFile(url);
+        if (attachment) {
+          return attachment
+        }
+        throw new PreconditionFailedException({
+          status: HttpStatus.PRECONDITION_FAILED,
+          error: 'Could not get media',
+        });
+      }
+      else {
+        throw new BadRequestException({
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Invalid url',
+        });
+      }
+
     }
     catch (error) {
       throw new InternalServerErrorException(error);
