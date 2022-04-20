@@ -200,7 +200,7 @@ export class PatientService {
         const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
         if(!userAlreadyExist){
-         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId})
+         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId, facilityId: patientInstance.facilityId})
          patientInstance.user = user
          const patient =  await this.patientRepository.save(patientInstance)
          await this.usersService.saveUserId(patient.id, user);
