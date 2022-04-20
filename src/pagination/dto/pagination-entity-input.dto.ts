@@ -40,4 +40,5 @@ export class PaginatedEntityInput {
   patientRecord?: string
   username?: string
   currentPhaseId?: string
+  FormId?: string
 }
