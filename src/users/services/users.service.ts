@@ -494,7 +494,7 @@ export class UsersService {
       user.token = token;
       const roles = user.roles.map(u => u.role);
       if (user) {
-        const isAdmin = roles.some(role => role.includes('admin' || 'super-admin'))
+        const isAdmin = roles.some(role => role.includes('patient'))
         const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
         this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '',isAdmin, token, isInvite)
         delete user.roles
