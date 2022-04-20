@@ -151,6 +151,7 @@ export class PaginationService {
       dueToday,
       facilityId,
       singleFacilityId,
+      FormId,
       facilityName,
       practiceName,
       serviceName,
@@ -190,6 +191,9 @@ export class PaginationService {
         }),
         ...(doctorId && {
           doctorId
+        }),
+        ...(FormId && {
+          FormId
         }),
         ...(patientRecord && {
           patientRecord: Raw(alias => `${alias} ILIKE '%${patientRecord}%'`),
