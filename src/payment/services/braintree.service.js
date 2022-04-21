@@ -1,6 +1,6 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException } from "@nestjs/common";
 
-import braintree, { BraintreeGateway, Environment } from 'braintree';
+import { BraintreeGateway, Environment } from "braintree";
 
 const gateway = new BraintreeGateway({
   environment: Environment.Sandbox,
@@ -11,31 +11,57 @@ const gateway = new BraintreeGateway({
 
 export const braintreeACHPayment = async (inputs) => {
   try {
+    const { paymentMethodNonce, customerId, price } = inputs || {};
     const data = await gateway.paymentMethod.create({
-      ...inputs,
-      options:{
-        usBankAccountVerificationMethod: braintree.UsBankAccountVerification.VerificationMethod.NetworkCheck  
-      }
+      paymentMethodNonce,
+      customerId,
+      options: {
+        usBankAccountVerificationMethod: "network_check",
+      },
     });
+
     const { success, message, usBankAccount } = data;
-    console.log('data => ', data);
     if (success && usBankAccount) {
       const { paymentMethod } = data;
-      const { verified } = usBankAccount || {};
+      const { verified, verifications } = usBankAccount || {};
       const { token } = paymentMethod;
-      console.log('verified =>', verified);
       if (token && verified) {
-        const trans = await gateway.transaction.sale({
-          amount: '10.00',
-          paymentMethodToken: token,
-          options: {
-            submitForSettlement: true,
-          },
+        const verification = verifications[0] || {};
+        if (verification) {
+          const { status } = verification || {};
+          if (status === "verified") {
+            if (price) {
+              const response = await gateway.transaction.sale({
+                amount: price,
+                paymentMethodToken: token,
+                options: {
+                  submitForSettlement: true,
+                },
+              });
+              const { success, transaction } = response || {};
+              const { id } = transaction;
+              if (success && id) {
+                return id;
+              } else {
+                throw new InternalServerErrorException({
+                  message: "Transaction failed",
+                });
+              }
+            } else {
+              throw new InternalServerErrorException({
+                message: "Price is not defined.",
+              });
+            }
+          } else {
+            throw new InternalServerErrorException({
+              message: "Account is not verified.",
+            });
+          }
+        }
+      } else {
+        throw new InternalServerErrorException({
+          message: "Account is not verified.",
         });
-        console.log('updatedToken', trans);
-      }
-      else {
-        throw new InternalServerErrorException({ message: "Account is not verified." });
       }
       return paymentMethod;
     } else {

@@ -4,11 +4,12 @@ import {
   Injectable,
   InternalServerErrorException
 } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Configuration, CountryCode, PlaidApi, PlaidEnvironments, Products } from 'plaid';
-import { BraintreeGateway, Environment, PaymentMethodType } from 'braintree';
+import { BraintreeGateway, Environment, Transaction as BraintreeTransaction, ValidatedResponse } from 'braintree';
+//user imports
 import { AppointmentService } from '../../appointments/services/appointment.service';
-import { Repository } from 'typeorm';
 import { BraintreePayload, TransactionsPayload } from '../dto/payment.dto';
 import {
   CreateTransactionInputs,
@@ -276,8 +277,8 @@ export class PaymentService {
 
   async createCustomer(input: ACHPaymentInputs) {
     try {
-      const { firstName, lastName } = input || {}
-      const response = await this.gateway.customer.create({ firstName, lastName });
+      const { firstName, lastName, company } = input || {}
+      const response = await this.gateway.customer.create({ firstName, lastName, company });
       const { success, customer, message } = response;
       if (success) {
         const { id } = customer;
@@ -325,13 +326,25 @@ export class PaymentService {
 
   //ach payment
 
-  async achPayment(achPaymentInputs: ACHPaymentInputs) {
+  async achPayment(achPaymentInputs: ACHPaymentInputs): Promise<Transactions> {
     try {
-      const { token: paymentMethodNonce } = achPaymentInputs || {}
+      const { token: paymentMethodNonce, price, appointmentId, doctorId, facilityId, patientId } = achPaymentInputs || {}
       const customerId = await this.createCustomer(achPaymentInputs);
-      const response = await braintreeACHPayment({ paymentMethodNonce, customerId })
+      const trans = await braintreeACHPayment({ paymentMethodNonce, customerId, price });
 
-      return "something went wrong"
+      if (trans) {
+        const transactionId = trans as string
+        const transactionInputs = {
+          transactionId,
+          patientId,
+          doctorId,
+          facilityId,
+          appointmentId,
+          status: TRANSACTIONSTATUS.PAID
+        }
+        const transaction = await this.create(transactionInputs)
+        return transaction
+      }
     } catch (error) {
       throw new InternalServerErrorException(error)
     }

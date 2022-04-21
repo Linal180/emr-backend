@@ -7,7 +7,7 @@ import { AppointmentPayload } from '../../appointments/dto/appointment-payload.d
 //resolver
 @Resolver()
 export class PaymentResolver {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(private readonly paymentService: PaymentService) { }
 
   @Query(() => BraintreePayload)
   async getToken(): Promise<BraintreePayload> {
@@ -16,12 +16,12 @@ export class PaymentResolver {
 
   @Mutation(() => TransactionPayload)
   async chargePayment(@Args('paymentInput') paymentInput: PaymentInput): Promise<TransactionPayload> {
-    return  {
+    return {
       transaction: await this.paymentService.chargeBefore(paymentInput),
       response: { status: 200, message: 'Appointment updated successfully' }
     };
   }
-  
+
   @Mutation(() => AppointmentPayload)
   async chargeAfterAppointment(@Args('paymentInput') paymentInput: PaymentInputsAfterAppointment): Promise<AppointmentPayload> {
     return {
@@ -32,27 +32,33 @@ export class PaymentResolver {
 
   //get all transactions
 
-  @Mutation(()=> TransactionsPayload)
-  async getAllTransactions(@Args('transactionInputs') transactionInputs: GetAllTransactionsInputs):Promise<TransactionsPayload> {
+  @Mutation(() => TransactionsPayload)
+  async getAllTransactions(@Args('transactionInputs') transactionInputs: GetAllTransactionsInputs): Promise<TransactionsPayload> {
     return await this.paymentService.getAll(transactionInputs);
   }
 
   //ach payment 
 
-  @Mutation(()=> String)
-  async paymentByACH(@Args('achPaymentInputs') achPaymentInputs:ACHPaymentInputs) {
-   return await this.paymentService.achPayment(achPaymentInputs)
+  @Mutation(() => TransactionPayload)
+  async paymentByACH(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs): Promise<TransactionPayload> {
+    return {
+      transaction: await this.paymentService.achPayment(achPaymentInputs),
+      response: {
+        message: "Transaction created successfully.",
+        status: 200
+      }
+    }
   }
 
-   //plaid token 
-   @Mutation(()=> String)
-   async getPlaidLinkToken(@Args('achPaymentInputs') achPaymentInputs:ACHPaymentInputs) {
+  //plaid token 
+  @Mutation(() => String)
+  async getPlaidLinkToken(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs) {
     return await this.paymentService.getPlaidLinkToken()
-   }
+  }
 
-    //plaid token exchange
-    @Mutation(()=> String)
-    async exchangePlaidToken(@Args('achPaymentInputs') achPaymentInputs:ACHPaymentInputs) {
-     return await this.paymentService.exchangePlaidToken()
-    }
+  //plaid token exchange
+  @Mutation(() => String)
+  async exchangePlaidToken(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs) {
+    return await this.paymentService.exchangePlaidToken()
+  }
 }
