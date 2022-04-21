@@ -135,8 +135,8 @@ export class AppointmentResolver {
   }
 
   @Query(returns => AppointmentsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getAppointments')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAppointments')
   async getAppointments(@Args('getAppointments') getAppointments: GetAppointments): Promise<AppointmentsPayload> {
     return {
       appointments: await this.appointmentService.getAppointments(getAppointments),
