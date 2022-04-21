@@ -1311,6 +1311,22 @@ type FormMediaPayload {
   response: ResponsePayloadResponse
 }
 
+type FormTemplate {
+  id: String!
+  name: String!
+  layout: LayoutJSONType!
+}
+
+type FormTemplatePayload {
+  form: FormTemplate
+  response: ResponsePayloadResponse
+}
+
+type FormsTemplatesPayload {
+  forms: [FormTemplate!]
+  response: ResponsePayloadResponse
+}
+
 type PatientAllergiesPayload {
   response: ResponsePayload
   patientAllergies: [PatientAllergies]
@@ -1406,6 +1422,7 @@ type Query {
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
   findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
+  getAllFormsTemplates: FormsTemplatesPayload!
 }
 
 input UsersInput {
@@ -1714,6 +1731,7 @@ type Mutation {
   createElement(inputs: ElementInputs!): Element!
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
+  createFormTemplate(createFormTemplateInput: CreateFormTemplateInput!): FormTemplatePayload!
 }
 
 input LoginUserInput {
@@ -2810,4 +2828,9 @@ input ArrayOfStringsTypeInput {
 input GetPublicMediaInput {
   url: String!
   formId: String!
+}
+
+input CreateFormTemplateInput {
+  name: String!
+  layout: LayoutJSONInputType!
 }

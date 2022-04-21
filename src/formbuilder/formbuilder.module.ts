@@ -18,10 +18,13 @@ import { UserFormElementService } from './services/userFormElements.service';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { UserFormController } from './controllers/userFormBuilder.controller';
 import { AwsModule } from 'src/aws/aws.module';
+import { FormTemplate } from './entities/formTemplates.entity';
+import { FormTemplateService } from './services/formTemplate.service';
+import { FormTemplateResolver } from './resolvers/formTemplate.resolver';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Form, Element, FormElement, UserForms, UsersFormsElements]),
+    TypeOrmModule.forFeature([Form, Element, FormElement, UserForms, UsersFormsElements, FormTemplate]),
     forwardRef(() => UsersModule),
     PaginationModule,
     AttachmentsModule,
@@ -29,7 +32,9 @@ import { AwsModule } from 'src/aws/aws.module';
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,
-    ElementService, UserFormResolver, UserFormsService, UserFormElementService],
+    ElementService, UserFormResolver, UserFormsService, UserFormElementService,
+    FormTemplateService, FormTemplateResolver
+  ],
   exports: [FormsService, TypeOrmModule],
   controllers: [UserFormController]
 })
