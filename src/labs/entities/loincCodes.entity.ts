@@ -4,7 +4,7 @@ import { LabTests } from './labTests.entity';
 import { Observations } from './observations.entity';
 
 
-@Entity({ name: 'LoincCodes' })
+@Entity({ name: 'LoincCodes' }) 
 @ObjectType()
 export class LoincCodes {
   @PrimaryGeneratedColumn('uuid')
