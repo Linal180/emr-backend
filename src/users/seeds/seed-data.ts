@@ -121,6 +121,7 @@ export const PermissionData = [
     { name: 'findAllPatientAllergies'  , moduleType: 'Patient Charting' },
     { name: 'getPatientAllergy'  , moduleType: 'Patient Charting' },
     { name: 'removePatientAllergy'  , moduleType: 'Patient Charting' },
+    { name: 'findAllAllergies'  , moduleType: 'Patient Charting' },
 ];
 
 
@@ -133,7 +134,7 @@ export const practiceAdminPermissionsList = ['fetchAllUsers','fetchUser','getUse
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
 'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital'
-,'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+,'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','findAllAllergies','getPatientAllergy','removePatientAllergy']
 
 export const facilityAdminPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
@@ -144,7 +145,7 @@ export const facilityAdminPermissionsList = ['fetchAllUsers','fetchUser','getUse
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
 'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital',
-'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','findAllAllergies','getPatientAllergy','removePatientAllergy']
 
 export const doctorPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
@@ -178,7 +179,7 @@ export const practitionerNursePermissionsList = ['fetchAllUsers','fetchUser','ge
 'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem'
-,'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital','addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+,'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital','addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','findAllAllergies','getPatientAllergy','removePatientAllergy']
 
 export const officeManagerPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
@@ -187,7 +188,7 @@ export const officeManagerPermissionsList = ['fetchAllUsers','fetchUser','getUse
 'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
 'findAllStaff','getStaff','removeStaff','disableStaff','removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes',
 'findAllPatientProblem','updatePatientProblem','addPatientProblem','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital',
-'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','findAllAllergies','getPatientAllergy','removePatientAllergy']
 
 export const doctorAssistantPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
@@ -196,7 +197,7 @@ export const doctorAssistantPermissionsList = ['fetchAllUsers','fetchUser','getU
 'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',
-'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital','addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital','addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','findAllAllergies','getPatientAllergy','removePatientAllergy']
 
 export const frontDeskPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
@@ -205,4 +206,4 @@ export const frontDeskPermissionsList = ['fetchAllUsers','fetchUser','getUser','
 'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',
-'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital','addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital','addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','findAllAllergies','getPatientAllergy','removePatientAllergy']
