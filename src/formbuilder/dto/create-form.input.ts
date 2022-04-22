@@ -87,10 +87,10 @@ export class CreateFormInput {
   @Field(() => Boolean, { nullable: true })
   isActive: boolean;
 
-  @Field(() => FormType, { nullable: false })
+  @Field(() => FormType, { nullable: true })
   type: FormType;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   facilityId: string;
 
   @Field(() => LayoutJSONInputType, { nullable: false })

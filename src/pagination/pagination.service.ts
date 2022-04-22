@@ -163,6 +163,7 @@ export class PaginationService {
       appointmentStatus,
       categoryId,
       category,
+      isSystemForm,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -239,6 +240,9 @@ export class PaginationService {
         }),
         ...(dueToday && {
           dueDate: Equal(new Date().toISOString().split('T')[0])
+        }),
+        ...(isSystemForm != null && {
+          isSystemForm
         }),
       }
     };

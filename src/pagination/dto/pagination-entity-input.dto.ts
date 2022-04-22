@@ -41,4 +41,5 @@ export class PaginatedEntityInput {
   username?: string
   currentPhaseId?: string
   FormId?: string
+  isSystemForm?: boolean
 }
