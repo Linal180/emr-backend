@@ -2,12 +2,12 @@ import { Field, InputType } from '@nestjs/graphql';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 
 @InputType()
-export default class AllergyInput {
+export default class PatientAllergyInput {
     @Field({ nullable: true })
-    allergyType?: string
+    patientId?: string
 
     @Field({ nullable: true })
-    allergyName?: string
+    appointmentId?: string
 
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
