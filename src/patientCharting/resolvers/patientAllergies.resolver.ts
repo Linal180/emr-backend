@@ -8,13 +8,15 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
-import { PatientAllergiesPayload } from '../dto/allergiess-payload.dto';
-import PatientAllergyInput from '../dto/allergy-input.dto';
+import { PatientAllergiesPayload } from '../dto/patient-allergiess-payload.dto';
+import PatientAllergyInput from '../dto/patient-allergy-input.dto';
 import { CreatePatientAllergyInput } from '../dto/create-patient-allergy.input';
 import { PatientAllergyPayload } from '../dto/patient-allergy-payload.dto';
 import { GetPatientAllergy, RemovePatientAllergy, UpdateAllergyInput } from '../dto/update-allergy.input';
 import { PatientAllergies } from '../entities/patientAllergies.entity';
 import { PatientAllergiesService } from '../services/patientAllergies.service';
+import AllergyInput from '../dto/allergy-input.dto';
+import { AllergiesPayload } from '../dto/allergiess-payload.dto';
 
 @Resolver(() => PatientAllergies)
 export class PatientAllergiesResolver {
@@ -83,6 +85,26 @@ export class PatientAllergiesResolver {
     });
   }
 
+  @Query(returns => AllergiesPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllAllergies')
+  async findAllAllergies(@Args('allergyInput') allergyInput: AllergyInput): Promise<AllergiesPayload> {
+    const allergies = await this.patientAllergiesService.findAllAllergies(allergyInput)
+    if (allergies) {
+      return {
+        ...allergies,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Allergies not found',
+    });
+  }
+
+  
   @Query(returns => PatientAllergyPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getPatientAllergy')

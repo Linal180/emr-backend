@@ -1,12 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
 import { ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
-import { Allergies } from '../entities/allergies.entity';
+import { PatientAllergies } from '../entities/patientAllergies.entity';
 
 @ObjectType()
-export class AllergiesPayload extends ResponsePayloadResponse {
-    @Field(type => [Allergies], { nullable: 'itemsAndList' })
-    allergies: Allergies[];
+export class PatientAllergiesPayload extends ResponsePayloadResponse {
+    @Field(type => [PatientAllergies], { nullable: 'itemsAndList' })
+    patientAllergies: PatientAllergies[];
 
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload

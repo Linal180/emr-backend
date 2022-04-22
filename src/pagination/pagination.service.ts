@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Between, Equal, FindConditions, FindManyOptions, FindOperator, JoinOptions, Not, ObjectLiteral, Raw, Repository, WhereExpressionBuilder } from "typeorm";
+import { Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral, Raw, Repository, WhereExpressionBuilder } from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
 
@@ -153,6 +153,8 @@ export class PaginationService {
       singleFacilityId,
       FormId,
       facilityName,
+      allergyName,
+      allergyType,
       practiceName,
       serviceName,
       searchString,
@@ -186,6 +188,12 @@ export class PaginationService {
         ...(facilityId && {
           facilityId
         }),
+        ...(allergyName && {
+            name: Raw(alias => `${alias} ILIKE '%${allergyName}%'`),
+        }),
+        ...(allergyType && {
+          allergyType: In([allergyType]),
+      }),
         ...(singleFacilityId && {
           id: singleFacilityId
         }),
