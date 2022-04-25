@@ -23,9 +23,13 @@ export class UsersFormsElements {
     @Field({ nullable: true })
     value: string;
 
-    @Column({ array: false, type: 'jsonb', nullable: false })
+    @Column({ array: false, type: 'jsonb', nullable: true })
     @Field(() => [ArrayOfStringsType])
-    arrayOfStrings: ArrayOfStringsType[];
+    arrayOfObjects: ArrayOfStringsType[];
+
+    @Column({ array: false, type: 'jsonb', nullable: false })
+    @Field(() => [String])
+    arrayOfStrings: string[]
 
     @CreateDateColumn({ type: 'timestamptz', nullable: true })
     @Field({ nullable: true })

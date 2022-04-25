@@ -29,7 +29,8 @@ import { AwsModule } from 'src/aws/aws.module';
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,
-    ElementService, UserFormResolver, UserFormsService, UserFormElementService],
+    ElementService, UserFormResolver, UserFormsService, UserFormElementService
+  ],
   exports: [FormsService, TypeOrmModule],
   controllers: [UserFormController]
 })
