@@ -68,6 +68,9 @@ export class FieldsTypes {
     @Field(() => Boolean, { nullable: false })
     textArea: boolean;
 
+    @Field(() => Boolean, { nullable: true })
+    isMultiSelect: boolean;
+
 }
 @ObjectType()
 export class SectionsTypes {
