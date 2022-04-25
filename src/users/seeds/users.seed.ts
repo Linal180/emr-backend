@@ -7,7 +7,7 @@ import { Permission } from "../entities/permissions.entity";
 import { Role } from '../entities/role.entity';
 import { RolePermission } from "../entities/rolePermissions.entity";
 import { User } from '../entities/user.entity';
-import { doctorAssistantPermissionsList, doctorPermissionsList, facilityAdminPermissionsList, FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList, patientPermissionsList, PermissionData, practiceAdminPermissionsList, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
+import { doctorAssistantPermissionsList, doctorPermissionsList, facilityAdminPermissionsList, emergencyAccessPermissionsList, FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList, patientPermissionsList, PermissionData, practiceAdminPermissionsList, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
 
 @Injectable()
 export class CreateUsers implements Seeder {
@@ -63,6 +63,17 @@ export class CreateUsers implements Seeder {
       let adminRolePermissionsRes = getRepository(RolePermission).create(adminRolePermissions)
       adminRolePermissionsRes = await queryRunner.manager.save(adminRolePermissionsRes);
       }
+
+      //Add emergency access role Permissions
+      let emergencyAccessRole = roles.find((item)=> item.role === 'emergency-access')
+      let emergencyAccessRolePermission =  await getRepository(RolePermission).find({where: {role: emergencyAccessRole.id}});
+      if(!emergencyAccessRolePermission.length){
+      let emergencyAccessPermissionList = permissions.filter(x => emergencyAccessPermissionsList.find(y => (y === x.name)));
+      let emergencyAccessRolePermissions = await this.rolePermissionPayload(emergencyAccessPermissionList, emergencyAccessRole)
+      let emergencyAccessRolePermissionsRes = getRepository(RolePermission).create(emergencyAccessRolePermissions)
+      emergencyAccessRolePermissionsRes = await queryRunner.manager.save(emergencyAccessRolePermissionsRes);
+      }
+
       //Add doctor role Permissions
       let doctorRole = roles.find((item)=> item.role === 'doctor')
       let doctorRolePermission = await getRepository(RolePermission).find({where: {role: doctorRole.id}})

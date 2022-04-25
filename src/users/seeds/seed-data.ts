@@ -19,7 +19,8 @@ export const RolesData = [
     { role: 'nurse-practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
     { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
     { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" },
-    { role: 'front-desk', customRole: false, description: "front desk assistant has partial permissions of admin" }
+    { role: 'front-desk', customRole: false, description: "front desk assistant has partial permissions of admin" },
+    { role: 'emergency-access', customRole: false, description: "emergency access role has facility-admin level permissions" }
 ];
 
 export const UsersData = [
@@ -29,6 +30,7 @@ export const UsersData = [
 ];
  
 export const PermissionData = [
+    { name: 'emergencyAccess'  , moduleType: 'Emergency Access' },
     { name: 'fetchAllUsers' , moduleType: 'User'},
     { name: 'fetchUser' , moduleType: 'User'},
     { name: 'getUser' , moduleType: 'User'},
@@ -136,6 +138,17 @@ export const practiceAdminPermissionsList = ['fetchAllUsers','fetchUser','getUse
 ,'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
 
 export const facilityAdminPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'findAllAppointments','getAppointment','getAppointments','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','updatePatientProvider','findAllPatient','getPatient','createPractice',
+'updatePractice','getPractice','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
+'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
+'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital',
+'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+
+export const emergencyAccessPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
 'findAllAppointments','getAppointment','getAppointments','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
 'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
