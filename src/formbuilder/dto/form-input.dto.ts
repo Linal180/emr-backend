@@ -7,6 +7,9 @@ export default class FormInput {
     @Field({ nullable: true })
     facilityId?: string
 
+    @Field(() => Boolean, { nullable: true })
+    isSystemForm?: boolean
+
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }
