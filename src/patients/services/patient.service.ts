@@ -294,7 +294,7 @@ export class PatientService {
   async findAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
       const [first]  = patientInput.searchString ? patientInput.searchString.split(' ') : ''
-      const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, { ...patientInput, associatedTo: 'Patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
+      const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, { ...patientInput, associatedTo: 'Patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', columnName4: 'dob', columnName5: 'ssn', columnName6: 'patientRecord', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse

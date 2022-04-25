@@ -1,12 +1,11 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { PaginationService } from 'src/pagination/pagination.service';
-import { PatientService } from 'src/patients/services/patient.service';
-import { StaffService } from 'src/providers/services/staff.service';
 import { UtilsService } from 'src/util/utils.service';
 import { In, Repository } from 'typeorm';
 import { CreateReactionInput } from '../dto/create-reaction.input';
+import ReactionInput from '../dto/reaction-input.dto';
+import { ReactionsPayload } from '../dto/reactions-payload.dto';
 import { RemoveReaction, UpdateReactionInput } from '../dto/update-reaction.input';
 import { Reactions } from '../entities/reactions.entity';
 
@@ -16,13 +15,15 @@ export class ReactionsService {
     @InjectRepository(Reactions)
     private reactionsRepository: Repository<Reactions>,
     private readonly paginationService: PaginationService,
-    private readonly appointmentService: AppointmentService,
-    private readonly staffService: StaffService,
-    private readonly patientService: PatientService,
     private readonly utilsService: UtilsService
   ) { }
 
 
+  /**
+   * Adds reaction
+   * @param createReactionInput 
+   * @returns reaction 
+   */
   async addReaction(createReactionInput: CreateReactionInput): Promise<Reactions> {
     try {
       //create reaction
@@ -35,6 +36,11 @@ export class ReactionsService {
     }
   }
 
+  /**
+   * Updates reaction
+   * @param updateReactionInput 
+   * @returns reaction 
+   */
   async updateReaction(updateReactionInput: UpdateReactionInput): Promise<Reactions> {
     try {
       return await this.utilsService.updateEntityManager(Reactions, updateReactionInput.id, updateReactionInput, this.reactionsRepository)
@@ -44,6 +50,31 @@ export class ReactionsService {
   }
 
 
+  /**
+   * Finds all reactions
+   * @param reactionInput 
+   * @returns all reactions 
+   */
+  async findAllReactions(reactionInput: ReactionInput): Promise<ReactionsPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Reactions>(this.reactionsRepository, reactionInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        reactions: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
   async findOne(id: string): Promise<Reactions> {
     const reaction = await this.reactionsRepository.findOne(id);
     if(reaction){
@@ -55,6 +86,11 @@ export class ReactionsService {
     });
   }
 
+  /**
+   * Gets reactions
+   * @param reactionsIds 
+   * @returns reactions 
+   */
   async getReactions(reactionsIds: string[]): Promise<Reactions[]>{
     return await this.reactionsRepository.find({
       where: {
@@ -63,10 +99,19 @@ export class ReactionsService {
     });
   }
 
+  /**
+   * Gets reaction
+   * @param id 
+   * @returns reaction 
+   */
   async GetReaction(id: string): Promise<Reactions> {
     return await this.findOne(id);
   }
 
+  /**
+   * Removes patient vital
+   * @param { id } 
+   */
   async removePatientVital({ id }: RemoveReaction) {
     try {
       await this.reactionsRepository.delete(id)
