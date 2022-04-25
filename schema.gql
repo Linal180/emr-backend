@@ -1311,6 +1311,12 @@ type FormMediaPayload {
   response: ResponsePayloadResponse
 }
 
+type AllergiesPayload {
+  response: ResponsePayload
+  allergies: [Allergies]
+  pagination: PaginationPayload
+}
+
 type PatientAllergiesPayload {
   response: ResponsePayload
   patientAllergies: [PatientAllergies]
@@ -1322,9 +1328,9 @@ type PatientAllergyPayload {
   patientAllergy: PatientAllergies
 }
 
-type AllergiesPayload {
+type ReactionsPayload {
   response: ResponsePayload
-  allergies: [Allergies]
+  reactions: [Reactions]
   pagination: PaginationPayload
 }
 
@@ -1541,6 +1547,7 @@ type Query {
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
   findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
   findAllAllergies(allergyInput: AllergyInput!): AllergiesPayload!
+  findAllReactions(reactionInput: ReactionInput!): ReactionsPayload!
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
@@ -1746,6 +1753,11 @@ input PatientAllergyInput {
 input AllergyInput {
   allergyType: String
   allergyName: String
+  paginationOptions: PaginationInput!
+}
+
+input ReactionInput {
+  reactionName: String
   paginationOptions: PaginationInput!
 }
 

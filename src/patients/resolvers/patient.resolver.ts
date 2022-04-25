@@ -59,7 +59,6 @@ export class PatientResolver {
     };
   }
 
-
   @Mutation(() => PatientPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updatePatientProfile')

@@ -22,12 +22,13 @@ export class PaginatedEntityInput {
   role?: string
   phychType?: string
   allergyType?: string
+  reactionName?: string
   allergyName?: string
   ageGroupId?: string
   primaryContact?: boolean
   categoryId?: string
   category?: { id: string }
-  associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?: string, filterType: string }
+  associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?: string,columnName4?: string, columnName5?: string,columnName6?: string, filterType: string }
   paginationOptions: PaginationInput
   associatedTo?: string
   relationField?: string
