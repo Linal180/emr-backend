@@ -21,6 +21,8 @@ export class PaginatedEntityInput {
   doctorId?: string
   role?: string
   phychType?: string
+  allergyType?: string
+  allergyName?: string
   ageGroupId?: string
   primaryContact?: boolean
   categoryId?: string

@@ -7,13 +7,15 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
-import { PatientAllergiesPayload } from '../dto/allergiess-payload.dto';
-import PatientAllergyInput from '../dto/allergy-input.dto';
+import { PatientAllergiesPayload } from '../dto/patient-allergiess-payload.dto';
+import PatientAllergyInput from '../dto/patient-allergy-input.dto';
 import { CreatePatientAllergyInput } from '../dto/create-patient-allergy.input';
 import { RemovePatientAllergy, UpdateAllergyInput } from '../dto/update-allergy.input';
 import { Allergies } from '../entities/allergies.entity';
 import { PatientAllergies } from '../entities/patientAllergies.entity';
 import { ReactionsService } from './reactions.service';
+import AllergyInput from '../dto/allergy-input.dto';
+import { AllergiesPayload } from '../dto/allergiess-payload.dto';
 
 @Injectable()
 export class PatientAllergiesService {
@@ -145,6 +147,26 @@ export class PatientAllergiesService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  /**
+   * Finds all allergies
+   * @param allergyInput 
+   * @returns all allergies 
+   */
+  async findAllAllergies(allergyInput: AllergyInput): Promise<AllergiesPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<Allergies>(this.allergiesRepository, allergyInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        allergies: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
 
   /**
    * Finds one
