@@ -1541,6 +1541,7 @@ type Query {
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
   findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
   findAllAllergies(allergyInput: AllergyInput!): AllergiesPayload!
+  findAllReactions(allergyInput: AllergyInput!): AllergiesPayload!
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
