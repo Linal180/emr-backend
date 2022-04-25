@@ -286,7 +286,7 @@ export class PatientService {
     return await this.patientRepository.save(patientInstance)
   }
 
-  /**
+  /** 
    * Finds all patients
    * @param patientInput 
    * @returns all patients 
