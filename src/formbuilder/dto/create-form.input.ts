@@ -77,6 +77,9 @@ export class FieldsInputs {
 
   @Field(() => Boolean, { nullable: false })
   textArea: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isMultiSelect: boolean;
 }
 @InputType()
 export class CreateFormInput {

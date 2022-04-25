@@ -1173,6 +1173,7 @@ type FieldsTypes {
   fieldId: String!
   options: [FieldOptionsType!]!
   textArea: Boolean!
+  isMultiSelect: Boolean
 }
 
 """The form's element types"""
@@ -1217,7 +1218,8 @@ type UsersFormsElements {
   UsersFormsId: String!
   FormsElementsId: String!
   value: String
-  arrayOfStrings: [ArrayOfStringsType!]!
+  arrayOfObjects: [ArrayOfStringsType!]!
+  arrayOfStrings: [String!]!
   createdAt: String
   updatedAt: String
   userForm: UserForms
@@ -2778,6 +2780,7 @@ input FieldsInputs {
   fieldId: String!
   options: [FieldOptionsInputType!]!
   textArea: Boolean!
+  isMultiSelect: Boolean
 }
 
 input FieldOptionsInputType {
@@ -2815,7 +2818,8 @@ input CreateUserFormInput {
 input UserFormElementInputs {
   FormsElementsId: String!
   value: String!
-  arrayOfStrings: [ArrayOfStringsTypeInput!]!
+  arrayOfObjects: [ArrayOfStringsTypeInput!]!
+  arrayOfStrings: [String!]!
 }
 
 input ArrayOfStringsTypeInput {

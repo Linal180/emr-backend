@@ -7,9 +7,10 @@ export class ArrayOfStringsTypeInput {
   @Field()
   name: string;
 
-  @Field(()=> Boolean)
+  @Field(() => Boolean)
   value: boolean
 }
+
 
 
 @InputType()
@@ -22,6 +23,9 @@ export class UserFormElementInputs {
   value: string;
 
   @Field(() => [ArrayOfStringsTypeInput])
-  arrayOfStrings: ArrayOfStringsTypeInput[];
-  
+  arrayOfObjects: ArrayOfStringsTypeInput[];
+
+  @Field(() => [String])
+  arrayOfStrings: string[];
+
 }
