@@ -50,4 +50,10 @@ export class PatientController {
     return { status: 200, message: 'Patient attachment fetched successfully' }
   }
 
+  @Get('/:limit/:page')
+  async getPatients(@Param('limit') limit: number, @Param('page') page: number) {
+    const patientsResponse = await this.patientService.fetchAllPatients({limit,page})
+    return patientsResponse
+  }
+
 }
