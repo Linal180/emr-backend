@@ -28,7 +28,7 @@ export class FormResolver {
   async createForm(@Args('createFormInput') createFormInput: CreateFormInput) {
     return {
       form: await this.formsService.createForm(createFormInput),
-      response: { status: 200, message: 'Service created successfully' }
+      response: { status: 200, message: 'Form is created successfully' }
     };
   }
 
@@ -95,7 +95,7 @@ export class FormResolver {
 
   async findAllUsersForms(@Args('userFormInput') userFormInput: UserFormInput): Promise<UserFormsPayload> {
     const form = await this.formsService.findOne(userFormInput.FormId);
-    const userForms = await this.userFormsService.getAll(userFormInput);   
+    const userForms = await this.userFormsService.getAll(userFormInput);
     form.userForms = userForms.userForms
     if (userForms) {
       return {
@@ -110,6 +110,22 @@ export class FormResolver {
       error: 'User Forms not found',
     });
 
+  }
+
+  @Mutation(() => FormPayload)
+  // @UseGuards(J wtAuthGraphQLGuard, RoleGuard)
+  async createFormTemplate(
+    @Args("createFormInput")
+    createFormInput: CreateFormInput
+  ): Promise<FormPayload> {
+
+    return {
+      form: await this.formsService.createFormTemplate(createFormInput),
+      response: {
+        message: "Form Template is created Successfully.",
+        status: HttpStatus.OK,
+      },
+    };
   }
 
   @ResolveField(() => [FormElement])
