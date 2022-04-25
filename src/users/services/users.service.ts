@@ -157,7 +157,8 @@ export class UsersService {
    */
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
-      const { roles } = updateRoleInput 
+      const { roles } = updateRoleInput
+      console.log("roles",roles);
       const isSuperAdmin = roles.includes("super-admin"); 
       if (isSuperAdmin) {
         throw new ConflictException({
@@ -172,6 +173,7 @@ export class UsersService {
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
+          console.log("fetchRoles",fetchRoles);
         user.roles = fetchRoles
         return await this.usersRepository.save(user);
       }
