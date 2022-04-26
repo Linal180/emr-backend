@@ -652,5 +652,764 @@ export const FormTemplates = [
 		type: FormType.TEMPLATE,
 		isSystemForm: true,
 		isActive: true
+	}, {
+		layout: {
+			sections: [
+				{
+					id: "89013df0-d818-47c8-bef4-7df14b8af24a",
+					col: 12,
+					name: "SOAP Plan",
+					fields: [
+						{
+							css: "",
+							name: "labs",
+							type: ElementType.SELECT,
+							label: "Labs",
+							column: 6,
+							fieldId: "88a82fac-d80b-4950-b1f2-29137c7596f5",
+							options: [
+								{
+									name: "LABS (to be done at Quest)",
+									value: "LABS (to be done at Quest)",
+								},
+								{
+									name: "LABS (to be done at LabCorp)",
+									value: "LABS (to be done at LabCorp)",
+								},
+								{
+									name: "LABS (to be done at Athena)",
+									value: "LABS (to be done at Athena)",
+								},
+								{
+									name: "Electrolyte panel",
+									value: "Electrolyte panel",
+								},
+								{
+									name: "Hepatic function panel",
+									value: "Hepatic function panel",
+								},
+								{
+									name: "Basic metabolic panel",
+									value: "Basic metabolic panel",
+								},
+								{
+									name: "Carbamazepine level",
+									value: "Carbamazepine level",
+								},
+								{
+									name: "Comp metabolic panel",
+									value: "Comp metabolic panel",
+								},
+								{
+									name: "Lipid panel",
+									value: "Lipid panel",
+								},
+								{
+									name: "Hepatitis panel",
+									value: "Hepatitis panel",
+								},
+								{
+									name: "Hypercoagulation Panel: Protein C; Protein S; Cardiolipin Ab; Russel viper venom; Antithrombin III; APCR; ANA; Sed rate",
+									value:
+										"Hypercoagulation Panel: Protein C; Protein S; Cardiolipin Ab; Russel viper venom; Antithrombin III; APCR; ANA; Sed rate",
+								},
+								{
+									name: "Homocysteine",
+									value: "Homocysteine",
+								},
+								{
+									name: "Autoimmune Panel: ANA; Anti SSA/SSB; Actin Ab IgG; Scleroderma Ab; Anti Jo-1 Ab; Anti DNA-DS; Anti RNP",
+									value:
+										"Autoimmune Panel: ANA; Anti SSA/SSB; Actin Ab IgG; Scleroderma Ab; Anti Jo-1 Ab; Anti DNA-DS; Anti RNP",
+								},
+								{
+									name: "Immunologic Indicated Panel: ANA; Rheum Arth factor; Complement C3; Immunofixation; IgA; IgM; IgG",
+									value:
+										"Immunologic Indicated Panel: ANA; Rheum Arth factor; Complement C3; Immunofixation; IgA; IgM; IgG",
+								},
+								{
+									name: "Infectious Disease Panel: HIV 1 Ab; HTLV I/II Ab; Lyme disease Ab; Hep B SAb; Hep C Ab",
+									value:
+										"Infectious Disease Panel: HIV 1 Ab; HTLV I/II Ab; Lyme disease Ab; Hep B SAb; Hep C Ab",
+								},
+								{
+									name: "Myasthenia Gravis Panel: AChR Binding Ab; AChR Blocking Ab; AChR Modulating Ab; Anti MUsk Ab",
+									value:
+										"Myasthenia Gravis Panel: AChR Binding Ab; AChR Blocking Ab; AChR Modulating Ab; Anti MUsk Ab",
+								},
+								{
+									name: "Myasthenia Gravis Panel: AChR Binding Ab; AChR Blocking Ab; AChR Modulating Ab; Anti MUsk Ab",
+									value:
+										"Myasthenia Gravis Panel: AChR Binding Ab; AChR Blocking Ab; AChR Modulating Ab; Anti MUsk Ab",
+								},
+								{
+									name: "Infectious Neuropathies Panel: Cytomegalovirus; Herpes simplex virus IgG / IgM; Herpes zoster (shingles); Hep C Ab; Hep B 006510; HIV Ab; Lyme dis IgG/IgM Ab screen; Corynebacterium diphtheria culture; Mycobacterium leprae culture; Chagas dis",
+									value:
+										"Infectious Neuropathies Panel: Cytomegalovirus; Herpes simplex virus IgG / IgM; Herpes zoster (shingles); Hep C Ab; Hep B 006510; HIV Ab; Lyme dis IgG/IgM Ab screen; Corynebacterium diphtheria culture; Mycobacterium leprae culture; Chagas dis",
+								},
+								{
+									name: "Neuropathic Toxins Panel: Acrylamide; Arsenic; Lead; Mercury; Organophosphates; Platinum",
+									value:
+										"Neuropathic Toxins Panel: Acrylamide; Arsenic; Lead; Mercury; Organophosphates; Platinum",
+								},
+								{
+									name: "ANA",
+									value: "ANA",
+								},
+								{
+									name: "ANCA",
+									value: "ANCA",
+								},
+								{
+									name: "Anti DNA-DS",
+									value: "Anti DNA-DS",
+								},
+								{
+									name: "Anti Parietal Cell Ab",
+									value: "Anti Parietal Cell Ab",
+								},
+								{
+									name: "Anti Cardiolipin Ab",
+									value: "Anti Cardiolipin Ab",
+								},
+								{
+									name: "Anti Hu",
+									value: "Anti Hu",
+								},
+								{
+									name: "Anti Thrombin III",
+									value: "Anti Thrombin III",
+								},
+								{
+									name: "Anti Yo",
+									value: "Anti Yo",
+								},
+								{
+									name: "Campylobact. jejuni titer",
+									value: "Campylobact. jejuni titer",
+								},
+								{
+									name: "Complement C3 C4",
+									value: "Complement C3 C4",
+								},
+								{
+									name: "Complement CH50",
+									value: "Complement CH50",
+								},
+								{
+									name: "CBC with diff",
+									value: "CBC with diff",
+								},
+								{
+									name: "Ceruloplasmin",
+									value: "Ceruloplasmin",
+								},
+								{
+									name: "Serum copper",
+									value: "Serum copper",
+								},
+								{
+									name: "CPK",
+									value: "CPK",
+								},
+								{
+									name: "CRP",
+									value: "CRP",
+								},
+								{
+									name: "Cryoglobulin",
+									value: "Cryoglobulin",
+								},
+								{
+									name: "Factor V Leiden",
+									value: "Factor V Leiden",
+								},
+								{
+									name: "Folate",
+									value: "Folate",
+								},
+								{
+									name: "Glucose fasting",
+									value: "Glucose fasting",
+								},
+								{
+									name: "Glucose tolerance test 2hr",
+									value: "Glucose tolerance test 2hr",
+								},
+								{
+									name: "Glucose tolerance test 3hr",
+									value: "Glucose tolerance test 3hr",
+								},
+								{
+									name: "HgBA1C",
+									value: "HgBA1C",
+								},
+								{
+									name: "HIV-1/2 SCR w/RFX WB confirm",
+									value: "HIV-1/2 SCR w/RFX WB confirm",
+								},
+								{
+									name: "HIV-1 RNA PCR quantitative",
+									value: "HIV-1 RNA PCR quantitative",
+								},
+								{
+									name: "Homocysteine",
+									value: "Homocysteine",
+								},
+								{
+									name: "Immunofixation serum",
+									value: "Immunofixation serum",
+								},
+								{
+									name: "Intrinsic factor Ab",
+									value: "Intrinsic factor Ab",
+								},
+								{
+									name: "Iron (tot) IBC % sat",
+									value: "Iron (tot) IBC % sat",
+								},
+								{
+									name: "Iron total",
+									value: "Iron total",
+								},
+								{
+									name: "Lambert-Eaton syndrome Ab",
+									value: "Lambert-Eaton syndrome Ab",
+								},
+							],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please select Labs",
+							defaultValue: "",
+							isMultiSelect: true,
+						},
+						{
+							css: "",
+							name: "lab_comments",
+							type: ElementType.TEXT,
+							label: "Lab Comments",
+							column: 6,
+							fieldId: "ddb454f6-d11b-4118-ada6-624c2a739465",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter lab comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "radiology",
+							type: ElementType.SELECT,
+							label: "Radiology",
+							column: 6,
+							fieldId: "bd20bb02-3ab3-4952-9de1-c62a5e9a47f9",
+							options: [
+								{
+									name: "Open MRI",
+									value: "Open MRI",
+								},
+								{
+									name: "Upright MRI",
+									value: "Upright MRI",
+								},
+								{
+									name: "MRI brain with and without contrast",
+									value: "MRI brain with and without contrast",
+								},
+								{
+									name: "MRI brain without contrast",
+									value: "MRI brain without contrast",
+								},
+								{
+									name: "MRI brain 3.0 T with and without contrast",
+									value: "MRI brain 3.0 T with and without contrast",
+								},
+								{
+									name: "MRI brain 3.0 T without contrast",
+									value: "MRI brain 3.0 T without contrast",
+								},
+								{
+									name: "MRA brain with and without contrast",
+									value: "MRA brain with and without contrast",
+								},
+								{
+									name: "MRA brain without contrast",
+									value: "MRA brain without contrast",
+								},
+								{
+									name: "CT scan brain with and without contrast",
+									value: "CT scan brain with and without contrast",
+								},
+								{
+									name: "CT scan brain without contrast",
+									value: "CT scan brain without contrast",
+								},
+								{
+									name: "CTA head and neck",
+									value: "CTA head and neck",
+								},
+							],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter radiology",
+							defaultValue: "",
+							isMultiSelect: true,
+						},
+						{
+							css: "",
+							name: "radiology_comments",
+							type: ElementType.TEXT,
+							label: "Radiology Comments",
+							column: 6,
+							fieldId: "1125b9c7-c8f2-4156-b395-518cdc8b5aac",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter Radiology Comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "PT Recommendations",
+							type: ElementType.SELECT,
+							label: "PT Recommendations",
+							column: 6,
+							fieldId: "d4936f49-8e28-4c0b-885a-b6eedf49ff05",
+							options: [
+								{
+									name: "Evaluate and Teat",
+									value: "Evaluate and Teat",
+								},
+								{
+									name: "Exercise",
+									value: "Exercise",
+								},
+								{
+									name: "Manual Therapy",
+									value: "Manual Therapy",
+								},
+								{
+									name: "Chronic Pain Program",
+									value: "Chronic Pain Program",
+								},
+								{
+									name: "Posture/Position/Body Mechanics",
+									value: "Posture/Position/Body Mechanics",
+								},
+								{
+									name: "AROM",
+									value: "AROM",
+								},
+								{
+									name: "PROM",
+									value: "PROM",
+								},
+								{
+									name: "Back school",
+									value: "Back school",
+								},
+								{
+									name: "Gait training",
+									value: "Gait training",
+								},
+								{
+									name: "McKenzie Program",
+									value: "McKenzie Program",
+								},
+								{
+									name: "Aquatic Therapy",
+									value: "Aquatic Therapy",
+								},
+								{
+									name: "Neuro Re-education",
+									value: "Neuro Re-education",
+								},
+							],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter PT Recommendations",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "PT Recommendation Comments",
+							type: ElementType.TEXT,
+							label: "PT Recommendation Comments",
+							column: 6,
+							fieldId: "2db82468-9665-4f6a-b49c-565c474c2bc1",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter PT Recommendation Comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "Home Health ",
+							type: ElementType.SELECT,
+							label: "Home Health ",
+							column: 6,
+							fieldId: "b0d78594-feea-4250-84db-ff844cacd782",
+							options: [
+								{
+									name: "Skilled Nursing:",
+									value: "Skilled Nursing:",
+								},
+								{
+									name: "Eval & Instruct for:",
+									value: "Eval & Instruct for:",
+								},
+								{
+									name: "Medication",
+									value: "Medication",
+								},
+								{
+									name: "Pain",
+									value: "Pain",
+								},
+								{
+									name: "Cardiac",
+									value: "Cardiac",
+								},
+								{
+									name: "Diabetic Management",
+									value: "Diabetic Management",
+								},
+								{
+									name: "Respiratory",
+									value: "Respiratory",
+								},
+								{
+									name: "Physical Therapy:",
+									value: "Physical Therapy:",
+								},
+								{
+									name: "Weakness",
+									value: "Weakness",
+								},
+								{
+									name: "Ambulation/Gait",
+									value: "Ambulation/Gait",
+								},
+								{
+									name: "Balance",
+									value: "Balance",
+								},
+								{
+									name: "Transfers",
+									value: "Transfers",
+								},
+								{
+									name: "Bed Mobility",
+									value: "Bed Mobility",
+								},
+								{
+									name: "Fall Risk",
+									value: "Fall Risk",
+								},
+								{
+									name: "Range of Motion",
+									value: "Range of Motion",
+								},
+							],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter Home Health ",
+							defaultValue: "",
+							isMultiSelect: true,
+						},
+						{
+							css: "",
+							name: "Home health comments",
+							type: ElementType.TEXT,
+							label: "Home health comments",
+							column: 6,
+							fieldId: "9a06c5e8-32b6-4bfb-98bf-2fbb5afe1726",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter Home health comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "Referrals ",
+							type: ElementType.TEXT,
+							label: "Referrals ",
+							column: 6,
+							fieldId: "8e78871f-3c18-49c4-b026-101bce43c440",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter Referrals ",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "Referral Comments",
+							type: ElementType.TEXT,
+							label: "Referral Comments",
+							column: 6,
+							fieldId: "6733821f-d67b-415f-8f7a-b1b6dc94b091",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter Referral Comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "Education",
+							type: ElementType.SELECT,
+							label: "Education",
+							column: 6,
+							fieldId: "06074222-d112-429e-96ac-440ea0bfad54",
+							options: [
+								{
+									name: "Alternative treatments",
+									value: "Alternative treatments",
+								},
+								{
+									name: "Drug interactions",
+									value: "Alternative Drug interactions",
+								},
+								{
+									name: "Handouts provided",
+									value: "Handouts provided",
+								},
+								{
+									name: "Medication side effects",
+									value: "Medication side effects",
+								},
+								{
+									name: "Pain management",
+									value: "Pain management",
+								},
+								{
+									name: "Potential adverse consequences if pregnant",
+									value: "Potential adverse consequences if pregnant",
+								},
+								{
+									name: "Recognizing stroke-like symptoms",
+									value: "Recognizing stroke-like symptoms",
+								},
+								{
+									name: "Risks of declining treatment",
+									value: "Risks of declining treatment",
+								},
+								{
+									name: "Risks/benefits of treatment plan",
+									value: "Risks/benefits of treatment plan",
+								},
+								{
+									name: "Signs of emergency",
+									value: "Signs of emergency",
+								},
+								{
+									name: "Symptom management",
+									value: "Symptom management",
+								},
+								{
+									name: "Written instructions for tapering/titrating medications",
+									value: "Written instructions for tapering/titrating medications",
+								},
+							],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please select Education",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "Education Comments",
+							type: ElementType.TEXT,
+							label: "Education Comments",
+							column: 6,
+							fieldId: "3f36d1d3-ba39-4db6-90ed-060143e48f5a",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please enter Education Comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "Diet",
+							type: ElementType.SELECT,
+							label: "Diet",
+							column: 6,
+							fieldId: "a22ddd61-3984-4de8-93c6-cbbda6c07b59",
+							options: [
+								{
+									name: "1800 cal ADA diet",
+									value: "1800 cal ADA diet",
+								},
+								{
+									name: "1800 cal ADA diet",
+									value: "1800 cal ADA diet",
+								},
+								{
+									name: "2000 cal ADA diet",
+									value: "2000 cal ADA diet",
+								},
+								{
+									name: "1500 cal ADA diet",
+									value: "1500 cal ADA diet",
+								},
+								{
+									name: "Low fat diet",
+									value: "Low fat diet",
+								},
+								{
+									name: "Low sodium diet",
+									value: "Low sodium diet",
+								},
+								{
+									name: "Low cholesterol diet",
+									value: "Low cholesterol diet",
+								},
+								{
+									name: "Adequate nutritional intake",
+									value: "Adequate nutritional intake",
+								},
+								{
+									name: "Vitamin supplementation",
+									value: "Vitamin supplementation",
+								},
+								{
+									name: "Avoid alcohol",
+									value: "Avoid alcohol",
+								},
+							],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please select a Diet",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "Diet Comments",
+							type: ElementType.TEXT,
+							label: "Diet Comments",
+							column: 6,
+							fieldId: "83fafb10-287d-4465-b15a-a0be1d0115dc",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please leave Diet Comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+						{
+							css: "",
+							name: "General Instructions ",
+							type: ElementType.SELECT,
+							label: "General Instructions ",
+							column: 6,
+							fieldId: "86a81979-37ed-4dc3-b48e-5bcbd4a15e29",
+							options: [
+								{
+									name: "Activity as tolerated",
+									value: "Activity as tolerated",
+								},
+								{
+									name: "Activity as tolerated",
+									value: "Activity as tolerated",
+								},
+								{
+									name: "Avoid crowds",
+									value: "Avoid crowds",
+								},
+								{
+									name: "Avoid driving",
+									value: "Avoid driving",
+								},
+								{
+									name: "Avoid high risk activity due to seizures/LOC",
+									value: "Avoid high risk activity due to seizures/LOC",
+								},
+								{
+									name: "Follow exercise program",
+									value: "Follow exercise program",
+								},
+								{
+									name: "Follow facial exercise program",
+									value: "Follow facial exercise program",
+								},
+								{
+									name: "Increase activity level",
+									value: "Increase activity level",
+								},
+								{
+									name: "No heavy lifting",
+									value: "No heavy lifting",
+								},
+								{
+									name: "No heavy lifting more than 5 lbs",
+									value: "No heavy lifting more than 5 lbs",
+								},
+								{
+									name: "No heavy lifting more than 10 lbs",
+									value: "No heavy lifting more than 10 lbs",
+								},
+								{
+									name: "No heavy lifting more than 20 lbs",
+									value: "No heavy lifting more than 20 lbs",
+								},
+							],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please select General Instructions ",
+							defaultValue: "",
+							isMultiSelect: true,
+						},
+						{
+							css: "",
+							name: "General Instruction Comments",
+							type: ElementType.TEXT,
+							label: "General Instruction Comments",
+							column: 6,
+							fieldId: "c58e2a82-3903-4917-a964-0485b1b9f5ee",
+							options: [],
+							errorMsg: "",
+							required: false,
+							textArea: false,
+							placeholder: "Please leave General Instruction Comments",
+							defaultValue: "",
+							isMultiSelect: false,
+						},
+					],
+				},
+			],
+		},
+		name: "SOAP Plan",
+		type: FormType.TEMPLATE,
+		isSystemForm: true,
+		isActive: true
 	}
 ]
