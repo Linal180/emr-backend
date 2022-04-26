@@ -31,6 +31,9 @@ export class GetSlots  {
   @Field({nullable: true})
   providerId?: string
 
+  @Field({nullable: true})
+  day?: string
+
   @Field()
   offset: number
 
