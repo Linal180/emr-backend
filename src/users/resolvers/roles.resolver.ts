@@ -1,15 +1,18 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from '../auth/role.guard';
 import RoleInput, { GetRole, RemoveRole, RoleItemInput, UpdateRoleItemInput } from '../dto/role-input.dto';
 import RolesPayload, { RolePayload } from '../dto/roles-payload.dto';
 import { Role } from '../entities/role.entity';
+import { RolePermission } from '../entities/rolePermissions.entity';
+import { User } from '../entities/user.entity';
+import { PermissionsService } from '../services/permissions.service';
 import { RolesService } from '../services/roles.service';
 
 @Resolver(() => Role)
 export class RoleResolver {
-  constructor(private readonly rolesService: RolesService) { }
+  constructor(private readonly rolesService: RolesService,private readonly permissionsService: PermissionsService) { }
 
   @Mutation(() => RolePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -66,5 +69,11 @@ export class RoleResolver {
   async removeRole(@Args('removeRole') removeRole: RemoveRole) {
     await this.rolesService.removeRole(removeRole);
     return { response: { status: 200, message: 'Role Deleted' } };
+  }
+
+  @ResolveField((returns) => [RolePermission])
+  async rolePermissions(@Parent() role: Role):  Promise<RolePermission[]>  {
+    const rolePermissions=await this.permissionsService.findPermissionsByRoleId(role.id)
+    return rolePermissions
   }
 }

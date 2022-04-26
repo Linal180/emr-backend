@@ -2,12 +2,15 @@ import { ForbiddenException, HttpStatus, NotFoundException, PreconditionFailedEx
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { FacilityService } from 'src/facilities/services/facility.service';
+import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { UtilsService } from 'src/util/utils.service';
 import { CurrentUser } from '../../customDecorators/current-user.decorator';
 import { CurrentUserInterface } from '../auth/dto/current-user.dto';
 import { AccessUserPayload } from '../dto/access-user.dto';
+import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
+import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
 import { ForgotPasswordInput } from '../dto/forget-password-input.dto';
 import { ForgotPasswordPayload } from '../dto/forgot-password-payload.dto';
 import { LoginUserInput } from '../dto/login-user-input.dto';
@@ -108,6 +111,14 @@ export class UsersResolver {
   async searchUser(@Args('search') searchTerm: string): Promise<UsersPayload> {
     const users = await this.usersService.search(searchTerm);
     return { users, response: { status: 200, message: 'User Data fetched successfully' } }
+  }
+
+  @Query(returns => EmergencyAccessUserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchEmergencyAccessUsers')
+  async fetchEmergencyAccessUsers(@Args('emergencyAccessUsersInput') emergencyAccessUsersInput:EmergencyAccessUserInput): Promise<EmergencyAccessUserPayload> {
+    const users = await this.usersService.fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput);
+    return { ...users, response: { status: 200, message: 'User Data fetched successfully' } }
   }
 
   @Mutation(returns => AccessUserPayload)

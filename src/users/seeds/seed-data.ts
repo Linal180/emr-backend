@@ -31,6 +31,7 @@ export const UsersData = [
  
 export const PermissionData = [
     { name: 'emergencyAccess'  , moduleType: 'Emergency Access' },
+    { name: 'fetchEmergencyAccessUsers'  , moduleType: 'Emergency Access' },
     { name: 'fetchAllUsers' , moduleType: 'User'},
     { name: 'fetchUser' , moduleType: 'User'},
     { name: 'getUser' , moduleType: 'User'},
@@ -135,7 +136,7 @@ export const practiceAdminPermissionsList = ['fetchAllUsers','fetchUser','getUse
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
 'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital'
-,'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+,'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy','fetchEmergencyAccessUsers']
 
 export const facilityAdminPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
@@ -146,7 +147,7 @@ export const facilityAdminPermissionsList = ['fetchAllUsers','fetchUser','getUse
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
 'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital',
-'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy','fetchEmergencyAccessUsers']
 
 export const emergencyAccessPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
@@ -157,7 +158,7 @@ export const emergencyAccessPermissionsList = ['fetchAllUsers','fetchUser','getU
 'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules', 'getFacilitySchedule','getDoctorSchedule', 'getSchedule','getSlots','removeSchedule',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem','createPermission','assignPermissionToRole',
 'updatePermission','findAllPermissions','GetPermission','removePermission','addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital',
-'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy']
+'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy','fetchEmergencyAccessUsers']
 
 export const doctorPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
