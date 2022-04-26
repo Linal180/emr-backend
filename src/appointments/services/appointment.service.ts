@@ -203,7 +203,7 @@ export class AppointmentService {
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
       const [first]  = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
-      const paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: 'Appointment', relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
+      const paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse
