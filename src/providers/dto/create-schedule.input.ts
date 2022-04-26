@@ -9,6 +9,9 @@ export class CreateScheduleInput {
   @Field({ nullable: false })
   endAt: string;
 
+  @Field({ nullable: false })
+  day: string;
+
   @Field({ nullable: true })
   recurringEndDate: Date;
 
