@@ -203,7 +203,7 @@ export class ScheduleService {
    * @param uTcEndDateOffset 
    * @returns doctors schedule 
    */
-  async getTodaySchedule(getSlots: GetSlots, uTcStartDateOffset: Date ,uTcEndDateOffset: Date ): Promise<Schedule[]> {
+  async getTodaySchedule(getSlots: GetSlots): Promise<Schedule[]> {
     if(getSlots.facilityId){
       return await this.scheduleRepository.find({
         where: {
@@ -265,7 +265,7 @@ export class ScheduleService {
       const uTcEndDateOffset = moment(new Date (getSlots.currentDate)).endOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
       //fetch doctor's booked appointment 
       const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots,uTcStartDateOffset,uTcEndDateOffset)
-      const schedules = await this.getTodaySchedule(getSlots, uTcStartDateOffset, uTcEndDateOffset)
+      const schedules = await this.getTodaySchedule(getSlots)
       const newSchedule = await this.getScheduleServices(schedules, getSlots)
       const duration = parseInt(await(await this.servicesService.findOne(getSlots.serviceId)).duration)
       //get doctor's remaining time 
