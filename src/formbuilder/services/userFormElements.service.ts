@@ -2,10 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 //user import
-import { PaginationService } from "src/pagination/pagination.service";
-import { UtilsService } from "src/util/utils.service";
 import { UsersFormsElements } from '../entities/userFormElements.entity'
-import { UserFormInput } from "../dto/userForms.input";
 import { UserFormElementInputs } from "../dto/userFormElements.input";
 import { UserForms } from "../entities/userforms.entity";
 
@@ -15,8 +12,6 @@ export class UserFormElementService {
   constructor(
     @InjectRepository(UsersFormsElements)
     private userFormElementRepository: Repository<UsersFormsElements>,
-    private readonly paginationService: PaginationService,
-    private readonly utilsService: UtilsService,
   ) { }
 
 
