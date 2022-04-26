@@ -20,6 +20,10 @@ export class Schedule {
   @Field()
   endAt: string;
 
+  @Column({nullable: true})
+  @Field({nullable: true})
+  day: string;
+
   @Column({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   recurringEndDate: Date;
