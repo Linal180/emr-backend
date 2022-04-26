@@ -77,6 +77,9 @@ export class FieldsInputs {
 
   @Field(() => Boolean, { nullable: false })
   textArea: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  isMultiSelect: boolean;
 }
 @InputType()
 export class CreateFormInput {
@@ -87,10 +90,10 @@ export class CreateFormInput {
   @Field(() => Boolean, { nullable: true })
   isActive: boolean;
 
-  @Field(() => FormType, { nullable: false })
+  @Field(() => FormType, { nullable: true })
   type: FormType;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   facilityId: string;
 
   @Field(() => LayoutJSONInputType, { nullable: false })

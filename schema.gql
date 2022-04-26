@@ -289,6 +289,7 @@ type PatientAllergies {
   comments: String
   isActive: Boolean
   staffId: String
+  patientId: String
   appointmentId: String
   doctorId: String
   allergy: Allergies
@@ -483,6 +484,7 @@ type Schedule {
   id: String!
   startAt: String!
   endAt: String!
+  day: String
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -1173,6 +1175,7 @@ type FieldsTypes {
   fieldId: String!
   options: [FieldOptionsType!]!
   textArea: Boolean!
+  isMultiSelect: Boolean
 }
 
 """The form's element types"""
@@ -1217,7 +1220,8 @@ type UsersFormsElements {
   UsersFormsId: String!
   FormsElementsId: String!
   value: String
-  arrayOfStrings: [ArrayOfStringsType!]!
+  arrayOfObjects: [ArrayOfStringsType!]!
+  arrayOfStrings: [String!]!
   createdAt: String
   updatedAt: String
   userForm: UserForms
@@ -1238,9 +1242,9 @@ type UserForms {
 
 type Form {
   id: String!
-  name: String!
+  name: String
   type: FormType!
-  facilityId: String!
+  facilityId: String
   layout: LayoutJSONType!
   isSystemForm: Boolean
   isActive: Boolean
@@ -1256,6 +1260,7 @@ enum FormType {
   DOCTOR
   PATIENT
   STAFF
+  TEMPLATE
 }
 
 type FormElement {
@@ -1284,7 +1289,7 @@ type Element {
 
 type FormsPayload {
   response: ResponsePayload
-  forms: [Form]
+  forms: [Form!]!
   pagination: PaginationPayload
 }
 
@@ -1366,141 +1371,6 @@ type PatientVitalsPayload {
   response: ResponsePayload
   patientVitals: [PatientVitals]
   pagination: PaginationPayload
-}
-
-type Observations {
-  id: String!
-  doctorsSignOff: Boolean
-  resultValue: String
-  resultUnit: String
-  normalRange: String
-  normalRangeUnit: String
-  abnormalFlag: AbnormalFlag!
-  description: String
-  loincCodes: LoincCodes
-  labTest: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-"""The test result's abnormal flag status assigned"""
-enum AbnormalFlag {
-  NONE
-  BELOW_LOW_NORMAL
-  ABOVE_HIGH_NORMAL
-  BELOW_LOWER_PANIC_LIMIT
-  BELOW_UPPER_PANIC_LIMIT
-  BELOW_ABSOLUTE_LOW_OFF_SCALE
-  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
-  NORMAL
-  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
-  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
-  SIGNIFICANT_CHANGE_UP
-  SIGNIFICANT_CHANGE_DOWN
-  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
-  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
-  SUSCEPTIBLE
-  RESISTANT
-  INTERMEDIATE
-  MODERATELY
-  VERY_SUSCEPTIBLE
-}
-
-type LoincCodes {
-  id: String!
-  loincNum: String
-  component: String
-  property: String
-  timeAspect: String
-  system: String
-  scaleTyp: String
-  methodTyp: String
-  class: String
-  versionLastChanged: String
-  chngType: String
-  definitionDescription: String
-  status: String
-  consumerName: String
-  classType: String
-  formula: String
-  exmplAnswers: String
-  surveyQuestTest: String
-  surveyQuestSRC: String
-  unitsRequired: String
-  submittedUnits: String
-  relatedNames2: String
-  shortName: String
-  orderObs: String
-  cdiscCommonTests: String
-  hl7FieldSubFieldId: String
-  externalCopyRightNotice: String
-  exampleUnits: String
-  longCommonName: String
-  unitsAndRange: String
-  exampleUcumUnits: String
-  exampleSiUcumUnits: String
-  statusReason: String
-  statusText: String
-  changeReasonPublic: String
-  commonTestRank: String
-  commonOrderRank: String
-  commonSiTestRank: String
-  hl7AttachmentStructure: String
-  externalCopyRightLink: String
-  panelType: String
-  askAtOrderEntry: String
-  associationObservations: String
-  versionFirstRelease: String
-  validHl7AttachmentRequest: String
-  displayName: String
-  labTests: [LabTests!]
-  observations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-type SpecimenTypes {
-  id: String!
-  name: String
-  testSpecimens: [TestSpecimens!]
-  createdAt: String
-  updatedAt: String
-}
-
-type TestSpecimens {
-  id: String!
-  collectionDate: String
-  collectionTime: String
-  specimenNotes: String
-  specimenTypes: SpecimenTypes
-  labTest: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-type LabTests {
-  id: String!
-  status: Status!
-  testDate: String
-  testTime: String
-  testNotes: String
-  patient: Patient
-  appointment: Appointment
-  diagnoses: [ICDCodes]
-  test: LoincCodes
-  testSpecimens: [TestSpecimens!]
-  testObservations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The lab's test status assigned"""
-enum Status {
-  ORDER_ENTERED
-  DISCONTINUED
-  IN_PROGRESS
-  RESULT_RECEIVED
-  RESULT_REVIEWED_WITH_PATIENT
 }
 
 type Query {
@@ -1665,6 +1535,7 @@ input GetFacilitySchedule {
 input GetSlots {
   facilityId: String
   providerId: String
+  day: String
   offset: Float!
   serviceId: String!
   currentDate: String!
@@ -1777,6 +1648,7 @@ input GetPatientVital {
 
 input FormInput {
   facilityId: String
+  isSystemForm: Boolean
   paginationOptions: PaginationInput!
 }
 
@@ -1871,6 +1743,7 @@ type Mutation {
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
+  createFormTemplate(createFormInput: CreateFormInput!): FormPayload!
   createElement(inputs: ElementInputs!): Element!
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
@@ -2373,6 +2246,7 @@ input DisableDoctor {
 input CreateScheduleInput {
   startAt: String!
   endAt: String!
+  day: String!
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -2382,6 +2256,7 @@ input CreateScheduleInput {
 input UpdateScheduleInput {
   startAt: String
   endAt: String
+  day: String
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -2890,8 +2765,8 @@ input RemoveVital {
 input CreateFormInput {
   name: String!
   isActive: Boolean
-  type: FormType!
-  facilityId: String!
+  type: FormType
+  facilityId: String
   layout: LayoutJSONInputType!
   isSystemForm: Boolean
 }
@@ -2922,6 +2797,7 @@ input FieldsInputs {
   fieldId: String!
   options: [FieldOptionsInputType!]!
   textArea: Boolean!
+  isMultiSelect: Boolean
 }
 
 input FieldOptionsInputType {
@@ -2959,7 +2835,8 @@ input CreateUserFormInput {
 input UserFormElementInputs {
   FormsElementsId: String!
   value: String!
-  arrayOfStrings: [ArrayOfStringsTypeInput!]!
+  arrayOfObjects: [ArrayOfStringsTypeInput!]!
+  arrayOfStrings: [String!]!
 }
 
 input ArrayOfStringsTypeInput {
