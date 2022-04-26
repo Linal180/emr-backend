@@ -192,7 +192,64 @@ export class UsersService {
 
   async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput:EmergencyAccessUserInput):Promise<EmergencyAccessUserPayload>{
     const {page,limit}=emergencyAccessUsersInput.paginationInput
-    const baseQuery=getConnection()
+    
+    if(emergencyAccessUsersInput.facilityId){
+      const [emergencyAccessUsers,totalCount]=await getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .skip((page-1)*limit)
+      .take(limit)
+      .innerJoin(qb2 => {
+        return qb2
+        .select('user.id', 'id')
+        .from(User, 'user')
+        .innerJoin('user.roles', 'userRoles')
+        .where('userRoles.role = :role', { role:'emergency-access' });
+      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+      .leftJoinAndSelect('user.roles', 'userRoles')
+      .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId})
+      .getManyAndCount()
+
+      const totalPages=Math.ceil(totalCount / limit)
+
+      return {
+        pagination:{
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        emergencyAccessUsers
+      }
+    }
+    
+    // if(emergencyAccessUsersInput.practiceId){
+    //   const [emergencyAccessUsers,totalCount]=await baseQuery
+    //   .innerJoin(qb2 => {
+    //     return qb2
+    //     .select('user.id', 'id')
+    //     .from(User, 'user')
+    //     .innerJoin('user.facility', 'userFacility')
+    //     .where('userFacility.practiceId = :practiceId', { practiceId:emergencyAccessUsersInput.practiceId });
+    //   }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
+    //   .leftJoinAndSelect('user.facility', 'userFacility')
+    //   .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId })
+    //   .getManyAndCount()
+      
+    //   const totalPages=Math.ceil(totalCount / limit)
+
+    //   return {
+    //     pagination:{
+    //       totalCount,
+    //       page,
+    //       limit,
+    //       totalPages,
+    //     },
+    //     emergencyAccessUsers
+    //   }
+    // }
+
+    const [emergencyAccessUsers,totalCount]=  await getConnection()
     .getRepository(User)
     .createQueryBuilder('user')
     .skip((page-1)*limit)
@@ -205,52 +262,6 @@ export class UsersService {
       .where('userRoles.role = :role', { role:'emergency-access' });
     }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
     .leftJoinAndSelect('user.roles', 'userRoles')
-    
-    if(emergencyAccessUsersInput.facilityId){
-      const [emergencyAccessUsers,totalCount]=await baseQuery
-      .where('user.facilityId = :facilityId',{facilityId:'926d8fe4-5097-4b55-ac19-92805aa8db40'})
-      .getManyAndCount()
-
-      const totalPages=Math.ceil(totalCount / limit)
-
-      return {
-        pagination:{
-          totalCount,
-          page,
-          limit,
-          totalPages,
-        },
-        emergencyAccessUsers
-      }
-    }
-    
-    if(emergencyAccessUsersInput.practiceId){
-      const [emergencyAccessUsers,totalCount]=await baseQuery
-      .innerJoin(qb2 => {
-        return qb2
-        .select('user.id', 'id')
-        .from(User, 'user')
-        .innerJoin('user.facility', 'userFacility')
-        .where('userFacility.practiceId = :practiceId', { practiceId:emergencyAccessUsersInput.practiceId });
-      }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
-      .leftJoinAndSelect('user.facility', 'userFacility')
-      .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId })
-      .getManyAndCount()
-      
-      const totalPages=Math.ceil(totalCount / limit)
-
-      return {
-        pagination:{
-          totalCount,
-          page,
-          limit,
-          totalPages,
-        },
-        emergencyAccessUsers
-      }
-    }
-
-    const [emergencyAccessUsers,totalCount]=  await baseQuery
     .getManyAndCount()
 
     const totalPages=Math.ceil(totalCount / limit)
