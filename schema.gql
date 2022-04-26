@@ -289,6 +289,7 @@ type PatientAllergies {
   comments: String
   isActive: Boolean
   staffId: String
+  patientId: String
   appointmentId: String
   doctorId: String
   allergy: Allergies
@@ -483,6 +484,7 @@ type Schedule {
   id: String!
   startAt: String!
   endAt: String!
+  day: String
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -1533,6 +1535,7 @@ input GetFacilitySchedule {
 input GetSlots {
   facilityId: String
   providerId: String
+  day: String
   offset: Float!
   serviceId: String!
   currentDate: String!
@@ -2243,6 +2246,7 @@ input DisableDoctor {
 input CreateScheduleInput {
   startAt: String!
   endAt: String!
+  day: String!
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -2252,6 +2256,7 @@ input CreateScheduleInput {
 input UpdateScheduleInput {
   startAt: String
   endAt: String
+  day: String
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
