@@ -12,8 +12,8 @@ export class UpdateStaffInput {
   @Field()
   updateStaffItemInput: UpdateStaffItemInput
 
-  @Field(type => [String])
-  providers: string[]
+  @Field(type => [String], {nullable: true})
+  providers?: string[]
 }
 
 @InputType()
