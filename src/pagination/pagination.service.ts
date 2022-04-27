@@ -49,7 +49,7 @@ export class PaginationService {
       if (associatedTo && associatedToField.columnValue) {
         filterOption = this.getFilterOptions(paginationInput);
       }
-      console.log("filterOption",filterOption);
+      console.log("filterOption....",filterOption);
       const { paginationOptions: { page, limit } } = paginationInput || {};
       let query: FindManyOptions = null;
       if (filterOption) {
