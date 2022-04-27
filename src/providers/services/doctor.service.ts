@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, In, Repository } from 'typeorm';
 //user imports
 import { File } from 'src/aws/dto/file-input.dto';
-import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -21,6 +20,7 @@ import { DisableDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
+import { AttachmentsService } from 'src/attachments/attachments.service';
 
 @Injectable()
 export class DoctorService {
@@ -38,6 +38,7 @@ export class DoctorService {
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
+    // @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,
   ) { }
 

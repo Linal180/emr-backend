@@ -1,7 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppointmentModule } from 'src/appointments/appointment.module';
-import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { PatientModule } from 'src/patients/patient.module';
@@ -21,6 +20,7 @@ import { ContactService } from './services/contact.service';
 import { DoctorService } from './services/doctor.service';
 import { ScheduleService } from './services/schedule.service';
 import { StaffService } from './services/staff.service';
+import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { DoctorController } from './controllers/doctor.controller'
 
 @Module({
