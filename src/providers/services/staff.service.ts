@@ -69,7 +69,7 @@ export class StaffService {
    */
   async updateStaff(updateStaffInput: UpdateStaffInput): Promise<Staff> {
     try {
-       await this.utilsService.updateEntityManager(Staff, updateStaffInput.updateStaffItemInput.id, updateStaffInput.updateStaffItemInput, this.staffRepository)
+       const staff = await this.utilsService.updateEntityManager(Staff, updateStaffInput.updateStaffItemInput.id, updateStaffInput.updateStaffItemInput, this.staffRepository)
        const staffInstance = await this.findOne(updateStaffInput.updateStaffItemInput.id)
        if(!staffInstance){
         throw new NotFoundException({
@@ -78,9 +78,12 @@ export class StaffService {
         });
        }
       // get providers
-      const providers = await this.doctorService.getDoctors(updateStaffInput.providers)
-      staffInstance.providers = providers
-      return this.staffRepository.save(staffInstance)
+      if(updateStaffInput.providers){
+        const providers = await this.doctorService.getDoctors(updateStaffInput.providers)
+        staffInstance.providers = providers
+        return this.staffRepository.save(staffInstance)
+      }
+      return staff
       } catch (error) {
       throw new InternalServerErrorException(error);
     }
