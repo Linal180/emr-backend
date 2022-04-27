@@ -998,6 +998,12 @@ type AccessUserPayload {
   response: ResponsePayload
 }
 
+type EmergencyAccessUserPayload {
+  emergencyAccessUsers: [User!]
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
 type ForgotPasswordPayload {
   response: ResponsePayload
 }
@@ -1380,6 +1386,7 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  fetchEmergencyAccessUsers(emergencyAccessUsersInput: EmergencyAccessUserInput!): EmergencyAccessUserPayload!
   findAllPermissions(permissionInput: PermissionInput!): PermissionsPayload!
   GetPermission(getPermission: GetPermission!): PermissionPayload!
   getAllRoles(roleInput: RoleInput!): RolesPayload!
@@ -1440,6 +1447,12 @@ input PaginationInput {
 
 input GetUser {
   id: String!
+}
+
+input EmergencyAccessUserInput {
+  facilityId: String
+  practiceId: String
+  paginationInput: PaginationInput
 }
 
 input PermissionInput {

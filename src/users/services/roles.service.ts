@@ -117,4 +117,12 @@ export class RolesService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async findRolesByUserId() {
+    try {
+     return await this.roleRepository.find({relations:['users']})
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
