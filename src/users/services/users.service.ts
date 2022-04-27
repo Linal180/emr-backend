@@ -4,12 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { MailerService } from 'src/mailer/mailer.service';
+import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { UtilsService } from 'src/util/utils.service';
 import { getConnection, Not, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { createToken } from '../../lib/helper';
+import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
+import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
 import { TwoFactorInput } from '../dto/twoFactor-input.dto';
 import { AccessUserPayload } from './../dto/access-user.dto';
 import { RegisterUserInput } from './../dto/register-user-input.dto';
@@ -184,6 +187,93 @@ export class UsersService {
 
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput:EmergencyAccessUserInput):Promise<EmergencyAccessUserPayload>{
+    const {page,limit}=emergencyAccessUsersInput.paginationInput
+    
+    if(emergencyAccessUsersInput.facilityId){
+      const [emergencyAccessUsers,totalCount]=await getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .skip((page-1)*limit)
+      .take(limit)
+      .innerJoin(qb2 => {
+        return qb2
+        .select('user.id', 'id')
+        .from(User, 'user')
+        .innerJoin('user.roles', 'userRoles')
+        .where('userRoles.role = :role', { role:'emergency-access' });
+      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+      .leftJoinAndSelect('user.roles', 'userRoles')
+      .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId})
+      .getManyAndCount()
+
+      const totalPages=Math.ceil(totalCount / limit)
+
+      return {
+        pagination:{
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        emergencyAccessUsers
+      }
+    }
+    
+    // if(emergencyAccessUsersInput.practiceId){
+    //   const [emergencyAccessUsers,totalCount]=await baseQuery
+    //   .innerJoin(qb2 => {
+    //     return qb2
+    //     .select('user.id', 'id')
+    //     .from(User, 'user')
+    //     .innerJoin('user.facility', 'userFacility')
+    //     .where('userFacility.practiceId = :practiceId', { practiceId:emergencyAccessUsersInput.practiceId });
+    //   }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
+    //   .leftJoinAndSelect('user.facility', 'userFacility')
+    //   .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId })
+    //   .getManyAndCount()
+      
+    //   const totalPages=Math.ceil(totalCount / limit)
+
+    //   return {
+    //     pagination:{
+    //       totalCount,
+    //       page,
+    //       limit,
+    //       totalPages,
+    //     },
+    //     emergencyAccessUsers
+    //   }
+    // }
+
+    const [emergencyAccessUsers,totalCount]=  await getConnection()
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .skip((page-1)*limit)
+    .take(limit)
+    .innerJoin(qb2 => {
+      return qb2
+      .select('user.id', 'id')
+      .from(User, 'user')
+      .innerJoin('user.roles', 'userRoles')
+      .where('userRoles.role = :role', { role:'emergency-access' });
+    }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+    .leftJoinAndSelect('user.roles', 'userRoles')
+    .getManyAndCount()
+
+    const totalPages=Math.ceil(totalCount / limit)
+     
+    return {
+      pagination:{
+        totalCount,
+        page,
+        limit,
+        totalPages,
+      },
+      emergencyAccessUsers
     }
   }
 
