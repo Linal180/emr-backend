@@ -2105,7 +2105,7 @@ input CreateStaffItemInput {
 
 input UpdateStaffInput {
   updateStaffItemInput: UpdateStaffItemInput!
-  providers: [String!]!
+  providers: [String!]
 }
 
 input UpdateStaffItemInput {
