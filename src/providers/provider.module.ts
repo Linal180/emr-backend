@@ -21,7 +21,8 @@ import { DoctorService } from './services/doctor.service';
 import { ScheduleService } from './services/schedule.service';
 import { StaffService } from './services/staff.service';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
-import { DoctorController } from './controllers/doctor.controller'
+import { DoctorController } from './controllers/doctor.controller';
+import { DoctorSubscriber } from './provider.subscriber'
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { DoctorController } from './controllers/doctor.controller'
     forwardRef(() => AppointmentModule),
     AttachmentsModule
   ],
-  providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService, DoctorResolver, DoctorService, ScheduleResolver, ScheduleService],
+  providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService,
+    DoctorResolver, DoctorService, ScheduleResolver, ScheduleService, DoctorSubscriber],
   controllers: [DoctorController],
   exports: [ContactService, StaffService, ScheduleService, TypeOrmModule, BillingAddressService, DoctorService]
 })
