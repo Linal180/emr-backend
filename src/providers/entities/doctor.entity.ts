@@ -1,5 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
@@ -228,21 +229,21 @@ export class Doctor {
   @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.patient)
   doctorPatients: DoctorPatient[];
 
-  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Schedule], { nullable: true })
   schedule: Schedule[];
 
-  @OneToMany(() => PatientProblems, patientProblems => patientProblems.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
 
-  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [PatientAllergies], { nullable: true })
   patientAllergies: PatientAllergies[];
 
   @OneToMany(() => Appointment, appointment => appointment.provider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   appointments: Appointment[];
-  
+
   @Field(type => [Staff], { nullable: 'itemsAndList' })
   @ManyToMany(type => Staff, staff => staff.providers)
   @JoinTable({ name: 'doctorStaff' })
@@ -259,4 +260,7 @@ export class Doctor {
   @ManyToOne(() => Transactions, transaction => transaction.id)
   @Field(type => Transactions, { nullable: true })
   transaction: Transactions;
+
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 }

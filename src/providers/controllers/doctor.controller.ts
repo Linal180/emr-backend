@@ -38,9 +38,9 @@ export class DoctorController {
     fileFilter: mediaFilesInter
   }))
   async updateMedia(@UploadedFile() file: File, @Body() updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<DoctorPayload> {
-    const patient = await this.doctorService.updateDoctorMedia(file, updateAttachmentMediaInput)
+    const doctor = await this.doctorService.updateDoctorMedia(file, updateAttachmentMediaInput)
     return {
-      ...patient,
+      ...doctor,
       response: { status: 200, message: 'Doctor attachment updated successfully' }
     }
   }

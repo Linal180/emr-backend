@@ -288,7 +288,7 @@ export class DoctorService {
    */
   async updateDoctorMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<DoctorPayload> {
     try {
-      updateAttachmentMediaInput.type = AttachmentType.PATIENT
+      updateAttachmentMediaInput.type = AttachmentType.DOCTOR
       const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
       const doctor = await this.doctorRepository.findOne(updateAttachmentMediaInput.typeId)
       if (attachment) {

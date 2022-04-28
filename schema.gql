@@ -22,6 +22,8 @@ enum AttachmentType {
   DOCTOR
   lab
   FORM_BUILDER
+  SUPER_ADMIN
+  STAFF
 }
 
 type ResponsePayload {
@@ -550,6 +552,7 @@ type Doctor {
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
+  attachments: [Attachment!]
 }
 
 """The doctor's speciality"""
