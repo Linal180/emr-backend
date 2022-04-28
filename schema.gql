@@ -1517,6 +1517,16 @@ type PatientVitalsPayload {
   pagination: PaginationPayload
 }
 
+type LabTestPayload {
+  response: ResponsePayload
+  labTest: LabTests
+}
+
+type LoincCodePayload {
+  response: ResponsePayload
+  loincCode: LoincCodes
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1882,6 +1892,10 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
+  updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
+  createLabTest(createLabTestInput: CreateLabTestInput!): LabTestPayload!
+  updateLabTest(updateLoincCodeInput: UpdateLoincCodeInput!): LabTestPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
@@ -2804,6 +2818,40 @@ input CreateExternalInvoiceInputs {
 input InvoiceStatusInputs {
   status: STATUS!
   id: String!
+}
+
+input LoincCodeInput {
+  loincNum: String
+  component: String
+}
+
+input UpdateLoincCodeInput {
+  loincNum: String
+  component: String
+  id: String!
+}
+
+input CreateLabTestInput {
+  createLabTestItemInput: CreateLabTestItemInput
+  test: String
+  diagnoses: [String!]
+  createSpecimenItemInput: [CreateSpecimenItemInput!]
+}
+
+input CreateLabTestItemInput {
+  patientId: String!
+  appointmentId: String
+  status: String
+  testNotes: String
+  testDate: String
+  testTime: String
+}
+
+input CreateSpecimenItemInput {
+  testSpecimen: String!
+  specimenNotes: String
+  collectionDate: String
+  collectionTime: String
 }
 
 input CreateProblemInput {
