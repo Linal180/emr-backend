@@ -1465,6 +1465,7 @@ input GetPermission {
 
 input RoleInput {
   role: String
+  roleName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1518,6 +1519,7 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  doctorFirstName: String
   searchString: String
   practiceId: String
   paginationOptions: PaginationInput!

@@ -83,7 +83,7 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const doctor = await this.doctorRepository.save({...updateDoctorInput.updateDoctorItemInput})
+      const doctor = await this.doctorRepository.save({ ...updateDoctorInput.updateDoctorItemInput })
       //updating contact details
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
@@ -103,7 +103,7 @@ export class DoctorService {
       //get contact 
       const contact = await this.contactService.createContact(createPracticeInput.createContactInput)
       // Doctor Creation    
-      const doctorInstance = this.doctorRepository.create({...createPracticeInput.registerUserInput, practiceId})
+      const doctorInstance = this.doctorRepository.create({ ...createPracticeInput.registerUserInput, practiceId })
       doctorInstance.user = user;
       doctorInstance.contacts = [contact];
       doctorInstance.facility = facility;
@@ -123,7 +123,7 @@ export class DoctorService {
    */
   async findAllDoctor(doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     try {
-      const [first]  = doctorInput.searchString ? doctorInput.searchString.split(' ') : ''
+      const [first] = doctorInput.searchString ? doctorInput.searchString.split(' ') : ''
       const paginationResponse = await this.paginationService.willPaginate<Doctor>(this.doctorRepository, { ...doctorInput, associatedTo: 'Doctor', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
@@ -168,14 +168,14 @@ export class DoctorService {
    * @param providerIds 
    * @returns doctors 
    */
-  async getDoctors(providerIds: string[]): Promise<Doctor[]>{
+  async getDoctors(providerIds: string[]): Promise<Doctor[]> {
     return await this.doctorRepository.find({
       where: {
         id: In(providerIds)
       }
     });
   }
-  
+
   /**
    * Finds one
    * @param id 
