@@ -222,6 +222,7 @@ type User {
   roles: [Role]
   createdAt: String!
   updatedAt: String!
+  attachments: [Attachment!]
 }
 
 """The user status"""

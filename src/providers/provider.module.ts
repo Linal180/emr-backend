@@ -22,7 +22,9 @@ import { ScheduleService } from './services/schedule.service';
 import { StaffService } from './services/staff.service';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { DoctorController } from './controllers/doctor.controller';
-import { DoctorSubscriber } from './subscribers/doctor.subscriber'
+import { StaffController } from './controllers/staff.controller';
+import { DoctorSubscriber } from './subscribers/doctor.subscriber';
+import { StaffSubscriber } from './subscribers/staff.subscriber';
 
 @Module({
   imports: [
@@ -35,8 +37,8 @@ import { DoctorSubscriber } from './subscribers/doctor.subscriber'
     AttachmentsModule
   ],
   providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService,
-    DoctorResolver, DoctorService, ScheduleResolver, ScheduleService, DoctorSubscriber],
-  controllers: [DoctorController],
+    DoctorResolver, DoctorService, ScheduleResolver, ScheduleService, DoctorSubscriber, StaffSubscriber],
+  controllers: [DoctorController, StaffController],
   exports: [ContactService, StaffService, ScheduleService, TypeOrmModule, BillingAddressService, DoctorService]
 })
 export class ProviderModule { }
