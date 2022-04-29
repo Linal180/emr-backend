@@ -5,7 +5,9 @@ export enum AttachmentType {
   PATIENT = "patient",
   DOCTOR = "doctor",
   lab = "lab",
-  FORM_BUILDER = 'form builder'
+  FORM_BUILDER = 'form builder',
+  SUPER_ADMIN = 'super-admin',
+  STAFF = 'staff'
 }
 
 registerEnumType(AttachmentType, {
@@ -30,8 +32,8 @@ export class Attachment {
   @Field()
   typeId: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   title: string;
 
   @Column({ nullable: true })
