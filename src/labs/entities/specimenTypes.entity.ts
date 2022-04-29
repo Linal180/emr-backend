@@ -10,7 +10,7 @@ export class SpecimenTypes {
   @Field()
   id: string;
 
-  @Column({nullable: true})
+  @Column({nullable: true}) 
   @Field({nullable: true})
   name: string;
 

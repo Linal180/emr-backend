@@ -165,6 +165,7 @@ export class PaginationService {
       practiceId,
       appointmentStatus,
       categoryId,
+      labTestStatus,
       category,
       isSystemForm,
       paginationOptions: { page, limit: take } } = paginationInput || {}
@@ -195,7 +196,10 @@ export class PaginationService {
         }),
         ...(allergyType && {
           allergyType: In([allergyType]),
-      }),
+        }),
+        ...(labTestStatus && {
+          status: In([labTestStatus]),
+        }),
         ...(singleFacilityId && {
           id: singleFacilityId
         }),

@@ -48,6 +48,14 @@ export class LabTests {
   @Field({nullable: true})
   testNotes: string;
 
+  @Column({nullable: true})
+  @Field({nullable: true})
+  patientId: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  appointmentId: string;
+
   @ManyToOne(() => Patient, patient => patient.labTests, { onDelete: 'CASCADE' })
   @Field(type => Patient, { nullable: true })
   patient: Patient;
@@ -59,9 +67,9 @@ export class LabTests {
   @Field(type => [ICDCodes], { nullable: 'itemsAndList' })
   @ManyToMany(type => ICDCodes, iCDCodes => iCDCodes.labTests, { eager: true })
   @JoinTable({ name: 'LabTestsDiagnoses' })
-  diagnoses: ICDCodes[];  
+  diagnoses: ICDCodes[]; 
 
-  @ManyToOne(() => LoincCodes, loincCodes => loincCodes.labTests, { onDelete: 'CASCADE' })
+  @ManyToOne(() => LoincCodes, loincCodes => loincCodes.labTests, { onDelete: 'CASCADE', eager: true  })
   @Field(type => LoincCodes, { nullable: true })
   test: LoincCodes;
 

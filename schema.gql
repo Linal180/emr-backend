@@ -63,6 +63,7 @@ type Observations {
   normalRangeUnit: String
   abnormalFlag: AbnormalFlag!
   description: String
+  labTestId: String
   loincCodes: LoincCodes
   labTest: LabTests
   createdAt: String
@@ -158,6 +159,7 @@ type TestSpecimens {
   collectionDate: String
   collectionTime: String
   specimenNotes: String
+  labTestId: String
   specimenTypes: SpecimenTypes
   labTest: LabTests
   createdAt: String
@@ -170,6 +172,8 @@ type LabTests {
   testDate: String
   testTime: String
   testNotes: String
+  patientId: String
+  appointmentId: String
   patient: Patient
   appointment: Appointment
   diagnoses: [ICDCodes]
@@ -1522,6 +1526,17 @@ type LabTestPayload {
   labTest: LabTests
 }
 
+type LabTestObservationPayload {
+  response: ResponsePayload
+  labTestObservation: Observations
+}
+
+type LabTestsPayload {
+  response: ResponsePayload
+  labTests: [LabTests]
+  pagination: PaginationPayload
+}
+
 type LoincCodePayload {
   response: ResponsePayload
   loincCode: LoincCodes
@@ -1566,6 +1581,8 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  getLabTest(getLabTest: GetLabTest!): LabTestPayload!
+  findAllLabTest(labTestInput: LabTestInput!): LabTestsPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
@@ -1759,6 +1776,16 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input GetLabTest {
+  id: String
+}
+
+input LabTestInput {
+  patientId: String
+  labTestStatus: String
+  paginationOptions: PaginationInput!
+}
+
 input PatientProblemInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -1895,7 +1922,11 @@ type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
   createLabTest(createLabTestInput: CreateLabTestInput!): LabTestPayload!
-  updateLabTest(updateLoincCodeInput: UpdateLoincCodeInput!): LabTestPayload!
+  updateLabTest(updateLabTestInput: UpdateLabTestInput!): LabTestPayload!
+  removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
+  createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
+  updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
+  removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
@@ -2852,6 +2883,70 @@ input CreateSpecimenItemInput {
   specimenNotes: String
   collectionDate: String
   collectionTime: String
+}
+
+input UpdateLabTestInput {
+  updateLabTestItemInput: UpdateLabTestItemInput
+  test: String
+  diagnoses: [String!]
+  updateSpecimenItemInput: [UpdateSpecimenItemInput!]
+}
+
+input UpdateLabTestItemInput {
+  patientId: String
+  appointmentId: String
+  status: String
+  testNotes: String
+  testDate: String
+  testTime: String
+  id: String!
+}
+
+input UpdateSpecimenItemInput {
+  testSpecimen: String
+  specimenNotes: String
+  collectionDate: String
+  collectionTime: String
+  id: String!
+}
+
+input RemoveLabTest {
+  id: String
+}
+
+input CreateLabTestObservationInput {
+  labTestId: String!
+  createLabTestObservationItemInput: [CreateLabTestObservationItemInput!]
+}
+
+input CreateLabTestObservationItemInput {
+  doctorsSignOff: Boolean
+  resultValue: String!
+  resultUnit: String!
+  normalRange: String!
+  normalRangeUnit: String!
+  abnormalFlag: String!
+  description: String!
+}
+
+input UpdateLabTestObservationInput {
+  labTestId: String!
+  updateLabTestObservationItemInput: [UpdateLabTestObservationItemInput!]
+}
+
+input UpdateLabTestObservationItemInput {
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: String
+  description: String
+  id: String!
+}
+
+input RemoveLabTestObservation {
+  id: String!
 }
 
 input CreateProblemInput {

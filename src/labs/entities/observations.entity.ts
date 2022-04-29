@@ -69,6 +69,10 @@ export class Observations {
   @Field({nullable: true})
   description: string;
 
+  @Column({nullable: true})
+  @Field({nullable: true})
+  labTestId: string;
+
   @ManyToOne(() => LoincCodes, loincCodes => loincCodes.observations, { onDelete: 'CASCADE' })
   @Field(type => LoincCodes, { nullable: true })
   loincCodes: LoincCodes;
