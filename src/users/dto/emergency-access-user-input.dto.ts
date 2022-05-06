@@ -11,6 +11,9 @@ export class EmergencyAccessUserInput{
   @Field({ nullable: true })
   practiceId?: string
 
+  @Field({ nullable: true })
+  email?: string
+
   @Field(type => PaginationInput, { nullable: true })
   paginationInput: PaginationInput
 }

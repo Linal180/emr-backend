@@ -22,6 +22,8 @@ enum AttachmentType {
   DOCTOR
   lab
   FORM_BUILDER
+  SUPER_ADMIN
+  STAFF
 }
 
 type ResponsePayload {
@@ -220,6 +222,7 @@ type User {
   roles: [Role]
   createdAt: String!
   updatedAt: String!
+  attachments: [Attachment!]
 }
 
 """The user status"""
@@ -247,6 +250,7 @@ type Staff {
   patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
+  attachments: [Attachment!]
 }
 
 """The user gender assigned"""
@@ -550,6 +554,7 @@ type Doctor {
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
+  attachments: [Attachment!]
 }
 
 """The doctor's speciality"""
@@ -1452,6 +1457,7 @@ input GetUser {
 input EmergencyAccessUserInput {
   facilityId: String
   practiceId: String
+  email: String
   paginationInput: PaginationInput
 }
 

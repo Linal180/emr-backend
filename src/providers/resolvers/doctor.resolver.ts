@@ -1,5 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
@@ -8,11 +10,13 @@ import DoctorInput from '../dto/doctor-input.dto';
 import { DoctorPayload } from '../dto/doctor-payload.dto';
 import { UpdateDoctorInput } from '../dto/update-doctor.input';
 import { DisableDoctor, GetDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
+import { Doctor } from '../entities/doctor.entity';
 import { DoctorService } from '../services/doctor.service';
 
-@Resolver('doctor')
+@Resolver(() => Doctor)
 export class DoctorResolver {
-  constructor(private readonly doctorService: DoctorService) { }
+  constructor(private readonly doctorService: DoctorService,
+    private readonly attachmentsService: AttachmentsService) { }
 
   @Mutation(() => DoctorPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -33,7 +37,7 @@ export class DoctorResolver {
       response: { status: 200, message: 'Doctor updated successfully' }
     };
   }
-  
+
   @Query(returns => AllDoctorPayload)
   async findAllDoctor(@Args('doctorInput') doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     const doctors = await this.doctorService.findAllDoctor(doctorInput)
@@ -75,5 +79,12 @@ export class DoctorResolver {
   async disableDoctor(@Args('disableDoctor') disableDoctor: DisableDoctor) {
     await this.doctorService.disableDoctor(disableDoctor);
     return { response: { status: 200, message: 'Doctor Disabled' } };
+  }
+
+  @ResolveField((returns) => [Attachment])
+  async attachments(@Parent() doctor: Doctor): Promise<Attachment[]> {
+    if (doctor) {
+      return await this.attachmentsService.findAttachments(doctor.id, AttachmentType.DOCTOR);
+    }
   }
 }

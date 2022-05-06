@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
@@ -100,5 +101,8 @@ export class Staff {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
+
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 
 }

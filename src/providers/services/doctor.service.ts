@@ -1,20 +1,26 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Connection, In, Repository } from 'typeorm';
+//user imports
+import { File } from 'src/aws/dto/file-input.dto';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Connection, In, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { AllDoctorPayload } from '../dto/all-doctor-payload.dto';
 import { CreateDoctorInput } from '../dto/create-doctor.input';
 import DoctorInput from '../dto/doctor-input.dto';
+import { DoctorPayload } from '../dto/doctor-payload.dto';
 import { UpdateDoctorInput } from '../dto/update-doctor.input';
 import { DisableDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
+import { AttachmentsService } from 'src/attachments/attachments.service';
 
 @Injectable()
 export class DoctorService {
@@ -31,7 +37,9 @@ export class DoctorService {
     private readonly facilityService: FacilityService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
-    private readonly utilsService: UtilsService
+    private readonly utilsService: UtilsService,
+    // @Inject(forwardRef(() => AttachmentsService))
+    private readonly attachmentsService: AttachmentsService,
   ) { }
 
   /**
@@ -83,7 +91,7 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const doctor = await this.doctorRepository.save({...updateDoctorInput.updateDoctorItemInput})
+      const doctor = await this.doctorRepository.save({ ...updateDoctorInput.updateDoctorItemInput })
       //updating contact details
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
@@ -103,7 +111,7 @@ export class DoctorService {
       //get contact 
       const contact = await this.contactService.createContact(createPracticeInput.createContactInput)
       // Doctor Creation    
-      const doctorInstance = this.doctorRepository.create({...createPracticeInput.registerUserInput, practiceId})
+      const doctorInstance = this.doctorRepository.create({ ...createPracticeInput.registerUserInput, practiceId })
       doctorInstance.user = user;
       doctorInstance.contacts = [contact];
       doctorInstance.facility = facility;
@@ -123,7 +131,7 @@ export class DoctorService {
    */
   async findAllDoctor(doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     try {
-      const [first]  = doctorInput.searchString ? doctorInput.searchString.split(' ') : ''
+      const [first] = doctorInput.searchString ? doctorInput.searchString.split(' ') : ''
       const paginationResponse = await this.paginationService.willPaginate<Doctor>(this.doctorRepository, { ...doctorInput, associatedTo: 'Doctor', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
@@ -168,14 +176,14 @@ export class DoctorService {
    * @param providerIds 
    * @returns doctors 
    */
-  async getDoctors(providerIds: string[]): Promise<Doctor[]>{
+  async getDoctors(providerIds: string[]): Promise<Doctor[]> {
     return await this.doctorRepository.find({
       where: {
         id: In(providerIds)
       }
     });
   }
-  
+
   /**
    * Finds one
    * @param id 
@@ -215,6 +223,83 @@ export class DoctorService {
     try {
       await this.usersService.deactivateUser(id)
     } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Uploads doctor media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns doctor media 
+   */
+  async uploadDoctorMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<DoctorPayload> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.DOCTOR;
+      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+      const doctor = await this.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { doctor };
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Removes doctor media
+   * @param id 
+   * @returns  
+   */
+  async removeDoctorMedia(id: string) {
+    try {
+      return await this.attachmentsService.removeMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Gets doctor media
+   * @param id 
+   * @returns  
+   */
+  async getDoctorMedia(id: string) {
+    try {
+      return await this.attachmentsService.getMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+  
+  /**
+   * Updates doctor media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns doctor media 
+   */
+  async updateDoctorMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<DoctorPayload> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.DOCTOR
+      const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+      const doctor = await this.doctorRepository.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { doctor }
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
