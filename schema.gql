@@ -1521,14 +1521,14 @@ type PatientVitalsPayload {
   pagination: PaginationPayload
 }
 
-type LabTestPayload {
-  response: ResponsePayload
-  labTest: LabTests
-}
-
 type LabTestObservationPayload {
   response: ResponsePayload
   labTestObservation: Observations
+}
+
+type LabTestPayload {
+  response: ResponsePayload
+  labTest: LabTests
 }
 
 type LabTestsPayload {
@@ -1926,7 +1926,7 @@ type Mutation {
   removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
   createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
-  removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestPayload!
+  removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!

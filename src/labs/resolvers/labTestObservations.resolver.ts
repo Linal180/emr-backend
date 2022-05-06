@@ -1,6 +1,5 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
-import { LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
 import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
 import { Observations } from '../entities/observations.entity';
@@ -30,11 +29,11 @@ export class LabTestObservationResolver {
     };
   }
 
-  @Mutation(() => LabTestPayload)
+  @Mutation(() => LabTestObservationPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'removeLabTestObservation')
   async removeLabTestObservation(@Args('removeLabTestObservation') removeLabTestObservation: RemoveLabTestObservation) {
-    await this.labTestsObservationsService.removeLabTest(removeLabTestObservation);
+    await this.labTestsObservationsService.removeLabTestObservation(removeLabTestObservation);
     return { response: { status: 200, message: 'Lab test observation Deleted' } };
   }
 }

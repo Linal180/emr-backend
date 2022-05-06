@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
 import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
@@ -15,6 +16,7 @@ export class LabTestsObservationsService {
     @InjectRepository(Observations)
     private ObservationsRepository: Repository<Observations>,
     private readonly labTestsService: LabTestsService,
+    private readonly utilsService: UtilsService,
     private readonly loincCodesService: LoincCodesService,
   ) { }
 
@@ -42,15 +44,11 @@ export class LabTestsObservationsService {
 
   async updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput): Promise<Observations[]> {
       try {
-      //get lab test
-      const labTest = await this.labTestsService.findOne(updateLabTestObservationInput.labTestId)
+      //updating multiple records of lab test observations
       for (let index = 0; index < updateLabTestObservationInput.updateLabTestObservationItemInput.length; index++) {
-        const element = updateLabTestObservationInput.updateLabTestObservationItemInput[index];
-        const labTestObservationInstance = await this.findOne(element.id)
-        const labTestObservationInstanceRes = await this.mapLabTestWithResults([labTestObservationInstance], labTest)
-        console.log("labTestObservationInstanceRes",labTestObservationInstanceRes);
-        await this.ObservationsRepository.save(labTestObservationInstanceRes)
-      }
+         const element = updateLabTestObservationInput.updateLabTestObservationItemInput[index];
+         await this.utilsService.updateEntityManager(Observations, element.id, element, this.ObservationsRepository)
+       }
       return
       } catch (error) {
         throw new InternalServerErrorException(error);
@@ -87,11 +85,11 @@ export class LabTestsObservationsService {
   }
 
 
-  async removeLabTest({ id }: RemoveLabTestObservation) {
+  async removeLabTestObservation({ id }: RemoveLabTestObservation) {
     try {
-      const labTest = await this.findOne(id)
-      if (labTest) {
-        await this.ObservationsRepository.delete(labTest.id)
+      const labTestObservation = await this.findOne(id)
+      if (labTestObservation) {
+        await this.ObservationsRepository.delete(labTestObservation.id)
         return
       }
       throw new NotFoundException({
