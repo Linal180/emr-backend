@@ -46,4 +46,6 @@ export class PaginatedEntityInput {
   currentPhaseId?: string
   FormId?: string
   isSystemForm?: boolean
+  doctorFirstName?: string
+  roleName?: string
 }
