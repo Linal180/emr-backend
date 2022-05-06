@@ -63,7 +63,7 @@ export class PatientProblems {
   @Field({nullable: true})
   patientId: string;
 
-  @ManyToOne(() => ICDCodes, iCDCodes => iCDCodes.patientProblems)
+  @ManyToOne(() => ICDCodes, iCDCodes => iCDCodes.patientProblems, {eager: true})
   @Field(type => ICDCodes, { nullable: true })
   ICDCode: ICDCodes;
 
@@ -83,7 +83,7 @@ export class PatientProblems {
   @Field(type => Appointment, { nullable: true })
   appointment: Appointment;
 
-  @ManyToOne(() => SnoMedCodes, snowMedCodes => snowMedCodes.patientProblem, { onDelete: 'CASCADE' })
+  @ManyToOne(() => SnoMedCodes, snowMedCodes => snowMedCodes.patientProblem, { onDelete: 'CASCADE', eager: true })
   @Field(type => SnoMedCodes, { nullable: true })
   snowMedCode: SnoMedCodes; 
 
