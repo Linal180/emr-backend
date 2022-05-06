@@ -1457,6 +1457,7 @@ input GetUser {
 input EmergencyAccessUserInput {
   facilityId: String
   practiceId: String
+  email: String
   paginationInput: PaginationInput
 }
 
