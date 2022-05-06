@@ -77,7 +77,7 @@ export class PaginationService {
       }
       const [paginatedData, totalCount] = await repository.findAndCount(query);
       const totalPages = Math.ceil(totalCount / limit)
-      
+
       if (page > totalPages)
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
@@ -167,6 +167,8 @@ export class PaginationService {
       categoryId,
       category,
       isSystemForm,
+      doctorFirstName,
+      roleName,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -191,11 +193,11 @@ export class PaginationService {
           facilityId
         }),
         ...(allergyName && {
-            name: Raw(alias => `${alias} ILIKE '%${allergyName}%'`),
+          name: Raw(alias => `${alias} ILIKE '%${allergyName}%'`),
         }),
         ...(allergyType && {
           allergyType: In([allergyType]),
-      }),
+        }),
         ...(singleFacilityId && {
           id: singleFacilityId
         }),
@@ -214,6 +216,9 @@ export class PaginationService {
         ...(role && {
           role: Not(role)
         }),
+        ...(roleName && {
+          role: Raw(alias => `${alias} ILIKE '%${roleName}%'`),
+        }),
         ...(facilityName && {
           name: Raw(alias => `${alias} ILIKE '%${facilityName}%'`),
         }),
@@ -222,6 +227,9 @@ export class PaginationService {
         }),
         ...(serviceName && {
           name: Raw(alias => `${alias} ILIKE '%${serviceName}%'`),
+        }),
+        ...(doctorFirstName && {
+          firstName: Raw(alias => `${alias} ILIKE '%${doctorFirstName}%'`),
         }),
         ...(practiceId && {
           practiceId: practiceId
@@ -259,7 +267,7 @@ export class PaginationService {
       }
     };
     console.log("whereOptions",whereOptions);
-    
+
     // Assigned to User
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status
