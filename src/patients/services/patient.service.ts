@@ -117,20 +117,22 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
- 
+
+      const { id: patientId, usualProviderId, ...patientInfoToUpdate } = updatePatientInput.updatePatientItemInput
+
       //save patient basic info
-      await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, updatePatientInput.updatePatientItemInput, this.patientRepository)
-     
+      await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, patientInfoToUpdate, this.patientRepository)
+
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
       //get facility 
-      if(updatePatientInput.updatePatientItemInput.facilityId){
-      const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
-      patientInstance.facility = facility
-       const user = await this.usersService.findUserByUserId(updatePatientInput.updatePatientItemInput.id)
-       if(user){
+      if (updatePatientInput.updatePatientItemInput.facilityId) {
+        const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
+        patientInstance.facility = facility
+        const user = await this.usersService.findUserByUserId(updatePatientInput.updatePatientItemInput.id)
+        if (user) {
           await this.usersService.updateFacility(facility, user)
-       }
+        }
       }
       //update patient contact 
       const contact = await this.contactService.updateContact(updatePatientInput.updateContactInput)
@@ -146,6 +148,9 @@ export class PatientService {
       const employerContact = await this.employerService.updateEmployer(updatePatientInput.updateEmployerInput)
       patientInstance.employer = [employerContact]
       patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
+      if (usualProviderId) {
+        await this.updatePatientProvider({ patientId, providerId: usualProviderId })
+      }
       const patient = await queryRunner.manager.save(patientInstance);
       await queryRunner.commitTransaction();
       return patient
@@ -167,10 +172,10 @@ export class PatientService {
       const patientInstance = await this.findOne(updatePatientProfileInput.updatePatientProfileItemInput.id)
       //user registration input
       if (patientInstance) {
-          await this.utilsService.updateEntityManager(Patient, updatePatientProfileInput.updatePatientProfileItemInput.id, updatePatientProfileInput.updatePatientProfileItemInput, this.patientRepository)
-          const contact = await this.contactService.updateContact(updatePatientProfileInput.updateContactInput)
-          patientInstance.contacts.push(contact)
-          return await this.patientRepository.save({...patientInstance,...updatePatientProfileInput.updatePatientProfileItemInput })
+        await this.utilsService.updateEntityManager(Patient, updatePatientProfileInput.updatePatientProfileItemInput.id, updatePatientProfileInput.updatePatientProfileItemInput, this.patientRepository)
+        const contact = await this.contactService.updateContact(updatePatientProfileInput.updateContactInput)
+        patientInstance.contacts.push(contact)
+        return await this.patientRepository.save({ ...patientInstance, ...updatePatientProfileInput.updatePatientProfileItemInput })
       }
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
@@ -189,31 +194,31 @@ export class PatientService {
    */
   async sendInviteToPatient(patientInviteInput: PatientInviteInput): Promise<Patient> {
     try {
-      const patientInstance  = await this.findOne(patientInviteInput.id)
+      const patientInstance = await this.findOne(patientInviteInput.id)
       const patientProviders = await this.usualProvider(patientInstance.id)
       const usualProvider = patientProviders.find((item) => item.currentProvider)
       //get patient role
       const allRoles = await this.usersService.findAllRoles()
       const patientRole = allRoles.find((item) => item.role === 'patient')
       //user registration input
-      if(patientInstance && patientInstance.email) {
+      if (patientInstance && patientInstance.email) {
         const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
-        if(!userAlreadyExist){
-         const user = await this.usersService.create({firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId, facilityId: patientInstance.facilityId})
-         patientInstance.user = user
-         const patient =  await this.patientRepository.save(patientInstance)
-         await this.usersService.saveUserId(patient.id, user);
-         this.mailerService.sendEmailForgotPassword(user.email, user.id, patientInstance.firstName +' '+ patientInstance.lastName, usualProvider.doctor.firstName + " "+usualProvider.doctor.lastName,  true, user.token, inviteTemplateId)
-         return patient
-        }else{
+        if (!userAlreadyExist) {
+          const user = await this.usersService.create({ firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId, facilityId: patientInstance.facilityId })
+          patientInstance.user = user
+          const patient = await this.patientRepository.save(patientInstance)
+          await this.usersService.saveUserId(patient.id, user);
+          this.mailerService.sendEmailForgotPassword(user.email, user.id, patientInstance.firstName + ' ' + patientInstance.lastName, usualProvider.doctor.firstName + " " + usualProvider.doctor.lastName, true, user.token, inviteTemplateId)
+          return patient
+        } else {
           const token = createToken();
           userAlreadyExist.token = token;
           await this.usersService.save(userAlreadyExist);
-          this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.id, patientInstance.firstName +' '+ patientInstance.lastName, usualProvider.doctor.firstName + " "+usualProvider.doctor.lastName, true, token, inviteTemplateId)
+          this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.id, patientInstance.firstName + ' ' + patientInstance.lastName, usualProvider.doctor.firstName + " " + usualProvider.doctor.lastName, true, token, inviteTemplateId)
           return patientInstance
         }
-      }else if(patientInstance && !patientInstance.email) {
+      } else if (patientInstance && !patientInstance.email) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Patient does not have email',
@@ -293,7 +298,7 @@ export class PatientService {
    */
   async findAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
-      const [first]  = patientInput.searchString ? patientInput.searchString.split(' ') : ''
+      const [first] = patientInput.searchString ? patientInput.searchString.split(' ') : ''
       const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, { ...patientInput, associatedTo: 'Patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', columnName4: 'dob', columnName5: 'ssn', columnName6: 'patientRecord', filterType: 'stringFilter' } })
       return {
         pagination: {
@@ -306,13 +311,14 @@ export class PatientService {
     }
   }
 
+
   /**
    * Usuals provider
    * @param id 
    * @returns provider 
    */
   async usualProvider(id: string): Promise<DoctorPatient[]> {
-    try{
+    try {
       const usualProvider = await this.doctorPatientRepository.find({
         where: {
           patientId: id
@@ -322,7 +328,7 @@ export class PatientService {
       })
       return usualProvider
     }
-     catch (error) {
+    catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
@@ -353,22 +359,28 @@ export class PatientService {
   async addPatient(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Patient> {
     const patientInstance = this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
     patientInstance.patientRecord = await this.utilsService.generateString(10);
-    const usualProvider = await this.doctorService.findOne(createExternalAppointmentInput.createPatientItemInput.usualProviderId)
-    //creating doctorPatient Instance 
-    const doctorPatientInstance = await this.doctorPatientRepository.create({
-      doctorId: usualProvider.id,
-      currentProvider: true,
-    })
-    doctorPatientInstance.doctor = usualProvider
-    doctorPatientInstance.doctorId = usualProvider.id
-    //adding usual provider with patient
-    patientInstance.doctorPatients = [doctorPatientInstance]
+    let doctorPatientInstance
+    if (createExternalAppointmentInput.createPatientItemInput.usualProviderId) {
+      const usualProvider = await this.doctorService.findOne(createExternalAppointmentInput.createPatientItemInput.usualProviderId)
+      //creating doctorPatient Instance 
+      doctorPatientInstance = await this.doctorPatientRepository.create({
+        doctorId: usualProvider.id,
+        currentProvider: true,
+      })
+      doctorPatientInstance.doctor = usualProvider
+      doctorPatientInstance.doctorId = usualProvider.id
+      //adding usual provider with patient
+      patientInstance.doctorPatients = [doctorPatientInstance]
+    }
     const guardianContact = await this.contactService.createContact(createExternalAppointmentInput.createGuardianContactInput)
     patientInstance.contacts = [guardianContact]
     const patient = await this.patientRepository.save(patientInstance)
-    doctorPatientInstance.patient = patient
-    doctorPatientInstance.patientId = patient.id
-    await this.doctorPatientRepository.save(doctorPatientInstance)
+
+    if (createExternalAppointmentInput.createPatientItemInput.usualProviderId) {
+      doctorPatientInstance.patient = patient
+      doctorPatientInstance.patientId = patient.id
+      await this.doctorPatientRepository.save(doctorPatientInstance)
+    }
     return patient
   }
 
@@ -387,13 +399,13 @@ export class PatientService {
       error: 'Patient not found',
     });
   }
-  
+
   async GetPatientByEmail(email: string): Promise<PatientPayload> {
-      const patient = await this.patientRepository.findOne({email: email});
-      if (patient) {
-        return { patient }
-      }
+    const patient = await this.patientRepository.findOne({ email: email });
+    if (patient) {
+      return { patient }
     }
+  }
 
   /**
    * Removes patient
@@ -444,14 +456,14 @@ export class PatientService {
    * @param id 
    * @returns patient invite 
    */
-  async updatePatientInvite(id: string ): Promise<Patient>{
+  async updatePatientInvite(id: string): Promise<Patient> {
     try {
       const patient = await this.findOne(id)
-      if(patient){
-      return await this.utilsService.updateEntityManager(Patient, id, {inviteAccepted: true}, this.patientRepository)
+      if (patient) {
+        return await this.utilsService.updateEntityManager(Patient, id, { inviteAccepted: true }, this.patientRepository)
       }
       return
-    }catch(error){
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }

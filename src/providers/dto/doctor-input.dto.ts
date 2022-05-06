@@ -7,6 +7,9 @@ export default class DoctorInput {
     facilityId?: string
 
     @Field({ nullable: true })
+    doctorFirstName?: string
+
+    @Field({ nullable: true })
     searchString?: string
 
     @Field({ nullable: true })
