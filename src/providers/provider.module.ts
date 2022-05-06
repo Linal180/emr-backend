@@ -20,6 +20,11 @@ import { ContactService } from './services/contact.service';
 import { DoctorService } from './services/doctor.service';
 import { ScheduleService } from './services/schedule.service';
 import { StaffService } from './services/staff.service';
+import { AttachmentsModule } from 'src/attachments/attachments.module';
+import { DoctorController } from './controllers/doctor.controller';
+import { StaffController } from './controllers/staff.controller';
+import { DoctorSubscriber } from './subscribers/doctor.subscriber';
+import { StaffSubscriber } from './subscribers/staff.subscriber';
 
 @Module({
   imports: [
@@ -28,9 +33,12 @@ import { StaffService } from './services/staff.service';
     forwardRef(() => PatientModule),
     forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule),
-    forwardRef(() => AppointmentModule)
+    forwardRef(() => AppointmentModule),
+    AttachmentsModule
   ],
-  providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService, DoctorResolver, DoctorService, ScheduleResolver, ScheduleService],
+  providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService,
+    DoctorResolver, DoctorService, ScheduleResolver, ScheduleService, DoctorSubscriber, StaffSubscriber],
+  controllers: [DoctorController, StaffController],
   exports: [ContactService, StaffService, ScheduleService, TypeOrmModule, BillingAddressService, DoctorService]
 })
 export class ProviderModule { }

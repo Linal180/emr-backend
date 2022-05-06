@@ -86,10 +86,14 @@ export class AttachmentsService {
    * @returns attachments 
    */
   async findAttachments(id: string, type: string): Promise<Attachment[]> {
-    return await this.attachmentsRepository.find({
-      where: { typeId: id, type: type },
-      order: { createdAt: "ASC" },
-    });
+    try {
+      return await this.attachmentsRepository.find({
+        where: { typeId: id, type: type },
+        order: { createdAt: "ASC" },
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   /**

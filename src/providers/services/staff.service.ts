@@ -1,16 +1,21 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Connection, Repository } from 'typeorm';
+//user import
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Connection, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { AllStaffPayload } from '../dto/all-staff-payload.dto';
 import { CreateStaffInput } from '../dto/create-staff.input';
 import StaffInput from '../dto/staff-input.dto';
 import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
 import { Staff } from '../entities/staff.entity';
+import { File } from 'src/aws/dto/file-input.dto';
 import { DoctorService } from './doctor.service';
 
 @Injectable()
@@ -25,7 +30,8 @@ export class StaffService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService,
-    private readonly doctorService: DoctorService
+    private readonly doctorService: DoctorService,
+    private readonly attachmentsService: AttachmentsService,
   ) { }
 
   /**
@@ -69,22 +75,22 @@ export class StaffService {
    */
   async updateStaff(updateStaffInput: UpdateStaffInput): Promise<Staff> {
     try {
-       const staff = await this.utilsService.updateEntityManager(Staff, updateStaffInput.updateStaffItemInput.id, updateStaffInput.updateStaffItemInput, this.staffRepository)
-       const staffInstance = await this.findOne(updateStaffInput.updateStaffItemInput.id)
-       if(!staffInstance){
+      const staff = await this.utilsService.updateEntityManager(Staff, updateStaffInput.updateStaffItemInput.id, updateStaffInput.updateStaffItemInput, this.staffRepository)
+      const staffInstance = await this.findOne(updateStaffInput.updateStaffItemInput.id)
+      if (!staffInstance) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Staff not found or disabled',
         });
-       }
+      }
       // get providers
-      if(updateStaffInput.providers){
+      if (updateStaffInput.providers) {
         const providers = await this.doctorService.getDoctors(updateStaffInput.providers)
         staffInstance.providers = providers
         return this.staffRepository.save(staffInstance)
       }
       return staff
-      } catch (error) {
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
@@ -102,11 +108,11 @@ export class StaffService {
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       // Staff Creation
-      const staffInstance = this.staffRepository.create({...registerUserInput, practiceId})
+      const staffInstance = this.staffRepository.create({ ...registerUserInput, practiceId })
       staffInstance.user = user;
       staffInstance.facility = facility;
       staffInstance.facilityId = facility.id
-      const staff =  await this.staffRepository.save(staffInstance)
+      const staff = await this.staffRepository.save(staffInstance)
       await this.usersService.saveUserId(staff.id, user);
       return staff
     } catch (error) {
@@ -121,7 +127,7 @@ export class StaffService {
    */
   async findAllStaff(staffInput: StaffInput): Promise<AllStaffPayload> {
     try {
-      const [first]  = staffInput.searchString ? staffInput.searchString.split(' ') : ''
+      const [first] = staffInput.searchString ? staffInput.searchString.split(' ') : ''
       const paginationResponse = await this.paginationService.willPaginate<Staff>(this.staffRepository, { ...staffInput, associatedTo: 'Staff', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
@@ -208,5 +214,82 @@ export class StaffService {
    */
   async findOneByEmail(email: string): Promise<Staff> {
     return await this.staffRepository.findOne({ email: email });
+  }
+
+  /**
+   * Uploads staff media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns staff media 
+   */
+  async uploadStaffMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<Staff> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.STAFF;
+      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+      const staff = await this.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return staff
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Removes staff media
+   * @param id 
+   * @returns  
+   */
+  async removeStaffMedia(id: string) {
+    try {
+      return await this.attachmentsService.removeMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Updates staff media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns staff media 
+   */
+  async updateStaffMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<Staff> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.DOCTOR
+      const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+      const staff = await this.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return staff
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Gets staff media
+   * @param id 
+   * @returns  
+   */
+  async getStaffMedia(id: string) {
+    try {
+      return await this.attachmentsService.getMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

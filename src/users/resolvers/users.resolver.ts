@@ -1,8 +1,9 @@
 import { ForbiddenException, HttpStatus, NotFoundException, PreconditionFailedException, SetMetadata, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { FacilityService } from 'src/facilities/services/facility.service';
-import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { UtilsService } from 'src/util/utils.service';
@@ -27,15 +28,17 @@ import UsersInput from '../dto/users-input.dto';
 import { UsersPayload } from '../dto/users-payload.dto';
 import { SeneOTPAgainInput, VerifyCodeInput } from '../dto/verify-code.dto';
 import { VerifyEmailInput } from '../dto/verify-email-input.dto';
+import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
-@Resolver('users')
+@Resolver(() => User)
 @UseFilters(HttpExceptionFilterGql)
 export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
     private readonly facilityService: FacilityService,
+    private readonly attachmentsService: AttachmentsService
   ) { }
 
   // Queries 
@@ -51,16 +54,16 @@ export class UsersResolver {
       }
     }
   }
-  
+
   @Query(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   async fetchUser(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email);
     return { user: userFound, response: { status: 200, message: 'User Data' } }
   }
 
   @Query(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getUser')
   async getUser(@Args('getUser') getUser: GetUser): Promise<UserPayload> {
     const userFound = await this.usersService.findUserById(getUser.id);
@@ -68,7 +71,7 @@ export class UsersResolver {
   }
 
   @Query(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email)
     if (!userFound) {
@@ -116,7 +119,7 @@ export class UsersResolver {
   @Query(returns => EmergencyAccessUserPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'fetchEmergencyAccessUsers')
-  async fetchEmergencyAccessUsers(@Args('emergencyAccessUsersInput') emergencyAccessUsersInput:EmergencyAccessUserInput): Promise<EmergencyAccessUserPayload> {
+  async fetchEmergencyAccessUsers(@Args('emergencyAccessUsersInput') emergencyAccessUsersInput: EmergencyAccessUserInput): Promise<EmergencyAccessUserPayload> {
     const users = await this.usersService.fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput);
     return { ...users, response: { status: 200, message: 'User Data fetched successfully' } }
   }
@@ -127,8 +130,8 @@ export class UsersResolver {
     const user = await this.usersService.findOne(email.trim().toLowerCase())
     if (user) {
       if (user.emailVerified) {
-        if(user.isTwoFactorEnabled){
-           this.utilsService.sendVerificationCode(user.phone)
+        if (user.isTwoFactorEnabled) {
+          this.utilsService.sendVerificationCode(user.phone)
         }
         return await this.usersService.createToken(user, password);
       }
@@ -147,19 +150,19 @@ export class UsersResolver {
   async verifyOTP(@Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
     const { id, otpCode } = verifyCodeInput
     const user = await this.usersService.findUserById(id)
-    if(user){
-       const verifyOTP = await this.utilsService.verifyOTPCode(user.phone, otpCode)
-       if(verifyOTP){
-         return {
+    if (user) {
+      const verifyOTP = await this.utilsService.verifyOTPCode(user.phone, otpCode)
+      if (verifyOTP) {
+        return {
           user: user,
           response: { status: 200, message: 'OTP has been successfully verified.' }
-         }
-       }else {
+        }
+      } else {
         throw new PreconditionFailedException({
           status: HttpStatus.PRECONDITION_FAILED,
           error: 'OTP code could not verify, Resend again',
         });
-       }
+      }
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
@@ -171,12 +174,12 @@ export class UsersResolver {
   async resentOTP(@Args('seneOTPAgainInput') seneOTPAgainInput: SeneOTPAgainInput): Promise<UserPayload> {
     const { id } = seneOTPAgainInput
     const user = await this.usersService.findUserById(id)
-    if(user){
-        await this.utilsService.sendVerificationCode(user.phone)
-        return {
-          user: null,
-          response: { status: 200, message: 'OTP has been sent again successfully.' }
-        }
+    if (user) {
+      await this.utilsService.sendVerificationCode(user.phone)
+      return {
+        user: null,
+        response: { status: 200, message: 'OTP has been sent again successfully.' }
+      }
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
@@ -250,7 +253,7 @@ export class UsersResolver {
       status: HttpStatus.NOT_FOUND,
       error: 'User not found',
     });
-  } 
+  }
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -298,5 +301,12 @@ export class UsersResolver {
   async updateUserRole(@Args('user') updateRoleInput: UpdateRoleInput): Promise<UserPayload> {
     const user = await this.usersService.updateUserRole(updateRoleInput);
     return { user, response: { status: 200, message: 'User Data updated successfully' } }
+  }
+
+  @ResolveField(() => [Attachment])
+  async attachments(@Parent() user: User): Promise<Attachment[]> {
+    if (user) {
+      return await this.attachmentsService.findAttachments(user.id, AttachmentType.SUPER_ADMIN);
+    }
   }
 }
