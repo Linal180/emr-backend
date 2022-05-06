@@ -192,6 +192,36 @@ export class UsersService {
 
   async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput:EmergencyAccessUserInput):Promise<EmergencyAccessUserPayload>{
     const {page,limit}=emergencyAccessUsersInput.paginationInput
+
+    if(emergencyAccessUsersInput.email){
+      const [emergencyAccessUsers,totalCount]=await getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .skip((page-1)*limit)
+      .take(limit)
+      .innerJoin(qb2 => {
+        return qb2
+        .select('user.id', 'id')
+        .from(User, 'user')
+        .innerJoin('user.roles', 'userRoles')
+        .where('userRoles.role = :role', { role:'emergency-access' });
+      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+      .leftJoinAndSelect('user.roles', 'userRoles')
+      .where('user.email like :email',{email:`%${emergencyAccessUsersInput.email}%`})
+      .getManyAndCount()
+
+      const totalPages=Math.ceil(totalCount / limit)
+
+      return {
+        pagination:{
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        emergencyAccessUsers
+      }
+    }
     
     if(emergencyAccessUsersInput.facilityId){
       const [emergencyAccessUsers,totalCount]=await getConnection()
