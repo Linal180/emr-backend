@@ -18,7 +18,7 @@ export class CreateloincCodesData implements Seeder {
       if (!loincCodes.length) {
         loincCodesData.map( async (item)=> { 
           let loincCode = getRepository(LoincCodes).create(item)
-          loincCode = await queryRunner.manager.save(loincCode);
+          loincCode = await queryRunner.manager .save(loincCode);
         })
       }
        //Check specimen types  

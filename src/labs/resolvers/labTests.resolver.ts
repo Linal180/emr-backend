@@ -104,7 +104,7 @@ export class LabTestsResolver {
 
   @Mutation(() => LabTestPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllLabTest')
+  // @SetMetadata('name', 'removeLabTest')
   async removeLabTest(@Args('removeLabTest') removeLabTest: RemoveLabTest) {
     await this.labTestsService.removeLabTest(removeLabTest);
     return { response: { status: 200, message: 'Lab test Deleted' } };
