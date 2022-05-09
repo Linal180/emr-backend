@@ -36,8 +36,8 @@ export class CreateUsers implements Seeder {
        }
        //---------
         //Add Permissions
-        let permissionsNew = getRepository(Permission).create(permissionDataNew)
-        permissionsNew = await queryRunner.manager.save(permissionsNew);
+        // let permissionsNew = getRepository(Permission).create(permissionDataNew)
+        // permissionsNew = await queryRunner.manager.save(permissionsNew);
        //--------
        
       //Add superAdmin role Permissions
