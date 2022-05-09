@@ -1576,6 +1576,7 @@ type Query {
   getFacilitySchedule(getFacilitySchedule: GetFacilitySchedule!): SchedulesPayload!
   getSlots(getSlots: GetSlots!): SlotsPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
+  fetchAllPatients(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
@@ -1731,6 +1732,9 @@ input GetSlots {
 input PatientInput {
   facilityId: String
   searchString: String
+  dob: String
+  appointmentDate: String
+  doctorId: String
   patientRecord: String
   practiceId: String
   paginationOptions: PaginationInput!
