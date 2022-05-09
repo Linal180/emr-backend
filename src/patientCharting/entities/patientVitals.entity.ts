@@ -140,6 +140,10 @@ export class PatientVitals {
   @Field({nullable: true})
   PainRange: string;
 
+  @Column({ nullable: true })   
+  @Field({nullable: true})
+  pulseRate: string;
+
   @Column({ nullable: true })
   @Field({nullable: true})
   patientHeadCircumference: string;
