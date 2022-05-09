@@ -9,6 +9,15 @@ export default class PatientInput {
     @Field({ nullable: true })
     searchString?: string
 
+    @Field({ nullable: true })
+    dob?: string
+
+    @Field({ nullable: true })
+    appointmentDate?: string
+
+    @Field({ nullable: true })
+    doctorId?: string
+
     @Field({nullable: true})
     patientRecord?: string
 
