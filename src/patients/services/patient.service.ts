@@ -1,6 +1,7 @@
 import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-external-appointment.input';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
@@ -11,7 +12,7 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Connection, Repository } from 'typeorm';
+import { Connection, getConnection, Repository } from 'typeorm';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreatePatientInput } from '../dto/create-patient.input';
@@ -311,6 +312,61 @@ export class PatientService {
     }
   }
 
+  async fetchAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
+      try {
+        const { limit, page } = patientInput.paginationOptions
+        const { dob, appointmentDate, doctorId, facilityId, practiceId } = patientInput
+
+        const baseQuery=getConnection()
+        .getRepository(Patient)
+        .createQueryBuilder('patient')
+        .skip((page - 1) * limit)
+        .take(limit)
+
+        if(appointmentDate){
+          const [patients,totalCount] = await baseQuery
+                                            .innerJoin(Appointment, 'patientWithCertainAppointment', `patient.id = "patientWithCertainAppointment"."patientId" ${appointmentDate? 'AND "patientWithCertainAppointment"."scheduleStartDateTime"::date = :scDate':''}`, { scDate: `%${appointmentDate}%` })
+                                            .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId':''}`, { doctorId: doctorId })
+                                            .where(dob?'patient.dob ILIKE :dob':'1=1', { dob: `%${dob}%` })
+                                            .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
+                                            .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
+                                            .getManyAndCount()
+          
+          const totalPages=Math.ceil(totalCount / limit)
+
+          return {
+            patients:patients,
+            pagination:{
+              totalCount,
+              page,
+              limit,
+              totalPages,
+            },
+          }
+        }else{
+          const [patients,totalCount] = await baseQuery
+                                            .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId':''}`, { doctorId: doctorId })
+                                            .where(dob?'patient.dob ILIKE :dob':'1=1', { dob: `%${dob}%` })
+                                            .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
+                                            .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
+                                            .getManyAndCount()
+
+          const totalPages=Math.ceil(totalCount / limit)
+
+          return {
+            patients:patients,
+            pagination:{
+              totalCount,
+              page,
+              limit,
+              totalPages,
+            },
+          }
+        }
+      } catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
 
   /**
    * Usuals provider

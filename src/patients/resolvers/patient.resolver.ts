@@ -1,5 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { AttachmentsService } from 'src/attachments/attachments.service';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
@@ -31,6 +33,7 @@ export class PatientResolver {
     private readonly attachmentsService: AttachmentsService,
     private readonly employerService: EmployerService,
     private readonly contactService: ContactService,
+    private readonly appointmentService: AppointmentService,
     private readonly facilityService: FacilityService) { }
 
   @Mutation(() => PatientPayload)
@@ -144,6 +147,26 @@ export class PatientResolver {
     });
   }
 
+  @Query(returns => PatientsPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'fetchAllPatients')
+  async fetchAllPatients(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
+    const patients = await this.patientService.fetchAllPatients(patientInput)
+    if (patients) {
+      return {
+        ...patients,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Patient not found',
+    });
+  }
+
   @Query(returns => PatientPayload)  
   async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
     const patients = await this.patientService.GetPatient(getPatient.id)
@@ -159,5 +182,12 @@ export class PatientResolver {
   async removePatient(@Args('removePatient') removePatient: RemovePatient) {
     await this.patientService.removePatient(removePatient);
     return { response: { status: 200, message: 'Patient Deleted' } };
+  }
+
+  @ResolveField((returns) => [Appointment])
+  async appointments(@Parent() patient: Patient): Promise<Appointment[]> {
+    if (patient) {
+     return await this.appointmentService.getPatientAppointment({patientId:patient.id});
+    }
   }
 }
