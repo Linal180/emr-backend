@@ -6,7 +6,7 @@ import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { UtilsService } from 'src/util/utils.service';
-import { getConnection, Repository } from 'typeorm';
+import { getConnection, In, Repository } from 'typeorm';
 import { CreateProblemInput } from '../dto/create-problem.input';
 import PatientProblemInput from '../dto/problem-input.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
@@ -115,6 +115,21 @@ export class ProblemService {
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
       error: 'Patient Problem not found',
+    });
+  }
+
+  async getDiagnoses(ids: string[]): Promise<ICDCodes[]> {
+    const diagnoses = await this.icdCodeRepository.find({
+      where: {
+        id: In(ids)
+      }
+    });
+    if(diagnoses){
+      return diagnoses
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'diagnoses not found',
     });
   }
 

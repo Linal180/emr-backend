@@ -30,8 +30,8 @@ export class PatientAllergiesResolver {
     private readonly doctorService:  DoctorService) { }
 
   @Mutation(() => PatientAllergyPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'addPatientAllergy')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'addPatientAllergy')
   async addPatientAllergy(@Args('createPatientAllergyInput') createPatientAllergyInput: CreatePatientAllergyInput) {
     return {
       patientAllergy: await this.patientAllergiesService.addPatientAllergy(createPatientAllergyInput),
@@ -40,8 +40,8 @@ export class PatientAllergiesResolver {
   }
 
   @Mutation(() => PatientAllergyPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updatePatientAllergy')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updatePatientAllergy')
   async updatePatientAllergy(@Args('updateAllergyInput') updateAllergyInput: UpdateAllergyInput) {
     return {
       patientAllergy: await this.patientAllergiesService.updatePatientAllergy(updateAllergyInput),
@@ -71,8 +71,8 @@ export class PatientAllergiesResolver {
   }
   
   @Query(returns => PatientAllergiesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllPatientAllergies')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllPatientAllergies')
   async findAllPatientAllergies(@Args('patientAllergyInput') patientAllergyInput: PatientAllergyInput): Promise<PatientAllergiesPayload> {
     const patientAllergies = await this.patientAllergiesService.findAllPatientAllergies(patientAllergyInput)
     if (patientAllergies) {
@@ -90,8 +90,8 @@ export class PatientAllergiesResolver {
   }
 
   @Query(returns => AllergiesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllAllergies')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllAllergies')
   async findAllAllergies(@Args('allergyInput') allergyInput: AllergyInput): Promise<AllergiesPayload> {
     const allergies = await this.patientAllergiesService.findAllAllergies(allergyInput)
     if (allergies) {
@@ -109,8 +109,8 @@ export class PatientAllergiesResolver {
   }
 
   @Query(returns => ReactionsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllReactions')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllReactions')
   async findAllReactions(@Args('reactionInput') reactionInput: ReactionInput): Promise<ReactionsPayload> {
     const reactions = await this.reactionsService.findAllReactions(reactionInput)
     if (reactions) {
@@ -129,8 +129,8 @@ export class PatientAllergiesResolver {
 
   
   @Query(returns => PatientAllergyPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getPatientAllergy')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientAllergy')
   async getPatientAllergy(@Args('getPatientAllergy') getPatientAllergy: GetPatientAllergy): Promise<PatientAllergyPayload> {
     const patientAllergy = await this.patientAllergiesService.GetPatientAllergy(getPatientAllergy.id)
     return {
@@ -140,8 +140,8 @@ export class PatientAllergiesResolver {
   }
 
   @Mutation(() => PatientAllergyPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'removePatientAllergy')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removePatientAllergy')
   async removePatientAllergy(@Args('removePatientAllergy') removePatientAllergy: RemovePatientAllergy) {
     await this.patientAllergiesService.removePatientAllergy(removePatientAllergy);
     return { response: { status: 200, message: 'Patient allergy deleted' } };
