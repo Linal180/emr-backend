@@ -175,10 +175,10 @@ export class PatientService {
       if (patientInstance) {
         await this.utilsService.updateEntityManager(Patient, updatePatientProfileInput.updatePatientProfileItemInput.id, updatePatientProfileInput.updatePatientProfileItemInput, this.patientRepository)
         const contact = await this.contactService.updateContact(updatePatientProfileInput.updateContactInput)
-        patientInstance.contacts.push(contact)
+        patientInstance.contacts = [contact]
         return await this.patientRepository.save({ ...patientInstance, ...updatePatientProfileInput.updatePatientProfileItemInput })
       }
-      throw new NotFoundException({
+      throw new NotFoundException({ 
         status: HttpStatus.NOT_FOUND,
         error: 'Patient not found',
       });
