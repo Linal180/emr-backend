@@ -1,9 +1,11 @@
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
 import LabTestInput from '../dto/lab-test.input';
 import { LabTestPayload } from '../dto/labTest-payload.dto';
@@ -25,8 +27,8 @@ export class LabTestsResolver {
     private readonly patientService: PatientService) { }
 
   @Mutation(() => LabTestPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'createLabTest')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createLabTest')
   async createLabTest(@Args('createLabTestInput') createLabTestInput: CreateLabTestInput) {
     return {
       labTest: await this.labTestsService.createLabTest(createLabTestInput),
@@ -35,8 +37,8 @@ export class LabTestsResolver {
   } 
 
   @Mutation(() => LabTestPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updateLabTest')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateLabTest')
   async updateLabTest(@Args('updateLabTestInput') updateLabTestInput: UpdateLabTestInput) {
     return {
       labTest: await this.labTestsService.updateLabTest(updateLabTestInput),
@@ -45,8 +47,8 @@ export class LabTestsResolver {
   }
   
   @Query(returns => LabTestPayload)  
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getLabTest')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getLabTest')
   async getLabTest(@Args('getLabTest') getLabTest: GetLabTest): Promise<LabTestPayload> {
     const labTest = await this.labTestsService.GetLabTest(getLabTest.id)
     return {
@@ -84,8 +86,8 @@ export class LabTestsResolver {
   }
 
   @Query(returns => LabTestsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllLabTest')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllLabTest')
   async findAllLabTest(@Args('labTestInput') labTestInput: LabTestInput): Promise<LabTestsPayload> {
     const labTests = await this.labTestsService.findAllLabTest(labTestInput)
     if (labTests) {
@@ -103,8 +105,8 @@ export class LabTestsResolver {
   }
 
   @Mutation(() => LabTestPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'removeLabTest')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeLabTest')
   async removeLabTest(@Args('removeLabTest') removeLabTest: RemoveLabTest) {
     await this.labTestsService.removeLabTest(removeLabTest);
     return { response: { status: 200, message: 'Lab test Deleted' } };
