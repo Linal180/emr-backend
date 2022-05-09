@@ -1,7 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { Attachment } from '../../attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { LabTests } from 'src/labs/entities/labTests.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
@@ -9,6 +9,7 @@ import { Transactions } from 'src/payment/entity/payment.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Attachment } from '../../attachments/entities/attachment.entity';
 import { DoctorPatient } from './doctorPatient.entity';
 import { Employer } from './employer.entity';
 
@@ -379,6 +380,10 @@ export class Patient {
   @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Appointment], { nullable: true })
   appointments: Appointment[];
+  
+  @OneToMany(() => LabTests, labTests => labTests.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [LabTests], { nullable: true })
+  labTests: LabTests[];
   
   @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE"})
   @Field(type => Employer, { nullable: true })
