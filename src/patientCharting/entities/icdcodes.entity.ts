@@ -1,5 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { LabTests } from 'src/labs/entities/labTests.entity';
+// import { TestSpecimens } from 'src/labs/entities/testSpecimens.entity';
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { PatientProblems } from './patientProblems.entity';
 
 @Entity({ name: 'ICDCode' })
@@ -23,6 +25,10 @@ export class ICDCodes {
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.ICDCode)
   patientProblems: PatientProblems[];
+  
+  @ManyToMany(type => LabTests, labTests => labTests.diagnoses)
+  @Field((type)=> LabTests, {nullable: true})
+  labTests: LabTests[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

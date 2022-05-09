@@ -56,11 +56,151 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type Observations {
+  id: String!
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: AbnormalFlag!
+  description: String
+  labTestId: String
+  loincCodes: LoincCodes
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+"""The test result's abnormal flag status assigned"""
+enum AbnormalFlag {
+  NONE
+  BELOW_LOW_NORMAL
+  ABOVE_HIGH_NORMAL
+  BELOW_LOWER_PANIC_LIMIT
+  BELOW_UPPER_PANIC_LIMIT
+  BELOW_ABSOLUTE_LOW_OFF_SCALE
+  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
+  NORMAL
+  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
+  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
+  SIGNIFICANT_CHANGE_UP
+  SIGNIFICANT_CHANGE_DOWN
+  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
+  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
+  SUSCEPTIBLE
+  RESISTANT
+  INTERMEDIATE
+  MODERATELY
+  VERY_SUSCEPTIBLE
+}
+
+type LoincCodes {
+  id: String!
+  loincNum: String
+  component: String
+  property: String
+  timeAspect: String
+  system: String
+  scaleTyp: String
+  methodTyp: String
+  class: String
+  versionLastChanged: String
+  chngType: String
+  definitionDescription: String
+  status: String
+  consumerName: String
+  classType: String
+  formula: String
+  exmplAnswers: String
+  surveyQuestTest: String
+  surveyQuestSRC: String
+  unitsRequired: String
+  submittedUnits: String
+  relatedNames2: String
+  shortName: String
+  orderObs: String
+  cdiscCommonTests: String
+  hl7FieldSubFieldId: String
+  externalCopyRightNotice: String
+  exampleUnits: String
+  longCommonName: String
+  unitsAndRange: String
+  exampleUcumUnits: String
+  exampleSiUcumUnits: String
+  statusReason: String
+  statusText: String
+  changeReasonPublic: String
+  commonTestRank: String
+  commonOrderRank: String
+  commonSiTestRank: String
+  hl7AttachmentStructure: String
+  externalCopyRightLink: String
+  panelType: String
+  askAtOrderEntry: String
+  associationObservations: String
+  versionFirstRelease: String
+  validHl7AttachmentRequest: String
+  displayName: String
+  labTests: [LabTests!]
+  observations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+type SpecimenTypes {
+  id: String!
+  name: String
+  testSpecimens: [TestSpecimens!]
+  createdAt: String
+  updatedAt: String
+}
+
+type TestSpecimens {
+  id: String!
+  collectionDate: String
+  collectionTime: String
+  specimenNotes: String
+  labTestId: String
+  specimenTypes: SpecimenTypes
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+type LabTests {
+  id: String!
+  status: Status!
+  testDate: String
+  testTime: String
+  testNotes: String
+  patientId: String
+  appointmentId: String
+  patient: Patient
+  appointment: Appointment
+  diagnoses: [ICDCodes]
+  test: LoincCodes
+  testSpecimens: [TestSpecimens!]
+  testObservations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The lab's test status assigned"""
+enum Status {
+  ORDER_ENTERED
+  DISCONTINUED
+  IN_PROGRESS
+  RESULT_RECEIVED
+  RESULT_REVIEWED_WITH_PATIENT
+}
+
 type ICDCodes {
   id: String!
   code: String!
   description: String
   version: String
+  labTests: LabTests
   createdAt: String
   updatedAt: String
 }
@@ -784,6 +924,7 @@ type Appointment {
   facility: Facility
   provider: Doctor
   patient: Patient
+  labTests: [LabTests!]
   invoice: Invoice
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
@@ -887,6 +1028,7 @@ type Patient {
   patientAllergies: [PatientAllergies!]
   patientProblems: [PatientProblems!]
   appointments: [Appointment!]
+  labTests: [LabTests!]
   employer: Employer
   patientVitals: [PatientVitals!]
   createdAt: String!
@@ -1384,143 +1526,25 @@ type PatientVitalsPayload {
   pagination: PaginationPayload
 }
 
-type Observations {
-  id: String!
-  doctorsSignOff: Boolean
-  resultValue: String
-  resultUnit: String
-  normalRange: String
-  normalRangeUnit: String
-  abnormalFlag: AbnormalFlag!
-  description: String
-  labTestId: String
-  loincCodes: LoincCodes
+type LabTestObservationPayload {
+  response: ResponsePayload
+  labTestObservation: Observations
+}
+
+type LabTestPayload {
+  response: ResponsePayload
   labTest: LabTests
-  createdAt: String
-  updatedAt: String
 }
 
-"""The test result's abnormal flag status assigned"""
-enum AbnormalFlag {
-  NONE
-  BELOW_LOW_NORMAL
-  ABOVE_HIGH_NORMAL
-  BELOW_LOWER_PANIC_LIMIT
-  BELOW_UPPER_PANIC_LIMIT
-  BELOW_ABSOLUTE_LOW_OFF_SCALE
-  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
-  NORMAL
-  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
-  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
-  SIGNIFICANT_CHANGE_UP
-  SIGNIFICANT_CHANGE_DOWN
-  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
-  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
-  SUSCEPTIBLE
-  RESISTANT
-  INTERMEDIATE
-  MODERATELY
-  VERY_SUSCEPTIBLE
+type LabTestsPayload {
+  response: ResponsePayload
+  labTests: [LabTests]
+  pagination: PaginationPayload
 }
 
-type LoincCodes {
-  id: String!
-  loincNum: String
-  component: String
-  property: String
-  timeAspect: String
-  system: String
-  scaleTyp: String
-  methodTyp: String
-  class: String
-  versionLastChanged: String
-  chngType: String
-  definitionDescription: String
-  status: String
-  consumerName: String
-  classType: String
-  formula: String
-  exmplAnswers: String
-  surveyQuestTest: String
-  surveyQuestSRC: String
-  unitsRequired: String
-  submittedUnits: String
-  relatedNames2: String
-  shortName: String
-  orderObs: String
-  cdiscCommonTests: String
-  hl7FieldSubFieldId: String
-  externalCopyRightNotice: String
-  exampleUnits: String
-  longCommonName: String
-  unitsAndRange: String
-  exampleUcumUnits: String
-  exampleSiUcumUnits: String
-  statusReason: String
-  statusText: String
-  changeReasonPublic: String
-  commonTestRank: String
-  commonOrderRank: String
-  commonSiTestRank: String
-  hl7AttachmentStructure: String
-  externalCopyRightLink: String
-  panelType: String
-  askAtOrderEntry: String
-  associationObservations: String
-  versionFirstRelease: String
-  validHl7AttachmentRequest: String
-  displayName: String
-  labTests: [LabTests!]
-  observations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-type SpecimenTypes {
-  id: String!
-  name: String
-  testSpecimens: [TestSpecimens!]
-  createdAt: String
-  updatedAt: String
-}
-
-type TestSpecimens {
-  id: String!
-  collectionDate: String
-  collectionTime: String
-  specimenNotes: String
-  labTestId: String
-  specimenTypes: SpecimenTypes
-  labTest: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-type LabTests {
-  id: String!
-  status: Status!
-  testDate: String
-  testTime: String
-  testNotes: String
-  patientId: String
-  appointmentId: String
-  patient: Patient
-  appointment: Appointment
-  diagnoses: [ICDCodes]
-  test: LoincCodes
-  testSpecimens: [TestSpecimens!]
-  testObservations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The lab's test status assigned"""
-enum Status {
-  ORDER_ENTERED
-  DISCONTINUED
-  IN_PROGRESS
-  RESULT_RECEIVED
-  RESULT_REVIEWED_WITH_PATIENT
+type LoincCodePayload {
+  response: ResponsePayload
+  loincCode: LoincCodes
 }
 
 type Query {
@@ -1562,6 +1586,8 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  getLabTest(getLabTest: GetLabTest!): LabTestPayload!
+  findAllLabTest(labTestInput: LabTestInput!): LabTestsPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
@@ -1758,6 +1784,16 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input GetLabTest {
+  id: String
+}
+
+input LabTestInput {
+  patientId: String
+  labTestStatus: String
+  paginationOptions: PaginationInput!
+}
+
 input PatientProblemInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -1891,6 +1927,14 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
+  updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
+  createLabTest(createLabTestInput: CreateLabTestInput!): LabTestPayload!
+  updateLabTest(updateLabTestInput: UpdateLabTestInput!): LabTestPayload!
+  removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
+  createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
+  updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
+  removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
@@ -2812,6 +2856,104 @@ input CreateExternalInvoiceInputs {
 
 input InvoiceStatusInputs {
   status: STATUS!
+  id: String!
+}
+
+input LoincCodeInput {
+  loincNum: String
+  component: String
+}
+
+input UpdateLoincCodeInput {
+  loincNum: String
+  component: String
+  id: String!
+}
+
+input CreateLabTestInput {
+  createLabTestItemInput: CreateLabTestItemInput
+  test: String
+  diagnoses: [String!]
+  createSpecimenItemInput: [CreateSpecimenItemInput!]
+}
+
+input CreateLabTestItemInput {
+  patientId: String!
+  appointmentId: String
+  status: String
+  testNotes: String
+  testDate: String
+  testTime: String
+}
+
+input CreateSpecimenItemInput {
+  testSpecimen: String!
+  specimenNotes: String
+  collectionDate: String
+  collectionTime: String
+}
+
+input UpdateLabTestInput {
+  updateLabTestItemInput: UpdateLabTestItemInput
+  test: String
+  diagnoses: [String!]
+  updateSpecimenItemInput: [UpdateSpecimenItemInput!]
+}
+
+input UpdateLabTestItemInput {
+  patientId: String
+  appointmentId: String
+  status: String
+  testNotes: String
+  testDate: String
+  testTime: String
+  id: String!
+}
+
+input UpdateSpecimenItemInput {
+  testSpecimen: String
+  specimenNotes: String
+  collectionDate: String
+  collectionTime: String
+  id: String!
+}
+
+input RemoveLabTest {
+  id: String
+}
+
+input CreateLabTestObservationInput {
+  labTestId: String!
+  createLabTestObservationItemInput: [CreateLabTestObservationItemInput!]
+}
+
+input CreateLabTestObservationItemInput {
+  doctorsSignOff: Boolean
+  resultValue: String!
+  resultUnit: String!
+  normalRange: String!
+  normalRangeUnit: String!
+  abnormalFlag: String!
+  description: String!
+}
+
+input UpdateLabTestObservationInput {
+  labTestId: String!
+  updateLabTestObservationItemInput: [UpdateLabTestObservationItemInput!]
+}
+
+input UpdateLabTestObservationItemInput {
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: String
+  description: String
+  id: String!
+}
+
+input RemoveLabTestObservation {
   id: String!
 }
 

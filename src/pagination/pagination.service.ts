@@ -165,6 +165,7 @@ export class PaginationService {
       practiceId,
       appointmentStatus,
       categoryId,
+      labTestStatus,
       category,
       isSystemForm,
       doctorFirstName,

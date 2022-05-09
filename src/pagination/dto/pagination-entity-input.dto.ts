@@ -36,6 +36,7 @@ export class PaginatedEntityInput {
   requestStatus?: string
   facilityName?:string
   practiceName?:string
+  labTestStatus?:string
   serviceName?:string
   searchString?:string
   isPrivate?: boolean
