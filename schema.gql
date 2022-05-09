@@ -269,6 +269,7 @@ type PatientVitals {
   PatientWeight: String
   PatientBMI: String
   PainRange: String
+  pulseRate: String
   patientHeadCircumference: String
   vitalCreationDate: String
   patientId: String
@@ -3028,6 +3029,7 @@ input CreateVitalInput {
   smokingStatus: SmokingStatus!
   patientTemperature: String
   bloodPressure: String
+  pulseRate: String
   respiratoryRate: String
   oxygenSaturation: String
   PatientHeight: String
