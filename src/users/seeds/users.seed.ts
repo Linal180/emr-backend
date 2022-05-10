@@ -157,6 +157,13 @@ export class CreateUsers implements Seeder {
       staffRolePermissionsRes = await queryRunner.manager.save(staffRolePermissionsRes);
       }
 
+      //--------------------
+      // let staffRolePermissionListNew = permissionsNew 
+      // let staffRolePermissionsNew = await this.rolePermissionPayload(staffRolePermissionListNew, staffRole)
+      // let staffRolePermissionsResNew = getRepository(RolePermission).create(staffRolePermissionsNew)
+      // staffRolePermissionsResNew = await queryRunner.manager.save(staffRolePermissionsResNew);
+      //----------------------
+
       //Add nursePractitioner role Permissions
       let nursePractitionerRole = roles.find((item)=> item.role === 'nurse-practitioner')
       let nursePractitionerRolePermission = await getRepository(RolePermission).find({where: {role: nursePractitionerRole.id}})

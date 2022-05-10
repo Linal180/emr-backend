@@ -135,7 +135,7 @@ export const PermissionData = [
     { name: 'removeLabTest'  , moduleType: 'Lab Orders' }
 ];
 export const permissionDataNew = [
-    { name: 'findAllReactions'  , moduleType: 'Patient Charting' }
+    { name: 'updateStaff'  , moduleType: 'Staff' },
 ]
 
 
