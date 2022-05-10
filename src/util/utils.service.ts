@@ -69,24 +69,31 @@ export class UtilsService {
   }
 
   async sendVerificationCode(phone: string) {
-    const verification = await client.verify
-    .services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
-    .verifications.create({ to: phone, channel: "sms" })
-    console.log("verification",verification);
-    return verification;
+    try{
+      console.log("phone",phone);
+      const verification = await client.verify
+      .services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
+      .verifications.create({ to: phone, channel: "sms" })
+      return verification;
+    }catch (error) {
+      throw new InternalServerErrorException(error);
+    }
  }
 
  async verifyOTPCode(phone: string, otpCode: string){
-  const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
-  .verificationChecks
-  .create({to: phone, code: otpCode})
-  if(verification.status === 'approved') {
-    return true
-  }else {
-    return false
+  try{
+    const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
+    .verificationChecks
+    .create({to: phone, code: otpCode})
+    if(verification.status === 'approved') {
+      return true
+    }else {
+      return false
+    }
+  }catch (error) {
+    throw new InternalServerErrorException(error);
   }
  }
- 
   /**
    * Converts tz
    * @param date 

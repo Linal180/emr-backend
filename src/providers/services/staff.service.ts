@@ -83,6 +83,10 @@ export class StaffService {
           error: 'Staff not found or disabled',
         });
       }
+      //update primary contact in user's model 
+      if(updateStaffInput.updateStaffItemInput.phone){
+         await this.usersService.updateUserInfo({phone: updateStaffInput.updateStaffItemInput.phone, id: staffInstance.user.id})
+      }
       // get providers
       if (updateStaffInput.providers) {
         const providers = await this.doctorService.getDoctors(updateStaffInput.providers)
