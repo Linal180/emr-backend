@@ -58,7 +58,7 @@ export class PatientAllergies {
   @Field({nullable: true})
   allergyStartDate: string;
 
-  @Column({ nullable: true })
+  @Column("text", { nullable: true })
   @Field({nullable: true})
   comments: string;
 

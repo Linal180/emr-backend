@@ -65,7 +65,7 @@ export class Observations {
   @Field(type => AbnormalFlag)
   abnormalFlag: AbnormalFlag
 
-  @Column({nullable: true})
+  @Column("text", { nullable: true })
   @Field({nullable: true})
   description: string;
 

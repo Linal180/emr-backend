@@ -18,7 +18,7 @@ export class TestSpecimens {
   @Field({nullable: true})
   collectionTime: string;
 
-  @Column({nullable: true})
+  @Column("text", { nullable: true })
   @Field({nullable: true})
   specimenNotes: string;
 

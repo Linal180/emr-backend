@@ -8,4 +8,6 @@ export class UserInfoInput {
   email?: string;
   @Field({ nullable: true })
   phone?: string;
+  @Field({ nullable: true })
+  autoLogoutTime?: string;
 }
