@@ -35,7 +35,6 @@ export class RolesService {
       const roleInstance = this.roleRepository.create({...roleItemInput, role: roleItemInput.role.trim().toLowerCase()})
       //saving role
       return await this.roleRepository.save(roleInstance);
-      return 
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

@@ -96,6 +96,11 @@ export class DoctorService {
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
       await this.billingAddressService.updateBillingAddress(updateDoctorInput.updateBillingAddressInput)
+       //update primary contact in user's model 
+       if(updateDoctorInput.updateContactInput.phone){
+         const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
+        await this.usersService.updateUserInfo({phone: updateDoctorInput.updateContactInput.phone, id: user.id})
+     }
       return doctor
     } catch (error) {
       throw new InternalServerErrorException(error);
