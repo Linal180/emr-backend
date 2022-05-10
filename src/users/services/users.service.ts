@@ -30,6 +30,7 @@ import { UserLog } from './../entities/user-logs.entity';
 import { User, UserStatus } from './../entities/user.entity';
 import { RolesService } from './roles.service';
 import { File } from 'src/aws/dto/file-input.dto';
+import { UserInfoInput } from '../dto/user-info-input.dto';
 
 @Injectable()
 export class UsersService {
@@ -516,6 +517,14 @@ export class UsersService {
           error: 'Password invalid',
         });
       }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateUserInfo(userInfoInput: UserInfoInput): Promise<User> {
+    try {
+      return await this.utilsService.updateEntityManager(User, userInfoInput.id, userInfoInput, this.usersRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
