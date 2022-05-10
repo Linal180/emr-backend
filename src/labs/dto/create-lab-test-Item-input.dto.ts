@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Status } from '../entities/labTests.entity';
+import { LabTestStatus } from '../entities/labTests.entity';
 
 @InputType()
 export default class CreateLabTestItemInput {
@@ -10,7 +10,7 @@ export default class CreateLabTestItemInput {
     appointmentId?: string
 
     @Field({ nullable: true })
-    status?: Status
+    status?: LabTestStatus
 
     @Field({ nullable: true })
     testNotes?: string

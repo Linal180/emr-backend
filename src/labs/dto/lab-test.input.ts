@@ -1,7 +1,7 @@
 
   import { Field, InputType } from '@nestjs/graphql';
   import PaginationInput from 'src/pagination/dto/pagination-input.dto';
-  import {Status} from '../entities/labTests.entity' 
+  import {LabTestStatus} from '../entities/labTests.entity' 
   
   @InputType()
   export default class LabTestInput {
@@ -9,7 +9,7 @@
       patientId?: string
 
       @Field({ nullable: true })
-      labTestStatus?: Status
+      labTestStatus?: LabTestStatus
   
       @Field(type => PaginationInput)
       paginationOptions: PaginationInput

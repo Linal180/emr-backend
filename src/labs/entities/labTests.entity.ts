@@ -7,7 +7,7 @@ import { LoincCodes } from './loincCodes.entity';
 import { Observations } from './observations.entity';
 import { TestSpecimens } from './testSpecimens.entity';
 
-export enum Status {
+export enum LabTestStatus {
   ORDER_ENTERED = "Order Entered",
   DISCONTINUED = "Discontinued",
   IN_PROGRESS = "In Progress",
@@ -15,8 +15,8 @@ export enum Status {
   RESULT_REVIEWED_WITH_PATIENT = "Results Reviewed with Patient"
 }
 
-registerEnumType(Status, {
-  name: "Status",
+registerEnumType(LabTestStatus, {
+  name: "LabTestStatus",
   description: "The lab's test status assigned",
 });
 
@@ -30,11 +30,11 @@ export class LabTests {
 
   @Column({
     type: "enum",
-    enum: Status,
-    default: Status.ORDER_ENTERED
+    enum: LabTestStatus,
+    default: LabTestStatus.ORDER_ENTERED
   })
-  @Field(type => Status)
-  status: Status
+  @Field(type => LabTestStatus)
+  labTestStatus: LabTestStatus
 
   @Column({nullable: true})
   @Field({nullable: true})
