@@ -123,6 +123,7 @@ export const PermissionData = [
     { name: 'findAllPatientAllergies'  , moduleType: 'Patient Charting' },
     { name: 'getPatientAllergy'  , moduleType: 'Patient Charting' },
     { name: 'removePatientAllergy'  , moduleType: 'Patient Charting' },
+    { name: 'findAllReactions'  , moduleType: 'Patient Charting' },
     { name: 'findAllAllergies'  , moduleType: 'Patient Charting' },
     { name: 'createLabTestObservation'  , moduleType: 'Lab Orders' },
     { name: 'updateLabTestObservation'  , moduleType: 'Lab Orders' },
@@ -130,24 +131,11 @@ export const PermissionData = [
     { name: 'createLabTest'  , moduleType: 'Lab Orders' },
     { name: 'updateLabTest'  , moduleType: 'Lab Orders' },
     { name: 'getLabTest'  , moduleType: 'Lab Orders' },
-    { name: 'findAllLabTest'  , moduleType: 'Lab Orders' },
+    { name: 'findAllLabTest'  , moduleType: 'Lab Orders' }, 
     { name: 'removeLabTest'  , moduleType: 'Lab Orders' }
 ];
 export const permissionDataNew = [
-    { name: 'createLabTestObservation'  , moduleType: 'Lab Orders' },
-    { name: 'updateLabTestObservation'  , moduleType: 'Lab Orders' },
-    { name: 'removeLabTestObservation'  , moduleType: 'Lab Orders' },
-    { name: 'createLabTest'  , moduleType: 'Lab Orders' },
-    { name: 'updateLabTest'  , moduleType: 'Lab Orders' },
-    { name: 'getLabTest'  , moduleType: 'Lab Orders' },
-    { name: 'findAllLabTest'  , moduleType: 'Lab Orders' },
-    { name: 'removeLabTest'  , moduleType: 'Lab Orders' },
-    { name: 'addPatientAllergy'  , moduleType: 'Patient Charting' },
-    { name: 'updatePatientAllergy'  , moduleType: 'Patient Charting' },
-    { name: 'findAllPatientAllergies'  , moduleType: 'Patient Charting' },
-    { name: 'getPatientAllergy'  , moduleType: 'Patient Charting' },
-    { name: 'removePatientAllergy'  , moduleType: 'Patient Charting' },
-    { name: 'findAllAllergies'  , moduleType: 'Patient Charting' }
+    { name: 'findAllReactions'  , moduleType: 'Patient Charting' }
 ]
 
 
