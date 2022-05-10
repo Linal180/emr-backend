@@ -48,4 +48,5 @@ export class PaginatedEntityInput {
   isSystemForm?: boolean
   doctorFirstName?: string
   roleName?: string
+  customRole?: boolean
 }
