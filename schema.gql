@@ -170,7 +170,7 @@ type TestSpecimens {
 
 type LabTests {
   id: String!
-  status: Status!
+  labTestStatus: LabTestStatus!
   testDate: String
   testTime: String
   testNotes: String
@@ -187,7 +187,7 @@ type LabTests {
 }
 
 """The lab's test status assigned"""
-enum Status {
+enum LabTestStatus {
   ORDER_ENTERED
   DISCONTINUED
   IN_PROGRESS

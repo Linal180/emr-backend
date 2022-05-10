@@ -12,15 +12,16 @@ export const RolesData = [
     { role: 'super-admin', customRole: false, description: "super admin has all permissions" },
     { role: 'practice-admin', customRole: false, description: "admin has all permissions of any practice"},
     { role: 'facility-admin', customRole: false, description: "admin has all permissions of any facility"},
-    { role: 'doctor', customRole: false, description: "doctor has all permissions related to patients and their medical history" },
-    { role: 'nurse', customRole: false, description: "nurse has permissions" },
-    { role: 'patient', customRole: false,description: "patient has all permissions for patient portal" },
-    { role: 'staff' , customRole: false, description: "staff has permissions for staff members and lab records"},
-    { role: 'nurse-practitioner', customRole: false, description: "nurse practitioner has all permissions of facility's patients" },
-    { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
-    { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" },
-    { role: 'front-desk', customRole: false, description: "front desk assistant has partial permissions of admin" },
-    { role: 'emergency-access', customRole: false, description: "emergency access role has facility-admin level permissions" }
+    { role: 'emergency-access', customRole: false, description: "emergency access role has facility-admin level permissions" },
+    { role: 'doctor', customRole: true, description: "doctor has all permissions related to patients and their medical history" },
+    { role: 'nurse', customRole: true, description: "nurse has permissions" },
+    { role: 'patient', customRole: true,description: "patient has all permissions for patient portal" },
+    { role: 'staff' , customRole: true, description: "staff has permissions for staff members and lab records"},
+    { role: 'nurse-practitioner', customRole: true, description: "nurse practitioner has all permissions of facility's patients" },
+    { role: 'office-manager', customRole: true, description: "office manager has administrative permissions" },
+    { role: 'doctor-assistant', customRole: true, description: "doctor assistant has partial permissions of doctor" },
+    { role: 'front-desk', customRole: true, description: "front desk assistant has partial permissions of admin" },
+   
 ];
 
 export const UsersData = [
