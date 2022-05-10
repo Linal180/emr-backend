@@ -65,6 +65,10 @@ export class User {
   token: string;
 
   @Column({ nullable: true })
+  @Field({ nullable: true })
+  autoLogoutTime: string;
+
+  @Column({ nullable: true })
   @Field()
   userType: string;
 

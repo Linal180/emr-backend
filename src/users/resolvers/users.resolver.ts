@@ -24,6 +24,7 @@ import { UpdatePasswordInput } from '../dto/update-password-input.dto';
 import { UpdateRoleInput } from '../dto/update-role-input.dto';
 import { GetUser, ResendVerificationEmail, UpdateUserInput } from '../dto/update-user-input.dto';
 import { UserIdInput } from '../dto/user-id-input.dto';
+import { UserInfoInput } from '../dto/user-info-input.dto';
 import UsersInput from '../dto/users-input.dto';
 import { UsersPayload } from '../dto/users-payload.dto';
 import { SeneOTPAgainInput, VerifyCodeInput } from '../dto/verify-code.dto';
@@ -229,6 +230,15 @@ export class UsersResolver {
       response: { status: 200, message: 'An email has been sent to you, check your email for verification' }
     };
   }
+
+  @Mutation(returns => UserPayload)
+  async updateAutoLogoutTime(@Args('userInfoInput') userInfoInput: UserInfoInput): Promise<UserPayload> {
+    return {
+      user: await this.usersService.updateUserInfo(userInfoInput),
+      response: { status: 200, message: 'Logout time updated' }
+    };
+  }
+
 
   @Mutation(returns => UserPayload)
   async resetPassword(@Args('resetPassword') resetPasswordInput: ResetPasswordInput): Promise<UserPayload> {

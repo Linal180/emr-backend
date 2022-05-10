@@ -48,13 +48,19 @@ export class PatientAllergiesService {
           error: 'Patient not found',
        });
       }
-      //get patient 
-      const allergy  = await this.allergiesRepository.findOne(createPatientAllergyInput.allergyId)
+      //get patient
+      let allergy
+      if(createPatientAllergyInput.allergyId){
+       allergy = await this.allergiesRepository.findOne(createPatientAllergyInput.allergyId)
       if(!allergy){
         throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: 'Allergy not found',
        });
+      }
+     }else if(createPatientAllergyInput.allergyName){
+     let allergyInstance = this.allergiesRepository.create({name: createPatientAllergyInput.allergyName})
+      allergy =  await this.allergiesRepository.save(allergyInstance)
       }
       //adding patient problem
       const patientAllergyInstance = this.patientAllergiesRepository.create({...createPatientAllergyInput, allergy: allergy, patient: patient})

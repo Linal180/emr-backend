@@ -3,6 +3,7 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
+import { text } from 'stream/consumers';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ICDCodes } from './icdcodes.entity';
 import { SnoMedCodes } from './snowmedCodes.entity';
@@ -55,7 +56,7 @@ export class PatientProblems {
   @Field({nullable: true})
   problemStartDate: string;
 
-  @Column({ nullable: true })
+  @Column("text", { nullable: true })
   @Field({nullable: true})
   note: string;
 

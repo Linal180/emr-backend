@@ -44,7 +44,7 @@ export class LabTests {
   @Field({nullable: true})
   testTime: string;
 
-  @Column({nullable: true})
+  @Column("text", { nullable: true })
   @Field({nullable: true})
   testNotes: string;
 

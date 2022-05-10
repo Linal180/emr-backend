@@ -357,6 +357,7 @@ type User {
   inviteAcceptedAt: String!
   userId: String!
   token: String
+  autoLogoutTime: String
   userType: String!
   facilityId: String
   facility: Facility
@@ -1870,6 +1871,7 @@ type Mutation {
   forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
   verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
   resendVerificationEmail(resendVerificationEmail: ResendVerificationEmail!): UserPayload!
+  updateAutoLogoutTime(userInfoInput: UserInfoInput!): UserPayload!
   resetPassword(resetPassword: ResetPasswordInput!): UserPayload!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): UserPayload!
   deactivateUser(user: UserIdInput!): UserPayload!
@@ -1997,6 +1999,13 @@ input VerifyEmailInput {
 
 input ResendVerificationEmail {
   email: String
+}
+
+input UserInfoInput {
+  id: String!
+  email: String
+  phone: String
+  autoLogoutTime: String
 }
 
 input ResetPasswordInput {
@@ -2993,6 +3002,7 @@ input CreatePatientAllergyInput {
   patientId: String!
   staffId: String
   allergyId: String
+  allergyName: String
   providerId: String
   isActive: Boolean
   comments: String
