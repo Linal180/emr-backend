@@ -197,7 +197,7 @@ export const patientPermissionsList = ['createAppointment','createExternalAppoin
 
 export const staffPermissionsList = ['createPatient','updatePatient','patientInfo','updatePatientProfile',
 'findAllPatient','getPatient','createSchedule','updateSchedule','findAllSchedules','getSchedule',
-'getDoctorSlots','findAllDoctor','getDoctor','getStaff']
+'getDoctorSlots','findAllDoctor','getDoctor','getStaff','updateStaff']
 
 export const practitionerNursePermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
 'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
