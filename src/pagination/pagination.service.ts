@@ -170,6 +170,7 @@ export class PaginationService {
       isSystemForm,
       doctorFirstName,
       roleName,
+      customRole,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -246,6 +247,9 @@ export class PaginationService {
         }),
         ...(isActive != null && {
           isActive
+        }),
+        ...(customRole != null && {
+          customRole
         }),
         ...(isPrivate && {
           isPrivate: Not(isPrivate)

@@ -1639,6 +1639,7 @@ input GetPermission {
 input RoleInput {
   role: String
   roleName: String
+  customRole: Boolean
   paginationOptions: PaginationInput!
 }
 

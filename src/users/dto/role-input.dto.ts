@@ -21,6 +21,9 @@ export default class RoleInput {
 
   @Field({ nullable: true })
   roleName?: string
+  
+  @Field({ nullable: true })
+  customRole?: boolean;
 
   @Field(type => PaginationInput)
   paginationOptions: PaginationInput
