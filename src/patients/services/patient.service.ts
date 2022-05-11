@@ -12,7 +12,7 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Connection, getConnection, Repository } from 'typeorm';
+import { Brackets, Connection, getConnection, Repository } from 'typeorm';
 import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreatePatientInput } from '../dto/create-patient.input';
@@ -315,7 +315,7 @@ export class PatientService {
   async fetchAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
       try {
         const { limit, page } = patientInput.paginationOptions
-        const { dob, appointmentDate, doctorId, facilityId, practiceId } = patientInput
+        const { dob, appointmentDate, doctorId, facilityId, practiceId,searchString } = patientInput
 
         const baseQuery=getConnection()
         .getRepository(Patient)
@@ -327,9 +327,17 @@ export class PatientService {
           const [patients,totalCount] = await baseQuery
                                             .innerJoin(Appointment, 'patientWithCertainAppointment', `patient.id = "patientWithCertainAppointment"."patientId" ${appointmentDate? 'AND "patientWithCertainAppointment"."scheduleStartDateTime"::date = :scDate':''}`, { scDate: `%${appointmentDate}%` })
                                             .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId':''}`, { doctorId: doctorId })
-                                            .where(dob?'patient.dob ILIKE :dob':'1=1', { dob: `%${dob}%` })
+                                            .where(dob?'patient.dob = :dob':'1=1', { dob: dob })
                                             .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
                                             .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
+                                            .andWhere(new Brackets(qb => {
+                                              qb.where('patient.firstName like :search', { search: `%${searchString}%`}).
+                                              orWhere('patient.lastName like :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.email like :search', { search: `%${searchString}%` }).                           
+                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                         
+                                              orWhere('patient.ssn like :search', { search: `%${searchString}%` })                         
+                                            }))
                                             .getManyAndCount()
           
           const totalPages=Math.ceil(totalCount / limit)
@@ -346,9 +354,17 @@ export class PatientService {
         }else{
           const [patients,totalCount] = await baseQuery
                                             .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId':''}`, { doctorId: doctorId })
-                                            .where(dob?'patient.dob ILIKE :dob':'1=1', { dob: `%${dob}%` })
+                                            .where(dob?'patient.dob = :dob':'1=1', { dob: dob })
                                             .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
                                             .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
+                                            .andWhere(new Brackets(qb => {
+                                              qb.where('patient.firstName like :search', { search: `%${searchString}%`}).
+                                              orWhere('patient.lastName like :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.email like :search', { search: `%${searchString}%` }).                           
+                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                         
+                                              orWhere('patient.ssn like :search', { search: `%${searchString}%` })                         
+                                            }))
                                             .getManyAndCount()
 
           const totalPages=Math.ceil(totalCount / limit)
