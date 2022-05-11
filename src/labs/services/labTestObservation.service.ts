@@ -1,7 +1,11 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
+import { File } from '../../aws/dto/file-input.dto';
 import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
 import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
 import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
@@ -17,9 +21,15 @@ export class LabTestsObservationsService {
     private ObservationsRepository: Repository<Observations>,
     private readonly labTestsService: LabTestsService,
     private readonly utilsService: UtilsService,
+    private readonly attachmentsService: AttachmentsService,
     private readonly loincCodesService: LoincCodesService,
   ) { }
 
+  /**
+   * Creates lab test observation
+   * @param createLabTestObservationInput 
+   * @returns lab test observation 
+   */
   async createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput): Promise<Observations> {
     try {
       //get lab test
@@ -34,14 +44,24 @@ export class LabTestsObservationsService {
     }
   }
 
+  /**
+   * Maps lab test with results
+   * @param labTestObservationInstance 
+   * @param labTest 
+   * @returns  
+   */
   async mapLabTestWithResults(labTestObservationInstance: Observations[], labTest: LabTests){
     return labTestObservationInstance.map((item)=> {
       item.labTest = labTest
       return item
     })
-
   }
 
+  /**
+   * Updates lab test observation
+   * @param updateLabTestObservationInput 
+   * @returns lab test observation 
+   */
   async updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput): Promise<Observations[]> {
       try {
       //updating multiple records of lab test observations
@@ -55,6 +75,11 @@ export class LabTestsObservationsService {
       }
   }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
   async findOne(id: string): Promise<Observations> {
     const labTestObservation = await this.ObservationsRepository.findOne(id);
     if(labTestObservation){
@@ -66,6 +91,11 @@ export class LabTestsObservationsService {
     });
   }
 
+  /**
+   * Gets lab test observation
+   * @param id 
+   * @returns lab test observation 
+   */
   async GetLabTestObservation(id: string): Promise<LabTestObservationPayload> {
     const labTestObservation = await this.findOne(id);
     if (labTestObservation) {
@@ -73,6 +103,11 @@ export class LabTestsObservationsService {
     }
   }
 
+  /**
+   * Gets lab test observations
+   * @param id 
+   * @returns lab test observations 
+   */
   async GetLabTestObservations(id: string): Promise<Observations[]> {
     const labTestObservations = await this.ObservationsRepository.find({
       where: {
@@ -84,7 +119,10 @@ export class LabTestsObservationsService {
     }
   }
 
-
+  /**
+   * Removes lab test observation
+   * @param { id } 
+   */
   async removeLabTestObservation({ id }: RemoveLabTestObservation) {
     try {
       const labTestObservation = await this.findOne(id)
@@ -97,6 +135,83 @@ export class LabTestsObservationsService {
         error: 'Lab test observation not found',
       });
     } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Uploads labs media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns labs media 
+   */
+  async uploadLabsMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<LabTestObservationPayload> {
+      try {
+        updateAttachmentMediaInput.type = AttachmentType.lab;
+        const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+        const labTestObservation = await this.findOne(updateAttachmentMediaInput.typeId)
+        if (attachment) {
+          return { labTestObservation };
+        }
+        throw new PreconditionFailedException({
+          status: HttpStatus.PRECONDITION_FAILED,
+          error: 'Could not create or upload media',
+        });
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+  }
+
+  /**
+   * Removes labs media
+   * @param id 
+   * @returns  
+   */
+  async removeLabsMedia(id: string) {
+      try {
+        return await this.attachmentsService.removeMedia(id)
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+  }
+
+  /**
+   * Updates labs media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns labs media 
+   */
+  async updateLabsMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<LabTestObservationPayload> {
+    try {
+      console.log("73adae1e-fa83-4f01-a6c6-c4de666ac31c73adae1e-fa83-4f01-a6c6-c4de666ac31c");
+      updateAttachmentMediaInput.type = AttachmentType.lab
+      const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+      const labTestObservation = await this.ObservationsRepository.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { labTestObservation }
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+ /**
+  * Gets labs media
+  * @param id 
+  * @returns  
+  */
+ async getLabsMedia(id: string) {
+    try {
+      return await this.attachmentsService.getMedia(id)
+    }
+    catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
