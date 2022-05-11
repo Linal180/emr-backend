@@ -14,6 +14,7 @@ import { Observations } from './entities/observations.entity';
 import { SpecimenTypes } from './entities/specimenTypes.entity';
 import { TestSpecimens } from './entities/testSpecimens.entity';
 import { LabTestsObservationsController } from './labs.controller';
+import { ObservationsSubscriber } from './labs.subscriber';
 import { LabTestObservationResolver } from './resolvers/labTestObservations.resolver';
 import { LabTestsResolver } from './resolvers/labTests.resolver';
 import { LoincCodesResolver } from './resolvers/loincCodes.resolver';
@@ -35,7 +36,7 @@ import { TestSpecimenService } from './services/testSpecimen.service';
     forwardRef(() => ProviderModule)
   ],
   controllers: [LabTestsObservationsController],
-  providers: [LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService],
+  providers: [ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService],
   exports: [LoincCodesService, LabTestsService, TestSpecimenService,LabTestsObservationsService, TypeOrmModule],
 })
 export class LabModule { }

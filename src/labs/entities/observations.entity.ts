@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { LabTests } from './labTests.entity';
 import { LoincCodes } from './loincCodes.entity';
@@ -73,6 +74,9 @@ export class Observations {
   @Field({nullable: true})
   labTestId: string;
 
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
+  
   @ManyToOne(() => LoincCodes, loincCodes => loincCodes.observations, { onDelete: 'CASCADE' })
   @Field(type => LoincCodes, { nullable: true })
   loincCodes: LoincCodes;
