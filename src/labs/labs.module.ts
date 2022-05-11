@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppointmentModule } from 'src/appointments/appointment.module';
+import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { ProblemChartingModule } from 'src/patientCharting/patientCharting.module';
 import { PatientModule } from 'src/patients/patient.module';
@@ -12,6 +13,7 @@ import { LoincCodes } from './entities/loincCodes.entity';
 import { Observations } from './entities/observations.entity';
 import { SpecimenTypes } from './entities/specimenTypes.entity';
 import { TestSpecimens } from './entities/testSpecimens.entity';
+import { LabTestsObservationsController } from './labs.controller';
 import { LabTestObservationResolver } from './resolvers/labTestObservations.resolver';
 import { LabTestsResolver } from './resolvers/labTests.resolver';
 import { LoincCodesResolver } from './resolvers/loincCodes.resolver';
@@ -28,9 +30,11 @@ import { TestSpecimenService } from './services/testSpecimen.service';
     PracticeModule,
     ProblemChartingModule,
     PatientModule,
+    AttachmentsModule,
     AppointmentModule,
     forwardRef(() => ProviderModule)
   ],
+  controllers: [LabTestsObservationsController],
   providers: [LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService],
   exports: [LoincCodesService, LabTestsService, TestSpecimenService,LabTestsObservationsService, TypeOrmModule],
 })
