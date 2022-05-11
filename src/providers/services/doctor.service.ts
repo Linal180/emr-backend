@@ -137,6 +137,7 @@ export class DoctorService {
   async findAllDoctor(doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     try {
       const [first] = doctorInput.searchString ? doctorInput.searchString.split(' ') : ''
+      console.log("first",first);
       const paginationResponse = await this.paginationService.willPaginate<Doctor>(this.doctorRepository, { ...doctorInput, associatedTo: 'Doctor', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {

@@ -103,7 +103,7 @@ export class PaginationService {
    * @returns options 
    */
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
-    const { associatedToField: { columnValue, columnName, columnName2, columnName3,columnName4,columnName5,columnName6, filterType }, associatedTo, relationField } = paginationInput;
+    const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
     console.log("associatedToField...", columnValue, columnName, columnName2);
     console.log("relationField",relationField);
 
@@ -116,7 +116,7 @@ export class PaginationService {
       };
     } else if (filterType === 'stringFilter') {
       where = {
-        str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data OR ${associatedTo}.${columnName4} ILIKE :data OR ${associatedTo}.${columnName5} ILIKE :data OR ${associatedTo}.${columnName6} ILIKE :data`,
+        str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data`,
         obj: { data: `%${columnValue}%` }
       };
     }
