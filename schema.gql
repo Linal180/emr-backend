@@ -1808,10 +1808,12 @@ input PatientProblemInput {
 
 input SearchIcdCodesInput {
   searchTerm: String!
+  paginationOptions: PaginationInput!
 }
 
 input SearchSnoMedCodesInput {
-  IcdCodes: String!
+  searchTerm: String!
+  paginationOptions: PaginationInput!
 }
 
 input GetPatientProblem {

@@ -70,11 +70,7 @@ export class UtilsService {
 
   async sendVerificationCode(phone: string) {
     try{
-      console.log("phone",phone);
-      const verification = await client.verify
-      .services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
-      .verifications.create({ to: '+1'+phone, channel: "sms" })
-      return verification;
+       client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID')).verifications.create({ to: '+1'+phone, channel: "sms" })
     }catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -85,7 +81,7 @@ export class UtilsService {
     const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
     .verificationChecks
     .create({to: '+1'+phone, code: otpCode})
-    if(verification.status === 'approved') {
+    if(verification && verification.status === 'approved') {
       return true
     }else {
       return false
@@ -101,7 +97,7 @@ export class UtilsService {
    * @returns  
    */
   async convertTZ(date, tzString) {
-    return  new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
   }
 
   //generate invoive #

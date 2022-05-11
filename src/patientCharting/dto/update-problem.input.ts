@@ -1,4 +1,5 @@
 import { Field, InputType, PartialType, PickType } from '@nestjs/graphql';
+import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { ProblemSeverity, ProblemType } from '../entities/patientProblems.entity';
 import { CreateProblemInput } from './create-problem.input';
 
@@ -33,10 +34,16 @@ export class RemoveProblem extends PickType(UpdateProblemInput, ['id'] as const)
 export class SearchIcdCodesInput {
   @Field()
   searchTerm: string
+
+  @Field(type => PaginationInput)
+  paginationOptions: PaginationInput
 }
 
 @InputType()
 export class SearchSnoMedCodesInput {
   @Field()
-  IcdCodes: string
+  searchTerm: string
+
+  @Field(type => PaginationInput)
+  paginationOptions: PaginationInput
 }
