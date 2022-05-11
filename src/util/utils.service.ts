@@ -84,7 +84,7 @@ export class UtilsService {
   try{
     const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
     .verificationChecks
-    .create({to: phone, code: otpCode})
+    .create({to: '+1'+phone, code: otpCode})
     if(verification.status === 'approved') {
       return true
     }else {
