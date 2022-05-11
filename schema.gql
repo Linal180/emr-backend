@@ -66,6 +66,7 @@ type Observations {
   abnormalFlag: AbnormalFlag!
   description: String
   labTestId: String
+  attachments: [Attachment!]
   loincCodes: LoincCodes
   labTest: LabTests
   createdAt: String
@@ -262,7 +263,8 @@ type PatientVitals {
   temperatureUnitType: TempUnitType!
   smokingStatus: SmokingStatus!
   patientTemperature: String
-  bloodPressure: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
   respiratoryRate: String
   oxygenSaturation: String
   PatientHeight: String
@@ -3045,7 +3047,8 @@ input CreateVitalInput {
   temperatureUnitType: TempUnitType!
   smokingStatus: SmokingStatus!
   patientTemperature: String
-  bloodPressure: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
   pulseRate: String
   respiratoryRate: String
   oxygenSaturation: String

@@ -114,7 +114,11 @@ export class PatientVitals {
 
   @Column({ nullable: true })
   @Field({nullable: true})
-  bloodPressure: string;
+  systolicBloodPressure: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  diastolicBloodPressure: string;
 
   @Column({ nullable: true })
   @Field({nullable: true})

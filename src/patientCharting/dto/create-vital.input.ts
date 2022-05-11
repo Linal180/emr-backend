@@ -23,7 +23,10 @@ export class CreateVitalInput {
   patientTemperature: string;
 
   @Field({nullable: true})
-  bloodPressure: string;
+  systolicBloodPressure: string;
+
+  @Field({nullable: true})
+  diastolicBloodPressure: string;
 
   @Field({nullable: true})
   pulseRate: string;
