@@ -56,8 +56,8 @@ export class DoctorResolver {
   }
 
   @Query(returns => DoctorPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getDoctor')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getDoctor')
   async getDoctor(@Args('getDoctor') getDoctor: GetDoctor): Promise<DoctorPayload> {
     return {
       doctor: await this.doctorService.getDoctor(getDoctor.id),
