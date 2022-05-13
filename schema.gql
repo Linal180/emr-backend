@@ -1176,6 +1176,12 @@ type PatientPayload {
   patient: Patient
 }
 
+type PatientAttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
 type PatientsPayload {
   response: ResponsePayload
   patients: [Patient]
@@ -1580,6 +1586,7 @@ type Query {
   getFacilitySchedule(getFacilitySchedule: GetFacilitySchedule!): SchedulesPayload!
   getSlots(getSlots: GetSlots!): SlotsPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
+  findPatientAttachments(patientAttachmentsInput: PatientAttachmentsInput!): PatientAttachmentsPayload!
   fetchAllPatients(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
@@ -1742,6 +1749,13 @@ input PatientInput {
   doctorId: String
   patientRecord: String
   practiceId: String
+  paginationOptions: PaginationInput!
+}
+
+input PatientAttachmentsInput {
+  typeId: String
+  searchString: String
+  AttachmentModuleType: String
   paginationOptions: PaginationInput!
 }
 

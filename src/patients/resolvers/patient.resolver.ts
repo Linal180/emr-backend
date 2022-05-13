@@ -12,10 +12,12 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreatePatientInput } from '../dto/create-patient.input';
+import PatientAttachmentsInput from '../dto/patient-attachments-input.dto';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
+import { PatientAttachmentsPayload } from '../dto/patients-attachments-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
@@ -147,9 +149,28 @@ export class PatientResolver {
     });
   }
 
+  @Query(returns => PatientAttachmentsPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findPatientAttachments')
+  async findPatientAttachments(@Args('patientAttachmentsInput') patientAttachmentsInput: PatientAttachmentsInput): Promise<PatientAttachmentsPayload> {
+    const attachments = await this.attachmentsService.patientAttachments(patientAttachmentsInput)
+    if (attachments) {
+      return {
+        ...attachments,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Patient Attachments not found',
+    });
+  }
+
   @Query(returns => PatientsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'fetchAllPatients')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchAllPatients')
   async fetchAllPatients(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
     const patients = await this.patientService.fetchAllPatients(patientInput)
     if (patients) {
