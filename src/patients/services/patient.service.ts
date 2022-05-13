@@ -300,7 +300,7 @@ export class PatientService {
   async findAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
       const [first] = patientInput.searchString ? patientInput.searchString.split(' ') : ''
-      const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, { ...patientInput, associatedTo: 'Patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', columnName4: 'dob', columnName5: 'ssn', columnName6: 'patientRecord', filterType: 'stringFilter' } })
+      const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, { ...patientInput, associatedTo: 'Patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse
@@ -331,12 +331,12 @@ export class PatientService {
                                             .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
                                             .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
                                             .andWhere(new Brackets(qb => {
-                                              qb.where('patient.firstName like :search', { search: `%${searchString}%`}).
-                                              orWhere('patient.lastName like :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.email like :search', { search: `%${searchString}%` }).                           
-                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                         
-                                              orWhere('patient.ssn like :search', { search: `%${searchString}%` })                         
+                                              qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%`}).
+                                              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).                           
+                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                         
+                                              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })                         
                                             }))
                                             .getManyAndCount()
           
@@ -358,12 +358,12 @@ export class PatientService {
                                             .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
                                             .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
                                             .andWhere(new Brackets(qb => {
-                                              qb.where('patient.firstName like :search', { search: `%${searchString}%`}).
-                                              orWhere('patient.lastName like :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.email like :search', { search: `%${searchString}%` }).                           
-                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.patientRecord like :search', { search: `%${searchString}%` }).                         
-                                              orWhere('patient.ssn like :search', { search: `%${searchString}%` })                         
+                                              qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%`}).
+                                              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).                           
+                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                          
+                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                         
+                                              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })                         
                                             }))
                                             .getManyAndCount()
 

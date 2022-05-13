@@ -2754,6 +2754,7 @@ input CreateAppointmentInput {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
+  isExternal: Boolean
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   appointmentTypeId: String!
@@ -2798,6 +2799,7 @@ input UpdateAppointmentInput {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
+  isExternal: Boolean
   scheduleStartDateTime: String
   scheduleEndDateTime: String
   appointmentTypeId: String
