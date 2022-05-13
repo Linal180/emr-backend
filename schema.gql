@@ -3067,13 +3067,14 @@ input CreateVitalInput {
 
 input UpdateVitalInput {
   id: String!
-  unitType: UnitType!
-  weightUnit: WeightType!
-  headCircumference: HeadCircumferenceType!
-  temperatureUnitType: TempUnitType!
-  smokingStatus: SmokingStatus!
+  unitType: UnitType
+  weightUnit: WeightType
+  headCircumference: HeadCircumferenceType
+  temperatureUnitType: TempUnitType
+  smokingStatus: SmokingStatus
   patientTemperature: String
-  bloodPressure: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
   respiratoryRate: String
   oxygenSaturation: String
   PatientHeight: String
@@ -3082,6 +3083,7 @@ input UpdateVitalInput {
   PainRange: String
   patientHeadCircumference: String
   vitalCreationDate: String
+  pulseRate: String
 }
 
 input RemoveVital {
