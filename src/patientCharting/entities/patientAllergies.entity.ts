@@ -22,7 +22,7 @@ registerEnumType(AllergySeverity, {
 export enum AllergyOnset {
   CHILDHOOD = "childhood",
   ADULTHOOD = "adulthood",
-  UNNKOWN = "unknown"
+  UNKNOWN = "unknown"
 }
 
 registerEnumType(AllergyOnset, {
