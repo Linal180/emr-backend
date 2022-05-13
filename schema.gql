@@ -12,6 +12,7 @@ type Attachment {
   providerName: String
   comments: String
   url: String
+  signedByProvider: Boolean
   createdAt: String!
   updatedAt: String!
 }
@@ -2684,6 +2685,7 @@ input CreateAttachmentInput {
   providerName: String
   attachmentName: String
   comments: String
+  signedByProvider: Boolean
   description: String
   url: String
 }
@@ -2701,6 +2703,7 @@ input UpdateAttachmentInput {
   providerName: String
   attachmentName: String
   comments: String
+  signedByProvider: Boolean
   description: String
   url: String
   id: String

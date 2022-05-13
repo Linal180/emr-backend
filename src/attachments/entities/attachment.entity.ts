@@ -56,6 +56,10 @@ export class Attachment {
   @Field({ nullable: true })
   url: string;
 
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  signedByProvider: boolean ;
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   createdAt: string;
