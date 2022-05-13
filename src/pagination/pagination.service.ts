@@ -171,6 +171,8 @@ export class PaginationService {
       doctorFirstName,
       roleName,
       customRole,
+      typeId,
+      AttachmentModuleType,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -202,6 +204,12 @@ export class PaginationService {
         }),
         ...(singleFacilityId && {
           id: singleFacilityId
+        }),
+        ...(typeId && {
+          typeId
+        }),
+        ...(AttachmentModuleType && {
+          type: AttachmentModuleType
         }),
         ...(doctorId && {
           doctorId
