@@ -1,8 +1,11 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from 'src/aws/dto/file-input.dto';
+import { PaginationService } from 'src/pagination/pagination.service';
+import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.dto';
+import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { Brackets, getConnection, Repository } from 'typeorm';
 import { AwsService } from '../aws/aws.service';
 import { CreateAttachmentInput } from './dto/create-attachment.input';
 import { UpdateAttachmentInput, UpdateAttachmentMediaInput } from './dto/update-attachment.input';
@@ -15,6 +18,7 @@ export class AttachmentsService {
     private attachmentsRepository: Repository<Attachment>,
     private readonly awsService: AwsService,
     private readonly utilsService: UtilsService,
+    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -93,6 +97,25 @@ export class AttachmentsService {
       });
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  /**
+   * Patients attachments
+   * @param patientAttachmentsInput 
+   * @returns attachments 
+   */
+  async patientAttachments(patientAttachmentsInput: PatientAttachmentsInput): Promise<PatientAttachmentsPayload> {
+    try {
+    const paginationResponse = await this.paginationService.willPaginate<Attachment>(this.attachmentsRepository, patientAttachmentsInput)
+    return {
+      pagination: {
+        ...paginationResponse
+      },
+      attachments: paginationResponse.data,
+    }
+  } catch (error) {
+    throw new InternalServerErrorException(error);
     }
   }
 
