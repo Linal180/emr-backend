@@ -24,6 +24,9 @@ export class CreateAttachmentInput {
   comments?: string
 
   @Field({ nullable: true })
+  signedByProvider?: boolean
+
+  @Field({ nullable: true })
   description?: string
 
   @Field({ nullable: true })
