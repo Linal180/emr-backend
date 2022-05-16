@@ -49,7 +49,7 @@ export class PaginationService {
       if (associatedTo && associatedToField.columnValue) {
         filterOption = this.getFilterOptions(paginationInput);
       }
-      console.log("filterOption....",filterOption);
+      console.log("filterOption....", filterOption);
       const { paginationOptions: { page, limit } } = paginationInput || {};
       let query: FindManyOptions = null;
       if (filterOption) {
@@ -105,7 +105,7 @@ export class PaginationService {
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
     const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
     console.log("associatedToField...", columnValue, columnName, columnName2);
-    console.log("relationField",relationField);
+    console.log("relationField", relationField);
 
     const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
     let where = { str: {}, obj: {} }
@@ -120,11 +120,11 @@ export class PaginationService {
         obj: { data: `%${columnValue}%` }
       };
     }
-    if(relationField){
-      return   { join, where };
-    }else{
+    if (relationField) {
+      return { join, where };
+    } else {
       console.log("ELSE");
-      return   { where };
+      return { where };
     }
   }
 
@@ -173,10 +173,11 @@ export class PaginationService {
       customRole,
       typeId,
       AttachmentModuleType,
+      formType,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
-    if(searchString){
+    if (searchString) {
 
     }
     const whereOptions: WhereOptions = {
@@ -277,9 +278,12 @@ export class PaginationService {
         ...(isSystemForm != null && {
           isSystemForm
         }),
+        ...(formType && {
+          type: formType
+        })
       }
     };
-    console.log("whereOptions",whereOptions);
+    console.log("whereOptions", whereOptions);
 
     // Assigned to User
     if (userId) {
