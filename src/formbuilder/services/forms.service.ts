@@ -149,4 +149,13 @@ export class FormsService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async createPreDefinedComponent(input: CreateFormInput) {
+    try {
+      const preDefined = this.formsRepository.create(input);
+      return await this.formsRepository.save(preDefined);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
