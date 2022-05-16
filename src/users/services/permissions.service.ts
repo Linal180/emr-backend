@@ -83,7 +83,7 @@ export class PermissionsService {
       return await getConnection().createQueryBuilder()
       .delete().from(RolePermission)
       .where("roleId = :roleId", { roleId: roleId })
-      .andWhere("isMutable = :isMutable", { isMutable: true })
+      // .andWhere("isMutable = :isMutable", { isMutable: true })
       .execute();
   }
 
