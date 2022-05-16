@@ -8,13 +8,26 @@ export class AccessUserPayload {
   access_token?: string
 
   @Field({ nullable: true })
+  access_2fa_token?: string
+
+  @Field({ nullable: true })
   userId?: string
 
   @Field({nullable: true})
   isTwoFactorEnabled?: boolean
 
   @Field(type => [Role], { nullable: true })
-  roles: Role[]
+  roles?: Role[]
+
+  @Field({ nullable: true })
+  response?: ResponsePayload
+}
+
+
+@ObjectType()
+export class User2FAPayload {
+  @Field({ nullable: true })
+  access_2fa_token?: string
 
   @Field({ nullable: true })
   response?: ResponsePayload

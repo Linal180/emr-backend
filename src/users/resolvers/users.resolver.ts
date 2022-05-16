@@ -9,6 +9,7 @@ import PermissionGuard from 'src/users/auth/role.guard';
 import { UtilsService } from 'src/util/utils.service';
 import { CurrentUser } from '../../customDecorators/current-user.decorator';
 import { CurrentUserInterface } from '../auth/dto/current-user.dto';
+import { Jwt2FAGuard } from '../auth/jwt-2fa.guard';
 import { AccessUserPayload } from '../dto/access-user.dto';
 import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
 import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
@@ -133,7 +134,9 @@ export class UsersResolver {
       if (user.emailVerified) {
         if (user.isTwoFactorEnabled) {
           this.utilsService.sendVerificationCode(user.phone)
+          return await this.usersService.create2FAToken(user, password)
         }
+        
         return await this.usersService.createToken(user, password);
       }
       throw new ForbiddenException({
@@ -148,6 +151,7 @@ export class UsersResolver {
   }
 
   @Mutation(returns => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard, Jwt2FAGuard)
   async verifyOTP(@Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
     const { id, otpCode } = verifyCodeInput
     const user = await this.usersService.findUserById(id)
