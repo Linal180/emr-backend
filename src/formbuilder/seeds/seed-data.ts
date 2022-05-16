@@ -18,94 +18,94 @@ export const ElementTypeData = [
 ];
 
 const MAPPED_RELATIONSHIP_TYPE = [
-  { id: "WARD", name: RelationshipType.WARD },
-  { id: "SELF", name: RelationshipType.SELF },
-  { id: "CHILD", name: RelationshipType.CHILD },
-  { id: "OTHER", name: RelationshipType.OTHER },
-  { id: "MOTHER", name: RelationshipType.MOTHER },
-  { id: "SPOUSE", name: RelationshipType.SPOUSE },
-  { id: "FATHER", name: RelationshipType.FATHER },
-  { id: "UNKNOWN", name: RelationshipType.UNKNOWN },
-  { id: "EMPLOYEE", name: RelationshipType.EMPLOYEE },
-  { id: "ORGAN_DONOR", name: RelationshipType.ORGAN_DONOR },
-  { id: "GRANDCHILD", name: RelationshipType.GRANDCHILD },
-  { id: "LIFE_PARTNER", name: RelationshipType.LIFE_PARTNER },
-  { id: "GRANDPARENT", name: RelationshipType.GRANDPARENT },
-  { id: "NEPHEW_NIECE", name: RelationshipType.NEPHEW_NIECE },
-  { id: "FOSTHER_CHILD", name: RelationshipType.FOSTHER_CHILD },
-  { id: "CADAVER_DONOR", name: RelationshipType.CADAVER_DONOR },
-  { id: "SIGNIFICANT_OTHER", name: RelationshipType.SIGNIFICANT_OTHER },
-  { id: "EMANCIPATED_MINOR", name: RelationshipType.EMANCIPATED_MINOR },
-  { id: "INJURED_PLAINTIIFF", name: RelationshipType.INJURED_PLAINTIIFF },
-  { id: "SPONSORED_DEPENDENT", name: RelationshipType.SPONSORED_DEPENDENT },
-  { id: "STEPSON_STEPDAUGHTER", name: RelationshipType.STEPSON_STEPDAUGHTER },
-  { id: "CHILD_MOTHER_INSURANCE", name: RelationshipType.CHILD_MOTHER_INSURANCE },
-  { id: "HANDICAPPED_DEPENDENT", name: RelationshipType.HANDICAPPED_DEPENDENT },
-  { id: "CHILD_FATHER_INSURANCE", name: RelationshipType.CHILD_FATHER_INSURANCE },
-  { id: "DEPENDENT_OF_MINOR_DEPENDENT", name: RelationshipType.DEPENDENT_OF_MINOR_DEPENDENT },
-  { id: "STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE", name: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE, },
-  { id: "STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE", name: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE, },
+  { value: "WARD", name: RelationshipType.WARD },
+  { value: "SELF", name: RelationshipType.SELF },
+  { value: "CHILD", name: RelationshipType.CHILD },
+  { value: "OTHER", name: RelationshipType.OTHER },
+  { value: "MOTHER", name: RelationshipType.MOTHER },
+  { value: "SPOUSE", name: RelationshipType.SPOUSE },
+  { value: "FATHER", name: RelationshipType.FATHER },
+  { value: "UNKNOWN", name: RelationshipType.UNKNOWN },
+  { value: "EMPLOYEE", name: RelationshipType.EMPLOYEE },
+  { value: "ORGAN_DONOR", name: RelationshipType.ORGAN_DONOR },
+  { value: "GRANDCHILD", name: RelationshipType.GRANDCHILD },
+  { value: "LIFE_PARTNER", name: RelationshipType.LIFE_PARTNER },
+  { value: "GRANDPARENT", name: RelationshipType.GRANDPARENT },
+  { value: "NEPHEW_NIECE", name: RelationshipType.NEPHEW_NIECE },
+  { value: "FOSTHER_CHILD", name: RelationshipType.FOSTHER_CHILD },
+  { value: "CADAVER_DONOR", name: RelationshipType.CADAVER_DONOR },
+  { value: "SIGNIFICANT_OTHER", name: RelationshipType.SIGNIFICANT_OTHER },
+  { value: "EMANCIPATED_MINOR", name: RelationshipType.EMANCIPATED_MINOR },
+  { value: "INJURED_PLAINTIIFF", name: RelationshipType.INJURED_PLAINTIIFF },
+  { value: "SPONSORED_DEPENDENT", name: RelationshipType.SPONSORED_DEPENDENT },
+  { value: "STEPSON_STEPDAUGHTER", name: RelationshipType.STEPSON_STEPDAUGHTER },
+  { value: "CHILD_MOTHER_INSURANCE", name: RelationshipType.CHILD_MOTHER_INSURANCE },
+  { value: "HANDICAPPED_DEPENDENT", name: RelationshipType.HANDICAPPED_DEPENDENT },
+  { value: "CHILD_FATHER_INSURANCE", name: RelationshipType.CHILD_FATHER_INSURANCE },
+  { value: "DEPENDENT_OF_MINOR_DEPENDENT", name: RelationshipType.DEPENDENT_OF_MINOR_DEPENDENT },
+  { value: "STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE", name: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE, },
+  { value: "STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE", name: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE, },
 ];
 
 const MAPPED_RACE = [
-  { id: "OTHER", name: RACE.OTHER },
-  { id: "ASIAN", name: RACE.ASIAN },
-  { id: "WHITE", name: RACE.WHITE },
+  { value: "OTHER", name: RACE.OTHER },
+  { value: "ASIAN", name: RACE.ASIAN },
+  { value: "WHITE", name: RACE.WHITE },
   {
-    id: "BLACK_AFRICAN_AMERICAN",
+    value: "BLACK_AFRICAN_AMERICAN",
     name: RACE.BLACK_AFRICAN_AMERICAN,
   },
   {
-    id: "BLACK_AFRICAN_AMERICAN",
+    value: "BLACK_AFRICAN_AMERICAN",
     name: RACE.BLACK_AFRICAN_AMERICAN,
   },
   {
-    id: "AMERICAN_INDIAN_ALASKA_NATIVE",
+    value: "AMERICAN_INDIAN_ALASKA_NATIVE",
     name: RACE.AMERICAN_INDIAN_ALASKA_NATIVE,
   },
   {
-    id: "NATIVE_HAWAIIAN_PACIFIC_ISLANDER",
+    value: "NATIVE_HAWAIIAN_PACIFIC_ISLANDER",
     name: RACE.NATIVE_HAWAIIAN_PACIFIC_ISLANDER,
   },
 ];
 
 const MAPPED_ETHNICITY = [
-  { id: "NONE", name: ETHNICITY.NONE },
-  { id: "CENTERAL_AMERICAN", name: ETHNICITY.CENTERAL_AMERICAN, },
-  { id: "CENTERAL_AMERICAN_INDIAN", name: ETHNICITY.CENTERAL_AMERICAN_INDIAN, },
+  { value: "NONE", name: ETHNICITY.NONE },
+  { value: "CENTERAL_AMERICAN", name: ETHNICITY.CENTERAL_AMERICAN, },
+  { value: "CENTERAL_AMERICAN_INDIAN", name: ETHNICITY.CENTERAL_AMERICAN_INDIAN, },
 ];
 
 const MAPPED_SEXUAL_ORIENTATION = [
-  { id: "NONE", name: SEXUALORIENTATION.NONE },
-  { id: "DONT_KNOW", name: SEXUALORIENTATION.DONT_KNOW, },
-  { id: "BISEXUAL", name: SEXUALORIENTATION.BISEXUAL, },
-  { id: "HOMOSEXUAL", name: SEXUALORIENTATION.HOMOSEXUAL, },
-  { id: "HETEROSEXUAL", name: SEXUALORIENTATION.HETEROSEXUAL, },
+  { value: "NONE", name: SEXUALORIENTATION.NONE },
+  { value: "DONT_KNOW", name: SEXUALORIENTATION.DONT_KNOW, },
+  { value: "BISEXUAL", name: SEXUALORIENTATION.BISEXUAL, },
+  { value: "HOMOSEXUAL", name: SEXUALORIENTATION.HOMOSEXUAL, },
+  { value: "HETEROSEXUAL", name: SEXUALORIENTATION.HETEROSEXUAL, },
 ];
 
 const MAPPED_HOMEBOUND = [
-  { id: "NO", name: HOMEBOUND.NO },
-  { id: "YES", name: HOMEBOUND.YES },
+  { value: "NO", name: HOMEBOUND.NO },
+  { value: "YES", name: HOMEBOUND.YES },
 ];
 
 const MAPPED_GENDER_IDENTITY = [
-  { id: "NONE", name: GENDERIDENTITY.NONE },
-  { id: "MALE", name: GENDERIDENTITY.MALE },
-  { id: "FEMALE", name: GENDERIDENTITY.FEMALE },
-  { id: "NOT_EXCLUSIVE", name: GENDERIDENTITY.NOT_EXCLUSIVE, },
+  { value: "NONE", name: GENDERIDENTITY.NONE },
+  { value: "MALE", name: GENDERIDENTITY.MALE },
+  { value: "FEMALE", name: GENDERIDENTITY.FEMALE },
+  { value: "NOT_EXCLUSIVE", name: GENDERIDENTITY.NOT_EXCLUSIVE, },
 ];
 
 const MAPPED_MARITAL_STATUS = [
-  { id: "SINGLE", name: MARITIALSTATUS.SINGLE },
-  { id: "WIDOWED", name: MARITIALSTATUS.WIDOWED },
-  { id: "DIVORCED", name: MARITIALSTATUS.DIVORCED },
-  { id: "SEPARATED", name: MARITIALSTATUS.SEPARATED },
+  { value: "SINGLE", name: MARITIALSTATUS.SINGLE },
+  { value: "WIDOWED", name: MARITIALSTATUS.WIDOWED },
+  { value: "DIVORCED", name: MARITIALSTATUS.DIVORCED },
+  { value: "SEPARATED", name: MARITIALSTATUS.SEPARATED },
 ];
 
 const MAPPED_PRONOUNS = [
-  { id: PRONOUNS.HE, name: PRONOUNS.HE },
-  { id: PRONOUNS.SHE, name: PRONOUNS.SHE },
-  { id: PRONOUNS.NONE, name: PRONOUNS.NONE },
+  { value: PRONOUNS.HE, name: PRONOUNS.HE },
+  { value: PRONOUNS.SHE, name: PRONOUNS.SHE },
+  { value: PRONOUNS.NONE, name: PRONOUNS.NONE },
 ];
 //Form template
 export const FormTemplates = [
