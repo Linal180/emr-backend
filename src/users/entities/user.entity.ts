@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from './role.entity';
@@ -63,6 +64,10 @@ export class User {
   @Field({ nullable: true })
   token: string;
 
+  @Column({ nullable: true, default: '2' })
+  @Field({ nullable: true })
+  autoLogoutTime: string;
+
   @Column({ nullable: true })
   @Field()
   userType: string;
@@ -91,4 +96,6 @@ export class User {
   @Field()
   updatedAt: string;
 
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 }

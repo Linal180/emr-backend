@@ -52,7 +52,7 @@ export class PatientController {
 
   @Get('/:limit/:page')
   async getPatients(@Param('limit') limit: number, @Param('page') page: number) {
-    const patientsResponse = await this.patientService.fetchAllPatients({limit,page})
+    const patientsResponse = await this.patientService.fetchAllFhirPatients({ limit,page })
     return patientsResponse
   }
 

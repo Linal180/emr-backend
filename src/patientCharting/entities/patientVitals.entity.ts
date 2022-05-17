@@ -46,12 +46,12 @@ registerEnumType(TempUnitType, {
 });
 
 export enum SmokingStatus {
-  NEVER_SMOCKED = "NeverSmoked",
+  NEVER_SMOKED = "NeverSmoked",
   CURRENT_EVERYDAY_SMOKER = "CurrentEveryDaySmoker",
   CURRENT_SOMEDAY_SMOKER = "CurrentSomeDaySmoker",
   FORMER_SMOKER = "FormerSmoker",
   SMOKER_CURRENT_STATUS_UNKNOWN = "SmokerCurrentStatusUnknown",
-  UNKNOWN_IF_EVER_SMOKED = "UnknownIfEverSmocked"
+  UNKNOWN_IF_EVER_SMOKED = "UnknownIfEverSmoked"
 }
 
 registerEnumType(SmokingStatus, {
@@ -103,7 +103,7 @@ export class PatientVitals {
   @Column({
     type: "enum",
     enum: SmokingStatus,
-    default: SmokingStatus.NEVER_SMOCKED
+    default: SmokingStatus.NEVER_SMOKED
   })
   @Field(type => SmokingStatus)
   smokingStatus: SmokingStatus
@@ -114,7 +114,11 @@ export class PatientVitals {
 
   @Column({ nullable: true })
   @Field({nullable: true})
-  bloodPressure: string;
+  systolicBloodPressure: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  diastolicBloodPressure: string;
 
   @Column({ nullable: true })
   @Field({nullable: true})
@@ -139,6 +143,10 @@ export class PatientVitals {
   @Column({ nullable: true })   
   @Field({nullable: true})
   PainRange: string;
+
+  @Column({ nullable: true })   
+  @Field({nullable: true})
+  pulseRate: string;
 
   @Column({ nullable: true })
   @Field({nullable: true})

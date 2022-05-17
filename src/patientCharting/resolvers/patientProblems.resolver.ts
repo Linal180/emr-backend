@@ -59,16 +59,26 @@ export class ProblemResolver {
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'searchIcdCodes')
   async searchIcdCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
-    const icdCodes = await this.problemService.searchIcdCodes(searchIcdCodesInput.searchTerm);
-    return { icdCodes, response: { status: 200, message: 'ICD codes fetched successfully' } }
+    const icdCodes = await this.problemService.searchIcdCodes(searchIcdCodesInput);
+    return {
+      ...icdCodes,
+      response: {
+        message: "OK", status: 200,
+      }
+    }
   }
 
   @Query(returns => snoMedCodesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'searchSnoMedCodeByIcdCodes')
   async searchSnoMedCodeByIcdCodes(@Args('searchSnoMedCodesInput') searchSnoMedCodesInput: SearchSnoMedCodesInput): Promise<snoMedCodesPayload> {
-    const snoMedCodes = await this.problemService.searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput.IcdCodes);
-    return { snoMedCodes, response: { status: 200, message: 'SnoMedCode fetched successfully' } }
+    const snoMedCodes = await this.problemService.searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput);
+    return {
+      ...snoMedCodes,
+      response: {
+        message: "OK", status: 200,
+      }
+    }
   }
 
   @Query(returns => PatientProblemPayload)

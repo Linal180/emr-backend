@@ -16,15 +16,21 @@ export class RoleItemInput {
 @InputType()
 export default class RoleInput {
 
-    @Field({nullable: true})
-    role?: string
-    
-    @Field(type => PaginationInput)
-    paginationOptions: PaginationInput
+  @Field({nullable: true})
+  role?: string
+
+  @Field({ nullable: true })
+  roleName?: string
+  
+  @Field({ nullable: true })
+  customRole?: boolean;
+
+  @Field(type => PaginationInput)
+  paginationOptions: PaginationInput
 }
 
 @InputType()
-export class UpdateRoleItemInput extends PartialType(RoleItemInput){
+export class UpdateRoleItemInput extends PartialType(RoleItemInput) {
   @Field({nullable: true})
   id: string;
 }

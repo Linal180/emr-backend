@@ -6,11 +6,13 @@ import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { UtilsService } from 'src/util/utils.service';
-import { getConnection, Repository } from 'typeorm';
+import { getConnection, In, Repository } from 'typeorm';
 import { CreateProblemInput } from '../dto/create-problem.input';
+import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
 import PatientProblemInput from '../dto/problem-input.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
-import { RemoveProblem, UpdateProblemInput } from '../dto/update-problem.input';
+import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
+import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput } from '../dto/update-problem.input';
 import { ICDCodes } from '../entities/icdcodes.entity';
 import { PatientProblems } from '../entities/patientProblems.entity';
 import { SnoMedCodes } from '../entities/snowmedCodes.entity';
@@ -118,21 +120,48 @@ export class ProblemService {
     });
   }
 
+  async getDiagnoses(ids: string[]): Promise<ICDCodes[]> {
+    const diagnoses = await this.icdCodeRepository.find({
+      where: {
+        id: In(ids)
+      }
+    });
+    if(diagnoses){
+      return diagnoses
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'diagnoses not found',
+    });
+  }
+
   /**
    * Searchs icd codes
    * @param searchTerm 
    * @returns icd codes 
    */
-  async searchIcdCodes(searchTerm: string): Promise<ICDCodes[]> {
-    const [first, last] = searchTerm.split(' ');
-    const result = await getConnection()
+  async searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
+    const { limit, page } = searchIcdCodesInput.paginationOptions
+    const [first, last] = searchIcdCodesInput.searchTerm.split(' ');
+    const  [icdCodes,totalCount]  = await getConnection()
       .getRepository(ICDCodes)
       .createQueryBuilder("ICDCode")
+      .skip((page - 1) * limit)
+      .take(limit)
       .where('ICDCode.code ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${first}%` })
-      .getMany();
-    return result;
+      .getManyAndCount()
+      const totalPages=Math.ceil(totalCount / limit)
+      return {
+        icdCodes:icdCodes,
+        pagination:{
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+      }
   }
 
   /**
@@ -140,16 +169,26 @@ export class ProblemService {
    * @param searchTerm 
    * @returns sno med code by icd codes 
    */
-  async searchSnoMedCodeByIcdCodes(searchTerm: string): Promise<SnoMedCodes[]> {
-    const [first, last] = searchTerm.split(' ');
-    const result = await getConnection()
+  async searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput): Promise<snoMedCodesPayload> {
+    const { limit, page } = searchSnoMedCodesInput.paginationOptions
+    const [first, last] = searchSnoMedCodesInput.searchTerm.split(' ');
+    const  [snoMedCodes,totalCount] = await getConnection()
       .getRepository(SnoMedCodes)
       .createQueryBuilder("SnoMedCodes")
       .where('SnoMedCodes.mapTarget ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${first}%` })
-      .getMany();
-    return result;
+      .getManyAndCount();
+      const totalPages=Math.ceil(totalCount / limit)
+      return {
+        snoMedCodes:snoMedCodes,
+        pagination:{
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+      }
   }
 
   /**

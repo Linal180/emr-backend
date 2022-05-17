@@ -2,14 +2,20 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { getConnection, Not, Repository } from 'typeorm';
+//user import
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { UtilsService } from 'src/util/utils.service';
-import { getConnection, Not, Repository } from 'typeorm';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { createToken } from '../../lib/helper';
+import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
+import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
 import { TwoFactorInput } from '../dto/twoFactor-input.dto';
 import { AccessUserPayload } from './../dto/access-user.dto';
 import { RegisterUserInput } from './../dto/register-user-input.dto';
@@ -23,6 +29,8 @@ import { Role } from './../entities/role.entity';
 import { UserLog } from './../entities/user-logs.entity';
 import { User, UserStatus } from './../entities/user.entity';
 import { RolesService } from './roles.service';
+import { File } from 'src/aws/dto/file-input.dto';
+import { UserInfoInput } from '../dto/user-info-input.dto';
 
 @Injectable()
 export class UsersService {
@@ -40,7 +48,8 @@ export class UsersService {
     private readonly mailerService: MailerService,
     private readonly patientService: PatientService,
     private readonly utilsService: UtilsService,
-    private readonly rolesService: RolesService
+    private readonly rolesService: RolesService,
+    private readonly attachmentsService: AttachmentsService,
   ) { }
 
 
@@ -157,7 +166,8 @@ export class UsersService {
    */
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
-      const { roles } = updateRoleInput 
+      const { roles } = updateRoleInput
+      console.log("roles",roles);
       const isSuperAdmin = roles.includes("super-admin"); 
       if (isSuperAdmin) {
         throw new ConflictException({
@@ -172,6 +182,7 @@ export class UsersService {
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
+          console.log("fetchRoles",fetchRoles);
         user.roles = fetchRoles
         return await this.usersRepository.save(user);
       }
@@ -182,6 +193,123 @@ export class UsersService {
 
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput:EmergencyAccessUserInput):Promise<EmergencyAccessUserPayload>{
+    const {page,limit}=emergencyAccessUsersInput.paginationInput
+
+    if(emergencyAccessUsersInput.email){
+      const [emergencyAccessUsers,totalCount]=await getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .skip((page-1)*limit)
+      .take(limit)
+      .innerJoin(qb2 => {
+        return qb2
+        .select('user.id', 'id')
+        .from(User, 'user')
+        .innerJoin('user.roles', 'userRoles')
+        .where('userRoles.role = :role', { role:'emergency-access' });
+      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+      .leftJoinAndSelect('user.roles', 'userRoles')
+      .where('user.email like :email',{email:`%${emergencyAccessUsersInput.email}%`})
+      .getManyAndCount()
+
+      const totalPages=Math.ceil(totalCount / limit)
+
+      return {
+        pagination:{
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        emergencyAccessUsers
+      }
+    }
+    
+    if(emergencyAccessUsersInput.facilityId){
+      const [emergencyAccessUsers,totalCount]=await getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .skip((page-1)*limit)
+      .take(limit)
+      .innerJoin(qb2 => {
+        return qb2
+        .select('user.id', 'id')
+        .from(User, 'user')
+        .innerJoin('user.roles', 'userRoles')
+        .where('userRoles.role = :role', { role:'emergency-access' });
+      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+      .leftJoinAndSelect('user.roles', 'userRoles')
+      .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId})
+      .getManyAndCount()
+
+      const totalPages=Math.ceil(totalCount / limit)
+
+      return {
+        pagination:{
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        emergencyAccessUsers
+      }
+    }
+    
+    // if(emergencyAccessUsersInput.practiceId){
+    //   const [emergencyAccessUsers,totalCount]=await baseQuery
+    //   .innerJoin(qb2 => {
+    //     return qb2
+    //     .select('user.id', 'id')
+    //     .from(User, 'user')
+    //     .innerJoin('user.facility', 'userFacility')
+    //     .where('userFacility.practiceId = :practiceId', { practiceId:emergencyAccessUsersInput.practiceId });
+    //   }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
+    //   .leftJoinAndSelect('user.facility', 'userFacility')
+    //   .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId })
+    //   .getManyAndCount()
+      
+    //   const totalPages=Math.ceil(totalCount / limit)
+
+    //   return {
+    //     pagination:{
+    //       totalCount,
+    //       page,
+    //       limit,
+    //       totalPages,
+    //     },
+    //     emergencyAccessUsers
+    //   }
+    // }
+
+    const [emergencyAccessUsers,totalCount]=  await getConnection()
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .skip((page-1)*limit)
+    .take(limit)
+    .innerJoin(qb2 => {
+      return qb2
+      .select('user.id', 'id')
+      .from(User, 'user')
+      .innerJoin('user.roles', 'userRoles')
+      .where('userRoles.role = :role', { role:'emergency-access' });
+    }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+    .leftJoinAndSelect('user.roles', 'userRoles')
+    .getManyAndCount()
+
+    const totalPages=Math.ceil(totalCount / limit)
+     
+    return {
+      pagination:{
+        totalCount,
+        page,
+        limit,
+        totalPages,
+      },
+      emergencyAccessUsers
     }
   }
 
@@ -389,6 +517,14 @@ export class UsersService {
           error: 'Password invalid',
         });
       }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateUserInfo(userInfoInput: UserInfoInput): Promise<User> {
+    try {
+      return await this.utilsService.updateEntityManager(User, userInfoInput.id, userInfoInput, this.usersRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -629,6 +765,77 @@ export class UsersService {
         .getMany();
       return users.map(u => u.id);
     } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Uploads user media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns user media 
+   */
+  async uploadUserMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<User> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.SUPER_ADMIN;
+      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+      const user = await this.findById(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return user;
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Removes user media
+   * @param id 
+   * @returns  
+   */
+  async removeUserMedia(id: string) {
+    try {
+      return await this.attachmentsService.removeMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Gets user media
+   * @param id 
+   * @returns  
+   */
+  async getUserMedia(id: string) {
+    try {
+      return await this.attachmentsService.getMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateUserMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<User> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.DOCTOR
+      const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+      const user = await this.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return user
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
       throw new InternalServerErrorException(error);
     }
   }

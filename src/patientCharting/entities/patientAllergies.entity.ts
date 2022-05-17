@@ -22,7 +22,7 @@ registerEnumType(AllergySeverity, {
 export enum AllergyOnset {
   CHILDHOOD = "childhood",
   ADULTHOOD = "adulthood",
-  UNNKOWN = "unknown"
+  UNKNOWN = "unknown"
 }
 
 registerEnumType(AllergyOnset, {
@@ -58,7 +58,7 @@ export class PatientAllergies {
   @Field({nullable: true})
   allergyStartDate: string;
 
-  @Column({ nullable: true })
+  @Column("text", { nullable: true })
   @Field({nullable: true})
   comments: string;
 
@@ -72,13 +72,17 @@ export class PatientAllergies {
 
   @Column({ nullable: true })
   @Field({nullable: true})
+  patientId: string;
+
+  @Column({ nullable: true })
+  @Field({nullable: true})
   appointmentId: string;
 
   @Column({ nullable: true })
   @Field({nullable: true})
   doctorId: string;
 
-  @ManyToOne(() => Allergies, allergies => allergies.patientAllergies)
+  @ManyToOne(() => Allergies, allergies => allergies.patientAllergies, {eager: true})
   @Field(type => Allergies, { nullable: true })
   allergy: Allergies;
   

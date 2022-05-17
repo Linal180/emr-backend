@@ -14,7 +14,10 @@ export class CreatePatientAllergyInput {
   staffId: string;
 
   @Field({ nullable: true })
-  allergyId: string;
+  allergyId?: string;
+
+  @Field({ nullable: true })
+  allergyName?: string;
 
   @Field({ nullable: true })
   providerId: string;

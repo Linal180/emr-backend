@@ -39,6 +39,9 @@ export class CreateAppointmentInput {
   
     @Field({ nullable: true })
     secondaryInsurance?: string;
+
+    @Field({ nullable: true })
+    isExternal: boolean;
   
     @Field({ nullable: false })
     scheduleStartDateTime?: string;

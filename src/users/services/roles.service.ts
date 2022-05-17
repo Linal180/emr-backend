@@ -35,7 +35,6 @@ export class RolesService {
       const roleInstance = this.roleRepository.create({...roleItemInput, role: roleItemInput.role.trim().toLowerCase()})
       //saving role
       return await this.roleRepository.save(roleInstance);
-      return 
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -69,7 +68,7 @@ export class RolesService {
    */
   async findAllRole(roleInput: RoleInput): Promise<RolesPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Role>(this.roleRepository, {...roleInput, role: 'super-admin'})
+      const paginationResponse = await this.paginationService.willPaginate<Role>(this.roleRepository, { ...roleInput })
       return {
         pagination: {
           ...paginationResponse
@@ -113,6 +112,14 @@ export class RolesService {
   async removeRole({ id }: RemoveRole) {
     try {
       await this.roleRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async findRolesByUserId() {
+    try {
+     return await this.roleRepository.find({relations:['users']})
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
