@@ -2,8 +2,10 @@ import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { default as LoincCodeInput } from '../dto/create-loincCode-input.dto';
+import { SearchLoincCodesInput } from '../dto/loincCodes-input.dto';
+import { LoincCodesPayload } from '../dto/loincCodes-payload.dto';
 import { UpdateLoincCodeInput } from '../dto/update-loincCode.input';
 import { LoincCodes } from '../entities/loincCodes.entity';
 
@@ -30,6 +32,26 @@ export class LoincCodesService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  /**
+   * Finds loinc code
+   * @param searchLoincCodesInput 
+   * @returns loinc code 
+   */
+ async findAllLoincCode(searchLoincCodesInput: SearchLoincCodesInput): Promise<LoincCodesPayload> {
+  const [first] = searchLoincCodesInput.searchTerm ? searchLoincCodesInput.searchTerm.split(' ') : '' 
+  try {
+    const paginationResponse = await this.paginationService.willPaginate<LoincCodes>(this.loincCodesRepository, { ...searchLoincCodesInput, associatedTo: "LoincCodes", associatedToField: { columnValue: first, columnName: 'loincNum', columnName2: 'component', columnName3: 'property', filterType: 'stringFilter' } })
+    return {
+      pagination: {
+        ...paginationResponse
+      },
+      loincCodes: paginationResponse.data,
+    } 
+  } catch (error) {
+    throw new InternalServerErrorException(error);
+  }
+ }
 
   /**
    * Updates loinc code

@@ -38,7 +38,12 @@ export class LabTests {
 
   @Column({nullable: true})
   @Field({nullable: true})
+  orderNumber: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
   testDate: string;
+
 
   @Column({nullable: true})
   @Field({nullable: true})

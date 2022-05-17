@@ -9,7 +9,7 @@ export default class CreateLabTestItemInput {
     @Field({ nullable: true })
     appointmentId?: string
 
-    @Field({ nullable: true })
+    @Field(type=>LabTestStatus,{ nullable: true })
     status?: LabTestStatus
 
     @Field({ nullable: true })
@@ -20,4 +20,7 @@ export default class CreateLabTestItemInput {
 
     @Field({ nullable: true })
     testTime?: string    
+
+    @Field({ nullable: true })
+    orderNumber?: string 
 }

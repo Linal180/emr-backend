@@ -50,15 +50,19 @@ export class Attachment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  signedBy: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  signedAt: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   comments: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   url: string;
-
-  @Column({ nullable: true, default: false })
-  @Field({ nullable: true })
-  signedByProvider: boolean ;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

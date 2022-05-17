@@ -9,6 +9,9 @@
       patientId?: string
 
       @Field({ nullable: true })
+      orderNumber?: string
+
+      @Field({ nullable: true })
       labTestStatus?: LabTestStatus
   
       @Field(type => PaginationInput)
