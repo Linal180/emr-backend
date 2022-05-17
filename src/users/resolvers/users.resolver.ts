@@ -136,7 +136,7 @@ export class UsersResolver {
           this.utilsService.sendVerificationCode(user.phone)
           return await this.usersService.create2FAToken(user, password)
         }
-        
+
         return await this.usersService.createToken(user, password);
       }
       throw new ForbiddenException({
@@ -152,14 +152,20 @@ export class UsersResolver {
 
   @Mutation(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, Jwt2FAGuard)
-  async verifyOTP(@Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
-    const { id, otpCode } = verifyCodeInput
-    const user = await this.usersService.findUserById(id)
-    if (user) {
-      const verifyOTP = await this.utilsService.verifyOTPCode(user.phone, otpCode)
+  async verifyOTP(@CurrentUser() user: CurrentUserInterface,
+    @Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
+
+    const { sub } = user
+    const { otpCode } = verifyCodeInput
+    const newUser = await this.usersService.findUserById(sub)
+    if (newUser) {
+      const verifyOTP = await this.utilsService.verifyOTPCode(newUser.phone, otpCode)
       if (verifyOTP) {
+        const token = await this.usersService.createToken(newUser, newUser.password);
+        const { access_token } = token
         return {
-          user: user,
+          user: newUser,
+          access_token,
           response: { status: 200, message: 'OTP has been successfully verified.' }
         }
       } else {

@@ -8,5 +8,8 @@ export class UserPayload {
   user: User;
 
   @Field({ nullable: true })
+  access_token?: string
+
+  @Field({ nullable: true })
   response?: ResponsePayload
 }

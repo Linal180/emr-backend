@@ -1163,6 +1163,7 @@ type ForgotPasswordPayload {
 
 type UserPayload {
   user: User
+  access_token: String
   response: ResponsePayload
 }
 
