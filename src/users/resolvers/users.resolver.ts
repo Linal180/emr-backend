@@ -180,9 +180,10 @@ export class UsersResolver {
     });
   }
 
-  @Mutation(returns => UserPayload)
-  async resentOTP(@Args('seneOTPAgainInput') seneOTPAgainInput: SeneOTPAgainInput): Promise<UserPayload> {
-    const { id } = seneOTPAgainInput
+  @Mutation(() => UserPayload)
+  @UseGuards(Jwt2FAGuard)
+  async resentOTP(@CurrentUser() authUser: CurrentUser2FaInterface): Promise<UserPayload> {
+    const { id } = authUser
     const user = await this.usersService.findUserById(id)
     if (user) {
       await this.utilsService.sendVerificationCode(user.phone)

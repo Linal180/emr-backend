@@ -1890,7 +1890,7 @@ input UserFormInput {
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
-  resentOTP(seneOTPAgainInput: SeneOTPAgainInput!): UserPayload!
+  resentOTP: UserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
   forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
   verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
@@ -1992,10 +1992,6 @@ input LoginUserInput {
 input VerifyCodeInput {
   id: String
   otpCode: String!
-}
-
-input SeneOTPAgainInput {
-  id: String!
 }
 
 input RegisterUserInput {
