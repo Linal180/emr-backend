@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Role } from '../entities/role.entity';
+import { User } from '../entities/user.entity';
 import { ResponsePayload } from './response-payload.dto';
 
 @ObjectType()
@@ -34,4 +35,10 @@ export class User2FAPayload {
 
   @Field({ nullable: true })
   response?: ResponsePayload
+}
+
+@ObjectType()
+export class User2FAVerifiedPayload {
+  @Field({ nullable: true })
+  user: User
 }

@@ -17,7 +17,7 @@ import { createToken } from '../../lib/helper';
 import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
 import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
 import { TwoFactorInput } from '../dto/twoFactor-input.dto';
-import { AccessUserPayload, User2FAPayload } from './../dto/access-user.dto';
+import { AccessUserPayload, User2FAPayload, User2FAVerifiedPayload } from './../dto/access-user.dto';
 import { RegisterUserInput } from './../dto/register-user-input.dto';
 import { UpdatePasswordInput } from './../dto/update-password-input.dto';
 import { UpdateRoleInput } from './../dto/update-role-input.dto';
@@ -840,16 +840,17 @@ export class UsersService {
     }
   }
 
+  
   /**
-   * Creates token
+   * Create2s fatoken
    * @param user 
    * @param paramPass 
-   * @returns token 
+   * @returns fatoken 
    */
   async create2FAToken(user: User, paramPass: string): Promise<AccessUserPayload> {
     const passwordMatch = await bcrypt.compare(paramPass, user.password)
     if (passwordMatch) {
-      const payload = { email: user.email, sub: user.id };
+      const payload = { email: user.email, sub: user.id, isTwoFactorEnabled: true };
       const access_2fa_token = await this.jwtService.sign(payload)
       return {
         access_2fa_token,
@@ -866,5 +867,13 @@ export class UsersService {
         }, access_2fa_token: null
       };
     }
+  }
+
+  async verify2FaToken(token: string):Promise<User2FAVerifiedPayload> {
+    const secret = await this.jwtService.verify(token);
+    const user = await this.findRolesByUserId(secret.sub)
+    return {
+      user
+    };
   }
 }

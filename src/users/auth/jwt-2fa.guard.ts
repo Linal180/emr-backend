@@ -14,8 +14,10 @@ export class Jwt2FAGuard extends AuthGuard('jwt') {
     if (!ctx.req.headers.authorization) {
       return false;
     }
-    ctx.user = await this.validateToken(ctx.req.headers.authorization);
-    return true;
+    const user = await this.validateToken(ctx.req.headers.authorization);
+    ctx.user = user
+    const { isTwoFactorEnabled } = user || {}
+    return isTwoFactorEnabled;
   }
 
   async validateToken(auth: string) {
@@ -24,8 +26,8 @@ export class Jwt2FAGuard extends AuthGuard('jwt') {
     }
     const token = auth.split(' ')[1];
     try {
-      const user = await this.usersService.verify(token);
-      return user;
+      const { user } = await this.usersService.verify2FaToken(token);
+      return user
     } catch (err) {
 
       throw new HttpException({
