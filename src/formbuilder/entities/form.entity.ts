@@ -9,7 +9,8 @@ export enum FormType {
   DOCTOR = "Doctor",
   PATIENT = "Patient",
   STAFF = "Staff",
-  TEMPLATE = "Template"
+  TEMPLATE = "Template",
+  PRE_DEFINED = "Pre-Defined"
 }
 
 registerEnumType(FormType, {

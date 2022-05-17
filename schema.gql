@@ -10,9 +10,10 @@ type Attachment {
   key: String
   attachmentName: String
   providerName: String
+  signedBy: String
+  signedAt: String
   comments: String
   url: String
-  signedByProvider: Boolean
   createdAt: String!
   updatedAt: String!
 }
@@ -311,7 +312,7 @@ enum TempUnitType {
 
 """The patient's smoking status type assigned"""
 enum SmokingStatus {
-  NEVER_SMOCKED
+  NEVER_SMOKED
   CURRENT_EVERYDAY_SMOKER
   CURRENT_SOMEDAY_SMOKER
   FORMER_SMOKER
@@ -1425,6 +1426,7 @@ enum FormType {
   PATIENT
   STAFF
   TEMPLATE
+  PRE_DEFINED
 }
 
 type FormElement {
@@ -1871,6 +1873,7 @@ input GetPatientVital {
 input FormInput {
   facilityId: String
   isSystemForm: Boolean
+  formType: FormType
   paginationOptions: PaginationInput!
 }
 
@@ -2696,7 +2699,8 @@ input CreateAttachmentInput {
   typeId: String!
   title: String
   subTitle: String
-  providerName: String
+  signedAt: String
+  signedBy: String
   attachmentName: String
   comments: String
   signedByProvider: Boolean
@@ -2714,7 +2718,8 @@ input UpdateAttachmentInput {
   typeId: String
   title: String
   subTitle: String
-  providerName: String
+  signedAt: String
+  signedBy: String
   attachmentName: String
   comments: String
   signedByProvider: Boolean

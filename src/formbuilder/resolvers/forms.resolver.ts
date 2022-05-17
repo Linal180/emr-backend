@@ -42,7 +42,7 @@ export class FormResolver {
     };
   }
 
-  @Query(returns => FormsPayload)
+  @Query(() => FormsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['super-admin', 'admin'])
   async findAllForms(@Args('formInput') formInput: FormInput): Promise<FormsPayload> {
@@ -61,7 +61,7 @@ export class FormResolver {
     });
   }
 
-  @Query(returns => FormPayload)
+  @Query(() => FormPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['admin', 'super-admin'])
   async getForm(@Args('getForm') getForm: GetForm): Promise<FormPayload> {
@@ -72,7 +72,7 @@ export class FormResolver {
     };
   }
 
-  @Query(returns => FormPayload)
+  @Query(() => FormPayload)
   async getPublicForm(@Args('getForm') getForm: GetForm): Promise<FormPayload> {
     const form = await this.formsService.getForm(getForm.id)
     return {
@@ -91,8 +91,6 @@ export class FormResolver {
 
   @Query(() => UserFormsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  // @SetMetadata('roles', ['super-admin', 'admin'])
-
   async findAllUsersForms(@Args('userFormInput') userFormInput: UserFormInput): Promise<UserFormsPayload> {
     const form = await this.formsService.findOne(userFormInput.FormId);
     const userForms = await this.userFormsService.getAll(userFormInput);
@@ -113,7 +111,7 @@ export class FormResolver {
   }
 
   @Mutation(() => FormPayload)
-  // @UseGuards(J wtAuthGraphQLGuard, RoleGuard)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   async createFormTemplate(
     @Args("createFormInput")
     createFormInput: CreateFormInput
