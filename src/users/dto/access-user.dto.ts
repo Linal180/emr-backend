@@ -29,6 +29,9 @@ export class User2FAPayload {
   @Field({ nullable: true })
   access_2fa_token?: string
 
+  @Field({nullable: true})
+  isTwoFactorEnabled?: boolean
+
   @Field({ nullable: true })
   response?: ResponsePayload
 }

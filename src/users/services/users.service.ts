@@ -853,6 +853,7 @@ export class UsersService {
       const access_2fa_token = await this.jwtService.sign(payload)
       return {
         access_2fa_token,
+        isTwoFactorEnabled: user.isTwoFactorEnabled,
         response: {
           message: "OK", status: 200, name: "Token Created"
         }
