@@ -3,7 +3,7 @@ import { Field, InputType } from '@nestjs/graphql';
 @InputType()
 export default class CreateSpecimenItemInput {
     @Field({ nullable: false })
-    testSpecimen: string
+    testSpecimen?: string
 
     @Field({ nullable: true })
     specimenNotes?: string

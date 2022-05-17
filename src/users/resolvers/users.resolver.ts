@@ -8,7 +8,8 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { UtilsService } from 'src/util/utils.service';
 import { CurrentUser } from '../../customDecorators/current-user.decorator';
-import { CurrentUserInterface } from '../auth/dto/current-user.dto';
+import { CurrentUser2FaInterface, CurrentUserInterface } from '../auth/dto/current-user.dto';
+import { Jwt2FAGuard } from '../auth/jwt-2fa.guard';
 import { AccessUserPayload } from '../dto/access-user.dto';
 import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
 import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
@@ -133,7 +134,9 @@ export class UsersResolver {
       if (user.emailVerified) {
         if (user.isTwoFactorEnabled) {
           this.utilsService.sendVerificationCode(user.phone)
+          return await this.usersService.create2FAToken(user, password)
         }
+
         return await this.usersService.createToken(user, password);
       }
       throw new ForbiddenException({
@@ -147,15 +150,21 @@ export class UsersResolver {
     });
   }
 
-  @Mutation(returns => UserPayload)
-  async verifyOTP(@Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
-    const { id, otpCode } = verifyCodeInput
-    const user = await this.usersService.findUserById(id)
-    if (user) {
-      const verifyOTP = await this.utilsService.verifyOTPCode(user.phone, otpCode)
+  @Mutation(() => UserPayload)
+  @UseGuards(Jwt2FAGuard)
+  async verifyOTP(@CurrentUser() user: CurrentUser2FaInterface,
+    @Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
+    const { id } = user
+    const { otpCode } = verifyCodeInput
+    const newUser = await this.usersService.findUserById(id)
+    if (newUser) {
+      const verifyOTP = await this.utilsService.verifyOTPCode(newUser.phone, otpCode)
       if (verifyOTP) {
+        const token = await this.usersService.createLoginToken(newUser);
+        const { access_token } = token
         return {
-          user: user,
+          user: newUser,
+          access_token,
           response: { status: 200, message: 'OTP has been successfully verified.' }
         }
       } else {
@@ -171,9 +180,10 @@ export class UsersResolver {
     });
   }
 
-  @Mutation(returns => UserPayload)
-  async resentOTP(@Args('seneOTPAgainInput') seneOTPAgainInput: SeneOTPAgainInput): Promise<UserPayload> {
-    const { id } = seneOTPAgainInput
+  @Mutation(() => UserPayload)
+  @UseGuards(Jwt2FAGuard)
+  async resentOTP(@CurrentUser() authUser: CurrentUser2FaInterface): Promise<UserPayload> {
+    const { id } = authUser
     const user = await this.usersService.findUserById(id)
     if (user) {
       await this.utilsService.sendVerificationCode(user.phone)
