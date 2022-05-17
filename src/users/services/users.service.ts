@@ -840,7 +840,7 @@ export class UsersService {
     }
   }
 
-  
+
   /**
    * Create2s fatoken
    * @param user 
@@ -850,7 +850,7 @@ export class UsersService {
   async create2FAToken(user: User, paramPass: string): Promise<AccessUserPayload> {
     const passwordMatch = await bcrypt.compare(paramPass, user.password)
     if (passwordMatch) {
-      const payload = { email: user.email, sub: user.id, isTwoFactorEnabled: true };
+      const payload = { id: user.id, isTwoFactorEnabled: true };
       const access_2fa_token = await this.jwtService.sign(payload)
       return {
         access_2fa_token,
@@ -869,9 +869,9 @@ export class UsersService {
     }
   }
 
-  async verify2FaToken(token: string):Promise<User2FAVerifiedPayload> {
+  async verify2FaToken(token: string): Promise<User2FAVerifiedPayload> {
     const secret = await this.jwtService.verify(token);
-    const user = await this.findRolesByUserId(secret.sub)
+    const user = await this.findRolesByUserId(secret.id)
     return {
       user
     };

@@ -8,7 +8,7 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { UtilsService } from 'src/util/utils.service';
 import { CurrentUser } from '../../customDecorators/current-user.decorator';
-import { CurrentUserInterface } from '../auth/dto/current-user.dto';
+import { CurrentUser2FaInterface, CurrentUserInterface } from '../auth/dto/current-user.dto';
 import { Jwt2FAGuard } from '../auth/jwt-2fa.guard';
 import { AccessUserPayload } from '../dto/access-user.dto';
 import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
@@ -150,14 +150,14 @@ export class UsersResolver {
     });
   }
 
-  @Mutation(returns => UserPayload)
-  @UseGuards(JwtAuthGraphQLGuard, Jwt2FAGuard)
-  async verifyOTP(@CurrentUser() user: CurrentUserInterface,
+  @Mutation(() => UserPayload)
+  @UseGuards(Jwt2FAGuard)
+  async verifyOTP(@CurrentUser() user: CurrentUser2FaInterface,
     @Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
 
-    const { sub } = user
+    const { id } = user
     const { otpCode } = verifyCodeInput
-    const newUser = await this.usersService.findUserById(sub)
+    const newUser = await this.usersService.findUserById(id)
     if (newUser) {
       const verifyOTP = await this.utilsService.verifyOTPCode(newUser.phone, otpCode)
       if (verifyOTP) {
