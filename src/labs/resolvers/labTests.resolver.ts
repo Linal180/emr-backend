@@ -7,6 +7,7 @@ import { PatientService } from 'src/patients/services/patient.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
+import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
 import LabTestInput from '../dto/lab-test.input';
 import { LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestsPayload } from '../dto/labTests-payload.dto';
@@ -53,6 +54,17 @@ export class LabTestsResolver {
     const labTest = await this.labTestsService.GetLabTest(getLabTest.id)
     return {
       ...labTest,
+      response: { status: 200, message: 'Lab test fetched successfully' }
+    };
+  }
+
+  @Query(returns => LabTestsPayload)  
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getLabTest')
+  async findLabTestsByOrderNum(@Args('labTestByOrderNumInput') labTestByOrderNumInput: LabTestByOrderNumInput): Promise<LabTestsPayload> {
+    const labTests = await this.labTestsService.findLabTestsByOrderNum(labTestByOrderNumInput)
+    return {
+      ...labTests,
       response: { status: 200, message: 'Lab test fetched successfully' }
     };
   }

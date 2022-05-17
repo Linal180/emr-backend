@@ -1,13 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
 import { ResponsePayload, ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
-import { LoincCodes } from '../entities/loincCodes.entity';
+import { SpecimenTypes } from '../entities/specimenTypes.entity';
 
 
 @ObjectType()
-export class LoincCodesPayload extends ResponsePayloadResponse {
-    @Field(type => [LoincCodes], { nullable: true })
-    loincCodes: LoincCodes[];
+export class TestSpecimenTypesPayload extends ResponsePayloadResponse {
+    @Field(type => [SpecimenTypes], { nullable: true })
+    specimenTypes: SpecimenTypes[];
 
     @Field({ nullable: true })
     response?: ResponsePayload
