@@ -846,7 +846,7 @@ export class UsersService {
    * @param paramPass 
    * @returns token 
    */
-  async create2FAToken(user: User, paramPass: string): Promise<User2FAPayload> {
+  async create2FAToken(user: User, paramPass: string): Promise<AccessUserPayload> {
     const passwordMatch = await bcrypt.compare(paramPass, user.password)
     if (passwordMatch) {
       const payload = { email: user.email, sub: user.id };
@@ -854,6 +854,7 @@ export class UsersService {
       return {
         access_2fa_token,
         isTwoFactorEnabled: user.isTwoFactorEnabled,
+        roles: user?.roles,
         response: {
           message: "OK", status: 200, name: "Token Created"
         }
