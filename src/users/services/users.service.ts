@@ -869,9 +869,24 @@ export class UsersService {
     }
   }
 
+
+  async createLoginToken(user: User): Promise<AccessUserPayload> {
+    const payload = { email: user.email, sub: user.id };
+    const access_token = await this.jwtService.sign(payload);
+    return {
+      access_token,
+      userId: user.id,
+      roles: user.roles,
+      isTwoFactorEnabled: user.isTwoFactorEnabled,
+      response: {
+        message: "OK", status: 200, name: "Token Created"
+      }
+    };
+  }
+
   async verify2FaToken(token: string): Promise<User2FAVerifiedPayload> {
     const secret = await this.jwtService.verify(token);
-    const user = await this.findRolesByUserId(secret.id)
+    const user = await this.findUserById(secret.id)
     return {
       user
     };

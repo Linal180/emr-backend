@@ -154,14 +154,13 @@ export class UsersResolver {
   @UseGuards(Jwt2FAGuard)
   async verifyOTP(@CurrentUser() user: CurrentUser2FaInterface,
     @Args('verifyCodeInput') verifyCodeInput: VerifyCodeInput): Promise<UserPayload> {
-
     const { id } = user
     const { otpCode } = verifyCodeInput
     const newUser = await this.usersService.findUserById(id)
     if (newUser) {
       const verifyOTP = await this.utilsService.verifyOTPCode(newUser.phone, otpCode)
       if (verifyOTP) {
-        const token = await this.usersService.createToken(newUser, newUser.password);
+        const token = await this.usersService.createLoginToken(newUser);
         const { access_token } = token
         return {
           user: newUser,
