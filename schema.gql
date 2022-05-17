@@ -10,9 +10,10 @@ type Attachment {
   key: String
   attachmentName: String
   providerName: String
+  signedBy: String
+  signedAt: String
   comments: String
   url: String
-  signedByProvider: Boolean
   createdAt: String!
   updatedAt: String!
 }
@@ -2698,7 +2699,8 @@ input CreateAttachmentInput {
   typeId: String!
   title: String
   subTitle: String
-  providerName: String
+  signedAt: String
+  signedBy: String
   attachmentName: String
   comments: String
   signedByProvider: Boolean
@@ -2716,7 +2718,8 @@ input UpdateAttachmentInput {
   typeId: String
   title: String
   subTitle: String
-  providerName: String
+  signedAt: String
+  signedBy: String
   attachmentName: String
   comments: String
   signedByProvider: Boolean

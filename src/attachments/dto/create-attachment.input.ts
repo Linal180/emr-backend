@@ -15,7 +15,10 @@ export class CreateAttachmentInput {
   subTitle?: string
   
   @Field({ nullable: true })
-  providerName?: string
+  signedAt?: string
+
+  @Field({ nullable: true })
+  signedBy?: string
     
   @Field({ nullable: true })
   attachmentName?: string
