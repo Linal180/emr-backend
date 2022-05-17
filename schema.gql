@@ -1147,6 +1147,7 @@ type RolePayload {
 
 type AccessUserPayload {
   access_token: String
+  access_2fa_token: String
   userId: String
   isTwoFactorEnabled: Boolean
   roles: [Role!]
@@ -1165,6 +1166,7 @@ type ForgotPasswordPayload {
 
 type UserPayload {
   user: User
+  access_token: String
   response: ResponsePayload
 }
 
@@ -1928,7 +1930,7 @@ input UserFormInput {
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
-  resentOTP(seneOTPAgainInput: SeneOTPAgainInput!): UserPayload!
+  resentOTP: UserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
   forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
   verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
@@ -2028,12 +2030,8 @@ input LoginUserInput {
 }
 
 input VerifyCodeInput {
-  id: String!
+  id: String
   otpCode: String!
-}
-
-input SeneOTPAgainInput {
-  id: String!
 }
 
 input RegisterUserInput {

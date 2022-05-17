@@ -17,7 +17,7 @@ import { createToken } from '../../lib/helper';
 import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
 import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
 import { TwoFactorInput } from '../dto/twoFactor-input.dto';
-import { AccessUserPayload } from './../dto/access-user.dto';
+import { AccessUserPayload, User2FAPayload, User2FAVerifiedPayload } from './../dto/access-user.dto';
 import { RegisterUserInput } from './../dto/register-user-input.dto';
 import { UpdatePasswordInput } from './../dto/update-password-input.dto';
 import { UpdateRoleInput } from './../dto/update-role-input.dto';
@@ -88,8 +88,8 @@ export class UsersService {
         let isAdmin = false
         const roles = await this.findAllRoles()
         const patientRole = roles.find((item) => item.role === 'patient')
-        if(registerUserInput.roleType !== patientRole.role){
-        this.mailerService.sendEmailForgotPassword(user.email, user.id, user.email, '', isAdmin, token, isInvite)
+        if (registerUserInput.roleType !== patientRole.role) {
+          this.mailerService.sendEmailForgotPassword(user.email, user.id, user.email, '', isAdmin, token, isInvite)
         }
         return user;
       }
@@ -156,7 +156,7 @@ export class UsersService {
    * @param user 
    * @returns save 
    */
-  async save(user: User): Promise<User>{
+  async save(user: User): Promise<User> {
     return await this.usersRepository.save(user)
   }
   /**
@@ -167,8 +167,8 @@ export class UsersService {
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
       const { roles } = updateRoleInput
-      console.log("roles",roles);
-      const isSuperAdmin = roles.includes("super-admin"); 
+      console.log("roles", roles);
+      const isSuperAdmin = roles.includes("super-admin");
       if (isSuperAdmin) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
@@ -182,7 +182,7 @@ export class UsersService {
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
-          console.log("fetchRoles",fetchRoles);
+        console.log("fetchRoles", fetchRoles);
         user.roles = fetchRoles
         return await this.usersRepository.save(user);
       }
@@ -196,30 +196,30 @@ export class UsersService {
     }
   }
 
-  async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput:EmergencyAccessUserInput):Promise<EmergencyAccessUserPayload>{
-    const {page,limit}=emergencyAccessUsersInput.paginationInput
+  async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput: EmergencyAccessUserInput): Promise<EmergencyAccessUserPayload> {
+    const { page, limit } = emergencyAccessUsersInput.paginationInput
 
-    if(emergencyAccessUsersInput.email){
-      const [emergencyAccessUsers,totalCount]=await getConnection()
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .skip((page-1)*limit)
-      .take(limit)
-      .innerJoin(qb2 => {
-        return qb2
-        .select('user.id', 'id')
-        .from(User, 'user')
-        .innerJoin('user.roles', 'userRoles')
-        .where('userRoles.role = :role', { role:'emergency-access' });
-      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
-      .leftJoinAndSelect('user.roles', 'userRoles')
-      .where('user.email like :email',{email:`%${emergencyAccessUsersInput.email}%`})
-      .getManyAndCount()
+    if (emergencyAccessUsersInput.email) {
+      const [emergencyAccessUsers, totalCount] = await getConnection()
+        .getRepository(User)
+        .createQueryBuilder('user')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .innerJoin(qb2 => {
+          return qb2
+            .select('user.id', 'id')
+            .from(User, 'user')
+            .innerJoin('user.roles', 'userRoles')
+            .where('userRoles.role = :role', { role: 'emergency-access' });
+        }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+        .leftJoinAndSelect('user.roles', 'userRoles')
+        .where('user.email like :email', { email: `%${emergencyAccessUsersInput.email}%` })
+        .getManyAndCount()
 
-      const totalPages=Math.ceil(totalCount / limit)
+      const totalPages = Math.ceil(totalCount / limit)
 
       return {
-        pagination:{
+        pagination: {
           totalCount,
           page,
           limit,
@@ -228,28 +228,28 @@ export class UsersService {
         emergencyAccessUsers
       }
     }
-    
-    if(emergencyAccessUsersInput.facilityId){
-      const [emergencyAccessUsers,totalCount]=await getConnection()
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .skip((page-1)*limit)
-      .take(limit)
-      .innerJoin(qb2 => {
-        return qb2
-        .select('user.id', 'id')
-        .from(User, 'user')
-        .innerJoin('user.roles', 'userRoles')
-        .where('userRoles.role = :role', { role:'emergency-access' });
-      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
-      .leftJoinAndSelect('user.roles', 'userRoles')
-      .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId})
-      .getManyAndCount()
 
-      const totalPages=Math.ceil(totalCount / limit)
+    if (emergencyAccessUsersInput.facilityId) {
+      const [emergencyAccessUsers, totalCount] = await getConnection()
+        .getRepository(User)
+        .createQueryBuilder('user')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .innerJoin(qb2 => {
+          return qb2
+            .select('user.id', 'id')
+            .from(User, 'user')
+            .innerJoin('user.roles', 'userRoles')
+            .where('userRoles.role = :role', { role: 'emergency-access' });
+        }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+        .leftJoinAndSelect('user.roles', 'userRoles')
+        .where('user.facilityId = :facilityId', { facilityId: emergencyAccessUsersInput.facilityId })
+        .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
 
       return {
-        pagination:{
+        pagination: {
           totalCount,
           page,
           limit,
@@ -258,7 +258,7 @@ export class UsersService {
         emergencyAccessUsers
       }
     }
-    
+
     // if(emergencyAccessUsersInput.practiceId){
     //   const [emergencyAccessUsers,totalCount]=await baseQuery
     //   .innerJoin(qb2 => {
@@ -271,7 +271,7 @@ export class UsersService {
     //   .leftJoinAndSelect('user.facility', 'userFacility')
     //   .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId })
     //   .getManyAndCount()
-      
+
     //   const totalPages=Math.ceil(totalCount / limit)
 
     //   return {
@@ -285,25 +285,25 @@ export class UsersService {
     //   }
     // }
 
-    const [emergencyAccessUsers,totalCount]=  await getConnection()
-    .getRepository(User)
-    .createQueryBuilder('user')
-    .skip((page-1)*limit)
-    .take(limit)
-    .innerJoin(qb2 => {
-      return qb2
-      .select('user.id', 'id')
-      .from(User, 'user')
-      .innerJoin('user.roles', 'userRoles')
-      .where('userRoles.role = :role', { role:'emergency-access' });
-    }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
-    .leftJoinAndSelect('user.roles', 'userRoles')
-    .getManyAndCount()
+    const [emergencyAccessUsers, totalCount] = await getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .innerJoin(qb2 => {
+        return qb2
+          .select('user.id', 'id')
+          .from(User, 'user')
+          .innerJoin('user.roles', 'userRoles')
+          .where('userRoles.role = :role', { role: 'emergency-access' });
+      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+      .leftJoinAndSelect('user.roles', 'userRoles')
+      .getManyAndCount()
 
-    const totalPages=Math.ceil(totalCount / limit)
-     
+    const totalPages = Math.ceil(totalCount / limit)
+
     return {
-      pagination:{
+      pagination: {
         totalCount,
         page,
         limit,
@@ -408,7 +408,7 @@ export class UsersService {
    * @returns user by user id 
    */
   async findUserByUserId(id: string): Promise<User> {
-    return await this.usersRepository.findOne({userId: id});
+    return await this.usersRepository.findOne({ userId: id });
   }
 
   /**
@@ -502,7 +502,7 @@ export class UsersService {
   async updateTwoFactorAuth(twoFactorInput: TwoFactorInput): Promise<User> {
     try {
       const user = await this.findUserById(twoFactorInput.userId)
-      if(!user){
+      if (!user) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'User not found or disabled',
@@ -510,8 +510,8 @@ export class UsersService {
       }
       const passwordMatch = await bcrypt.compare(twoFactorInput.password, user.password)
       if (passwordMatch) {
-      return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, {isTwoFactorEnabled:twoFactorInput.isTwoFactorEnabled }, this.usersRepository)
-      }else{
+        return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, { isTwoFactorEnabled: twoFactorInput.isTwoFactorEnabled }, this.usersRepository)
+      } else {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Password invalid',
@@ -632,7 +632,7 @@ export class UsersService {
       if (user) {
         const isAdmin = roles.some(role => role.includes('patient'))
         const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
-        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '',isAdmin, token, isInvite)
+        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '', isAdmin, token, isInvite)
         delete user.roles
         await this.usersRepository.save(user);
         return user
@@ -838,5 +838,57 @@ export class UsersService {
     catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+
+  /**
+   * Create2s fatoken
+   * @param user 
+   * @param paramPass 
+   * @returns fatoken 
+   */
+  async create2FAToken(user: User, paramPass: string): Promise<AccessUserPayload> {
+    const passwordMatch = await bcrypt.compare(paramPass, user.password)
+    if (passwordMatch) {
+      const payload = { id: user.id, isTwoFactorEnabled: true };
+      const access_2fa_token = await this.jwtService.sign(payload)
+      return {
+        access_2fa_token,
+        isTwoFactorEnabled: user.isTwoFactorEnabled,
+        roles: user?.roles,
+        response: {
+          message: "OK", status: 200, name: "Token Created"
+        }
+      };
+    } else {
+      return {
+        response: {
+          message: "Incorrect Email or Password", status: 404, name: "Email or Password invalid"
+        }, access_2fa_token: null
+      };
+    }
+  }
+
+
+  async createLoginToken(user: User): Promise<AccessUserPayload> {
+    const payload = { email: user.email, sub: user.id };
+    const access_token = await this.jwtService.sign(payload);
+    return {
+      access_token,
+      userId: user.id,
+      roles: user.roles,
+      isTwoFactorEnabled: user.isTwoFactorEnabled,
+      response: {
+        message: "OK", status: 200, name: "Token Created"
+      }
+    };
+  }
+
+  async verify2FaToken(token: string): Promise<User2FAVerifiedPayload> {
+    const secret = await this.jwtService.verify(token);
+    const user = await this.findUserById(secret.id)
+    return {
+      user
+    };
   }
 }
