@@ -18,6 +18,7 @@ import { ObservationsSubscriber } from './labs.subscriber';
 import { LabTestObservationResolver } from './resolvers/labTestObservations.resolver';
 import { LabTestsResolver } from './resolvers/labTests.resolver';
 import { LoincCodesResolver } from './resolvers/loincCodes.resolver';
+import { TestSpecimenResolver } from './resolvers/testSpecimen.resolver';
 import { LabTestsObservationsService } from './services/labTestObservation.service';
 import { LabTestsService } from './services/labTests.service';
 import { LoincCodesService } from './services/loincCodes.service';
@@ -36,7 +37,7 @@ import { TestSpecimenService } from './services/testSpecimen.service';
     forwardRef(() => ProviderModule)
   ],
   controllers: [LabTestsObservationsController],
-  providers: [ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService],
+  providers: [ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService,TestSpecimenResolver],
   exports: [LoincCodesService, LabTestsService, TestSpecimenService,LabTestsObservationsService, TypeOrmModule],
 })
 export class LabModule { }

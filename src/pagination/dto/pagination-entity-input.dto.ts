@@ -54,4 +54,8 @@ export class PaginatedEntityInput {
   typeId?: string
   AttachmentModuleType?: AttachmentType
   formType?: FormType
+  loincNum?: string
+  component?: string
+  specimenTypeName?: string
+  orderNumber?: string
 }

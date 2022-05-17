@@ -4,6 +4,8 @@ import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import CreateSpecimenItemInput from '../dto/create-specimen-Item-input.dto';
+import { TestSpecimenTypeInput } from '../dto/testSpecimenType-input.dto';
+import { TestSpecimenTypesPayload } from '../dto/testSpecimenTypes-payload.dto copy';
 import { UpdateSpecimenItemInput } from '../dto/update-specimen-Item-input.dto';
 import { SpecimenTypes } from '../entities/specimenTypes.entity';
 import { TestSpecimens } from '../entities/testSpecimens.entity';
@@ -63,13 +65,33 @@ export class TestSpecimenService {
     }
   }
 
+  async findSpecimenTypeById(id: string): Promise<SpecimenTypes> {
+    const specimenType = await this.specimenTypesRepository.findOne(id);
+    if (specimenType) {
+      return specimenType
+    }
+  }
+
+  async findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput): Promise<TestSpecimenTypesPayload> {
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<SpecimenTypes>(this.specimenTypesRepository, testSpecimenTypeInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        specimenTypes: paginationResponse.data,
+      } 
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+   }
+
   async GetSpecimensByLabTestId(id: string): Promise<TestSpecimens[]> {
     const specimen = await this.testSpecimensRepository.find({
       where: {
         labTestId: id
       }
     })
-    console.log("specimen",specimen);
     if (specimen) {
       return specimen
     }

@@ -166,6 +166,7 @@ type TestSpecimens {
   specimenNotes: String
   labTestId: String
   specimenTypes: SpecimenTypes
+  specimenTypesId: String
   labTest: LabTests
   createdAt: String
   updatedAt: String
@@ -174,6 +175,7 @@ type TestSpecimens {
 type LabTests {
   id: String!
   labTestStatus: LabTestStatus!
+  orderNumber: String
   testDate: String
   testTime: String
   testNotes: String
@@ -1560,6 +1562,18 @@ type LoincCodePayload {
   loincCode: LoincCodes
 }
 
+type LoincCodesPayload {
+  response: ResponsePayload
+  loincCodes: [LoincCodes!]
+  pagination: PaginationPayload
+}
+
+type TestSpecimenTypesPayload {
+  response: ResponsePayload
+  specimenTypes: [SpecimenTypes!]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1601,8 +1615,12 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
+  findLoincCode(id: String!): LoincCodes!
   getLabTest(getLabTest: GetLabTest!): LabTestPayload!
+  findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput!): LabTestsPayload!
   findAllLabTest(labTestInput: LabTestInput!): LabTestsPayload!
+  findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
@@ -1790,6 +1808,7 @@ input AppointmentInput {
   searchString: String
   practiceId: String
   facilityId: String
+  relationTable: String
 }
 
 input GetAppointment {
@@ -1810,13 +1829,33 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input SearchLoincCodesInput {
+  searchTerm: String
+  loincNum: String
+  component: String
+  paginationOptions: PaginationInput!
+}
+
 input GetLabTest {
   id: String
 }
 
+input LabTestByOrderNumInput {
+  patientId: String
+  orderNumber: String
+  labTestStatus: String
+  paginationOptions: PaginationInput
+}
+
 input LabTestInput {
   patientId: String
+  orderNumber: String
   labTestStatus: String
+  paginationOptions: PaginationInput!
+}
+
+input TestSpecimenTypeInput {
+  specimenTypeName: String
   paginationOptions: PaginationInput!
 }
 
@@ -2923,10 +2962,11 @@ input CreateLabTestInput {
 input CreateLabTestItemInput {
   patientId: String!
   appointmentId: String
-  status: String
+  status: LabTestStatus
   testNotes: String
   testDate: String
   testTime: String
+  orderNumber: String
 }
 
 input CreateSpecimenItemInput {
@@ -2946,10 +2986,11 @@ input UpdateLabTestInput {
 input UpdateLabTestItemInput {
   patientId: String
   appointmentId: String
-  status: String
+  status: LabTestStatus
   testNotes: String
   testDate: String
   testTime: String
+  orderNumber: String
   id: String!
 }
 
@@ -2976,7 +3017,7 @@ input CreateLabTestObservationItemInput {
   resultUnit: String!
   normalRange: String!
   normalRangeUnit: String!
-  abnormalFlag: String!
+  abnormalFlag: AbnormalFlag!
   description: String!
 }
 
@@ -2991,7 +3032,7 @@ input UpdateLabTestObservationItemInput {
   resultUnit: String
   normalRange: String
   normalRangeUnit: String
-  abnormalFlag: String
+  abnormalFlag: AbnormalFlag
   description: String
   id: String!
 }

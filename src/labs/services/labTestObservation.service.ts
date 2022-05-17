@@ -67,7 +67,26 @@ export class LabTestsObservationsService {
       //updating multiple records of lab test observations
       for (let index = 0; index < updateLabTestObservationInput.updateLabTestObservationItemInput.length; index++) {
          const element = updateLabTestObservationInput.updateLabTestObservationItemInput[index];
-         await this.utilsService.updateEntityManager(Observations, element.id, element, this.ObservationsRepository)
+         if(element.id){
+           await this.utilsService.updateEntityManager(Observations, element.id, element, this.ObservationsRepository)
+
+         }else{
+          const createItemInput= [element].map((createItem)=>{
+            return {
+             resultValue: createItem.resultValue,
+             resultUnit: createItem.resultUnit,
+             normalRange: createItem.normalRange,
+             normalRangeUnit: createItem.normalRangeUnit,
+             abnormalFlag: createItem.abnormalFlag,
+             description: createItem.description,
+            }
+          })
+  
+           await this.createLabTestObservation({
+             createLabTestObservationItemInput: createItemInput,
+             labTestId: updateLabTestObservationInput.labTestId
+           })
+         }
        }
       return
       } catch (error) {
