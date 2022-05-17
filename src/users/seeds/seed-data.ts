@@ -177,11 +177,11 @@ export const emergencyAccessPermissionsList = ['fetchAllUsers','fetchUser','getU
 'addPatientAllergy','updatePatientAllergy','findAllPatientAllergies','getPatientAllergy','removePatientAllergy','createLabTestObservation','updateLabTestObservation','removeLabTestObservation','createLabTest','updateLabTest','getLabTest','findAllLabTest','removeLabTest']
 
 export const doctorPermissionsList = ['fetchAllUsers','fetchUser','getUser','searchUser','forgotPassword','deactivateUser','updateUser','updateRole','createRole',
-'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
+'updateRole','getAllRoles','getRole','createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus','findAllReactions',
 'findAllAppointments','getAppointment','getAppointments','cancelAppointment','removeAppointment','getPatientAppointment','createFacility','updateFacility',
-'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient',
+'updateFacilityTimeZone','findAllFacility','getFacility','createService','updateService','findAllServices','getService','createPatient', 'findAllAllergies', 'getPatientAllergy', 'addPatientAllergy',
 'updatePatient','patientInfo','updatePatientProfile','sendInviteToPatient','findAllPatient','getPatient','findPatientAttachments','fetchAllPatients','createDoctor','updateDoctor','findAllDoctor','getDoctor','removeDoctor','disableDoctor','createStaff','updateStaff',
-'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule',
+'findAllStaff','getStaff','removeStaff','disableStaff','createSchedule','updateSchedule','findAllSchedules','getSchedule','getFacilitySchedule','getDoctorSchedule','getSlots','removeSchedule', 'updatePatientAllergy',
 'removePatientProblem','getPatientProblem','searchSnoMedCodeByIcdCodes', 'searchIcdCodes','findAllPatientProblem','updatePatientProblem','addPatientProblem',,'addPatientVital','updatePatientVital','findAllPatientVitals','getPatientVital','removePatientVital','createLabTestObservation','updateLabTestObservation','removeLabTestObservation','createLabTest','updateLabTest','getLabTest','findAllLabTest','removeLabTest']
 
 export const nursePermissionsList = ['createAppointment','createExternalAppointment','updateAppointment','updateAppointmentBillingStatus',
