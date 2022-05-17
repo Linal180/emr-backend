@@ -19,7 +19,7 @@ export default class CreateLabTestObservationItemInput {
     @Field({nullable: false})
     normalRangeUnit: string
 
-    @Field({nullable: false})
+    @Field(type => AbnormalFlag,{nullable: false})
     abnormalFlag: AbnormalFlag
 
     @Field({nullable: false})

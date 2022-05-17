@@ -5,8 +5,9 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
-import { createToken } from 'src/lib/helper';
+import { createToken, paginateResponse } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
+import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
@@ -50,6 +51,39 @@ export class PatientService {
     private readonly utilsService: UtilsService,
     private readonly mailerService: MailerService
   ) { }
+
+  patientMartialStatuses=[
+    {
+      "system": "http://hl7.org/fhir/v3/MaritalStatus",
+      "code": "S",
+      "display": "Never Married",
+      dbValue:"single"
+    },
+    {
+      "system": "http://hl7.org/fhir/v3/MaritalStatus",
+      "code": "M",
+      "display": "Married",
+      dbValue:"maried"
+    },
+    {
+      "system": "http://hl7.org/fhir/v3/MaritalStatus",
+      "code": "W",
+      "display": "Widowed",
+      dbValue:"Widowed"
+    },
+    {
+      "system": "http://hl7.org/fhir/v3/MaritalStatus",
+      "code": "L",
+      "display": "Legally Separated",
+      dbValue:"Separated"
+    },
+    {
+      "system": "http://hl7.org/fhir/v3/MaritalStatus",
+      "code": "D",
+      "display": "Divorced",
+      dbValue:"Divorced"
+    },
+  ]
 
   /**
    * Creates patient
@@ -312,6 +346,26 @@ export class PatientService {
     }
   }
 
+  async fetchAllFhirPatients(paginationInput:PaginationInput){
+    const take = paginationInput.limit || 10
+    const page=paginationInput.page || 1;
+    const skip= (page-1) * take;
+    const patientsInfo= await this.patientRepository.findAndCount({
+      relations:[
+       'contacts',
+       'doctorPatients',
+       'facility',
+       'employer',
+      ]
+      ,skip
+      ,take
+    })
+    const [result,total]=patientsInfo
+
+    const transformedPatients=result.map((patient)=>this.getTransformedPatient(patient))
+
+    return paginateResponse([transformedPatients,total],page,paginationInput.limit)
+  }
   async fetchAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
       try {
         const { limit, page } = patientInput.paginationOptions
@@ -589,5 +643,79 @@ export class PatientService {
     catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  getTransformedPatient(patient:Patient){
+      const {dbValue,...patientMartialStatus}=this.patientMartialStatuses.find(({dbValue})=>dbValue===patient.maritialStatus)
+      const patientPrimaryContact=patient.contacts.find(({primaryContact})=>primaryContact)
+      return {
+          fullUrl: "http://hapi.fhir.org/baseR4/Patient/1124467",
+          resource1:{
+            resourceType: "Patient",
+            active: true,
+            name: [
+                {
+                    use: "official",
+                    text: `${patient.firstName} ${patient.lastName}`,
+                    family: patient.lastName,
+                    given: [
+                        patient.firstName
+                    ],
+                    prefix: [
+                        patient.suffix
+                    ]
+                }
+            ],
+            telecom: [...patient.contacts.map(({phone})=>{return {system: "phone",value:phone}}),{system:"email",value:patientPrimaryContact.email}],
+            gender: patient.gender,
+            birthDate: patient.dob,
+            address: patient.contacts.map(contact=>{
+                return {
+                  use: "home",
+                  type: contact.contactType,
+                  line: [
+                      contact.address,
+                      contact.address2
+                  ],
+                  city: contact.city,
+                  state: contact.state,
+                  postalCode: contact.zipCode,
+                  country: contact.country
+              }
+              }),
+            contact: [
+                {
+                    name: {
+                      use: "official",
+                      text: `${patient.firstName} ${patient.lastName}`,
+                      family: patient.lastName,
+                    },
+                    telecom: patient.contacts.map(({phone})=>{return {value:phone}}),
+                    address: {
+                        use: "home",
+                        type: patientPrimaryContact.contactType,
+                        line: [
+                            patientPrimaryContact.address,
+                            patientPrimaryContact.address2
+                        ],
+                        city: patientPrimaryContact.city,
+                        state: patientPrimaryContact.state,
+                        postalCode: patientPrimaryContact.zipCode,
+                        country: patientPrimaryContact.country
+                    },
+                    gender: patient.gender
+                }
+            ],
+            maritalStatus: {
+                coding: [
+                  patientMartialStatus
+                ]
+            }
+            
+          },
+          search: {
+              mode: "match"
+          }
+      }
   }
 }

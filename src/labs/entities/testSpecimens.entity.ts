@@ -30,6 +30,10 @@ export class TestSpecimens {
   @Field(type => SpecimenTypes, { nullable: true })
   specimenTypes: SpecimenTypes;
 
+  @Column({nullable: true})
+  @Field({nullable: true})
+  specimenTypesId: string;
+
   @ManyToOne(() => LabTests, labTests => labTests.testSpecimens, { onDelete: 'CASCADE' })
   @Field(type => LabTests, { nullable: true })
   labTest: LabTests;

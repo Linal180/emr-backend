@@ -24,4 +24,7 @@ export default class AppointmentInput {
 
     @Field({nullable: true})
     facilityId?: string
+
+    @Field({nullable: true})
+    relationTable?: string
 }

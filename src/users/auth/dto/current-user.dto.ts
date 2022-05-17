@@ -7,6 +7,12 @@ export class CurrentUserInterface {
 }
 
 
+export class CurrentUser2FaInterface {
+  id: string
+  iat: number
+  exp: number
+}
+
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()

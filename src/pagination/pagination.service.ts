@@ -174,6 +174,10 @@ export class PaginationService {
       typeId,
       AttachmentModuleType,
       formType,
+      loincNum,
+      component,
+      specimenTypeName,
+      orderNumber,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -221,14 +225,26 @@ export class PaginationService {
         ...(patientRecord && {
           patientRecord: Raw(alias => `${alias} ILIKE '%${patientRecord}%'`),
         }),
+        ...(orderNumber && {
+          orderNumber: Raw(alias => `${alias} ILIKE '%${orderNumber}%'`),
+        }),
         ...(reactionName && {
           name: Raw(alias => `${alias} ILIKE '%${reactionName}%'`),
+        }),
+        ...(loincNum && {
+          loincNum: Raw(alias => `${alias} ILIKE '%${loincNum}%'`),
+        }),
+        ...(component && {
+          component: Raw(alias => `${alias} ILIKE '%${component}%'`),
         }),
         ...(role && {
           role: Not(role)
         }),
         ...(roleName && {
           role: Raw(alias => `${alias} ILIKE '%${roleName}%'`),
+        }),
+        ...(specimenTypeName && {
+          name: Raw(alias => `${alias} ILIKE '%${specimenTypeName}%'`),
         }),
         ...(facilityName && {
           name: Raw(alias => `${alias} ILIKE '%${facilityName}%'`),
