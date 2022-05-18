@@ -3071,6 +3071,7 @@ input CreatePatientAllergyInput {
   staffId: String
   allergyId: String
   allergyName: String
+  allergyType: AllergyType
   providerId: String
   isActive: Boolean
   comments: String

@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { AllergyType } from '../entities/allergies.entity';
 import { AllergyOnset, AllergySeverity } from '../entities/patientAllergies.entity';
 
 @InputType()
@@ -18,6 +19,9 @@ export class CreatePatientAllergyInput {
 
   @Field({ nullable: true })
   allergyName?: string;
+
+  @Field(type => AllergyType, { nullable: true })
+  allergyType?: AllergyType;
 
   @Field({ nullable: true })
   providerId: string;
