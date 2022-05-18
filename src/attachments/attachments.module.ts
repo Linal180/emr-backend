@@ -7,10 +7,11 @@ import { UtilsModule } from 'src/util/utils.module';
 import { AttachmentsResolver } from './attachments.resolver';
 import { AttachmentsService } from './attachments.service';
 import { Attachment } from './entities/attachment.entity';
+import { AttachmentMetadata } from './entities/attachmentMetadata.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Attachment]),
+    TypeOrmModule.forFeature([Attachment, AttachmentMetadata]),
     AwsModule,
     UtilsModule,
     PaginationModule,
