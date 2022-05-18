@@ -27,7 +27,6 @@ export class AttachmentMetadata {
 
   @Column({
     type: "enum", enum: AttachmentMetadataType,
-    default: AttachmentMetadataType.DRIVING_LICENSE1
   })
   @Field(type => AttachmentMetadataType)
   metadataType: AttachmentMetadataType;
