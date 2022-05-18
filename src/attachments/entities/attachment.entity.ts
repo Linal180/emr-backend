@@ -1,5 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { AttachmentMetadata } from './attachmentMetadata.entity';
 
 export enum AttachmentType {
   PATIENT = "patient",
@@ -63,6 +64,14 @@ export class Attachment {
   @Column({ nullable: true })
   @Field({ nullable: true })
   url: string;
+
+  @Field(() => AttachmentMetadata, { nullable: true })
+  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete:'CASCADE', onUpdate:'CASCADE' })
+  @JoinColumn()
+  attachmentMetadata: AttachmentMetadata;
+
+  @Field({ nullable: true })
+  attachmentMetadataId: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
