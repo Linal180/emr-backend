@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AttachmentsResolver } from "src/attachments/attachments.resolver";
 import { AttachmentsService } from "src/attachments/attachments.service";
 import { Attachment } from "src/attachments/entities/attachment.entity";
+import { AttachmentMetadata } from "src/attachments/entities/attachmentMetadata.entity";
 import { PaginationModule } from "src/pagination/pagination.module";
 import { UsersModule } from "src/users/users.module";
 import { AwsProvider } from "../aws/aws-provider";
@@ -10,7 +11,7 @@ import { AwsService } from "./aws.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Attachment]),
+    TypeOrmModule.forFeature([Attachment, AttachmentMetadata]),
     PaginationModule,
     forwardRef(() => UsersModule)
   ],

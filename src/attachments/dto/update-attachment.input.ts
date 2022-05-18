@@ -23,6 +23,16 @@ export class GetAttachment {
 }
 
 @InputType()
+export class GetAttachmentsByLabOrder {
+  @Field()
+  typeId: string;
+
+  @Field()
+  orderNum: string;
+}
+
+
+@InputType()
 export class GetMedia extends PickType(UpdateAttachmentInput, ['id'] as const) {
 }
 
