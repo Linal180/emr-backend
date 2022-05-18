@@ -59,7 +59,7 @@ export class PatientAllergiesService {
        });
       }
      }else if(createPatientAllergyInput.allergyName){
-     let allergyInstance = this.allergiesRepository.create({name: createPatientAllergyInput.allergyName})
+     let allergyInstance = this.allergiesRepository.create({name: createPatientAllergyInput.allergyName, allergyType: createPatientAllergyInput.allergyType})
       allergy =  await this.allergiesRepository.save(allergyInstance)
       }
       //adding patient problem
