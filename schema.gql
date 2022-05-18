@@ -2,6 +2,30 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AttachmentMetadata {
+  id: String!
+  metadataType: AttachmentMetaDataType!
+  labOrderNum: String
+  assignedTo: String
+  pending: Boolean
+  attachment: Attachment
+  attachmentId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The type is assigned"""
+enum AttachmentMetaDataType {
+  PROFILE_PICTURE
+  DRIVING_LICENSE1
+  DRIVING_LICENSE2
+  INSURANCE_CARD1
+  INSURANCE_CARD2
+  PROVIDER_UPLOADS
+  SIGNATURE
+  LAB_ORDERS
+}
+
 type Attachment {
   id: String!
   type: AttachmentType!
@@ -14,6 +38,8 @@ type Attachment {
   signedAt: String
   comments: String
   url: String
+  attachmentMetadata: AttachmentMetadata
+  attachmentMetadataId: String
   createdAt: String!
   updatedAt: String!
 }
@@ -1608,6 +1634,7 @@ type Query {
   fetchAllPatients(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
+  getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
@@ -1787,6 +1814,11 @@ input GetPatient {
 
 input GetAttachment {
   typeId: String!
+}
+
+input GetAttachmentsByLabOrder {
+  typeId: String!
+  orderNum: String!
 }
 
 input GetMedia {
@@ -1981,6 +2013,7 @@ type Mutation {
   removePatient(removePatient: RemovePatient!): PatientPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
+  removeAttachmentMedia(id: String!): AttachmentPayload!
   updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
   createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
   updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
@@ -2743,6 +2776,10 @@ input CreateAttachmentInput {
   signedByProvider: Boolean
   description: String
   url: String
+
+  """enum type for module type - Upload Media"""
+  metadataType: AttachmentMetaDataType
+  labOrderNum: String
 }
 
 input RemoveAttachment {
@@ -2762,6 +2799,10 @@ input UpdateAttachmentInput {
   signedByProvider: Boolean
   description: String
   url: String
+
+  """enum type for module type - Upload Media"""
+  metadataType: AttachmentMetaDataType
+  labOrderNum: String
   id: String
 }
 
