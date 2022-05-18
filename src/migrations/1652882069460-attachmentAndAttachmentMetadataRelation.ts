@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class attachmentAndAttachmentMetadataRelation1652852893619 implements MigrationInterface {
-    name = 'attachmentAndAttachmentMetadataRelation1652852893619'
+export class attachmentAndAttachmentMetadataRelation1652882069460 implements MigrationInterface {
+    name = 'attachmentAndAttachmentMetadataRelation1652882069460'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "Attachments" ADD "attachmentMetadataId" uuid`);
