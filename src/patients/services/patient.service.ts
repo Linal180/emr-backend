@@ -646,8 +646,10 @@ export class PatientService {
   }
 
   getTransformedPatient(patient:Patient){
-      const {dbValue,...patientMartialStatus}=this.patientMartialStatuses.find(({dbValue})=>dbValue===patient.maritialStatus)
-      const patientPrimaryContact=patient.contacts.find(({primaryContact})=>primaryContact)
+      const {dbValue,...patientMartialStatus}=this.patientMartialStatuses.find(({dbValue})=>dbValue===patient?.maritialStatus)
+      const { firstName, lastName, suffix, contacts, gender, dob } = patient ?? {}
+      const fullName= `${firstName ?? ''} ${lastName ?? ''}`.trim()
+      const { contactType, address, address2, city, state, zipCode, country, email }= contacts?.find((contact)=>!!contact?.primaryContact) ?? {}
       return {
           fullUrl: "http://hapi.fhir.org/baseR4/Patient/1124467",
           resource1:{
@@ -656,20 +658,20 @@ export class PatientService {
             name: [
                 {
                     use: "official",
-                    text: `${patient.firstName} ${patient.lastName}`,
-                    family: patient.lastName,
+                    text: fullName,
+                    family: lastName || '',
                     given: [
-                        patient.firstName
+                        firstName
                     ],
                     prefix: [
-                        patient.suffix
+                        suffix
                     ]
                 }
             ],
-            telecom: [...patient.contacts.map(({phone})=>{return {system: "phone",value:phone}}),{system:"email",value:patientPrimaryContact.email}],
-            gender: patient.gender,
-            birthDate: patient.dob,
-            address: patient.contacts.map(contact=>{
+            telecom: [...contacts.map((contact)=>{return {system: "phone",value:contact?.phone ?? ''}}),{system:"email",value:email || ''}],
+            gender: gender,
+            birthDate: dob,
+            address: patient?.contacts.map(contact=>{
                 return {
                   use: "home",
                   type: contact.contactType,
@@ -687,23 +689,23 @@ export class PatientService {
                 {
                     name: {
                       use: "official",
-                      text: `${patient.firstName} ${patient.lastName}`,
-                      family: patient.lastName,
+                      text: fullName,
+                      family: lastName || '',
                     },
-                    telecom: patient.contacts.map(({phone})=>{return {value:phone}}),
+                    telecom: contacts.map((contact)=>{return {value:contact?.phone}}),
                     address: {
                         use: "home",
-                        type: patientPrimaryContact.contactType,
+                        type: contactType,
                         line: [
-                            patientPrimaryContact.address,
-                            patientPrimaryContact.address2
+                            address,
+                            address2
                         ],
-                        city: patientPrimaryContact.city,
-                        state: patientPrimaryContact.state,
-                        postalCode: patientPrimaryContact.zipCode,
-                        country: patientPrimaryContact.country
+                        city: city,
+                        state: state,
+                        postalCode: zipCode,
+                        country: country
                     },
-                    gender: patient.gender
+                    gender: gender
                 }
             ],
             maritalStatus: {
