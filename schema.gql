@@ -1030,12 +1030,13 @@ type Patient {
   registrationDate: String
   deceasedDate: String
   privacyNotice: Boolean!
-  phonePermission: Boolean!
-  voiceCallPermission: Boolean!
+  phonePermission: Boolean
+  smsPermission: Boolean
   releaseOfInfoBill: Boolean!
   callToConsent: Boolean!
   medicationHistoryAuthority: Boolean!
   patientNote: String
+  patientNoteOpen: Boolean
   language: String
   pharmacy: String
   race: RACE
