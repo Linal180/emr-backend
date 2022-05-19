@@ -32,10 +32,10 @@ export class UpdatePatientNoteInfoInputs {
   @Field({ nullable: false })
   id: string;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   patientNoteOpen?: boolean;
 
-  @Field()
+  @Field({ nullable: true })
   patientNote?: string;
 
 }

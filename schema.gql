@@ -2767,8 +2767,8 @@ input RemovePatient {
 
 input UpdatePatientNoteInfoInputs {
   id: String!
-  patientNoteOpen: Boolean!
-  patientNote: String!
+  patientNoteOpen: Boolean
+  patientNote: String
 }
 
 input CreateAttachmentInput {
