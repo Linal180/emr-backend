@@ -65,7 +65,7 @@ export class FormsService {
    */
   async findAllForms(formInput: FormInput): Promise<FormsPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Form>(this.formsRepository, formInput)
+      const paginationResponse = await this.paginationService.willPaginate<Form>(this.formsRepository, { ...formInput })
       return {
         pagination: {
           ...paginationResponse
@@ -134,5 +134,28 @@ export class FormsService {
    */
   async getFormElements(id: string) {
     return await this.formElementsService.getAllFormElements(id);
+  }
+
+  /**
+   * Creates form template
+   * @param input 
+   * @returns form template 
+   */
+  async createFormTemplate(input: CreateFormInput): Promise<Form> {
+    try {
+      const formTemplate = this.formsRepository.create(input);
+      return await this.formsRepository.save(formTemplate);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async createPreDefinedComponent(input: CreateFormInput) {
+    try {
+      const preDefined = this.formsRepository.create(input);
+      return await this.formsRepository.save(preDefined);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

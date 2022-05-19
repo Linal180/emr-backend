@@ -8,7 +8,9 @@ export enum FormType {
   APPOINTMENT = "Appointment",
   DOCTOR = "Doctor",
   PATIENT = "Patient",
-  STAFF = "Staff"
+  STAFF = "Staff",
+  TEMPLATE = "Template",
+  PRE_DEFINED = "Pre-Defined"
 }
 
 registerEnumType(FormType, {
@@ -23,8 +25,8 @@ export class Form {
   @Field()
   id: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   name: string;
 
   @Column({
@@ -32,11 +34,11 @@ export class Form {
     enum: FormType,
     default: FormType.APPOINTMENT
   })
-  @Field(type => FormType)
+  @Field(() => FormType)
   type: FormType
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   facilityId: string;
 
   @Column({ nullable: false, type: "jsonb" })

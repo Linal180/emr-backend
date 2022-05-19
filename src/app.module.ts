@@ -19,6 +19,7 @@ import { UtilsModule } from './util/utils.module';
 import { PaymentModule } from './payment/payment.module';
 import { FormBuilderModule } from './formbuilder/formbuilder.module'
 import { ProblemChartingModule } from './patientCharting/patientCharting.module';
+import { LabModule } from './labs/labs.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ProblemChartingModule } from './patientCharting/patientCharting.module'
     ProviderModule,
     PracticeModule,
     AwsModule,
+    LabModule,
     AttachmentsModule,
     AppointmentModule,
     ProblemChartingModule,

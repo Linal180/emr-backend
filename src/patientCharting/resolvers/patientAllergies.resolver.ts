@@ -8,18 +8,24 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
-import { PatientAllergiesPayload } from '../dto/allergiess-payload.dto';
-import PatientAllergyInput from '../dto/allergy-input.dto';
+import { AllergiesPayload } from '../dto/allergiess-payload.dto';
+import AllergyInput from '../dto/allergy-input.dto';
 import { CreatePatientAllergyInput } from '../dto/create-patient-allergy.input';
+import { PatientAllergiesPayload } from '../dto/patient-allergiess-payload.dto';
+import PatientAllergyInput from '../dto/patient-allergy-input.dto';
 import { PatientAllergyPayload } from '../dto/patient-allergy-payload.dto';
+import ReactionInput from '../dto/reaction-input.dto';
+import { ReactionsPayload } from '../dto/reactions-payload.dto';
 import { GetPatientAllergy, RemovePatientAllergy, UpdateAllergyInput } from '../dto/update-allergy.input';
 import { PatientAllergies } from '../entities/patientAllergies.entity';
 import { PatientAllergiesService } from '../services/patientAllergies.service';
+import { ReactionsService } from '../services/reactions.service';
 
 @Resolver(() => PatientAllergies)
 export class PatientAllergiesResolver {
   constructor(private readonly patientAllergiesService:  PatientAllergiesService,
     private readonly staffService:  StaffService,
+    private readonly reactionsService:  ReactionsService,
     private readonly appointmentService:  AppointmentService,
     private readonly doctorService:  DoctorService) { }
 
@@ -83,6 +89,45 @@ export class PatientAllergiesResolver {
     });
   }
 
+  @Query(returns => AllergiesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllAllergies')
+  async findAllAllergies(@Args('allergyInput') allergyInput: AllergyInput): Promise<AllergiesPayload> {
+    const allergies = await this.patientAllergiesService.findAllAllergies(allergyInput)
+    if (allergies) {
+      return {
+        ...allergies,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Allergies not found',
+    });
+  }
+
+  @Query(returns => ReactionsPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllReactions')
+  async findAllReactions(@Args('reactionInput') reactionInput: ReactionInput): Promise<ReactionsPayload> {
+    const reactions = await this.reactionsService.findAllReactions(reactionInput)
+    if (reactions) {
+      return {
+        ...reactions,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Reactions not found',
+    });
+  }
+
+  
   @Query(returns => PatientAllergyPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getPatientAllergy')

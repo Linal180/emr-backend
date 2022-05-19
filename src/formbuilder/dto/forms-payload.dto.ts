@@ -5,7 +5,7 @@ import { Form } from '../entities/form.entity';
 
 @ObjectType()
 export class FormsPayload extends ResponsePayloadResponse {
-    @Field(type => [Form], { nullable: 'itemsAndList' })
+    @Field(type => [Form])
     forms: Form[];
 
     @Field(type => PaginationPayload, { nullable: true })

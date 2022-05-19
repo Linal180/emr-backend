@@ -1,5 +1,7 @@
 import { InputType } from "@nestjs/graphql";
 import { APPOINTMENTSTATUS } from "src/appointments/entities/appointment.entity";
+import { AttachmentType } from "src/attachments/entities/attachment.entity";
+import { FormType } from "src/formbuilder/entities/form.entity";
 import { UserStatus } from "src/users/entities/user.entity";
 import PaginationInput from "./pagination-input.dto";
 
@@ -21,11 +23,14 @@ export class PaginatedEntityInput {
   doctorId?: string
   role?: string
   phychType?: string
+  allergyType?: string
+  reactionName?: string
+  allergyName?: string
   ageGroupId?: string
   primaryContact?: boolean
   categoryId?: string
   category?: { id: string }
-  associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?: string, filterType: string }
+  associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?:string, filterType: string }
   paginationOptions: PaginationInput
   associatedTo?: string
   relationField?: string
@@ -33,6 +38,7 @@ export class PaginatedEntityInput {
   requestStatus?: string
   facilityName?:string
   practiceName?:string
+  labTestStatus?:string
   serviceName?:string
   searchString?:string
   isPrivate?: boolean
@@ -41,4 +47,15 @@ export class PaginatedEntityInput {
   username?: string
   currentPhaseId?: string
   FormId?: string
+  isSystemForm?: boolean
+  doctorFirstName?: string
+  roleName?: string
+  customRole?: boolean
+  typeId?: string
+  AttachmentModuleType?: AttachmentType
+  formType?: FormType
+  loincNum?: string
+  component?: string
+  specimenTypeName?: string
+  orderNumber?: string
 }

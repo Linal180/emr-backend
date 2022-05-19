@@ -2,6 +2,30 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AttachmentMetadata {
+  id: String!
+  metadataType: AttachmentMetaDataType!
+  labOrderNum: String
+  assignedTo: String
+  pending: Boolean
+  attachment: Attachment
+  attachmentId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The type is assigned"""
+enum AttachmentMetaDataType {
+  PROFILE_PICTURE
+  DRIVING_LICENSE1
+  DRIVING_LICENSE2
+  INSURANCE_CARD1
+  INSURANCE_CARD2
+  PROVIDER_UPLOADS
+  SIGNATURE
+  LAB_ORDERS
+}
+
 type Attachment {
   id: String!
   type: AttachmentType!
@@ -10,8 +34,12 @@ type Attachment {
   key: String
   attachmentName: String
   providerName: String
+  signedBy: String
+  signedAt: String
   comments: String
   url: String
+  attachmentMetadata: AttachmentMetadata
+  attachmentMetadataId: String
   createdAt: String!
   updatedAt: String!
 }
@@ -22,6 +50,8 @@ enum AttachmentType {
   DOCTOR
   lab
   FORM_BUILDER
+  SUPER_ADMIN
+  STAFF
 }
 
 type ResponsePayload {
@@ -54,11 +84,154 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
+type Observations {
+  id: String!
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: AbnormalFlag!
+  description: String
+  labTestId: String
+  attachments: [Attachment!]
+  loincCodes: LoincCodes
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+"""The test result's abnormal flag status assigned"""
+enum AbnormalFlag {
+  NONE
+  BELOW_LOW_NORMAL
+  ABOVE_HIGH_NORMAL
+  BELOW_LOWER_PANIC_LIMIT
+  BELOW_UPPER_PANIC_LIMIT
+  BELOW_ABSOLUTE_LOW_OFF_SCALE
+  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
+  NORMAL
+  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
+  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
+  SIGNIFICANT_CHANGE_UP
+  SIGNIFICANT_CHANGE_DOWN
+  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
+  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
+  SUSCEPTIBLE
+  RESISTANT
+  INTERMEDIATE
+  MODERATELY
+  VERY_SUSCEPTIBLE
+}
+
+type LoincCodes {
+  id: String!
+  loincNum: String
+  component: String
+  property: String
+  timeAspect: String
+  system: String
+  scaleTyp: String
+  methodTyp: String
+  class: String
+  versionLastChanged: String
+  chngType: String
+  definitionDescription: String
+  status: String
+  consumerName: String
+  classType: String
+  formula: String
+  exmplAnswers: String
+  surveyQuestTest: String
+  surveyQuestSRC: String
+  unitsRequired: String
+  submittedUnits: String
+  relatedNames2: String
+  shortName: String
+  orderObs: String
+  cdiscCommonTests: String
+  hl7FieldSubFieldId: String
+  externalCopyRightNotice: String
+  exampleUnits: String
+  longCommonName: String
+  unitsAndRange: String
+  exampleUcumUnits: String
+  exampleSiUcumUnits: String
+  statusReason: String
+  statusText: String
+  changeReasonPublic: String
+  commonTestRank: String
+  commonOrderRank: String
+  commonSiTestRank: String
+  hl7AttachmentStructure: String
+  externalCopyRightLink: String
+  panelType: String
+  askAtOrderEntry: String
+  associationObservations: String
+  versionFirstRelease: String
+  validHl7AttachmentRequest: String
+  displayName: String
+  labTests: [LabTests!]
+  observations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+type SpecimenTypes {
+  id: String!
+  name: String
+  testSpecimens: [TestSpecimens!]
+  createdAt: String
+  updatedAt: String
+}
+
+type TestSpecimens {
+  id: String!
+  collectionDate: String
+  collectionTime: String
+  specimenNotes: String
+  labTestId: String
+  specimenTypes: SpecimenTypes
+  specimenTypesId: String
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+type LabTests {
+  id: String!
+  labTestStatus: LabTestStatus!
+  orderNumber: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  patientId: String
+  appointmentId: String
+  patient: Patient
+  appointment: Appointment
+  diagnoses: [ICDCodes]
+  test: LoincCodes
+  testSpecimens: [TestSpecimens!]
+  testObservations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The lab's test status assigned"""
+enum LabTestStatus {
+  ORDER_ENTERED
+  DISCONTINUED
+  IN_PROGRESS
+  RESULT_RECEIVED
+  RESULT_REVIEWED_WITH_PATIENT
+}
+
 type ICDCodes {
   id: String!
   code: String!
   description: String
   version: String
+  labTests: LabTests
   createdAt: String
   updatedAt: String
 }
@@ -120,13 +293,15 @@ type PatientVitals {
   temperatureUnitType: TempUnitType!
   smokingStatus: SmokingStatus!
   patientTemperature: String
-  bloodPressure: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
   respiratoryRate: String
   oxygenSaturation: String
   PatientHeight: String
   PatientWeight: String
   PatientBMI: String
   PainRange: String
+  pulseRate: String
   patientHeadCircumference: String
   vitalCreationDate: String
   patientId: String
@@ -165,7 +340,7 @@ enum TempUnitType {
 
 """The patient's smoking status type assigned"""
 enum SmokingStatus {
-  NEVER_SMOCKED
+  NEVER_SMOKED
   CURRENT_EVERYDAY_SMOKER
   CURRENT_SOMEDAY_SMOKER
   FORMER_SMOKER
@@ -214,12 +389,14 @@ type User {
   inviteAcceptedAt: String!
   userId: String!
   token: String
+  autoLogoutTime: String
   userType: String!
   facilityId: String
   facility: Facility
   roles: [Role]
   createdAt: String!
   updatedAt: String!
+  attachments: [Attachment!]
 }
 
 """The user status"""
@@ -247,6 +424,7 @@ type Staff {
   patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
+  attachments: [Attachment!]
 }
 
 """The user gender assigned"""
@@ -289,6 +467,7 @@ type PatientAllergies {
   comments: String
   isActive: Boolean
   staffId: String
+  patientId: String
   appointmentId: String
   doctorId: String
   allergy: Allergies
@@ -313,7 +492,7 @@ enum AllergySeverity {
 enum AllergyOnset {
   CHILDHOOD
   ADULTHOOD
-  UNNKOWN
+  UNKNOWN
 }
 
 type DoctorPatient {
@@ -483,6 +662,7 @@ type Schedule {
   id: String!
   startAt: String!
   endAt: String!
+  day: String
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -548,6 +728,7 @@ type Doctor {
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
+  attachments: [Attachment!]
 }
 
 """The doctor's speciality"""
@@ -777,6 +958,7 @@ type Appointment {
   facility: Facility
   provider: Doctor
   patient: Patient
+  labTests: [LabTests!]
   invoice: Invoice
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
@@ -848,12 +1030,13 @@ type Patient {
   registrationDate: String
   deceasedDate: String
   privacyNotice: Boolean!
-  phonePermission: Boolean!
-  voiceCallPermission: Boolean!
+  phonePermission: Boolean
+  smsPermission: Boolean
   releaseOfInfoBill: Boolean!
   callToConsent: Boolean!
   medicationHistoryAuthority: Boolean!
   patientNote: String
+  patientNoteOpen: Boolean
   language: String
   pharmacy: String
   race: RACE
@@ -880,6 +1063,7 @@ type Patient {
   patientAllergies: [PatientAllergies!]
   patientProblems: [PatientProblems!]
   appointments: [Appointment!]
+  labTests: [LabTests!]
   employer: Employer
   patientVitals: [PatientVitals!]
   createdAt: String!
@@ -990,9 +1174,16 @@ type RolePayload {
 
 type AccessUserPayload {
   access_token: String
+  access_2fa_token: String
   userId: String
   isTwoFactorEnabled: Boolean
   roles: [Role!]
+  response: ResponsePayload
+}
+
+type EmergencyAccessUserPayload {
+  emergencyAccessUsers: [User!]
+  pagination: PaginationPayload
   response: ResponsePayload
 }
 
@@ -1002,6 +1193,7 @@ type ForgotPasswordPayload {
 
 type UserPayload {
   user: User
+  access_token: String
   response: ResponsePayload
 }
 
@@ -1014,6 +1206,12 @@ type UsersPayload {
 type PatientPayload {
   response: ResponsePayload
   patient: Patient
+}
+
+type PatientAttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
 }
 
 type PatientsPayload {
@@ -1172,6 +1370,7 @@ type FieldsTypes {
   fieldId: String!
   options: [FieldOptionsType!]!
   textArea: Boolean!
+  isMultiSelect: Boolean
 }
 
 """The form's element types"""
@@ -1216,7 +1415,8 @@ type UsersFormsElements {
   UsersFormsId: String!
   FormsElementsId: String!
   value: String
-  arrayOfStrings: [ArrayOfStringsType!]!
+  arrayOfObjects: [ArrayOfStringsType!]!
+  arrayOfStrings: [String!]!
   createdAt: String
   updatedAt: String
   userForm: UserForms
@@ -1237,9 +1437,9 @@ type UserForms {
 
 type Form {
   id: String!
-  name: String!
+  name: String
   type: FormType!
-  facilityId: String!
+  facilityId: String
   layout: LayoutJSONType!
   isSystemForm: Boolean
   isActive: Boolean
@@ -1255,6 +1455,8 @@ enum FormType {
   DOCTOR
   PATIENT
   STAFF
+  TEMPLATE
+  PRE_DEFINED
 }
 
 type FormElement {
@@ -1283,7 +1485,7 @@ type Element {
 
 type FormsPayload {
   response: ResponsePayload
-  forms: [Form]
+  forms: [Form!]!
   pagination: PaginationPayload
 }
 
@@ -1310,6 +1512,12 @@ type FormMediaPayload {
   response: ResponsePayloadResponse
 }
 
+type AllergiesPayload {
+  response: ResponsePayload
+  allergies: [Allergies]
+  pagination: PaginationPayload
+}
+
 type PatientAllergiesPayload {
   response: ResponsePayload
   patientAllergies: [PatientAllergies]
@@ -1319,6 +1527,12 @@ type PatientAllergiesPayload {
 type PatientAllergyPayload {
   response: ResponsePayload
   patientAllergy: PatientAllergies
+}
+
+type ReactionsPayload {
+  response: ResponsePayload
+  reactions: [Reactions]
+  pagination: PaginationPayload
 }
 
 type IcdCodesPayload {
@@ -1355,6 +1569,39 @@ type PatientVitalsPayload {
   pagination: PaginationPayload
 }
 
+type LabTestObservationPayload {
+  response: ResponsePayload
+  labTestObservation: Observations
+}
+
+type LabTestPayload {
+  response: ResponsePayload
+  labTest: LabTests
+}
+
+type LabTestsPayload {
+  response: ResponsePayload
+  labTests: [LabTests]
+  pagination: PaginationPayload
+}
+
+type LoincCodePayload {
+  response: ResponsePayload
+  loincCode: LoincCodes
+}
+
+type LoincCodesPayload {
+  response: ResponsePayload
+  loincCodes: [LoincCodes!]
+  pagination: PaginationPayload
+}
+
+type TestSpecimenTypesPayload {
+  response: ResponsePayload
+  specimenTypes: [SpecimenTypes!]
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1362,6 +1609,7 @@ type Query {
   me: UserPayload!
   fetchAllRoles: RolesPayload!
   searchUser(search: String!): UsersPayload!
+  fetchEmergencyAccessUsers(emergencyAccessUsersInput: EmergencyAccessUserInput!): EmergencyAccessUserPayload!
   findAllPermissions(permissionInput: PermissionInput!): PermissionsPayload!
   GetPermission(getPermission: GetPermission!): PermissionPayload!
   getAllRoles(roleInput: RoleInput!): RolesPayload!
@@ -1382,8 +1630,11 @@ type Query {
   getFacilitySchedule(getFacilitySchedule: GetFacilitySchedule!): SchedulesPayload!
   getSlots(getSlots: GetSlots!): SlotsPayload!
   findAllPatient(patientInput: PatientInput!): PatientsPayload!
+  findPatientAttachments(patientAttachmentsInput: PatientAttachmentsInput!): PatientAttachmentsPayload!
+  fetchAllPatients(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
+  getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
@@ -1393,11 +1644,19 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
+  findLoincCode(id: String!): LoincCodes!
+  getLabTest(getLabTest: GetLabTest!): LabTestPayload!
+  findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput!): LabTestsPayload!
+  findAllLabTest(labTestInput: LabTestInput!): LabTestsPayload!
+  findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
   findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
+  findAllAllergies(allergyInput: AllergyInput!): AllergiesPayload!
+  findAllReactions(reactionInput: ReactionInput!): ReactionsPayload!
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
@@ -1422,6 +1681,13 @@ input GetUser {
   id: String!
 }
 
+input EmergencyAccessUserInput {
+  facilityId: String
+  practiceId: String
+  email: String
+  paginationInput: PaginationInput
+}
+
 input PermissionInput {
   paginationOptions: PaginationInput!
 }
@@ -1432,6 +1698,8 @@ input GetPermission {
 
 input RoleInput {
   role: String
+  roleName: String
+  customRole: Boolean
   paginationOptions: PaginationInput!
 }
 
@@ -1485,6 +1753,7 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  doctorFirstName: String
   searchString: String
   practiceId: String
   paginationOptions: PaginationInput!
@@ -1515,6 +1784,7 @@ input GetFacilitySchedule {
 input GetSlots {
   facilityId: String
   providerId: String
+  day: String
   offset: Float!
   serviceId: String!
   currentDate: String!
@@ -1523,8 +1793,18 @@ input GetSlots {
 input PatientInput {
   facilityId: String
   searchString: String
+  dob: String
+  appointmentDate: String
+  doctorId: String
   patientRecord: String
   practiceId: String
+  paginationOptions: PaginationInput!
+}
+
+input PatientAttachmentsInput {
+  typeId: String
+  searchString: String
+  AttachmentModuleType: String
   paginationOptions: PaginationInput!
 }
 
@@ -1534,6 +1814,11 @@ input GetPatient {
 
 input GetAttachment {
   typeId: String!
+}
+
+input GetAttachmentsByLabOrder {
+  typeId: String!
+  orderNum: String!
 }
 
 input GetMedia {
@@ -1557,6 +1842,7 @@ input AppointmentInput {
   searchString: String
   practiceId: String
   facilityId: String
+  relationTable: String
 }
 
 input GetAppointment {
@@ -1577,6 +1863,36 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input SearchLoincCodesInput {
+  searchTerm: String
+  loincNum: String
+  component: String
+  paginationOptions: PaginationInput!
+}
+
+input GetLabTest {
+  id: String
+}
+
+input LabTestByOrderNumInput {
+  patientId: String
+  orderNumber: String
+  labTestStatus: String
+  paginationOptions: PaginationInput
+}
+
+input LabTestInput {
+  patientId: String
+  orderNumber: String
+  labTestStatus: String
+  paginationOptions: PaginationInput!
+}
+
+input TestSpecimenTypeInput {
+  specimenTypeName: String
+  paginationOptions: PaginationInput!
+}
+
 input PatientProblemInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -1584,10 +1900,12 @@ input PatientProblemInput {
 
 input SearchIcdCodesInput {
   searchTerm: String!
+  paginationOptions: PaginationInput!
 }
 
 input SearchSnoMedCodesInput {
-  IcdCodes: String!
+  searchTerm: String!
+  paginationOptions: PaginationInput!
 }
 
 input GetPatientProblem {
@@ -1597,6 +1915,17 @@ input GetPatientProblem {
 input PatientAllergyInput {
   patientId: String
   appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input AllergyInput {
+  allergyType: String
+  allergyName: String
+  paginationOptions: PaginationInput!
+}
+
+input ReactionInput {
+  reactionName: String
   paginationOptions: PaginationInput!
 }
 
@@ -1616,6 +1945,8 @@ input GetPatientVital {
 
 input FormInput {
   facilityId: String
+  isSystemForm: Boolean
+  formType: FormType
   paginationOptions: PaginationInput!
 }
 
@@ -1631,11 +1962,12 @@ input UserFormInput {
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
-  resentOTP(seneOTPAgainInput: SeneOTPAgainInput!): UserPayload!
+  resentOTP: UserPayload!
   registerUser(user: RegisterUserInput!): UserPayload!
   forgotPassword(forgotPassword: ForgotPasswordInput!): ForgotPasswordPayload!
   verifyEmail(verifyEmail: VerifyEmailInput!): UserPayload!
   resendVerificationEmail(resendVerificationEmail: ResendVerificationEmail!): UserPayload!
+  updateAutoLogoutTime(userInfoInput: UserInfoInput!): UserPayload!
   resetPassword(resetPassword: ResetPasswordInput!): UserPayload!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): UserPayload!
   deactivateUser(user: UserIdInput!): UserPayload!
@@ -1679,8 +2011,10 @@ type Mutation {
   sendInviteToPatient(patientInviteInput: PatientInviteInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
+  updatePatientNoteInfo(updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!): PatientPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
+  removeAttachmentMedia(id: String!): AttachmentPayload!
   updateAttachmentData(updateAttachmentInput: UpdateAttachmentInput!): AttachmentPayload!
   createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
   updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
@@ -1701,6 +2035,14 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
+  updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
+  createLabTest(createLabTestInput: CreateLabTestInput!): LabTestPayload!
+  updateLabTest(updateLabTestInput: UpdateLabTestInput!): LabTestPayload!
+  removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
+  createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
+  updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
+  removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
@@ -1713,6 +2055,7 @@ type Mutation {
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
+  createFormTemplate(createFormInput: CreateFormInput!): FormPayload!
   createElement(inputs: ElementInputs!): Element!
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
@@ -1724,12 +2067,8 @@ input LoginUserInput {
 }
 
 input VerifyCodeInput {
-  id: String!
+  id: String
   otpCode: String!
-}
-
-input SeneOTPAgainInput {
-  id: String!
 }
 
 input RegisterUserInput {
@@ -1757,6 +2096,13 @@ input VerifyEmailInput {
 
 input ResendVerificationEmail {
   email: String
+}
+
+input UserInfoInput {
+  id: String!
+  email: String
+  phone: String
+  autoLogoutTime: String
 }
 
 input ResetPasswordInput {
@@ -2061,7 +2407,7 @@ input CreateStaffItemInput {
 
 input UpdateStaffInput {
   updateStaffItemInput: UpdateStaffItemInput!
-  providers: [String!]!
+  providers: [String!]
 }
 
 input UpdateStaffItemInput {
@@ -2215,6 +2561,7 @@ input DisableDoctor {
 input CreateScheduleInput {
   startAt: String!
   endAt: String!
+  day: String!
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -2224,6 +2571,7 @@ input CreateScheduleInput {
 input UpdateScheduleInput {
   startAt: String
   endAt: String
+  day: String
   recurringEndDate: DateTime
   doctorId: String
   facilityId: String
@@ -2270,7 +2618,7 @@ input CreatePatientItemInput {
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
   inviteAccepted: Boolean
-  voiceCallPermission: Boolean
+  smsPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
@@ -2313,7 +2661,7 @@ input PatientInfoInput {
 input PatientInfoItemInput {
   pharmacy: String
   ssn: String
-  voiceCallPermission: Boolean
+  smsPermission: Boolean
   phonePermission: Boolean
   language: String
   preferredCommunicationMethod: COMMUNICATIONTYPE
@@ -2358,7 +2706,7 @@ input UpdatePatientItemInput {
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
   inviteAccepted: Boolean
-  voiceCallPermission: Boolean
+  smsPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
@@ -2419,17 +2767,29 @@ input RemovePatient {
   id: String!
 }
 
+input UpdatePatientNoteInfoInputs {
+  id: String!
+  patientNoteOpen: Boolean
+  patientNote: String
+}
+
 input CreateAttachmentInput {
   """enum type for module type - Upload Media"""
   type: AttachmentType!
   typeId: String!
   title: String
   subTitle: String
-  providerName: String
+  signedAt: String
+  signedBy: String
   attachmentName: String
   comments: String
+  signedByProvider: Boolean
   description: String
   url: String
+
+  """enum type for module type - Upload Media"""
+  metadataType: AttachmentMetaDataType
+  labOrderNum: String
 }
 
 input RemoveAttachment {
@@ -2442,11 +2802,17 @@ input UpdateAttachmentInput {
   typeId: String
   title: String
   subTitle: String
-  providerName: String
+  signedAt: String
+  signedBy: String
   attachmentName: String
   comments: String
+  signedByProvider: Boolean
   description: String
   url: String
+
+  """enum type for module type - Upload Media"""
+  metadataType: AttachmentMetaDataType
+  labOrderNum: String
   id: String
 }
 
@@ -2498,6 +2864,7 @@ input CreateAppointmentInput {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
+  isExternal: Boolean
   scheduleStartDateTime: String!
   scheduleEndDateTime: String!
   appointmentTypeId: String!
@@ -2542,6 +2909,7 @@ input UpdateAppointmentInput {
   otherPartyResponsible: Boolean
   primaryInsurance: String
   secondaryInsurance: String
+  isExternal: Boolean
   scheduleStartDateTime: String
   scheduleEndDateTime: String
   appointmentTypeId: String
@@ -2634,6 +3002,106 @@ input InvoiceStatusInputs {
   id: String!
 }
 
+input LoincCodeInput {
+  loincNum: String
+  component: String
+}
+
+input UpdateLoincCodeInput {
+  loincNum: String
+  component: String
+  id: String!
+}
+
+input CreateLabTestInput {
+  createLabTestItemInput: CreateLabTestItemInput
+  test: String
+  diagnoses: [String!]
+  createSpecimenItemInput: [CreateSpecimenItemInput!]
+}
+
+input CreateLabTestItemInput {
+  patientId: String!
+  appointmentId: String
+  status: LabTestStatus
+  testNotes: String
+  testDate: String
+  testTime: String
+  orderNumber: String
+}
+
+input CreateSpecimenItemInput {
+  testSpecimen: String!
+  specimenNotes: String
+  collectionDate: String
+  collectionTime: String
+}
+
+input UpdateLabTestInput {
+  updateLabTestItemInput: UpdateLabTestItemInput
+  test: String
+  diagnoses: [String!]
+  updateSpecimenItemInput: [UpdateSpecimenItemInput!]
+}
+
+input UpdateLabTestItemInput {
+  patientId: String
+  appointmentId: String
+  status: LabTestStatus
+  testNotes: String
+  testDate: String
+  testTime: String
+  orderNumber: String
+  id: String!
+}
+
+input UpdateSpecimenItemInput {
+  testSpecimen: String
+  specimenNotes: String
+  collectionDate: String
+  collectionTime: String
+  id: String!
+}
+
+input RemoveLabTest {
+  id: String
+}
+
+input CreateLabTestObservationInput {
+  labTestId: String!
+  createLabTestObservationItemInput: [CreateLabTestObservationItemInput!]
+}
+
+input CreateLabTestObservationItemInput {
+  doctorsSignOff: Boolean
+  resultValue: String!
+  resultUnit: String!
+  normalRange: String!
+  normalRangeUnit: String!
+  abnormalFlag: AbnormalFlag!
+  description: String!
+}
+
+input UpdateLabTestObservationInput {
+  labTestId: String!
+  updateLabTestObservationItemInput: [UpdateLabTestObservationItemInput!]
+}
+
+input UpdateLabTestObservationItemInput {
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: AbnormalFlag
+  description: String
+  id: String!
+}
+
+input RemoveLabTestObservation {
+  id: String!
+}
+
 input CreateProblemInput {
   icdCodeId: String!
   snowMedCodeId: String
@@ -2665,6 +3133,8 @@ input CreatePatientAllergyInput {
   patientId: String!
   staffId: String
   allergyId: String
+  allergyName: String
+  allergyType: AllergyType
   providerId: String
   isActive: Boolean
   comments: String
@@ -2704,7 +3174,9 @@ input CreateVitalInput {
   temperatureUnitType: TempUnitType!
   smokingStatus: SmokingStatus!
   patientTemperature: String
-  bloodPressure: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
+  pulseRate: String
   respiratoryRate: String
   oxygenSaturation: String
   PatientHeight: String
@@ -2720,13 +3192,14 @@ input CreateVitalInput {
 
 input UpdateVitalInput {
   id: String!
-  unitType: UnitType!
-  weightUnit: WeightType!
-  headCircumference: HeadCircumferenceType!
-  temperatureUnitType: TempUnitType!
-  smokingStatus: SmokingStatus!
+  unitType: UnitType
+  weightUnit: WeightType
+  headCircumference: HeadCircumferenceType
+  temperatureUnitType: TempUnitType
+  smokingStatus: SmokingStatus
   patientTemperature: String
-  bloodPressure: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
   respiratoryRate: String
   oxygenSaturation: String
   PatientHeight: String
@@ -2735,6 +3208,7 @@ input UpdateVitalInput {
   PainRange: String
   patientHeadCircumference: String
   vitalCreationDate: String
+  pulseRate: String
 }
 
 input RemoveVital {
@@ -2744,8 +3218,8 @@ input RemoveVital {
 input CreateFormInput {
   name: String!
   isActive: Boolean
-  type: FormType!
-  facilityId: String!
+  type: FormType
+  facilityId: String
   layout: LayoutJSONInputType!
   isSystemForm: Boolean
 }
@@ -2776,6 +3250,7 @@ input FieldsInputs {
   fieldId: String!
   options: [FieldOptionsInputType!]!
   textArea: Boolean!
+  isMultiSelect: Boolean
 }
 
 input FieldOptionsInputType {
@@ -2813,7 +3288,8 @@ input CreateUserFormInput {
 input UserFormElementInputs {
   FormsElementsId: String!
   value: String!
-  arrayOfStrings: [ArrayOfStringsTypeInput!]!
+  arrayOfObjects: [ArrayOfStringsTypeInput!]!
+  arrayOfStrings: [String!]!
 }
 
 input ArrayOfStringsTypeInput {

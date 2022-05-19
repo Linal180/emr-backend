@@ -118,8 +118,9 @@ export class AppointmentService {
         patientInstance = patient.patient;
       }
       const appointmentInstance = this.appointmentRepository.create({ ...createExternalAppointmentInput.createExternalAppointmentItemInput, isExternal: true, appointmentNumber })
-      const provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
+      let provider
       if (createExternalAppointmentInput.createExternalAppointmentItemInput.providerId) {
+        provider = await this.doctorService.findOne(createExternalAppointmentInput.createExternalAppointmentItemInput.providerId)
         appointmentInstance.provider = provider
         appointmentInstance.providerId = provider.id
       }
@@ -203,7 +204,13 @@ export class AppointmentService {
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
       const [first]  = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
-      const paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: 'Appointment', relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
+      let paginationResponse
+      if(appointmentInput.relationTable){
+        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: "Services", relationField: 'appointmentType', associatedToField: { columnValue: first, columnName: 'name', columnName2: 'color', columnName3: 'duration', filterType: 'stringFilter' } })
+      }else{
+        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: "Patients", relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
+      }
+
       return {
         pagination: {
           ...paginationResponse
@@ -251,7 +258,7 @@ export class AppointmentService {
    * @param utc_end_date_minus_offset 
    * @returns appointment by provider id 
    */
-  async findAppointmentByProviderId(getSlots: GetSlots,utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
+   async findAppointmentByProviderId(getSlots: GetSlots,utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
     if(getSlots.facilityId){
       return await this.appointmentRepository.find({
         where: {
@@ -261,13 +268,13 @@ export class AppointmentService {
         }
       })
     }else if(getSlots.providerId)
-    return await this.appointmentRepository.find({
-      where: {
-        scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
-        scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
-        providerId: getSlots.providerId,
-      }
-    })
+      return await this.appointmentRepository.find({
+        where: {
+          scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
+          scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
+          providerId: getSlots.providerId,
+        }
+      })
   }
 
   /**
@@ -302,24 +309,24 @@ export class AppointmentService {
 
   async getAppointments(getAppointments: GetAppointments): Promise<Appointment[]> {
     if(getAppointments.doctorId){
-        const appointment = await this.appointmentRepository.find({
-          where:[ 
-            {providerId: getAppointments.doctorId, status: APPOINTMENTSTATUS.INITIATED }
-          ]
-        })
-        if (appointment) {
-          return appointment
-        }
-        }else if(getAppointments.facilityId){
-        const appointment = await this.appointmentRepository.find({
-          where:[ 
-            {facilityId: getAppointments.facilityId, status: APPOINTMENTSTATUS.INITIATED }
-          ]
-        })
-        if (appointment) {
-          return appointment
-        }
+      const appointment = await this.appointmentRepository.find({
+        where:[ 
+          {providerId: getAppointments.doctorId, status: APPOINTMENTSTATUS.INITIATED }
+        ]
+      })
+      if (appointment) {
+        return appointment
       }
+      }else if(getAppointments.facilityId){
+      const appointment = await this.appointmentRepository.find({
+        where:[ 
+          {facilityId: getAppointments.facilityId, status: APPOINTMENTSTATUS.INITIATED }
+        ]
+      })
+      if (appointment) {
+        return appointment
+      }
+    }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
       error: 'Appointment not found',

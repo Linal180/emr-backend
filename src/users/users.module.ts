@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { AttachmentsModule } from "src/attachments/attachments.module";
 import { FacilityModule } from "src/facilities/facility.module";
 import { MailerModule } from "src/mailer/mailer.module";
 import { PaginationModule } from "src/pagination/pagination.module";
@@ -38,9 +39,10 @@ import { UsersController } from "./users.controller";
     PaginationModule,
     forwardRef(() => FacilityModule),
     forwardRef(() => ProviderModule),
-    forwardRef(() => PatientModule)
+    forwardRef(() => PatientModule),
+    forwardRef(() => AttachmentsModule),
   ],
-  providers: [UsersService, UsersResolver,PermissionResolver, RoleResolver,PermissionsService, RolesService, JwtStrategy, UserSubscriber],
+  providers: [UsersService, UsersResolver, PermissionResolver, RoleResolver, PermissionsService, RolesService, JwtStrategy, UserSubscriber],
   controllers: [UsersController],
   exports: [UsersService, TypeOrmModule, RolesService],
 })

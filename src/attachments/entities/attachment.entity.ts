@@ -1,11 +1,14 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { AttachmentMetadata } from './attachmentMetadata.entity';
 
 export enum AttachmentType {
   PATIENT = "patient",
   DOCTOR = "doctor",
   lab = "lab",
-  FORM_BUILDER = 'form builder'
+  FORM_BUILDER = 'form builder',
+  SUPER_ADMIN = 'super-admin',
+  STAFF = 'staff'
 }
 
 registerEnumType(AttachmentType, {
@@ -30,8 +33,8 @@ export class Attachment {
   @Field()
   typeId: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   title: string;
 
   @Column({ nullable: true })
@@ -48,11 +51,27 @@ export class Attachment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  signedBy: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  signedAt: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   comments: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   url: string;
+
+  @Field(() => AttachmentMetadata, { nullable: true })
+  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete:'CASCADE', onUpdate:'CASCADE' })
+  @JoinColumn()
+  attachmentMetadata: AttachmentMetadata;
+
+  @Field({ nullable: true })
+  attachmentMetadataId: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

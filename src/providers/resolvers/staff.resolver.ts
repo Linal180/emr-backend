@@ -1,5 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { AllStaffPayload } from '../dto/all-staff-payload.dto';
@@ -7,11 +9,12 @@ import { CreateStaffInput } from '../dto/create-staff.input';
 import StaffInput from '../dto/staff-input.dto';
 import { StaffPayload } from '../dto/staff-payload.dto';
 import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
+import { Staff } from '../entities/staff.entity';
 import { StaffService } from '../services/staff.service';
 
-@Resolver('staff')
+@Resolver(() => Staff)
 export class StaffResolver {
-  constructor(private readonly staffService: StaffService) { }
+  constructor(private readonly staffService: StaffService, private readonly attachmentsService: AttachmentsService,) { }
 
   @Mutation(() => StaffPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -76,5 +79,12 @@ export class StaffResolver {
   async disableStaff(@Args('disableStaff') disableStaff: DisableStaff) {
     await this.staffService.disableStaff(disableStaff);
     return { response: { status: 200, message: 'Staff Disabled' } };
+  }
+
+  @ResolveField((returns) => [Attachment])
+  async attachments(@Parent() staff: Staff): Promise<Attachment[]> {
+    if (staff) {
+      return await this.attachmentsService.findAttachments(staff.id, AttachmentType.STAFF);
+    }
   }
 }

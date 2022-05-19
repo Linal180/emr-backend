@@ -1,5 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { AttachmentType } from '../../attachments/entities/attachment.entity';
+import { AttachmentMetadataType } from '../entities/attachmentMetadata.entity';
 @InputType()
 export class CreateAttachmentInput {
   @Field(type => AttachmentType, { description: 'enum type for module type - Upload Media' })
@@ -15,7 +16,10 @@ export class CreateAttachmentInput {
   subTitle?: string
   
   @Field({ nullable: true })
-  providerName?: string
+  signedAt?: string
+
+  @Field({ nullable: true })
+  signedBy?: string
     
   @Field({ nullable: true })
   attachmentName?: string
@@ -24,8 +28,17 @@ export class CreateAttachmentInput {
   comments?: string
 
   @Field({ nullable: true })
+  signedByProvider?: boolean
+
+  @Field({ nullable: true })
   description?: string
 
   @Field({ nullable: true })
   url?: string;
+  
+  @Field(type => AttachmentMetadataType, { description: 'enum type for module type - Upload Media', nullable: true },)
+  metadataType?: AttachmentMetadataType;
+
+  @Field({ nullable: true })
+  labOrderNum?: string
 }

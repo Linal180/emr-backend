@@ -24,3 +24,17 @@ export const mediaFilesInter = (_req, file, callback) => {
   }
   callback(null, true);
 }
+
+
+export const paginateResponse=(data,page,limit)=> {
+  const [result, total]=data;
+  const totalPages=Math.ceil(total/limit);
+
+  return {
+    statusCode: 'success',
+    data: [...result],
+    totalCount: total,
+    totalPages,
+    page
+  }
+}

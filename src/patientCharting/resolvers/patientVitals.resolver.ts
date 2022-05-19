@@ -12,7 +12,7 @@ import { VitalsService } from '../services/patientVitals.service';
 
 @Resolver(() => PatientVitals)
 export class VitalsResolver {
-  constructor(private readonly vitalsService:  VitalsService) { }
+  constructor(private readonly vitalsService: VitalsService) { }
 
   @Mutation(() => PatientVitalPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -27,7 +27,7 @@ export class VitalsResolver {
   @Mutation(() => PatientVitalPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updatePatientVital')
-  async updatePatientVital(@Args('updateVitalInput') updateVitalInput: UpdateVitalInput) {
+  async updatePatientVital(@Args('updateVitalInput') updateVitalInput: UpdateVitalInput): Promise<PatientVitalPayload> {
     return {
       patientVital: await this.vitalsService.updatePatientVital(updateVitalInput),
       response: { status: 200, message: 'Patient vital updated successfully' }

@@ -1,20 +1,27 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from 'src/aws/dto/file-input.dto';
+import { PaginationService } from 'src/pagination/pagination.service';
+import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.dto';
+import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { Brackets, getConnection, Repository } from 'typeorm';
 import { AwsService } from '../aws/aws.service';
 import { CreateAttachmentInput } from './dto/create-attachment.input';
-import { UpdateAttachmentInput, UpdateAttachmentMediaInput } from './dto/update-attachment.input';
+import { GetAttachmentsByLabOrder, UpdateAttachmentInput, UpdateAttachmentMediaInput } from './dto/update-attachment.input';
 import { Attachment } from './entities/attachment.entity';
+import { AttachmentMetadata, AttachmentMetadataType } from './entities/attachmentMetadata.entity';
 
 @Injectable()
 export class AttachmentsService {
   constructor(
     @InjectRepository(Attachment)
     private attachmentsRepository: Repository<Attachment>,
+    @InjectRepository(AttachmentMetadata)
+    private attachmentMetadataRepository: Repository<AttachmentMetadata>,
     private readonly awsService: AwsService,
     private readonly utilsService: UtilsService,
+    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -24,7 +31,14 @@ export class AttachmentsService {
    * @returns  
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
-    const attachmentsResult = this.attachmentsRepository.create(createAttachmentInput)
+    const { labOrderNum,metadataType,...attachmentInput } = createAttachmentInput
+    const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
+    if(metadataType){
+       const attachmentMetadata= this.attachmentMetadataRepository.create({labOrderNum,metadataType: AttachmentMetadataType[metadataType]})
+       const createdMetaData= await this.attachmentMetadataRepository.save(attachmentMetadata)
+       attachmentsResult.attachmentMetadata= createdMetaData
+       attachmentsResult.attachmentMetadataId= createdMetaData.id
+    }
     return await this.attachmentsRepository.save(attachmentsResult)
   }
 
@@ -86,10 +100,33 @@ export class AttachmentsService {
    * @returns attachments 
    */
   async findAttachments(id: string, type: string): Promise<Attachment[]> {
-    return await this.attachmentsRepository.find({
-      where: { typeId: id, type: type },
-      order: { createdAt: "ASC" },
-    });
+    try {
+      return await this.attachmentsRepository.find({
+        where: { typeId: id, type: type },
+        order: { createdAt: "ASC" },
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  /**
+   * Patients attachments
+   * @param patientAttachmentsInput 
+   * @returns attachments 
+   */
+  async patientAttachments(patientAttachmentsInput: PatientAttachmentsInput): Promise<PatientAttachmentsPayload> {
+    try {
+    const paginationResponse = await this.paginationService.willPaginate<Attachment>(this.attachmentsRepository, patientAttachmentsInput)
+    return {
+      pagination: {
+        ...paginationResponse
+      },
+      attachments: paginationResponse.data,
+    }
+  } catch (error) {
+    throw new InternalServerErrorException(error);
+    }
   }
 
   /**
@@ -103,6 +140,20 @@ export class AttachmentsService {
     });
   }
 
+  async findAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder): Promise<Attachment[]> {
+    const { orderNum, typeId } = getAttachmentsByLabOrder
+    return await this.attachmentsRepository.find({
+      relations:['attachmentMetadata'],
+      where: {
+
+        attachmentMetadata: {
+          labOrderNum: orderNum,
+        },
+        typeId
+      }
+    });
+  }
+
   /**
    * Updates attachment media
    * @param updateAttachmentInput 
@@ -111,6 +162,14 @@ export class AttachmentsService {
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
       return await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, updateAttachmentInput, this.attachmentsRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getAttachmentMetadata(id: string): Promise<AttachmentMetadata> {
+    try {
+      return await this.attachmentMetadataRepository.findOne({ id })
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

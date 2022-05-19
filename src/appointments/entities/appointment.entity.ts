@@ -8,6 +8,7 @@ import { Invoice } from 'src/payment/entity/invoice.entity'
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
+import { LabTests } from 'src/labs/entities/labTests.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -184,6 +185,10 @@ export class Appointment {
   @ManyToOne(() => Patient, patient => patient.appointments, { onDelete: 'CASCADE' })
   @Field(type => Patient, { nullable: true })
   patient: Patient;
+
+  @OneToMany(() => LabTests, labTests => labTests.appointment, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [LabTests], { nullable: true })
+  labTests: LabTests[];
 
   @Field(() => Invoice, { nullable: true })
   @OneToOne(() => Invoice, (invoice) => invoice.appointment)
