@@ -26,3 +26,16 @@ export class UpdatePatientInput {
   @Field(type => UpdateEmployerItemInput)
   updateEmployerInput?: UpdateEmployerItemInput
 }
+
+@InputType()
+export class UpdatePatientNoteInfoInputs {
+  @Field({ nullable: false })
+  id: string;
+
+  @Field(() => Boolean)
+  patientNoteOpen?: boolean;
+
+  @Field()
+  patientNote?: string;
+
+}

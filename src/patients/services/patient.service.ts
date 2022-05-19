@@ -24,7 +24,7 @@ import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
-import { UpdatePatientInput } from '../dto/update-patient.input';
+import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Patient } from '../entities/patient.entity';
@@ -52,36 +52,36 @@ export class PatientService {
     private readonly mailerService: MailerService
   ) { }
 
-  patientMartialStatuses=[
+  patientMartialStatuses = [
     {
       "system": "http://hl7.org/fhir/v3/MaritalStatus",
       "code": "S",
       "display": "Never Married",
-      dbValue:"single"
+      dbValue: "single"
     },
     {
       "system": "http://hl7.org/fhir/v3/MaritalStatus",
       "code": "M",
       "display": "Married",
-      dbValue:"maried"
+      dbValue: "maried"
     },
     {
       "system": "http://hl7.org/fhir/v3/MaritalStatus",
       "code": "W",
       "display": "Widowed",
-      dbValue:"Widowed"
+      dbValue: "Widowed"
     },
     {
       "system": "http://hl7.org/fhir/v3/MaritalStatus",
       "code": "L",
       "display": "Legally Separated",
-      dbValue:"Separated"
+      dbValue: "Separated"
     },
     {
       "system": "http://hl7.org/fhir/v3/MaritalStatus",
       "code": "D",
       "display": "Divorced",
-      dbValue:"Divorced"
+      dbValue: "Divorced"
     },
   ]
 
@@ -212,7 +212,7 @@ export class PatientService {
         patientInstance.contacts = [contact]
         return await this.patientRepository.save({ ...patientInstance, ...updatePatientProfileInput.updatePatientProfileItemInput })
       }
-      throw new NotFoundException({ 
+      throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: 'Patient not found',
       });
@@ -346,97 +346,110 @@ export class PatientService {
     }
   }
 
-  async fetchAllFhirPatients(paginationInput:PaginationInput){
+
+  /**
+   * Updates patient note info
+   * @param updatePatientNoteInfoInputs 
+   */
+  async updatePatientNoteInfo(updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs): Promise<Patient> {
+    try {
+      return await this.utilsService.updateEntityManager(Patient, updatePatientNoteInfoInputs.id, updatePatientNoteInfoInputs, this.patientRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchAllFhirPatients(paginationInput: PaginationInput) {
     const take = paginationInput.limit || 10
-    const page=paginationInput.page || 1;
-    const skip= (page-1) * take;
-    const patientsInfo= await this.patientRepository.findAndCount({
-      relations:[
-       'contacts',
-       'doctorPatients',
-       'facility',
-       'employer',
+    const page = paginationInput.page || 1;
+    const skip = (page - 1) * take;
+    const patientsInfo = await this.patientRepository.findAndCount({
+      relations: [
+        'contacts',
+        'doctorPatients',
+        'facility',
+        'employer',
       ]
-      ,skip
-      ,take
+      , skip
+      , take
     })
-    const [result,total]=patientsInfo
+    const [result, total] = patientsInfo
 
-    const transformedPatients=result.map((patient)=>this.getTransformedPatient(patient))
+    const transformedPatients = result.map((patient) => this.getTransformedPatient(patient))
 
-    return paginateResponse([transformedPatients,total],page,paginationInput.limit)
+    return paginateResponse([transformedPatients, total], page, paginationInput.limit)
   }
   async fetchAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
-      try {
-        const { limit, page } = patientInput.paginationOptions
-        const { dob, appointmentDate, doctorId, facilityId, practiceId,searchString } = patientInput
+    try {
+      const { limit, page } = patientInput.paginationOptions
+      const { dob, appointmentDate, doctorId, facilityId, practiceId, searchString } = patientInput
 
-        const baseQuery=getConnection()
+      const baseQuery = getConnection()
         .getRepository(Patient)
         .createQueryBuilder('patient')
         .skip((page - 1) * limit)
         .take(limit)
 
-        if(appointmentDate){
-          const [patients,totalCount] = await baseQuery
-                                            .innerJoin(Appointment, 'patientWithCertainAppointment', `patient.id = "patientWithCertainAppointment"."patientId" ${appointmentDate? 'AND "patientWithCertainAppointment"."scheduleStartDateTime"::date = :scDate':''}`, { scDate: `%${appointmentDate}%` })
-                                            .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId':''}`, { doctorId: doctorId })
-                                            .where(dob?'patient.dob = :dob':'1=1', { dob: dob })
-                                            .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
-                                            .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
-                                            .andWhere(new Brackets(qb => {
-                                              qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%`}).
-                                              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).                           
-                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                         
-                                              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })                         
-                                            }))
-                                            .getManyAndCount()
-          
-          const totalPages=Math.ceil(totalCount / limit)
+      if (appointmentDate) {
+        const [patients, totalCount] = await baseQuery
+          .innerJoin(Appointment, 'patientWithCertainAppointment', `patient.id = "patientWithCertainAppointment"."patientId" ${appointmentDate ? 'AND "patientWithCertainAppointment"."scheduleStartDateTime"::date = :scDate' : ''}`, { scDate: `%${appointmentDate}%` })
+          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
+          .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
+          .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
+          .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
+          .andWhere(new Brackets(qb => {
+            qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
+          }))
+          .getManyAndCount()
 
-          return {
-            patients:patients,
-            pagination:{
-              totalCount,
-              page,
-              limit,
-              totalPages,
-            },
-          }
-        }else{
-          const [patients,totalCount] = await baseQuery
-                                            .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId':''}`, { doctorId: doctorId })
-                                            .where(dob?'patient.dob = :dob':'1=1', { dob: dob })
-                                            .andWhere(practiceId?'patient.practiceId = :practiceId': '1 = 1', { practiceId: practiceId })
-                                            .andWhere(facilityId?'patient.facilityId = :facilityId': '1 = 1', { facilityId: facilityId })
-                                            .andWhere(new Brackets(qb => {
-                                              qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%`}).
-                                              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).                           
-                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                          
-                                              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).                         
-                                              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })                         
-                                            }))
-                                            .getManyAndCount()
+        const totalPages = Math.ceil(totalCount / limit)
 
-          const totalPages=Math.ceil(totalCount / limit)
-
-          return {
-            patients:patients,
-            pagination:{
-              totalCount,
-              page,
-              limit,
-              totalPages,
-            },
-          }
+        return {
+          patients: patients,
+          pagination: {
+            totalCount,
+            page,
+            limit,
+            totalPages,
+          },
         }
-      } catch (error) {
-        throw new InternalServerErrorException(error);
+      } else {
+        const [patients, totalCount] = await baseQuery
+          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
+          .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
+          .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
+          .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
+          .andWhere(new Brackets(qb => {
+            qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
+              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
+          }))
+          .getManyAndCount()
+
+        const totalPages = Math.ceil(totalCount / limit)
+
+        return {
+          patients: patients,
+          pagination: {
+            totalCount,
+            page,
+            limit,
+            totalPages,
+          },
+        }
       }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
+  }
 
   /**
    * Usuals provider
@@ -645,79 +658,79 @@ export class PatientService {
     }
   }
 
-  getTransformedPatient(patient:Patient){
-      const {dbValue,...patientMartialStatus}=this.patientMartialStatuses.find(({dbValue})=>dbValue===patient?.maritialStatus)
-      const { firstName, lastName, suffix, contacts, gender, dob } = patient ?? {}
-      const fullName= `${firstName ?? ''} ${lastName ?? ''}`.trim()
-      const { contactType, address, address2, city, state, zipCode, country, email }= contacts?.find((contact)=>!!contact?.primaryContact) ?? {}
-      return {
-          fullUrl: "http://hapi.fhir.org/baseR4/Patient/1124467",
-          resource1:{
-            resourceType: "Patient",
-            active: true,
-            name: [
-                {
-                    use: "official",
-                    text: fullName,
-                    family: lastName || '',
-                    given: [
-                        firstName
-                    ],
-                    prefix: [
-                        suffix
-                    ]
-                }
+  getTransformedPatient(patient: Patient) {
+    const { dbValue, ...patientMartialStatus } = this.patientMartialStatuses.find(({ dbValue }) => dbValue === patient?.maritialStatus)
+    const { firstName, lastName, suffix, contacts, gender, dob } = patient ?? {}
+    const fullName = `${firstName ?? ''} ${lastName ?? ''}`.trim()
+    const { contactType, address, address2, city, state, zipCode, country, email } = contacts?.find((contact) => !!contact?.primaryContact) ?? {}
+    return {
+      fullUrl: "http://hapi.fhir.org/baseR4/Patient/1124467",
+      resource1: {
+        resourceType: "Patient",
+        active: true,
+        name: [
+          {
+            use: "official",
+            text: fullName,
+            family: lastName || '',
+            given: [
+              firstName
             ],
-            telecom: [...contacts.map((contact)=>{return {system: "phone",value:contact?.phone ?? ''}}),{system:"email",value:email || ''}],
-            gender: gender,
-            birthDate: dob,
-            address: patient?.contacts.map(contact=>{
-                return {
-                  use: "home",
-                  type: contact.contactType,
-                  line: [
-                      contact.address,
-                      contact.address2
-                  ],
-                  city: contact.city,
-                  state: contact.state,
-                  postalCode: contact.zipCode,
-                  country: contact.country
-              }
-              }),
-            contact: [
-                {
-                    name: {
-                      use: "official",
-                      text: fullName,
-                      family: lastName || '',
-                    },
-                    telecom: contacts.map((contact)=>{return {value:contact?.phone}}),
-                    address: {
-                        use: "home",
-                        type: contactType,
-                        line: [
-                            address,
-                            address2
-                        ],
-                        city: city,
-                        state: state,
-                        postalCode: zipCode,
-                        country: country
-                    },
-                    gender: gender
-                }
-            ],
-            maritalStatus: {
-                coding: [
-                  patientMartialStatus
-                ]
-            }
-            
-          },
-          search: {
-              mode: "match"
+            prefix: [
+              suffix
+            ]
           }
+        ],
+        telecom: [...contacts.map((contact) => { return { system: "phone", value: contact?.phone ?? '' } }), { system: "email", value: email || '' }],
+        gender: gender,
+        birthDate: dob,
+        address: patient?.contacts.map(contact => {
+          return {
+            use: "home",
+            type: contact.contactType,
+            line: [
+              contact.address,
+              contact.address2
+            ],
+            city: contact.city,
+            state: contact.state,
+            postalCode: contact.zipCode,
+            country: contact.country
+          }
+        }),
+        contact: [
+          {
+            name: {
+              use: "official",
+              text: fullName,
+              family: lastName || '',
+            },
+            telecom: contacts.map((contact) => { return { value: contact?.phone } }),
+            address: {
+              use: "home",
+              type: contactType,
+              line: [
+                address,
+                address2
+              ],
+              city: city,
+              state: state,
+              postalCode: zipCode,
+              country: country
+            },
+            gender: gender
+          }
+        ],
+        maritalStatus: {
+          coding: [
+            patientMartialStatus
+          ]
+        }
+
+      },
+      search: {
+        mode: "match"
       }
+    }
   }
 }

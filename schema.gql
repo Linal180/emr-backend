@@ -2012,6 +2012,7 @@ type Mutation {
   sendInviteToPatient(patientInviteInput: PatientInviteInput!): PatientPayload!
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
+  updatePatientNoteInfo(updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!): PatientPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   removeAttachmentMedia(id: String!): AttachmentPayload!
@@ -2615,7 +2616,7 @@ input CreatePatientItemInput {
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
   inviteAccepted: Boolean
-  voiceCallPermission: Boolean
+  smsPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
@@ -2658,7 +2659,7 @@ input PatientInfoInput {
 input PatientInfoItemInput {
   pharmacy: String
   ssn: String
-  voiceCallPermission: Boolean
+  smsPermission: Boolean
   phonePermission: Boolean
   language: String
   preferredCommunicationMethod: COMMUNICATIONTYPE
@@ -2703,7 +2704,7 @@ input UpdatePatientItemInput {
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
   inviteAccepted: Boolean
-  voiceCallPermission: Boolean
+  smsPermission: Boolean
   phonePermission: Boolean
   medicationHistoryAuthority: Boolean
   patientNote: String
@@ -2762,6 +2763,12 @@ input UpdatePatientProvider {
 
 input RemovePatient {
   id: String!
+}
+
+input UpdatePatientNoteInfoInputs {
+  id: String!
+  patientNoteOpen: Boolean!
+  patientNote: String!
 }
 
 input CreateAttachmentInput {
