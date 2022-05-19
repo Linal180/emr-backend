@@ -9,6 +9,7 @@ import { createToken, paginateResponse } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { ContactType } from 'src/providers/entities/contact.entity';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/services/users.service';
@@ -649,7 +650,12 @@ export class PatientService {
       const {dbValue,...patientMartialStatus}=this.patientMartialStatuses.find(({dbValue})=>dbValue===patient?.maritialStatus)
       const { firstName, lastName, suffix, contacts, gender, dob } = patient ?? {}
       const fullName= `${firstName ?? ''} ${lastName ?? ''}`.trim()
-      const { contactType, address, address2, city, state, zipCode, country, email }= contacts?.find((contact)=>!!contact?.primaryContact) ?? {}
+      const { contactType, address, address2, city, state, zipCode, country, email, phone, mobile}= contacts?.find((contact)=>!!contact?.primaryContact && contact.contactType===ContactType.SELF) ?? {}
+      const telecomInfo= [
+        ...(mobile ? [{use:"mobile",system: "phone",value:mobile || ''}]: []),
+        ...(phone ? [{use:"home",system:"phone",value:phone || ''}]: []),
+        ...(email ? [{use:"home",system:"email",value:email || ''}]: []),
+      ]
       return {
           fullUrl: "http://hapi.fhir.org/baseR4/Patient/1124467",
           resource1:{
@@ -668,23 +674,21 @@ export class PatientService {
                     ]
                 }
             ],
-            telecom: [...contacts.map((contact)=>{return {system: "phone",value:contact?.phone ?? ''}}),{system:"email",value:email || ''}],
+            telecom: telecomInfo,
             gender: gender,
             birthDate: dob,
-            address: patient?.contacts.map(contact=>{
-                return {
+            address: {
                   use: "home",
-                  type: contact.contactType,
+                  type: contactType,
                   line: [
-                      contact.address,
-                      contact.address2
+                      address,
+                      address2
                   ],
-                  city: contact.city,
-                  state: contact.state,
-                  postalCode: contact.zipCode,
-                  country: contact.country
-              }
-              }),
+                  city: city,
+                  state: state,
+                  postalCode: zipCode,
+                  country: country
+              },
             contact: [
                 {
                     name: {
@@ -692,7 +696,7 @@ export class PatientService {
                       text: fullName,
                       family: lastName || '',
                     },
-                    telecom: contacts.map((contact)=>{return {value:contact?.phone}}),
+                    telecom: telecomInfo,
                     address: {
                         use: "home",
                         type: contactType,
