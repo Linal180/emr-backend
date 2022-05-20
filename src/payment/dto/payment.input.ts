@@ -119,6 +119,9 @@ export class ACHPaymentInputs {
   @Field({ nullable: true })
   company: string;
 
+  @Field({ nullable: true })
+  deviceData: string;
+
 }
 
 @InputType()

@@ -2972,6 +2972,7 @@ input ACHPaymentInputs {
   facilityId: String
   appointmentId: String!
   company: String
+  deviceData: String
 }
 
 input CreateInvoiceInputs {

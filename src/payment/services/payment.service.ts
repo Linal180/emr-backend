@@ -328,7 +328,7 @@ export class PaymentService {
       throw new Error(error);
     }
   }
- 
+
   /**
    * Creates customer
    * @param input 
@@ -336,8 +336,8 @@ export class PaymentService {
    */
   async createCustomer(input: ACHPaymentInputs) {
     try {
-      const { firstName, lastName, company } = input || {}
-      const response = await this.gateway.customer.create({ firstName, lastName, company });
+      const { firstName, lastName, company, deviceData } = input || {}
+      const response = await this.gateway.customer.create({ firstName, lastName, company, deviceData });
       const { success, customer, message } = response;
       if (success) {
         const { id } = customer;
@@ -350,7 +350,7 @@ export class PaymentService {
       throw new InternalServerErrorException(error)
     }
   }
- 
+
   /**
    * Payments payment service
    * @param inputs 
