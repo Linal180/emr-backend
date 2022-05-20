@@ -10,9 +10,9 @@ async function bootstrap() {
   //swagger config
   const config = new DocumentBuilder()
     .setTitle('emr-pro')
-    .setDescription('The boca-plus API for media endpoints')
+    .setDescription('EMR API Endpoints')
     .setVersion('1.0')
-    .addTag('boca')
+    .addTag('EMR')
     .build();
   const document = SwaggerModule.createDocument(app, config, {
     include:[PatientModule],
