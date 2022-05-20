@@ -77,7 +77,7 @@ export class CreatePatientItemInput {
   inviteAccepted?: boolean;
 
   @Field({ nullable: true })
-  voiceCallPermission: boolean;
+  smsPermission: boolean;
 
   @Field({ nullable: true })
   phonePermission: boolean;
