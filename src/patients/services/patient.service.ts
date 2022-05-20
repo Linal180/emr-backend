@@ -9,6 +9,7 @@ import { createToken, paginateResponse } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { ContactType } from 'src/providers/entities/contact.entity';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/services/users.service';
