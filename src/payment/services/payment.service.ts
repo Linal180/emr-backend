@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Configuration, CountryCode, PlaidApi, PlaidEnvironments, Products } from 'plaid';
 import { BraintreeGateway, Environment } from 'braintree';
 //user imports
 import { AppointmentService } from '../../appointments/services/appointment.service';
@@ -18,7 +17,6 @@ import {
   UpdatePaymentStatus,
   GetAllTransactionsInputs,
   ACHPaymentInputs,
-  PaymentInputs
 } from '../dto/payment.input';
 import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
 import {
@@ -32,19 +30,6 @@ import { BILLING_TYPE, STATUS } from '../entity/invoice.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { braintreeACHPayment } from './braintree.service'
 
-
-const plaidConfig = new Configuration({
-  basePath: PlaidEnvironments.sandbox,
-  baseOptions: {
-    headers: {
-      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID || '624eabd33b17e100151c9748',
-      'PLAID-SECRET': process.env.PLAID_SECRET || '510b66326b3537ebcbd9188cd1b397',
-    },
-  },
-});
-
-
-
 @Injectable()
 export class PaymentService {
   private gateway = new BraintreeGateway({
@@ -53,8 +38,6 @@ export class PaymentService {
     publicKey: process.env.BRAINTREE_PUBLIC_ID,
     privateKey: process.env.BRAINTREE_SECRET_ID,
   });
-
-  private plaidClient = new PlaidApi(plaidConfig);
 
   constructor(
     @InjectRepository(Transactions)
@@ -352,41 +335,6 @@ export class PaymentService {
   }
 
   /**
-   * Payments payment service
-   * @param inputs 
-   * @returns  
-   */
-  async payment(inputs: PaymentInputs) {
-    try {
-      const data = await this.gateway.paymentMethod.create({
-        ...inputs,
-      })
-      const { success, message, } = data;
-      console.log('data => ', data)
-      if (success) {
-        const { paymentMethod } = data;
-        const { token } = paymentMethod;
-        if (token) {
-          const trans = await this.gateway.transaction.sale({
-            amount: "10.00",
-            paymentMethodToken: token,
-            options: {
-              submitForSettlement: true
-            }
-          })
-          console.log('updatedToken', trans)
-        }
-        return paymentMethod
-      }
-      else {
-        throw new InternalServerErrorException({ message })
-      }
-    } catch (error) {
-      throw new InternalServerErrorException(error)
-    }
-  }
-
-  /**
    * Ach payment
    * @param achPaymentInputs 
    * @returns payment 
@@ -396,24 +344,15 @@ export class PaymentService {
       const { token: paymentMethodNonce, price, appointmentId, doctorId, facilityId, patientId } = achPaymentInputs || {}
       const customerId = await this.createCustomer(achPaymentInputs);
       const trans = await braintreeACHPayment({ paymentMethodNonce, customerId, price });
-
       if (trans) {
         const transactionId = trans as string
-        const transactionInputs = {
-          transactionId,
-          patientId,
-          doctorId,
-          facilityId,
-          appointmentId,
-          status: TRANSACTIONSTATUS.PAID
-        }
+        await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+        const transactionInputs = { transactionId, patientId, doctorId, facilityId, appointmentId, status: TRANSACTIONSTATUS.PAID }
         const transaction = await this.create(transactionInputs)
         return transaction
       }
     } catch (error) {
       throw new InternalServerErrorException(error)
     }
-
   }
-
 }
