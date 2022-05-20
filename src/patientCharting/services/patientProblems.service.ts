@@ -46,21 +46,21 @@ export class ProblemService {
       //get snowMedCode
       const snowMedCode = await this.snowMedCodeRepository.findOne(createProblemInput.snowMedCodeId)
       //get patient 
-      const patient  = await this.patientService.findOne(createProblemInput.patientId)
+      const patient = await this.patientService.findOne(createProblemInput.patientId)
       //adding patient problem
-      const patientProblemInstance = this.patientProblemsRepository.create({...createProblemInput, ICDCode: icdCode, patient: patient})
+      const patientProblemInstance = this.patientProblemsRepository.create({ ...createProblemInput, ICDCode: icdCode, patient: patient })
       //get appointments
-      if(createProblemInput.appointmentId){
+      if (createProblemInput.appointmentId) {
         const appointment = await this.appointmentService.findOne(createProblemInput.appointmentId)
         patientProblemInstance.appointment = appointment
       }
       //get provider
-      if(createProblemInput.providerId){
+      if (createProblemInput.providerId) {
         const provider = await this.doctorService.findOne(createProblemInput.providerId)
         patientProblemInstance.doctor = provider
       }
       //get staff
-       if(createProblemInput.staffId){
+      if (createProblemInput.staffId) {
         const staff = await this.staffService.findOne(createProblemInput.staffId)
         patientProblemInstance.staff = staff
       }
@@ -111,7 +111,7 @@ export class ProblemService {
    */
   async findOne(id: string): Promise<PatientProblems> {
     const patientProblem = await this.patientProblemsRepository.findOne(id);
-    if(patientProblem){
+    if (patientProblem) {
       return patientProblem
     }
     throw new NotFoundException({
@@ -126,7 +126,7 @@ export class ProblemService {
         id: In(ids)
       }
     });
-    if(diagnoses){
+    if (diagnoses) {
       return diagnoses
     }
     throw new NotFoundException({
@@ -136,14 +136,32 @@ export class ProblemService {
   }
 
   /**
-   * Searchs icd codes
+   * Search icd codes
    * @param searchTerm 
    * @returns icd codes 
    */
   async searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
+
     const { limit, page } = searchIcdCodesInput.paginationOptions
     const [first, last] = searchIcdCodesInput.searchTerm.split(' ');
-    const  [icdCodes,totalCount]  = await getConnection()
+
+    const snoMedCodes = await getConnection()
+      .getRepository(SnoMedCodes)
+      .createQueryBuilder("SnoMedCode")
+      .where('SnoMedCode.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` }).getMany()
+
+    let IcdCodes = []
+    if(!!snoMedCodes.length){
+      IcdCodes = await Promise.all(snoMedCodes?.map(async ({ mapTarget }) => {
+        return await this.icdCodeRepository.findOne({
+          where: { code: mapTarget }
+        })
+      }))
+    }
+
+    const snoMedIcdCodes = !!IcdCodes.length ? IcdCodes.filter((icdCode) => !!icdCode) : []
+
+    const [icdCodes, totalCount] = await getConnection()
       .getRepository(ICDCodes)
       .createQueryBuilder("ICDCode")
       .skip((page - 1) * limit)
@@ -152,43 +170,43 @@ export class ProblemService {
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getManyAndCount()
-      const totalPages=Math.ceil(totalCount / limit)
-      return {
-        icdCodes:icdCodes,
-        pagination:{
-          totalCount,
-          page,
-          limit,
-          totalPages,
-        },
-      }
+    const totalPages = Math.ceil(totalCount / limit)
+    return {
+      icdCodes: !!snoMedIcdCodes.length ? snoMedIcdCodes : icdCodes,
+      pagination: {
+        totalCount,
+        page,
+        limit,
+        totalPages,
+      },
+    }
   }
 
   /**
-   * Searchs sno med code by icd codes
+   * Search sno med code by icd codes
    * @param searchTerm 
    * @returns sno med code by icd codes 
    */
   async searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput): Promise<snoMedCodesPayload> {
     const { limit, page } = searchSnoMedCodesInput.paginationOptions
     const [first, last] = searchSnoMedCodesInput.searchTerm.split(' ');
-    const  [snoMedCodes,totalCount] = await getConnection()
+    const [snoMedCodes, totalCount] = await getConnection()
       .getRepository(SnoMedCodes)
       .createQueryBuilder("SnoMedCodes")
       .where('SnoMedCodes.mapTarget ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getManyAndCount();
-      const totalPages=Math.ceil(totalCount / limit)
-      return {
-        snoMedCodes:snoMedCodes,
-        pagination:{
-          totalCount,
-          page,
-          limit,
-          totalPages,
-        },
-      }
+    const totalPages = Math.ceil(totalCount / limit)
+    return {
+      snoMedCodes: snoMedCodes,
+      pagination: {
+        totalCount,
+        page,
+        limit,
+        totalPages,
+      },
+    }
   }
 
   /**
