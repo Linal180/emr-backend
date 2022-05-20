@@ -36,29 +36,16 @@ export class PaymentResolver {
   async getAllTransactions(@Args('transactionInputs') transactionInputs: GetAllTransactionsInputs): Promise<TransactionsPayload> {
     return await this.paymentService.getAll(transactionInputs);
   }
-
-  //ach payment 
+ 
 
   @Mutation(() => TransactionPayload)
-  async paymentByACH(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs): Promise<TransactionPayload> {
+  async achPayment(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs): Promise<TransactionPayload> {
     return {
       transaction: await this.paymentService.achPayment(achPaymentInputs),
       response: {
-        message: "Transaction created successfully.",
+        message: "Appointment paid successfully.",
         status: 200
       }
     }
-  }
-
-  //plaid token 
-  @Mutation(() => String)
-  async getPlaidLinkToken(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs) {
-    return await this.paymentService.getPlaidLinkToken()
-  }
-
-  //plaid token exchange
-  @Mutation(() => String)
-  async exchangePlaidToken(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs) {
-    return await this.paymentService.exchangePlaidToken()
   }
 }

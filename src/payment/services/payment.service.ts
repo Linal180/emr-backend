@@ -7,7 +7,7 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Configuration, CountryCode, PlaidApi, PlaidEnvironments, Products } from 'plaid';
-import { BraintreeGateway, Environment, Transaction as BraintreeTransaction, ValidatedResponse } from 'braintree';
+import { BraintreeGateway, Environment } from 'braintree';
 //user imports
 import { AppointmentService } from '../../appointments/services/appointment.service';
 import { BraintreePayload, TransactionsPayload } from '../dto/payment.dto';
@@ -67,6 +67,10 @@ export class PaymentService {
     private readonly paginationService: PaginationService
   ) { }
 
+  /**
+   * Gets token
+   * @returns token 
+   */
   async getToken(): Promise<BraintreePayload> {
     try {
       return await this.gateway.clientToken.generate({});
@@ -75,6 +79,10 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Checks card
+   * @returns  
+   */
   async checkCard() {
     const data = await this.gateway.paymentMethod.create({
       paymentMethodNonce: '', // must
@@ -97,6 +105,11 @@ export class PaymentService {
     return data;
   }
 
+  /**
+   * Charges after
+   * @param req 
+   * @returns after 
+   */
   async chargeAfter(req: PaymentInputsAfterAppointment): Promise<Appointment> {
     const { clientIntent, price, appointmentId } = req;
     try {
@@ -141,6 +154,11 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Charges before
+   * @param req 
+   * @returns before 
+   */
   async chargeBefore(req: PaymentInput): Promise<Transactions> {
     const {
       clientIntent,
@@ -185,6 +203,9 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Paypal checkout
+   */
   async paypalCheckout() {
     this.gateway.transaction.sale({
       amount: '',
@@ -193,6 +214,11 @@ export class PaymentService {
     });
   }
 
+  /**
+   * Creates payment service
+   * @param data 
+   * @returns  
+   */
   async create(data: CreateTransactionInputs) {
     try {
       const transaction = this.transactionRepo.create(data);
@@ -203,6 +229,12 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Refunds payment service
+   * @param transactionId 
+   * @param id 
+   * @returns  
+   */
   async refund(transactionId: string, id: string) {
     try {
       const refund = await this.gateway.transaction.void(transactionId);
@@ -220,10 +252,20 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Gets transaction
+   * @param id 
+   * @returns  
+   */
   async getTransaction(id: string) {
     return await this.gateway.transaction.find(id);
   }
 
+  /**
+   * Gets payment transaction by braintree transaction id
+   * @param id 
+   * @returns  
+   */
   async getPaymentTransactionByBraintreeTransactionId(id: string) {
     try {
       return await this.transactionRepo.findOneOrFail({
@@ -237,6 +279,11 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Gets transaction by appointment id
+   * @param id 
+   * @returns  
+   */
   async getTransactionByAppointmentId(id: string) {
     return await this.transactionRepo.findOne({
       where: {
@@ -245,6 +292,11 @@ export class PaymentService {
     });
   }
 
+  /**
+   * Updates payment status
+   * @param updateAppointmentPayStatus 
+   * @returns  
+   */
   async updatePaymentStatus(updateAppointmentPayStatus: UpdatePaymentStatus) {
     try {
       return await this.utilsService.updateEntityManager(
@@ -258,7 +310,11 @@ export class PaymentService {
     }
   }
 
-  //get all transactions
+  /**
+   * Gets all
+   * @param transactionInputs 
+   * @returns all 
+   */
   async getAll(transactionInputs: GetAllTransactionsInputs): Promise<TransactionsPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Transactions>(this.transactionRepo, transactionInputs)
@@ -272,9 +328,12 @@ export class PaymentService {
       throw new Error(error);
     }
   }
-
-  //create braintree customer 
-
+ 
+  /**
+   * Creates customer
+   * @param input 
+   * @returns  
+   */
   async createCustomer(input: ACHPaymentInputs) {
     try {
       const { firstName, lastName, company } = input || {}
@@ -291,9 +350,12 @@ export class PaymentService {
       throw new InternalServerErrorException(error)
     }
   }
-
-  //ach payment
-
+ 
+  /**
+   * Payments payment service
+   * @param inputs 
+   * @returns  
+   */
   async payment(inputs: PaymentInputs) {
     try {
       const data = await this.gateway.paymentMethod.create({
@@ -324,8 +386,11 @@ export class PaymentService {
     }
   }
 
-  //ach payment
-
+  /**
+   * Ach payment
+   * @param achPaymentInputs 
+   * @returns payment 
+   */
   async achPayment(achPaymentInputs: ACHPaymentInputs): Promise<Transactions> {
     try {
       const { token: paymentMethodNonce, price, appointmentId, doctorId, facilityId, patientId } = achPaymentInputs || {}
@@ -347,53 +412,6 @@ export class PaymentService {
       }
     } catch (error) {
       throw new InternalServerErrorException(error)
-    }
-
-  }
-
-  async creatPaymentNonce() {
-    try {
-      const token = await this.gateway.paymentMethodNonce.create('EQbAw5XbKpuvLLr8KxD1uqK3JzkaRVtXrWypy')
-      console.log('payment none response => ', token)
-    } catch (error) {
-      console.log('payment none error =>', error)
-    }
-  }
-
-  //
-
-  async getPlaidLinkToken() {
-    try {
-      const palidResponse = await this.plaidClient.linkTokenCreate({
-        client_name: "mmuhammad",
-        country_codes: [CountryCode.Us],
-        language: "en",
-        products: [Products.Transactions],
-        user: {
-          client_user_id: "1221ddss321212dss21"
-        }
-      });
-      const { data } = palidResponse;
-      const { link_token } = data
-
-      console.log('plaid token => ', link_token)
-      return link_token;
-    } catch (error) {
-      console.log('plaid error => ', error)
-      throw new InternalServerErrorException(error);
-    }
-  }
-
-  async exchangePlaidToken() {
-    try {
-      const exchangePlaidResponse = await this.plaidClient.itemPublicTokenExchange({
-        public_token: "public-sandbox-32b676f6-5eea-4b1f-a275-29cd366cf82a"
-      });
-      this.creatPaymentNonce()
-      console.log('exchangePlaidResponse => ', exchangePlaidResponse)
-      return 'Plaid token is exchanged'
-    } catch (error) {
-
     }
 
   }
