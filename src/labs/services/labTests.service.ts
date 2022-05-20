@@ -4,6 +4,7 @@ import { AppointmentService } from 'src/appointments/services/appointment.servic
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ProblemService } from 'src/patientCharting/services/patientProblems.service';
 import { PatientService } from 'src/patients/services/patient.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
@@ -26,6 +27,7 @@ export class LabTestsService {
     private readonly problemService: ProblemService,
     private readonly loincCodesService: LoincCodesService,
     private readonly patientService: PatientService,
+    private readonly doctorService: DoctorService,
     private readonly testSpecimenService: TestSpecimenService,
     private readonly appointmentService: AppointmentService
   ) { }
@@ -69,12 +71,12 @@ export class LabTestsService {
   async updateLabTest(updateLabTestInput: UpdateLabTestInput): Promise<LabTests> {
       try {
       //get diagnoses
-      //get test 
-      const testName = await this.loincCodesService.findOne(updateLabTestInput.test)
+     
       //get patient 
       const patient = await this.patientService.findOne(updateLabTestInput.updateLabTestItemInput.patientId)
       //create lab test 
       const labTestInstance = this.labTestsRepository.create({...updateLabTestInput.updateLabTestItemInput, labTestStatus: updateLabTestInput.updateLabTestItemInput.status})
+      
       //get appointment 
       if(updateLabTestInput.updateLabTestItemInput.appointmentId){
         const appointment = await this.appointmentService.findOne(updateLabTestInput.updateLabTestItemInput.appointmentId)
@@ -99,8 +101,18 @@ export class LabTestsService {
         const diagnoses = await this.problemService.getDiagnoses(updateLabTestInput.diagnoses)
         labTestInstance.diagnoses = diagnoses
       }
+
+      if(updateLabTestInput.updateLabTestItemInput.doctorId){
+        const doctor = await this.doctorService.findOne(updateLabTestInput.updateLabTestItemInput.doctorId)
+        labTestInstance.doctor = doctor
+      }
       
-      labTestInstance.test = testName
+      if(updateLabTestInput.test){
+        //get test 
+        const testName = await this.loincCodesService.findOne(updateLabTestInput.test)
+        labTestInstance.test = testName
+      }
+
       labTestInstance.patient = patient
       return await this.labTestsRepository.save(labTestInstance)
       } catch (error) {

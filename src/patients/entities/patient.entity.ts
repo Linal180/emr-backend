@@ -205,11 +205,11 @@ export class Patient {
   preferredCommunicationMethod: COMMUNICATIONTYPE
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   registrationDate: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   deceasedDate: string;
 
   @Column({ nullable: true, default: false })
@@ -217,12 +217,12 @@ export class Patient {
   privacyNotice: boolean;
 
   @Column({ nullable: true, default: false })
-  @Field()
+  @Field(() => Boolean, { nullable: true })
   phonePermission: boolean;
 
   @Column({ nullable: true, default: false })
-  @Field()
-  voiceCallPermission: boolean;
+  @Field(() => Boolean, { nullable: true })
+  smsPermission: boolean;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -239,6 +239,10 @@ export class Patient {
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientNote: string;
+
+  @Column({ nullable: true, default: false })
+  @Field(() => Boolean, { nullable: true })
+  patientNoteOpen: boolean;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -322,23 +326,23 @@ export class Patient {
   holdStatement: HOLDSTATEMENT
 
   @Column({ nullable: true, default: false })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   statementDelivereOnline: boolean;
 
   @Column({ nullable: true, default: false })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   inviteAccepted: boolean;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   statementNote: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   statementNoteDateFrom: string;
 
   @Column({ nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   statementNoteDateTo: string;
 
   @Column({ nullable: true })
@@ -352,7 +356,7 @@ export class Patient {
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
 
-  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
+  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
 
@@ -365,27 +369,27 @@ export class Patient {
   @Field(type => User, { nullable: true })
   user: User;
 
-  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.doctor, {onDelete: "CASCADE"})
+  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.doctor, { onDelete: "CASCADE" })
   @Field(type => [DoctorPatient], { nullable: true })
   doctorPatients: DoctorPatient[];
 
-  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.patient, {onDelete: "CASCADE"})
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.patient, { onDelete: "CASCADE" })
   @Field(type => [PatientAllergies], { nullable: true })
   patientAllergies: PatientAllergies[];
 
-  @OneToMany(() => PatientProblems, patientProblems => patientProblems.patient, {onDelete: "CASCADE"})
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.patient, { onDelete: "CASCADE" })
   @Field(type => [PatientProblems], { nullable: true })
   patientProblems: PatientProblems[];
 
   @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Appointment], { nullable: true })
   appointments: Appointment[];
-  
+
   @OneToMany(() => LabTests, labTests => labTests.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [LabTests], { nullable: true })
   labTests: LabTests[];
-  
-  @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE"})
+
+  @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE" })
   @Field(type => Employer, { nullable: true })
   employer: Employer[];
 
