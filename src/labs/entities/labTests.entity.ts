@@ -2,6 +2,7 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { ICDCodes } from 'src/patientCharting/entities/icdcodes.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { LoincCodes } from './loincCodes.entity';
 import { Observations } from './observations.entity';
@@ -42,8 +43,27 @@ export class LabTests {
 
   @Column({nullable: true})
   @Field({nullable: true})
-  testDate: string;
+  collectedDate: string;
 
+  @Column({nullable: true})
+  @Field({nullable: true})
+  receivedDate: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  accessionNumber: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  labName: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  vendorName: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  testDate: string;
 
   @Column({nullable: true})
   @Field({nullable: true})
@@ -59,11 +79,19 @@ export class LabTests {
 
   @Column({nullable: true})
   @Field({nullable: true})
+  doctorId: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
   appointmentId: string;
 
   @ManyToOne(() => Patient, patient => patient.labTests, { onDelete: 'CASCADE' })
   @Field(type => Patient, { nullable: true })
   patient: Patient;
+
+  @ManyToOne(() => Doctor, doctor => doctor.labTests, { onDelete: 'CASCADE' })
+  @Field(type => Doctor, { nullable: true })
+  doctor: Doctor;
 
   @ManyToOne(() => Appointment, appointment => appointment.labTests, { onDelete: 'CASCADE' })
   @Field(type => Appointment, { nullable: true })
