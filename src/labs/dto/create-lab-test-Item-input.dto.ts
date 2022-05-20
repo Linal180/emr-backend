@@ -23,4 +23,22 @@ export default class CreateLabTestItemInput {
 
     @Field({ nullable: true })
     orderNumber?: string 
+    
+    @Field({ nullable: true })
+    collectedDate? : string
+
+    @Field({ nullable: true })
+    receivedDate? : string
+
+    @Field({ nullable: true })
+    accessionNumber? : string
+
+    @Field({ nullable: true })
+    labName? : string
+
+    @Field({ nullable: true })
+    vendorName? : string
+
+    @Field({ nullable: true })
+    doctorId? : string
 }

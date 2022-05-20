@@ -4,6 +4,8 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
@@ -25,7 +27,8 @@ export class LabTestsResolver {
     private readonly appointmentService: AppointmentService,
     private readonly testSpecimenService: TestSpecimenService,
     private readonly labTestsObservationsService: LabTestsObservationsService,
-    private readonly patientService: PatientService) { }
+    private readonly patientService: PatientService,
+    private readonly doctorService: DoctorService) { }
 
   @Mutation(() => LabTestPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -80,6 +83,13 @@ export class LabTestsResolver {
   async patient(@Parent() labTests: LabTests): Promise<Patient> {
     if (labTests && labTests.patientId) {
      return await this.patientService.findOne(labTests.patientId);
+    }
+  }
+
+  @ResolveField((returns) => Doctor)
+  async doctor(@Parent() labTests: LabTests): Promise<Doctor> {
+    if (labTests && labTests.doctorId) {
+     return await this.doctorService.findOne(labTests.doctorId);
     }
   }
 
