@@ -84,205 +84,65 @@ type AttachmentsPayload {
   pagination: PaginationPayload
 }
 
-type Observations {
-  id: String!
-  doctorsSignOff: Boolean
-  resultValue: String
-  resultUnit: String
-  normalRange: String
-  normalRangeUnit: String
-  abnormalFlag: AbnormalFlag!
-  description: String
-  labTestId: String
-  attachments: [Attachment!]
-  loincCodes: LoincCodes
-  labTest: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-"""The test result's abnormal flag status assigned"""
-enum AbnormalFlag {
-  NONE
-  BELOW_LOW_NORMAL
-  ABOVE_HIGH_NORMAL
-  BELOW_LOWER_PANIC_LIMIT
-  BELOW_UPPER_PANIC_LIMIT
-  BELOW_ABSOLUTE_LOW_OFF_SCALE
-  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
-  NORMAL
-  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
-  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
-  SIGNIFICANT_CHANGE_UP
-  SIGNIFICANT_CHANGE_DOWN
-  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
-  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
-  SUSCEPTIBLE
-  RESISTANT
-  INTERMEDIATE
-  MODERATELY
-  VERY_SUSCEPTIBLE
-}
-
-type LoincCodes {
-  id: String!
-  loincNum: String
-  component: String
-  property: String
-  timeAspect: String
-  system: String
-  scaleTyp: String
-  methodTyp: String
-  class: String
-  versionLastChanged: String
-  chngType: String
-  definitionDescription: String
-  status: String
-  consumerName: String
-  classType: String
-  formula: String
-  exmplAnswers: String
-  surveyQuestTest: String
-  surveyQuestSRC: String
-  unitsRequired: String
-  submittedUnits: String
-  relatedNames2: String
-  shortName: String
-  orderObs: String
-  cdiscCommonTests: String
-  hl7FieldSubFieldId: String
-  externalCopyRightNotice: String
-  exampleUnits: String
-  longCommonName: String
-  unitsAndRange: String
-  exampleUcumUnits: String
-  exampleSiUcumUnits: String
-  statusReason: String
-  statusText: String
-  changeReasonPublic: String
-  commonTestRank: String
-  commonOrderRank: String
-  commonSiTestRank: String
-  hl7AttachmentStructure: String
-  externalCopyRightLink: String
-  panelType: String
-  askAtOrderEntry: String
-  associationObservations: String
-  versionFirstRelease: String
-  validHl7AttachmentRequest: String
-  displayName: String
-  labTests: [LabTests!]
-  observations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-type SpecimenTypes {
+type Allergies {
   id: String!
   name: String
-  testSpecimens: [TestSpecimens!]
+  allergyType: AllergyType!
+  drugAllergyTypes: String
+  patientAllergies: [PatientAllergies!]
   createdAt: String
   updatedAt: String
 }
 
-type TestSpecimens {
+"""The patient's allergy type assigned"""
+enum AllergyType {
+  DRUG
+  FOOD
+  ENVIRONMENT
+}
+
+type Reactions {
   id: String!
-  collectionDate: String
-  collectionTime: String
-  specimenNotes: String
-  labTestId: String
-  specimenTypes: SpecimenTypes
-  specimenTypesId: String
-  labTest: LabTests
+  name: String!
+  patientAllergies: PatientAllergies
   createdAt: String
   updatedAt: String
 }
 
-type LabTests {
+type PatientAllergies {
   id: String!
-  labTestStatus: LabTestStatus!
-  orderNumber: String
-  testDate: String
-  testTime: String
-  testNotes: String
+  allergySeverity: AllergySeverity!
+  allergyOnset: AllergyOnset!
+  allergyStartDate: String
+  comments: String
+  isActive: Boolean
+  staffId: String
   patientId: String
   appointmentId: String
-  patient: Patient
-  appointment: Appointment
-  diagnoses: [ICDCodes]
-  test: LoincCodes
-  testSpecimens: [TestSpecimens!]
-  testObservations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The lab's test status assigned"""
-enum LabTestStatus {
-  ORDER_ENTERED
-  DISCONTINUED
-  IN_PROGRESS
-  RESULT_RECEIVED
-  RESULT_REVIEWED_WITH_PATIENT
-}
-
-type ICDCodes {
-  id: String!
-  code: String!
-  description: String
-  version: String
-  labTests: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-type SnoMedCodes {
-  id: String!
-  recordId: String
-  effectiveTime: String
-  active: String
-  moduleId: String
-  refsetId: String
-  referencedComponentId: String
-  mapGroup: String
-  mapPriority: String
-  mapRule: String
-  mapAdvice: String
-  mapTarget: String
-  correlationId: String
-  mapCategoryId: String
-  patientProblem: [PatientProblems!]
-  createdAt: String
-  updatedAt: String
-}
-
-type PatientProblems {
-  id: String!
-  problemType: ProblemType!
-  problemSeverity: ProblemSeverity!
-  problemStartDate: String
-  note: String
-  patientId: String
-  ICDCode: ICDCodes
+  doctorId: String
+  allergy: Allergies
   patient: Patient
   doctor: Doctor
   staff: Staff
   appointment: Appointment
-  snowMedCode: SnoMedCodes
+  reactions: [Reactions]
   createdAt: String
   updatedAt: String
 }
 
-"""The patient's problem type assigned"""
-enum ProblemType {
-  ACTIVE
-  HISTORIC
+"""The patient's allergy severity type assigned"""
+enum AllergySeverity {
+  MILD
+  ACUTE
+  MODERATE
+  VERY_MILD
 }
 
-"""The patient's problem severity type assigned"""
-enum ProblemSeverity {
-  CHRONIC
-  ACUTE
+"""The patient's allergy onset type assigned"""
+enum AllergyOnset {
+  CHILDHOOD
+  ADULTHOOD
+  UNKNOWN
 }
 
 type PatientVitals {
@@ -434,65 +294,212 @@ enum Gender {
   OTHER
 }
 
-type Allergies {
+type SnoMedCodes {
   id: String!
-  name: String
-  allergyType: AllergyType!
-  drugAllergyTypes: String
-  patientAllergies: [PatientAllergies!]
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
   createdAt: String
   updatedAt: String
 }
 
-"""The patient's allergy type assigned"""
-enum AllergyType {
-  DRUG
-  FOOD
-  ENVIRONMENT
-}
-
-type Reactions {
+type PatientProblems {
   id: String!
-  name: String!
-  patientAllergies: PatientAllergies
-  createdAt: String
-  updatedAt: String
-}
-
-type PatientAllergies {
-  id: String!
-  allergySeverity: AllergySeverity!
-  allergyOnset: AllergyOnset!
-  allergyStartDate: String
-  comments: String
-  isActive: Boolean
-  staffId: String
+  problemType: ProblemType!
+  problemSeverity: ProblemSeverity!
+  problemStartDate: String
+  note: String
   patientId: String
-  appointmentId: String
-  doctorId: String
-  allergy: Allergies
+  ICDCode: ICDCodes
   patient: Patient
   doctor: Doctor
   staff: Staff
   appointment: Appointment
-  reactions: [Reactions]
+  snowMedCode: SnoMedCodes
   createdAt: String
   updatedAt: String
 }
 
-"""The patient's allergy severity type assigned"""
-enum AllergySeverity {
-  MILD
-  ACUTE
-  MODERATE
-  VERY_MILD
+"""The patient's problem type assigned"""
+enum ProblemType {
+  ACTIVE
+  HISTORIC
 }
 
-"""The patient's allergy onset type assigned"""
-enum AllergyOnset {
-  CHILDHOOD
-  ADULTHOOD
-  UNKNOWN
+"""The patient's problem severity type assigned"""
+enum ProblemSeverity {
+  CHRONIC
+  ACUTE
+}
+
+type ICDCodes {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+type Observations {
+  id: String!
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: AbnormalFlag!
+  description: String
+  labTestId: String
+  attachments: [Attachment!]
+  loincCodes: LoincCodes
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+"""The test result's abnormal flag status assigned"""
+enum AbnormalFlag {
+  NONE
+  BELOW_LOW_NORMAL
+  ABOVE_HIGH_NORMAL
+  BELOW_LOWER_PANIC_LIMIT
+  BELOW_UPPER_PANIC_LIMIT
+  BELOW_ABSOLUTE_LOW_OFF_SCALE
+  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
+  NORMAL
+  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
+  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
+  SIGNIFICANT_CHANGE_UP
+  SIGNIFICANT_CHANGE_DOWN
+  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
+  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
+  SUSCEPTIBLE
+  RESISTANT
+  INTERMEDIATE
+  MODERATELY
+  VERY_SUSCEPTIBLE
+}
+
+type LoincCodes {
+  id: String!
+  loincNum: String
+  component: String
+  property: String
+  timeAspect: String
+  system: String
+  scaleTyp: String
+  methodTyp: String
+  class: String
+  versionLastChanged: String
+  chngType: String
+  definitionDescription: String
+  status: String
+  consumerName: String
+  classType: String
+  formula: String
+  exmplAnswers: String
+  surveyQuestTest: String
+  surveyQuestSRC: String
+  unitsRequired: String
+  submittedUnits: String
+  relatedNames2: String
+  shortName: String
+  orderObs: String
+  cdiscCommonTests: String
+  hl7FieldSubFieldId: String
+  externalCopyRightNotice: String
+  exampleUnits: String
+  longCommonName: String
+  unitsAndRange: String
+  exampleUcumUnits: String
+  exampleSiUcumUnits: String
+  statusReason: String
+  statusText: String
+  changeReasonPublic: String
+  commonTestRank: String
+  commonOrderRank: String
+  commonSiTestRank: String
+  hl7AttachmentStructure: String
+  externalCopyRightLink: String
+  panelType: String
+  askAtOrderEntry: String
+  associationObservations: String
+  versionFirstRelease: String
+  validHl7AttachmentRequest: String
+  displayName: String
+  labTests: [LabTests!]
+  observations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+type SpecimenTypes {
+  id: String!
+  name: String
+  testSpecimens: [TestSpecimens!]
+  createdAt: String
+  updatedAt: String
+}
+
+type TestSpecimens {
+  id: String!
+  collectionDate: String
+  collectionTime: String
+  specimenNotes: String
+  labTestId: String
+  specimenTypes: SpecimenTypes
+  specimenTypesId: String
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+type LabTests {
+  id: String!
+  labTestStatus: LabTestStatus!
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  patientId: String
+  doctorId: String
+  appointmentId: String
+  patient: Patient
+  doctor: Doctor
+  appointment: Appointment
+  diagnoses: [ICDCodes]
+  test: LoincCodes
+  testSpecimens: [TestSpecimens!]
+  testObservations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The lab's test status assigned"""
+enum LabTestStatus {
+  ORDER_ENTERED
+  DISCONTINUED
+  IN_PROGRESS
+  RESULT_RECEIVED
+  RESULT_REVIEWED_WITH_PATIENT
 }
 
 type DoctorPatient {
@@ -725,6 +732,7 @@ type Doctor {
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
   staff: [Staff]
+  labTests: [LabTests!]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
@@ -1321,7 +1329,6 @@ type TransactionsPayload {
 type TransactionPayload {
   response: ResponsePayload
   transaction: Transactions!
-  pagination: PaginationPayload
 }
 
 type AppointmentPayload {
@@ -2030,6 +2037,7 @@ type Mutation {
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  achPayment(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
@@ -2962,6 +2970,19 @@ input GetAllTransactionsInputs {
   paginationOptions: PaginationInput!
 }
 
+input ACHPaymentInputs {
+  token: String!
+  firstName: String
+  lastName: String
+  price: String!
+  patientId: String!
+  doctorId: String
+  facilityId: String
+  appointmentId: String!
+  company: String
+  deviceData: String
+}
+
 input CreateInvoiceInputs {
   paymentTransactionId: String
   facilityId: String!
@@ -3014,6 +3035,12 @@ input CreateLabTestItemInput {
   testDate: String
   testTime: String
   orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  doctorId: String
 }
 
 input CreateSpecimenItemInput {
@@ -3038,6 +3065,12 @@ input UpdateLabTestItemInput {
   testDate: String
   testTime: String
   orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  doctorId: String
   id: String!
 }
 
