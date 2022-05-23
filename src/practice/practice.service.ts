@@ -37,8 +37,8 @@ export class PracticeService {
     try {
       //check if already user exists
       const user = await this.usersService.findOneByEmail(createPracticeInput.registerUserInput.email)
-      if(user){
-        throw new ConflictException({ 
+      if (user) {
+        throw new ConflictException({
           status: HttpStatus.CONFLICT,
           error: 'User associated with this email already exists',
         });
@@ -46,7 +46,7 @@ export class PracticeService {
       //creating practice
       const practiceInstance = this.practiceRepository.create(createPracticeInput.createPracticeItemInput)
       //create a facility 
-      const facility  = await this.facilityService.addFacility(createPracticeInput)
+      const facility = await this.facilityService.addFacility(createPracticeInput)
       practiceInstance.facilities = [facility]
       //save the practice
       const practice = await this.practiceRepository.save(practiceInstance)
@@ -54,18 +54,18 @@ export class PracticeService {
       const doctorRole = allRoles.find((item) => item.role === 'doctor')
       const adminRole = allRoles.find((item) => item.role === 'practice-admin')
       //create a user or provider based on its role type under this facility
-      if(createPracticeInput.registerUserInput.roleType === doctorRole.role){
-          const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
-          const doctor = await this.doctorService.addDoctor(createPracticeInput, facility.id, practice.id)
-          if(createPracticeInput.registerUserInput.isAdmin){
-             await this.usersService.updateUserRole({id: doctor.user.id, roles: [adminRole.role,registerUserInput.roleType]})
-          }
-      }else{
-          const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
-          const staff = await this.staffService.addStaff(registerUserInput, facility.id, practice.id)
-           if(createPracticeInput.registerUserInput.isAdmin){
-            await this.usersService.updateUserRole({id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType]})
-          }
+      if (createPracticeInput.registerUserInput.roleType === doctorRole.role) {
+        const registerUserInput: RegisterUserInput = { ...createPracticeInput.registerUserInput }
+        const doctor = await this.doctorService.addDoctor(createPracticeInput, facility.id, practice.id)
+        if (createPracticeInput.registerUserInput.isAdmin) {
+          await this.usersService.updateUserRole({ id: doctor.user.id, roles: [adminRole.role, registerUserInput.roleType] })
+        }
+      } else {
+        const registerUserInput: RegisterUserInput = { ...createPracticeInput.registerUserInput }
+        const staff = await this.staffService.addStaff(registerUserInput, facility.id, practice.id)
+        if (createPracticeInput.registerUserInput.isAdmin) {
+          await this.usersService.updateUserRole({ id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType] })
+        }
       }
       return practice
     } catch (error) {
@@ -99,7 +99,7 @@ export class PracticeService {
    */
   async findOne(id: string): Promise<Practice> {
     const practice = await this.practiceRepository.findOne(id);
-    if(practice){
+    if (practice) {
       return practice
     }
     throw new NotFoundException({
@@ -145,5 +145,9 @@ export class PracticeService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async allPractices() {
+    return await this.practiceRepository.find({ select: ['id', 'name'] })
   }
 }

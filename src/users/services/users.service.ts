@@ -891,4 +891,9 @@ export class UsersService {
       user
     };
   }
+
+  async getFacilityUsersCount(id: string) {
+    return await this.usersRepository.count({ where: { facilityId: id } })
+  }
+
 }
