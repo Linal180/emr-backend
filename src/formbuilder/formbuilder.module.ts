@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { UsersModule } from 'src/users/users.module';
 import { Element } from './entities/element.entity';
@@ -18,6 +19,7 @@ import { UserFormElementService } from './services/userFormElements.service';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { UserFormController } from './controllers/userFormBuilder.controller';
 import { AwsModule } from 'src/aws/aws.module';
+import { PatientModule } from 'src/patients/patient.module';
 
 @Module({
   imports: [
@@ -25,7 +27,8 @@ import { AwsModule } from 'src/aws/aws.module';
     forwardRef(() => UsersModule),
     PaginationModule,
     AttachmentsModule,
-    AwsModule
+    AwsModule,
+    PatientModule
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,
