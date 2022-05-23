@@ -1329,7 +1329,6 @@ type TransactionsPayload {
 type TransactionPayload {
   response: ResponsePayload
   transaction: Transactions!
-  pagination: PaginationPayload
 }
 
 type AppointmentPayload {
@@ -2038,6 +2037,7 @@ type Mutation {
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  achPayment(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
@@ -2968,6 +2968,19 @@ input PaymentInputsAfterAppointment {
 input GetAllTransactionsInputs {
   facilityId: String
   paginationOptions: PaginationInput!
+}
+
+input ACHPaymentInputs {
+  token: String!
+  firstName: String
+  lastName: String
+  price: String!
+  patientId: String!
+  doctorId: String
+  facilityId: String
+  appointmentId: String!
+  company: String
+  deviceData: String
 }
 
 input CreateInvoiceInputs {
