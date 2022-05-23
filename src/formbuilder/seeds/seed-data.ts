@@ -18,88 +18,88 @@ export const ElementTypeData = [
 ];
 
 const MAPPED_RELATIONSHIP_TYPE = [
-  { value: "WARD", name: RelationshipType.WARD },
-  { value: "SELF", name: RelationshipType.SELF },
-  { value: "CHILD", name: RelationshipType.CHILD },
-  { value: "OTHER", name: RelationshipType.OTHER },
-  { value: "MOTHER", name: RelationshipType.MOTHER },
-  { value: "SPOUSE", name: RelationshipType.SPOUSE },
-  { value: "FATHER", name: RelationshipType.FATHER },
-  { value: "UNKNOWN", name: RelationshipType.UNKNOWN },
-  { value: "EMPLOYEE", name: RelationshipType.EMPLOYEE },
-  { value: "ORGAN_DONOR", name: RelationshipType.ORGAN_DONOR },
-  { value: "GRANDCHILD", name: RelationshipType.GRANDCHILD },
-  { value: "LIFE_PARTNER", name: RelationshipType.LIFE_PARTNER },
-  { value: "GRANDPARENT", name: RelationshipType.GRANDPARENT },
-  { value: "NEPHEW_NIECE", name: RelationshipType.NEPHEW_NIECE },
-  { value: "FOSTHER_CHILD", name: RelationshipType.FOSTHER_CHILD },
-  { value: "CADAVER_DONOR", name: RelationshipType.CADAVER_DONOR },
-  { value: "SIGNIFICANT_OTHER", name: RelationshipType.SIGNIFICANT_OTHER },
-  { value: "EMANCIPATED_MINOR", name: RelationshipType.EMANCIPATED_MINOR },
-  { value: "INJURED_PLAINTIIFF", name: RelationshipType.INJURED_PLAINTIIFF },
-  { value: "SPONSORED_DEPENDENT", name: RelationshipType.SPONSORED_DEPENDENT },
-  { value: "STEPSON_STEPDAUGHTER", name: RelationshipType.STEPSON_STEPDAUGHTER },
-  { value: "CHILD_MOTHER_INSURANCE", name: RelationshipType.CHILD_MOTHER_INSURANCE },
-  { value: "HANDICAPPED_DEPENDENT", name: RelationshipType.HANDICAPPED_DEPENDENT },
-  { value: "CHILD_FATHER_INSURANCE", name: RelationshipType.CHILD_FATHER_INSURANCE },
-  { value: "DEPENDENT_OF_MINOR_DEPENDENT", name: RelationshipType.DEPENDENT_OF_MINOR_DEPENDENT },
-  { value: "STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE", name: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE, },
-  { value: "STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE", name: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE, },
+  { value: RelationshipType.WARD, name: RelationshipType.WARD },
+  { value: RelationshipType.SELF, name: RelationshipType.SELF },
+  { value: RelationshipType.CHILD, name: RelationshipType.CHILD },
+  { value: RelationshipType.OTHER, name: RelationshipType.OTHER },
+  { value: RelationshipType.MOTHER, name: RelationshipType.MOTHER },
+  { value: RelationshipType.SPOUSE, name: RelationshipType.SPOUSE },
+  { value: RelationshipType.FATHER, name: RelationshipType.FATHER },
+  { value: RelationshipType.UNKNOWN, name: RelationshipType.UNKNOWN },
+  { value: RelationshipType.EMPLOYEE, name: RelationshipType.EMPLOYEE },
+  { value: RelationshipType.ORGAN_DONOR, name: RelationshipType.ORGAN_DONOR },
+  { value: RelationshipType.GRANDCHILD, name: RelationshipType.GRANDCHILD },
+  { value: RelationshipType.LIFE_PARTNER, name: RelationshipType.LIFE_PARTNER },
+  { value: RelationshipType.GRANDPARENT, name: RelationshipType.GRANDPARENT },
+  { value: RelationshipType.NEPHEW_NIECE, name: RelationshipType.NEPHEW_NIECE },
+  { value: RelationshipType.FOSTHER_CHILD, name: RelationshipType.FOSTHER_CHILD },
+  { value: RelationshipType.CADAVER_DONOR, name: RelationshipType.CADAVER_DONOR },
+  { value: RelationshipType.SIGNIFICANT_OTHER, name: RelationshipType.SIGNIFICANT_OTHER },
+  { value: RelationshipType.EMANCIPATED_MINOR, name: RelationshipType.EMANCIPATED_MINOR },
+  { value: RelationshipType.INJURED_PLAINTIIFF, name: RelationshipType.INJURED_PLAINTIIFF },
+  { value: RelationshipType.SPONSORED_DEPENDENT, name: RelationshipType.SPONSORED_DEPENDENT },
+  { value: RelationshipType.STEPSON_STEPDAUGHTER, name: RelationshipType.STEPSON_STEPDAUGHTER },
+  { value: RelationshipType.CHILD_MOTHER_INSURANCE, name: RelationshipType.CHILD_MOTHER_INSURANCE },
+  { value: RelationshipType.HANDICAPPED_DEPENDENT, name: RelationshipType.HANDICAPPED_DEPENDENT },
+  { value: RelationshipType.CHILD_FATHER_INSURANCE, name: RelationshipType.CHILD_FATHER_INSURANCE },
+  { value: RelationshipType.DEPENDENT_OF_MINOR_DEPENDENT, name: RelationshipType.DEPENDENT_OF_MINOR_DEPENDENT },
+  { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE, },
+  { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE, },
 ];
 
 const MAPPED_RACE = [
-  { value: "OTHER", name: RACE.OTHER },
-  { value: "ASIAN", name: RACE.ASIAN },
-  { value: "WHITE", name: RACE.WHITE },
+  { value: RACE.OTHER, name: RACE.OTHER },
+  { value: RACE.ASIAN, name: RACE.ASIAN },
+  { value: RACE.WHITE, name: RACE.WHITE },
   {
-    value: "BLACK_AFRICAN_AMERICAN",
+    value: RACE.BLACK_AFRICAN_AMERICAN,
     name: RACE.BLACK_AFRICAN_AMERICAN,
   },
   {
-    value: "BLACK_AFRICAN_AMERICAN",
+    value: RACE.BLACK_AFRICAN_AMERICAN,
     name: RACE.BLACK_AFRICAN_AMERICAN,
   },
   {
-    value: "AMERICAN_INDIAN_ALASKA_NATIVE",
+    value: RACE.AMERICAN_INDIAN_ALASKA_NATIVE,
     name: RACE.AMERICAN_INDIAN_ALASKA_NATIVE,
   },
   {
-    value: "NATIVE_HAWAIIAN_PACIFIC_ISLANDER",
+    value: RACE.NATIVE_HAWAIIAN_PACIFIC_ISLANDER,
     name: RACE.NATIVE_HAWAIIAN_PACIFIC_ISLANDER,
   },
 ];
 
 const MAPPED_ETHNICITY = [
-  { value: "NONE", name: ETHNICITY.NONE },
-  { value: "CENTERAL_AMERICAN", name: ETHNICITY.CENTERAL_AMERICAN, },
-  { value: "CENTERAL_AMERICAN_INDIAN", name: ETHNICITY.CENTERAL_AMERICAN_INDIAN, },
+  { value: ETHNICITY.NONE, name: ETHNICITY.NONE },
+  { value: ETHNICITY.CENTERAL_AMERICAN, name: ETHNICITY.CENTERAL_AMERICAN, },
+  { value: ETHNICITY.CENTERAL_AMERICAN_INDIAN, name: ETHNICITY.CENTERAL_AMERICAN_INDIAN, },
 ];
 
 const MAPPED_SEXUAL_ORIENTATION = [
-  { value: "NONE", name: SEXUALORIENTATION.NONE },
-  { value: "DONT_KNOW", name: SEXUALORIENTATION.DONT_KNOW, },
-  { value: "BISEXUAL", name: SEXUALORIENTATION.BISEXUAL, },
-  { value: "HOMOSEXUAL", name: SEXUALORIENTATION.HOMOSEXUAL, },
-  { value: "HETEROSEXUAL", name: SEXUALORIENTATION.HETEROSEXUAL, },
+  { value: SEXUALORIENTATION.NONE, name: SEXUALORIENTATION.NONE },
+  { value: SEXUALORIENTATION.DONT_KNOW, name: SEXUALORIENTATION.DONT_KNOW, },
+  { value: SEXUALORIENTATION.BISEXUAL, name: SEXUALORIENTATION.BISEXUAL, },
+  { value: SEXUALORIENTATION.HOMOSEXUAL, name: SEXUALORIENTATION.HOMOSEXUAL, },
+  { value: SEXUALORIENTATION.HETEROSEXUAL, name: SEXUALORIENTATION.HETEROSEXUAL, },
 ];
 
 const MAPPED_HOMEBOUND = [
-  { value: "NO", name: HOMEBOUND.NO },
-  { value: "YES", name: HOMEBOUND.YES },
+  { value: HOMEBOUND.NO, name: HOMEBOUND.NO },
+  { value: HOMEBOUND.YES, name: HOMEBOUND.YES },
 ];
 
 const MAPPED_GENDER_IDENTITY = [
-  { value: "NONE", name: GENDERIDENTITY.NONE },
-  { value: "MALE", name: GENDERIDENTITY.MALE },
-  { value: "FEMALE", name: GENDERIDENTITY.FEMALE },
-  { value: "NOT_EXCLUSIVE", name: GENDERIDENTITY.NOT_EXCLUSIVE, },
+  { value: GENDERIDENTITY.NONE, name: GENDERIDENTITY.NONE },
+  { value: GENDERIDENTITY.MALE, name: GENDERIDENTITY.MALE },
+  { value: GENDERIDENTITY.FEMALE, name: GENDERIDENTITY.FEMALE },
+  { value: GENDERIDENTITY.NOT_EXCLUSIVE, name: GENDERIDENTITY.NOT_EXCLUSIVE, },
 ];
 
 const MAPPED_MARITAL_STATUS = [
-  { value: "SINGLE", name: MARITIALSTATUS.SINGLE },
-  { value: "WIDOWED", name: MARITIALSTATUS.WIDOWED },
-  { value: "DIVORCED", name: MARITIALSTATUS.DIVORCED },
-  { value: "SEPARATED", name: MARITIALSTATUS.SEPARATED },
+  { value: MARITIALSTATUS.SINGLE, name: MARITIALSTATUS.SINGLE },
+  { value: MARITIALSTATUS.WIDOWED, name: MARITIALSTATUS.WIDOWED },
+  { value: MARITIALSTATUS.DIVORCED, name: MARITIALSTATUS.DIVORCED },
+  { value: MARITIALSTATUS.SEPARATED, name: MARITIALSTATUS.SEPARATED },
 ];
 
 const MAPPED_PRONOUNS = [
@@ -1523,6 +1523,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "zipCode",
+              columnName: "zipCode",
+              tableName: "Contacts",
               type: ElementType.TEXT,
               label: "Zip Code",
               column: 12,
@@ -1538,6 +1540,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "address1",
+              columnName: "address",
+              tableName: "Contacts",
               type: ElementType.TEXT,
               label: "Address 1",
               column: 12,
@@ -1553,6 +1557,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "address-2",
+              columnName: "address2",
+              tableName: "Contacts",
               type: ElementType.TEXT,
               label: "Address 2",
               column: 12,
@@ -1568,6 +1574,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "city",
+              columnName: "city",
+              tableName: "Contacts",
               type: ElementType.TEXT,
               label: "City",
               column: 4,
@@ -1583,6 +1591,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "state",
+              columnName: "state",
+              tableName: "Contacts",
               type: ElementType.SELECT,
               label: "State",
               column: 4,
@@ -1647,6 +1657,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "country",
+              columnName: "country",
+              tableName: "Contacts",
               type: ElementType.SELECT,
               label: "Country",
               column: 4,
@@ -1683,6 +1695,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "name",
+              columnName: "name",
+              tableName: "Contacts",
               type: ElementType.TEXT,
               label: "Name",
               column: 6,
@@ -1698,6 +1712,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "relationship",
+              columnName: "relationship",
+              tableName: "Contacts",
               type: ElementType.SELECT,
               label: "Relationship",
               column: 6,
@@ -1712,7 +1728,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "homePhone",
+              name: "phone",
+              columnName: "phone",
+              tableName: "Contacts",
               type: ElementType.TEXT,
               label: "Home Phone",
               column: 6,
@@ -1727,7 +1745,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "mobilePhone",
+              name: "mobile",
+              columnName: "mobile",
+              tableName: "Contacts",
               type: ElementType.TEXT,
               label: "Mobile Phone",
               column: 6,
@@ -1758,7 +1778,9 @@ export const FormTemplates = [
           fields: [
             {
               css: "",
-              name: "languageSpoken",
+              name: "language",
+              columnName: "language",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Language Spoken",
               column: 6,
@@ -1774,6 +1796,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "race",
+              columnName: "race",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Race",
               column: 6,
@@ -1789,6 +1813,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "ethnicity",
+              columnName: "ethnicity",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Ethnicity",
               column: 6,
@@ -1803,7 +1829,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "maritalStatus",
+              name: "maritialStatus",
+              columnName: "maritialStatus",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Marital Status",
               column: 6,
@@ -1819,6 +1847,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "sexualOrientation",
+              columnName: "sexualOrientation",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Sexual Orientation",
               column: 6,
@@ -1834,6 +1864,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "genderIdentity",
+              columnName: "genderIdentity",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Gender Identity",
               column: 6,
@@ -1849,6 +1881,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "sexAtBirth",
+              columnName: "sexAtBirth",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Sex At Birth",
               column: 6,
@@ -1863,7 +1897,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "pronoun",
+              name: "pronouns",
+              columnName: "pronouns",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Pronouns",
               column: 6,
@@ -1879,6 +1915,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "homeBound",
+              columnName: "homeBound",
+              tableName: "Patients",
               type: ElementType.RADIO,
               label: "Home Bound",
               column: 6,
@@ -1910,6 +1948,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "suffix",
+              columnName: "suffix",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Suffix",
               column: 6,
@@ -1925,6 +1965,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "firstName",
+              columnName: "firstName",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "First Name",
               column: 6,
@@ -1940,6 +1982,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "middleName",
+              columnName: "middleName",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Middle Name",
               column: 6,
@@ -1955,6 +1999,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "lastName",
+              columnName: "lastName",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Last Name",
               column: 6,
@@ -1970,6 +2016,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "firstNameUsed",
+              columnName: "firstNameUsed",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "First Name Used",
               column: 6,
@@ -1984,7 +2032,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "preferredName",
+              name: "prefferedName",
+              columnName: "prefferedName",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Preferred Name",
               column: 6,
@@ -2000,6 +2050,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "previousFirstName",
+              columnName: "previousFirstName",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Previous First Name",
               column: 6,
@@ -2014,7 +2066,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "previousLastName",
+              name: "previouslastName",
+              columnName: "previouslastName",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Previous Last Name",
               column: 6,
@@ -2029,7 +2083,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "mothersMaidenName",
+              name: "motherMaidenName",
+              columnName: "motherMaidenName",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "Mother's Maiden Name",
               column: 6,
@@ -2045,6 +2101,8 @@ export const FormTemplates = [
             {
               css: "",
               name: "ssn",
+              columnName: "ssn",
+              tableName: "Patients",
               type: ElementType.TEXT,
               label: "SSN",
               column: 6,
@@ -2059,7 +2117,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "dateOfBirth",
+              name: "dob",
+              columnName: "dob",
+              tableName: "Patients",
               type: ElementType.DATE,
               label: "Date of Birth",
               column: 6,
@@ -2074,7 +2134,9 @@ export const FormTemplates = [
             },
             {
               css: "",
-              name: "legalSex",
+              name: "gender",
+              columnName: "gender",
+              tableName: "Patients",
               type: ElementType.SELECT,
               label: "Legal Sex",
               column: 6,
