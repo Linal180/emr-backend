@@ -10,8 +10,8 @@ export default () => {
         rejectUnauthorized: false,
       },
       logging: true,
-      migrations: ["dist/migrations/*{.ts,.js}"],
-      entities: ["dist/**/*.entity{.ts,.js}"],
+      migrations: ["dist/src/migrations/*{.ts,.js}"],
+      entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
     redis = {
       socket: {
@@ -29,8 +29,8 @@ export default () => {
       timezone: 'Z',
       migrationsRun: true,
       logging: true,
-      migrations: ["dist/migrations/*{.ts,.js}"],
-      entities: ["dist/**/*.entity{.ts,.js}"],
+      migrations: ["dist/src/migrations/*{.ts,.js}"],
+      entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
     redis = {
       socket: {
