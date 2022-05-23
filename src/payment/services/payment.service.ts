@@ -4,17 +4,19 @@ import {
   Injectable,
   InternalServerErrorException
 } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BraintreeGateway, Environment } from 'braintree';
+//user imports
 import { AppointmentService } from '../../appointments/services/appointment.service';
-import { Repository } from 'typeorm';
 import { BraintreePayload, TransactionsPayload } from '../dto/payment.dto';
 import {
   CreateTransactionInputs,
   PaymentInput,
   PaymentInputsAfterAppointment,
   UpdatePaymentStatus,
-  GetAllTransactionsInputs
+  GetAllTransactionsInputs,
+  ACHPaymentInputs,
 } from '../dto/payment.input';
 import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
 import {
@@ -26,6 +28,7 @@ import { UtilsService } from '../../util/utils.service';
 import { InvoiceService } from './invoice.service';
 import { BILLING_TYPE, STATUS } from '../entity/invoice.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
+import { braintreeACHPayment } from './braintree.service'
 
 @Injectable()
 export class PaymentService {
@@ -47,6 +50,10 @@ export class PaymentService {
     private readonly paginationService: PaginationService
   ) { }
 
+  /**
+   * Gets token
+   * @returns token 
+   */
   async getToken(): Promise<BraintreePayload> {
     try {
       return await this.gateway.clientToken.generate({});
@@ -55,6 +62,10 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Checks card
+   * @returns  
+   */
   async checkCard() {
     const data = await this.gateway.paymentMethod.create({
       paymentMethodNonce: '', // must
@@ -77,6 +88,11 @@ export class PaymentService {
     return data;
   }
 
+  /**
+   * Charges after
+   * @param req 
+   * @returns after 
+   */
   async chargeAfter(req: PaymentInputsAfterAppointment): Promise<Appointment> {
     const { clientIntent, price, appointmentId } = req;
     try {
@@ -121,6 +137,11 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Charges before
+   * @param req 
+   * @returns before 
+   */
   async chargeBefore(req: PaymentInput): Promise<Transactions> {
     const {
       clientIntent,
@@ -165,6 +186,9 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Paypal checkout
+   */
   async paypalCheckout() {
     this.gateway.transaction.sale({
       amount: '',
@@ -173,6 +197,11 @@ export class PaymentService {
     });
   }
 
+  /**
+   * Creates payment service
+   * @param data 
+   * @returns  
+   */
   async create(data: CreateTransactionInputs) {
     try {
       const transaction = this.transactionRepo.create(data);
@@ -183,6 +212,12 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Refunds payment service
+   * @param transactionId 
+   * @param id 
+   * @returns  
+   */
   async refund(transactionId: string, id: string) {
     try {
       const refund = await this.gateway.transaction.void(transactionId);
@@ -200,10 +235,20 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Gets transaction
+   * @param id 
+   * @returns  
+   */
   async getTransaction(id: string) {
     return await this.gateway.transaction.find(id);
   }
 
+  /**
+   * Gets payment transaction by braintree transaction id
+   * @param id 
+   * @returns  
+   */
   async getPaymentTransactionByBraintreeTransactionId(id: string) {
     try {
       return await this.transactionRepo.findOneOrFail({
@@ -217,6 +262,11 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Gets transaction by appointment id
+   * @param id 
+   * @returns  
+   */
   async getTransactionByAppointmentId(id: string) {
     return await this.transactionRepo.findOne({
       where: {
@@ -225,6 +275,11 @@ export class PaymentService {
     });
   }
 
+  /**
+   * Updates payment status
+   * @param updateAppointmentPayStatus 
+   * @returns  
+   */
   async updatePaymentStatus(updateAppointmentPayStatus: UpdatePaymentStatus) {
     try {
       return await this.utilsService.updateEntityManager(
@@ -238,7 +293,11 @@ export class PaymentService {
     }
   }
 
-  //get all transactions
+  /**
+   * Gets all
+   * @param transactionInputs 
+   * @returns all 
+   */
   async getAll(transactionInputs: GetAllTransactionsInputs): Promise<TransactionsPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Transactions>(this.transactionRepo, transactionInputs)
@@ -253,4 +312,47 @@ export class PaymentService {
     }
   }
 
+  /**
+   * Creates customer
+   * @param input 
+   * @returns  
+   */
+  async createCustomer(input: ACHPaymentInputs) {
+    try {
+      const { firstName, lastName, company, deviceData } = input || {}
+      const response = await this.gateway.customer.create({ firstName, lastName, company, deviceData });
+      const { success, customer, message } = response;
+      if (success) {
+        const { id } = customer;
+        return id
+      }
+      else {
+        throw new InternalServerErrorException(message)
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+  /**
+   * Ach payment
+   * @param achPaymentInputs 
+   * @returns payment 
+   */
+  async achPayment(achPaymentInputs: ACHPaymentInputs): Promise<Transactions> {
+    try {
+      const { token: paymentMethodNonce, price, appointmentId, doctorId, facilityId, patientId } = achPaymentInputs || {}
+      const customerId = await this.createCustomer(achPaymentInputs);
+      const trans = await braintreeACHPayment({ paymentMethodNonce, customerId, price });
+      if (trans) {
+        const transactionId = trans as string
+        await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+        const transactionInputs = { transactionId, patientId, doctorId, facilityId, appointmentId, status: TRANSACTIONSTATUS.PAID }
+        const transaction = await this.create(transactionInputs)
+        return transaction
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
 }
