@@ -193,7 +193,10 @@ export class ProblemService {
     const [snoMedCodes, totalCount] = await getConnection()
       .getRepository(SnoMedCodes)
       .createQueryBuilder("SnoMedCodes")
+      .skip((page - 1) * limit)
+      .take(limit)
       .where('SnoMedCodes.mapTarget ILIKE :searchTerm', { searchTerm: `%${first}%` })
+      .where('SnoMedCodes.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getManyAndCount();
