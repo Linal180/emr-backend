@@ -1,9 +1,18 @@
 import { Field, InputType } from "@nestjs/graphql";
+//user imports
+import PaginationInput from "src/pagination/dto/pagination-input.dto";
+
+@InputType()
+export class PracticeFacilitiesInputs {
+
+	@Field(() => PaginationInput)
+	paginationOptions: PaginationInput
+
+}
 
 @InputType()
 export class PracticeUsersInputs {
 
-    @Field({ nullable: true })
-    practiceId: string;
-
+	@Field(() => PaginationInput)
+	paginationOptions: PaginationInput
 }

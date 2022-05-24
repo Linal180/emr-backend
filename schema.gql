@@ -1612,12 +1612,23 @@ type TestSpecimenTypesPayload {
 
 type PracticeFacilities {
   id: String
-  facility: Float
   name: String
+  facility: Float
+}
+
+type PracticeUsers {
+  id: String
+  name: String
+  userCount: Float
 }
 
 type PracticeFacilitiesPayload {
   practiceFacilities: [PracticeFacilities!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeUsersPayload {
+  practiceUsers: [PracticeUsers!]
   response: ResponsePayloadResponse
 }
 
@@ -1679,7 +1690,8 @@ type Query {
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
-  getPracticesFacilities(practiceUsersInputs: PracticeUsersInputs!): PracticeFacilitiesPayload!
+  getPracticesFacilities: PracticeFacilitiesPayload!
+  getPracticesUser: PracticeUsersPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -1961,10 +1973,6 @@ input PatientVitalInput {
 
 input GetPatientVital {
   id: String!
-}
-
-input PracticeUsersInputs {
-  practiceId: String
 }
 
 input FormInput {

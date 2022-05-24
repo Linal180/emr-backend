@@ -892,8 +892,8 @@ export class UsersService {
     };
   }
 
-  async getFacilityUsersCount(id: string) {
-    return await this.usersRepository.count({ where: { facilityId: id } })
+  async getFacilityUsersCount(facilityId: string): Promise<number> {
+    return await this.usersRepository.count({ where: { facilityId } })
   }
 
 }

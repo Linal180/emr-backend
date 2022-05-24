@@ -1,18 +1,23 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { StaffService } from 'src/providers/services/staff.service';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
-import { UsersService } from 'src/users/services/users.service';
 import { Repository } from 'typeorm';
-import { CreatePracticeInput } from './dto/create-practice.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException,
+  NotFoundException
+} from '@nestjs/common';
+//user imports
 import PracticeInput from './dto/practice-input.dto';
+import { Practice } from './entities/practice.entity';
 import { PracticePayload } from './dto/practice-payload.dto';
 import { PracticesPayload } from './dto/practices-payload.dto';
+import { UsersService } from 'src/users/services/users.service';
+import { CreatePracticeInput } from './dto/create-practice.input';
+import { StaffService } from 'src/providers/services/staff.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PracticeUsersInputs } from 'src/dashboard/dto/dashboard.inputs';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
+import { FacilityService } from 'src/facilities/services/facility.service';
 import { RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
-import { Practice } from './entities/practice.entity';
 
 @Injectable()
 export class PracticeService {

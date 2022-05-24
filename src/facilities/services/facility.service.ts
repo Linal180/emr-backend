@@ -173,7 +173,17 @@ export class FacilityService {
     }
   }
 
+  /**
+   * Gets practice facility count
+   * @param practiceId 
+   * @returns  
+   */
   async getPracticeFacilityCount(practiceId: string) {
     return await this.facilityRepository.count({ where: { practiceId } })
+  }
+
+
+  async getPracticeFacilities(practiceId: string) {
+    return await this.facilityRepository.find({ where: { practiceId }, select: ['id', 'name'] })
   }
 }
