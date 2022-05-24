@@ -2,7 +2,7 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { getConnection, Not, Repository } from 'typeorm';
+import { getConnection, In, Not, Repository } from 'typeorm';
 //user import
 import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
@@ -782,7 +782,6 @@ export class UsersService {
     }
   }
 
-
   /**
    * Create2s fatoken
    * @param user 
@@ -811,7 +810,11 @@ export class UsersService {
     }
   }
 
-
+  /**
+   * Creates login token
+   * @param user 
+   * @returns login token 
+   */
   async createLoginToken(user: User): Promise<AccessUserPayload> {
     const payload = { email: user.email, sub: user.id };
     const access_token = await this.jwtService.sign(payload);
@@ -826,6 +829,11 @@ export class UsersService {
     };
   }
 
+  /**
+   * Verify2s fa token
+   * @param token 
+   * @returns fa token 
+   */
   async verify2FaToken(token: string): Promise<User2FAVerifiedPayload> {
     const secret = await this.jwtService.verify(token);
     const user = await this.findUserById(secret.id)
@@ -833,4 +841,40 @@ export class UsersService {
       user
     };
   }
+
+  /**
+   * Gets facility users count
+   * @param facilityId 
+   * @returns facility users count 
+   */
+  async getFacilityUsersCount(facilityId: string): Promise<number> {
+    return await this.usersRepository.count({ where: { facilityId } })
+  }
+
+  async getFacilityUsersWithRolesCount(facilityId: string, roles: string[]) {
+    try {
+      const userRoles = await Promise.all(roles?.map(async (val) => {
+        return {
+          count: await this.usersRepository.count({ where: { facilityId, userType: val } }),
+          role: val
+        }
+      }))
+      const userRole = await this.usersRepository.count({
+        where: {
+          facilityId,
+          userType: Not(In(['super-admin', 'practice-admin', 'facility-admin', 'doctor']))
+        }
+      })
+      userRoles.push({
+        count: userRole,
+        role: "staff"
+      })
+      console.log('userRole', userRole)
+      return userRoles
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+
+    }
+  }
+
 }
