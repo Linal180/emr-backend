@@ -41,17 +41,19 @@ export class PaginationService {
    * @param paginationInput 
    * @returns paginated response PaginationPayloadInterface<T>
    */
-  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput): Promise<PaginationPayloadInterface<T>> {
+  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[] ): Promise<PaginationPayloadInterface<T>> {
     try {
       const { associatedTo, relationField, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
       let filterOption: FilterOptionsResponse = null;
+
       if (associatedTo && associatedToField.columnValue) {
         filterOption = this.getFilterOptions(paginationInput);
       }
-      console.log("filterOption....", filterOption);
+
       const { paginationOptions: { page, limit } } = paginationInput || {};
       let query: FindManyOptions = null;
+
       if (filterOption) {
         query = {
           where: (qb: WhereExpressionBuilder) => {
@@ -63,6 +65,7 @@ export class PaginationService {
           skip,
           take,
           order,
+          select
         };
         query.join = filterOption.join;
       } else {
@@ -73,8 +76,10 @@ export class PaginationService {
           skip,
           take,
           order,
+          select
         }
       }
+
       const [paginatedData, totalCount] = await repository.findAndCount(query);
       const totalPages = Math.ceil(totalCount / limit)
 
