@@ -263,11 +263,12 @@ export class UsersResolver {
     });
   }
 
-  @Mutation(returns => UserPayload)
+  @Mutation(() => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
   async updatePassword(@Args('updatePasswordInput') updatePasswordInput: UpdatePasswordInput): Promise<UserPayload> {
     const user = await this.usersService.updatePassword(updatePasswordInput)
     if (user) {
-      return { user, response: { status: 200, message: "Password updated successfully", name: "updatePassword successfully" } }
+      return { user, response: { status: 200, message: "Password updated successfully" } }
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,

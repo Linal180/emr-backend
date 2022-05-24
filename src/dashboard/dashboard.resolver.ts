@@ -3,10 +3,12 @@ import { Args, Query, Resolver } from "@nestjs/graphql";
 //user imports
 import { DashboardService } from "./dashboard.service";
 import PermissionGuard from "src/users/auth/role.guard";
-import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
-import { ActiveInactivePracticesPayload, PracticeFacilities, PracticeFacilitiesPayload, PracticesViaDatePayload, PracticeUsersPayload } from "./dto/dashboard.dto";
 import { PracticesViaDateInputs } from "./dto/dashboard.inputs";
-import { PracticesPayload } from "src/practice/dto/practices-payload.dto";
+import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
+import {
+  ActiveInactivePracticesPayload, PracticeFacilitiesPayload, PracticesViaDatePayload, PracticeUsersPayload,
+  PracticeFacilities
+} from "./dto/dashboard.dto";
 
 
 @Resolver(() => PracticeFacilities)
@@ -30,6 +32,7 @@ export class DashboardResolver {
 
   @Query(() => PracticeUsersPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+
   async getPracticesUser(): Promise<PracticeUsersPayload> {
     return {
       practiceUsers: await this.dashboardService.getPracticeUsersCount(),
@@ -43,6 +46,7 @@ export class DashboardResolver {
 
   @Query(() => ActiveInactivePracticesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+
   async getActiveInactivePractices(): Promise<ActiveInactivePracticesPayload> {
     const practices = await this.dashboardService.getActiveInactivePracticesCount();
 
@@ -58,7 +62,7 @@ export class DashboardResolver {
 
   @Query(() => PracticesViaDatePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  
+
   async getPracticesViaDate(
     @Args('practicesViaDateInputs') practicesViaDateInputs: PracticesViaDateInputs
   ): Promise<PracticesViaDatePayload> {
