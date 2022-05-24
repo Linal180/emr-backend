@@ -835,6 +835,7 @@ type Practice {
   medicare: String
   medicaid: String
   champus: String
+  active: Boolean
   facilities: [Facility!]
   createdAt: String
   updatedAt: String
@@ -1329,7 +1330,6 @@ type TransactionsPayload {
 type TransactionPayload {
   response: ResponsePayload
   transaction: Transactions!
-  pagination: PaginationPayload
 }
 
 type AppointmentPayload {
@@ -1611,6 +1611,75 @@ type TestSpecimenTypesPayload {
   pagination: PaginationPayload
 }
 
+type FacilitiesUser {
+  id: String
+  name: String
+  usersCount: Float
+}
+
+type UserWithRoles {
+  count: Float
+  role: String
+}
+
+type FacilitiesUserWithRoles {
+  id: String
+  name: String
+  users: [UserWithRoles!]
+}
+
+type PracticeFacilities {
+  id: String
+  name: String
+  facility: Float
+}
+
+type PracticeUsers {
+  id: String
+  name: String
+  facilities: [FacilitiesUser!]
+  userCount: Float
+}
+
+type PracticeUsersWithRoles {
+  id: String
+  name: String
+  facilities: [FacilitiesUserWithRoles!]
+  userCount: Float
+}
+
+type PracticesViaDate {
+  id: Int
+  count: Int
+  name: String
+}
+
+type PracticeFacilitiesPayload {
+  practiceFacilities: [PracticeFacilities!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeUsersPayload {
+  practiceUsers: [PracticeUsers!]
+  response: ResponsePayloadResponse
+}
+
+type ActiveInactivePracticesPayload {
+  activePractices: Int
+  inactivePractices: Int
+  response: ResponsePayloadResponse
+}
+
+type PracticesViaDatePayload {
+  practices: [PracticesViaDate!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeUsersWithRolesPayload {
+  practiceUsers: [PracticeUsersWithRoles!]
+  response: ResponsePayloadResponse
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1669,6 +1738,11 @@ type Query {
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
+  getPracticesFacilities: PracticeFacilitiesPayload!
+  getPracticesUser: PracticeUsersPayload!
+  getActiveInactivePractices: ActiveInactivePracticesPayload!
+  getPracticesByYear(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
+  getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!): PracticeUsersWithRolesPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -1952,6 +2026,21 @@ input GetPatientVital {
   id: String!
 }
 
+input PracticesViaDateInputs {
+  date: Float!
+}
+
+input PracticeFacilitiesUsersInputs {
+  roles: [PracticeRolesTypes!]
+  practiceId: String
+}
+
+"""The type is assigned"""
+enum PracticeRolesTypes {
+  DOCTOR
+  PATIENT
+}
+
 input FormInput {
   facilityId: String
   isSystemForm: Boolean
@@ -2038,6 +2127,7 @@ type Mutation {
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  achPayment(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
@@ -2968,6 +3058,19 @@ input PaymentInputsAfterAppointment {
 input GetAllTransactionsInputs {
   facilityId: String
   paginationOptions: PaginationInput!
+}
+
+input ACHPaymentInputs {
+  token: String!
+  firstName: String
+  lastName: String
+  price: String!
+  patientId: String!
+  doctorId: String
+  facilityId: String
+  appointmentId: String!
+  company: String
+  deviceData: String
 }
 
 input CreateInvoiceInputs {

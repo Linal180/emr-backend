@@ -2,7 +2,7 @@ import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { getConnection, Not, Repository } from 'typeorm';
+import { getConnection, In, Not, Repository } from 'typeorm';
 //user import
 import { AttachmentsService } from 'src/attachments/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
@@ -31,6 +31,7 @@ import { User, UserStatus } from './../entities/user.entity';
 import { RolesService } from './roles.service';
 import { File } from 'src/aws/dto/file-input.dto';
 import { UserInfoInput } from '../dto/user-info-input.dto';
+import { Staff } from 'src/providers/entities/staff.entity';
 
 @Injectable()
 export class UsersService {
@@ -166,8 +167,9 @@ export class UsersService {
    */
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
+      let shouldUserUpdateEmergencyAccess=true
+
       const { roles } = updateRoleInput
-      console.log("roles", roles);
       const isSuperAdmin = roles.includes("super-admin");
       if (isSuperAdmin) {
         throw new ConflictException({
@@ -175,14 +177,27 @@ export class UsersService {
           error: 'Can not assign this role to user',
         });
       }
+
       const user = await this.findUserById(updateRoleInput.id);
+      if(updateRoleInput.roles.includes('emergency-access')){
+        const permissions =  user.roles.map((role) => role?.rolePermissions.map((item)=> item?.permission))
+        const permissionsFlat = permissions.flat()
+
+        shouldUserUpdateEmergencyAccess= !!permissionsFlat.find(permission=>permission.name==='emergencyAccess')
+        if(!shouldUserUpdateEmergencyAccess){
+          throw new ConflictException({
+            status: HttpStatus.CONFLICT,
+            error: 'Can not assign this role to user',
+          });
+        }
+      }
+      
       if (user) {
         const fetchRoles = await getConnection()
           .getRepository(Role)
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
-        console.log("fetchRoles", fetchRoles);
         user.roles = fetchRoles
         return await this.usersRepository.save(user);
       }
@@ -198,119 +213,46 @@ export class UsersService {
 
   async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput: EmergencyAccessUserInput): Promise<EmergencyAccessUserPayload> {
     const { page, limit } = emergencyAccessUsersInput.paginationInput
+    const { email, facilityId, practiceId } = emergencyAccessUsersInput
 
-    if (emergencyAccessUsersInput.email) {
-      const [emergencyAccessUsers, totalCount] = await getConnection()
-        .getRepository(User)
-        .createQueryBuilder('user')
-        .skip((page - 1) * limit)
-        .take(limit)
-        .innerJoin(qb2 => {
-          return qb2
-            .select('user.id', 'id')
-            .from(User, 'user')
-            .innerJoin('user.roles', 'userRoles')
-            .where('userRoles.role = :role', { role: 'emergency-access' });
-        }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
-        .leftJoinAndSelect('user.roles', 'userRoles')
-        .where('user.email like :email', { email: `%${emergencyAccessUsersInput.email}%` })
-        .getManyAndCount()
+    const baseQuery= getConnection()
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .skip((page - 1) * limit)
+    .take(limit)
+    .innerJoin(qb2 => {
+      return qb2
+        .select('user.id', 'id')
+        .from(User, 'user')
+        .innerJoin('user.roles', 'userRoles')
+        .where('userRoles.role = :role', { role: 'emergency-access' });
+    }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+    .leftJoinAndSelect('user.roles', 'userRoles')
 
-      const totalPages = Math.ceil(totalCount / limit)
-
-      return {
-        pagination: {
-          totalCount,
-          page,
-          limit,
-          totalPages,
-        },
-        emergencyAccessUsers
-      }
-    }
-
-    if (emergencyAccessUsersInput.facilityId) {
-      const [emergencyAccessUsers, totalCount] = await getConnection()
-        .getRepository(User)
-        .createQueryBuilder('user')
-        .skip((page - 1) * limit)
-        .take(limit)
-        .innerJoin(qb2 => {
-          return qb2
-            .select('user.id', 'id')
-            .from(User, 'user')
-            .innerJoin('user.roles', 'userRoles')
-            .where('userRoles.role = :role', { role: 'emergency-access' });
-        }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
-        .leftJoinAndSelect('user.roles', 'userRoles')
-        .where('user.facilityId = :facilityId', { facilityId: emergencyAccessUsersInput.facilityId })
-        .getManyAndCount()
-
-      const totalPages = Math.ceil(totalCount / limit)
-
-      return {
-        pagination: {
-          totalCount,
-          page,
-          limit,
-          totalPages,
-        },
-        emergencyAccessUsers
-      }
-    }
-
-    // if(emergencyAccessUsersInput.practiceId){
-    //   const [emergencyAccessUsers,totalCount]=await baseQuery
-    //   .innerJoin(qb2 => {
-    //     return qb2
-    //     .select('user.id', 'id')
-    //     .from(User, 'user')
-    //     .innerJoin('user.facility', 'userFacility')
-    //     .where('userFacility.practiceId = :practiceId', { practiceId:emergencyAccessUsersInput.practiceId });
-    //   }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
-    //   .leftJoinAndSelect('user.facility', 'userFacility')
-    //   .where('user.facilityId = :facilityId',{facilityId:emergencyAccessUsersInput.facilityId })
-    //   .getManyAndCount()
-
-    //   const totalPages=Math.ceil(totalCount / limit)
-
-    //   return {
-    //     pagination:{
-    //       totalCount,
-    //       page,
-    //       limit,
-    //       totalPages,
-    //     },
-    //     emergencyAccessUsers
-    //   }
-    // }
-
-    const [emergencyAccessUsers, totalCount] = await getConnection()
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .skip((page - 1) * limit)
-      .take(limit)
+      const [emergencyAccessUsers, totalCount] = await baseQuery
       .innerJoin(qb2 => {
-        return qb2
-          .select('user.id', 'id')
-          .from(User, 'user')
-          .innerJoin('user.roles', 'userRoles')
-          .where('userRoles.role = :role', { role: 'emergency-access' });
-      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
-      .leftJoinAndSelect('user.roles', 'userRoles')
-      .getManyAndCount()
+            return qb2
+            .select('user.id', 'id')
+            .from(User, 'user')
+            .innerJoin('user.facility', 'userFacility')
+            .where(practiceId?'userFacility.practiceId = :practiceId': '1 = 1', { practiceId:emergencyAccessUsersInput.practiceId });
+          }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
+          .leftJoinAndSelect('user.facility', 'userFacility')
+        .where(email? 'user.email like :email':'1=1', { email: `%${email}%` })
+        .andWhere(facilityId ? 'user.facilityId = :facilityId' :'1=1', { facilityId: facilityId })
+        .getManyAndCount()
 
-    const totalPages = Math.ceil(totalCount / limit)
+      const totalPages = Math.ceil(totalCount / limit)
 
-    return {
-      pagination: {
-        totalCount,
-        page,
-        limit,
-        totalPages,
-      },
-      emergencyAccessUsers
-    }
+      return {
+        pagination: {
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        emergencyAccessUsers
+      }
   }
 
   /**
@@ -840,7 +782,6 @@ export class UsersService {
     }
   }
 
-
   /**
    * Create2s fatoken
    * @param user 
@@ -869,7 +810,11 @@ export class UsersService {
     }
   }
 
-
+  /**
+   * Creates login token
+   * @param user 
+   * @returns login token 
+   */
   async createLoginToken(user: User): Promise<AccessUserPayload> {
     const payload = { email: user.email, sub: user.id };
     const access_token = await this.jwtService.sign(payload);
@@ -884,6 +829,11 @@ export class UsersService {
     };
   }
 
+  /**
+   * Verify2s fa token
+   * @param token 
+   * @returns fa token 
+   */
   async verify2FaToken(token: string): Promise<User2FAVerifiedPayload> {
     const secret = await this.jwtService.verify(token);
     const user = await this.findUserById(secret.id)
@@ -891,4 +841,40 @@ export class UsersService {
       user
     };
   }
+
+  /**
+   * Gets facility users count
+   * @param facilityId 
+   * @returns facility users count 
+   */
+  async getFacilityUsersCount(facilityId: string): Promise<number> {
+    return await this.usersRepository.count({ where: { facilityId } })
+  }
+
+  async getFacilityUsersWithRolesCount(facilityId: string, roles: string[]) {
+    try {
+      const userRoles = await Promise.all(roles?.map(async (val) => {
+        return {
+          count: await this.usersRepository.count({ where: { facilityId, userType: val } }),
+          role: val
+        }
+      }))
+      const userRole = await this.usersRepository.count({
+        where: {
+          facilityId,
+          userType: Not(In(['super-admin', 'practice-admin', 'facility-admin', 'doctor']))
+        }
+      })
+      userRoles.push({
+        count: userRole,
+        role: "staff"
+      })
+      console.log('userRole', userRole)
+      return userRoles
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+
+    }
+  }
+
 }

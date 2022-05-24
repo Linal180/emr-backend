@@ -87,3 +87,49 @@ export class GetAllTransactionsInputs {
   @Field(type => PaginationInput)
   paginationOptions: PaginationInput
 }
+
+
+@InputType()
+export class ACHPaymentInputs {
+
+  @Field({ nullable: false })
+  token: string
+
+  @Field({ nullable: true })
+  firstName: string;
+
+  @Field({ nullable: true })
+  lastName: string;
+
+  @Field({ nullable: false })
+  price: string
+
+  @Field({ nullable: false })
+  patientId: string;
+
+  @Field({ nullable: true })
+  doctorId: string;
+
+  @Field({ nullable: true })
+  facilityId: string;
+
+  @Field({ nullable: false })
+  appointmentId: string;
+
+  @Field({ nullable: true })
+  company: string;
+
+  @Field({ nullable: true })
+  deviceData: string;
+
+}
+
+@InputType()
+export class PaymentInputs {
+
+  @Field()
+  paymentMethodNonce: string;
+
+  @Field()
+  customerId: string;
+}
