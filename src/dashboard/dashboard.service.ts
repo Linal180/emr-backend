@@ -1,9 +1,10 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //user imports
-import { FacilityService } from "src/facilities/services/facility.service";
+import { getMonthsRecord } from "src/lib/helper";
+import { PracticesViaDate, PracticeUsers } from "./dto/dashboard.dto";
 import { PracticeService } from "src/practice/practice.service";
 import { UsersService } from "src/users/services/users.service";
-import { PracticeUsers } from "./dto/dashboard.dto";
+import { FacilityService } from "src/facilities/services/facility.service";
 import { PracticeFacilitiesInputs, PracticeUsersInputs } from "./dto/dashboard.inputs";
 
 @Injectable()
@@ -62,4 +63,33 @@ export class DashboardService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  /**
+   * Gets active inactive practices
+   * @returns  
+   */
+  async getActiveInactivePracticesCount() {
+    try {
+      const activePractices = await this.practiceService.getActivePractices();
+      const inactivePractices = await this.practiceService.getInactivePractices();
+      return { activePractices, inactivePractices }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Gets practices date
+   * @returns  
+   */
+  async getPracticesDate(date: number): Promise<PracticesViaDate[]> {
+    try {
+      const data = await this.practiceService.getMonthsPractice(date);
+      return getMonthsRecord(data);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+  
 }

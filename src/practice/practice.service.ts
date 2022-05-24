@@ -1,3 +1,4 @@
+
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -5,6 +6,7 @@ import {
   NotFoundException
 } from '@nestjs/common';
 //user imports
+import { getYearDate } from 'src/lib/helper';
 import PracticeInput from './dto/practice-input.dto';
 import { Practice } from './entities/practice.entity';
 import { PracticePayload } from './dto/practice-payload.dto';
@@ -14,10 +16,10 @@ import { CreatePracticeInput } from './dto/create-practice.input';
 import { StaffService } from 'src/providers/services/staff.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
-import { PracticeUsersInputs } from 'src/dashboard/dto/dashboard.inputs';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
+
 
 @Injectable()
 export class PracticeService {
@@ -152,7 +154,43 @@ export class PracticeService {
     }
   }
 
+  /**
+   * All practices
+   * @returns  
+   */
   async allPractices() {
     return await this.practiceRepository.find({ select: ['id', 'name'] })
+  }
+
+  /**
+   * Gets active practices
+   * @returns active practices 
+   */
+  async getActivePractices(): Promise<number> {
+    return await this.practiceRepository.count({ where: { active: true } })
+  }
+
+
+  /**
+   * Gets inactive practices
+   * @returns inactive practices 
+   */
+  async getInactivePractices(): Promise<number> {
+    return await this.practiceRepository.count({ where: { active: false } })
+  }
+
+  async getMonthsPractice(date: number): Promise<Practice[]> {
+    try {
+      const { endDate, startDate } = getYearDate(date)
+      const data = await this.practiceRepository
+        .createQueryBuilder('practice')
+        .where('practice.createdAt >= :after', { after: startDate })
+        .andWhere('practice.createdAt < :before', { before: endDate })
+        .getMany();
+      return data
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+
+    }
   }
 }

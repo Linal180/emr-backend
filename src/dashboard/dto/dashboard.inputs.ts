@@ -16,3 +16,10 @@ export class PracticeUsersInputs {
 	@Field(() => PaginationInput)
 	paginationOptions: PaginationInput
 }
+
+@InputType()
+export class PracticesViaDateInputs {
+	
+	@Field(() => Number, { nullable: false })
+	date: number
+}

@@ -835,6 +835,7 @@ type Practice {
   medicare: String
   medicaid: String
   champus: String
+  active: Boolean
   facilities: [Facility!]
   createdAt: String
   updatedAt: String
@@ -1622,6 +1623,12 @@ type PracticeUsers {
   userCount: Float
 }
 
+type PracticesViaDate {
+  id: Int
+  count: Int
+  name: String
+}
+
 type PracticeFacilitiesPayload {
   practiceFacilities: [PracticeFacilities!]
   response: ResponsePayloadResponse
@@ -1629,6 +1636,17 @@ type PracticeFacilitiesPayload {
 
 type PracticeUsersPayload {
   practiceUsers: [PracticeUsers!]
+  response: ResponsePayloadResponse
+}
+
+type ActiveInactivePracticesPayload {
+  activePractices: Int
+  inactivePractices: Int
+  response: ResponsePayloadResponse
+}
+
+type PracticesViaDatePayload {
+  practices: [PracticesViaDate!]
   response: ResponsePayloadResponse
 }
 
@@ -1692,6 +1710,8 @@ type Query {
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
+  getActiveInactivePractices: ActiveInactivePracticesPayload!
+  getPracticesViaDate(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -1973,6 +1993,10 @@ input PatientVitalInput {
 
 input GetPatientVital {
   id: String!
+}
+
+input PracticesViaDateInputs {
+  date: Float!
 }
 
 input FormInput {

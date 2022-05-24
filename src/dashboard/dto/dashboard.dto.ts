@@ -1,6 +1,6 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+//user import
 import { ResponsePayloadResponse } from "src/customDecorators/response-payload.dto";
-import { Facility } from "src/facilities/entities/facility.entity";
 
 @ObjectType()
 export class SelectOptions {
@@ -13,7 +13,14 @@ export class SelectOptions {
 }
 
 @ObjectType()
-export class FacilitiesUser extends SelectOptions  {
+export class PracticeDate extends SelectOptions {
+
+  @Field({ nullable: true })
+  date: string
+}
+
+@ObjectType()
+export class FacilitiesUser extends SelectOptions {
 
   @Field({ nullable: true })
   usersCount: number
@@ -34,6 +41,21 @@ export class PracticeUsers extends SelectOptions {
   userCount: number
 }
 
+
+@ObjectType()
+export class PracticesViaDate {
+  @Field(() => Int, { nullable: true })
+  id: number;
+
+  @Field(() => Int, { nullable: true })
+  count: number;
+
+  @Field({ nullable: true })
+  name: string;
+}
+
+//payloads
+
 @ObjectType()
 export class PracticeFacilitiesPayload {
 
@@ -49,6 +71,30 @@ export class PracticeUsersPayload {
 
   @Field(() => [PracticeUsers], { nullable: true })
   practiceUsers: PracticeUsers[]
+
+  @Field({ nullable: true })
+  response: ResponsePayloadResponse
+}
+
+
+@ObjectType()
+export class ActiveInactivePracticesPayload {
+
+  @Field(() => Int, { nullable: true })
+  activePractices: number
+
+  @Field(() => Int, { nullable: true })
+  inactivePractices: number
+
+  @Field({ nullable: true })
+  response: ResponsePayloadResponse
+}
+
+@ObjectType()
+export class PracticesViaDatePayload {
+
+  @Field(() => [PracticesViaDate], { nullable: true })
+  practices: PracticesViaDate[]
 
   @Field({ nullable: true })
   response: ResponsePayloadResponse

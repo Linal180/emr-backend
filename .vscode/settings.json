@@ -2,6 +2,7 @@
   "cSpell.words": [
     "braintree",
     "ILIKE",
-    "nestjs"
+    "nestjs",
+    "typeorm"
   ]
 }
