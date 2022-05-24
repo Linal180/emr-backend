@@ -166,8 +166,9 @@ export class UsersService {
    */
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
+      let shouldUserUpdateEmergencyAccess=true
+
       const { roles } = updateRoleInput
-      console.log("roles", roles);
       const isSuperAdmin = roles.includes("super-admin");
       if (isSuperAdmin) {
         throw new ConflictException({
@@ -175,14 +176,27 @@ export class UsersService {
           error: 'Can not assign this role to user',
         });
       }
+
       const user = await this.findUserById(updateRoleInput.id);
+      if(updateRoleInput.roles.includes('emergency-access')){
+        const permissions =  user.roles.map((role) => role?.rolePermissions.map((item)=> item?.permission))
+        const permissionsFlat = permissions.flat()
+
+        shouldUserUpdateEmergencyAccess= !!permissionsFlat.find(permission=>permission.name==='emergencyAccess')
+        if(!shouldUserUpdateEmergencyAccess){
+          throw new ConflictException({
+            status: HttpStatus.CONFLICT,
+            error: 'Can not assign this role to user',
+          });
+        }
+      }
+      
       if (user) {
         const fetchRoles = await getConnection()
           .getRepository(Role)
           .createQueryBuilder("role")
           .where("role.role IN (:...roles)", { roles })
           .getMany();
-        console.log("fetchRoles", fetchRoles);
         user.roles = fetchRoles
         return await this.usersRepository.save(user);
       }
