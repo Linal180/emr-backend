@@ -3,11 +3,12 @@ import { Args, Query, Resolver } from "@nestjs/graphql";
 //user imports
 import { DashboardService } from "./dashboard.service";
 import PermissionGuard from "src/users/auth/role.guard";
-import { PracticesViaDateInputs } from "./dto/dashboard.inputs";
+import { PracticeFacilitiesUsersInputs, PracticesViaDateInputs } from "./dto/dashboard.inputs";
 import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
 import {
   ActiveInactivePracticesPayload, PracticeFacilitiesPayload, PracticesViaDatePayload, PracticeUsersPayload,
-  PracticeFacilities
+  PracticeFacilities,
+  PracticeUsersWithRolesPayload
 } from "./dto/dashboard.dto";
 
 
@@ -63,7 +64,7 @@ export class DashboardResolver {
   @Query(() => PracticesViaDatePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
 
-  async getPracticesViaDate(
+  async getPracticesByYear(
     @Args('practicesViaDateInputs') practicesViaDateInputs: PracticesViaDateInputs
   ): Promise<PracticesViaDatePayload> {
 
@@ -76,5 +77,20 @@ export class DashboardResolver {
       }
     }
   }
+
+
+  @Query(() => PracticeUsersWithRolesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+
+  async getPracticeFacilitiesUsersWithRoles(@Args('practiceFacilitiesUsersInputs') practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs): Promise<PracticeUsersWithRolesPayload> {
+    return {
+      practiceUsers: await this.dashboardService.getPracticeFacilityUsersWithRolesCount(practiceFacilitiesUsersInputs),
+      response: {
+        status: 200,
+        message: 'Practice user get successfully'
+      }
+    }
+  }
+
 
 }

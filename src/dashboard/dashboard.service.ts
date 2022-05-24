@@ -1,11 +1,11 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //user imports
 import { getMonthsRecord } from "src/lib/helper";
-import { PracticesViaDate, PracticeUsers } from "./dto/dashboard.dto";
+import { PracticesViaDate, PracticeUsers, PracticeUsersWithRoles } from "./dto/dashboard.dto";
 import { PracticeService } from "src/practice/practice.service";
 import { UsersService } from "src/users/services/users.service";
 import { FacilityService } from "src/facilities/services/facility.service";
-import { PracticeFacilitiesInputs, PracticeUsersInputs } from "./dto/dashboard.inputs";
+import { PracticeFacilitiesInputs, PracticeFacilitiesUsersInputs } from "./dto/dashboard.inputs";
 
 @Injectable()
 export class DashboardService {
@@ -38,10 +38,9 @@ export class DashboardService {
    * @param practiceUsersInputs 
    * @returns  
    */
-  async getPracticeUsersCount(practiceUsersInputs?: PracticeUsersInputs): Promise<PracticeUsers[]> {
+  async getPracticeUsersCount(): Promise<PracticeUsers[]> {
     try {
       const practices = await this.practiceService.allPractices();
-
       const practiceFacilities = await Promise.all(practices?.map(async ({ id, name }) =>
       ({
         facility: await this.facilityService.getPracticeFacilities(id),
@@ -91,5 +90,29 @@ export class DashboardService {
       throw new InternalServerErrorException(error);
     }
   }
-  
+
+  async getPracticeFacilityUsersWithRolesCount(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs): Promise<PracticeUsersWithRoles[]> {
+    try {
+      const { practiceId, roles } = practiceFacilitiesUsersInputs
+      const practices = await this.practiceService.allPractices(practiceId);
+      const practiceFacilities = await Promise.all(practices?.map(async ({ id, name }) =>
+      ({
+        facility: await this.facilityService.getPracticeFacilities(id),
+        id, name
+      })))
+
+      const practiceUsers = await Promise.all(practiceFacilities?.map(async ({ facility, id, name }) => {
+        const facilities = await Promise.all(facility?.map(async ({ id, name }) => {
+          const users = await this.userService.getFacilityUsersWithRolesCount(id, roles);
+          return { users, id, name }
+        }))
+
+        return { facilities, id, name }
+      }))
+
+      return practiceUsers
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

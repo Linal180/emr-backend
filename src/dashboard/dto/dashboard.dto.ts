@@ -22,9 +22,27 @@ export class PracticeDate extends SelectOptions {
 @ObjectType()
 export class FacilitiesUser extends SelectOptions {
 
-  @Field({ nullable: true })
+  @Field(() => Number, { nullable: true })
   usersCount: number
 }
+
+@ObjectType()
+export class UserWithRoles {
+
+  @Field(() => Number, { nullable: true })
+  count: number;
+
+  @Field({ nullable: true })
+  role: string;
+}
+
+@ObjectType()
+export class FacilitiesUserWithRoles extends SelectOptions {
+
+  @Field(() => [UserWithRoles], { nullable: true })
+  users: UserWithRoles[]
+}
+
 
 @ObjectType()
 export class PracticeFacilities extends SelectOptions {
@@ -37,8 +55,21 @@ export class PracticeFacilities extends SelectOptions {
 @ObjectType()
 export class PracticeUsers extends SelectOptions {
 
+  @Field(() => [FacilitiesUser], { nullable: true })
+  facilities: FacilitiesUser[]
+
   @Field(() => Number, { nullable: true })
-  userCount: number
+  userCount?: number
+}
+
+@ObjectType()
+export class PracticeUsersWithRoles extends SelectOptions {
+
+  @Field(() => [FacilitiesUserWithRoles], { nullable: true })
+  facilities: FacilitiesUserWithRoles[]
+
+  @Field(() => Number, { nullable: true })
+  userCount?: number
 }
 
 
@@ -95,6 +126,16 @@ export class PracticesViaDatePayload {
 
   @Field(() => [PracticesViaDate], { nullable: true })
   practices: PracticesViaDate[]
+
+  @Field({ nullable: true })
+  response: ResponsePayloadResponse
+}
+
+@ObjectType()
+export class PracticeUsersWithRolesPayload {
+
+  @Field(() => [PracticeUsersWithRoles], { nullable: true })
+  practiceUsers: PracticeUsersWithRoles[]
 
   @Field({ nullable: true })
   response: ResponsePayloadResponse

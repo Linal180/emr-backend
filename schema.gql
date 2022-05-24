@@ -1611,6 +1611,23 @@ type TestSpecimenTypesPayload {
   pagination: PaginationPayload
 }
 
+type FacilitiesUser {
+  id: String
+  name: String
+  usersCount: Float
+}
+
+type UserWithRoles {
+  count: Float
+  role: String
+}
+
+type FacilitiesUserWithRoles {
+  id: String
+  name: String
+  users: [UserWithRoles!]
+}
+
 type PracticeFacilities {
   id: String
   name: String
@@ -1620,6 +1637,14 @@ type PracticeFacilities {
 type PracticeUsers {
   id: String
   name: String
+  facilities: [FacilitiesUser!]
+  userCount: Float
+}
+
+type PracticeUsersWithRoles {
+  id: String
+  name: String
+  facilities: [FacilitiesUserWithRoles!]
   userCount: Float
 }
 
@@ -1647,6 +1672,11 @@ type ActiveInactivePracticesPayload {
 
 type PracticesViaDatePayload {
   practices: [PracticesViaDate!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeUsersWithRolesPayload {
+  practiceUsers: [PracticeUsersWithRoles!]
   response: ResponsePayloadResponse
 }
 
@@ -1711,7 +1741,8 @@ type Query {
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
   getActiveInactivePractices: ActiveInactivePracticesPayload!
-  getPracticesViaDate(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
+  getPracticesByYear(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
+  getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!): PracticeUsersWithRolesPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -1997,6 +2028,17 @@ input GetPatientVital {
 
 input PracticesViaDateInputs {
   date: Float!
+}
+
+input PracticeFacilitiesUsersInputs {
+  roles: [PracticeRolesTypes!]
+  practiceId: String
+}
+
+"""The type is assigned"""
+enum PracticeRolesTypes {
+  DOCTOR
+  PATIENT
 }
 
 input FormInput {

@@ -158,8 +158,8 @@ export class PracticeService {
    * All practices
    * @returns  
    */
-  async allPractices() {
-    return await this.practiceRepository.find({ select: ['id', 'name'] })
+  async allPractices(id?: string) {
+    return await this.practiceRepository.find({ select: ['id', 'name'], where: id ? { id } : {} })
   }
 
   /**
