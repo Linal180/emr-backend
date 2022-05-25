@@ -13,6 +13,10 @@ import { AwsService } from 'src/aws/aws.service';
 import { FormsService } from "./forms.service";
 import { Form, FormType } from "../entities/form.entity";
 import { PatientService } from "src/patients/services/patient.service";
+import { CreatePatientItemInput } from "src/patients/dto/create-patientItem.input ";
+import { CreateContactInput } from "src/providers/dto/create-contact.input";
+import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, Patient, PRONOUNS, RACE, SEXUALORIENTATION } from "src/patients/entities/patient.entity";
+import { ContactType, RelationshipType } from "src/providers/entities/contact.entity";
 
 
 @Injectable()
@@ -29,36 +33,156 @@ export class UserFormsService {
     private readonly patientService: PatientService,
   ) { }
 
+  async createPatient() {
+
+  }
+
   async createPatientAppointment(form: Form, userForm: UserForms) {
-    const { type, id } = form;
+    const { type, id, facilityId } = form;
     const { userFormElements } = userForm;
     try {
+      const formElements = await this.formService.getFormElements(id)
+      const patientElements = formElements?.filter(({ tableName }) => tableName === 'Patients')
+      const patientsInputs = patientElements?.map(({ fieldId }) => fieldId)
+      const contactElements = formElements?.filter(({ tableName }) => tableName === 'Contacts')
+      const contactInputs = contactElements?.map(({ fieldId }) => fieldId)
+      const userPatientElements = userFormElements?.filter(({ FormsElementsId }) => patientsInputs?.includes(FormsElementsId))
+      const userContactElements = userFormElements?.filter(({ FormsElementsId }) => contactInputs?.includes(FormsElementsId))
+      const patient = {}
+      patientElements?.map(({ columnName, fieldId }) => {
+        const element = userPatientElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+        const { value } = element
+        return patient[columnName] = value
+      })
+      const contacts = {}
+      contactElements?.map(({ columnName, fieldId }) => {
+        const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+        const { value } = element
+        return contacts[columnName] = value
+      })
+
       if (type === FormType.PATIENT) {
-        const formElements = await this.formService.getFormElements(id)
-        const patientElements = formElements?.filter(({ tableName }) => tableName === 'Patients')
-        const patientsInputs = patientElements?.map(({ fieldId }) => fieldId)
-        const contactElements = formElements?.filter(({ tableName }) => tableName === 'Contacts')
-        const contactInputs = contactElements?.map(({ fieldId }) => fieldId)
-        const userPatientElements = userFormElements?.filter(({ FormsElementsId }) => patientsInputs?.includes(FormsElementsId))
-        const userContactElements = userFormElements?.filter(({ FormsElementsId }) => contactInputs?.includes(FormsElementsId))
-        console.log('userPatientElements => ', userPatientElements)
-        console.log('-------------------------------')
-        console.log('userContactElements => ', userContactElements)
-        console.log('-------------------------------')
-        const patient = patientElements?.map(({ columnName, fieldId }) => {
-          const element = userPatientElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-          const { value } = element
-          return { [columnName]: value }
-        })
-        const contacts = contactElements?.map(({ columnName, fieldId }) => {
-          const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-          const { value } = element
-          return { [columnName]: value }
-        })
-        console.log('patient values => ', patient)
-        console.log('----------------------------')
-        console.log('contacts => ', contacts)
-        // await this.patientService.createPatient()
+        const {
+          language, suffix, firstName, lastName, middleName, firstNameUsed, prefferedName, previousFirstName,
+          previouslastName, motherMaidenName, ssn, dob, gender, homeBound, race, ethnicity, maritialStatus,
+          genderIdentity, sexAtBirth, pronouns
+        } = patient as Patient || {}
+
+        const { zipCode, address, address2, city, state, country, name, relationship, phone, mobile, email, } = contacts as CreateContactInput || {}
+
+        const inputs = {
+          createPatientItemInput: {
+            deceasedDate: "",
+            registrationDate: "",
+            statementNoteDateTo: "",
+            statementNoteDateFrom: "",
+            suffix: suffix || "",
+            firstName: firstName || "",
+            middleName: middleName || "",
+            lastName: lastName || "",
+            firstNameUsed: firstNameUsed || "",
+            prefferedName: prefferedName || "",
+            previousFirstName: previousFirstName || "",
+            facilityId,
+            callToConsent: false,
+            privacyNotice: false,
+            releaseOfInfoBill: false,
+            practiceId: "",
+            medicationHistoryAuthority: false,
+            ethnicity: ethnicity || ETHNICITY.NONE,
+            homeBound: homeBound || HOMEBOUND.NO,
+            holdStatement: HOLDSTATEMENT.NONE,
+            previouslastName: previouslastName || "",
+            motherMaidenName: motherMaidenName || "",
+            ssn: ssn || "",
+            statementNote: "",
+            language: language || "",
+            patientNote: "",
+            email: email || "",
+            pronouns: pronouns || PRONOUNS.NONE,
+            race: race || RACE.OTHER,
+            gender: gender || GENDERIDENTITY.NONE,
+            sexAtBirth: sexAtBirth || GENDERIDENTITY.NONE,
+            genderIdentity: genderIdentity || GENDERIDENTITY.NONE,
+            maritialStatus: maritialStatus || MARITIALSTATUS.SINGLE,
+            sexualOrientation: SEXUALORIENTATION.NONE,
+            statementDelivereOnline: false,
+            dob: dob || "",
+            registrationDepartment: "",
+            patientRecord: "",
+            primaryDepartment: "",
+            smsPermission: false,
+            phonePermission: false,
+            pharmacy: "",
+            preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE
+          },
+          createContactInput: {
+            email: email || "",
+            city: city || "",
+            zipCode: zipCode || "",
+            state: state || "",
+            facilityId,
+            phone: phone || "",
+            address2: address2 || "",
+            address: address || "",
+            contactType: ContactType.SELF,
+            country: country || "",
+            primaryContact: true,
+          },
+          createEmployerInput: {
+            name: "",
+            email: "",
+            phone: phone || "",
+            usualOccupation: "",
+            industry: "",
+            mobile: mobile || ""
+          },
+          createGuardianContactInput: {
+            firstName: "",
+            middleName: "",
+            primaryContact: false,
+            lastName: "",
+            contactType: ContactType.GUARDIAN,
+            suffix: "",
+          },
+          createEmergencyContactInput: {
+            contactType: ContactType.EMERGENCY,
+            name: name || "",
+            phone: "",
+            mobile: "",
+            primaryContact: false,
+            relationship: relationship || RelationshipType.OTHER,
+            facilityId
+          },
+          createGuarantorContactInput: {
+            firstName: "",
+            middleName: "",
+            lastName: "",
+            email: "",
+            contactType: ContactType.GUARANDOR,
+            relationship: RelationshipType.OTHER,
+            employerName: "",
+            address2: "",
+            zipCode: "",
+            city: "",
+            state: "",
+            phone: "",
+            suffix: "",
+            country: "",
+            ssn: "000-00-0000",
+            primaryContact: false,
+            address: "",
+          },
+          createNextOfKinContactInput: {
+            contactType: ContactType.NEXT_OF_KIN,
+            name: "",
+            phone: "",
+            relationship: RelationshipType.OTHER,
+            mobile: "",
+            primaryContact: false,
+          },
+        };
+        await this.patientService.createPatient(inputs)
       }
 
       else if (type === FormType.APPOINTMENT) {
