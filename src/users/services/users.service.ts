@@ -196,6 +196,11 @@ export class UsersService {
     }
   }
 
+  /**
+   * Fetch emergency access role users
+   * @param emergencyAccessUsersInput 
+   * @returns emergency access role users 
+   */
   async fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput: EmergencyAccessUserInput): Promise<EmergencyAccessUserPayload> {
     const { page, limit } = emergencyAccessUsersInput.paginationInput
 
@@ -332,7 +337,7 @@ export class UsersService {
     }
   }
   /**
-  * Searchs users service
+  * Search users service
   * @param searchTerm 
   * @returns users by searchTerms 
   */
@@ -374,6 +379,13 @@ export class UsersService {
     return await this.usersRepository.findOne({ email: email.trim().toLowerCase() });
   }
 
+
+  /**
+   * Saves user id
+   * @param id 
+   * @param userInstance 
+   * @returns user id 
+   */
   async saveUserId(id: string, userInstance: User): Promise<User> {
     userInstance.userId = id
     return await this.usersRepository.save(userInstance);
@@ -522,6 +534,12 @@ export class UsersService {
     }
   }
 
+
+  /**
+   * Updates user info
+   * @param userInfoInput 
+   * @returns user info 
+   */
   async updateUserInfo(userInfoInput: UserInfoInput): Promise<User> {
     try {
       return await this.utilsService.updateEntityManager(User, userInfoInput.id, userInfoInput, this.usersRepository)
@@ -589,7 +607,7 @@ export class UsersService {
   }
 
   /**
-   * Verifys users service
+   * Verify users service
    * @param token 
    * @returns  jwt object with roles
    */
@@ -619,7 +637,7 @@ export class UsersService {
   }
 
   /**
-   * Forgots password
+   * Forgot password
    * @param email 
    * @returns password 
    */
@@ -644,7 +662,7 @@ export class UsersService {
   }
 
   /**
-   * Verifys email
+   * Verify email
    * @param token 
    * @returns email 
    */
@@ -909,6 +927,7 @@ export class UsersService {
     return await this.usersRepository.count({ where: { facilityId } })
   }
 
+
   async getFacilityUsersWithRolesCount(facilityId: string, roles: string[]) {
     try {
       const userRoles = await Promise.all(roles?.map(async (val) => {
@@ -927,7 +946,7 @@ export class UsersService {
         count: userRole,
         role: "staff"
       })
-      console.log('userRole', userRole)
+
       return userRoles
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -935,4 +954,18 @@ export class UsersService {
     }
   }
 
+
+  async usersWithRoles(id: string): Promise<Role[]> {
+    try {
+      return await this.rolesRepository.find({
+        where: {
+          role: Not(In(['super-admin', 'practice-admin']))
+        },
+        relations: ['users'],
+        select: ['id', 'role', 'users', 'customRole']
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

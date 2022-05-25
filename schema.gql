@@ -860,6 +860,7 @@ type Facility {
   serviceCode: ServiceCode!
   staff: [Staff!]
   doctors: [Doctor!]
+  appointments: [Appointment!]
   user: [User!]
   contacts: [Contact!]
   services: [Service!]
@@ -1159,77 +1160,6 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
-type PermissionsPayload {
-  response: ResponsePayload
-  permissions: [Permission]
-  pagination: PaginationPayload
-}
-
-type PermissionPayload {
-  response: ResponsePayload
-  permission: Permission
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
-  pagination: PaginationPayload
-}
-
-type RolePayload {
-  response: ResponsePayload
-  role: Role
-}
-
-type AccessUserPayload {
-  access_token: String
-  access_2fa_token: String
-  userId: String
-  isTwoFactorEnabled: Boolean
-  roles: [Role!]
-  response: ResponsePayload
-}
-
-type EmergencyAccessUserPayload {
-  emergencyAccessUsers: [User!]
-  pagination: PaginationPayload
-  response: ResponsePayload
-}
-
-type ForgotPasswordPayload {
-  response: ResponsePayload
-}
-
-type UserPayload {
-  user: User
-  access_token: String
-  response: ResponsePayload
-}
-
-type UsersPayload {
-  response: ResponsePayload
-  users: [User]
-  pagination: PaginationPayload
-}
-
-type PatientPayload {
-  response: ResponsePayload
-  patient: Patient
-}
-
-type PatientAttachmentsPayload {
-  response: ResponsePayload
-  attachments: [Attachment]
-  pagination: PaginationPayload
-}
-
-type PatientsPayload {
-  response: ResponsePayload
-  patients: [Patient]
-  facilityId: String
-  pagination: PaginationPayload
-}
-
 type ContactPayload {
   contact: Contact
   response: ResponsePayload
@@ -1284,6 +1214,77 @@ type StaffPayload {
   response: ResponsePayload
 }
 
+type PatientPayload {
+  response: ResponsePayload
+  patient: Patient
+}
+
+type PatientAttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type PatientsPayload {
+  response: ResponsePayload
+  patients: [Patient]
+  facilityId: String
+  pagination: PaginationPayload
+}
+
+type PermissionsPayload {
+  response: ResponsePayload
+  permissions: [Permission]
+  pagination: PaginationPayload
+}
+
+type PermissionPayload {
+  response: ResponsePayload
+  permission: Permission
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+  pagination: PaginationPayload
+}
+
+type RolePayload {
+  response: ResponsePayload
+  role: Role
+}
+
+type AccessUserPayload {
+  access_token: String
+  access_2fa_token: String
+  userId: String
+  isTwoFactorEnabled: Boolean
+  roles: [Role!]
+  response: ResponsePayload
+}
+
+type EmergencyAccessUserPayload {
+  emergencyAccessUsers: [User!]
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  access_token: String
+  response: ResponsePayload
+}
+
+type UsersPayload {
+  response: ResponsePayload
+  users: [User]
+  pagination: PaginationPayload
+}
+
 type PracticePayload {
   response: ResponsePayload
   practice: Practice
@@ -1295,17 +1296,6 @@ type PracticesPayload {
   pagination: PaginationPayload
 }
 
-type FacilitiesPayload {
-  response: ResponsePayload
-  facilities: [Facility]
-  pagination: PaginationPayload
-}
-
-type FacilityPayload {
-  response: ResponsePayload
-  facility: Facility
-}
-
 type ServicePayload {
   response: ResponsePayload
   service: Service
@@ -1314,6 +1304,17 @@ type ServicePayload {
 type ServicesPayload {
   response: ResponsePayload
   services: [Service]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
+type FacilitiesPayload {
+  response: ResponsePayload
+  facilities: [Facility]
   pagination: PaginationPayload
 }
 
@@ -1680,6 +1681,11 @@ type PracticeUsersWithRolesPayload {
   response: ResponsePayloadResponse
 }
 
+type PracticeFacilityAppointmentsPayload {
+  facilitiesAppointments: [Facility!]
+  response: ResponsePayloadResponse
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1743,6 +1749,8 @@ type Query {
   getActiveInactivePractices: ActiveInactivePracticesPayload!
   getPracticesByYear(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
   getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!): PracticeUsersWithRolesPayload!
+  getPracticeFacilityAppointments(practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs!): PracticeFacilityAppointmentsPayload!
+  getUsersWithRoles(usersWithRolesInputs: UsersWithRolesInputs!): PracticeFacilityAppointmentsPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -2039,6 +2047,14 @@ input PracticeFacilitiesUsersInputs {
 enum PracticeRolesTypes {
   DOCTOR
   PATIENT
+}
+
+input PracticeFacilityAppointmentsInputs {
+  practiceId: String
+}
+
+input UsersWithRolesInputs {
+  practiceId: String
 }
 
 input FormInput {

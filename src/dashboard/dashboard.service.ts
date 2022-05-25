@@ -5,7 +5,7 @@ import { PracticesViaDate, PracticeUsers, PracticeUsersWithRoles } from "./dto/d
 import { PracticeService } from "src/practice/practice.service";
 import { UsersService } from "src/users/services/users.service";
 import { FacilityService } from "src/facilities/services/facility.service";
-import { PracticeFacilitiesInputs, PracticeFacilitiesUsersInputs } from "./dto/dashboard.inputs";
+import { PracticeFacilitiesInputs, PracticeFacilitiesUsersInputs, PracticeFacilityAppointmentsInputs, UsersWithRolesInputs } from "./dto/dashboard.inputs";
 
 @Injectable()
 export class DashboardService {
@@ -91,6 +91,11 @@ export class DashboardService {
     }
   }
 
+  /**
+   * Gets practice facility users with roles count
+   * @param practiceFacilitiesUsersInputs 
+   * @returns practice facility users with roles count 
+   */
   async getPracticeFacilityUsersWithRolesCount(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs): Promise<PracticeUsersWithRoles[]> {
     try {
       const { practiceId, roles } = practiceFacilitiesUsersInputs
@@ -115,4 +120,33 @@ export class DashboardService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  /**
+   * Practices facility appointments
+   * @param input 
+   * @returns  
+   */
+  async practiceFacilityAppointments(input: PracticeFacilityAppointmentsInputs) {
+    const { practiceId } = input
+    try {
+      const facilities = await this.facilityService.getPracticeFacilitiesAppointments(practiceId)
+      return facilities
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getUsersWithRoles(inputs: UsersWithRolesInputs) {
+    try {
+      const { practiceId } = inputs
+      const userRoles = await this.userService.usersWithRoles(practiceId)
+      console.log('-----------------------------')
+      console.log('userRoles =>>>', userRoles)
+      console.log('-----------------------------')
+      return userRoles
+    } catch (error) {
+
+    }
+  }
+
 }

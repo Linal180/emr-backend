@@ -3,6 +3,7 @@
     "braintree",
     "ILIKE",
     "nestjs",
+    "timestamptz",
     "typeorm"
   ]
 }

@@ -186,4 +186,8 @@ export class FacilityService {
   async getPracticeFacilities(practiceId: string) {
     return await this.facilityRepository.find({ where: { practiceId }, select: ['id', 'name'] })
   }
+
+  async getPracticeFacilitiesAppointments(practiceId: string) {
+    return await this.facilityRepository.find({ where: { practiceId }, select: ['id', 'name','appointments'],relations:['appointments'] })
+  }
 }

@@ -1,6 +1,8 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 //user import
 import { ResponsePayloadResponse } from "src/customDecorators/response-payload.dto";
+import { Facility } from "src/facilities/entities/facility.entity";
+import { Role } from "src/users/entities/role.entity";
 
 @ObjectType()
 export class SelectOptions {
@@ -136,6 +138,26 @@ export class PracticeUsersWithRolesPayload {
 
   @Field(() => [PracticeUsersWithRoles], { nullable: true })
   practiceUsers: PracticeUsersWithRoles[]
+
+  @Field({ nullable: true })
+  response: ResponsePayloadResponse
+}
+
+@ObjectType()
+export class PracticeFacilityAppointmentsPayload {
+
+  @Field(() => [Facility], { nullable: true })
+  facilitiesAppointments: Facility[]
+
+  @Field({ nullable: true })
+  response: ResponsePayloadResponse
+}
+
+@ObjectType()
+export class UsersWithRolesPayload {
+
+  @Field(() => [Role], { nullable: true })
+  userRoles: Role[]
 
   @Field({ nullable: true })
   response: ResponsePayloadResponse

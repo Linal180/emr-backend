@@ -1,29 +1,36 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Practice } from 'src/practice/entities/practice.entity';
-import { PracticeService } from 'src/practice/practice.service';
-import { BillingAddress } from 'src/providers/entities/billing-address.entity';
+//user imports
+import FacilityInput from '../dto/facility-input.dto';
+import { Facility } from '../entities/facility.entity';
+import { FacilityPayload } from '../dto/facility-payload.dto';
+import { FacilityService } from '../services/facility.service';
 import { Contact } from 'src/providers/entities/contact.entity';
-import { BillingAddressService } from 'src/providers/services/billing-address.service';
+import { PracticeService } from 'src/practice/practice.service';
+import { Practice } from 'src/practice/entities/practice.entity';
+import { FacilitiesPayload } from '../dto/facilities-payload.dto';
+import { CreateFacilityInput } from '../dto/create-facility.input';
+import { UpdateFacilityInput } from '../dto/update-facility.input';
+import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { ContactService } from 'src/providers/services/contact.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import { default as PermissionGuard } from 'src/users/auth/role.guard';
-import { CreateFacilityInput } from '../dto/create-facility.input';
-import { FacilitiesPayload } from '../dto/facilities-payload.dto';
-import FacilityInput from '../dto/facility-input.dto';
-import { FacilityPayload } from '../dto/facility-payload.dto';
-import { UpdateFacilityInput } from '../dto/update-facility.input';
 import { GetFacility, RemoveFacility } from '../dto/update-facilityItem.input';
+import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
-import { Facility } from '../entities/facility.entity';
-import { FacilityService } from '../services/facility.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { BillingAddressService } from 'src/providers/services/billing-address.service';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 @Resolver(() => Facility)
 export class FacilityResolver {
   constructor(private readonly facilityService: FacilityService,
     private readonly contactService: ContactService,
     private readonly billingAddressService: BillingAddressService,
-    private readonly practiceService: PracticeService) { }
+    private readonly practiceService: PracticeService,
+    private readonly appointmentService: AppointmentService,
+  ) { }
+
+  //mutations
 
   @Mutation(() => FacilityPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -55,29 +62,17 @@ export class FacilityResolver {
     };
   }
 
-
-  @ResolveField((returns) => [Contact])
-  async contacts(@Parent() facility: Facility): Promise<Contact[]> {
-    if (facility) {
-     return await this.contactService.findContactsByFacilityId(facility.id);
-    }
+  @Mutation(() => FacilityPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeFacility')
+  async removeFacility(@Args('removeFacility') removeFacility: RemoveFacility) {
+    await this.facilityService.removeFacility(removeFacility);
+    return { response: { status: 200, message: 'Facility Deleted' } };
   }
 
-  @ResolveField((returns) => [Practice])
-  async practice(@Parent() facility: Facility): Promise<Practice> {
-    if (facility && facility.practiceId) {
-     return await this.practiceService.findOne(facility.practiceId);
-    }
-  }
+  //queries fields  
 
-  @ResolveField((returns) => [BillingAddress])
-  async billingAddress(@Parent() facility: Facility): Promise<BillingAddress[]> {
-    if (facility) {
-     return await this.billingAddressService.findBillingAddressByFacilityId(facility.id);
-    }
-  }
-
-  @Query(returns => FacilitiesPayload)
+  @Query(() => FacilitiesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllFacility')
   async findAllFacility(@Args('facilityInput') facilityInput: FacilityInput): Promise<FacilitiesPayload> {
@@ -96,7 +91,7 @@ export class FacilityResolver {
     });
   }
 
-  @Query(returns => FacilityPayload)
+  @Query(() => FacilityPayload)
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
     const facility = await this.facilityService.GetFacility(getFacility.id)
     return {
@@ -105,11 +100,34 @@ export class FacilityResolver {
     };
   }
 
-  @Mutation(() => FacilityPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'removeFacility')
-  async removeFacility(@Args('removeFacility') removeFacility: RemoveFacility) {
-    await this.facilityService.removeFacility(removeFacility);
-    return { response: { status: 200, message: 'Facility Deleted' } };
+  //resolve fields
+
+  @ResolveField(() => [Contact])
+  async contacts(@Parent() facility: Facility): Promise<Contact[]> {
+    if (facility) {
+      return await this.contactService.findContactsByFacilityId(facility.id);
+    }
   }
+
+  @ResolveField(() => [Practice])
+  async practice(@Parent() facility: Facility): Promise<Practice> {
+    if (facility && facility.practiceId) {
+      return await this.practiceService.findOne(facility.practiceId);
+    }
+  }
+
+  @ResolveField(() => [BillingAddress])
+  async billingAddress(@Parent() facility: Facility): Promise<BillingAddress[]> {
+    if (facility) {
+      return await this.billingAddressService.findBillingAddressByFacilityId(facility.id);
+    }
+  }
+
+  @ResolveField(() => [Contact])
+  async appointments(@Parent() facility: Facility): Promise<Appointment[]> {
+    if (facility) {
+      return await this.appointmentService.getFacilityAppointments(facility.id);
+    }
+  }
+  
 }
