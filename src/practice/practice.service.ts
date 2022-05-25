@@ -1,18 +1,25 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { StaffService } from 'src/providers/services/staff.service';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
-import { UsersService } from 'src/users/services/users.service';
+
 import { Repository } from 'typeorm';
-import { CreatePracticeInput } from './dto/create-practice.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException,
+  NotFoundException
+} from '@nestjs/common';
+//user imports
+import { getYearDate } from 'src/lib/helper';
 import PracticeInput from './dto/practice-input.dto';
+import { Practice } from './entities/practice.entity';
 import { PracticePayload } from './dto/practice-payload.dto';
 import { PracticesPayload } from './dto/practices-payload.dto';
+import { UsersService } from 'src/users/services/users.service';
+import { CreatePracticeInput } from './dto/create-practice.input';
+import { StaffService } from 'src/providers/services/staff.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
+import { FacilityService } from 'src/facilities/services/facility.service';
 import { RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
-import { Practice } from './entities/practice.entity';
+
 
 @Injectable()
 export class PracticeService {
@@ -37,8 +44,8 @@ export class PracticeService {
     try {
       //check if already user exists
       const user = await this.usersService.findOneByEmail(createPracticeInput.registerUserInput.email)
-      if(user){
-        throw new ConflictException({ 
+      if (user) {
+        throw new ConflictException({
           status: HttpStatus.CONFLICT,
           error: 'User associated with this email already exists',
         });
@@ -46,7 +53,7 @@ export class PracticeService {
       //creating practice
       const practiceInstance = this.practiceRepository.create(createPracticeInput.createPracticeItemInput)
       //create a facility 
-      const facility  = await this.facilityService.addFacility(createPracticeInput)
+      const facility = await this.facilityService.addFacility(createPracticeInput)
       practiceInstance.facilities = [facility]
       //save the practice
       const practice = await this.practiceRepository.save(practiceInstance)
@@ -54,18 +61,18 @@ export class PracticeService {
       const doctorRole = allRoles.find((item) => item.role === 'doctor')
       const adminRole = allRoles.find((item) => item.role === 'practice-admin')
       //create a user or provider based on its role type under this facility
-      if(createPracticeInput.registerUserInput.roleType === doctorRole.role){
-          const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
-          const doctor = await this.doctorService.addDoctor(createPracticeInput, facility.id, practice.id)
-          if(createPracticeInput.registerUserInput.isAdmin){
-             await this.usersService.updateUserRole({id: doctor.user.id, roles: [adminRole.role,registerUserInput.roleType]})
-          }
-      }else{
-          const registerUserInput : RegisterUserInput = {...createPracticeInput.registerUserInput}
-          const staff = await this.staffService.addStaff(registerUserInput, facility.id, practice.id)
-           if(createPracticeInput.registerUserInput.isAdmin){
-            await this.usersService.updateUserRole({id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType]})
-          }
+      if (createPracticeInput.registerUserInput.roleType === doctorRole.role) {
+        const registerUserInput: RegisterUserInput = { ...createPracticeInput.registerUserInput }
+        const doctor = await this.doctorService.addDoctor(createPracticeInput, facility.id, practice.id)
+        if (createPracticeInput.registerUserInput.isAdmin) {
+          await this.usersService.updateUserRole({ id: doctor.user.id, roles: [adminRole.role, registerUserInput.roleType] })
+        }
+      } else {
+        const registerUserInput: RegisterUserInput = { ...createPracticeInput.registerUserInput }
+        const staff = await this.staffService.addStaff(registerUserInput, facility.id, practice.id)
+        if (createPracticeInput.registerUserInput.isAdmin) {
+          await this.usersService.updateUserRole({ id: staff.user.id, roles: [adminRole.role, registerUserInput.roleType] })
+        }
       }
       return practice
     } catch (error) {
@@ -99,7 +106,7 @@ export class PracticeService {
    */
   async findOne(id: string): Promise<Practice> {
     const practice = await this.practiceRepository.findOne(id);
-    if(practice){
+    if (practice) {
       return practice
     }
     throw new NotFoundException({
@@ -144,6 +151,46 @@ export class PracticeService {
       await this.practiceRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * All practices
+   * @returns  
+   */
+  async allPractices(id?: string) {
+    return await this.practiceRepository.find({ select: ['id', 'name'], where: id ? { id } : {} })
+  }
+
+  /**
+   * Gets active practices
+   * @returns active practices 
+   */
+  async getActivePractices(): Promise<number> {
+    return await this.practiceRepository.count({ where: { active: true } })
+  }
+
+
+  /**
+   * Gets inactive practices
+   * @returns inactive practices 
+   */
+  async getInactivePractices(): Promise<number> {
+    return await this.practiceRepository.count({ where: { active: false } })
+  }
+
+  async getMonthsPractice(date: number): Promise<Practice[]> {
+    try {
+      const { endDate, startDate } = getYearDate(date)
+      const data = await this.practiceRepository
+        .createQueryBuilder('practice')
+        .where('practice.createdAt >= :after', { after: startDate })
+        .andWhere('practice.createdAt < :before', { before: endDate })
+        .getMany();
+      return data
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+
     }
   }
 }
