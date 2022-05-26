@@ -19,7 +19,7 @@ export class PatientController {
   }))
   @ApiExcludeEndpoint()
   async uploadMedia(@UploadedFile() file: File, @Body() updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PatientPayload> {
-    console.log("updateAttachmentMediaInput1", updateAttachmentMediaInput);
+    
     const patient = await this.patientService.uploadPatientMedia(file, updateAttachmentMediaInput)
     return {
       ...patient,

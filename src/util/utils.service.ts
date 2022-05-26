@@ -68,6 +68,10 @@ export class UtilsService {
      });
   }
 
+  /**
+   * Sends verification code
+   * @param phone 
+   */
   async sendVerificationCode(phone: string) {
     try{
        client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID')).verifications.create({ to: '+1'+phone, channel: "sms" })
@@ -76,6 +80,12 @@ export class UtilsService {
     }
  }
 
+ /**
+  * Verifys otpcode
+  * @param phone 
+  * @param otpCode 
+  * @returns  
+  */
  async verifyOTPCode(phone: string, otpCode: string){
   try{
     const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
