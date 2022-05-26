@@ -143,6 +143,7 @@ export const FormTemplates = [
               placeholder: "Please select Locations",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -160,6 +161,7 @@ export const FormTemplates = [
               placeholder: "Please enter location comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -230,6 +232,7 @@ export const FormTemplates = [
               placeholder: "Please select qualities",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -247,6 +250,7 @@ export const FormTemplates = [
               placeholder: "Please enter Quality Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -329,6 +333,7 @@ export const FormTemplates = [
               placeholder: "Please select Severity",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -346,6 +351,7 @@ export const FormTemplates = [
               placeholder: "Please enter Severity Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -400,6 +406,7 @@ export const FormTemplates = [
               placeholder: "Please select duration",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -417,6 +424,7 @@ export const FormTemplates = [
               placeholder: "Please enter Duration Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -495,6 +503,7 @@ export const FormTemplates = [
               placeholder: "Please Select Onset / Timing",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -512,6 +521,7 @@ export const FormTemplates = [
               placeholder: "Please enter Onset Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -574,6 +584,7 @@ export const FormTemplates = [
               placeholder: "Please  select Contexts",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -591,6 +602,7 @@ export const FormTemplates = [
               placeholder: "Please enter Context Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -633,6 +645,7 @@ export const FormTemplates = [
               placeholder: "Please select Modifying Factors",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -650,6 +663,7 @@ export const FormTemplates = [
               placeholder: "Please enter Modifying Factors Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -704,6 +718,7 @@ export const FormTemplates = [
               placeholder: "Please Select Associated Symptoms",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -721,6 +736,7 @@ export const FormTemplates = [
               placeholder: "Please enter Associated Symptoms Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -738,6 +754,7 @@ export const FormTemplates = [
               placeholder: "Please enter Previous Treatment",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
           ],
         },
@@ -980,6 +997,7 @@ export const FormTemplates = [
               placeholder: "Please select Labs",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -995,6 +1013,7 @@ export const FormTemplates = [
               placeholder: "Please enter lab comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1055,6 +1074,7 @@ export const FormTemplates = [
               placeholder: "Please enter radiology",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -1070,6 +1090,7 @@ export const FormTemplates = [
               placeholder: "Please enter Radiology Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1134,6 +1155,7 @@ export const FormTemplates = [
               placeholder: "Please enter PT Recommendations",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1149,6 +1171,7 @@ export const FormTemplates = [
               placeholder: "Please enter PT Recommendation Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1225,6 +1248,7 @@ export const FormTemplates = [
               placeholder: "Please enter Home Health ",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -1240,6 +1264,7 @@ export const FormTemplates = [
               placeholder: "Please enter Home health comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1255,6 +1280,7 @@ export const FormTemplates = [
               placeholder: "Please enter Referrals ",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1270,6 +1296,7 @@ export const FormTemplates = [
               placeholder: "Please enter Referral Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1335,6 +1362,7 @@ export const FormTemplates = [
               placeholder: "Please select Education",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1350,6 +1378,7 @@ export const FormTemplates = [
               placeholder: "Please enter Education Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1406,6 +1435,7 @@ export const FormTemplates = [
               placeholder: "Please select a Diet",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1421,6 +1451,7 @@ export const FormTemplates = [
               placeholder: "Please leave Diet Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1485,6 +1516,7 @@ export const FormTemplates = [
               placeholder: "Please select General Instructions ",
               defaultValue: "",
               isMultiSelect: true,
+              apiCall: ''
             },
             {
               css: "",
@@ -1500,6 +1532,7 @@ export const FormTemplates = [
               placeholder: "Please leave General Instruction Comments",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
           ],
         },
@@ -1519,7 +1552,7 @@ export const FormTemplates = [
         {
           id: uuid(),
           col: 12,
-          name: "Address",
+          name: "Contact Info",
           fields: [
             {
               css: "",
@@ -1537,6 +1570,7 @@ export const FormTemplates = [
               placeholder: "Please enter zip code",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1554,6 +1588,7 @@ export const FormTemplates = [
               placeholder: "Please enter your address 1 ",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1571,6 +1606,7 @@ export const FormTemplates = [
               placeholder: "Please enter your address 2",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1588,6 +1624,7 @@ export const FormTemplates = [
               placeholder: "Please enter your city",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1654,6 +1691,7 @@ export const FormTemplates = [
               placeholder: "Please select your state",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1676,6 +1714,7 @@ export const FormTemplates = [
               placeholder: "Please Select a country",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1693,13 +1732,14 @@ export const FormTemplates = [
               placeholder: "Please enter your email address",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
               name: "phone",
               columnName: "phone",
               tableName: "Contacts",
-              type: ElementType.NUMBER,
+              type: ElementType.TEL,
               label: "Home Phone",
               column: 6,
               fieldId: uuid(),
@@ -1710,13 +1750,14 @@ export const FormTemplates = [
               placeholder: "Please enter your Home Phone",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
               name: "mobile",
               columnName: "mobile",
               tableName: "Contacts",
-              type: ElementType.NUMBER,
+              type: ElementType.TEL,
               label: "Mobile Phone",
               column: 6,
               fieldId: uuid(),
@@ -1727,6 +1768,7 @@ export const FormTemplates = [
               placeholder: "Please enter your Mobile Phone",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
           ],
         },
@@ -1760,6 +1802,7 @@ export const FormTemplates = [
               placeholder: "Please enter your name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1777,13 +1820,14 @@ export const FormTemplates = [
               placeholder: "Please select a relationship",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
               name: "phone",
               columnName: "phone",
               tableName: "Contacts",
-              type: ElementType.TEXT,
+              type: ElementType.TEL,
               label: "Home Phone",
               column: 6,
               fieldId: uuid(),
@@ -1794,13 +1838,14 @@ export const FormTemplates = [
               placeholder: "Please enter your Home Phone",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
               name: "mobile",
               columnName: "mobile",
               tableName: "Contacts",
-              type: ElementType.TEXT,
+              type: ElementType.TEL,
               label: "Mobile Phone",
               column: 6,
               fieldId: uuid(),
@@ -1811,6 +1856,7 @@ export const FormTemplates = [
               placeholder: "Please enter Mobile Phone",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
           ],
         },
@@ -1844,6 +1890,7 @@ export const FormTemplates = [
               placeholder: "Please enter Language Spoken",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1861,6 +1908,7 @@ export const FormTemplates = [
               placeholder: "Please select your race",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1878,6 +1926,7 @@ export const FormTemplates = [
               placeholder: "Please select your Ethnicity",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1895,6 +1944,7 @@ export const FormTemplates = [
               placeholder: "Please select a Marital Status",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1912,6 +1962,7 @@ export const FormTemplates = [
               placeholder: "Please enter Sexual Orientation",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1929,6 +1980,7 @@ export const FormTemplates = [
               placeholder: "Please select your Gender Identity",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1946,6 +1998,7 @@ export const FormTemplates = [
               placeholder: "Please select your Sex At Birth",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1963,6 +2016,7 @@ export const FormTemplates = [
               defaultValue: "",
               options: MAPPED_PRONOUNS,
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -1980,6 +2034,7 @@ export const FormTemplates = [
               placeholder: "Please select Home Bound",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
 
           ]
@@ -2013,6 +2068,7 @@ export const FormTemplates = [
               placeholder: "Please enter Suffix",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2030,6 +2086,7 @@ export const FormTemplates = [
               placeholder: "Please enter your First Name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2047,6 +2104,7 @@ export const FormTemplates = [
               placeholder: "Please enter your Middle Name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2064,6 +2122,7 @@ export const FormTemplates = [
               placeholder: "Please enter your Last Name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2081,6 +2140,7 @@ export const FormTemplates = [
               placeholder: "Please enter your First Name Used",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2098,6 +2158,7 @@ export const FormTemplates = [
               placeholder: "Please enter Preferred Name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2115,6 +2176,7 @@ export const FormTemplates = [
               placeholder: "Please enter your Previous First Name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2132,6 +2194,7 @@ export const FormTemplates = [
               placeholder: "Please enter your Previous Last Name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2149,6 +2212,7 @@ export const FormTemplates = [
               placeholder: "Please enter your Mother's Maiden Name",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2166,6 +2230,7 @@ export const FormTemplates = [
               placeholder: "Please enter your SSN",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2183,6 +2248,7 @@ export const FormTemplates = [
               placeholder: "Please select your date of birth",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
             {
               css: "",
@@ -2200,10 +2266,77 @@ export const FormTemplates = [
               placeholder: "Please select a Legal Sex",
               defaultValue: "",
               isMultiSelect: false,
+              apiCall: ''
             },
           ],
         },
       ],
     },
+  },
+  {
+    name: "Appointment Type",
+    type: FormType.PRE_DEFINED,
+    isSystemForm: true,
+    layout: {
+      sections: [
+        {
+          id: uuid(),
+          col: 12,
+          name: "Select Services",
+          fields: [
+            {
+              css: "",
+              name: "appointmentType",
+              columnName: "",
+              tableName: "",
+              type: ElementType.SELECT,
+              label: "Appointment Type",
+              column: 12,
+              fieldId: uuid(),
+              options: [],
+              errorMsg: "",
+              required: false,
+              textArea: false,
+              placeholder: "Please select a Appointment Type",
+              defaultValue: "",
+              isMultiSelect: false,
+              apiCall: 'serviceSelect'
+            },
+          ]
+        }]
+    }
+  },
+  {
+    name: "Available Slots",
+    type: FormType.PRE_DEFINED,
+    isSystemForm: true,
+    layout: {
+      sections: [
+        {
+          id: uuid(),
+          col: 12,
+          name: "Available Slots",
+          fields: [
+            {
+              css: "",
+              name: "slot",
+              columnName: "",
+              tableName: "",
+              type: ElementType.SELECT,
+              label: "Available Slots",
+              column: 12,
+              fieldId: uuid(),
+              options: [],
+              errorMsg: "",
+              required: false,
+              textArea: false,
+              placeholder: "Please select a Slot",
+              defaultValue: "",
+              isMultiSelect: false,
+              apiCall: 'serviceSlot'
+            },
+          ]
+        }]
+    }
   }
 ]

@@ -186,7 +186,7 @@ export class UserFormsService {
       }
 
       else if (type === FormType.APPOINTMENT) {
-
+        
       }
 
     } catch (error) {
