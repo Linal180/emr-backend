@@ -52,6 +52,7 @@ enum AttachmentType {
   FORM_BUILDER
   SUPER_ADMIN
   STAFF
+  PRACTICE
 }
 
 type ResponsePayload {
@@ -837,6 +838,7 @@ type Practice {
   champus: String
   active: Boolean
   facilities: [Facility!]
+  attachments: [Attachment!]
   createdAt: String
   updatedAt: String
 }
@@ -1159,77 +1161,6 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
-type PermissionsPayload {
-  response: ResponsePayload
-  permissions: [Permission]
-  pagination: PaginationPayload
-}
-
-type PermissionPayload {
-  response: ResponsePayload
-  permission: Permission
-}
-
-type RolesPayload {
-  response: ResponsePayload
-  roles: [Role]
-  pagination: PaginationPayload
-}
-
-type RolePayload {
-  response: ResponsePayload
-  role: Role
-}
-
-type AccessUserPayload {
-  access_token: String
-  access_2fa_token: String
-  userId: String
-  isTwoFactorEnabled: Boolean
-  roles: [Role!]
-  response: ResponsePayload
-}
-
-type EmergencyAccessUserPayload {
-  emergencyAccessUsers: [User!]
-  pagination: PaginationPayload
-  response: ResponsePayload
-}
-
-type ForgotPasswordPayload {
-  response: ResponsePayload
-}
-
-type UserPayload {
-  user: User
-  access_token: String
-  response: ResponsePayload
-}
-
-type UsersPayload {
-  response: ResponsePayload
-  users: [User]
-  pagination: PaginationPayload
-}
-
-type PatientPayload {
-  response: ResponsePayload
-  patient: Patient
-}
-
-type PatientAttachmentsPayload {
-  response: ResponsePayload
-  attachments: [Attachment]
-  pagination: PaginationPayload
-}
-
-type PatientsPayload {
-  response: ResponsePayload
-  patients: [Patient]
-  facilityId: String
-  pagination: PaginationPayload
-}
-
 type ContactPayload {
   contact: Contact
   response: ResponsePayload
@@ -1282,6 +1213,77 @@ type AllStaffPayload {
 type StaffPayload {
   staff: Staff
   response: ResponsePayload
+}
+
+type PatientPayload {
+  response: ResponsePayload
+  patient: Patient
+}
+
+type PatientAttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type PatientsPayload {
+  response: ResponsePayload
+  patients: [Patient]
+  facilityId: String
+  pagination: PaginationPayload
+}
+
+type PermissionsPayload {
+  response: ResponsePayload
+  permissions: [Permission]
+  pagination: PaginationPayload
+}
+
+type PermissionPayload {
+  response: ResponsePayload
+  permission: Permission
+}
+
+type RolesPayload {
+  response: ResponsePayload
+  roles: [Role]
+  pagination: PaginationPayload
+}
+
+type RolePayload {
+  response: ResponsePayload
+  role: Role
+}
+
+type AccessUserPayload {
+  access_token: String
+  access_2fa_token: String
+  userId: String
+  isTwoFactorEnabled: Boolean
+  roles: [Role!]
+  response: ResponsePayload
+}
+
+type EmergencyAccessUserPayload {
+  emergencyAccessUsers: [User!]
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
+type ForgotPasswordPayload {
+  response: ResponsePayload
+}
+
+type UserPayload {
+  user: User
+  access_token: String
+  response: ResponsePayload
+}
+
+type UsersPayload {
+  response: ResponsePayload
+  users: [User]
+  pagination: PaginationPayload
 }
 
 type PracticePayload {

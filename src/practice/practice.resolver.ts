@@ -1,5 +1,7 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreatePracticeInput } from './dto/create-practice.input';
@@ -12,7 +14,10 @@ import { PracticeService } from './practice.service';
 
 @Resolver(() => Practice)
 export class PracticeResolver {
-  constructor(private readonly practiceService: PracticeService) { }
+  constructor(
+    private readonly practiceService: PracticeService,
+    private readonly attachmentsService: AttachmentsService,
+    ) { }
 
   @Mutation(() => PracticePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -71,5 +76,12 @@ export class PracticeResolver {
   async removePractice(@Args('removePractice') removePractice: RemovePractice) {
     await this.practiceService.removePractice(removePractice);
     return { response: { status: 200, message: 'Practice Deleted' } };
+  }
+
+  @ResolveField(() => [Attachment])
+  async attachments(@Parent() practice: Practice): Promise<Attachment[]> {
+    if (practice) {
+      return await this.attachmentsService.findAttachments(practice.id, AttachmentType.PRACTICE);
+    }
   }
 }
