@@ -3,7 +3,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException,
-  NotFoundException
+  NotFoundException,
+  PreconditionFailedException
 } from '@nestjs/common';
 //user imports
 import { getYearDate } from 'src/lib/helper';
@@ -19,7 +20,10 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
-
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
+import { AttachmentsService } from 'src/attachments/attachments.service';
+import { File } from '../aws/dto/file-input.dto';
 
 @Injectable()
 export class PracticeService {
@@ -31,8 +35,12 @@ export class PracticeService {
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
+    @Inject(forwardRef(() => DoctorService))
     private readonly doctorService: DoctorService,
-    private readonly staffService: StaffService
+    @Inject(forwardRef(() => StaffService))
+    private readonly staffService: StaffService,
+    @Inject(forwardRef(() => AttachmentsService))
+    private readonly attachmentsService: AttachmentsService
   ) { }
 
   /**
@@ -193,4 +201,64 @@ export class PracticeService {
 
     }
   }
+
+    /**
+  * Updates practice media
+  * @param file 
+  * @param updateAttachmentMediaInput 
+  * @returns practice media 
+  */
+     async updatePracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
+      try {
+        updateAttachmentMediaInput.type = AttachmentType.PRACTICE
+        const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+        const practice = await this.practiceRepository.findOne(updateAttachmentMediaInput.typeId)
+        if (attachment) {
+          return { practice }
+        }
+        throw new PreconditionFailedException({
+          status: HttpStatus.PRECONDITION_FAILED,
+          error: 'Could not create or upload media',
+        });
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+
+    async uploadPracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
+      try {
+        updateAttachmentMediaInput.type = AttachmentType.PRACTICE;
+        const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+        const practice = await this.findOne(updateAttachmentMediaInput.typeId)
+        if (attachment) {
+          return { practice };
+        }
+        throw new PreconditionFailedException({
+          status: HttpStatus.PRECONDITION_FAILED,
+          error: 'Could not create or upload media',
+        });
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+
+    async getPracticeMedia(id: string) {
+      try {
+        return await this.attachmentsService.getMedia(id)
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+
+    async removePracticeMedia(id: string) {
+      try {
+        return await this.attachmentsService.removeMedia(id)
+      }
+      catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
 }
