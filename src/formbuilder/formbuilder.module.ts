@@ -20,6 +20,7 @@ import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { UserFormController } from './controllers/userFormBuilder.controller';
 import { AwsModule } from 'src/aws/aws.module';
 import { PatientModule } from 'src/patients/patient.module';
+import { AppointmentModule } from 'src/appointments/appointment.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { PatientModule } from 'src/patients/patient.module';
     PaginationModule,
     AttachmentsModule,
     AwsModule,
-    PatientModule
+    PatientModule,
+    AppointmentModule
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,

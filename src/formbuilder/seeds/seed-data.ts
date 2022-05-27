@@ -2281,14 +2281,14 @@ export const FormTemplates = [
       sections: [
         {
           id: uuid(),
-          col: 12,
+          col: 8,
           name: "Select Services",
           fields: [
             {
               css: "",
               name: "appointmentType",
-              columnName: "",
-              tableName: "",
+              columnName: "appointmentTypeId",
+              tableName: "Appointments",
               type: ElementType.SELECT,
               label: "Appointment Type",
               column: 12,
@@ -2314,14 +2314,14 @@ export const FormTemplates = [
       sections: [
         {
           id: uuid(),
-          col: 12,
+          col: 4,
           name: "Available Slots",
           fields: [
             {
               css: "",
               name: "slot",
               columnName: "",
-              tableName: "",
+              tableName: "Appointments",
               type: ElementType.SELECT,
               label: "Available Slots",
               column: 12,
