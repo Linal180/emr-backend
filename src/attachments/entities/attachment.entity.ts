@@ -8,7 +8,8 @@ export enum AttachmentType {
   lab = "lab",
   FORM_BUILDER = 'form builder',
   SUPER_ADMIN = 'super-admin',
-  STAFF = 'staff'
+  STAFF = 'staff',
+  PRACTICE = 'practice'
 }
 
 registerEnumType(AttachmentType, {
