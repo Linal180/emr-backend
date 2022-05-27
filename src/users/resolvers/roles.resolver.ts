@@ -73,7 +73,9 @@ export class RoleResolver {
 
   @ResolveField((returns) => [RolePermission])
   async rolePermissions(@Parent() role: Role):  Promise<RolePermission[]>  {
+    // console.log("role in resolveField", role)
     const rolePermissions=await this.permissionsService.findPermissionsByRoleId(role.id)
+    // console.log('rolePermisssdsdsd', rolePermissions)
     return rolePermissions
   }
 }

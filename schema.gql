@@ -222,7 +222,9 @@ type RolePermission {
   id: String!
   isMutable: Boolean
   permission: Permission
+  permissionId: String
   role: Role
+  roleId: String
   createdAt: String!
   updatedAt: String!
 }
@@ -1649,6 +1651,16 @@ type PracticeUsersWithRoles {
   userCount: Float
 }
 
+type PracticeUserRoles {
+  role: String
+  count: Float!
+}
+
+type PracticeFacilityAppointment {
+  facility: String
+  count: Float!
+}
+
 type PracticesViaDate {
   id: Int
   count: Int
@@ -1682,7 +1694,12 @@ type PracticeUsersWithRolesPayload {
 }
 
 type PracticeFacilityAppointmentsPayload {
-  facilitiesAppointments: [Facility!]
+  facilitiesAppointments: [PracticeFacilityAppointment!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeUserRolesPayload {
+  userRoles: [PracticeUserRoles!]
   response: ResponsePayloadResponse
 }
 
@@ -1750,7 +1767,7 @@ type Query {
   getPracticesByYear(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
   getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!): PracticeUsersWithRolesPayload!
   getPracticeFacilityAppointments(practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs!): PracticeFacilityAppointmentsPayload!
-  getUsersWithRoles(usersWithRolesInputs: UsersWithRolesInputs!): PracticeFacilityAppointmentsPayload!
+  getUsersWithRoles(usersWithRolesInputs: UsersWithRolesInputs!): PracticeUserRolesPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!

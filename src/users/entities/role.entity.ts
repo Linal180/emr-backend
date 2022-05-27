@@ -26,7 +26,7 @@ export class Role {
   @Field((type) => User, { nullable: true })
   users: User[];
 
-  @OneToMany(() => RolePermission, rolePermission => rolePermission.role, { eager: true })
+  @OneToMany(() => RolePermission, rolePermission => rolePermission.role, { eager: true})
   @Field((type) => [RolePermission], { nullable: true })
   rolePermissions: RolePermission[];
 

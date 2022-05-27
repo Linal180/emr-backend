@@ -896,18 +896,30 @@ export class UsersService {
     }
   }
 
-
   async usersWithRoles(id: string): Promise<Role[]> {
     try {
       return await this.rolesRepository.find({
         where: {
-          role: Not(In(['super-admin', 'practice-admin']))
+          role: Not(In(['super-admin', 'practice-admin', 'emergency-access']))
         },
-        relations: ['users'],
-        select: ['id', 'role', 'users', 'customRole']
+        select: ['id', 'role']
       });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async findUserCountWithRole(role: string, practiceId: string){
+    return await getConnection()
+    .getRepository(User)
+    .createQueryBuilder('user').innerJoin(qb2 => {
+      return qb2
+      .select('user.id', 'id')
+      .from(User, 'user')
+      .innerJoin('user.facility', 'userFacility')
+      .where(practiceId?'userFacility.practiceId = :practiceId': '1 = 1', { practiceId: practiceId });
+    }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
+    .leftJoinAndSelect('user.facility', 'userFacility')
+    .where('user.userType = :userType', { userType: role }).getCount()
   }
 }

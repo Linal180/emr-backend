@@ -447,4 +447,8 @@ export class AppointmentService {
   async getFacilityAppointments(facilityId: string) {
     return await this.appointmentRepository.find({ where: { facilityId } })
   }
+
+  async getFacilityAppointmentCount(facilityId: string) {
+    return await this.appointmentRepository.count({ where: { facilityId } })
+  }
 }

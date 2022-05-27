@@ -10,7 +10,8 @@ import {
   PracticeFacilities,
   PracticeUsersWithRolesPayload,
   PracticeFacilityAppointmentsPayload,
-  UsersWithRolesPayload
+  UsersWithRolesPayload,
+  PracticeUserRolesPayload
 } from "./dto/dashboard.dto";
 
 
@@ -93,19 +94,20 @@ export class DashboardResolver {
 
   @Query(() => PracticeFacilityAppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  async getPracticeFacilityAppointments(@Args('practiceFacilityAppointmentsInputs') practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs):Promise<PracticeFacilityAppointmentsPayload> {
+  async getPracticeFacilityAppointments(@Args('practiceFacilityAppointmentsInputs') practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs): Promise<PracticeFacilityAppointmentsPayload> {
     return {
-      facilitiesAppointments: await this.dashboardService.practiceFacilityAppointments(practiceFacilityAppointmentsInputs),
+      facilitiesAppointments:  await this.dashboardService.practiceFacilityAppointments(practiceFacilityAppointmentsInputs),
       response: {
         status: 200,
-        message: 'Practice user get successfully'
+        message: 'Practice Facilities appointments get successfully'
       }
     }
   }
 
-  @Query(() => PracticeFacilityAppointmentsPayload)
+  @Query(() => PracticeUserRolesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  async getUsersWithRoles(@Args('usersWithRolesInputs') usersWithRolesInputs: UsersWithRolesInputs):Promise<UsersWithRolesPayload> {
+  async getUsersWithRoles(@Args('usersWithRolesInputs') usersWithRolesInputs: UsersWithRolesInputs):
+    Promise<PracticeUserRolesPayload> {
     return {
       userRoles: await this.dashboardService.getUsersWithRoles(usersWithRolesInputs),
       response: {
