@@ -223,7 +223,9 @@ type RolePermission {
   id: String!
   isMutable: Boolean
   permission: Permission
+  permissionId: String
   role: Role
+  roleId: String
   createdAt: String!
   updatedAt: String!
 }
@@ -862,6 +864,7 @@ type Facility {
   serviceCode: ServiceCode!
   staff: [Staff!]
   doctors: [Doctor!]
+  appointments: [Appointment!]
   user: [User!]
   contacts: [Contact!]
   services: [Service!]
@@ -1297,17 +1300,6 @@ type PracticesPayload {
   pagination: PaginationPayload
 }
 
-type FacilitiesPayload {
-  response: ResponsePayload
-  facilities: [Facility]
-  pagination: PaginationPayload
-}
-
-type FacilityPayload {
-  response: ResponsePayload
-  facility: Facility
-}
-
 type ServicePayload {
   response: ResponsePayload
   service: Service
@@ -1316,6 +1308,17 @@ type ServicePayload {
 type ServicesPayload {
   response: ResponsePayload
   services: [Service]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
+type FacilitiesPayload {
+  response: ResponsePayload
+  facilities: [Facility]
   pagination: PaginationPayload
 }
 
@@ -1650,6 +1653,16 @@ type PracticeUsersWithRoles {
   userCount: Float
 }
 
+type PracticeUserRoles {
+  role: String
+  count: Float!
+}
+
+type PracticeFacilityAppointment {
+  facility: String
+  count: Float!
+}
+
 type PracticesViaDate {
   id: Int
   count: Int
@@ -1679,6 +1692,16 @@ type PracticesViaDatePayload {
 
 type PracticeUsersWithRolesPayload {
   practiceUsers: [PracticeUsersWithRoles!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeFacilityAppointmentsPayload {
+  facilitiesAppointments: [PracticeFacilityAppointment!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeUserRolesPayload {
+  userRoles: [PracticeUserRoles!]
   response: ResponsePayloadResponse
 }
 
@@ -1745,6 +1768,8 @@ type Query {
   getActiveInactivePractices: ActiveInactivePracticesPayload!
   getPracticesByYear(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
   getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!): PracticeUsersWithRolesPayload!
+  getPracticeFacilityAppointments(practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs!): PracticeFacilityAppointmentsPayload!
+  getUsersWithRoles(usersWithRolesInputs: UsersWithRolesInputs!): PracticeUserRolesPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
@@ -2041,6 +2066,14 @@ input PracticeFacilitiesUsersInputs {
 enum PracticeRolesTypes {
   DOCTOR
   PATIENT
+}
+
+input PracticeFacilityAppointmentsInputs {
+  practiceId: String
+}
+
+input UsersWithRolesInputs {
+  practiceId: String
 }
 
 input FormInput {

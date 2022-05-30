@@ -16,6 +16,7 @@ import { RolePermission } from "./entities/rolePermissions.entity";
 import { UserLog } from "./entities/user-logs.entity";
 import { User } from "./entities/user.entity";
 import { PermissionResolver } from "./resolvers/permissions.resolver";
+import { RolePermissionResolver } from "./resolvers/rolePermissions.resolver";
 import { RoleResolver } from "./resolvers/roles.resolver";
 import { UsersResolver } from "./resolvers/users.resolver";
 import { PermissionsService } from "./services/permissions.service";
@@ -42,7 +43,7 @@ import { UsersController } from "./users.controller";
     forwardRef(() => PatientModule),
     forwardRef(() => AttachmentsModule),
   ],
-  providers: [UsersService, UsersResolver, PermissionResolver, RoleResolver, PermissionsService, RolesService, JwtStrategy, UserSubscriber],
+  providers: [UsersService, UsersResolver, PermissionResolver, RoleResolver, PermissionsService, RolePermissionResolver, RolesService, JwtStrategy, UserSubscriber],
   controllers: [UsersController],
   exports: [UsersService, TypeOrmModule, RolesService],
 })
