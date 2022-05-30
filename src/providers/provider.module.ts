@@ -34,7 +34,8 @@ import { StaffSubscriber } from './subscribers/staff.subscriber';
     forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule),
     forwardRef(() => AppointmentModule),
-    AttachmentsModule
+    forwardRef(() => AttachmentsModule),
+    
   ],
   providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService,
     DoctorResolver, DoctorService, ScheduleResolver, ScheduleService, DoctorSubscriber, StaffSubscriber],

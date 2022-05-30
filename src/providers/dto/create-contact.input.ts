@@ -87,4 +87,7 @@ export class CreateContactInput {
 
   @Field({ nullable: true })
   employerName?: string;
+
+  @Field({nullable:true})
+  insuranceId?: string
 }

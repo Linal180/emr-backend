@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 //user imports
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
@@ -53,6 +54,9 @@ export class Practice {
   @OneToMany(() => Facility, facility => facility.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Facility], { nullable: true })
   facilities: Facility[];
+
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

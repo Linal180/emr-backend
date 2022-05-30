@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { AppointmentModule } from "src/appointments/appointment.module";
 //user imports
 import { FacilityModule } from "src/facilities/facility.module";
 import { PracticeModule } from "src/practice/practice.module";
@@ -10,7 +11,8 @@ import { DashboardService } from "./dashboard.service";
 	imports: [
 		UsersModule,
 		FacilityModule,
-		PracticeModule
+		PracticeModule,
+		AppointmentModule
 	],
 	providers: [
 		DashboardService,

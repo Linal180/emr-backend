@@ -170,7 +170,8 @@ export class Facility {
 
   @OneToMany(() => Patient, patient => patient.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   patients: Patient[];
-
+  
+  @Field(() => [Appointment], { nullable: true })
   @OneToMany(() => Appointment, appointment => appointment.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   appointments: Appointment[];
 

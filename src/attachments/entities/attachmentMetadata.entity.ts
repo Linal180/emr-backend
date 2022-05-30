@@ -37,6 +37,10 @@ export class AttachmentMetadata {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  policyId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   assignedTo: string;
 
   @Column({nullable: true, default: true})

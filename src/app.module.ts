@@ -21,6 +21,7 @@ import { FormBuilderModule } from './formbuilder/formbuilder.module'
 import { ProblemChartingModule } from './patientCharting/patientCharting.module';
 import { LabModule } from './labs/labs.module';
 import { DashboardModule } from './dashboard/dashboard.module'
+import { InsuranceModule } from './insurance/insurance.module';
 
 @Module({
   imports: [
@@ -52,7 +53,8 @@ import { DashboardModule } from './dashboard/dashboard.module'
       useClass: DatabaseConfig
     }),
     PaymentModule,
-    FormBuilderModule
+    FormBuilderModule,
+    InsuranceModule
   ],
   controllers: [AppController],
   providers: [AppService],
