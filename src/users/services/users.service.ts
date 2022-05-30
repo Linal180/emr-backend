@@ -167,7 +167,7 @@ export class UsersService {
    */
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
-      let shouldUserUpdateEmergencyAccess=true
+      let shouldUserUpdateEmergencyAccess = true
 
       const { roles } = updateRoleInput
       const isSuperAdmin = roles.includes("super-admin");
@@ -179,19 +179,19 @@ export class UsersService {
       }
 
       const user = await this.findUserById(updateRoleInput.id);
-      if(updateRoleInput.roles.includes('emergency-access')){
-        const permissions =  user.roles.map((role) => role?.rolePermissions.map((item)=> item?.permission))
+      if (updateRoleInput.roles.includes('emergency-access')) {
+        const permissions = user.roles.map((role) => role?.rolePermissions.map((item) => item?.permission))
         const permissionsFlat = permissions.flat()
 
-        shouldUserUpdateEmergencyAccess= !!permissionsFlat.find(permission=>permission.name==='emergencyAccess')
-        if(!shouldUserUpdateEmergencyAccess){
+        shouldUserUpdateEmergencyAccess = !!permissionsFlat.find(permission => permission.name === 'emergencyAccess')
+        if (!shouldUserUpdateEmergencyAccess) {
           throw new ConflictException({
             status: HttpStatus.CONFLICT,
             error: 'Can not assign this role to user',
           });
         }
       }
-      
+
       if (user) {
         const fetchRoles = await getConnection()
           .getRepository(Role)
@@ -220,44 +220,44 @@ export class UsersService {
     const { page, limit } = emergencyAccessUsersInput.paginationInput
     const { email, facilityId, practiceId } = emergencyAccessUsersInput
 
-    const baseQuery= getConnection()
-    .getRepository(User)
-    .createQueryBuilder('user')
-    .skip((page - 1) * limit)
-    .take(limit)
-    .innerJoin(qb2 => {
-      return qb2
-        .select('user.id', 'id')
-        .from(User, 'user')
-        .innerJoin('user.roles', 'userRoles')
-        .where('userRoles.role = :role', { role: 'emergency-access' });
-    }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
-    .leftJoinAndSelect('user.roles', 'userRoles')
-
-      const [emergencyAccessUsers, totalCount] = await baseQuery
+    const baseQuery = getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .skip((page - 1) * limit)
+      .take(limit)
       .innerJoin(qb2 => {
-            return qb2
-            .select('user.id', 'id')
-            .from(User, 'user')
-            .innerJoin('user.facility', 'userFacility')
-            .where(practiceId?'userFacility.practiceId = :practiceId': '1 = 1', { practiceId:emergencyAccessUsersInput.practiceId });
-          }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
-          .leftJoinAndSelect('user.facility', 'userFacility')
-        .where(email? 'user.email like :email':'1=1', { email: `%${email}%` })
-        .andWhere(facilityId ? 'user.facilityId = :facilityId' :'1=1', { facilityId: facilityId })
-        .getManyAndCount()
+        return qb2
+          .select('user.id', 'id')
+          .from(User, 'user')
+          .innerJoin('user.roles', 'userRoles')
+          .where('userRoles.role = :role', { role: 'emergency-access' });
+      }, 'userWithCertainRole', 'user.id = "userWithCertainRole".id')
+      .leftJoinAndSelect('user.roles', 'userRoles')
 
-      const totalPages = Math.ceil(totalCount / limit)
+    const [emergencyAccessUsers, totalCount] = await baseQuery
+      .innerJoin(qb2 => {
+        return qb2
+          .select('user.id', 'id')
+          .from(User, 'user')
+          .innerJoin('user.facility', 'userFacility')
+          .where(practiceId ? 'userFacility.practiceId = :practiceId' : '1 = 1', { practiceId: emergencyAccessUsersInput.practiceId });
+      }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
+      .leftJoinAndSelect('user.facility', 'userFacility')
+      .where(email ? 'user.email like :email' : '1=1', { email: `%${email}%` })
+      .andWhere(facilityId ? 'user.facilityId = :facilityId' : '1=1', { facilityId: facilityId })
+      .getManyAndCount()
 
-      return {
-        pagination: {
-          totalCount,
-          page,
-          limit,
-          totalPages,
-        },
-        emergencyAccessUsers
-      }
+    const totalPages = Math.ceil(totalCount / limit)
+
+    return {
+      pagination: {
+        totalCount,
+        page,
+        limit,
+        totalPages,
+      },
+      emergencyAccessUsers
+    }
   }
 
   /**
@@ -869,7 +869,12 @@ export class UsersService {
     return await this.usersRepository.count({ where: { facilityId } })
   }
 
-
+  /**
+   * Gets facility users with roles count
+   * @param facilityId 
+   * @param roles 
+   * @returns  
+   */
   async getFacilityUsersWithRolesCount(facilityId: string, roles: string[]) {
     try {
       const userRoles = await Promise.all(roles?.map(async (val) => {
@@ -896,6 +901,11 @@ export class UsersService {
     }
   }
 
+  /**
+   * Users with roles
+   * @param id 
+   * @returns with roles 
+   */
   async usersWithRoles(id: string): Promise<Role[]> {
     try {
       return await this.rolesRepository.find({
@@ -909,17 +919,28 @@ export class UsersService {
     }
   }
 
-  async findUserCountWithRole(role: string, practiceId: string){
-    return await getConnection()
-    .getRepository(User)
-    .createQueryBuilder('user').innerJoin(qb2 => {
-      return qb2
-      .select('user.id', 'id')
-      .from(User, 'user')
-      .innerJoin('user.facility', 'userFacility')
-      .where(practiceId?'userFacility.practiceId = :practiceId': '1 = 1', { practiceId: practiceId });
-    }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
-    .leftJoinAndSelect('user.facility', 'userFacility')
-    .where('user.userType = :userType', { userType: role }).getCount()
+
+  /**
+   * Finds user count with role
+   * @param role 
+   * @param practiceId 
+   * @returns  
+   */
+  async findUserCountWithRole(role: string, practiceId: string) {
+    try {
+      return await getConnection()
+        .getRepository(User)
+        .createQueryBuilder('user').innerJoin(qb2 => {
+          return qb2
+            .select('user.id', 'id')
+            .from(User, 'user')
+            .innerJoin('user.facility', 'userFacility')
+            .where(practiceId ? 'userFacility.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId });
+        }, 'userWithCertainFacility', 'user.id = "userWithCertainFacility".id')
+        .leftJoinAndSelect('user.facility', 'userFacility')
+        .where('user.userType = :userType', { userType: role }).getCount()
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

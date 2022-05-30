@@ -100,14 +100,23 @@ export class PermissionsService {
     })
   }
 
+  /**
+   * find role permissions
+   * @param roleId
+   * @returns  permissions
+   */
   async findPermissionsByRoleId(id: string) {
-    return await this.rolePermissionRepository.find({
-      where: {
-        role: {
-          id
-        }
-      },
-    })
+    try {
+      return await this.rolePermissionRepository.find({
+        where: {
+          role: {
+            id
+          }
+        },
+      })
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**

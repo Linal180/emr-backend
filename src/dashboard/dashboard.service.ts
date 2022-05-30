@@ -126,15 +126,15 @@ export class DashboardService {
   /**
    * Practices facility appointments count
    * @param input 
-   * @returns  
+   * @returns PracticeFacilityAppointment[]
    */
   async practiceFacilityAppointments(input: PracticeFacilityAppointmentsInputs): Promise<PracticeFacilityAppointment[]> {
     try {
-    const { practiceId } = input
-      const  facilities = await this.facilityService.getPracticeFacilitiesAppointments(practiceId)
+      const { practiceId } = input
+      const facilities = await this.facilityService.getPracticeFacilitiesAppointments(practiceId)
       const facilityAppointment = await Promise.all(facilities.map(async ({ id, name }) => {
-        const count = await this.appointmentService.getFacilityAppointmentCount(id)
-        return {facility: name, count}
+        const count = await this.appointmentService.getFacilityAppointmentCount({ facilityId: id })
+        return { facility: name, count }
       }))
       return facilityAppointment
     } catch (error) {
@@ -142,11 +142,11 @@ export class DashboardService {
     }
   }
 
-    /**
-   * Find Practice User count against Practice
-   * @param UsersWithRolesInputs
-   * @returns  
-   */
+  /**
+ * Find Practice User count against Practice
+ * @param UsersWithRolesInputs
+ * @returns  PracticeUserRoles[]
+ */
   async getUsersWithRoles(inputs: UsersWithRolesInputs): Promise<PracticeUserRoles[]> {
     try {
       const { practiceId } = inputs
@@ -154,11 +154,10 @@ export class DashboardService {
 
       return await Promise.all(userRoles.map(async ({ role }) => {
         const count = await this.userService.findUserCountWithRole(role, practiceId)
-         return {role, count}
+        return { role, count }
       }))
-
     } catch (error) {
-
+      throw new InternalServerErrorException(error);
     }
   }
 }

@@ -7,11 +7,7 @@ import { PracticeFacilityAppointmentsInputs, PracticeFacilitiesUsersInputs, Prac
 import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
 import {
   ActiveInactivePracticesPayload, PracticeFacilitiesPayload, PracticesViaDatePayload, PracticeUsersPayload,
-  PracticeFacilities,
-  PracticeUsersWithRolesPayload,
-  PracticeFacilityAppointmentsPayload,
-  UsersWithRolesPayload,
-  PracticeUserRolesPayload
+  PracticeFacilities, PracticeUsersWithRolesPayload, PracticeFacilityAppointmentsPayload, PracticeUserRolesPayload
 } from "./dto/dashboard.dto";
 
 

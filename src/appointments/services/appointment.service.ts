@@ -20,7 +20,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS, BillingStatus } from '../entities/appointment.entity';
 
 @Injectable()
@@ -423,7 +423,6 @@ export class AppointmentService {
     }
   }
 
-
   /**
    * Gets patient appointment
    * @param getPatientAppointmentInput 
@@ -444,11 +443,21 @@ export class AppointmentService {
     });
   }
 
-  async getFacilityAppointments(facilityId: string) {
-    return await this.appointmentRepository.find({ where: { facilityId } })
+  /**
+   * Gets facility appointment
+   * @param getFacilityAppointmentsInput
+   * @returns facility appointments 
+   */
+  async getFacilityAppointments(getFacilityAppointmentsInput: GetFacilityAppointmentsInput) {
+    return await this.appointmentRepository.find({ where: { facilityId: getFacilityAppointmentsInput.facilityId } })
   }
 
-  async getFacilityAppointmentCount(facilityId: string) {
-    return await this.appointmentRepository.count({ where: { facilityId } })
+  /**
+   * Gets facility appointment count
+   * @param getFacilityAppointmentsInput
+   * @returns facility appointments count
+   */
+  async getFacilityAppointmentCount(getFacilityAppointmentsInput: GetFacilityAppointmentsInput) {
+    return await this.appointmentRepository.count({ where: { facilityId: getFacilityAppointmentsInput.facilityId } })
   }
 }

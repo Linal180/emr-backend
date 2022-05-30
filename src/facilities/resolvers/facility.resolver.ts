@@ -126,7 +126,7 @@ export class FacilityResolver {
   @ResolveField(() => [Contact])
   async appointments(@Parent() facility: Facility): Promise<Appointment[]> {
     if (facility) {
-      return await this.appointmentService.getFacilityAppointments(facility.id);
+      return await this.appointmentService.getFacilityAppointments({ facilityId: facility.id });
     }
   }
   
