@@ -19,6 +19,7 @@ import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND,
 import { ContactType, RelationshipType } from "src/providers/entities/contact.entity";
 import { AppointmentService } from "src/appointments/services/appointment.service";
 import { BillingStatus, PaymentType } from "src/appointments/entities/appointment.entity";
+import { CreateEmployerInput } from "src/patients/dto/create-employer.input";
 
 
 @Injectable()
@@ -41,23 +42,69 @@ export class UserFormsService {
     const { userFormElements } = userForm;
     const formElements = await this.formService.getFormElements(id)
     const patientElements = formElements?.filter(({ tableName }) => tableName === 'Patients')
-    const patientsInputs = patientElements?.map(({ fieldId }) => fieldId)
-    const contactElements = formElements?.filter(({ tableName }) => tableName === 'Contacts')
+    const employersElements = formElements?.filter(({ tableName }) => tableName === 'Employers')
+    const contactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.SELF)
+    const emergenceContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.EMERGENCY)
+    const kinContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.NEXT_OF_KIN)
+    const guardianContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.GUARDIAN)
+    const guarantorContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.GUARANDOR)
+
     const contactInputs = contactElements?.map(({ fieldId }) => fieldId)
+    const patientsInputs = patientElements?.map(({ fieldId }) => fieldId)
+    const employerInputs = employersElements?.map(({ fieldId }) => fieldId)
+
     const userPatientElements = userFormElements?.filter(({ FormsElementsId }) => patientsInputs?.includes(FormsElementsId))
     const userContactElements = userFormElements?.filter(({ FormsElementsId }) => contactInputs?.includes(FormsElementsId))
+    const employerElements = userFormElements?.filter(({ FormsElementsId }) => employerInputs?.includes(FormsElementsId))
+
     const patient = {}
     patientElements?.map(({ columnName, fieldId }) => {
       const element = userPatientElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
       const { value } = element
       return patient[columnName] = value
     })
+
     const contacts = {}
     contactElements?.map(({ columnName, fieldId }) => {
       const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
       const { value } = element
       return contacts[columnName] = value
     })
+
+    const employer = {}
+    employersElements?.map(({ columnName, fieldId }) => {
+      const element = employerElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+      const { value } = element
+      return employer[columnName] = value
+    })
+
+    const emergenceContacts = {}
+    emergenceContactElements?.map(({ columnName, fieldId }) => {
+      const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+      const { value } = element
+      return emergenceContacts[columnName] = value
+    })
+
+    const kinContacts = {}
+    kinContactElements?.map(({ columnName, fieldId }) => {
+      const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+      const { value } = element
+      return kinContacts[columnName] = value
+    })
+    const guardianContacts = {}
+    guardianContactElements?.map(({ columnName, fieldId }) => {
+      const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+      const { value } = element
+      return guardianContacts[columnName] = value
+    })
+
+    const guarantorContacts = {}
+    guarantorContactElements?.map(({ columnName, fieldId }) => {
+      const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+      const { value } = element
+      return guarantorContacts[columnName] = value
+    })
+
     const {
       language, suffix, firstName, lastName, middleName, firstNameUsed, prefferedName, previousFirstName,
       previouslastName, motherMaidenName, ssn, dob, gender, homeBound, race, ethnicity, maritialStatus,
@@ -65,6 +112,25 @@ export class UserFormsService {
     } = patient as Patient || {}
 
     const { zipCode, address, address2, city, state, country, name, relationship, phone, mobile, email, } = contacts as CreateContactInput || {}
+    const {
+      name: emergenceName, relationship: emergenceRelationship, phone: emergencePhone, mobile: emergenceMobile
+    } = emergenceContacts as CreateContactInput || {}
+    const {
+      name: kinName, relationship: kinRelationship, phone: kinPhone, mobile: kinMobile
+    } = kinContacts as CreateContactInput || {}
+
+    const {
+      firstName: guardianFirstName, middleName: guardianMiddleName, lastName: guardianLastName, suffix: guardianSuffix
+    } = guardianContacts as CreateContactInput || {}
+
+    const {
+      relationship: guarantorRelationship, suffix: guarantorSuffix, firstName: guarantorFirstName,
+      middleName: guarantorMiddleName, lastName: guarantorLastName, employerName: guarantorEmployerName,
+      zipCode: guarantorZipCode, address: guarantorAddress, address2: guarantorAddress2, city: guarantorCity,
+      state: guarantorState, country: guarantorCountry, ssn: guarantorSSN, phone: guarantorPhone, email: guarantorEmail
+    } = guarantorContacts as CreateContactInput || {}
+
+    const { name: employerName, phone: employerPhone, usualOccupation, industry } = employer as CreateEmployerInput
 
     const patientInputs = {
       createPatientItemInput: {
@@ -126,55 +192,55 @@ export class UserFormsService {
         primaryContact: true,
       },
       createEmployerInput: {
-        name: "",
+        name: employerName || "",
         email: "",
-        phone: phone || "",
-        usualOccupation: "",
-        industry: "",
-        mobile: mobile || ""
+        phone: employerPhone || "",
+        usualOccupation: usualOccupation || "",
+        industry: industry || "",
+        mobile: ""
       },
       createGuardianContactInput: {
-        firstName: "",
-        middleName: "",
+        firstName: guardianFirstName || "",
+        middleName: guardianMiddleName || "",
         primaryContact: false,
-        lastName: "",
+        lastName: guardianLastName || "",
         contactType: ContactType.GUARDIAN,
-        suffix: "",
+        suffix: guardianSuffix || "",
       },
       createEmergencyContactInput: {
         contactType: ContactType.EMERGENCY,
-        name: name || "",
-        phone: "",
-        mobile: "",
+        name: emergenceName || "",
+        phone: emergencePhone,
+        mobile: emergenceMobile,
         primaryContact: false,
-        relationship: relationship || RelationshipType.OTHER,
+        relationship: emergenceRelationship || RelationshipType.OTHER,
         facilityId
       },
       createGuarantorContactInput: {
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        email: "",
+        firstName: guarantorFirstName || "",
+        middleName: guarantorMiddleName || "",
+        lastName: guarantorLastName || "",
+        email: guarantorEmail || "",
         contactType: ContactType.GUARANDOR,
-        relationship: RelationshipType.OTHER,
-        employerName: "",
-        address2: "",
-        zipCode: "",
-        city: "",
-        state: "",
-        phone: "",
-        suffix: "",
-        country: "",
-        ssn: "000-00-0000",
+        relationship: guarantorRelationship || RelationshipType.OTHER,
+        employerName: guarantorEmployerName || "",
+        address2: guarantorAddress2 || "",
+        zipCode: guarantorZipCode || "",
+        city: guarantorCity || "",
+        state: guarantorState || "",
+        phone: guarantorPhone || "",
+        suffix: guarantorSuffix || "",
+        country: guarantorCountry || "",
+        ssn: guarantorSSN || "000-00-0000",
         primaryContact: false,
-        address: "",
+        address: guarantorAddress || "",
       },
       createNextOfKinContactInput: {
         contactType: ContactType.NEXT_OF_KIN,
-        name: "",
-        phone: "",
-        relationship: RelationshipType.OTHER,
-        mobile: "",
+        name: kinName || "",
+        phone: kinPhone || "",
+        relationship: kinRelationship || RelationshipType.OTHER,
+        mobile: kinMobile || "",
         primaryContact: false,
       },
     };

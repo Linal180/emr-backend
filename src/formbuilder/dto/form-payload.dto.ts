@@ -72,9 +72,10 @@ export class FieldsTypes {
     isMultiSelect: boolean;
 
     @Field({ nullable: true })
-    apiCall: string
+    apiCall: string;
 
-
+    @Field({ nullable: true })
+    tableContactType: string;
 }
 @ObjectType()
 export class SectionsTypes {

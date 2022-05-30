@@ -42,6 +42,10 @@ export class FormElement {
   @Field({ nullable: true })
   tableName: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  tableContactType: string;
+
   @Column({ nullable: false })
   @Field({ nullable: false })
   fieldId: string;

@@ -1381,6 +1381,7 @@ type FieldsTypes {
   textArea: Boolean!
   isMultiSelect: Boolean
   apiCall: String
+  tableContactType: String
 }
 
 """The form's element types"""
@@ -1479,6 +1480,7 @@ type FormElement {
   label: String
   columnName: String
   tableName: String
+  tableContactType: String
   fieldId: String!
   sectionId: String!
   isDeleted: Boolean!
@@ -3363,6 +3365,7 @@ input FieldsInputs {
   textArea: Boolean!
   isMultiSelect: Boolean
   apiCall: String
+  tableContactType: String
 }
 
 input FieldOptionsInputType {
