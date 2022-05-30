@@ -31,39 +31,39 @@ export class PermissionsService {
   async createPermission(permissionItemInput: PermissionItemInput): Promise<Permission> {
     try {
       //check name of permission for existing one
-      const permission = await this.permissionsRepository.findOne({name: permissionItemInput.name.trim().toLowerCase()})
-      if(permission){
+      const permission = await this.permissionsRepository.findOne({ name: permissionItemInput.name.trim().toLowerCase() })
+      if (permission) {
         throw new ForbiddenException({
           status: HttpStatus.FORBIDDEN,
           error: 'Permission already exists with this name',
         });
       }
       // creating permission
-      const permissionInstance = this.permissionsRepository.create({...permissionItemInput, name: permissionItemInput.name.trim().toLowerCase()})
+      const permissionInstance = this.permissionsRepository.create({ ...permissionItemInput, name: permissionItemInput.name.trim().toLowerCase() })
       //saving permission
-     return await this.permissionsRepository.save(permissionInstance);
+      return await this.permissionsRepository.save(permissionInstance);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
- /**
-  * Assigns permission to role
-  * @param rolePermissionItemInput 
-  */
- async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
+  /**
+   * Assigns permission to role
+   * @param rolePermissionItemInput 
+   */
+  async assignPermissionToRole(rolePermissionItemInput: RolePermissionItemInput) {
     try {
       await this.deleteExistingMutablePermission(rolePermissionItemInput.roleId)
       //check name of permission for existing one
       const permissions = await this.findPermissions(rolePermissionItemInput.permissionsId)
       //check name of role for existing one
       const role = await this.rolesService.findOne(rolePermissionItemInput.roleId)
-      if(!role){
-          throw new NotFoundException({
-            status: HttpStatus.NOT_FOUND,
-            error: 'Role not found',
-          });
-        }
+      if (!role) {
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Role not found',
+        });
+      }
       const rolePermissionPayload = await this.rolePermissionPayload(permissions, role)
       //creating role permission
       const rolePermissionInstance = await this.rolePermissionRepository.create(rolePermissionPayload)
@@ -79,8 +79,8 @@ export class PermissionsService {
    * @param roleId 
    * @returns  
    */
-  async deleteExistingMutablePermission(roleId: string){
-      return await getConnection().createQueryBuilder()
+  async deleteExistingMutablePermission(roleId: string) {
+    return await getConnection().createQueryBuilder()
       .delete().from(RolePermission)
       .where("roleId = :roleId", { roleId: roleId })
       // .andWhere("isMutable = :isMutable", { isMutable: true })
@@ -92,7 +92,7 @@ export class PermissionsService {
    * @param ids 
    * @returns  
    */
-  async findPermissions(ids: string[]){
+  async findPermissions(ids: string[]) {
     return await this.permissionsRepository.find({
       where: {
         id: In(ids)
@@ -100,13 +100,23 @@ export class PermissionsService {
     })
   }
 
-  async findPermissionsByRoleId(id: string){
-    return await this.rolePermissionRepository.find({
-      where: {
-        role: id
-      },
-      relations: ["permission"]
-    })
+  /**
+   * find role permissions
+   * @param roleId
+   * @returns  permissions
+   */
+  async findPermissionsByRoleId(id: string) {
+    try {
+      return await this.rolePermissionRepository.find({
+        where: {
+          role: {
+            id
+          }
+        },
+      })
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
@@ -115,15 +125,15 @@ export class PermissionsService {
    * @param role 
    * @returns  
    */
-  async rolePermissionPayload(permissions: Permission[], role: Role){
-   return permissions.map((item)=>{
-     return {
-       permission:item,
-       permissionId: item.id,
-       role: role,
-       roleId: role.id
-     }
-   })
+  async rolePermissionPayload(permissions: Permission[], role: Role) {
+    return permissions.map((item) => {
+      return {
+        permission: item,
+        permissionId: item.id,
+        role: role,
+        roleId: role.id
+      }
+    })
   }
 
   /**
@@ -133,14 +143,14 @@ export class PermissionsService {
    */
   async updatePermission(updatePermissionItemInput: UpdatePermissionItemInput): Promise<Permission> {
     try {
-       //check name of role for existing one
-     const permission = await this.permissionsRepository.findOne({name: updatePermissionItemInput.name.trim().toLowerCase()})
-     if(permission && permission.id !=updatePermissionItemInput.id){
-       throw new ForbiddenException({
-         status: HttpStatus.FORBIDDEN,
-         error: 'Permission already exists with this name',
-       });
-     }
+      //check name of role for existing one
+      const permission = await this.permissionsRepository.findOne({ name: updatePermissionItemInput.name.trim().toLowerCase() })
+      if (permission && permission.id != updatePermissionItemInput.id) {
+        throw new ForbiddenException({
+          status: HttpStatus.FORBIDDEN,
+          error: 'Permission already exists with this name',
+        });
+      }
       return await this.utilsService.updateEntityManager(Permission, updatePermissionItemInput.id, updatePermissionItemInput, this.permissionsRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);

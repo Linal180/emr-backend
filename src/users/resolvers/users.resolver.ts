@@ -30,6 +30,7 @@ import UsersInput from '../dto/users-input.dto';
 import { UsersPayload } from '../dto/users-payload.dto';
 import { SeneOTPAgainInput, VerifyCodeInput } from '../dto/verify-code.dto';
 import { VerifyEmailInput } from '../dto/verify-email-input.dto';
+import { RolePermission } from '../entities/rolePermissions.entity';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
