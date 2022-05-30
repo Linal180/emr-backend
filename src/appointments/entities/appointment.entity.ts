@@ -93,6 +93,14 @@ export class Appointment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  checkedInAt: string;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  selfCheckIn: boolean;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   insuranceCompany: string;
 
   @Column({ nullable: true })

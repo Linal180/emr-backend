@@ -9,6 +9,12 @@ export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) 
 
   @Field({nullable: true})
   paymentStatus?: string;
+
+  @Field({nullable: true})
+  selfCheckIn?: boolean;
+
+  @Field({nullable: true})
+  checkedInAt?: string;
 }
 
 @InputType()
@@ -47,6 +53,12 @@ export class GetPatientAppointmentInput {
   @Field()
   patientId: string
  }
+
+ @InputType()
+ export class GetFacilityAppointmentsInput {
+   @Field()
+   facilityId: string
+  }
 
 @InputType()
 export class RemoveAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }

@@ -6,6 +6,7 @@ type AttachmentMetadata {
   id: String!
   metadataType: AttachmentMetaDataType!
   labOrderNum: String
+  policyId: String
   assignedTo: String
   pending: Boolean
   attachment: Attachment
@@ -83,6 +84,308 @@ type AttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
   pagination: PaginationPayload
+}
+
+type Copay {
+  id: String!
+  type: CopayType
+  amount: String
+  policy: Policy
+  policyId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The type of copay"""
+enum CopayType {
+  OFFICE_VISIT
+  SPECIALTY_CARE
+  ALLERGY
+  DERMATOLOGY
+  PT_OT_ST
+  MH_GROUP
+  MH_INDIVIDUAL
+  ER_VISIT
+  OB_GYN
+  URGENT_CARE
+  TELE_HEALTH
+  AMBULATORY_SURGERY
+  AUDIOLOGIST
+  BRAND_DRUG
+  CHIROPRACTIC_COPAYMENT
+  DME
+  DEDUCTIBLE
+  GENERIC_DRUG
+  GLOBAL
+  LAB
+  NON_FORMULARY_DRUG
+  NURSE_VISIT
+  OFFICE_VISIT_FU
+  OFFICE_VISIR_NEW
+  OUT_OF_NETWORK
+  PHYSICIANS_ASSISTANT
+  PODIATRY
+  POST_OP
+  PREFERRED_DRUG
+  PRENATAL_CARE
+  PREVENTIVE_CARE
+  RETAIL_CONVENIENCE
+  ULTRASOUND
+  WELL_CHILD
+  XRAY_IMAGING
+}
+
+type Contact {
+  id: String!
+  email: String
+  name: String
+  firstName: String
+  lastName: String
+  middleName: String
+  suffix: String
+  phone: String
+  mobile: String
+  pager: String
+  fax: String
+  address: String
+  address2: String
+  zipCode: String
+  city: String
+  state: String
+  country: String
+  color: String
+  primaryContact: Boolean
+  locationLink: String
+  ssn: String
+  employerName: String
+  serviceCode: ServiceCodes!
+  relationship: RelationshipType
+  contactType: ContactType
+  facilityId: String
+  patientId: String
+  doctorId: String
+  insuranceId: String
+  facility: Facility
+  doctor: Doctor
+  userId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The facility service code type assigned"""
+enum ServiceCodes {
+  AMBULANCE_41
+  AMBULANCE_42
+  AMBULANCE_24
+  ASSISTED_LIVING_13
+  BIRTHING_CENTER_25
+  COMMUNITY_MENTAL_HEALTH_CENTER_53
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
+  CUSTODIAL_CARE_FACILITY_33
+  EMERGENCY_ROOM_23
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
+  GROUP_HOME_14
+  HOMELESS_SHELTER_04
+  HOSPICE_34
+  INDEPENDENT_CLINIC_49
+  INDEPENDENT_LABORATORY_81
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
+}
+
+"""The user's relationship assigned"""
+enum RelationshipType {
+  SELF
+  SPOUSE
+  CHILD
+  CHILD_MOTHER_INSURANCE
+  CHILD_FATHER_INSURANCE
+  OTHER
+  GRANDPARENT
+  GRANDCHILD
+  NEPHEW_NIECE
+  FOSTHER_CHILD
+  WARD
+  STEPSON_STEPDAUGHTER
+  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE
+  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE
+  EMPLOYEE
+  UNKNOWN
+  HANDICAPPED_DEPENDENT
+  SPONSORED_DEPENDENT
+  DEPENDENT_OF_MINOR_DEPENDENT
+  SIGNIFICANT_OTHER
+  MOTHER
+  FATHER
+  EMANCIPATED_MINOR
+  ORGAN_DONOR
+  CADAVER_DONOR
+  INJURED_PLAINTIIFF
+  LIFE_PARTNER
+}
+
+"""The user's contact type assigned"""
+enum ContactType {
+  SELF
+  EMERGENCY
+  NEXT_OF_KIN
+  CHILD_MOTHER_INSURANCE
+  GUARDIAN
+  GUARANDOR
+}
+
+type Insurance {
+  id: String!
+  payerId: String!
+  payerName: String!
+  enrollmentRequired: Boolean
+  type: InsurancePayerType!
+  lineOfBusiness: String!
+  state: String
+  realTimeEligibility: Boolean
+  realTimeClaimStatus: Boolean
+  electronicRemittanceAdvice: Boolean
+  secondaryCoordinationBenefits: Boolean
+  Note: String
+  contacts: [Contact!]
+  policies: [Policy!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The insurance payer type"""
+enum InsurancePayerType {
+  P
+  NP
+}
+
+type PolicyHolder {
+  id: String!
+  certificationNumber: String
+  employer: String
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  zipCode: String
+  address: String
+  addressCTD: String
+  city: String
+  state: String
+  ssn: String
+  sex: POLICY_HOLDER_GENDER_IDENTITY
+  dob: String
+  policies: [Policy!]
+  patients: [Patient!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The Policy Holder gender Type"""
+enum POLICY_HOLDER_GENDER_IDENTITY {
+  MALE
+  FEMALE
+  TRANSGENDER_MALE
+  TRANSGENDER_FEMALE
+  NOT_EXCLUSIVE
+  NONE
+}
+
+type Policy {
+  id: String!
+  name: String
+  orderOfBenifit: OrderOfBenefitType
+  policyHolderRelationship: PolicyHolderRelationshipType
+  memberId: String
+  groupNumber: String
+  issueDate: String
+  expirationDate: String
+  coinsurancePercentage: String
+  referringProvider: Doctor
+  primaryCareProvider: Doctor
+  pricingProductType: PricingProductType
+  notes: String
+  insurance: Insurance
+  policyHolder: PolicyHolder
+  patient: Patient
+  copays: [Copay!]
+  patientId: String
+  policyHolderId: String
+  insuranceId: String
+  referringProviderId: String
+  primaryCareProviderId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The order of benefit type"""
+enum OrderOfBenefitType {
+  PRIMARY
+  SECONDARY
+  TERTIARY
+}
+
+"""The Policy Holder Relationship Type"""
+enum PolicyHolderRelationshipType {
+  SELF
+  SPOUSE
+  CHILD
+  CHILD_MOTHER_INSURANCE
+  CHILD_FATHER_INSURANCE
+  OTHER
+  GRANDPARENT
+  GRANDCHILD
+  NEPHEW_OR_NIECE
+  FOSTER_CHILD
+  WARD
+  STEPSON_OR_STEPDAUGTER
+  STEPSON_OR_STEPDAUGTER_STEPMOTHER_INSURANCE
+  STEPSON_OR_STEPDAUGTER_STEPFATHER_INSURANCE
+  EMPLOYEE
+  UNKNOWN
+  HANDICAPPED_DEPENDENT
+  SPONSORED_DEPENDENT
+  DEPENDENT_OF_MINOR_DEPENDENT
+  SIGNIFICANT_OTHER
+  MOTHER
+  FATHER
+  EMANCIPATED_MINOR
+  ORGAN_DONOR
+  CADAVER_DONOR
+  INJURED_PLAINTIFF
+  CHILD_INS_NOT_FINANCIALLY_RESPONSE
+  CHILD_MOTHER_INS_NOT_FINANCIALLY_RESPONSE
+  CHILD_FATHER_INS_NOT_FINANCIALLY_RESPONSE
+  LIFE_PARTNER
+}
+
+"""The Policy Holder Relationship Type"""
+enum PricingProductType {
+  AUTOMOBILE_MEDICAL
+  BLUE_CROSS_BLUE_SHIELD
+  CHAMPUS
+  COMMERCIAL_INSURANCE_CO
+  DENTAL_MAINTENANCE_ORGANIZATION
+  DISABILITY
+  EXCLUSIVE_PROVIDER_ORGANIZATION_EPO
+  FEDERAL_EMPLOYEES_PROGRAM
+  HEALTH_MAINTENANCE_ORGANIZATION
+  HEALTH_MAINTENANCE_ORGANIZATION_HMO_MEDICARE_RISK
+  INDEMNITY_INSURANCE
+  LIABILITY_MEDICAL
+  MEDICAID
+  MEDICARE_PART_A
+  MEDICARE_PART_B
+  MUTUALLY_DEFINED
+  OTHER_FEDERAL_PROGRAM
+  OTHER_NON_FEDERAL_PROGRAM
+  POINT_OF_SERVICE_POS
+  PREFERRED_PROVIDER_ORGANIZATION_PPO
+  TITLE_V
+  VETERANS_AFFAIRS_PLAN
+  WORKERS_COMPENSATION_HEALTH_CLAIM
 }
 
 type Allergies {
@@ -223,7 +526,9 @@ type RolePermission {
   id: String!
   isMutable: Boolean
   permission: Permission
+  permissionId: String
   role: Role
+  roleId: String
   createdAt: String!
   updatedAt: String!
 }
@@ -536,106 +841,6 @@ type BillingAddress {
   updatedAt: String!
 }
 
-type Contact {
-  id: String!
-  email: String
-  name: String
-  firstName: String
-  lastName: String
-  middleName: String
-  suffix: String
-  phone: String
-  mobile: String
-  pager: String
-  fax: String
-  address: String
-  address2: String
-  zipCode: String
-  city: String
-  state: String
-  country: String
-  color: String
-  primaryContact: Boolean
-  locationLink: String
-  ssn: String
-  employerName: String
-  serviceCode: ServiceCodes!
-  relationship: RelationshipType
-  contactType: ContactType
-  facilityId: String
-  patientId: String
-  doctorId: String
-  facility: Facility
-  doctor: Doctor
-  userId: String
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The facility service code type assigned"""
-enum ServiceCodes {
-  AMBULANCE_41
-  AMBULANCE_42
-  AMBULANCE_24
-  ASSISTED_LIVING_13
-  BIRTHING_CENTER_25
-  COMMUNITY_MENTAL_HEALTH_CENTER_53
-  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
-  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
-  CUSTODIAL_CARE_FACILITY_33
-  EMERGENCY_ROOM_23
-  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
-  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
-  GROUP_HOME_14
-  HOMELESS_SHELTER_04
-  HOSPICE_34
-  INDEPENDENT_CLINIC_49
-  INDEPENDENT_LABORATORY_81
-  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
-  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
-}
-
-"""The user's relationship assigned"""
-enum RelationshipType {
-  SELF
-  SPOUSE
-  CHILD
-  CHILD_MOTHER_INSURANCE
-  CHILD_FATHER_INSURANCE
-  OTHER
-  GRANDPARENT
-  GRANDCHILD
-  NEPHEW_NIECE
-  FOSTHER_CHILD
-  WARD
-  STEPSON_STEPDAUGHTER
-  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE
-  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE
-  EMPLOYEE
-  UNKNOWN
-  HANDICAPPED_DEPENDENT
-  SPONSORED_DEPENDENT
-  DEPENDENT_OF_MINOR_DEPENDENT
-  SIGNIFICANT_OTHER
-  MOTHER
-  FATHER
-  EMANCIPATED_MINOR
-  ORGAN_DONOR
-  CADAVER_DONOR
-  INJURED_PLAINTIIFF
-  LIFE_PARTNER
-}
-
-"""The user's contact type assigned"""
-enum ContactType {
-  SELF
-  EMERGENCY
-  NEXT_OF_KIN
-  CHILD_MOTHER_INSURANCE
-  GUARDIAN
-  GUARANDOR
-}
-
 type Service {
   id: String!
   name: String!
@@ -734,6 +939,8 @@ type Doctor {
   patientAllergies: [PatientAllergies!]
   staff: [Staff]
   labTests: [LabTests!]
+  policyOfReferringProvider: [Policy!]
+  policyOfPrimaryCareProvider: [Policy!]
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
@@ -862,6 +1069,7 @@ type Facility {
   serviceCode: ServiceCode!
   staff: [Staff!]
   doctors: [Doctor!]
+  appointments: [Appointment!]
   user: [User!]
   contacts: [Contact!]
   services: [Service!]
@@ -945,6 +1153,8 @@ type Appointment {
   status: APPOINTMENTSTATUS!
   billingStatus: BillingStatus!
   appointmentCancelReason: String
+  checkedInAt: String
+  selfCheckIn: Boolean
   insuranceCompany: String
   membershipID: String
   reason: String
@@ -1080,6 +1290,9 @@ type Patient {
   createdAt: String!
   updatedAt: String!
   transaction: Transactions
+  policies: [Policy!]
+  policyHolder: PolicyHolder
+  policyHolderId: String
 }
 
 """The patient's sexual orientation type assigned"""
@@ -1297,17 +1510,6 @@ type PracticesPayload {
   pagination: PaginationPayload
 }
 
-type FacilitiesPayload {
-  response: ResponsePayload
-  facilities: [Facility]
-  pagination: PaginationPayload
-}
-
-type FacilityPayload {
-  response: ResponsePayload
-  facility: Facility
-}
-
 type ServicePayload {
   response: ResponsePayload
   service: Service
@@ -1316,6 +1518,17 @@ type ServicePayload {
 type ServicesPayload {
   response: ResponsePayload
   services: [Service]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
+type FacilitiesPayload {
+  response: ResponsePayload
+  facilities: [Facility]
   pagination: PaginationPayload
 }
 
@@ -1650,6 +1863,16 @@ type PracticeUsersWithRoles {
   userCount: Float
 }
 
+type PracticeUserRoles {
+  role: String
+  count: Float!
+}
+
+type PracticeFacilityAppointment {
+  facility: String
+  count: Float!
+}
+
 type PracticesViaDate {
   id: Int
   count: Int
@@ -1680,6 +1903,45 @@ type PracticesViaDatePayload {
 type PracticeUsersWithRolesPayload {
   practiceUsers: [PracticeUsersWithRoles!]
   response: ResponsePayloadResponse
+}
+
+type PracticeFacilityAppointmentsPayload {
+  facilitiesAppointments: [PracticeFacilityAppointment!]
+  response: ResponsePayloadResponse
+}
+
+type PracticeUserRolesPayload {
+  userRoles: [PracticeUserRoles!]
+  response: ResponsePayloadResponse
+}
+
+type Response {
+  status: Int
+  message: String
+}
+
+type InsurancesPayload {
+  insurances: [Insurance!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PoliciesPayload {
+  policies: [Policy!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyPayload {
+  policy: Policy!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyHoldersPayload {
+  policyHolders: [PolicyHolder!]!
+  pagination: PaginationPayload
+  response: Response
 }
 
 type Query {
@@ -1715,6 +1977,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
+  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
@@ -1745,10 +2008,18 @@ type Query {
   getActiveInactivePractices: ActiveInactivePracticesPayload!
   getPracticesByYear(practicesViaDateInputs: PracticesViaDateInputs!): PracticesViaDatePayload!
   getPracticeFacilitiesUsersWithRoles(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs!): PracticeUsersWithRolesPayload!
+  getPracticeFacilityAppointments(practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs!): PracticeFacilityAppointmentsPayload!
+  getUsersWithRoles(usersWithRolesInputs: UsersWithRolesInputs!): PracticeUserRolesPayload!
   findAllForms(formInput: FormInput!): FormsPayload!
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
   findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
+  fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
+  fetchInsurance(searchTerm: String!): InsurancesPayload!
+  fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
+  fetchPolicy(id: String!): PolicyPayload!
+  fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
+  fetchPolicyHolder(id: String!): PolicyHolder!
 }
 
 input UsersInput {
@@ -1906,6 +2177,11 @@ input GetAttachmentsByLabOrder {
   orderNum: String!
 }
 
+input GetAttachmentsByPolicyId {
+  typeId: String!
+  policyId: String!
+}
+
 input GetMedia {
   id: String
 }
@@ -2043,6 +2319,14 @@ enum PracticeRolesTypes {
   PATIENT
 }
 
+input PracticeFacilityAppointmentsInputs {
+  practiceId: String
+}
+
+input UsersWithRolesInputs {
+  practiceId: String
+}
+
 input FormInput {
   facilityId: String
   isSystemForm: Boolean
@@ -2056,6 +2340,20 @@ input GetForm {
 
 input UserFormInput {
   FormId: String!
+  paginationOptions: PaginationInput!
+}
+
+input InsurancePaginationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input PolicyPaginationInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input PolicyHolderPaginationInput {
   paginationOptions: PaginationInput!
 }
 
@@ -2157,6 +2455,10 @@ type Mutation {
   createElement(inputs: ElementInputs!): Element!
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
+  createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
+  updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
+  createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
+  createCopay(createCopayInput: CopayInput!): Copay!
 }
 
 input LoginUserInput {
@@ -2339,6 +2641,7 @@ input CreateContactInput {
   facilityId: String
   patientId: String
   employerName: String
+  insuranceId: String
 }
 
 input CreateBillingAddressInput {
@@ -2417,6 +2720,7 @@ input UpdateContactInput {
   facilityId: String
   patientId: String
   employerName: String
+  insuranceId: String
   id: String
 }
 
@@ -2888,6 +3192,7 @@ input CreateAttachmentInput {
   """enum type for module type - Upload Media"""
   metadataType: AttachmentMetaDataType
   labOrderNum: String
+  policyId: String
 }
 
 input RemoveAttachment {
@@ -2911,6 +3216,7 @@ input UpdateAttachmentInput {
   """enum type for module type - Upload Media"""
   metadataType: AttachmentMetaDataType
   labOrderNum: String
+  policyId: String
   id: String
 }
 
@@ -3017,6 +3323,8 @@ input UpdateAppointmentInput {
   practiceId: String
   id: String!
   paymentStatus: String
+  selfCheckIn: Boolean
+  checkedInAt: String
 }
 
 input UpdateAppointmentBillingStatusInput {
@@ -3411,4 +3719,89 @@ input ArrayOfStringsTypeInput {
 input GetPublicMediaInput {
   url: String!
   formId: String!
+}
+
+input CreatePolicyInput {
+  orderOfBenifit: OrderOfBenefitType
+  policyHolderRelationship: PolicyHolderRelationshipType
+  memberId: String
+  groupNumber: String
+  issueDate: String
+  expirationDate: String
+  coinsurancePercentage: String
+  referringProviderId: String
+  primaryCareProviderId: String
+  pricingProductType: PricingProductType
+  notes: String
+  insuranceId: String
+  patientId: String
+  copays: [CopayInput!]
+  policyHolderInfo: PolicyHolderInput
+}
+
+input CopayInput {
+  type: CopayType
+  amount: String
+  policy: CreatePolicyInput
+}
+
+input PolicyHolderInput {
+  certificationNumber: String
+  employer: String
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  zipCode: String
+  address: String
+  addressCTD: String
+  city: String
+  state: String
+  ssn: String
+  sex: POLICY_HOLDER_GENDER_IDENTITY
+  dob: String
+}
+
+input UpdatePolicyInput {
+  orderOfBenifit: OrderOfBenefitType
+  policyHolderRelationship: PolicyHolderRelationshipType
+  memberId: String
+  groupNumber: String
+  issueDate: String
+  expirationDate: String
+  coinsurancePercentage: String
+  referringProviderId: String
+  primaryCareProviderId: String
+  pricingProductType: PricingProductType
+  notes: String
+  insuranceId: String
+  patientId: String
+  copays: [UpdateCopayInput!]
+  policyHolderInfo: UpdatePolicyHolderInput
+  id: String!
+}
+
+input UpdateCopayInput {
+  type: CopayType
+  amount: String
+  policy: CreatePolicyInput
+  id: String!
+}
+
+input UpdatePolicyHolderInput {
+  certificationNumber: String
+  employer: String
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  zipCode: String
+  address: String
+  addressCTD: String
+  city: String
+  state: String
+  ssn: String
+  sex: POLICY_HOLDER_GENDER_IDENTITY
+  dob: String
+  id: String!
 }

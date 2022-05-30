@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 import { MailerService } from "src/mailer/mailer.service";
 import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -17,7 +17,7 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
   }
 
   async beforeInsert(event: InsertEvent<User>): Promise<void> {
-    event.entity.password = await bcrypt.hash(event.entity.password, await bcrypt.genSalt());
+    event.entity.password = await bcryptjs.hash(event.entity.password, await bcryptjs.genSalt());
   }
 
   async beforeUpdate(event: UpdateEvent<User>): Promise<void> {
@@ -35,7 +35,7 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
       }
     }
     if (passwordGotUpdated && event.entity.password) {
-      const hashedPassword = await bcrypt.hash(event.entity.password, await bcrypt.genSalt());
+      const hashedPassword = await bcryptjs.hash(event.entity.password, await bcryptjs.genSalt());
       if (event.databaseEntity.password !== event.entity.password) {
         Logger.log(`Password changed from ${event.databaseEntity.password} to ${hashedPassword}`, 'Password Got Updated');
         event.entity.password = hashedPassword;

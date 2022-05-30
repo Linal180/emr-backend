@@ -1,17 +1,19 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //user imports
 import { getMonthsRecord } from "src/lib/helper";
-import { PracticesViaDate, PracticeUsers, PracticeUsersWithRoles } from "./dto/dashboard.dto";
+import { PracticeFacilityAppointment, PracticesViaDate, PracticeUserRoles, PracticeUsers, PracticeUsersWithRoles } from "./dto/dashboard.dto";
 import { PracticeService } from "src/practice/practice.service";
 import { UsersService } from "src/users/services/users.service";
 import { FacilityService } from "src/facilities/services/facility.service";
-import { PracticeFacilitiesInputs, PracticeFacilitiesUsersInputs } from "./dto/dashboard.inputs";
+import { PracticeFacilitiesInputs, PracticeFacilitiesUsersInputs, PracticeFacilityAppointmentsInputs, UsersWithRolesInputs } from "./dto/dashboard.inputs";
+import { AppointmentService } from "src/appointments/services/appointment.service";
 
 @Injectable()
 export class DashboardService {
   constructor(private readonly userService: UsersService,
     private readonly facilityService: FacilityService,
     private readonly practiceService: PracticeService,
+    private readonly appointmentService: AppointmentService,
   ) { }
 
   /**
@@ -91,6 +93,11 @@ export class DashboardService {
     }
   }
 
+  /**
+   * Gets practice facility users with roles count
+   * @param practiceFacilitiesUsersInputs 
+   * @returns practice facility users with roles count 
+   */
   async getPracticeFacilityUsersWithRolesCount(practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs): Promise<PracticeUsersWithRoles[]> {
     try {
       const { practiceId, roles } = practiceFacilitiesUsersInputs
@@ -111,6 +118,44 @@ export class DashboardService {
       }))
 
       return practiceUsers
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Practices facility appointments count
+   * @param input 
+   * @returns PracticeFacilityAppointment[]
+   */
+  async practiceFacilityAppointments(input: PracticeFacilityAppointmentsInputs): Promise<PracticeFacilityAppointment[]> {
+    try {
+      const { practiceId } = input
+      const facilities = await this.facilityService.getPracticeFacilitiesAppointments(practiceId)
+      const facilityAppointment = await Promise.all(facilities.map(async ({ id, name }) => {
+        const count = await this.appointmentService.getFacilityAppointmentCount({ facilityId: id })
+        return { facility: name, count }
+      }))
+      return facilityAppointment
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+ * Find Practice User count against Practice
+ * @param UsersWithRolesInputs
+ * @returns  PracticeUserRoles[]
+ */
+  async getUsersWithRoles(inputs: UsersWithRolesInputs): Promise<PracticeUserRoles[]> {
+    try {
+      const { practiceId } = inputs
+      const userRoles = await this.userService.usersWithRoles(practiceId)
+
+      return await Promise.all(userRoles.map(async ({ role }) => {
+        const count = await this.userService.findUserCountWithRole(role, practiceId)
+        return { role, count }
+      }))
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

@@ -20,7 +20,7 @@ import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
+import { CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
 import { Appointment, APPOINTMENTSTATUS, BillingStatus } from '../entities/appointment.entity';
 
 @Injectable()
@@ -102,6 +102,12 @@ export class AppointmentService {
       await queryRunner.release();
     }
   }
+
+  /**
+   * Creates external appointment input
+   * @param createExternalAppointmentInput 
+   * @returns external appointment input 
+   */
   async createExternalAppointmentInput(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Appointment> {
     //Transaction start
     const queryRunner = this.connection.createQueryRunner();
@@ -203,11 +209,11 @@ export class AppointmentService {
    */
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
-      const [first]  = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
+      const [first] = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
       let paginationResponse
-      if(appointmentInput.relationTable){
+      if (appointmentInput.relationTable) {
         paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: "Services", relationField: 'appointmentType', associatedToField: { columnValue: first, columnName: 'name', columnName2: 'color', columnName3: 'duration', filterType: 'stringFilter' } })
-      }else{
+      } else {
         paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: "Patients", relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       }
 
@@ -258,8 +264,8 @@ export class AppointmentService {
    * @param utc_end_date_minus_offset 
    * @returns appointment by provider id 
    */
-   async findAppointmentByProviderId(getSlots: GetSlots,utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
-    if(getSlots.facilityId){
+  async findAppointmentByProviderId(getSlots: GetSlots, utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
+    if (getSlots.facilityId) {
       return await this.appointmentRepository.find({
         where: {
           scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
@@ -267,7 +273,7 @@ export class AppointmentService {
           facilityId: getSlots.facilityId,
         }
       })
-    }else if(getSlots.providerId)
+    } else if (getSlots.providerId)
       return await this.appointmentRepository.find({
         where: {
           scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
@@ -308,19 +314,19 @@ export class AppointmentService {
   }
 
   async getAppointments(getAppointments: GetAppointments): Promise<Appointment[]> {
-    if(getAppointments.doctorId){
+    if (getAppointments.doctorId) {
       const appointment = await this.appointmentRepository.find({
-        where:[ 
-          {providerId: getAppointments.doctorId, status: APPOINTMENTSTATUS.INITIATED }
+        where: [
+          { providerId: getAppointments.doctorId, status: APPOINTMENTSTATUS.INITIATED }
         ]
       })
       if (appointment) {
         return appointment
       }
-      }else if(getAppointments.facilityId){
+    } else if (getAppointments.facilityId) {
       const appointment = await this.appointmentRepository.find({
-        where:[ 
-          {facilityId: getAppointments.facilityId, status: APPOINTMENTSTATUS.INITIATED }
+        where: [
+          { facilityId: getAppointments.facilityId, status: APPOINTMENTSTATUS.INITIATED }
         ]
       })
       if (appointment) {
@@ -403,7 +409,7 @@ export class AppointmentService {
           if (transaction) {
             await this.paymentService.refund(transaction.transactionId, transaction.id)
           }
-          await this.updateAppointmentBillingStatus({id: appointment.id , billingStatus: BillingStatus.REFUND})
+          await this.updateAppointmentBillingStatus({ id: appointment.id, billingStatus: BillingStatus.REFUND })
         }
         return await this.appointmentRepository.save({ id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '', reason: cancelAppointment.reason, })
       }
@@ -417,6 +423,11 @@ export class AppointmentService {
     }
   }
 
+  /**
+   * Gets patient appointment
+   * @param getPatientAppointmentInput 
+   * @returns patient appointment 
+   */
   async getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput): Promise<Appointment[]> {
     const appointment = await this.appointmentRepository.find({
       where: [
@@ -430,5 +441,23 @@ export class AppointmentService {
       status: HttpStatus.NOT_FOUND,
       error: 'Appointment not found',
     });
+  }
+
+  /**
+   * Gets facility appointment
+   * @param getFacilityAppointmentsInput
+   * @returns facility appointments 
+   */
+  async getFacilityAppointments(getFacilityAppointmentsInput: GetFacilityAppointmentsInput) {
+    return await this.appointmentRepository.find({ where: { facilityId: getFacilityAppointmentsInput.facilityId } })
+  }
+
+  /**
+   * Gets facility appointment count
+   * @param getFacilityAppointmentsInput
+   * @returns facility appointments count
+   */
+  async getFacilityAppointmentCount(getFacilityAppointmentsInput: GetFacilityAppointmentsInput) {
+    return await this.appointmentRepository.count({ where: { facilityId: getFacilityAppointmentsInput.facilityId } })
   }
 }

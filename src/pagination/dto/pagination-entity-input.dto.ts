@@ -58,4 +58,5 @@ export class PaginatedEntityInput {
   component?: string
   specimenTypeName?: string
   orderNumber?: string
+  payerName?: string
 }
