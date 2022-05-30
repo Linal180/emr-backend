@@ -7,7 +7,7 @@ import { AttachmentsService } from './attachments.service';
 import { AttachmentMediaPayload, AttachmentPayload } from './dto/attachment-payload.dto';
 import { AttachmentsPayload } from './dto/attachments-payload.dto';
 import { CreateAttachmentInput } from './dto/create-attachment.input';
-import { GetAttachment, GetAttachmentsByLabOrder, GetMedia, RemoveAttachment, UpdateAttachmentInput } from './dto/update-attachment.input';
+import { GetAttachment, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetMedia, RemoveAttachment, UpdateAttachmentInput } from './dto/update-attachment.input';
 import { Attachment } from './entities/attachment.entity';
 import { AttachmentMetadata } from './entities/attachmentMetadata.entity';
 
@@ -32,6 +32,17 @@ export class AttachmentsResolver {
   // @SetMetadata('name', 'getAttachments')
   async getAttachmentsByLabOrder(@Args('getAttachmentsByLabOrder') getAttachmentsByLabOrder: GetAttachmentsByLabOrder): Promise<AttachmentsPayload> {
     const attachments = await this.attachmentsService.findAttachmentsByLabOrder(getAttachmentsByLabOrder)
+    return {
+      attachments,
+      response: { status: 200, message: 'Attachments fetched successfully' }
+    };
+  }
+
+  @Query(returns => AttachmentsPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAttachments')
+  async getAttachmentsByPolicyId(@Args('getAttachmentsByPolicyId') getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<AttachmentsPayload> {
+    const attachments = await this.attachmentsService.findAttachmentsByPolicyId(getAttachmentsByPolicyId)
     return {
       attachments,
       response: { status: 200, message: 'Attachments fetched successfully' }

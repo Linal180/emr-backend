@@ -8,7 +8,7 @@ import { UtilsService } from 'src/util/utils.service';
 import { Brackets, getConnection, Repository } from 'typeorm';
 import { AwsService } from '../aws/aws.service';
 import { CreateAttachmentInput } from './dto/create-attachment.input';
-import { GetAttachmentsByLabOrder, UpdateAttachmentInput, UpdateAttachmentMediaInput } from './dto/update-attachment.input';
+import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from './dto/update-attachment.input';
 import { Attachment } from './entities/attachment.entity';
 import { AttachmentMetadata, AttachmentMetadataType } from './entities/attachmentMetadata.entity';
 
@@ -31,10 +31,19 @@ export class AttachmentsService {
    * @returns  
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
-    const { labOrderNum,metadataType,...attachmentInput } = createAttachmentInput
+    const { labOrderNum,metadataType,policyId,...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
     if(metadataType){
-       const attachmentMetadata= this.attachmentMetadataRepository.create({labOrderNum,metadataType: AttachmentMetadataType[metadataType]})
+       let createMetaDataParams= {}
+       if(labOrderNum){
+        (createMetaDataParams as any).labOrderNum= labOrderNum
+       }
+
+       if(policyId){
+        (createMetaDataParams as any).policyId= policyId
+       }
+
+       const attachmentMetadata= this.attachmentMetadataRepository.create({...createMetaDataParams,metadataType: AttachmentMetadataType[metadataType]})
        const createdMetaData= await this.attachmentMetadataRepository.save(attachmentMetadata)
        attachmentsResult.attachmentMetadata= createdMetaData
        attachmentsResult.attachmentMetadataId= createdMetaData.id
@@ -148,6 +157,19 @@ export class AttachmentsService {
 
         attachmentMetadata: {
           labOrderNum: orderNum,
+        },
+        typeId
+      }
+    });
+  }
+
+  async findAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<Attachment[]> {
+    const { policyId, typeId } = getAttachmentsByPolicyId
+    return await this.attachmentsRepository.find({
+      relations:['attachmentMetadata'],
+      where: {
+        attachmentMetadata: {
+          policyId: policyId,
         },
         typeId
       }

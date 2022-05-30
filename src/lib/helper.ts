@@ -1,5 +1,5 @@
 import * as  moment from 'moment';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from "@nestjs/common";
 
@@ -9,7 +9,7 @@ export function createToken(): string {
 }
 
 export async function createPasswordHash(password: string): Promise<string> {
-  return await bcrypt.hash(password, await bcrypt.genSalt());
+  return await bcryptjs.hash(password, await bcryptjs.genSalt());
 }
 
 export const mediaFilesFilter = (_req, file, callback) => {
