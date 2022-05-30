@@ -31,6 +31,12 @@ export class GetAttachmentsByLabOrder {
   orderNum: string;
 }
 
+@InputType()
+export class GetAttachmentsByPolicyId extends GetAttachment{
+  @Field()
+  policyId: string
+}
+
 
 @InputType()
 export class GetMedia extends PickType(UpdateAttachmentInput, ['id'] as const) {

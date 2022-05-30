@@ -1,7 +1,7 @@
 import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 import { getConnection, In, Not, Repository } from 'typeorm';
 //user import
 import { AttachmentsService } from 'src/attachments/attachments.service';
@@ -462,7 +462,7 @@ export class UsersService {
           error: 'User not found or disabled',
         });
       }
-      const passwordMatch = await bcrypt.compare(twoFactorInput.password, user.password)
+      const passwordMatch = await bcryptjs.compare(twoFactorInput.password, user.password)
       if (passwordMatch) {
         return await this.utilsService.updateEntityManager(User, twoFactorInput.userId, { isTwoFactorEnabled: twoFactorInput.isTwoFactorEnabled }, this.usersRepository)
       } else {
@@ -496,7 +496,7 @@ export class UsersService {
    * @returns token 
    */
   async createToken(user: User, paramPass: string): Promise<AccessUserPayload> {
-    const passwordMatch = await bcrypt.compare(paramPass, user.password)
+    const passwordMatch = await bcryptjs.compare(paramPass, user.password)
     if (passwordMatch) {
       const payload = { email: user.email, sub: user.id };
       return {
@@ -526,7 +526,7 @@ export class UsersService {
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.findOne(email);
     if (user) {
-      const passwordMatch = await bcrypt.compare(pass, user.password)
+      const passwordMatch = await bcryptjs.compare(pass, user.password)
       if (passwordMatch) {
         const { password, ...result } = user;
         return result;
@@ -654,7 +654,7 @@ export class UsersService {
   async updatePassword(updatePasswordInput: UpdatePasswordInput): Promise<User | undefined> {
     try {
       const user = await this.findById(updatePasswordInput.id);
-      const oldPassword = await bcrypt.compare(updatePasswordInput.oldPassword, user.password)
+      const oldPassword = await bcryptjs.compare(updatePasswordInput.oldPassword, user.password)
       if (oldPassword) {
         user.password = updatePasswordInput.newPassword
         const updatedUser = await this.usersRepository.save(user);
@@ -807,7 +807,7 @@ export class UsersService {
    * @returns fatoken 
    */
   async create2FAToken(user: User, paramPass: string): Promise<AccessUserPayload> {
-    const passwordMatch = await bcrypt.compare(paramPass, user.password)
+    const passwordMatch = await bcryptjs.compare(paramPass, user.password)
     if (passwordMatch) {
       const payload = { id: user.id, isTwoFactorEnabled: true };
       const access_2fa_token = await this.jwtService.sign(payload)

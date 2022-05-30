@@ -23,6 +23,7 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
+import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
@@ -217,6 +218,24 @@ export class PatientService {
         status: HttpStatus.NOT_FOUND,
         error: 'Patient not found',
       });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Updates patient profile
+   * @param updatePatientPolicyHolderInput 
+   * @returns patient profile 
+   */
+   async updatePatientPolicyHolder(updatePatientPolicyHolderInput: UpdatePatientPolicyHolderInput){
+    try {
+      const patientInstance = await this.findOne(updatePatientPolicyHolderInput.id)
+      //user registration input
+      if (patientInstance) {
+          await this.utilsService.updateEntityManager(Patient, updatePatientPolicyHolderInput.id, updatePatientPolicyHolderInput, this.patientRepository)
+      }
     }
     catch (error) {
       throw new InternalServerErrorException(error);
