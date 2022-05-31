@@ -16,7 +16,7 @@ import PatientAttachmentsInput from '../dto/patient-attachments-input.dto';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
-import { PatientPayload } from '../dto/patient-payload.dto';
+import { PatientPayload, PatientProviderPayload } from '../dto/patient-payload.dto';
 import { PatientAttachmentsPayload } from '../dto/patients-attachments-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
@@ -180,6 +180,15 @@ export class PatientResolver {
     const patients = await this.patientService.GetPatient(getPatient.id)
     return {
       ...patients,
+      response: { status: 200, message: 'Patient fetched successfully' }
+    };
+  }
+
+  @Query(returns => PatientProviderPayload)
+  async getPatientProvider(@Args('getPatient') getPatient: GetPatient): Promise<PatientProviderPayload> {
+    const providers = await this.patientService.usualProvider(getPatient.id);
+    return {
+      providers,
       response: { status: 200, message: 'Patient fetched successfully' }
     };
   }

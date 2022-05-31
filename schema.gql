@@ -1433,6 +1433,11 @@ type PatientPayload {
   patient: Patient
 }
 
+type PatientProviderPayload {
+  response: ResponsePayload
+  providers: [DoctorPatient!]
+}
+
 type PatientAttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
@@ -1975,6 +1980,7 @@ type Query {
   findPatientAttachments(patientAttachmentsInput: PatientAttachmentsInput!): PatientAttachmentsPayload!
   fetchAllPatients(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
+  getPatientProvider(getPatient: GetPatient!): PatientProviderPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
