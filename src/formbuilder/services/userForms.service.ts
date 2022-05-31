@@ -265,11 +265,11 @@ export class UserFormsService {
           const scheduleStartTime = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'scheduleEndDateTime')
           const scheduleEndTimes = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'scheduleStartDateTime')
 
-          if (appointmentType && facilityId && scheduleEndTimes && scheduleStartTime && providerId) {
+          if (appointmentType && facilityId && scheduleEndTimes && scheduleStartTime) {
             const { value: startTime } = scheduleStartTime || {}
             const { value: endTime } = scheduleEndTimes || {}
             const { value: appointmentTypeId } = appointmentType
-            const { value: doctorId } = providerId
+            const { value: doctorId } = providerId || {}
             const patientInstance = await this.patientService.createPatient(patientInputs)
             if(endTime && startTime && patientInstance?.id){
 
@@ -282,7 +282,7 @@ export class UserFormsService {
               scheduleEndDateTime: endTime,
               appointmentTypeId: appointmentTypeId || '',
               facilityId,
-              providerId: doctorId || '',
+              providerId: doctorId || null,
               patientId: patientInstance.id,
               practiceId: null
             }
