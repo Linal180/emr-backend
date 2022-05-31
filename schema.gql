@@ -1745,6 +1745,35 @@ type FormMediaPayload {
   response: ResponsePayloadResponse
 }
 
+type Response {
+  status: Int
+  message: String
+}
+
+type InsurancesPayload {
+  insurances: [Insurance!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PoliciesPayload {
+  policies: [Policy!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyPayload {
+  policy: Policy!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyHoldersPayload {
+  policyHolders: [PolicyHolder!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
 type AllergiesPayload {
   response: ResponsePayload
   allergies: [Allergies]
@@ -1922,35 +1951,6 @@ type PracticeFacilityAppointmentsPayload {
 type PracticeUserRolesPayload {
   userRoles: [PracticeUserRoles!]
   response: ResponsePayloadResponse
-}
-
-type Response {
-  status: Int
-  message: String
-}
-
-type InsurancesPayload {
-  insurances: [Insurance!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PoliciesPayload {
-  policies: [Policy!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyPayload {
-  policy: Policy!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyHoldersPayload {
-  policyHolders: [PolicyHolder!]!
-  pagination: PaginationPayload
-  response: Response
 }
 
 type Query {

@@ -2,25 +2,27 @@ import { BadRequestException, HttpStatus, Injectable, InternalServerErrorExcepti
 import { InjectRepository } from "@nestjs/typeorm";
 import { Connection, Repository } from "typeorm";
 //user import
-import { PaginationService } from "src/pagination/pagination.service";
-import { UserForms } from '../entities/userforms.entity'
-import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
-import { UserFormElementService } from "./userFormElements.service";
-import { AttachmentType } from "src/attachments/entities/attachment.entity";
-import { UpdateAttachmentMediaInput } from "src/attachments/dto/update-attachment.input";
-import { File } from 'src/aws/dto/file-input.dto';
-import { AwsService } from 'src/aws/aws.service';
 import { FormsService } from "./forms.service";
+import { AwsService } from 'src/aws/aws.service';
+import { File } from 'src/aws/dto/file-input.dto';
 import { Form, FormType } from "../entities/form.entity";
+import { UserForms } from '../entities/userforms.entity';
+import { UserFormElementService } from "./userFormElements.service";
+import { PolicyService } from "src/insurance/services/policy.service";
+import { PaginationService } from "src/pagination/pagination.service";
 import { PatientService } from "src/patients/services/patient.service";
-import { CreatePatientItemInput } from "src/patients/dto/create-patientItem.input ";
+import { AttachmentType } from "src/attachments/entities/attachment.entity";
 import { CreateContactInput } from "src/providers/dto/create-contact.input";
-import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, Patient, PRONOUNS, RACE, SEXUALORIENTATION } from "src/patients/entities/patient.entity";
-import { ContactType, RelationshipType } from "src/providers/entities/contact.entity";
-import { AppointmentService } from "src/appointments/services/appointment.service";
-import { BillingStatus, PaymentType } from "src/appointments/entities/appointment.entity";
 import { CreateEmployerInput } from "src/patients/dto/create-employer.input";
-
+import { AppointmentService } from "src/appointments/services/appointment.service";
+import { ContactType, RelationshipType } from "src/providers/entities/contact.entity";
+import { UpdateAttachmentMediaInput } from "src/attachments/dto/update-attachment.input";
+import { BillingStatus, PaymentType } from "src/appointments/entities/appointment.entity";
+import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
+import {
+  COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, Patient, PRONOUNS, RACE,
+  SEXUALORIENTATION
+} from "src/patients/entities/patient.entity";
 
 @Injectable()
 export class UserFormsService {
@@ -35,6 +37,7 @@ export class UserFormsService {
     private readonly awsService: AwsService,
     private readonly patientService: PatientService,
     private readonly appointmentService: AppointmentService,
+    private readonly policyService: PolicyService
   ) { }
 
   async createPatientAppointment(form: Form, userForm: UserForms, inputs: CreateUserFormInput) {
@@ -271,28 +274,45 @@ export class UserFormsService {
             const { value: appointmentTypeId } = appointmentType
             const { value: doctorId } = providerId || {}
             const patientInstance = await this.patientService.createPatient(patientInputs)
-            if(endTime && startTime && patientInstance?.id){
+            if (endTime && startTime && patientInstance?.id) {
 
-            
-            const appointmentInputs = {
-              paymentType: PaymentType.SELF,
-              billingStatus: BillingStatus.DUE,
-              isExternal: true,
-              scheduleStartDateTime: startTime,
-              scheduleEndDateTime: endTime,
-              appointmentTypeId: appointmentTypeId || '',
-              facilityId,
-              providerId: doctorId || null,
-              patientId: patientInstance.id,
-              practiceId: null
+              const memberElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'memberId')
+              const groupNoElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'groupNumber')
+              const companyNameElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'companyName')
+              const appointmentInputs = {
+                paymentType: PaymentType.SELF,
+                billingStatus: BillingStatus.DUE,
+                isExternal: true,
+                scheduleStartDateTime: startTime,
+                scheduleEndDateTime: endTime,
+                appointmentTypeId: appointmentTypeId || '',
+                facilityId,
+                providerId: doctorId || null,
+                patientId: patientInstance.id,
+                practiceId: null
+              }
+              if (groupNoElement && memberElement && companyNameElement) {
+                const { value: companyName } = companyNameElement || {}
+                const { value: groupNumber } = groupNoElement || {}
+                const { value: memberId } = memberElement || {}
+                if (companyName && groupNumber && memberId) {
+                  const inputs = {
+                    memberId,
+                    groupNumber,
+                    insuranceId: companyName,
+                    patientId: patientInstance.id,
+                    primaryCareProviderId: doctorId || null
+                  }
+                  await this.policyService.create(inputs)
+                }
+              }
+
+              await this.appointmentService.createAppointment(appointmentInputs)
+              return patientInstance
             }
-
-            await this.appointmentService.createAppointment(appointmentInputs)
-            return patientInstance
-          }
-          else{
-            throw new Error('Please provide appointment start and end time')
-          }
+            else {
+              throw new Error('Please provide appointment start and end time')
+            }
           }
           else {
             throw new Error('Please provide appointment start and end time')

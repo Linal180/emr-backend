@@ -21,6 +21,7 @@ import { UserFormController } from './controllers/userFormBuilder.controller';
 import { AwsModule } from 'src/aws/aws.module';
 import { PatientModule } from 'src/patients/patient.module';
 import { AppointmentModule } from 'src/appointments/appointment.module';
+import { InsuranceModule } from 'src/insurance/insurance.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { AppointmentModule } from 'src/appointments/appointment.module';
     AttachmentsModule,
     AwsModule,
     PatientModule,
-    AppointmentModule
+    AppointmentModule,
+    InsuranceModule
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,

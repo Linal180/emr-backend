@@ -18,6 +18,34 @@ export const ElementTypeData = [
   { type: ElementType.TEL },
 ];
 
+
+export enum FormBuilderPaymentTypes {
+  INSURANCE = 'insurance',
+  NO_INSURANCE = 'no_insurance',
+  CONTRACT = 'contract',
+  INTERNATIONAL_TRAVELER = 'international_traveler'
+}
+
+
+export const PAYMENT_TYPES = [
+  {
+    name: "No Insurance",
+    value: FormBuilderPaymentTypes.NO_INSURANCE,
+  },
+  {
+    name: "Insurance",
+    value: FormBuilderPaymentTypes.INSURANCE,
+  },
+  {
+    name: "International Traveler",
+    value: FormBuilderPaymentTypes.INTERNATIONAL_TRAVELER,
+  },
+  {
+    name: "Contract",
+    value: FormBuilderPaymentTypes.CONTRACT,
+  },
+]
+
 const MAPPED_RELATIONSHIP_TYPE = [
   { value: RelationshipType.WARD, name: RelationshipType.WARD },
   { value: RelationshipType.SELF, name: RelationshipType.SELF },
@@ -112,7 +140,8 @@ const MAPPED_PRONOUNS = [
 export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
   SERVICE_SLOT = 'serviceSlot',
-  FACILITY_PROVIDERS = 'facilityProviders'
+  FACILITY_PROVIDERS = 'facilityProviders',
+  PAYMENT_TYPE = 'paymentType'
 }
 
 //Form template
@@ -2293,6 +2322,37 @@ export const FormTemplates = [
     },
   },
   {
+    name: "Payment",
+    type: FormType.PRE_DEFINED,
+    isSystemForm: true,
+    layout: {
+      sections: [
+        {
+          id: uuid(),
+          col: 12,
+          name: "Payment",
+          fields: [
+            {
+              css: "",
+              name: "paymentType",
+              type: ElementType.RADIO,
+              label: "How will you be covering your visit?",
+              column: 12,
+              apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
+              fieldId: uuid(),
+              options: PAYMENT_TYPES,
+              errorMsg: "",
+              required: true,
+              textArea: false,
+              placeholder: "",
+              defaultValue: "",
+              isMultiSelect: false,
+            },
+          ]
+        }]
+    }
+  },
+  {
     name: "Appointment Type",
     type: FormType.PRE_DEFINED,
     isSystemForm: true,
@@ -2319,7 +2379,7 @@ export const FormTemplates = [
               placeholder: "Please select a Appointment Type",
               defaultValue: "",
               isMultiSelect: false,
-              apiCall: 'serviceSelect'
+              apiCall: FormBuilderApiSelector.SERVICE_SELECT
             },
           ]
         }]
@@ -2352,7 +2412,7 @@ export const FormTemplates = [
               placeholder: "Please select a Slot",
               defaultValue: "",
               isMultiSelect: false,
-              apiCall: 'serviceSlot'
+              apiCall: FormBuilderApiSelector.SERVICE_SLOT
             },
           ]
         }]
@@ -3117,7 +3177,7 @@ export const FormTemplates = [
               type: ElementType.SELECT,
               label: "Appointment Type",
               column: 12,
-              apiCall: "serviceSelect",
+              apiCall: FormBuilderApiSelector.SERVICE_SELECT,
               fieldId: uuid(),
               options: [],
               errorMsg: "",
@@ -3143,7 +3203,7 @@ export const FormTemplates = [
               type: ElementType.SELECT,
               label: "Available Slots",
               column: 12,
-              apiCall: "serviceSlot",
+              apiCall: FormBuilderApiSelector.SERVICE_SLOT,
               fieldId: uuid(),
               options: [],
               errorMsg: "",
@@ -4457,6 +4517,37 @@ export const FormTemplates = [
           ],
         },
         {
+          name: "Payment",
+          type: FormType.PRE_DEFINED,
+          isSystemForm: true,
+          layout: {
+            sections: [
+              {
+                id: uuid(),
+                col: 12,
+                name: "Payment",
+                fields: [
+                  {
+                    css: "",
+                    name: "paymentType",
+                    type: ElementType.RADIO,
+                    label: "How will you be covering your visit?",
+                    column: 12,
+                    apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
+                    fieldId: uuid(),
+                    options: PAYMENT_TYPES,
+                    errorMsg: "",
+                    required: true,
+                    textArea: false,
+                    placeholder: "",
+                    defaultValue: "",
+                    isMultiSelect: false,
+                  },
+                ]
+              }]
+          }
+        },
+        {
           id: uuid(),
           col: 12,
           name: "Provider / Registration Dates",
@@ -4467,7 +4558,7 @@ export const FormTemplates = [
               type: ElementType.SELECT,
               label: "Usual Provider ",
               column: 12,
-              apiCall: "facilityProviders",
+              apiCall: FormBuilderApiSelector.FACILITY_PROVIDERS,
               fieldId: uuid(),
               options: [],
               errorMsg: "",
@@ -4590,36 +4681,7 @@ export const FormTemplates = [
               column: 6,
               apiCall: "",
               fieldId: uuid(),
-              options: [
-                {
-                  name: "OTHER",
-                  value: "OTHER",
-                },
-                {
-                  name: "Asian",
-                  value: "Asian",
-                },
-                {
-                  name: "White",
-                  value: "White",
-                },
-                {
-                  name: "Black or African American",
-                  value: "Black or African American",
-                },
-                {
-                  name: "Black or African American",
-                  value: "Black or African American",
-                },
-                {
-                  name: "American Indian or Alaska Native",
-                  value: "American Indian or Alaska Native",
-                },
-                {
-                  name: "Native Hawaiian or Pacific Islander",
-                  value: "Native Hawaiian or Pacific Islander",
-                },
-              ],
+              options: MAPPED_RACE,
               errorMsg: "",
               required: false,
               textArea: false,
@@ -4638,20 +4700,7 @@ export const FormTemplates = [
               column: 6,
               apiCall: "",
               fieldId: uuid(),
-              options: [
-                {
-                  name: "none",
-                  value: "none",
-                },
-                {
-                  name: "centeral American",
-                  value: "centeral American",
-                },
-                {
-                  name: "centeral American Indian",
-                  value: "centeral American Indian",
-                },
-              ],
+              options: MAPPED_ETHNICITY,
               errorMsg: "",
               required: false,
               textArea: false,
@@ -4670,24 +4719,7 @@ export const FormTemplates = [
               column: 6,
               apiCall: "",
               fieldId: uuid(),
-              options: [
-                {
-                  name: "single",
-                  value: "single",
-                },
-                {
-                  name: "Widowed",
-                  value: "Widowed",
-                },
-                {
-                  name: "Divorced",
-                  value: "Divorced",
-                },
-                {
-                  name: "Separated",
-                  value: "Separated",
-                },
-              ],
+              options: MAPPED_MARITAL_STATUS,
               errorMsg: "",
               required: false,
               textArea: false,
@@ -4706,28 +4738,7 @@ export const FormTemplates = [
               column: 6,
               apiCall: "",
               fieldId: uuid(),
-              options: [
-                {
-                  name: "Choose not to disclose",
-                  value: "Choose not to disclose",
-                },
-                {
-                  name: "Don't know",
-                  value: "Don't know",
-                },
-                {
-                  name: "Bisexual",
-                  value: "Bisexual",
-                },
-                {
-                  name: "Lesbian, gay or homosexual",
-                  value: "Lesbian, gay or homosexual",
-                },
-                {
-                  name: "Straight or heterosexual",
-                  value: "Straight or heterosexual",
-                },
-              ],
+              options: MAPPED_SEXUAL_ORIENTATION,
               errorMsg: "",
               required: false,
               textArea: false,
@@ -4746,25 +4757,7 @@ export const FormTemplates = [
               column: 6,
               apiCall: "",
               fieldId: uuid(),
-              options: [
-                {
-                  name: "Choose not to disclose",
-                  value: "Choose not to disclose",
-                },
-                {
-                  name: "Identifies as Male",
-                  value: "Identifies as Male",
-                },
-                {
-                  name: "Identifies as Female",
-                  value: "Identifies as Female",
-                },
-                {
-                  name: "Gender non-conforming (neither exclusively male nor female)",
-                  value:
-                    "Gender non-conforming (neither exclusively male nor female)",
-                },
-              ],
+              options: MAPPED_GENDER_IDENTITY,
               errorMsg: "",
               required: false,
               textArea: false,

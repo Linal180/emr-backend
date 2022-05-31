@@ -26,6 +26,7 @@ import { PaginationModule } from 'src/pagination/pagination.module';
   providers: [
     InsuranceResolver, InsuranceService, PolicyResolver, PolicyService, PolicyHolderService, PolicyHolderResolver,
     CopayResolver, CopayService
-  ]
+  ],
+  exports: [PolicyService]
 })
 export class InsuranceModule { }
