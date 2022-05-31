@@ -279,8 +279,22 @@ export class UserFormsService {
               const memberElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'memberId')
               const groupNoElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'groupNumber')
               const companyNameElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'companyName')
+
+              const { value: companyName } = companyNameElement || {}
+              const { value: groupNumber } = groupNoElement || {}
+              const { value: memberId } = memberElement || {}
+              if (companyName && groupNumber && memberId) {
+                const inputs = {
+                  memberId,
+                  groupNumber,
+                  insuranceId: companyName,
+                  patientId: patientInstance.id,
+                  primaryCareProviderId: doctorId || null
+                }
+                await this.policyService.create(inputs)
+              }
               const appointmentInputs = {
-                paymentType: PaymentType.SELF,
+                paymentType: companyName ? PaymentType.INSURANCE : PaymentType.SELF,
                 billingStatus: BillingStatus.DUE,
                 isExternal: true,
                 scheduleStartDateTime: startTime,
@@ -291,22 +305,6 @@ export class UserFormsService {
                 patientId: patientInstance.id,
                 practiceId: null
               }
-              if (groupNoElement && memberElement && companyNameElement) {
-                const { value: companyName } = companyNameElement || {}
-                const { value: groupNumber } = groupNoElement || {}
-                const { value: memberId } = memberElement || {}
-                if (companyName && groupNumber && memberId) {
-                  const inputs = {
-                    memberId,
-                    groupNumber,
-                    insuranceId: companyName,
-                    patientId: patientInstance.id,
-                    primaryCareProviderId: doctorId || null
-                  }
-                  await this.policyService.create(inputs)
-                }
-              }
-
               await this.appointmentService.createAppointment(appointmentInputs)
               return patientInstance
             }
