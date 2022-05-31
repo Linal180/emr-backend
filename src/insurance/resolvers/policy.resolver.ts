@@ -75,21 +75,21 @@ export class PolicyResolver {
 
   @ResolveField((returns) => [Copay])
   copays(@Parent() policy: Policy): Promise<Copay[]> {
-    if(policy){
+    if (policy) {
       return this.copayService.findByPolicyId(policy.id)
     }
   }
 
   @ResolveField((returns) => [Doctor])
   primaryCareProvider(@Parent() policy: Policy): Promise<Doctor> {
-    if(policy){
+    if (policy) {
       return this.doctorService.findOne(policy.primaryCareProviderId)
     }
   }
 
   @ResolveField((returns) => [Doctor])
   referringProvider(@Parent() policy: Policy): Promise<Doctor> {
-    if(policy){
+    if (policy) {
       return this.doctorService.findOne(policy.primaryCareProviderId)
     }
   }

@@ -14,9 +14,9 @@ export class InsurancePaginationInput {
 
 @InputType()
 export class InsuranceInput {
-  @Field({nullable:true})
-  payerName?:string
+  @Field({ nullable: true })
+  payerName?: string
 
-  @Field({nullable:true})
-  payerId?:string
+  @Field({ nullable: true })
+  payerId?: string
 }
