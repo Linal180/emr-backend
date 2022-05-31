@@ -80,6 +80,12 @@ export class FieldsInputs {
 
   @Field(() => Boolean, { nullable: true })
   isMultiSelect: boolean;
+
+  @Field({ nullable: true })
+  apiCall: string;
+
+  @Field({ nullable: true })
+  tableContactType: string;
 }
 @InputType()
 export class CreateFormInput {

@@ -66,8 +66,9 @@ export class AppointmentService {
           appointmentInstance.provider = provider
         }
         //associate patient
-        const patient = await this.patientService.findOne(createAppointmentInput.patientId)
+        let patient
         if (createAppointmentInput.patientId) {
+          patient = await this.patientService.findOne(createAppointmentInput.patientId)
           appointmentInstance.patient = patient
           appointmentInstance.patientId = patient.id
         }
@@ -77,6 +78,11 @@ export class AppointmentService {
           facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
           appointmentInstance.facility = facility
           appointmentInstance.facilityId = facility.id
+          const { practice } = facility || {}
+          if (practice) {
+            const { id } = practice
+            appointmentInstance.practiceId = id
+          }
         }
         //associate service 
         if (createAppointmentInput.appointmentTypeId) {
@@ -104,9 +110,9 @@ export class AppointmentService {
   }
 
   /**
-   * Creates external appointment input
+   * Creates external appointment 
    * @param createExternalAppointmentInput 
-   * @returns external appointment input 
+   * @returns appointment 
    */
   async createExternalAppointmentInput(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Appointment> {
     //Transaction start

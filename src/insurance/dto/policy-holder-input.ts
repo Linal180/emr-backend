@@ -54,7 +54,7 @@ export class PolicyHolderPaginationInput {
 }
 
 @InputType()
-export class UpdatePolicyHolderInput extends PolicyHolderInput{
+export class UpdatePolicyHolderInput extends PolicyHolderInput {
   @Field()
   id: string
 }
