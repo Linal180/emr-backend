@@ -58,36 +58,36 @@ export class PolicyResolver {
     };
   }
 
-  @ResolveField((returns) => [PolicyHolder])
+  @ResolveField(() => [PolicyHolder])
   async policyHolder(@Parent() policy: Policy): Promise<PolicyHolder> {
     return this.policyHolderService.findOne(policy.policyHolderId)
   }
 
-  @ResolveField((returns) => [Patient])
+  @ResolveField(() => [Patient])
   patient(@Parent() policy: Policy): Promise<Patient> {
     return this.patientService.findOne(policy.patientId)
   }
 
-  @ResolveField((returns) => [Insurance])
+  @ResolveField(() => [Insurance])
   insurance(@Parent() policy: Policy): Promise<Insurance> {
     return this.insuranceService.findOne(policy.insuranceId)
   }
 
-  @ResolveField((returns) => [Copay])
+  @ResolveField(() => [Copay])
   copays(@Parent() policy: Policy): Promise<Copay[]> {
     if (policy) {
       return this.copayService.findByPolicyId(policy.id)
     }
   }
 
-  @ResolveField((returns) => [Doctor])
+  @ResolveField(() => [Doctor])
   primaryCareProvider(@Parent() policy: Policy): Promise<Doctor> {
     if (policy) {
       return this.doctorService.findOne(policy.primaryCareProviderId)
     }
   }
 
-  @ResolveField((returns) => [Doctor])
+  @ResolveField(() => [Doctor])
   referringProvider(@Parent() policy: Policy): Promise<Doctor> {
     if (policy) {
       return this.doctorService.findOne(policy.primaryCareProviderId)

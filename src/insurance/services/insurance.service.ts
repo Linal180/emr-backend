@@ -14,6 +14,11 @@ export class InsuranceService {
     private readonly paginationService: PaginationService,
   ) { }
 
+  /**
+   * Finds all
+   * @param insuranceInput 
+   * @returns all 
+   */
   async findAll(insuranceInput: InsurancePaginationInput): Promise<InsurancesPayload> {
     try {
       const { searchString } = insuranceInput
@@ -29,6 +34,12 @@ export class InsuranceService {
     }
   }
 
+
+  /**
+   * Finds by payer name or id
+   * @param searchTerm 
+   * @returns by payer name or id 
+   */
   async findByPayerNameOrId(searchTerm: string): Promise<Insurance[]> {
     const [id, name] = searchTerm.split(' ');
 
@@ -47,6 +58,11 @@ export class InsuranceService {
     return insurances;
   }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
   findOne(id: string): Promise<Insurance> {
     return this.insuranceRepository.findOne({ id })
   }

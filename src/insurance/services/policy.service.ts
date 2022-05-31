@@ -25,6 +25,11 @@ export class PolicyService {
     private readonly doctorService: DoctorService,
   ) { }
 
+  /**
+   * Finds all
+   * @param policyInput 
+   * @returns all 
+   */
   async findAll(policyInput: PolicyPaginationInput): Promise<PoliciesPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Policy>(this.policyRepository, policyInput)
@@ -39,6 +44,11 @@ export class PolicyService {
     }
   }
 
+  /**
+   * Finds by id
+   * @param id 
+   * @returns by id 
+   */
   async findById(id: string): Promise<Policy> {
     const policy = await this.policyRepository.findOne({ id });
 
@@ -52,6 +62,11 @@ export class PolicyService {
     return policy;
   }
 
+  /**
+   * Creates policy service
+   * @param createPolicyInput 
+   * @returns create 
+   */
   async create(createPolicyInput: CreatePolicyInput): Promise<Policy> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
@@ -98,7 +113,7 @@ export class PolicyService {
 
       //associate copays
       if (createPolicyInput.copays) {
-        const createdCopays = createPolicyInput.copays.map(async (copay) => {
+        createPolicyInput?.copays?.map(async (copay) => {
           return await this.copayService.create({ ...copay, policy })
         })
       }
@@ -112,6 +127,11 @@ export class PolicyService {
     }
   }
 
+  /**
+   * Updates policy service
+   * @param updatePolicyInput 
+   * @returns update 
+   */
   async update(updatePolicyInput: UpdatePolicyInput): Promise<Policy> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
