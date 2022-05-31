@@ -1,7 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Facility } from 'src/facilities/entities/facility.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
+//user imports
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
@@ -46,9 +47,16 @@ export class Practice {
   @Field({ nullable: true })
   champus: string;
 
+  @Column({ type: "boolean", default: true })
+  @Field(() => Boolean, { nullable: true })
+  active: boolean;
+
   @OneToMany(() => Facility, facility => facility.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Facility], { nullable: true })
   facilities: Facility[];
+
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

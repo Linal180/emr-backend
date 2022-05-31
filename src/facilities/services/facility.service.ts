@@ -43,14 +43,14 @@ export class FacilityService {
       facilityInstance.practice = practice;
       facilityInstance.practiceId = practice.id;
       //adding contact
-      if(createFacilityInput.createContactInput){
-      const contact = await this.contactService.createContact(createFacilityInput.createContactInput)
-      facilityInstance.contacts = [contact];
+      if (createFacilityInput.createContactInput) {
+        const contact = await this.contactService.createContact(createFacilityInput.createContactInput)
+        facilityInstance.contacts = [contact];
       }
       //adding billing address details
-      if(createFacilityInput.createBillingAddressInput){
-      const billingAddress = await this.billingAddressService.createBillingAddress(createFacilityInput.createBillingAddressInput)
-      facilityInstance.billingAddress = [billingAddress]
+      if (createFacilityInput.createBillingAddressInput) {
+        const billingAddress = await this.billingAddressService.createBillingAddress(createFacilityInput.createBillingAddressInput)
+        facilityInstance.billingAddress = [billingAddress]
       }
       const facility = await this.facilityRepository.save(facilityInstance);
       return facility
@@ -86,7 +86,7 @@ export class FacilityService {
    */
   async findOne(id: string): Promise<Facility> {
     const facility = await this.facilityRepository.findOne(id);
-    if(facility){
+    if (facility) {
       return facility
     }
     throw new NotFoundException({
@@ -98,12 +98,12 @@ export class FacilityService {
   async addFacility(createPracticeInput: CreatePracticeInput): Promise<Facility> {
     try {
       //adding new facility
-      const facilityInstance = this.facilityRepository.create({...createPracticeInput.createFacilityItemInput,isPrimary: true})
-        //adding contact
-        if(createPracticeInput.createContactInput){
-          const contact = await this.contactService.createContact({...createPracticeInput.createFacilityContactInput, primaryContact: true})
-          facilityInstance.contacts = [contact];
-        }
+      const facilityInstance = this.facilityRepository.create({ ...createPracticeInput.createFacilityItemInput, isPrimary: true })
+      //adding contact
+      if (createPracticeInput.createContactInput) {
+        const contact = await this.contactService.createContact({ ...createPracticeInput.createFacilityContactInput, primaryContact: true })
+        facilityInstance.contacts = [contact];
+      }
       const facility = await this.facilityRepository.save(facilityInstance);
       return facility
     } catch (error) {
@@ -131,7 +131,7 @@ export class FacilityService {
   async updateFacility(updateFacilityInput: UpdateFacilityInput): Promise<Facility> {
     try {
       //update facility 
-       await this.utilsService.updateEntityManager(Facility, updateFacilityInput.updateFacilityItemInput.id, updateFacilityInput.updateFacilityItemInput, this.facilityRepository)
+      await this.utilsService.updateEntityManager(Facility, updateFacilityInput.updateFacilityItemInput.id, updateFacilityInput.updateFacilityItemInput, this.facilityRepository)
       //get practice
       const practice = await this.practiceService.findOne(updateFacilityInput.updateFacilityItemInput.practiceId)
       const facilityInstance = await this.findOne(updateFacilityInput.updateFacilityItemInput.id)
@@ -148,18 +148,18 @@ export class FacilityService {
       throw new InternalServerErrorException(error);
     }
   }
-    /**
-   * Updates facility
-   * @param updateFacilityTimeZoneInput 
-   * @returns facility 
-   */
-     async updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput): Promise<Facility> {
-      try {
-        return this.facilityRepository.save(updateFacilityTimeZoneInput)
-      } catch (error) { 
-        throw new InternalServerErrorException(error);
-      }
+  /**
+ * Updates facility
+ * @param updateFacilityTimeZoneInput 
+ * @returns facility 
+ */
+  async updateFacilityTimeZone(updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput): Promise<Facility> {
+    try {
+      return this.facilityRepository.save(updateFacilityTimeZoneInput)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
+  }
 
   /**
    * Removes facility
@@ -171,5 +171,23 @@ export class FacilityService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  /**
+   * Gets practice facility count
+   * @param practiceId 
+   * @returns  
+   */
+  async getPracticeFacilityCount(practiceId: string) {
+    return await this.facilityRepository.count({ where: { practiceId } })
+  }
+
+
+  async getPracticeFacilities(practiceId: string) {
+    return await this.facilityRepository.find({ where: { practiceId }, select: ['id', 'name'] })
+  }
+
+  async getPracticeFacilitiesAppointments(practiceId: string) {
+    return await this.facilityRepository.find({ where: { practiceId }, select:  ['id', 'name'] })
   }
 }

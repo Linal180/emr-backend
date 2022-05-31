@@ -17,7 +17,6 @@ export class LabTestsObservationsController {
     fileFilter: mediaFilesFilter
   }))
   async uploadMedia(@UploadedFile() file: File, @Body() updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<LabTestObservationPayload> {
-    console.log("updateAttachmentMediaInput", updateAttachmentMediaInput);
     const labTestObservation = await this.labTestsObservationsService.uploadLabsMedia(file, updateAttachmentMediaInput)
     return {
       ...labTestObservation,

@@ -41,4 +41,7 @@ export class CreateAttachmentInput {
 
   @Field({ nullable: true })
   labOrderNum?: string
+
+  @Field({ nullable: true })
+  policyId?: string
 }

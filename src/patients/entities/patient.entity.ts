@@ -3,6 +3,8 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
+import { PolicyHolder } from 'src/insurance/entities/policy-holder.entity';
+import { Policy } from 'src/insurance/entities/policy.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
@@ -408,4 +410,16 @@ export class Patient {
   @ManyToOne(() => Transactions, transaction => transaction.id)
   @Field(type => Transactions, { nullable: true })
   transaction: Transactions;
+
+  @OneToMany(() => Policy, policy => policy.patient, {onDelete: "CASCADE"})
+  @Field(type => [Policy], { nullable: true })
+  policies: Policy[];
+
+  @ManyToOne(() => PolicyHolder, policyHolder => policyHolder.patients)
+  @Field(type => PolicyHolder, { nullable: true })
+  policyHolder: PolicyHolder;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  policyHolderId: string;
 }

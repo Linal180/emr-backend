@@ -30,6 +30,7 @@ import UsersInput from '../dto/users-input.dto';
 import { UsersPayload } from '../dto/users-payload.dto';
 import { SeneOTPAgainInput, VerifyCodeInput } from '../dto/verify-code.dto';
 import { VerifyEmailInput } from '../dto/verify-email-input.dto';
+import { RolePermission } from '../entities/rolePermissions.entity';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
@@ -263,11 +264,12 @@ export class UsersResolver {
     });
   }
 
-  @Mutation(returns => UserPayload)
+  @Mutation(() => UserPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
   async updatePassword(@Args('updatePasswordInput') updatePasswordInput: UpdatePasswordInput): Promise<UserPayload> {
     const user = await this.usersService.updatePassword(updatePasswordInput)
     if (user) {
-      return { user, response: { status: 200, message: "Password updated successfully", name: "updatePassword successfully" } }
+      return { user, response: { status: 200, message: "Password updated successfully" } }
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
