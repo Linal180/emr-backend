@@ -229,12 +229,12 @@ export class PatientService {
    * @param updatePatientPolicyHolderInput 
    * @returns patient profile 
    */
-   async updatePatientPolicyHolder(updatePatientPolicyHolderInput: UpdatePatientPolicyHolderInput){
+  async updatePatientPolicyHolder(updatePatientPolicyHolderInput: UpdatePatientPolicyHolderInput) {
     try {
       const patientInstance = await this.findOne(updatePatientPolicyHolderInput.id)
       //user registration input
       if (patientInstance) {
-          await this.utilsService.updateEntityManager(Patient, updatePatientPolicyHolderInput.id, updatePatientPolicyHolderInput, this.patientRepository)
+        await this.utilsService.updateEntityManager(Patient, updatePatientPolicyHolderInput.id, updatePatientPolicyHolderInput, this.patientRepository)
       }
     }
     catch (error) {
@@ -303,18 +303,25 @@ export class PatientService {
       //get patient
       const patient = await this.findOne(updatePatientProvider.patientId)
       if (patient) {
-        //get previous Provider of patient
+        //get previous primary Provider of patient
         const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ doctorId: updatePatientProvider.providerId, patientId: updatePatientProvider.patientId, currentProvider: true }] })
         if (previousProvider) {
           return patient
+        }
+        //get previous secondary Provider of patient
+        const previousSecProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: updatePatientProvider.patientId, doctorId: updatePatientProvider.providerId, currentProvider: false }] })
+        if(previousSecProvider){
+          await this.doctorPatientRepository.save({ id: previousSecProvider.id, currentProvider: true })
         }
         //get currentProvider
         const currentProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: updatePatientProvider.patientId, currentProvider: true }] })
         if (currentProvider) {
           await this.doctorPatientRepository.save({ id: currentProvider.id, currentProvider: false })
         }
-        const doctorPatientInstance = await this.doctorPatientRepository.create({ doctorId: updatePatientProvider.providerId, currentProvider: true, patientId: updatePatientProvider.patientId })
-        await queryRunner.manager.save(doctorPatientInstance);
+        if(!previousSecProvider){
+          const doctorPatientInstance = await this.doctorPatientRepository.create({ doctorId: updatePatientProvider.providerId, currentProvider: true, patientId: updatePatientProvider.patientId })
+          await queryRunner.manager.save(doctorPatientInstance);
+        }
         await queryRunner.commitTransaction();
         return patient
       }
