@@ -1,4 +1,6 @@
 export default () => {
+  console.log("....entering into configurations....");
+  
   let database: any;
   let redis: any;
   if (process.env.NODE_ENV === "production") {
