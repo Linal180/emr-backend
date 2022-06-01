@@ -12,64 +12,67 @@ export class CreateICDCodes implements Seeder {
     const queryRunner = connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    try { 
+    try {
       //Add iCDCodes  
       let iCDCodes = await getRepository(ICDCodes).find();
       //limiting the seeder data 
       let iCDCodesDataLimited = iCDCodesData.slice(0, 1000)
-      if (!iCDCodes.length) {
-        iCDCodesDataLimited.map( async (item)=> { 
+      // if (!iCDCodes.length) {
+      await Promise.all(iCDCodesDataLimited.map(async (item) => {
+        const getICDCode = await getRepository(ICDCodes).findOne({ code: item.code })
+        if (!getICDCode) {
           let icdCode = getRepository(ICDCodes).create(item)
           icdCode = await queryRunner.manager.save(icdCode);
-        })
-      }
-        //Add SnowMedCodes  
-        let snowMedCodeCheck = await getRepository(SnoMedCodes).find();
-        //limiting the seeder data 
-       let snowMedCodeLimited = snowMedCodeOne.slice(0, 1000)
-        if (!snowMedCodeCheck.length) {
-         //Add SnowMedCodes  
-          snowMedCodeLimited.map( async (item)=> {
-           let snowMedCodes = getRepository(SnoMedCodes).create(item)
-           snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-         })
-          // snowMedCodeTwo.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeThree.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeFour.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeFive.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeSix.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeSeven.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeEight.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeNine.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
-          // snoMedCodeTen.map( async (item)=> {
-          //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
-          //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-          // })
         }
+      }))
+      // }
+      //Add SnowMedCodes  
+      let snowMedCodeCheck = await getRepository(SnoMedCodes).find();
+      //limiting the seeder data 
+      let snowMedCodeLimited = snowMedCodeOne.slice(0, 1000)
+      if (!snowMedCodeCheck.length) {
+        //Add SnowMedCodes  
+        snowMedCodeLimited.map(async (item) => {
+          let snowMedCodes = getRepository(SnoMedCodes).create(item)
+          snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        })
+        // snowMedCodeTwo.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeThree.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeFour.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeFive.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeSix.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeSeven.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeEight.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeNine.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+        // snoMedCodeTen.map( async (item)=> {
+        //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
+        //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
+        // })
+      }
 
       await queryRunner.commitTransaction();
     }
