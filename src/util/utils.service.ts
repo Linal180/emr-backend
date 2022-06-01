@@ -47,13 +47,13 @@ export class UtilsService {
    * @returns  
    */
   async generateString(length) {
-    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
-    const charactersLength = characters.length-2;
-    for ( let i = 0; i < 2; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    const charactersLength = characters.length - 2;
+    for (let i = 0; i < 2; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-    return result+Math.floor(100000 + Math.random() * 9000);
+    return result + Math.floor(100000 + Math.random() * 9000);
   }
 
   /**
@@ -61,11 +61,11 @@ export class UtilsService {
    * @param twilioInput 
    */
   async smsNotification(twilioInput: TwilioInput) {
-     return await client.messages.create({
-       body: twilioInput.body,
-       from: process.env.TWILIO_PHONE_NUMBER,
-       to: twilioInput.to
-     });
+    return await client.messages.create({
+      body: twilioInput.body,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: twilioInput.to
+    });
   }
 
   /**
@@ -73,33 +73,33 @@ export class UtilsService {
    * @param phone 
    */
   async sendVerificationCode(phone: string) {
-    try{
-       client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID')).verifications.create({ to: '+1'+phone, channel: "sms" })
-    }catch (error) {
+    try {
+      client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID')).verifications.create({ to: '+1' + phone, channel: "sms" })
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
- }
-
- /**
-  * Verifys otpcode
-  * @param phone 
-  * @param otpCode 
-  * @returns  
-  */
- async verifyOTPCode(phone: string, otpCode: string){
-  try{
-    const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
-    .verificationChecks
-    .create({to: '+1'+phone, code: otpCode})
-    if(verification && verification.status === 'approved') {
-      return true
-    }else {
-      return false
-    }
-  }catch (error) {
-    throw new InternalServerErrorException(error);
   }
- }
+
+  /**
+   * Verifys otpcode
+   * @param phone 
+   * @param otpCode 
+   * @returns  
+   */
+  async verifyOTPCode(phone: string, otpCode: string) {
+    try {
+      const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
+        .verificationChecks
+        .create({ to: '+1' + phone, code: otpCode })
+      if (verification && verification.status === 'approved') {
+        return true
+      } else {
+        return false
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
   /**
    * Converts tz
    * @param date 
@@ -107,17 +107,27 @@ export class UtilsService {
    * @returns  
    */
   async convertTZ(date, tzString) {
-    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: tzString }));
   }
 
   //generate invoice #
   async generateInvoiceNo() {
-    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
-    const charactersLength = characters.length-2;
-    for ( let i = 0; i < 3; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    const charactersLength = characters.length - 2;
+    for (let i = 0; i < 3; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return `${result}-${Math.floor(100000000 + Math.random() * 9000)}`;
   }
+
+  mergeArrayAndRemoveDuplicates = (original, newdata, selector = 'key') => {
+    newdata.forEach(dat => {
+      const foundIndex = original.findIndex(ori => ori[selector] == dat[selector]);
+      if (foundIndex >= 0) original.splice(foundIndex, 1, dat);
+      else original.push(dat);
+    });
+
+    return original;
+  };
 }

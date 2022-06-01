@@ -2003,8 +2003,10 @@ type Query {
   findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput!): LabTestsPayload!
   findAllLabTest(labTestInput: LabTestInput!): LabTestsPayload!
   findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
+  getSpecimenTypeByName(name: String!): SpecimenTypes!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
+  fetchICDCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
   findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
