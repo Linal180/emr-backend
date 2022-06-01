@@ -21,6 +21,8 @@ export class UserFormResolver {
     private readonly formService: FormsService,
   ) { }
 
+  //mutations
+
   @Mutation(() => UserFormPayload)
   async saveUserFormValues(@Args('createUserFormInput') createUserFormInput: CreateUserFormInput): Promise<UserFormPayload> {
     return {
@@ -38,6 +40,7 @@ export class UserFormResolver {
     };
   }
 
+  //resolve fields
 
   @ResolveField(() => [UsersFormsElements])
   async userFormElements(@Parent() userForm: UserForms): Promise<UsersFormsElements[]> {

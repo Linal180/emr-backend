@@ -2,7 +2,7 @@ import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
-import { getConnection, Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { default as LoincCodeInput } from '../dto/create-loincCode-input.dto';
 import { SearchLoincCodesInput } from '../dto/loincCodes-input.dto';
 import { LoincCodesPayload } from '../dto/loincCodes-payload.dto';
@@ -41,12 +41,22 @@ export class LoincCodesService {
  async findAllLoincCode(searchLoincCodesInput: SearchLoincCodesInput): Promise<LoincCodesPayload> {
   const [first] = searchLoincCodesInput.searchTerm ? searchLoincCodesInput.searchTerm.split(' ') : '' 
   try {
+    let loincCodes
+    if(first){
+      loincCodes =[]
+    }else{
+      loincCodes= await this.loincCodesRepository.find({
+        where: {
+          component : Like("%corona%")
+        }
+      })
+    }
     const paginationResponse = await this.paginationService.willPaginate<LoincCodes>(this.loincCodesRepository, { ...searchLoincCodesInput, associatedTo: "LoincCodes", associatedToField: { columnValue: first, columnName: 'loincNum', columnName2: 'component', columnName3: 'property', filterType: 'stringFilter' } })
     return {
       pagination: {
         ...paginationResponse
       },
-      loincCodes: paginationResponse.data,
+      loincCodes: this.utilsService.mergeArrayAndRemoveDuplicates(loincCodes,paginationResponse.data, 'loincNum'),
     } 
   } catch (error) {
     throw new InternalServerErrorException(error);

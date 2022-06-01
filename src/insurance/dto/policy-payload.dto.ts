@@ -1,28 +1,28 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
 import { Policy } from '../entities/policy.entity';
 import { Response } from './insurances-payload.dto';
 
 @ObjectType()
-export class PoliciesPayload{
-  @Field(type => [Policy])
+export class PoliciesPayload {
+  @Field(() => [Policy])
   policies: Policy[];
 
-  @Field(type => PaginationPayload, { nullable: true })
+  @Field(() => PaginationPayload, { nullable: true })
   pagination?: PaginationPayload
 
-  @Field(type=>Response,{nullable:true})
-  response?:Response
+  @Field(() => Response, { nullable: true })
+  response?: Response
 }
 
 @ObjectType()
-export class PolicyPayload{
-  @Field(type => Policy)
+export class PolicyPayload {
+  @Field(() => Policy)
   policy: Policy;
 
-  @Field(type => PaginationPayload, { nullable: true })
+  @Field(() => PaginationPayload, { nullable: true })
   pagination?: PaginationPayload
 
-  @Field(type=>Response,{nullable:true})
-  response?:Response
+  @Field(() => Response, { nullable: true })
+  response?: Response
 }

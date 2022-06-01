@@ -31,6 +31,20 @@ export class TestSpecimenResolver {
     });
   }
 
+  @Query(returns => SpecimenTypes)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllTestSpecimen')
+  async getSpecimenTypeByName(@Args('name') name: string): Promise<SpecimenTypes> {
+    const testSpecimenTypes = await this.testSpecimenService.GetSpecimenByName(name)
+    if (testSpecimenTypes) {
+      return testSpecimenTypes
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Specimen Type not found',
+    });
+  }
+
   @ResolveField((returns) => SpecimenTypes)
   async specimenTypes(@Parent() testSpecimens: TestSpecimens): Promise<SpecimenTypes> {
     if (testSpecimens && testSpecimens.specimenTypesId) {

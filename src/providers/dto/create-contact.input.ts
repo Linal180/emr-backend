@@ -19,13 +19,13 @@ export class CreateContactInput {
   @Field({ nullable: true })
   email?: string;
 
-  @Field(type => ContactType, { nullable: true })
+  @Field(() => ContactType, { nullable: true })
   contactType?: ContactType
 
-  @Field(type => RelationshipType, { nullable: true })
+  @Field(() => RelationshipType, { nullable: true })
   relationship?: RelationshipType
 
-  @Field(type => ServiceCodes, { nullable: true })
+  @Field(() => ServiceCodes, { nullable: true })
   serviceCode?: ServiceCodes
 
   @Field({ nullable: true })
@@ -59,7 +59,7 @@ export class CreateContactInput {
   address2?: string;
 
   @Field({ nullable: true })
-  locationLink?: string 
+  locationLink?: string
 
   @Field({ nullable: true })
   zipCode?: string;
@@ -80,14 +80,14 @@ export class CreateContactInput {
   doctorId?: string;
 
   @Field({ nullable: true })
-  facilityId: string;
+  facilityId?: string;
 
   @Field({ nullable: true })
-  patientId: string;
+  patientId?: string;
 
   @Field({ nullable: true })
   employerName?: string;
 
   @Field({nullable:true})
-  insuranceId: string
+  insuranceId?: string
 }

@@ -101,13 +101,13 @@ export class Policy {
   @Column({
     type: "enum", enum: OrderOfBenefitType, default: OrderOfBenefitType.PRIMARY
   })
-  @Field(type => OrderOfBenefitType, { nullable: true })
+  @Field(() => OrderOfBenefitType, { nullable: true })
   orderOfBenifit?: OrderOfBenefitType
 
   @Column({
     type: "enum", enum: PolicyHolderRelationshipType, default: PolicyHolderRelationshipType.SELF
   })
-  @Field(type => PolicyHolderRelationshipType, { nullable: true })
+  @Field(() => PolicyHolderRelationshipType, { nullable: true })
   policyHolderRelationship?: PolicyHolderRelationshipType
 
   @Column({ nullable: true })
@@ -131,17 +131,17 @@ export class Policy {
   coinsurancePercentage?: string
 
   @ManyToOne(() => Doctor, doctor => doctor.policyOfReferringProvider, { onDelete: 'CASCADE' })
-  @Field(type => Doctor, { nullable: true })
+  @Field(() => Doctor, { nullable: true })
   referringProvider?: Doctor
 
   @ManyToOne(() => Doctor, doctor => doctor.policyOfPrimaryCareProvider, { onDelete: 'CASCADE' })
-  @Field(type => Doctor, { nullable: true }) 
+  @Field(() => Doctor, { nullable: true })
   primaryCareProvider?: Doctor
 
   @Column({
     type: "enum", enum: PricingProductType, default: PricingProductType.AUTOMOBILE_MEDICAL
   })
-  @Field(type => PricingProductType, { nullable: true })
+  @Field(() => PricingProductType, { nullable: true })
   pricingProductType?: PricingProductType
 
   @Column({ nullable: true })
@@ -149,27 +149,27 @@ export class Policy {
   notes?: string
 
   @ManyToOne(() => Insurance, insurance => insurance.policies, { onDelete: 'CASCADE' })
-  @Field(type => Insurance, { nullable: true })
+  @Field(() => Insurance, { nullable: true })
   insurance?: Insurance;
 
   @ManyToOne(() => PolicyHolder, policyHolder => policyHolder.policies, { onDelete: 'CASCADE' })
-  @Field(type => PolicyHolder, { nullable: true })
+  @Field(() => PolicyHolder, { nullable: true })
   policyHolder?: PolicyHolder;
 
   @ManyToOne(() => Patient, patient => patient.policies, { onDelete: 'CASCADE' })
-  @Field(type => Patient, { nullable: true })
+  @Field(() => Patient, { nullable: true })
   patient?: Patient;
 
-  @OneToMany(() => Copay, copay => copay.policy, { onDelete: "CASCADE"})
-  @Field(type => [Copay], { nullable: true })
+  @OneToMany(() => Copay, copay => copay.policy, { onDelete: "CASCADE" })
+  @Field(() => [Copay], { nullable: true })
   copays?: Copay[];
 
-  @Column({nullable:true})
-  @Field({nullable:true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   patientId: string
 
-  @Column({nullable:true})
-  @Field({nullable:true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   policyHolderId: string
 
   @Column({ nullable: true })

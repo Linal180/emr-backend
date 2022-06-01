@@ -71,6 +71,11 @@ export class FieldsTypes {
     @Field(() => Boolean, { nullable: true })
     isMultiSelect: boolean;
 
+    @Field({ nullable: true })
+    apiCall: string;
+
+    @Field({ nullable: true })
+    tableContactType: string;
 }
 @ObjectType()
 export class SectionsTypes {
