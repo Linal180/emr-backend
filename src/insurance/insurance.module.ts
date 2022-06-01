@@ -30,3 +30,4 @@ import { PaginationModule } from 'src/pagination/pagination.module';
   exports: [PolicyService,TypeOrmModule]
 })
 export class InsuranceModule { }
+
