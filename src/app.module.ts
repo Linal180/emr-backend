@@ -60,3 +60,4 @@ import { InsuranceModule } from './insurance/insurance.module';
   providers: [AppService],
 })
 export class AppModule { }
+
