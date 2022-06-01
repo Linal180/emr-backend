@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { DoctorPatientRelationType } from '../entities/doctorPatient.entity';
 
 @InputType()
 export class UpdatePatientProvider {
@@ -7,4 +8,23 @@ export class UpdatePatientProvider {
 
   @Field()
   providerId?: string
+
+  @Field({ nullable: true })
+  otherRelation?: string;
+
+  @Field(() => DoctorPatientRelationType, { nullable: true })
+  relation?: DoctorPatientRelationType
+}
+
+@InputType()
+export class UpdatePatientProviderRelationInputs {
+
+  @Field({ nullable: false })
+  id: string;
+
+  @Field({ nullable: true })
+  otherRelation?: string;
+
+  @Field(() => DoctorPatientRelationType, { nullable: true })
+  relation: DoctorPatientRelationType
 }

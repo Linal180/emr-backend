@@ -115,9 +115,20 @@ export class PatientResolver {
     };
   }
 
+  @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updatePatientNoteInfoInputs')
+  async updatePatientProviderRelation(@Args('updatePatientProviderRelationInputs')
+  updatePatientProviderRelationInputs: UpdatePatientNoteInfoInputs): Promise<PatientPayload> {
+    return {
+      patient: await this.patientService.updatePatientNoteInfo(updatePatientProviderRelationInputs),
+      response: { status: 200, message: 'Patient notes updated successfully' }
+    };
+  }
+
   //queries
 
-  @Query(returns => PatientsPayload)
+  @Query(() => PatientsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllPatient')
   async findAllPatient(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
@@ -136,7 +147,7 @@ export class PatientResolver {
     });
   }
 
-  @Query(returns => PatientAttachmentsPayload)
+  @Query(() => PatientAttachmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findPatientAttachments')
   async findPatientAttachments(@Args('patientAttachmentsInput') patientAttachmentsInput: PatientAttachmentsInput): Promise<PatientAttachmentsPayload> {
@@ -155,7 +166,7 @@ export class PatientResolver {
     });
   }
 
-  @Query(returns => PatientsPayload)
+  @Query(() => PatientsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'fetchAllPatients')
   async fetchAllPatients(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
@@ -175,7 +186,7 @@ export class PatientResolver {
     });
   }
 
-  @Query(returns => PatientPayload)
+  @Query(() => PatientPayload)
   async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
     const patients = await this.patientService.GetPatient(getPatient.id)
     return {
@@ -184,7 +195,7 @@ export class PatientResolver {
     };
   }
 
-  @Query(returns => PatientProviderPayload)
+  @Query(() => PatientProviderPayload)
   async getPatientProvider(@Args('getPatient') getPatient: GetPatient): Promise<PatientProviderPayload> {
     const providers = await this.patientService.usualProvider(getPatient.id);
     return {
@@ -202,7 +213,7 @@ export class PatientResolver {
     }
   }
 
-  @ResolveField(() => [Doctor])
+  @ResolveField(() => [DoctorPatient])
   async doctorPatients(@Parent() patient: Patient): Promise<DoctorPatient[]> {
     if (patient && patient.id) {
       const provider = await this.patientService.usualProvider(patient.id);
@@ -210,14 +221,14 @@ export class PatientResolver {
     }
   }
 
-  @ResolveField(() => [Facility])
+  @ResolveField(() => Facility)
   async facility(@Parent() patient: Patient): Promise<Facility> {
     if (patient && patient.facilityId) {
       return await this.facilityService.findOne(patient.facilityId);
     }
   }
 
-  @ResolveField(() => [Employer])
+  @ResolveField(() => Employer)
   async employer(@Parent() patient: Patient): Promise<Employer> {
     if (patient) {
       return await this.employerService.getEmployerByPatientId(patient.id);
