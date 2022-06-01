@@ -151,7 +151,7 @@ export class ProblemService {
       .where('SnoMedCode.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` }).getMany()
 
     let IcdCodes = []
-    if(!!snoMedCodes.length){
+    if (!!snoMedCodes.length) {
       IcdCodes = await Promise.all(snoMedCodes?.map(async ({ mapTarget }) => {
         return await this.icdCodeRepository.findOne({
           where: { code: mapTarget }
@@ -183,6 +183,39 @@ export class ProblemService {
   }
 
   /**
+   * Search icd codes
+   * @param searchTerm 
+   * @returns icd codes 
+   */
+  async fetchICDCodes(searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
+    try {
+      const [first] = searchIcdCodesInput.searchTerm.split(' ');
+      let icdCodes
+      if (first) {
+        icdCodes = []
+      } else {
+        icdCodes = await getConnection()
+          .getRepository(ICDCodes)
+          .createQueryBuilder("ICDCode")
+          .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%SARS%` })
+          .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%corona%` })
+          .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%COV%` })
+          .getMany()
+      }
+
+      const paginationResponse = await this.paginationService.willPaginate<ICDCodes>(this.icdCodeRepository, { ...searchIcdCodesInput, associatedTo: 'ICDCodes', associatedToField: { columnValue: first, columnName: 'code', columnName2: 'description', columnName3: 'description', filterType: 'stringFilter' } })
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        icdCodes: this.utilsService.mergeArrayAndRemoveDuplicates(icdCodes, paginationResponse.data,'code'),
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
    * Search sno med code by icd codes
    * @param searchTerm 
    * @returns sno med code by icd codes 
@@ -196,7 +229,7 @@ export class ProblemService {
       .skip((page - 1) * limit)
       .take(limit)
       .where('SnoMedCodes.mapTarget ILIKE :searchTerm', { searchTerm: `%${first}%` })
-      .where('SnoMedCodes.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` })
+      .orWhere('SnoMedCodes.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('SnoMedCodes.mapRule ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getManyAndCount();
