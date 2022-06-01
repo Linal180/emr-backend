@@ -1,5 +1,5 @@
-import { ObjectType, Field, registerEnumType, Int } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Policy } from './policy.entity';
 
 export enum CopayType {
@@ -38,7 +38,7 @@ export enum CopayType {
   ULTRASOUND = "Ultrasound",
   WELL_CHILD = "Well Child",
   XRAY_IMAGING = "Xray/Imaging",
- 
+
 }
 
 registerEnumType(CopayType, {

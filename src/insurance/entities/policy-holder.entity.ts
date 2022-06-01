@@ -1,6 +1,6 @@
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { GENDERIDENTITY, Patient } from 'src/patients/entities/patient.entity';
-import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { Policy } from './policy.entity';
 
 export enum POLICY_HOLDER_GENDER_IDENTITY {
@@ -24,52 +24,52 @@ export class PolicyHolder {
   @Field()
   id: string;
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   certificationNumber?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   employer?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   suffix?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   firstName?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   middleName?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   lastName?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   zipCode?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   address?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   addressCTD?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   city?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   state?: string
 
-  @Column({ nullable: true },)
-  @Field({ nullable: true },)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   ssn?: string
 
   @Column({
@@ -84,11 +84,11 @@ export class PolicyHolder {
   @Field({ nullable: true })
   dob?: string
 
-  @OneToMany(() => Policy, policy => policy.policyHolder, { onDelete: "CASCADE"})
+  @OneToMany(() => Policy, policy => policy.policyHolder, { onDelete: "CASCADE" })
   @Field(type => [Policy], { nullable: true })
   policies?: Policy[];
 
-  @OneToMany(() => Patient, patient => patient.policyHolder, { onDelete: "CASCADE"})
+  @OneToMany(() => Patient, patient => patient.policyHolder, { onDelete: "CASCADE" })
   @Field(type => [Patient], { nullable: true })
   patients?: Patient[];
 

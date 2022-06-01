@@ -1,12 +1,12 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { Staff } from 'src/providers/entities/staff.entity';
-import { text } from 'stream/consumers';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//user imports
 import { ICDCodes } from './icdcodes.entity';
 import { SnoMedCodes } from './snowmedCodes.entity';
+import { Staff } from 'src/providers/entities/staff.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 export enum ProblemType {
   ACTIVE = "active",

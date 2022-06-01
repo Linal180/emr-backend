@@ -1,7 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Insurance } from './entities/insurance.entity';
-import { PaginationService } from 'src/pagination/pagination.service';
 import { InsuranceService } from './services/insurance.service';
 import { InsuranceResolver } from './resolvers/insurance.resolver';
 import { Policy } from './entities/policy.entity';
@@ -24,12 +23,10 @@ import { PaginationModule } from 'src/pagination/pagination.module';
     PaginationModule,
     forwardRef(() => ProviderModule),
   ],
-  providers: [InsuranceResolver, InsuranceService, PolicyResolver, PolicyService, PolicyHolderService, PolicyHolderResolver, CopayResolver, CopayService,],
-
-  // @Module({
-  //   imports:[
-  //     TypeOrmModule.forFeature([Insurance]),
-  //   ],
-  //   providers: [InsuranceResolver, InsuranceService,PaginationService]
+  providers: [
+    InsuranceResolver, InsuranceService, PolicyResolver, PolicyService, PolicyHolderService, PolicyHolderResolver,
+    CopayResolver, CopayService
+  ],
+  exports: [PolicyService]
 })
 export class InsuranceModule { }

@@ -388,6 +388,26 @@ enum PricingProductType {
   WORKERS_COMPENSATION_HEALTH_CLAIM
 }
 
+type SnoMedCodes {
+  id: String!
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
+  createdAt: String
+  updatedAt: String
+}
+
 type Allergies {
   id: String!
   name: String
@@ -598,26 +618,6 @@ enum Gender {
   MALE
   FEMALE
   OTHER
-}
-
-type SnoMedCodes {
-  id: String!
-  recordId: String
-  effectiveTime: String
-  active: String
-  moduleId: String
-  refsetId: String
-  referencedComponentId: String
-  mapGroup: String
-  mapPriority: String
-  mapRule: String
-  mapAdvice: String
-  mapTarget: String
-  correlationId: String
-  mapCategoryId: String
-  patientProblem: [PatientProblems!]
-  createdAt: String
-  updatedAt: String
 }
 
 type PatientProblems {
@@ -1600,6 +1600,8 @@ type FieldsTypes {
   options: [FieldOptionsType!]!
   textArea: Boolean!
   isMultiSelect: Boolean
+  apiCall: String
+  tableContactType: String
 }
 
 """The form's element types"""
@@ -1697,6 +1699,8 @@ type FormElement {
   name: String!
   label: String
   columnName: String
+  tableName: String
+  tableContactType: String
   fieldId: String!
   sectionId: String!
   isDeleted: Boolean!
@@ -1739,6 +1743,35 @@ type UserFormsPayload {
 type FormMediaPayload {
   publicUrl: String
   response: ResponsePayloadResponse
+}
+
+type Response {
+  status: Int
+  message: String
+}
+
+type InsurancesPayload {
+  insurances: [Insurance!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PoliciesPayload {
+  policies: [Policy!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyPayload {
+  policy: Policy!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyHoldersPayload {
+  policyHolders: [PolicyHolder!]!
+  pagination: PaginationPayload
+  response: Response
 }
 
 type AllergiesPayload {
@@ -1918,35 +1951,6 @@ type PracticeFacilityAppointmentsPayload {
 type PracticeUserRolesPayload {
   userRoles: [PracticeUserRoles!]
   response: ResponsePayloadResponse
-}
-
-type Response {
-  status: Int
-  message: String
-}
-
-type InsurancesPayload {
-  insurances: [Insurance!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PoliciesPayload {
-  policies: [Policy!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyPayload {
-  policy: Policy!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyHoldersPayload {
-  policyHolders: [PolicyHolder!]!
-  pagination: PaginationPayload
-  response: Response
 }
 
 type Query {
@@ -3676,6 +3680,8 @@ input FieldsInputs {
   options: [FieldOptionsInputType!]!
   textArea: Boolean!
   isMultiSelect: Boolean
+  apiCall: String
+  tableContactType: String
 }
 
 input FieldOptionsInputType {

@@ -1,10 +1,10 @@
-import { Field, InputType, Int } from "@nestjs/graphql"
+import { Field, InputType } from "@nestjs/graphql"
 import { CopayType } from "../entities/copay.entity"
 import { CreatePolicyInput } from "./policy-input.dto"
 
 @InputType()
 export class CopayInput {
-  @Field(type => CopayType, { nullable: true })
+  @Field(() => CopayType, { nullable: true })
   type?: CopayType
 
   @Field({ nullable: true })
@@ -15,7 +15,7 @@ export class CopayInput {
 }
 
 @InputType()
-export class UpdateCopayInput extends  CopayInput{
+export class UpdateCopayInput extends CopayInput {
   @Field()
   id: string
 }
