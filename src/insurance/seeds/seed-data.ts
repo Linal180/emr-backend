@@ -1,5 +1,3 @@
-import { Insurance } from '../entities/insurance.entity'
-
 //insurance for seed
 export const InsuranceData = [
     {

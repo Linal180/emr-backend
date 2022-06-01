@@ -31,6 +31,9 @@ export class FormElementInputs {
   @Field(() => ElementType)
   type: ElementType
 
+  @Field({ nullable: true })
+  tableContactType: string;
+
 }
 
 @InputType()

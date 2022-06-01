@@ -6,10 +6,10 @@ import { CopayService } from '../services/copay.service';
 @Resolver(() => Copay)
 export class CopayResolver {
   constructor(private readonly copayService: CopayService,
-    ) {}
+  ) { }
 
-  @Mutation(()=>Copay)
-  createCopay(@Args('createCopayInput') createCopayInput:CopayInput):Promise<Copay>{
-    return this.copayService.create(createCopayInput) 
+  @Mutation(() => Copay)
+  createCopay(@Args('createCopayInput') createCopayInput: CopayInput): Promise<Copay> {
+    return this.copayService.create(createCopayInput)
   }
 }

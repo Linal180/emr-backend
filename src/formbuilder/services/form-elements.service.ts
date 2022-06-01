@@ -100,11 +100,11 @@ export class FormElementsService {
   }
 
   /**
-   * Gets elementby field id
+   * Gets element by field id
    * @param id 
    * @returns  
    */
-  async getElementbyFieldId(id: string) {
+  async getElementByFieldId(id: string) {
     return await this.formElementRepository.findOne({
       where: {
         fieldId: id
@@ -140,7 +140,7 @@ export class FormElementsService {
   }
 
   /**
-   * Dels form elements service
+   * Del form elements service
    * @param id 
    * @returns  
    */

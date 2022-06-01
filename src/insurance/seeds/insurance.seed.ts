@@ -1,8 +1,8 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Contact } from "src/providers/entities/contact.entity";
-import { Connection, getRepository } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
+import { Connection, getRepository } from "typeorm";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //user imports
+import { Contact } from "src/providers/entities/contact.entity";
 import { Insurance, InsurancePayerType } from '../entities/insurance.entity';
 import { InsuranceData } from './seed-data'
 //class

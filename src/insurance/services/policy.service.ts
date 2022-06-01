@@ -1,16 +1,15 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Connection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { CopayService } from './copay.service';
+import { Policy } from '../entities/policy.entity';
+import { InsuranceService } from './insurance.service';
+import { PoliciesPayload } from '../dto/policy-payload.dto';
+import { PolicyHolderService } from './policy-holder.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { Connection, Repository } from 'typeorm';
 import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
-import { PoliciesPayload } from '../dto/policy-payload.dto';
-import { POLICY_HOLDER_GENDER_IDENTITY } from '../entities/policy-holder.entity';
-import { Policy, PolicyHolderRelationshipType, PricingProductType } from '../entities/policy.entity';
-import { CopayService } from './copay.service';
-import { InsuranceService } from './insurance.service';
-import { PolicyHolderService } from './policy-holder.service';
 
 @Injectable()
 export class PolicyService {
@@ -26,6 +25,11 @@ export class PolicyService {
     private readonly doctorService: DoctorService,
   ) { }
 
+  /**
+   * Finds all
+   * @param policyInput 
+   * @returns all 
+   */
   async findAll(policyInput: PolicyPaginationInput): Promise<PoliciesPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Policy>(this.policyRepository, policyInput)
@@ -40,6 +44,11 @@ export class PolicyService {
     }
   }
 
+  /**
+   * Finds by id
+   * @param id 
+   * @returns by id 
+   */
   async findById(id: string): Promise<Policy> {
     const policy = await this.policyRepository.findOne({ id });
 
@@ -53,6 +62,11 @@ export class PolicyService {
     return policy;
   }
 
+  /**
+   * Creates policy service
+   * @param createPolicyInput 
+   * @returns create 
+   */
   async create(createPolicyInput: CreatePolicyInput): Promise<Policy> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
@@ -60,7 +74,7 @@ export class PolicyService {
     try {
       const { referringProviderId, patientId, primaryCareProviderId, ...policyInfoToCreate } = createPolicyInput
       //creating policy
-      const policyInstance = this.policyRepository.create({ ...policyInfoToCreate})
+      const policyInstance = this.policyRepository.create({ ...policyInfoToCreate })
 
       if (referringProviderId) {
         const referringProviderInstance = await this.doctorService.findOne(referringProviderId)
@@ -86,7 +100,7 @@ export class PolicyService {
         this.patientService.updatePatientPolicyHolder({ id: patient.id, policyHolder: createdPolicyHolder })
         policyInstance.policyHolder = createdPolicyHolder
       } else {
-        this.policyHolderService.update({...policyHolderInfo,...createPolicyInput.policyHolderInfo})
+        this.policyHolderService.update({ ...policyHolderInfo, ...createPolicyInput.policyHolderInfo })
         policyInstance.policyHolder = policyHolderInfo
       }
 
@@ -99,8 +113,8 @@ export class PolicyService {
 
       //associate copays
       if (createPolicyInput.copays) {
-        const createdCopays = createPolicyInput.copays.map(async (copay) => {
-          return await this.copayService.create({ ...copay, policy})
+        createPolicyInput?.copays?.map(async (copay) => {
+          return await this.copayService.create({ ...copay, policy })
         })
       }
       await queryRunner.commitTransaction();
@@ -113,12 +127,17 @@ export class PolicyService {
     }
   }
 
+  /**
+   * Updates policy service
+   * @param updatePolicyInput 
+   * @returns update 
+   */
   async update(updatePolicyInput: UpdatePolicyInput): Promise<Policy> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { referringProviderId, patientId, primaryCareProviderId, policyHolderInfo:updatePolicyHolderInfo,copays:updateCopaysInput,...policyInfoToCreate } = updatePolicyInput
+      const { referringProviderId, patientId, primaryCareProviderId, policyHolderInfo: updatePolicyHolderInfo, copays: updateCopaysInput, ...policyInfoToCreate } = updatePolicyInput
       //creating policy
       const policyInstance = await this.policyRepository.findOne(updatePolicyInput.id)
 
@@ -146,7 +165,7 @@ export class PolicyService {
         this.patientService.updatePatientPolicyHolder({ id: patient.id, policyHolder: createdPolicyHolder })
         policyInstance.policyHolder = createdPolicyHolder
       } else {
-        const updatedPolicyHolderInfo=await this.policyHolderService.update({...policyHolderInfo,...updatePolicyInput.policyHolderInfo})
+        const updatedPolicyHolderInfo = await this.policyHolderService.update({ ...policyHolderInfo, ...updatePolicyInput.policyHolderInfo })
         policyInstance.policyHolder = updatedPolicyHolderInfo
       }
 
@@ -158,18 +177,18 @@ export class PolicyService {
       const policy = await this.policyRepository.save(policyInstance);
 
       //associate copays
-      if(updateCopaysInput){
-        const copays =  await Promise.all(updateCopaysInput.map(async (item) => {
-          if(item.id){
+      if (updateCopaysInput) {
+        const copays = await Promise.all(updateCopaysInput.map(async (item) => {
+          if (item.id) {
             return await this.copayService.updateCopay(item)
           }
           const { id, ...createCopayInput } = item
-          return await this.copayService.create({...createCopayInput, policy})
+          return await this.copayService.create({ ...createCopayInput, policy })
         }));
 
         policy.copays = copays
-      }else{
-        policy.copays=[]
+      } else {
+        policy.copays = []
       }
       await queryRunner.commitTransaction();
       const updatedPolicy = await this.policyRepository.save(policy);
