@@ -406,6 +406,7 @@ export class PatientService {
 
     return paginateResponse([transformedPatients, total], page, paginationInput.limit)
   }
+
   async fetchAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
       const { limit, page } = patientInput.paginationOptions
@@ -447,7 +448,7 @@ export class PatientService {
         }
       } else {
         const [patients, totalCount] = await baseQuery
-          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
+          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `${doctorId? 'patient.id = "patientWithCertainDoctor"."patientId"':'1=1'} ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
           .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
           .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
           .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
