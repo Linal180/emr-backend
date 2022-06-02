@@ -1671,6 +1671,7 @@ type Form {
   name: String
   type: FormType!
   facilityId: String
+  practiceId: String
   layout: LayoutJSONType!
   isSystemForm: Boolean
   isActive: Boolean
@@ -2340,6 +2341,7 @@ input UsersWithRolesInputs {
 }
 
 input FormInput {
+  practiceId: String
   facilityId: String
   isSystemForm: Boolean
   formType: FormType
@@ -3651,6 +3653,7 @@ input CreateFormInput {
   isActive: Boolean
   type: FormType
   facilityId: String
+  practiceId: String
   layout: LayoutJSONInputType!
   isSystemForm: Boolean
 }
@@ -3696,6 +3699,7 @@ input UpdateFormInput {
   isActive: Boolean
   type: FormType
   facilityId: String
+  practiceId: String
   layout: LayoutJSONInputType
   isSystemForm: Boolean
   id: String!

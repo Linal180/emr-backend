@@ -6,6 +6,9 @@ import { FormType } from '../entities/form.entity';
 export default class FormInput {
 
     @Field({ nullable: true })
+    practiceId?: string;
+
+    @Field({ nullable: true })
     facilityId?: string
 
     @Field(() => Boolean, { nullable: true })
