@@ -1161,7 +1161,7 @@ type Appointment {
   id: String!
   isExternal: Boolean
   paymentType: PaymentType!
-  status: APPOINTMENTSTATUS!
+  status: AppointmentStatus!
   billingStatus: BillingStatus!
   appointmentCancelReason: String
   checkedInAt: String
@@ -1206,19 +1206,16 @@ enum PaymentType {
 }
 
 """The patient appointment status type assigned"""
-enum APPOINTMENTSTATUS {
-  CANCELLED
-  INITIATED
-  COMPLETED
-  ARRIVED
-  CHECKED_IN
-  CHECKED_IN_ONLINE
-  IN_ROOM
-  IN_SESSION
-  CONFIRMED
-  NOT_CONFIRMED
-  RESCHEDULED
+enum AppointmentStatus {
   NO_SHOW
+  INITIATED
+  CHECKED_IN
+  SELF_CHECKED_IN
+  IN_LOBBY
+  IN_SESSION
+  COMPLETED
+  RESCHEDULED
+  CANCELLED
 }
 
 """The patient billing status assigned"""
@@ -3368,6 +3365,7 @@ input UpdateAppointmentInput {
   paymentStatus: String
   selfCheckIn: Boolean
   checkedInAt: String
+  status: AppointmentStatus
 }
 
 input UpdateAppointmentBillingStatusInput {
@@ -3386,7 +3384,7 @@ input CancelAppointment {
 
 input UpdateAppointmentStatusInput {
   id: String!
-  status: APPOINTMENTSTATUS!
+  status: AppointmentStatus!
 }
 
 input PaymentInput {
