@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
-import { APPOINTMENTSTATUS } from '../entities/appointment.entity';
+import { AppointmentStatus } from '../entities/appointment.entity';
 
 @InputType()
 export default class AppointmentInput {
@@ -11,7 +11,7 @@ export default class AppointmentInput {
     appointmentNumber?: string
 
     @Field({nullable: true})
-    appointmentStatus?: APPOINTMENTSTATUS
+    appointmentStatus?: AppointmentStatus
 
     @Field({nullable: true})
     patientId?: string

@@ -21,7 +21,7 @@ import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import { CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
-import { Appointment, APPOINTMENTSTATUS, BillingStatus } from '../entities/appointment.entity';
+import { Appointment, AppointmentStatus, BillingStatus } from '../entities/appointment.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -298,7 +298,7 @@ export class AppointmentService {
   async findAppointment(providerId: string, patientId: string) {
     return await this.appointmentRepository.findOne({
       where: [
-        { patientId: patientId, providerId: providerId, status: APPOINTMENTSTATUS.INITIATED }
+        { patientId: patientId, providerId: providerId, status: AppointmentStatus.INITIATED }
       ]
     });
   }
@@ -323,7 +323,7 @@ export class AppointmentService {
     if (getAppointments.doctorId) {
       const appointment = await this.appointmentRepository.find({
         where: [
-          { providerId: getAppointments.doctorId, status: APPOINTMENTSTATUS.INITIATED }
+          { providerId: getAppointments.doctorId, status: AppointmentStatus.INITIATED }
         ]
       })
       if (appointment) {
@@ -332,7 +332,7 @@ export class AppointmentService {
     } else if (getAppointments.facilityId) {
       const appointment = await this.appointmentRepository.find({
         where: [
-          { facilityId: getAppointments.facilityId, status: APPOINTMENTSTATUS.INITIATED }
+          { facilityId: getAppointments.facilityId, status: AppointmentStatus.INITIATED }
         ]
       })
       if (appointment) {
@@ -417,7 +417,7 @@ export class AppointmentService {
           }
           await this.updateAppointmentBillingStatus({ id: appointment.id, billingStatus: BillingStatus.REFUND })
         }
-        return await this.appointmentRepository.save({ id: appointment.id, status: APPOINTMENTSTATUS.CANCELLED, token: '', reason: cancelAppointment.reason, })
+        return await this.appointmentRepository.save({ id: appointment.id, status: AppointmentStatus.CANCELLED, token: '', reason: cancelAppointment.reason, })
       }
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,

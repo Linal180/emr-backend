@@ -22,7 +22,7 @@ import { Transactions, TRANSACTIONSTATUS } from '../entity/payment.entity';
 import {
   Appointment,
   BillingStatus,
-  APPOINTMENTSTATUS
+  AppointmentStatus
 } from '../../appointments/entities/appointment.entity';
 import { UtilsService } from '../../util/utils.service';
 import { InvoiceService } from './invoice.service';
@@ -158,7 +158,7 @@ export class PaymentService {
         if (brainTrans?.success) {
           if (appointmentId) {
             await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
-            await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: APPOINTMENTSTATUS.COMPLETED });
+            await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: AppointmentStatus.COMPLETED });
             const data = { transactionId: brainTrans?.transaction?.id, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
             return await this.create(data);
           } else {
@@ -175,7 +175,7 @@ export class PaymentService {
       }
       else {
         await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
-        await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: APPOINTMENTSTATUS.COMPLETED });
+        await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: AppointmentStatus.COMPLETED });
         const data = { transactionId: null, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
         return await this.create(data);
       }
