@@ -68,6 +68,19 @@ export class ProblemResolver {
     }
   }
 
+  @Query(returns => IcdCodesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'searchIcdCodes')
+  async fetchICDCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
+    const icdCodes = await this.problemService.fetchICDCodes(searchIcdCodesInput);
+    return {
+      ...icdCodes,
+      response: {
+        message: "OK", status: 200,
+      }
+    }
+  }
+
   @Query(returns => snoMedCodesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'searchSnoMedCodeByIcdCodes')

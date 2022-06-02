@@ -300,7 +300,7 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { patientId,providerId } = updatePatientProvider
+      const { patientId, providerId } = updatePatientProvider
       //get patient
       const patient = await this.findOne(patientId)
       if (patient) {
@@ -308,6 +308,11 @@ export class PatientService {
         const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ doctorId: providerId, patientId: updatePatientProvider.patientId, currentProvider: true }] })
         if (previousProvider) {
           return patient
+        }
+        //get previous secondary Provider of patient
+        const previousSecProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: updatePatientProvider.patientId, doctorId: updatePatientProvider.providerId, currentProvider: false }] })
+        if (previousSecProvider) {
+          await this.doctorPatientRepository.save({ id: previousSecProvider.id, currentProvider: true })
         }
         //get currentProvider
         const currentProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, currentProvider: true }] })

@@ -3,8 +3,8 @@ import { Connection, getRepository } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import { LoincCodes } from "../entities/loincCodes.entity";
 import { SpecimenTypes } from "../entities/specimenTypes.entity";
-import {loincCodesData} from './ioinc-codes-data';
-import {specimenTypesData} from './spciment-type-data';
+import { loincCodesData } from './ioinc-codes-data';
+import { specimenTypesData } from './spciment-type-data';
 
 @Injectable()
 export class CreateloincCodesData implements Seeder {
@@ -12,23 +12,29 @@ export class CreateloincCodesData implements Seeder {
     const queryRunner = connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    try { 
+    try {
       //Check loinc codes  
       let loincCodes = await getRepository(LoincCodes).find();
-      if (!loincCodes.length) {
-        loincCodesData.map( async (item)=> { 
+      // if (!loincCodes.length) {
+      await Promise.all(loincCodesData.map(async (item) => {
+        const getLoincCode = await getRepository(LoincCodes).findOne({ loincNum: item.loincNum })
+        if (!getLoincCode) {
           let loincCode = getRepository(LoincCodes).create(item)
-          loincCode = await queryRunner.manager .save(loincCode);
-        })
-      }
-       //Check specimen types  
-       let specimenTypes = await getRepository(SpecimenTypes).find();
-       if (!specimenTypes.length) {
-        specimenTypesData.map( async (item)=> { 
-           let specimenType = getRepository(SpecimenTypes).create(item)
-           specimenType = await queryRunner.manager.save(specimenType);
-         })
-       }
+          await queryRunner.manager.save(loincCode);
+        }
+      }))
+      // }
+      //Check specimen types  
+      let specimenTypes = await getRepository(SpecimenTypes).find();
+      //  if (!specimenTypes.length) {
+      await Promise.all(specimenTypesData.map(async (item) => {
+        const getspecimenType = await getRepository(SpecimenTypes).findOne({ name: item.name })
+        if (!getspecimenType) {
+          let specimenType = getRepository(SpecimenTypes).create(item)
+          await queryRunner.manager.save(specimenType);
+        }
+      }))
+      //  }
       await queryRunner.commitTransaction();
     }
     catch (error) {
