@@ -31,23 +31,20 @@ registerEnumType(BillingStatus, {
   description: "The patient billing status assigned",
 });
 
-export enum APPOINTMENTSTATUS {
-  CANCELLED = "cancelled",
+export enum AppointmentStatus {
+  NO_SHOW = 'no_show',
   INITIATED = "initiated",
-  COMPLETED = "completed",
-  ARRIVED = 'arrived',
 	CHECKED_IN = 'checked_in',
-	CHECKED_IN_ONLINE = 'checked_in_online',
-  IN_ROOM = 'in_room',
+	SELF_CHECKED_IN = 'self_checked_in',
+  IN_LOBBY = 'in_lobby',
   IN_SESSION = 'in_session',
-  CONFIRMED = 'confirmed',
-  NOT_CONFIRMED = 'not_confirmed',
-	RESCHEDULED = 'rescheduled',
-  NO_SHOW = 'no_show'
+  COMPLETED = "completed",
+  RESCHEDULED = 'rescheduled',
+  CANCELLED = "cancelled"
 }
 
-registerEnumType(APPOINTMENTSTATUS, {
-  name: "APPOINTMENTSTATUS",
+registerEnumType(AppointmentStatus, {
+  name: "AppointmentStatus",
   description: "The patient appointment status type assigned",
 });
 
@@ -73,11 +70,11 @@ export class Appointment {
 
   @Column({
     type: "enum",
-    enum: APPOINTMENTSTATUS,
-    default: APPOINTMENTSTATUS.INITIATED
+    enum: AppointmentStatus,
+    default: AppointmentStatus.INITIATED
   })
-  @Field(type => APPOINTMENTSTATUS)
-  status: APPOINTMENTSTATUS;
+  @Field(type => AppointmentStatus)
+  status: AppointmentStatus;
 
   @Column({
     type: "enum",

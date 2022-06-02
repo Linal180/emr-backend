@@ -1,5 +1,5 @@
 import { InputType } from "@nestjs/graphql";
-import { APPOINTMENTSTATUS } from "src/appointments/entities/appointment.entity";
+import { AppointmentStatus } from "src/appointments/entities/appointment.entity";
 import { AttachmentType } from "src/attachments/entities/attachment.entity";
 import { FormType } from "src/formbuilder/entities/form.entity";
 import { UserStatus } from "src/users/entities/user.entity";
@@ -16,7 +16,7 @@ export class PaginatedEntityInput {
   practiceId?: string
   patientId?: string
   appointmentId?: string
-  appointmentStatus?: APPOINTMENTSTATUS
+  appointmentStatus?: AppointmentStatus
   dueToday?: boolean
   facilityId?: string
   singleFacilityId?:string
