@@ -433,6 +433,7 @@ export class PatientService {
               orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
               orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
           }))
+          .orderBy('patient.createdAt','DESC')
           .getManyAndCount()
 
         const totalPages = Math.ceil(totalCount / limit)
@@ -460,6 +461,7 @@ export class PatientService {
               orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
               orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
           }))
+          .orderBy('patient.createdAt','DESC')
           .getManyAndCount()
 
         const totalPages = Math.ceil(totalCount / limit)
