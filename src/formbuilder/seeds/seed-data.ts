@@ -4517,35 +4517,28 @@ export const FormTemplates = [
           ],
         },
         {
+
+          id: uuid(),
+          col: 12,
           name: "Payment",
-          type: FormType.PRE_DEFINED,
-          isSystemForm: true,
-          layout: {
-            sections: [
-              {
-                id: uuid(),
-                col: 12,
-                name: "Payment",
-                fields: [
-                  {
-                    css: "",
-                    name: "paymentType",
-                    type: ElementType.RADIO,
-                    label: "How will you be covering your visit?",
-                    column: 12,
-                    apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
-                    fieldId: uuid(),
-                    options: PAYMENT_TYPES,
-                    errorMsg: "",
-                    required: true,
-                    textArea: false,
-                    placeholder: "",
-                    defaultValue: "",
-                    isMultiSelect: false,
-                  },
-                ]
-              }]
-          }
+          fields: [
+            {
+              css: "",
+              name: "paymentType",
+              type: ElementType.RADIO,
+              label: "How will you be covering your visit?",
+              column: 12,
+              apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
+              fieldId: uuid(),
+              options: PAYMENT_TYPES,
+              errorMsg: "",
+              required: true,
+              textArea: false,
+              placeholder: "",
+              defaultValue: "",
+              isMultiSelect: false,
+            },
+          ]
         },
         {
           id: uuid(),
