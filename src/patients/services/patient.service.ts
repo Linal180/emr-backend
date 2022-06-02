@@ -25,7 +25,7 @@ import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
-import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
+import { PatientProviderInputs, UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
@@ -489,6 +489,23 @@ export class PatientService {
       const usualProvider = await this.doctorPatientRepository.find({
         where: {
           patientId: id
+        },
+        order: { createdAt: "ASC" },
+        relations: ["doctor"]
+      })
+      return usualProvider
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getProvider(patientProviderInputs: PatientProviderInputs): Promise<DoctorPatient> {
+    try {
+      const usualProvider = await this.doctorPatientRepository.findOne({
+        where: {
+          patientId: patientProviderInputs.patientId,
+          doctorId: patientProviderInputs.providerId
         },
         order: { createdAt: "ASC" },
         relations: ["doctor"]

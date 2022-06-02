@@ -16,11 +16,11 @@ import PatientAttachmentsInput from '../dto/patient-attachments-input.dto';
 import { PatientInfoInput } from '../dto/patient-info.input';
 import PatientInput from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
-import { PatientPayload, PatientProviderPayload } from '../dto/patient-payload.dto';
+import { PatientDoctorPayload, PatientPayload, PatientProviderPayload } from '../dto/patient-payload.dto';
 import { PatientAttachmentsPayload } from '../dto/patients-attachments-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
-import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
+import { PatientProviderInputs, UpdatePatientProvider } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
@@ -196,10 +196,19 @@ export class PatientResolver {
   }
 
   @Query(() => PatientProviderPayload)
-  async getPatientProvider(@Args('getPatient') getPatient: GetPatient): Promise<PatientProviderPayload> {
+  async getPatientProviders(@Args('getPatient') getPatient: GetPatient): Promise<PatientProviderPayload> {
     const providers = await this.patientService.usualProvider(getPatient.id);
     return {
       providers,
+      response: { status: 200, message: 'Patient fetched successfully' }
+    };
+  }
+
+  @Query(() => PatientDoctorPayload)
+  async getPatientProvider(@Args('PatientProviderInputs') patientProviderInputs: PatientProviderInputs): Promise<PatientDoctorPayload> {
+    const provider = await this.patientService.getProvider(patientProviderInputs);
+    return {
+      provider,
       response: { status: 200, message: 'Patient fetched successfully' }
     };
   }
