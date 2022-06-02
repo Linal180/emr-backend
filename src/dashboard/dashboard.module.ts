@@ -18,6 +18,6 @@ import { DashboardService } from "./dashboard.service";
 		DashboardService,
 		DashboardResolver
 	],
-	exports: [],
+	// exports: [],
 })
 export class DashboardModule { }
