@@ -20,7 +20,7 @@ import { PatientDoctorPayload, PatientPayload, PatientProviderPayload } from '..
 import { PatientAttachmentsPayload } from '../dto/patients-attachments-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
-import { PatientProviderInputs, UpdatePatientProvider } from '../dto/update-patient-provider.input';
+import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
@@ -119,7 +119,7 @@ export class PatientResolver {
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'updatePatientNoteInfoInputs')
   async updatePatientProviderRelation(@Args('updatePatientProviderRelationInputs')
-  updatePatientProviderRelationInputs: UpdatePatientNoteInfoInputs): Promise<PatientPayload> {
+  updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs): Promise<PatientPayload> {
     return {
       patient: await this.patientService.updatePatientNoteInfo(updatePatientProviderRelationInputs),
       response: { status: 200, message: 'Patient notes updated successfully' }

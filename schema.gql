@@ -2444,7 +2444,7 @@ type Mutation {
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
   updatePatientNoteInfo(updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!): PatientPayload!
-  updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientNoteInfoInputs!): PatientPayload!
+  updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs!): PatientPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   removeAttachmentMedia(id: String!): AttachmentPayload!
@@ -3210,6 +3210,12 @@ input UpdatePatientNoteInfoInputs {
   id: String!
   patientNoteOpen: Boolean
   patientNote: String
+}
+
+input UpdatePatientProviderRelationInputs {
+  id: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
 }
 
 input CreateAttachmentInput {
