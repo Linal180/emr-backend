@@ -4517,7 +4517,6 @@ export const FormTemplates = [
           ],
         },
         {
-
           id: uuid(),
           col: 12,
           name: "Payment",
