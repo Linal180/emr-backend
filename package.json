@@ -71,7 +71,7 @@
     "strip-bom": "^5.0.0",
     "swagger-ui-express": "^4.3.0",
     "twilio": "^3.75.0",
-    "typeorm": "^0.2.41",
+    "typeorm": "^0.2.45",
     "typeorm-seeding": "^1.6.1",
     "uuid": "^8.3.2"
   },
