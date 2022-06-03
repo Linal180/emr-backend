@@ -22,6 +22,7 @@ import { ProblemChartingModule } from './patientCharting/patientCharting.module'
 import { LabModule } from './labs/labs.module';
 import { DashboardModule } from './dashboard/dashboard.module'
 import { InsuranceModule } from './insurance/insurance.module';
+import { BillingModule } from './billings/billing.module';
 
 @Module({
   imports: [
@@ -54,7 +55,8 @@ import { InsuranceModule } from './insurance/insurance.module';
     }),
     PaymentModule,
     FormBuilderModule,
-    InsuranceModule
+    InsuranceModule,
+    BillingModule
   ],
   controllers: [AppController],
   providers: [AppService],

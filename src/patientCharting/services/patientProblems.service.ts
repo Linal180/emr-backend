@@ -134,7 +134,7 @@ export class ProblemService {
       error: 'diagnoses not found',
     });
   }
-
+  
   /**
    * Search icd codes
    * @param searchTerm 
@@ -170,6 +170,7 @@ export class ProblemService {
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getManyAndCount()
+    console.log("icdcodes", icdCodes, page, limit, snoMedIcdCodes)
     const totalPages = Math.ceil(totalCount / limit)
     return {
       icdCodes: !!snoMedIcdCodes.length ? snoMedIcdCodes : icdCodes,
@@ -189,6 +190,8 @@ export class ProblemService {
    */
   async fetchICDCodes(searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
     try {
+      const { paginationOptions } = searchIcdCodesInput
+      const { limit } = paginationOptions
       const [first] = searchIcdCodesInput.searchTerm.split(' ');
       let icdCodes
       if (first) {
@@ -208,7 +211,7 @@ export class ProblemService {
         pagination: {
           ...paginationResponse
         },
-        icdCodes: this.utilsService.mergeArrayAndRemoveDuplicates(icdCodes, paginationResponse.data,'code'),
+        icdCodes: this.utilsService.mergeArrayAndRemoveDuplicates(icdCodes, paginationResponse.data, 'code').slice(0,limit),
       }
     } catch (error) {
       throw new InternalServerErrorException(error);
