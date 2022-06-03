@@ -8,6 +8,7 @@ export enum DoctorPatientRelationType {
   BACKUP_PROVIDER = "Backup provider in practice",
   PRIMARY_PROVIDER = "Primary care provider",
   REFERRING_PROVIDER = "Referring provider",
+  ORDERING_PROVIDER = 'Ordering provider',
   OTHER_PROVIDER = "Other provider"
 }
 
