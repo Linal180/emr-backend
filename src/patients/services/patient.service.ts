@@ -311,7 +311,9 @@ export class PatientService {
         //get primary provider
         if (relation === DoctorPatientRelationType.PRIMARY_PROVIDER) {
           const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER }] })
-          await this.doctorPatientRepository.save({ id: previousProvider.id, relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          if (previousProvider) {
+            await this.doctorPatientRepository.save({ id: previousProvider.id, relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          }
         }
         //create patient provider
         const doctorPatientInstance = await this.doctorPatientRepository.create({
@@ -348,7 +350,9 @@ export class PatientService {
         //get primary provider
         if (relation === DoctorPatientRelationType.PRIMARY_PROVIDER) {
           const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER }] })
-          await this.doctorPatientRepository.save({ id: previousProvider.id, relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          if (previousProvider) {
+            await this.doctorPatientRepository.save({ id: previousProvider.id, relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          }
         }
         await this.doctorPatientRepository.save({ id: id, relation: relation, otherRelation: otherRelation })
         await queryRunner.commitTransaction();
