@@ -141,7 +141,8 @@ export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
   SERVICE_SLOT = 'serviceSlot',
   FACILITY_PROVIDERS = 'facilityProviders',
-  PAYMENT_TYPE = 'paymentType'
+  PAYMENT_TYPE = 'paymentType',
+  PRACTICE_FACILITIES = 'practiceFacilities'
 }
 
 //Form template
