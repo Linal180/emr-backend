@@ -73,8 +73,8 @@ export class FacilityResolver {
   //queries fields  
 
   @Query(() => FacilitiesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'findAllFacility')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllFacility')
   async findAllFacility(@Args('facilityInput') facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     const facilities = await this.facilityService.findAllFacilities(facilityInput)
     if (facilities) {

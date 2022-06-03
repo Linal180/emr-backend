@@ -137,6 +137,57 @@ const MAPPED_PRONOUNS = [
   { value: PRONOUNS.NONE, name: PRONOUNS.NONE },
 ];
 
+const MAPPED_STATES = [
+  {
+    name: "Alabama",
+    value: "Alabama - AL",
+  },
+  {
+    name: "Alaska",
+    value: "Alaska - AK",
+  },
+  {
+    name: "American Samoa",
+    value: "American Samoa - AS",
+  },
+  {
+    name: "Arizona",
+    value: "Arizona - AZ",
+  },
+  {
+    name: "Arkansas",
+    value: "Arkansas - AR",
+  },
+  {
+    name: "California",
+    value: "California - CA",
+  },
+  {
+    name: "Colorado",
+    value: "Colorado - CO",
+  },
+  {
+    name: "Connecticut",
+    value: "Connecticut - CT",
+  },
+  {
+    name: "Delaware",
+    value: "Delaware - DE",
+  },
+  {
+    name: "District Of Columbia",
+    value: "District Of Columbia - DC",
+  },
+  {
+    name: "Federated States Of Micronesia",
+    value: "Federated States Of Micronesia - FM",
+  },
+  {
+    name: "Florida",
+    value: "Florida - FL",
+  },
+]
+
 export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
   SERVICE_SLOT = 'serviceSlot',
@@ -1677,56 +1728,7 @@ export const FormTemplates = [
               label: "State",
               column: 4,
               fieldId: uuid(),
-              options: [
-                {
-                  name: "Alabama",
-                  value: "Alabama - AL",
-                },
-                {
-                  name: "Alaska",
-                  value: "Alaska - AK",
-                },
-                {
-                  name: "American Samoa",
-                  value: "American Samoa - AS",
-                },
-                {
-                  name: "Arizona",
-                  value: "Arizona - AZ",
-                },
-                {
-                  name: "Arkansas",
-                  value: "Arkansas - AR",
-                },
-                {
-                  name: "California",
-                  value: "California - CA",
-                },
-                {
-                  name: "Colorado",
-                  value: "Colorado - CO",
-                },
-                {
-                  name: "Connecticut",
-                  value: "Connecticut - CT",
-                },
-                {
-                  name: "Delaware",
-                  value: "Delaware - DE",
-                },
-                {
-                  name: "District Of Columbia",
-                  value: "District Of Columbia - DC",
-                },
-                {
-                  name: "Federated States Of Micronesia",
-                  value: "Federated States Of Micronesia - FM",
-                },
-                {
-                  name: "Florida",
-                  value: "Florida - FL",
-                },
-              ],
+              options: MAPPED_STATES,
               errorMsg: "",
               required: true,
               textArea: false,
@@ -2354,6 +2356,37 @@ export const FormTemplates = [
     }
   },
   {
+    name: "Facility",
+    type: FormType.PRE_DEFINED,
+    isSystemForm: true,
+    layout: {
+      sections: [
+        {
+          id: uuid(),
+          col: 12,
+          name: "Facility",
+          fields: [
+            {
+              css: "",
+              name: "facilityId",
+              type: ElementType.SELECT,
+              label: "Facility",
+              column: 12,
+              apiCall: FormBuilderApiSelector.PRACTICE_FACILITIES,
+              fieldId: uuid(),
+              options: [],
+              errorMsg: "",
+              required: true,
+              textArea: false,
+              placeholder: "",
+              defaultValue: "",
+              isMultiSelect: false,
+            },
+          ]
+        }]
+    }
+  },
+  {
     name: "Appointment Type",
     type: FormType.PRE_DEFINED,
     isSystemForm: true,
@@ -2906,56 +2939,7 @@ export const FormTemplates = [
               label: "State",
               column: 4,
               fieldId: uuid(),
-              options: [
-                {
-                  name: "Alabama",
-                  value: "Alabama - AL",
-                },
-                {
-                  name: "Alaska",
-                  value: "Alaska - AK",
-                },
-                {
-                  name: "American Samoa",
-                  value: "American Samoa - AS",
-                },
-                {
-                  name: "Arizona",
-                  value: "Arizona - AZ",
-                },
-                {
-                  name: "Arkansas",
-                  value: "Arkansas - AR",
-                },
-                {
-                  name: "California",
-                  value: "California - CA",
-                },
-                {
-                  name: "Colorado",
-                  value: "Colorado - CO",
-                },
-                {
-                  name: "Connecticut",
-                  value: "Connecticut - CT",
-                },
-                {
-                  name: "Delaware",
-                  value: "Delaware - DE",
-                },
-                {
-                  name: "District Of Columbia",
-                  value: "District Of Columbia - DC",
-                },
-                {
-                  name: "Federated States Of Micronesia",
-                  value: "Federated States Of Micronesia - FM",
-                },
-                {
-                  name: "Florida",
-                  value: "Florida - FL",
-                },
-              ],
+              options: MAPPED_STATES,
               errorMsg: "",
               required: true,
               textArea: false,
@@ -3167,6 +3151,29 @@ export const FormTemplates = [
     type: FormType.TEMPLATE,
     layout: {
       sections: [
+        {
+          id: uuid(),
+          col: 12,
+          name: "Facility",
+          fields: [
+            {
+              css: "",
+              name: "facilityId",
+              type: ElementType.SELECT,
+              label: "Facility",
+              column: 12,
+              apiCall: FormBuilderApiSelector.PRACTICE_FACILITIES,
+              fieldId: uuid(),
+              options: [],
+              errorMsg: "",
+              required: true,
+              textArea: false,
+              placeholder: "",
+              defaultValue: "",
+              isMultiSelect: false,
+            },
+          ]
+        },
         {
           id: uuid(),
           col: 8,
@@ -3561,56 +3568,7 @@ export const FormTemplates = [
               column: 4,
               apiCall: "",
               fieldId: uuid(),
-              options: [
-                {
-                  name: "Alabama",
-                  value: "Alabama - AL",
-                },
-                {
-                  name: "Alaska",
-                  value: "Alaska - AK",
-                },
-                {
-                  name: "American Samoa",
-                  value: "American Samoa - AS",
-                },
-                {
-                  name: "Arizona",
-                  value: "Arizona - AZ",
-                },
-                {
-                  name: "Arkansas",
-                  value: "Arkansas - AR",
-                },
-                {
-                  name: "California",
-                  value: "California - CA",
-                },
-                {
-                  name: "Colorado",
-                  value: "Colorado - CO",
-                },
-                {
-                  name: "Connecticut",
-                  value: "Connecticut - CT",
-                },
-                {
-                  name: "Delaware",
-                  value: "Delaware - DE",
-                },
-                {
-                  name: "District Of Columbia",
-                  value: "District Of Columbia - DC",
-                },
-                {
-                  name: "Federated States Of Micronesia",
-                  value: "Federated States Of Micronesia - FM",
-                },
-                {
-                  name: "Florida",
-                  value: "Florida - FL",
-                },
-              ],
+              options: MAPPED_STATES,
               errorMsg: "",
               required: true,
               textArea: false,
@@ -4374,56 +4332,7 @@ export const FormTemplates = [
               column: 4,
               apiCall: "",
               fieldId: uuid(),
-              options: [
-                {
-                  name: "Alabama",
-                  value: "Alabama - AL",
-                },
-                {
-                  name: "Alaska",
-                  value: "Alaska - AK",
-                },
-                {
-                  name: "American Samoa",
-                  value: "American Samoa - AS",
-                },
-                {
-                  name: "Arizona",
-                  value: "Arizona - AZ",
-                },
-                {
-                  name: "Arkansas",
-                  value: "Arkansas - AR",
-                },
-                {
-                  name: "California",
-                  value: "California - CA",
-                },
-                {
-                  name: "Colorado",
-                  value: "Colorado - CO",
-                },
-                {
-                  name: "Connecticut",
-                  value: "Connecticut - CT",
-                },
-                {
-                  name: "Delaware",
-                  value: "Delaware - DE",
-                },
-                {
-                  name: "District Of Columbia",
-                  value: "District Of Columbia - DC",
-                },
-                {
-                  name: "Federated States Of Micronesia",
-                  value: "Federated States Of Micronesia - FM",
-                },
-                {
-                  name: "Florida",
-                  value: "Florida - FL",
-                },
-              ],
+              options: MAPPED_STATES,
               errorMsg: "",
               required: true,
               textArea: false,
