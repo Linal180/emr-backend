@@ -816,6 +816,18 @@ type DoctorPatient {
   doctor: Doctor
   createdAt: String!
   updatedAt: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
+}
+
+"""The relationship of patient with doctor"""
+enum DoctorPatientRelationType {
+  PREFERRED_PROVIDER
+  BACKUP_PROVIDER
+  PRIMARY_PROVIDER
+  REFERRING_PROVIDER
+  ORDERING_PROVIDER
+  OTHER_PROVIDER
 }
 
 type BillingAddress {
@@ -1435,6 +1447,11 @@ type PatientProviderPayload {
   providers: [DoctorPatient!]
 }
 
+type PatientDoctorPayload {
+  response: ResponsePayload
+  provider: DoctorPatient
+}
+
 type PatientAttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
@@ -1981,7 +1998,8 @@ type Query {
   findPatientAttachments(patientAttachmentsInput: PatientAttachmentsInput!): PatientAttachmentsPayload!
   fetchAllPatients(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
-  getPatientProvider(getPatient: GetPatient!): PatientProviderPayload!
+  getPatientProviders(getPatient: GetPatient!): PatientProviderPayload!
+  getPatientProvider(patientProviderInputs: PatientProviderInputs!): PatientDoctorPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
@@ -2175,6 +2193,11 @@ input PatientAttachmentsInput {
 
 input GetPatient {
   id: String!
+}
+
+input PatientProviderInputs {
+  patientId: String!
+  providerId: String
 }
 
 input GetAttachment {
@@ -2419,6 +2442,7 @@ type Mutation {
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
   updatePatientNoteInfo(updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!): PatientPayload!
+  updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs!): PatientDoctorPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   removeAttachmentMedia(id: String!): AttachmentPayload!
@@ -3172,6 +3196,8 @@ input PatientInviteInput {
 input UpdatePatientProvider {
   patientId: String!
   providerId: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
 }
 
 input RemovePatient {
@@ -3182,6 +3208,12 @@ input UpdatePatientNoteInfoInputs {
   id: String!
   patientNoteOpen: Boolean
   patientNote: String
+}
+
+input UpdatePatientProviderRelationInputs {
+  id: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
 }
 
 input CreateAttachmentInput {
