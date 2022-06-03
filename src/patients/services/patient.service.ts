@@ -25,7 +25,7 @@ import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
-import { PatientProviderInputs, UpdatePatientProvider } from '../dto/update-patient-provider.input';
+import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
@@ -338,6 +338,33 @@ export class PatientService {
     }
   }
 
+  async updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs) {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { id, relation, otherRelation } = updatePatientProviderRelationInputs
+      //get patient
+      const patient = await this.doctorPatientRepository.findOne(id)
+      if (patient) {
+        //get previous Provider of patient
+        await this.doctorPatientRepository.save({ id: id, relation: relation, otherRelation: otherRelation })
+        await queryRunner.commitTransaction();
+        return patient
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   /**
    * Patients info
    * @param patientInfoInput 
@@ -434,7 +461,7 @@ export class PatientService {
               orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
               orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
           }))
-          .orderBy('patient.createdAt','DESC')
+          .orderBy('patient.createdAt', 'DESC')
           .getManyAndCount()
 
         const totalPages = Math.ceil(totalCount / limit)
@@ -450,7 +477,7 @@ export class PatientService {
         }
       } else {
         const [patients, totalCount] = await baseQuery
-          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `${doctorId? 'patient.id = "patientWithCertainDoctor"."patientId"':'1=1'} ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
+          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `${doctorId ? 'patient.id = "patientWithCertainDoctor"."patientId"' : '1=1'} ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
           .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
           .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
           .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
@@ -462,7 +489,7 @@ export class PatientService {
               orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
               orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
           }))
-          .orderBy('patient.createdAt','DESC')
+          .orderBy('patient.createdAt', 'DESC')
           .getManyAndCount()
 
         const totalPages = Math.ceil(totalCount / limit)

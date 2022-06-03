@@ -115,13 +115,13 @@ export class PatientResolver {
     };
   }
 
-  @Mutation(() => PatientPayload)
+  @Mutation(() => PatientDoctorPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'updatePatientNoteInfoInputs')
   async updatePatientProviderRelation(@Args('updatePatientProviderRelationInputs')
-  updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs): Promise<PatientPayload> {
+  updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs): Promise<PatientDoctorPayload> {
     return {
-      patient: await this.patientService.updatePatientNoteInfo(updatePatientProviderRelationInputs),
+      provider: await this.patientService.updatePatientProviderRelation(updatePatientProviderRelationInputs),
       response: { status: 200, message: 'Patient notes updated successfully' }
     };
   }
