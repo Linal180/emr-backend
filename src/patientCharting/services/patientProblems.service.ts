@@ -170,7 +170,6 @@ export class ProblemService {
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getManyAndCount()
-    console.log("icdcodes", icdCodes, page, limit, snoMedIcdCodes)
     const totalPages = Math.ceil(totalCount / limit)
     return {
       icdCodes: !!snoMedIcdCodes.length ? snoMedIcdCodes : icdCodes,
