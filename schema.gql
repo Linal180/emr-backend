@@ -296,7 +296,7 @@ enum POLICY_HOLDER_GENDER_IDENTITY {
 type Policy {
   id: String!
   name: String
-  orderOfBenifit: OrderOfBenefitType
+  orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
   memberId: String
   groupNumber: String
@@ -3855,7 +3855,7 @@ input GetPublicMediaInput {
 }
 
 input CreatePolicyInput {
-  orderOfBenifit: OrderOfBenefitType
+  orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
   memberId: String
   groupNumber: String
@@ -3897,7 +3897,7 @@ input PolicyHolderInput {
 }
 
 input UpdatePolicyInput {
-  orderOfBenifit: OrderOfBenefitType
+  orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
   memberId: String
   groupNumber: String
