@@ -42,6 +42,14 @@ export class PolicyResolver {
     };
   }
 
+  @Query(() => PoliciesPayload)
+  async fetchPatientInsurances(@Args('id') id: string): Promise<PoliciesPayload> {
+    return {
+      policies: await this.policyService.fetchPatientInsurances(id),
+      response: { status: 200, message: "Policies matching id fetched successfully" }
+    };
+  }
+
   @Mutation(() => PolicyPayload)
   async createPolicy(@Args('createPolicyInput') createPolicyInput: CreatePolicyInput): Promise<PolicyPayload> {
     return {

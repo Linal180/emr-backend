@@ -174,7 +174,7 @@ export class PolicyService {
         const insurance = await this.insuranceService.findOne(updatePolicyInput.insuranceId)
         policyInstance.insurance = insurance
       }
-      const policy = await this.policyRepository.save(policyInstance);
+      const policy = await this.policyRepository.save({...policyInstance, ...policyInfoToCreate});
 
       //associate copays
       if (updateCopaysInput) {
@@ -199,5 +199,11 @@ export class PolicyService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async fetchPatientInsurances(id: string):Promise<Policy[]> {
+    return this.policyRepository.find({
+      patientId: id
+    })
   }
 }
