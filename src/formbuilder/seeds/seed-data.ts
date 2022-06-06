@@ -1668,7 +1668,7 @@ export const FormTemplates = [
               tableName: "Contacts",
               type: ElementType.TEXT,
               tableContactType: ContactType.SELF,
-              label: "Address 1",
+              label: "Address",
               column: 12,
               fieldId: uuid(),
               options: [],
@@ -2381,9 +2381,11 @@ export const FormTemplates = [
               placeholder: "",
               defaultValue: "",
               isMultiSelect: false,
+              tableName: "Appointments",
+              columnName: "facilityId",
             },
           ]
-        }]
+        },]
     }
   },
   {
@@ -2879,7 +2881,7 @@ export const FormTemplates = [
               tableName: "Contacts",
               type: ElementType.TEXT,
               tableContactType: ContactType.GUARANDOR,
-              label: "Address 1",
+              label: "Address",
               column: 12,
               fieldId: uuid(),
               options: [],
@@ -3171,6 +3173,8 @@ export const FormTemplates = [
               placeholder: "",
               defaultValue: "",
               isMultiSelect: false,
+              tableName: "Appointments",
+              columnName: "facilityId",
             },
           ]
         },
@@ -3507,7 +3511,7 @@ export const FormTemplates = [
               css: "",
               name: "address1",
               type: ElementType.TEXT,
-              label: "Address 1",
+              label: "Address",
               column: 12,
               apiCall: "",
               fieldId: uuid(),
@@ -4271,7 +4275,7 @@ export const FormTemplates = [
               css: "",
               name: "address1",
               type: ElementType.TEXT,
-              label: "Address 1",
+              label: "Address",
               column: 12,
               apiCall: "",
               fieldId: uuid(),

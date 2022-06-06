@@ -1,4 +1,4 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-external-appointment.input';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
@@ -99,42 +99,56 @@ export class PatientService {
     await queryRunner.startTransaction();
     try {
       //create patient 
-      const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
-      patientInstance.patientRecord = await this.utilsService.generateString(8);
-      //get facility 
-      const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
-      patientInstance.facility = facility
-      //get doctor 
-      const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
-      //creating doctorPatient Instance 
-      const doctorPatientInstance = await this.doctorPatientRepository.create({
-        doctorId: doctor.id,
-        currentProvider: true,
+      let prevPatient = null;
+      if (createPatientInput?.createPatientItemInput?.email) {
+        prevPatient = await this.GetPatientByEmail(createPatientInput?.createPatientItemInput?.email);
+      }
+      if (prevPatient) {
+        const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
+        patientInstance.patientRecord = await this.utilsService.generateString(8);
+        //get facility 
+        if (createPatientInput?.createPatientItemInput?.facilityId) {
+          const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
+          patientInstance.facility = facility
+        } else {
+          //get doctor 
+          const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
+          //creating doctorPatient Instance 
+          const doctorPatientInstance = await this.doctorPatientRepository.create({
+            doctorId: doctor.id,
+            currentProvider: true,
+          })
+          doctorPatientInstance.doctor = doctor
+          doctorPatientInstance.doctorId = doctor.id
+          //adding usual provider with patient
+          patientInstance.doctorPatients = [doctorPatientInstance]
+          //create patient contact 
+          const contact = await this.contactService.createContact(createPatientInput.createContactInput)
+          //create patient emergency contact 
+          const emergencyContact = await this.contactService.createContact(createPatientInput.createEmergencyContactInput)
+          //create patient next of kin contact 
+          const nextOfKinContact = await this.contactService.createContact(createPatientInput.createNextOfKinContactInput)
+          //create patient guarantor contact 
+          const guarantorContact = await this.contactService.createContact(createPatientInput.createGuarantorContactInput)
+          //create patient guardian contact 
+          const guardianContact = await this.contactService.createContact(createPatientInput.createGuardianContactInput)
+          //create patient employer contact 
+          const employerContact = await this.employerService.createEmployer(createPatientInput.createEmployerInput)
+          patientInstance.employer = [employerContact]
+          patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
+          const patient = await queryRunner.manager.save(patientInstance);
+          doctorPatientInstance.patient = patient
+          doctorPatientInstance.patientId = patient.id
+          await queryRunner.commitTransaction();
+          await this.doctorPatientRepository.save(doctorPatientInstance)
+          return patient
+        }
+      }
+      throw new ConflictException({
+        status: HttpStatus.CONFLICT,
+        error: 'patient is ready exist with this email'
       })
-      doctorPatientInstance.doctor = doctor
-      doctorPatientInstance.doctorId = doctor.id
-      //adding usual provider with patient
-      patientInstance.doctorPatients = [doctorPatientInstance]
-      //create patient contact 
-      const contact = await this.contactService.createContact(createPatientInput.createContactInput)
-      //create patient emergency contact 
-      const emergencyContact = await this.contactService.createContact(createPatientInput.createEmergencyContactInput)
-      //create patient next of kin contact 
-      const nextOfKinContact = await this.contactService.createContact(createPatientInput.createNextOfKinContactInput)
-      //create patient guarantor contact 
-      const guarantorContact = await this.contactService.createContact(createPatientInput.createGuarantorContactInput)
-      //create patient guardian contact 
-      const guardianContact = await this.contactService.createContact(createPatientInput.createGuardianContactInput)
-      //create patient employer contact 
-      const employerContact = await this.employerService.createEmployer(createPatientInput.createEmployerInput)
-      patientInstance.employer = [employerContact]
-      patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
-      const patient = await queryRunner.manager.save(patientInstance);
-      doctorPatientInstance.patient = patient
-      doctorPatientInstance.patientId = patient.id
-      await queryRunner.commitTransaction();
-      await this.doctorPatientRepository.save(doctorPatientInstance)
-      return patient
+
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
@@ -310,7 +324,7 @@ export class PatientService {
         }
         //get previous secondary Provider of patient
         const previousSecProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: updatePatientProvider.patientId, doctorId: updatePatientProvider.providerId, currentProvider: false }] })
-        if(previousSecProvider){
+        if (previousSecProvider) {
           await this.doctorPatientRepository.save({ id: previousSecProvider.id, currentProvider: true })
         }
         //get currentProvider
@@ -318,7 +332,7 @@ export class PatientService {
         if (currentProvider) {
           await this.doctorPatientRepository.save({ id: currentProvider.id, currentProvider: false })
         }
-        if(!previousSecProvider){
+        if (!previousSecProvider) {
           const doctorPatientInstance = await this.doctorPatientRepository.create({ doctorId: updatePatientProvider.providerId, currentProvider: true, patientId: updatePatientProvider.patientId })
           await queryRunner.manager.save(doctorPatientInstance);
         }
@@ -433,7 +447,7 @@ export class PatientService {
               orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
               orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
           }))
-          .orderBy('patient.createdAt','DESC')
+          .orderBy('patient.createdAt', 'DESC')
           .getManyAndCount()
 
         const totalPages = Math.ceil(totalCount / limit)
@@ -449,7 +463,7 @@ export class PatientService {
         }
       } else {
         const [patients, totalCount] = await baseQuery
-          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `${doctorId? 'patient.id = "patientWithCertainDoctor"."patientId"':'1=1'} ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
+          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `${doctorId ? 'patient.id = "patientWithCertainDoctor"."patientId"' : '1=1'} ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
           .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
           .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
           .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
@@ -461,7 +475,7 @@ export class PatientService {
               orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
               orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
           }))
-          .orderBy('patient.createdAt','DESC')
+          .orderBy('patient.createdAt', 'DESC')
           .getManyAndCount()
 
         const totalPages = Math.ceil(totalCount / limit)
