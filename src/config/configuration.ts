@@ -1,4 +1,6 @@
 export default () => {
+  console.log("....entering into configurations....");
+  
   let database: any;
   let redis: any;
   if (process.env.NODE_ENV === "production") {
@@ -18,6 +20,8 @@ export default () => {
         url: process.env.REDIS_URL || "redis://localhost:",
       },
     };
+    console.log("....database....",database);
+    
   } else {
     database = {
       host: process.env.DATABASE_HOST || "localhost",
