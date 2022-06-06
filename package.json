@@ -37,7 +37,7 @@
     "@nestjs/platform-socket.io": "^8.1.2",
     "@nestjs/platform-ws": "^8.2.5",
     "@nestjs/swagger": "^5.1.5",
-    "@nestjs/typeorm": "^8.0.3",
+    "@nestjs/typeorm": "8.0.3",
     "@nestjs/websockets": "^8.2.5",
     "@sendgrid/mail": "^7.6.0",
     "apollo-server-express": "^3.6.2",
@@ -71,7 +71,7 @@
     "strip-bom": "^5.0.0",
     "swagger-ui-express": "^4.3.0",
     "twilio": "^3.75.0",
-    "typeorm": "^0.2.41",
+    "typeorm": "^0.2.45",
     "typeorm-seeding": "^1.6.1",
     "uuid": "^8.3.2"
   },

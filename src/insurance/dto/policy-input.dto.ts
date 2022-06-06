@@ -1,10 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql';
-import PaginationInput from 'src/pagination/dto/pagination-input.dto';
-import { Copay } from '../entities/copay.entity';
-import { PolicyHolder } from '../entities/policy-holder.entity';
-import { OrderOfBenefitType, PolicyHolderRelationshipType, PricingProductType } from '../entities/policy.entity';
 import { CopayInput, UpdateCopayInput } from './copay-input.dto';
+import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { PolicyHolderInput, UpdatePolicyHolderInput } from './policy-holder-input';
+import { OrderOfBenefitType, PolicyHolderRelationshipType, PricingProductType } from '../entities/policy.entity';
 
 
 @InputType()
@@ -12,7 +10,7 @@ export class PolicyPaginationInput {
   @Field({ nullable: true })
   patientId?: string
 
-  @Field(type => PaginationInput)
+  @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 }
 
@@ -21,7 +19,7 @@ export class CreatePolicyInput {
   @Field(() => OrderOfBenefitType, { nullable: true })
   orderOfBenifit?: OrderOfBenefitType
 
-  @Field(type => PolicyHolderRelationshipType, { nullable: true })
+  @Field(() => PolicyHolderRelationshipType, { nullable: true })
   policyHolderRelationship?: PolicyHolderRelationshipType
 
   @Field({ nullable: true })
@@ -45,7 +43,7 @@ export class CreatePolicyInput {
   @Field({ nullable: true })
   primaryCareProviderId?: string
 
-  @Field(type => PricingProductType, { nullable: true })
+  @Field(() => PricingProductType, { nullable: true })
   pricingProductType?: PricingProductType
 
   @Field({ nullable: true })
@@ -65,13 +63,13 @@ export class CreatePolicyInput {
 }
 
 @InputType()
-export class UpdatePolicyInput extends CreatePolicyInput{
+export class UpdatePolicyInput extends CreatePolicyInput {
   @Field()
   id: string
 
   @Field(() => UpdatePolicyHolderInput, { nullable: true })
   policyHolderInfo?: UpdatePolicyHolderInput
 
-  @Field(()=>[UpdateCopayInput], {nullable: true})
+  @Field(() => [UpdateCopayInput], { nullable: true })
   copays?: UpdateCopayInput[];
 }

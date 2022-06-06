@@ -4,13 +4,13 @@ import { PolicyHolder } from '../entities/policy-holder.entity';
 import { Response } from './insurances-payload.dto';
 
 @ObjectType()
-export class PolicyHoldersPayload{
-  @Field(type => [PolicyHolder])
+export class PolicyHoldersPayload {
+  @Field(() => [PolicyHolder])
   policyHolders: PolicyHolder[];
 
-  @Field(type => PaginationPayload, { nullable: true })
+  @Field(() => PaginationPayload, { nullable: true })
   pagination?: PaginationPayload
 
-  @Field(type=>Response,{nullable:true})
-  response?:Response
+  @Field(() => Response, { nullable: true })
+  response?: Response
 }

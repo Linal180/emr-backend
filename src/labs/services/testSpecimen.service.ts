@@ -65,6 +65,13 @@ export class TestSpecimenService {
     }
   }
 
+  async GetSpecimenByName(name: string): Promise<SpecimenTypes> {
+    const specimenType = await this.specimenTypesRepository.findOne({ name: name });
+    if (specimenType) {
+      return specimenType
+    }
+  }
+
   async findSpecimenTypeById(id: string): Promise<SpecimenTypes> {
     const specimenType = await this.specimenTypesRepository.findOne(id);
     if (specimenType) {
