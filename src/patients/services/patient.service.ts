@@ -103,14 +103,13 @@ export class PatientService {
       if (createPatientInput?.createPatientItemInput?.email) {
         prevPatient = await this.GetPatientByEmail(createPatientInput?.createPatientItemInput?.email);
       }
-      if (prevPatient) {
+      if (!prevPatient) {
         const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
         patientInstance.patientRecord = await this.utilsService.generateString(8);
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
           const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
           patientInstance.facility = facility
-        } else {
           //get doctor 
           const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
           //creating doctorPatient Instance 
@@ -143,7 +142,14 @@ export class PatientService {
           await this.doctorPatientRepository.save(doctorPatientInstance)
           return patient
         }
+        else {
+          throw new PreconditionFailedException({
+            status: HttpStatus.PRECONDITION_FAILED,
+            error: 'Facility id cannot be null'
+          })
+        }
       }
+
       throw new ConflictException({
         status: HttpStatus.CONFLICT,
         error: 'patient is ready exist with this email'

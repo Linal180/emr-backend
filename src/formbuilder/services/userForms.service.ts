@@ -330,9 +330,7 @@ export class UserFormsService {
                 }
                 await this.policyService.create(inputs)
               }
-              console.log('----------------------------------------')
-              console.log('facilityElementId => ', facilityElementId)
-              console.log('----------------------------------------')
+              
               const appointmentInputs = {
                 paymentType: companyName ? PaymentType.INSURANCE : PaymentType.SELF,
                 billingStatus: BillingStatus.DUE,

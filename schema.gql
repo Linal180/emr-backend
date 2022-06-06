@@ -1951,6 +1951,80 @@ type PracticeUserRolesPayload {
   response: ResponsePayloadResponse
 }
 
+type Code {
+  id: String!
+  code: String
+  description: String
+  price: String
+  codeType: CodeType!
+  billing: Billing
+  billingId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The code type assigned with the code"""
+enum CodeType {
+  ICD_10_CODE
+  CPT_CODE
+  HCPCS_CODE
+  CUSTOM_CODE
+}
+
+type Billing {
+  id: String!
+  patientPaymentType: PatientPaymentType!
+  patientBillingStatus: PatientBillingStatus!
+  amount: String
+  onsetDateType: OnsetDateType!
+  onsetDate: String
+  otherDateType: OtherDateType!
+  otherDate: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  codes: [Code!]
+  appointment: Appointment
+  patient: Patient
+  patientId: String
+  appointmentId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient payment type used to billing"""
+enum PatientPaymentType {
+  INSURANCE
+  NO_INSURANCE
+}
+
+"""The patient billing status assigned"""
+enum PatientBillingStatus {
+  PAID_IN_FULL
+  BALANCE_DUE
+  SETTLED
+  INTERNAL_REVIEW
+  BILL_INSURANCE
+  BILL_SECONDARY_INSURANCE
+  WORKERS_COMP_CLAIM
+  AUTO_ACCIDENT_CLAIM
+  DURABLE_MEDICAL_EQUIPMENT_CLAIM
+}
+
+"""The patient billing status assigned"""
+enum OnsetDateType {
+  ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS
+  DATE_OF_ACCIDENT
+  LAST_MENSTRUAL_PERIOD
+}
+
+"""The patient billing status assigned"""
+enum OtherDateType {
+  INITIAL_VISIT_DATE
+  INITIAL_TREATMENT_DATE
+  LAST_RELATED_VISIT
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -3051,7 +3125,7 @@ input CreatePatientItemInput {
   statementNoteDateFrom: String
   statementNoteDateTo: String
   adminId: String
-  facilityId: String!
+  facilityId: String
   practiceId: String
 }
 
