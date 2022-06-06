@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppointmentModule } from './appointments/appointment.module';
 import { AttachmentsModule } from './attachments/attachments.module';
@@ -23,6 +22,7 @@ import { LabModule } from './labs/labs.module';
 import { DashboardModule } from './dashboard/dashboard.module'
 import { InsuranceModule } from './insurance/insurance.module';
 import { BillingModule } from './billings/billing.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -62,3 +62,6 @@ import { BillingModule } from './billings/billing.module';
   providers: [AppService],
 })
 export class AppModule { }
+
+
+
