@@ -18,6 +18,12 @@ export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) 
 
   @Field(()=>AppointmentStatus,{nullable: true})
   status?: AppointmentStatus
+  
+  @Field({nullable: true})
+  checkInActiveStep?: string;
+
+  @Field({nullable: true})
+  checkedOutAt?: string;
 }
 
 @InputType()

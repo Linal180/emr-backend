@@ -1,16 +1,19 @@
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { UtilsService } from 'src/util/utils.service';
+import { Repository } from 'typeorm';
 import { CopayInput, UpdateCopayInput } from '../dto/copay-input.dto';
 import { Copay } from '../entities/copay.entity';
+import { Policy } from '../entities/policy.entity';
 
 @Injectable()
 export class CopayService {
   constructor(
     @InjectRepository(Copay)
     private copayRepository: Repository<Copay>,
-    private readonly utilsService: UtilsService
+    private readonly utilsService: UtilsService,
+    @InjectRepository(Copay)
+    private policyRepository: Repository<Policy>,
   ) { }
 
 
@@ -19,7 +22,13 @@ export class CopayService {
    * @param createCopayInput 
    * @returns create 
    */
-  create(createCopayInput: CopayInput): Promise<Copay> {
+  async create(createCopayInput: CopayInput): Promise<Copay> {
+    const { policyId, amount, type } = createCopayInput
+    if (policyId) {
+      const policy = await this.policyRepository.findOne({ id: policyId })
+      const copayInstance = this.copayRepository.create({ ...createCopayInput, policy: policy })
+      return this.copayRepository.save(copayInstance)
+    }
     const copayInstance = this.copayRepository.create(createCopayInput)
     return this.copayRepository.save(copayInstance)
   }
