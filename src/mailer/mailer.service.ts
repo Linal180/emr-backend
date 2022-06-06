@@ -36,13 +36,13 @@ export class MailerService {
    * @param fullName 
    */
   async sendEmailForgotPassword(email: string, userId: string, fullName: string, providerName: string, isAdmin: boolean, token: string, isInvite: string) {
-    const portalAppBaseUrl = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') :  this.configService.get('ADMIN_APP_BASE_URL')
+    const portalAppBaseUrl = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') : this.configService.get('ADMIN_APP_BASE_URL')
     let templateId = ''
-    if(isInvite === 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID'){
+    if (isInvite === 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID') {
       templateId = this.configService.get('PATIENT_PORTAL_INVITATION_TEMPLATE_ID')
-    }else if(isInvite === 'INVITATION_TEMPLATE_ID'){
+    } else if (isInvite === 'INVITATION_TEMPLATE_ID') {
       templateId = this.configService.get('INVITATION_TEMPLATE_ID')
-    }else if(isInvite === 'FORGOT_PASSWORD_TEMPLATE_ID'){
+    } else if (isInvite === 'FORGOT_PASSWORD_TEMPLATE_ID') {
       templateId = this.configService.get('FORGOT_PASSWORD_TEMPLATE_ID')
     }
     const url = isInvite ? `${portalAppBaseUrl}/set-password?token=${token}` : `${portalAppBaseUrl}/reset-password?token=${token}`
@@ -66,8 +66,10 @@ export class MailerService {
     }
   }
 
-  async sendAppointmentConfirmationsEmail(email: string, fullName: string, slotStartTime: string, token: string, id: string) {
-    const portalAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+  async sendAppointmentConfirmationsEmail(email: string, fullName: string, slotStartTime: string, token: string, id: string, patientPortal: boolean) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const emrAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
+    const portalAppBaseUrl = patientPortal ? patientAppBaseUrl : emrAppBaseUrl
     const url = `${portalAppBaseUrl}/cancel-appointment/${token}`
     const moreInfo = `${portalAppBaseUrl}/patient-information/${id}`
     const msg = {
