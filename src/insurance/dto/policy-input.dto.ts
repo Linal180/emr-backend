@@ -17,7 +17,7 @@ export class PolicyPaginationInput {
 @InputType()
 export class CreatePolicyInput {
   @Field(() => OrderOfBenefitType, { nullable: true })
-  orderOfBenifit?: OrderOfBenefitType
+  orderOfBenefit?: OrderOfBenefitType
 
   @Field(() => PolicyHolderRelationshipType, { nullable: true })
   policyHolderRelationship?: PolicyHolderRelationshipType

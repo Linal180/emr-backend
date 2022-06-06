@@ -9,6 +9,7 @@ import { PatientProblems } from 'src/patientCharting/entities/patientProblems.en
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { LabTests } from 'src/labs/entities/labTests.entity';
+import { Billing } from 'src/billings/entities/billing.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -92,9 +93,17 @@ export class Appointment {
   @Field({ nullable: true })
   checkedInAt: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  checkedOutAt: string;
+
   @Column({ nullable: true, default: false })
   @Field({ nullable: true })
   selfCheckIn: boolean;
+
+  @Column({ nullable: true, default: '0' })
+  @Field({ nullable: true })
+  checkInActiveStep: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -198,6 +207,10 @@ export class Appointment {
   @Field(() => Invoice, { nullable: true })
   @OneToOne(() => Invoice, (invoice) => invoice.appointment)
   invoice: Invoice;
+
+  @Field(() => Billing, { nullable: true })
+  @OneToOne(() => Billing, (billing) => billing.appointment)
+  billing: Billing;
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)
   @Field(type => [PatientProblems], { nullable: true })

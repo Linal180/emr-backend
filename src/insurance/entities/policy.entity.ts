@@ -102,7 +102,7 @@ export class Policy {
     type: "enum", enum: OrderOfBenefitType, default: OrderOfBenefitType.PRIMARY
   })
   @Field(() => OrderOfBenefitType, { nullable: true })
-  orderOfBenifit?: OrderOfBenefitType
+  orderOfBenefit?: OrderOfBenefitType
 
   @Column({
     type: "enum", enum: PolicyHolderRelationshipType, default: PolicyHolderRelationshipType.SELF

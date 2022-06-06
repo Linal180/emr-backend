@@ -12,6 +12,9 @@ export class CopayInput {
 
   @Field(() => CreatePolicyInput, { nullable: true })
   policy?: Omit<CreatePolicyInput, 'copays'>
+
+  @Field({ nullable: true })
+  policyId?: string
 }
 
 @InputType()
