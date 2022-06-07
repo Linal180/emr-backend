@@ -188,7 +188,7 @@ export class UserFormsService {
           city: city || "",
           zipCode: zipCode || "",
           state: state || "",
-          facilityId: facilityId || null ,
+          facilityId: facilityId || null,
           phone: phone || "",
           address2: address2 || "",
           address: address || "",
@@ -219,7 +219,7 @@ export class UserFormsService {
           mobile: emergenceMobile,
           primaryContact: false,
           relationship: emergenceRelationship || RelationshipType.OTHER,
-          facilityId: facilityId ||  null
+          facilityId: facilityId || null
         },
         createGuarantorContactInput: {
           firstName: guarantorFirstName || "",
@@ -292,14 +292,14 @@ export class UserFormsService {
                 ...patientInputs.createContactInput,
                 facilityId: facilityElementId || facilityId || null
               },
-              createEmergencyContactInput:{
+              createEmergencyContactInput: {
                 ...patientInputs.createEmergencyContactInput,
                 facilityId: facilityElementId || facilityId || null
               },
               createEmployerInput: {
                 ...patientInputs.createEmployerInput
               },
-              createGuarantorContactInput:{
+              createGuarantorContactInput: {
                 ...patientInputs.createGuarantorContactInput
               },
               createGuardianContactInput: {
@@ -309,7 +309,7 @@ export class UserFormsService {
                 ...patientInputs.createNextOfKinContactInput
               }
             }
-  
+
             const patientInstance = await this.patientService.createPatient(patientInput)
             if (endTime && startTime && patientInstance?.id) {
 
@@ -330,9 +330,15 @@ export class UserFormsService {
                 }
                 await this.policyService.create(inputs)
               }
-              
+
+              const organizationNameElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'organizationName')
+              const contractNoElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'contractNumber')
+
+              const { value: organizationName } = organizationNameElement || {}
+              const { value: contractNo } = contractNoElement || {}
+
               const appointmentInputs = {
-                paymentType: companyName ? PaymentType.INSURANCE : PaymentType.SELF,
+                paymentType: companyName ? PaymentType.INSURANCE : contractNo ? PaymentType.CONTRACT : PaymentType.SELF,
                 billingStatus: BillingStatus.DUE,
                 isExternal: true,
                 scheduleStartDateTime: startTime,
@@ -341,7 +347,9 @@ export class UserFormsService {
                 facilityId: facilityElementId || facilityId || null,
                 providerId: doctorId || null,
                 patientId: patientInstance.id,
-                practiceId: practiceId || null
+                practiceId: practiceId || null,
+                contractNumber: contractNo || null,
+                organizationName: organizationName || null
               }
               await this.appointmentService.createAppointment(appointmentInputs)
               return patientInstance

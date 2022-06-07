@@ -1232,6 +1232,13 @@ enum OtherDateType {
   LAST_RELATED_VISIT
 }
 
+type Contract {
+  id: String!
+  contractNumber: String
+  organizationName: String
+  appointment: Appointment
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1269,6 +1276,7 @@ type Appointment {
   patient: Patient
   labTests: [LabTests!]
   invoice: Invoice
+  contract: Contract
   billing: Billing
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
@@ -1281,6 +1289,7 @@ type Appointment {
 enum PaymentType {
   SELF
   INSURANCE
+  CONTRACT
 }
 
 """The patient appointment status type assigned"""
@@ -3386,6 +3395,8 @@ input RemovePractice {
 }
 
 input CreateAppointmentInput {
+  contractNumber: String
+  organizationName: String
   paymentType: PaymentType!
   billingStatus: BillingStatus!
   insuranceCompany: String
@@ -3431,6 +3442,8 @@ input CreateExternalAppointmentItemInput {
 }
 
 input UpdateAppointmentInput {
+  contractNumber: String
+  organizationName: String
   paymentType: PaymentType
   billingStatus: BillingStatus
   insuranceCompany: String
