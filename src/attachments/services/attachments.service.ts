@@ -39,14 +39,10 @@ export class AttachmentsService {
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
     const { labOrderNum, policyId, documentTypeId, documentTypeName, practiceId, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
-
-    console.log("\n\n\n\n\n\n attachmentInput >>>>>>>>>>>>", attachmentInput)
-    console.log("\n\n\n\n\n\n attachmentsResult >>>>>>>>>>>>", attachmentsResult)
     let createMetaDataParams = {}
     if (labOrderNum) {
       (createMetaDataParams as any).labOrderNum = labOrderNum
     }
-    console.log("\n\n\n\n\n\n v >>>>>>>>>>>>", createMetaDataParams)
 
     if (policyId) {
       (createMetaDataParams as any).policyId = policyId
@@ -75,7 +71,6 @@ export class AttachmentsService {
       }
       attachmentMetadata.documentType = documentType
       const createdMetaData = await this.attachmentMetadataRepository.save(attachmentMetadata)
-      console.log("\n\n\n\n\n\n createdMetaData >>>>>>>>>>>>", createdMetaData)
 
       attachmentsResult.attachmentMetadata = createdMetaData
       attachmentsResult.attachmentMetadataId = createdMetaData.id
