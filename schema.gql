@@ -1404,7 +1404,10 @@ type AttachmentMetadata {
   labOrderNum: String
   policyId: String
   assignedTo: String
-  pending: Boolean
+  providerName: String
+  signedBy: String
+  signedAt: String
+  comments: String
   attachment: Attachment
   attachmentId: String
   createdAt: String!
@@ -1418,10 +1421,6 @@ type Attachment {
   title: String
   key: String
   attachmentName: String
-  providerName: String
-  signedBy: String
-  signedAt: String
-  comments: String
   url: String
   attachmentMetadata: AttachmentMetadata
   attachmentMetadataId: String

@@ -48,26 +48,10 @@ export class Attachment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  providerName: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  signedBy: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  signedAt: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  comments: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   url: string;
 
-  @Field(() => AttachmentMetadata, { nullable: true })
-  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete:'CASCADE', onUpdate:'CASCADE' })
+  @Field(() => AttachmentMetadata, { nullable: true, })
+  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete:'CASCADE', onUpdate:'CASCADE', eager:true })
   @JoinColumn()
   attachmentMetadata: AttachmentMetadata;
 
