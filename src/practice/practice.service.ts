@@ -22,8 +22,8 @@ import { FacilityService } from 'src/facilities/services/facility.service';
 import { RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
-import { AttachmentsService } from 'src/attachments/attachments.service';
 import { File } from '../aws/dto/file-input.dto';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
 
 @Injectable()
 export class PracticeService {

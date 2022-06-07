@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcryptjs from 'bcryptjs';
 import { getConnection, In, Not, Repository } from 'typeorm';
 //user import
-import { AttachmentsService } from 'src/attachments/attachments.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
@@ -47,9 +47,11 @@ export class UsersService {
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
     private readonly mailerService: MailerService,
+    @Inject(forwardRef(() => PatientService))
     private readonly patientService: PatientService,
     private readonly utilsService: UtilsService,
     private readonly rolesService: RolesService,
+    @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,
   ) { }
 
