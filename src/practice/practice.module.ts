@@ -13,9 +13,8 @@ import { PracticeService } from './practice.service';
   imports: [
     TypeOrmModule.forFeature([Practice]),
     PaginationModule,
-    UsersModule,
-    ProviderModule,
     forwardRef(() => FacilityModule),
+    forwardRef(() => UsersModule),
     forwardRef(() => ProviderModule),
     forwardRef(() => AttachmentsModule),
   ],

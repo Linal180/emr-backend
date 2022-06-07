@@ -1,6 +1,6 @@
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { Connection, EntitySubscriberInterface, EventSubscriber } from 'typeorm';
-import { AttachmentsService } from "../attachments/attachments.service";
+import { AttachmentsService } from "../attachments/services/attachments.service";
 import { ObservationsAttachmentsPayload } from './dto/update-lab-test-observationItem.input';
 import { Observations } from './entities/observations.entity';
 

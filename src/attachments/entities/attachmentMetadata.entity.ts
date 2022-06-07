@@ -1,23 +1,7 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Attachment } from './attachment.entity';
-
-export enum AttachmentMetadataType {
-  PROFILE_PICTURE = "Profile Picture",
-  DRIVING_LICENSE1 = "Driving License 1",
-  DRIVING_LICENSE2 = "Driving License 2",
-  INSURANCE_CARD1 = "Insurance Card 1",
-  INSURANCE_CARD2 = "Insurance Card 2",
-  PROVIDER_UPLOADS = "Provider Uploads",
-  SIGNATURE = "Signature",
-  LAB_ORDERS = "Lab Orders",
-}
-
-registerEnumType(AttachmentMetadataType, {
-    name: "AttachmentMetaDataType",
-    description: "The type is assigned",
-});
-
+import { DocumentType } from './documentType.entity';
 @Entity({ name: 'AttachmentMetadata' })
 @ObjectType()
 export class AttachmentMetadata {
@@ -25,11 +9,13 @@ export class AttachmentMetadata {
   @Field()
   id: string;
 
-  @Column({
-    type: "enum", enum: AttachmentMetadataType,
-  })
-  @Field(type => AttachmentMetadataType)
-  metadataType: AttachmentMetadataType;
+  @ManyToOne(() => DocumentType, documentType => documentType.attachments, { onDelete: 'CASCADE' })
+  @Field(type => DocumentType, { nullable: true })
+  documentType: DocumentType;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  documentTypeId: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -43,12 +29,12 @@ export class AttachmentMetadata {
   @Field({ nullable: true })
   assignedTo: string;
 
-  @Column({nullable: true, default: true})
-  @Field({nullable: true})
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
   pending: boolean
 
   @Field(() => Attachment, { nullable: true })
-  @OneToOne(() => Attachment, (attachment) => attachment.attachmentMetadata, { onDelete:'CASCADE', onUpdate:'CASCADE' })
+  @OneToOne(() => Attachment, (attachment) => attachment.attachmentMetadata, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   attachment: Attachment;
 
   @Field({ nullable: true })
