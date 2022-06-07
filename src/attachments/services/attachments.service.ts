@@ -1,16 +1,18 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from 'src/aws/dto/file-input.dto';
 import { PaginationService } from 'src/pagination/pagination.service';
 import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.dto';
 import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
+import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Brackets, getConnection, Repository } from 'typeorm';
-import { AwsService } from '../aws/aws.service';
-import { CreateAttachmentInput } from './dto/create-attachment.input';
-import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from './dto/update-attachment.input';
-import { Attachment } from './entities/attachment.entity';
-import { AttachmentMetadata, AttachmentMetadataType } from './entities/attachmentMetadata.entity';
+import { AwsService } from '../../aws/aws.service';
+import { CreateAttachmentInput } from '../dto/create-attachment.input';
+import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
+import { Attachment } from '../entities/attachment.entity';
+import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
+import { DocumentType } from '../entities/documentType.entity';
 
 @Injectable()
 export class AttachmentsService {
@@ -19,9 +21,13 @@ export class AttachmentsService {
     private attachmentsRepository: Repository<Attachment>,
     @InjectRepository(AttachmentMetadata)
     private attachmentMetadataRepository: Repository<AttachmentMetadata>,
+    @InjectRepository(DocumentType)
+    private documentTypeRepository: Repository<DocumentType>,
     private readonly awsService: AwsService,
     private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
+    @Inject(forwardRef(() => PracticeService))
+    private readonly practiceService: PracticeService,
   ) { }
 
   /**
@@ -31,23 +37,44 @@ export class AttachmentsService {
    * @returns  
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
-    const { labOrderNum,metadataType,policyId,...attachmentInput } = createAttachmentInput
+    const { labOrderNum, policyId, documentTypeId, documentTypeName, practiceId, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
-    if(metadataType){
-       let createMetaDataParams= {}
-       if(labOrderNum){
-        (createMetaDataParams as any).labOrderNum= labOrderNum
-       }
-
-       if(policyId){
-        (createMetaDataParams as any).policyId= policyId
-       }
-
-       const attachmentMetadata= this.attachmentMetadataRepository.create({...createMetaDataParams,metadataType: AttachmentMetadataType[metadataType]})
-       const createdMetaData= await this.attachmentMetadataRepository.save(attachmentMetadata)
-       attachmentsResult.attachmentMetadata= createdMetaData
-       attachmentsResult.attachmentMetadataId= createdMetaData.id
+    let createMetaDataParams = {}
+    if (labOrderNum) {
+      (createMetaDataParams as any).labOrderNum = labOrderNum
     }
+
+    if (policyId) {
+      (createMetaDataParams as any).policyId = policyId
+    }
+
+    if (documentTypeId) {
+      (createMetaDataParams as any).documentTypeId = documentTypeId
+    }
+
+    if (documentTypeName) {
+      (createMetaDataParams as any).documentTypeName = documentTypeName
+    }
+
+    if (Object.keys(createMetaDataParams).length) {
+      const attachmentMetadata = this.attachmentMetadataRepository.create(createMetaDataParams)
+      let documentType
+      if (documentTypeId) {
+        documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
+      } else if (documentTypeName) {
+        const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
+        if (practiceId) {
+          const practice = await this.practiceService.findOne(practiceId)
+          documentTypeInstance.practice = practice
+        }
+        documentType = await this.documentTypeRepository.save(documentTypeInstance)
+      }
+      attachmentMetadata.documentType = documentType
+      const createdMetaData = await this.attachmentMetadataRepository.save(attachmentMetadata)
+      attachmentsResult.attachmentMetadata = createdMetaData
+      attachmentsResult.attachmentMetadataId = createdMetaData.id
+    }
+
     return await this.attachmentsRepository.save(attachmentsResult)
   }
 
@@ -126,15 +153,15 @@ export class AttachmentsService {
    */
   async patientAttachments(patientAttachmentsInput: PatientAttachmentsInput): Promise<PatientAttachmentsPayload> {
     try {
-    const paginationResponse = await this.paginationService.willPaginate<Attachment>(this.attachmentsRepository, patientAttachmentsInput)
-    return {
-      pagination: {
-        ...paginationResponse
-      },
-      attachments: paginationResponse.data,
-    }
-  } catch (error) {
-    throw new InternalServerErrorException(error);
+      const paginationResponse = await this.paginationService.willPaginate<Attachment>(this.attachmentsRepository, patientAttachmentsInput)
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        attachments: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -152,9 +179,8 @@ export class AttachmentsService {
   async findAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder): Promise<Attachment[]> {
     const { orderNum, typeId } = getAttachmentsByLabOrder
     return await this.attachmentsRepository.find({
-      relations:['attachmentMetadata'],
+      relations: ['attachmentMetadata'],
       where: {
-
         attachmentMetadata: {
           labOrderNum: orderNum,
         },
@@ -166,7 +192,7 @@ export class AttachmentsService {
   async findAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<Attachment[]> {
     const { policyId, typeId } = getAttachmentsByPolicyId
     return await this.attachmentsRepository.find({
-      relations:['attachmentMetadata'],
+      relations: ['attachmentMetadata'],
       where: {
         attachmentMetadata: {
           policyId: policyId,

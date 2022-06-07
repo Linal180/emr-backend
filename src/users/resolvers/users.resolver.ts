@@ -1,6 +1,6 @@
 import { ForbiddenException, HttpStatus, NotFoundException, PreconditionFailedException, SetMetadata, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { AttachmentsService } from 'src/attachments/attachments.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { FacilityService } from 'src/facilities/services/facility.service';

@@ -24,6 +24,7 @@ export class FacilityService {
     private readonly paginationService: PaginationService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
+    @Inject(forwardRef(() => PracticeService))
     private readonly practiceService: PracticeService,
     private readonly billingAddressService: BillingAddressService,
     private readonly utilsService: UtilsService

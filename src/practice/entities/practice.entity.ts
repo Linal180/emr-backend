@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 //user imports
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
+import { DocumentType } from 'src/attachments/entities/documentType.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
@@ -54,6 +55,10 @@ export class Practice {
   @OneToMany(() => Facility, facility => facility.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Facility], { nullable: true })
   facilities: Facility[];
+
+  @OneToMany(() => DocumentType, documentType => documentType.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [DocumentType], { nullable: true })
+  documentTypes: DocumentType[];
 
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];

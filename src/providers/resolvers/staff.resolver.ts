@@ -1,6 +1,6 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { AttachmentsService } from 'src/attachments/attachments.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
