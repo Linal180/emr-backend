@@ -20,7 +20,7 @@ import { DisableDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
-import { AttachmentsService } from 'src/attachments/attachments.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
 
 @Injectable()
 export class DoctorService {
@@ -38,7 +38,7 @@ export class DoctorService {
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
-    // @Inject(forwardRef(() => AttachmentsService))
+    @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,
   ) { }
 

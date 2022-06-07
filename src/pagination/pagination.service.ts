@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral, Raw, Repository, WhereExpressionBuilder } from "typeorm";
+import { Between, Equal, FindConditions, FindManyOptions, FindOperator, In, IsNull, JoinOptions, Not, ObjectLiteral, Raw, Repository, WhereExpressionBuilder} from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
 
@@ -41,7 +41,7 @@ export class PaginationService {
    * @param paginationInput 
    * @returns paginated response PaginationPayloadInterface<T>
    */
-  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[] ): Promise<PaginationPayloadInterface<T>> {
+  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[]): Promise<PaginationPayloadInterface<T>> {
     try {
       const { associatedTo, relationField, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
@@ -183,6 +183,8 @@ export class PaginationService {
       component,
       specimenTypeName,
       orderNumber,
+      documentPracticeId,
+      documentTypeName,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -263,6 +265,9 @@ export class PaginationService {
         ...(doctorFirstName && {
           firstName: Raw(alias => `${alias} ILIKE '%${doctorFirstName}%'`),
         }),
+        ...(documentTypeName && {
+          type: Raw(alias => `${alias} ILIKE '%${documentTypeName}%'`),
+        }),
         ...(practiceId && {
           practiceId: practiceId
         }),
@@ -301,6 +306,9 @@ export class PaginationService {
         }),
         ...(formType && {
           type: formType
+        }),
+        ...(documentPracticeId && {
+          practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${documentPracticeId}'`),
         })
       }
     };

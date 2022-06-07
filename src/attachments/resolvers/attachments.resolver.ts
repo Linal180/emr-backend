@@ -1,15 +1,13 @@
-import { SetMetadata, UseFilters, UseGuards } from '@nestjs/common';
+import { UseFilters } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import { default as PermissionGuard } from 'src/users/auth/role.guard';
-import { AttachmentsService } from './attachments.service';
-import { AttachmentMediaPayload, AttachmentPayload } from './dto/attachment-payload.dto';
-import { AttachmentsPayload } from './dto/attachments-payload.dto';
-import { CreateAttachmentInput } from './dto/create-attachment.input';
-import { GetAttachment, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetMedia, RemoveAttachment, UpdateAttachmentInput } from './dto/update-attachment.input';
-import { Attachment } from './entities/attachment.entity';
-import { AttachmentMetadata } from './entities/attachmentMetadata.entity';
+import { AttachmentMediaPayload, AttachmentPayload } from '../dto/attachment-payload.dto';
+import { AttachmentsPayload } from '../dto/attachments-payload.dto';
+import { CreateAttachmentInput } from '../dto/create-attachment.input';
+import { GetAttachment, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetMedia, RemoveAttachment, UpdateAttachmentInput } from '../dto/update-attachment.input';
+import { Attachment } from '../entities/attachment.entity';
+import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
+import { AttachmentsService } from '../services/attachments.service';
 
 @Resolver(Attachment)
 @UseFilters(HttpExceptionFilterGql)

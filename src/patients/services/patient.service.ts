@@ -2,7 +2,7 @@ import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorExceptio
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-external-appointment.input';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { AttachmentsService } from 'src/attachments/attachments.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { createToken, paginateResponse } from 'src/lib/helper';
@@ -48,6 +48,7 @@ export class PatientService {
     private readonly doctorService: DoctorService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
+    @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,
     private readonly utilsService: UtilsService,
     private readonly mailerService: MailerService

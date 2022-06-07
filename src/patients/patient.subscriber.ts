@@ -1,7 +1,7 @@
 import { PatientAttachmentsPayload } from 'src/attachments/dto/update-attachment.input';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { Connection, EntitySubscriberInterface, EventSubscriber } from 'typeorm';
-import { AttachmentsService } from "../attachments/attachments.service";
+import { AttachmentsService } from "../attachments/services/attachments.service";
 import { Patient } from './entities/patient.entity';
 
 @EventSubscriber()
