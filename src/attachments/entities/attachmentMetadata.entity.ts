@@ -29,9 +29,21 @@ export class AttachmentMetadata {
   @Field({ nullable: true })
   assignedTo: string;
 
-  @Column({ nullable: true, default: true })
+  @Column({ nullable: true })
   @Field({ nullable: true })
-  pending: boolean
+  providerName: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  signedBy: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  signedAt: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  comments: string;
 
   @Field(() => Attachment, { nullable: true })
   @OneToOne(() => Attachment, (attachment) => attachment.attachmentMetadata, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })

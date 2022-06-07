@@ -287,7 +287,7 @@ export class UsersService {
   */
   async search(searchTerm: string): Promise<User[]> {
     const [first, last] = searchTerm.split(' ');
-    console.log(first, last)
+
     const result = await getConnection()
       .getRepository(User)
       .createQueryBuilder("user")
