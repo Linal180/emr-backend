@@ -318,7 +318,7 @@ export class AttachmentsService {
    * @param uploadMedia 
    * @returns  
    */
-  async uploadMedia(attachments: File, { id, type, typeId }: UpdateAttachmentInput) {
+  async uploadMedia(attachments: File, { id, type, typeId, attachmentName }: UpdateAttachmentInput) {
     const { Key, Location } = await this.awsService.uploadFile(attachments, type, typeId);
     return {
       id,
@@ -326,7 +326,7 @@ export class AttachmentsService {
       typeId,
       key: Key,
       url: Location,
-      attachmentName: Key.split("/").pop().split('.').slice(0, -1).join('')
+      attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join('')
     }
   }
 }
