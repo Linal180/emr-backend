@@ -296,7 +296,7 @@ enum POLICY_HOLDER_GENDER_IDENTITY {
 type Policy {
   id: String!
   name: String
-  orderOfBenifit: OrderOfBenefitType
+  orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
   memberId: String
   groupNumber: String
@@ -816,6 +816,18 @@ type DoctorPatient {
   doctor: Doctor
   createdAt: String!
   updatedAt: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
+}
+
+"""The relationship of patient with doctor"""
+enum DoctorPatientRelationType {
+  PREFERRED_PROVIDER
+  BACKUP_PROVIDER
+  PRIMARY_PROVIDER
+  REFERRING_PROVIDER
+  ORDERING_PROVIDER
+  OTHER_PROVIDER
 }
 
 type BillingAddress {
@@ -1146,6 +1158,80 @@ enum ServiceCode {
   INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
 }
 
+type Code {
+  id: String!
+  code: String
+  description: String
+  price: String
+  codeType: CodeType!
+  billing: Billing
+  billingId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The code type assigned with the code"""
+enum CodeType {
+  ICD_10_CODE
+  CPT_CODE
+  HCPCS_CODE
+  CUSTOM_CODE
+}
+
+type Billing {
+  id: String!
+  patientPaymentType: PatientPaymentType!
+  patientBillingStatus: PatientBillingStatus!
+  amount: String
+  onsetDateType: OnsetDateType!
+  onsetDate: String
+  otherDateType: OtherDateType!
+  otherDate: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  codes: [Code!]
+  appointment: Appointment
+  patient: Patient
+  patientId: String
+  appointmentId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient payment type used to billing"""
+enum PatientPaymentType {
+  INSURANCE
+  NO_INSURANCE
+}
+
+"""The patient billing status assigned"""
+enum PatientBillingStatus {
+  PAID_IN_FULL
+  BALANCE_DUE
+  SETTLED
+  INTERNAL_REVIEW
+  BILL_INSURANCE
+  BILL_SECONDARY_INSURANCE
+  WORKERS_COMP_CLAIM
+  AUTO_ACCIDENT_CLAIM
+  DURABLE_MEDICAL_EQUIPMENT_CLAIM
+}
+
+"""The patient billing status assigned"""
+enum OnsetDateType {
+  ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS
+  DATE_OF_ACCIDENT
+  LAST_MENSTRUAL_PERIOD
+}
+
+"""The patient billing status assigned"""
+enum OtherDateType {
+  INITIAL_VISIT_DATE
+  INITIAL_TREATMENT_DATE
+  LAST_RELATED_VISIT
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1154,7 +1240,9 @@ type Appointment {
   billingStatus: BillingStatus!
   appointmentCancelReason: String
   checkedInAt: String
+  checkedOutAt: String
   selfCheckIn: Boolean
+  checkInActiveStep: String
   insuranceCompany: String
   membershipID: String
   reason: String
@@ -1181,6 +1269,7 @@ type Appointment {
   patient: Patient
   labTests: [LabTests!]
   invoice: Invoice
+  billing: Billing
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
   patientVitals: [PatientVitals!]
@@ -1282,6 +1371,7 @@ type Patient {
   patientProblems: [PatientProblems!]
   appointments: [Appointment!]
   labTests: [LabTests!]
+  billings: [Billing!]
   employer: Employer
   patientVitals: [PatientVitals!]
   createdAt: String!
@@ -1433,6 +1523,11 @@ type PatientPayload {
 type PatientProviderPayload {
   response: ResponsePayload
   providers: [DoctorPatient!]
+}
+
+type PatientDoctorPayload {
+  response: ResponsePayload
+  provider: DoctorPatient
 }
 
 type PatientAttachmentsPayload {
@@ -1951,6 +2046,12 @@ type PracticeUserRolesPayload {
   response: ResponsePayloadResponse
 }
 
+type BillingPayload {
+  billing: Billing!
+  pagination: PaginationPayload
+  response: Response
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -1982,7 +2083,8 @@ type Query {
   findPatientAttachments(patientAttachmentsInput: PatientAttachmentsInput!): PatientAttachmentsPayload!
   fetchAllPatients(patientInput: PatientInput!): PatientsPayload!
   getPatient(getPatient: GetPatient!): PatientPayload!
-  getPatientProvider(getPatient: GetPatient!): PatientProviderPayload!
+  getPatientProviders(getPatient: GetPatient!): PatientProviderPayload!
+  getPatientProvider(patientProviderInputs: PatientProviderInputs!): PatientDoctorPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
@@ -2028,8 +2130,10 @@ type Query {
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
   fetchPolicy(id: String!): PolicyPayload!
+  fetchPatientInsurances(id: String!): PoliciesPayload!
   fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
   fetchPolicyHolder(id: String!): PolicyHolder!
+  fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
 }
 
 input UsersInput {
@@ -2176,6 +2280,11 @@ input PatientAttachmentsInput {
 
 input GetPatient {
   id: String!
+}
+
+input PatientProviderInputs {
+  patientId: String!
+  providerId: String
 }
 
 input GetAttachment {
@@ -2421,6 +2530,7 @@ type Mutation {
   updatePatientProvider(updatePatientProvider: UpdatePatientProvider!): PatientPayload!
   removePatient(removePatient: RemovePatient!): PatientPayload!
   updatePatientNoteInfo(updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!): PatientPayload!
+  updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs!): PatientDoctorPayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   removeAttachmentMedia(id: String!): AttachmentPayload!
@@ -2470,6 +2580,7 @@ type Mutation {
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
   createCopay(createCopayInput: CopayInput!): Copay!
+  createBilling(createBillingInput: BillingInput!): BillingPayload!
 }
 
 input LoginUserInput {
@@ -3174,6 +3285,8 @@ input PatientInviteInput {
 input UpdatePatientProvider {
   patientId: String!
   providerId: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
 }
 
 input RemovePatient {
@@ -3184,6 +3297,12 @@ input UpdatePatientNoteInfoInputs {
   id: String!
   patientNoteOpen: Boolean
   patientNote: String
+}
+
+input UpdatePatientProviderRelationInputs {
+  id: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
 }
 
 input CreateAttachmentInput {
@@ -3337,6 +3456,8 @@ input UpdateAppointmentInput {
   selfCheckIn: Boolean
   checkedInAt: String
   status: AppointmentStatus
+  checkInActiveStep: String
+  checkedOutAt: String
 }
 
 input UpdateAppointmentBillingStatusInput {
@@ -3738,7 +3859,7 @@ input GetPublicMediaInput {
 }
 
 input CreatePolicyInput {
-  orderOfBenifit: OrderOfBenefitType
+  orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
   memberId: String
   groupNumber: String
@@ -3759,6 +3880,7 @@ input CopayInput {
   type: CopayType
   amount: String
   policy: CreatePolicyInput
+  policyId: String
 }
 
 input PolicyHolderInput {
@@ -3779,7 +3901,7 @@ input PolicyHolderInput {
 }
 
 input UpdatePolicyInput {
-  orderOfBenifit: OrderOfBenefitType
+  orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
   memberId: String
   groupNumber: String
@@ -3801,6 +3923,7 @@ input UpdateCopayInput {
   type: CopayType
   amount: String
   policy: CreatePolicyInput
+  policyId: String
   id: String!
 }
 
@@ -3820,4 +3943,27 @@ input UpdatePolicyHolderInput {
   sex: POLICY_HOLDER_GENDER_IDENTITY
   dob: String
   id: String!
+}
+
+input BillingInput {
+  patientPaymentType: PatientPaymentType
+  patientBillingStatus: PatientBillingStatus
+  amount: String
+  onsetDateType: OnsetDateType
+  onsetDate: String
+  otherDateType: OtherDateType
+  otherDate: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  codes: [CodesInput!]
+  patientId: String
+  appointmentId: String
+}
+
+input CodesInput {
+  code: String
+  description: String
+  price: String
+  codeType: CodeType
 }

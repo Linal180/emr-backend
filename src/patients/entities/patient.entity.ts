@@ -14,6 +14,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, One
 import { Attachment } from '../../attachments/entities/attachment.entity';
 import { DoctorPatient } from './doctorPatient.entity';
 import { Employer } from './employer.entity';
+import { Billing } from 'src/billings/entities/billing.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -390,6 +391,10 @@ export class Patient {
   @OneToMany(() => LabTests, labTests => labTests.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [LabTests], { nullable: true })
   labTests: LabTests[];
+
+  @OneToMany(() => Billing, billing => billing.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [Billing], { nullable: true })
+  billings: Billing[];
 
   @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE" })
   @Field(type => Employer, { nullable: true })

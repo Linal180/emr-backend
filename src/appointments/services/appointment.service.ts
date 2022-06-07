@@ -157,7 +157,7 @@ export class AppointmentService {
       const token = createToken();
       appointmentInstance.token = token;
       const appointment = await this.appointmentRepository.save(appointmentInstance);
-      this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName + ' ' + patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id)
+      this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName + ' ' + patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id, false)
       await queryRunner.commitTransaction();
       if (patientInstance.phonePermission) {
         this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)

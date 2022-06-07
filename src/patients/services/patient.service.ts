@@ -9,7 +9,6 @@ import { createToken, paginateResponse } from 'src/lib/helper';
 import { MailerService } from 'src/mailer/mailer.service';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { PaginationService } from 'src/pagination/pagination.service';
-import { ContactType } from 'src/providers/entities/contact.entity';
 import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UsersService } from 'src/users/services/users.service';
@@ -25,10 +24,10 @@ import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
-import { UpdatePatientProvider } from '../dto/update-patient-provider.input';
+import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
 import { RemovePatient } from '../dto/update-patientItem.input';
-import { DoctorPatient } from '../entities/doctorPatient.entity';
+import { DoctorPatient, DoctorPatientRelationType } from '../entities/doctorPatient.entity';
 import { Patient } from '../entities/patient.entity';
 import { EmployerService } from './employer.service';
 
@@ -320,28 +319,62 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      const { patientId, providerId, relation, otherRelation } = updatePatientProvider
       //get patient
-      const patient = await this.findOne(updatePatientProvider.patientId)
+      const patient = await this.findOne(patientId)
       if (patient) {
-        //get previous primary Provider of patient
-        const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ doctorId: updatePatientProvider.providerId, patientId: updatePatientProvider.patientId, currentProvider: true }] })
+        //get previous Provider of patient
+        const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ doctorId: providerId, patientId: patientId }] })
         if (previousProvider) {
           return patient
         }
-        //get previous secondary Provider of patient
-        const previousSecProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: updatePatientProvider.patientId, doctorId: updatePatientProvider.providerId, currentProvider: false }] })
-        if (previousSecProvider) {
-          await this.doctorPatientRepository.save({ id: previousSecProvider.id, currentProvider: true })
+        //get primary provider
+        if (relation === DoctorPatientRelationType.PRIMARY_PROVIDER) {
+          const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER }] })
+          if (previousProvider) {
+            await this.doctorPatientRepository.save({ id: previousProvider.id, relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          }
         }
-        //get currentProvider
-        const currentProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: updatePatientProvider.patientId, currentProvider: true }] })
-        if (currentProvider) {
-          await this.doctorPatientRepository.save({ id: currentProvider.id, currentProvider: false })
+        //create patient provider
+        const doctorPatientInstance = await this.doctorPatientRepository.create({
+          doctorId: providerId, patientId: patientId, otherRelation: otherRelation, relation: relation
+        })
+        //save 
+        await queryRunner.manager.save(doctorPatientInstance);
+        await queryRunner.commitTransaction();
+        return patient
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Patient not found',
+      });
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs) {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { id, relation, otherRelation } = updatePatientProviderRelationInputs
+      //get patient
+      const patient = await this.doctorPatientRepository.findOne(id)
+      if (patient) {
+        const { patientId } = patient
+        //get primary provider
+        if (relation === DoctorPatientRelationType.PRIMARY_PROVIDER) {
+          const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER }] })
+          if (previousProvider) {
+            await this.doctorPatientRepository.save({ id: previousProvider.id, relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          }
         }
-        if (!previousSecProvider) {
-          const doctorPatientInstance = await this.doctorPatientRepository.create({ doctorId: updatePatientProvider.providerId, currentProvider: true, patientId: updatePatientProvider.patientId })
-          await queryRunner.manager.save(doctorPatientInstance);
-        }
+        await this.doctorPatientRepository.save({ id: id, relation: relation, otherRelation: otherRelation })
         await queryRunner.commitTransaction();
         return patient
       }
@@ -511,6 +544,23 @@ export class PatientService {
       const usualProvider = await this.doctorPatientRepository.find({
         where: {
           patientId: id
+        },
+        order: { createdAt: "ASC" },
+        relations: ["doctor"]
+      })
+      return usualProvider
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getProvider(patientProviderInputs: PatientProviderInputs): Promise<DoctorPatient> {
+    try {
+      const usualProvider = await this.doctorPatientRepository.findOne({
+        where: {
+          patientId: patientProviderInputs.patientId,
+          doctorId: patientProviderInputs.providerId
         },
         order: { createdAt: "ASC" },
         relations: ["doctor"]

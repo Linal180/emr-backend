@@ -20,3 +20,12 @@ export class PatientProviderPayload extends ResponsePayloadResponse {
     @Field({ nullable: true })
     response?: ResponsePayload
 }
+
+@ObjectType()
+export class PatientDoctorPayload extends ResponsePayloadResponse {
+    @Field(() => DoctorPatient, { nullable: true })
+    provider: DoctorPatient;
+
+    @Field({ nullable: true })
+    response?: ResponsePayload
+}

@@ -5,6 +5,7 @@
         "COMMUNICATIONTYPE",
         "copays",
         "GENDERIDENTITY",
+        "maritial",
         "MARITIALSTATUS",
         "nestjs",
         "SEXUALORIENTATION",
