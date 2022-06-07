@@ -102,6 +102,9 @@ export class CreateFormInput {
   @Field({ nullable: true })
   facilityId: string;
 
+  @Field({ nullable: true })
+  practiceId: string;
+
   @Field(() => LayoutJSONInputType, { nullable: false })
   layout: LayoutJSONInputType;
 

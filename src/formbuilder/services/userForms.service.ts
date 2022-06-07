@@ -40,9 +40,10 @@ export class UserFormsService {
     private readonly policyService: PolicyService
   ) { }
 
-  async createPatientAppointment(form: Form, userForm: UserForms, inputs: CreateUserFormInput) {
+  async createPatientAppointment(form: Form, userForm: UserForms, inputs: CreateUserFormInput): Promise<Patient> {
     try {
-      const { type, id, facilityId } = form;
+
+      const { type, id, facilityId, practiceId } = form;
       const { userFormElements } = userForm;
       const formElements = await this.formService.getFormElements(id)
       const patientElements = formElements?.filter(({ tableName }) => tableName === 'Patients')
@@ -112,7 +113,7 @@ export class UserFormsService {
       const {
         language, suffix, firstName, lastName, middleName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn, dob, gender, homeBound, race, ethnicity, maritialStatus,
-        genderIdentity, sexAtBirth, pronouns
+        genderIdentity, sexAtBirth, pronouns, deceasedDate, registrationDate, statementNoteDateTo, statementNoteDateFrom
       } = patient as Patient || {}
 
       const { zipCode, address, address2, city, state, country, phone, email } = contacts as CreateContactInput || {}
@@ -138,33 +139,33 @@ export class UserFormsService {
 
       const patientInputs = {
         createPatientItemInput: {
-          deceasedDate: "",
-          registrationDate: "",
-          statementNoteDateTo: "",
-          statementNoteDateFrom: "",
-          suffix: suffix || "",
-          firstName: firstName || "",
-          middleName: middleName || "",
-          lastName: lastName || "",
-          firstNameUsed: firstNameUsed || "",
-          prefferedName: prefferedName || "",
-          previousFirstName: previousFirstName || "",
-          facilityId,
+          deceasedDate: deceasedDate || null,
+          registrationDate: registrationDate || null,
+          statementNoteDateTo: statementNoteDateTo || null,
+          statementNoteDateFrom: statementNoteDateFrom || null,
+          suffix: suffix || null,
+          firstName: firstName || null,
+          middleName: middleName || null,
+          lastName: lastName || null,
+          firstNameUsed: firstNameUsed || null,
+          prefferedName: prefferedName || null,
+          previousFirstName: previousFirstName || null,
+          facilityId: facilityId || null,
           callToConsent: false,
           privacyNotice: false,
           releaseOfInfoBill: false,
-          practiceId: "",
+          practiceId: practiceId || null,
           medicationHistoryAuthority: false,
           ethnicity: ethnicity || ETHNICITY.NONE,
           homeBound: homeBound || HOMEBOUND.NO,
           holdStatement: HOLDSTATEMENT.NONE,
-          previouslastName: previouslastName || "",
-          motherMaidenName: motherMaidenName || "",
-          ssn: ssn || "",
-          statementNote: "",
-          language: language || "",
-          patientNote: "",
-          email: email || "",
+          previouslastName: previouslastName || null,
+          motherMaidenName: motherMaidenName || null,
+          ssn: ssn || null,
+          statementNote: null,
+          language: language || null,
+          patientNote: null,
+          email: email || null,
           pronouns: pronouns || PRONOUNS.NONE,
           race: race || RACE.OTHER,
           gender: gender || GENDERIDENTITY.NONE,
@@ -173,13 +174,13 @@ export class UserFormsService {
           maritialStatus: maritialStatus || MARITIALSTATUS.SINGLE,
           sexualOrientation: SEXUALORIENTATION.NONE,
           statementDelivereOnline: false,
-          dob: dob || "",
-          registrationDepartment: "",
-          patientRecord: "",
-          primaryDepartment: "",
+          dob: dob || null,
+          registrationDepartment: null,
+          patientRecord: null,
+          primaryDepartment: null,
           smsPermission: false,
           phonePermission: false,
-          pharmacy: "",
+          pharmacy: null,
           preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE
         },
         createContactInput: {
@@ -187,7 +188,7 @@ export class UserFormsService {
           city: city || "",
           zipCode: zipCode || "",
           state: state || "",
-          facilityId,
+          facilityId: facilityId || null,
           phone: phone || "",
           address2: address2 || "",
           address: address || "",
@@ -218,7 +219,7 @@ export class UserFormsService {
           mobile: emergenceMobile,
           primaryContact: false,
           relationship: emergenceRelationship || RelationshipType.OTHER,
-          facilityId
+          facilityId: facilityId || null
         },
         createGuarantorContactInput: {
           firstName: guarantorFirstName || "",
@@ -256,24 +257,60 @@ export class UserFormsService {
       else if (type === FormType.APPOINTMENT) {
         const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
         const providerElement = formElements?.find(({ columnName }) => columnName === 'usualProviderId')
+        const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
 
         if (appointmentElement && providerElement) {
           const { fieldId } = appointmentElement
           const { fieldId: providerField } = providerElement
-
+          let facilityElementId = ''
           const { userFormElements: userFormElementInputs } = inputs
-
           const appointmentType = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === fieldId)
           const providerId = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === providerField)
           const scheduleStartTime = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'scheduleEndDateTime')
           const scheduleEndTimes = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'scheduleStartDateTime')
 
-          if (appointmentType && facilityId && scheduleEndTimes && scheduleStartTime) {
+          if (facilityElement) {
+            const { fieldId: facilityFieldId } = facilityElement;
+            if (facilityFieldId) {
+              const facilityItem = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === facilityFieldId)
+              const { value } = facilityItem || {}
+              facilityElementId = value
+            }
+          }
+
+          if (appointmentType && scheduleEndTimes && scheduleStartTime) {
             const { value: startTime } = scheduleStartTime || {}
             const { value: endTime } = scheduleEndTimes || {}
             const { value: appointmentTypeId } = appointmentType
             const { value: doctorId } = providerId || {}
-            const patientInstance = await this.patientService.createPatient(patientInputs)
+            const patientInput = {
+              createPatientItemInput: {
+                ...patientInputs.createContactInput,
+                facilityId: facilityElementId || facilityId || null,
+              },
+              createContactInput: {
+                ...patientInputs.createContactInput,
+                facilityId: facilityElementId || facilityId || null
+              },
+              createEmergencyContactInput: {
+                ...patientInputs.createEmergencyContactInput,
+                facilityId: facilityElementId || facilityId || null
+              },
+              createEmployerInput: {
+                ...patientInputs.createEmployerInput
+              },
+              createGuarantorContactInput: {
+                ...patientInputs.createGuarantorContactInput
+              },
+              createGuardianContactInput: {
+                ...patientInputs.createGuardianContactInput
+              },
+              createNextOfKinContactInput: {
+                ...patientInputs.createNextOfKinContactInput
+              }
+            }
+
+            const patientInstance = await this.patientService.createPatient(patientInput)
             if (endTime && startTime && patientInstance?.id) {
 
               const memberElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'memberId')
@@ -293,17 +330,26 @@ export class UserFormsService {
                 }
                 await this.policyService.create(inputs)
               }
+
+              const organizationNameElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'organizationName')
+              const contractNoElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'contractNumber')
+
+              const { value: organizationName } = organizationNameElement || {}
+              const { value: contractNo } = contractNoElement || {}
+
               const appointmentInputs = {
-                paymentType: companyName ? PaymentType.INSURANCE : PaymentType.SELF,
+                paymentType: companyName ? PaymentType.INSURANCE : contractNo ? PaymentType.CONTRACT : PaymentType.SELF,
                 billingStatus: BillingStatus.DUE,
                 isExternal: true,
                 scheduleStartDateTime: startTime,
                 scheduleEndDateTime: endTime,
-                appointmentTypeId: appointmentTypeId || '',
-                facilityId,
+                appointmentTypeId: appointmentTypeId || null,
+                facilityId: facilityElementId || facilityId || null,
                 providerId: doctorId || null,
                 patientId: patientInstance.id,
-                practiceId: null
+                practiceId: practiceId || null,
+                contractNumber: contractNo || null,
+                organizationName: organizationName || null
               }
               await this.appointmentService.createAppointment(appointmentInputs)
               return patientInstance
@@ -321,6 +367,13 @@ export class UserFormsService {
           throw new Error('Please provide service and provider')
         }
       }
+      // else if (type === FormType.DOCTOR) {
+
+      // }
+
+      // else if (type === FormType.STAFF) {
+
+      // }
 
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -385,7 +438,6 @@ export class UserFormsService {
   async uploadUserFormMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<String> {
     try {
       updateAttachmentMediaInput.type = AttachmentType.FORM_BUILDER;
-      // const userForm = await this.findOne(updateAttachmentMediaInput.typeId)
       const attachment = await this.awsService.uploadFile(file, AttachmentType.FORM_BUILDER, updateAttachmentMediaInput.typeId);
       const { Key } = attachment || {};
       if (Key) {

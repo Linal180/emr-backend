@@ -1,8 +1,9 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
 import { BillingStatus, PaymentType } from '../entities/appointment.entity';
+import { CreateContractInput } from './contract.input';
 
 @InputType()
-export class CreateAppointmentInput {
+export class CreateAppointmentInput  extends PartialType(CreateContractInput){
   
     @Field(type => PaymentType)
     paymentType: PaymentType;

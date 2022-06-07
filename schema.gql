@@ -1192,6 +1192,13 @@ enum ServiceType {
   EXTERNAL
 }
 
+type Contract {
+  id: String!
+  contractNumber: String
+  organizationName: String
+  appointment: Appointment
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1229,6 +1236,7 @@ type Appointment {
   patient: Patient
   labTests: [LabTests!]
   invoice: Invoice
+  contract: Contract
   billing: Billing
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
@@ -1241,6 +1249,7 @@ type Appointment {
 enum PaymentType {
   SELF
   INSURANCE
+  CONTRACT
 }
 
 """The patient appointment status type assigned"""
@@ -1775,6 +1784,7 @@ type Form {
   name: String
   type: FormType!
   facilityId: String
+  practiceId: String
   layout: LayoutJSONType!
   isSystemForm: Boolean
   isActive: Boolean
@@ -2467,6 +2477,7 @@ input UsersWithRolesInputs {
 }
 
 input FormInput {
+  practiceId: String
   facilityId: String
   isSystemForm: Boolean
   formType: FormType
@@ -3181,7 +3192,7 @@ input CreatePatientItemInput {
   statementNoteDateFrom: String
   statementNoteDateTo: String
   adminId: String
-  facilityId: String!
+  facilityId: String
   practiceId: String
 }
 
@@ -3405,6 +3416,8 @@ input RemovePractice {
 }
 
 input CreateAppointmentInput {
+  contractNumber: String
+  organizationName: String
   paymentType: PaymentType!
   billingStatus: BillingStatus!
   insuranceCompany: String
@@ -3450,6 +3463,8 @@ input CreateExternalAppointmentItemInput {
 }
 
 input UpdateAppointmentInput {
+  contractNumber: String
+  organizationName: String
   paymentType: PaymentType
   billingStatus: BillingStatus
   insuranceCompany: String
@@ -3791,6 +3806,7 @@ input CreateFormInput {
   isActive: Boolean
   type: FormType
   facilityId: String
+  practiceId: String
   layout: LayoutJSONInputType!
   isSystemForm: Boolean
 }
@@ -3836,6 +3852,7 @@ input UpdateFormInput {
   isActive: Boolean
   type: FormType
   facilityId: String
+  practiceId: String
   layout: LayoutJSONInputType
   isSystemForm: Boolean
   id: String!

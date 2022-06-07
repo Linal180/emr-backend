@@ -41,6 +41,10 @@ export class Form {
   @Field({ nullable: true })
   facilityId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
+
   @Column({ nullable: false, type: "jsonb" })
   @Field(() => LayoutJSONType, { nullable: false })
   layout: LayoutJSONType;

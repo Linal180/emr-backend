@@ -8,12 +8,14 @@ import { PaymentModule } from 'src/payment/payment.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { UsersModule } from 'src/users/users.module';
 import { Appointment } from './entities/appointment.entity';
+import { Contract } from './entities/contract.entity';
 import { AppointmentResolver } from './resolvers/appointment.resolver';
 import { AppointmentService } from './services/appointment.service';
+import { ContractService } from './services/contract.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Appointment]),
+    TypeOrmModule.forFeature([Appointment, Contract]),
     forwardRef(() => UsersModule),
     PaginationModule,
     forwardRef(() => ProviderModule),
@@ -23,8 +25,8 @@ import { AppointmentService } from './services/appointment.service';
     FacilityModule,
     forwardRef(() => PaymentModule),
   ],
-  providers: [AppointmentResolver, AppointmentService],
-  exports: [AppointmentService, TypeOrmModule],
+  providers: [AppointmentResolver, AppointmentService, ContractService],
+  exports: [AppointmentService, TypeOrmModule, ContractService],
 })
 export class AppointmentModule { }
 
