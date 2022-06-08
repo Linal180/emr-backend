@@ -9,6 +9,7 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
+import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
 import LabTestInput from '../dto/lab-test.input';
 import { LabTestPayload } from '../dto/labTest-payload.dto';
@@ -46,6 +47,16 @@ export class LabTestsResolver {
   async updateLabTest(@Args('updateLabTestInput') updateLabTestInput: UpdateLabTestInput) {
     return {
       labTest: await this.labTestsService.updateLabTest(updateLabTestInput),
+      response: { status: 200, message: 'Lab test updated successfully' }
+    };
+  }
+
+  @Mutation(() => LabTestsPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateLabTestsByOrderNum')
+  async updateLabTestsByOrderNum(@Args('updateLabTestItemInput') updateLabTestItemInput: CreateLabTestItemInput): Promise<LabTestsPayload> {
+    return {
+      labTests: await this.labTestsService.updateLabTestsByOrderNumber(updateLabTestItemInput),
       response: { status: 200, message: 'Lab test updated successfully' }
     };
   }

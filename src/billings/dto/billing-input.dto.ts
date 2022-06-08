@@ -42,4 +42,7 @@ export default class BillingInput {
 
   @Field({ nullable: true })
   appointmentId?: string
+
+  @Field({ nullable: true })
+  labOrderNumber?: string
 }

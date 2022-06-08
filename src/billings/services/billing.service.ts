@@ -53,13 +53,16 @@ export class BillingService {
       }
 
       const createdBilling = await this.billingRepository.save(billing);
-      if (createdBilling.id) {
-        this.appointmentService.updateAppointment({
-          id: appointmentId,
-          status: AppointmentStatus.COMPLETED,
-          checkedOutAt: moment().toISOString()
-        })
+      if (appointmentId) {
+        if (createdBilling.id) {
+          this.appointmentService.updateAppointment({
+            id: appointmentId,
+            status: AppointmentStatus.COMPLETED,
+            checkedOutAt: moment().toISOString()
+          })
+        }
       }
+
       await queryRunner.commitTransaction();
       return createdBilling
     } catch (error) {

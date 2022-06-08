@@ -66,6 +66,7 @@ export class AttachmentsService {
       let documentType
       if (documentTypeId) {
         documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
+        attachmentMetadata.documentType = documentType
       } else if (documentTypeName) {
         const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
         if (practiceId) {
@@ -73,8 +74,9 @@ export class AttachmentsService {
           documentTypeInstance.practice = practice
         }
         documentType = await this.documentTypeRepository.save(documentTypeInstance)
+        attachmentMetadata.documentType = documentType
       }
-      attachmentMetadata.documentType = documentType
+      
       const createdMetaData = await this.attachmentMetadataRepository.save(attachmentMetadata)
 
       attachmentsResult.attachmentMetadata = createdMetaData
@@ -218,19 +220,22 @@ export class AttachmentsService {
       const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId,practiceId,...attachmentInputToUpdate } = updateAttachmentInput
       const attachmentMetadataInput= {comments, labOrderNum, signedAt, signedBy, policyId}
       const updatedAttachment=  await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
-      let documentType
-      if (documentTypeId) {
-        documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
-      } else if (documentTypeName) {
-        const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
-        if (practiceId) {
-          const practice = await this.practiceService.findOne(practiceId)
-          documentTypeInstance.practice = practice
-        }
-        documentType = await this.documentTypeRepository.save(documentTypeInstance)
+      if(updatedAttachment.attachmentMetadata){
+        let documentType
+        if (documentTypeId) {
+          documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
+          updatedAttachment.attachmentMetadata.documentType = documentType
+        } else if (documentTypeName) {
+          const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
+          if (practiceId) {
+            const practice = await this.practiceService.findOne(practiceId)
+            documentTypeInstance.practice = practice
+          }
+          documentType = await this.documentTypeRepository.save(documentTypeInstance)
+          updatedAttachment.attachmentMetadata.documentType = documentType
+        }    
+        const updatedAttachmentMetaData= await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, {...updatedAttachment.attachmentMetadata,...attachmentMetadataInput}, this.attachmentMetadataRepository)
       }
-      updatedAttachment.attachmentMetadata.documentType = documentType
-      const updatedAttachmentMetaData= await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, {...updatedAttachment.attachmentMetadata,...attachmentMetadataInput}, this.attachmentMetadataRepository)
       return updatedAttachment
     } catch (error) {
       throw new InternalServerErrorException(error);

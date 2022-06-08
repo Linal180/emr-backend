@@ -399,11 +399,16 @@ type LabTests {
   testDate: String
   testTime: String
   testNotes: String
+  providerNotes: String
   patientId: String
   doctorId: String
+  primaryProviderId: String
+  referringProviderId: String
   appointmentId: String
   patient: Patient
   doctor: Doctor
+  primaryProvider: Doctor
+  referringProvider: Doctor
   appointment: Appointment
   diagnoses: [ICDCodes]
   test: LoincCodes
@@ -697,6 +702,7 @@ type Billing {
   amount: String
   onsetDateType: OnsetDateType!
   onsetDate: String
+  labOrderNumber: String
   otherDateType: OtherDateType!
   otherDate: String
   employment: Boolean
@@ -1103,6 +1109,8 @@ type Doctor {
   patientAllergies: [PatientAllergies!]
   staff: [Staff]
   labTests: [LabTests!]
+  primaryProviderLabTests: [LabTests!]
+  referringProviderLabTests: [LabTests!]
   policyOfReferringProvider: [Policy!]
   policyOfPrimaryCareProvider: [Policy!]
   createdAt: String!
@@ -2585,6 +2593,7 @@ type Mutation {
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
   createLabTest(createLabTestInput: CreateLabTestInput!): LabTestPayload!
   updateLabTest(updateLabTestInput: UpdateLabTestInput!): LabTestPayload!
+  updateLabTestsByOrderNum(updateLabTestItemInput: CreateLabTestItemInput!): LabTestsPayload!
   removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
   createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
@@ -3607,6 +3616,9 @@ input CreateLabTestItemInput {
   labName: String
   vendorName: String
   doctorId: String
+  primaryProviderId: String
+  referringProviderId: String
+  providerNotes: String
 }
 
 input CreateSpecimenItemInput {
@@ -3637,6 +3649,9 @@ input UpdateLabTestItemInput {
   labName: String
   vendorName: String
   doctorId: String
+  primaryProviderId: String
+  referringProviderId: String
+  providerNotes: String
   id: String!
 }
 
@@ -3992,6 +4007,7 @@ input BillingInput {
   codes: [CodesInput!]
   patientId: String
   appointmentId: String
+  labOrderNumber: String
 }
 
 input CodesInput {
