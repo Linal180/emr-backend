@@ -6,7 +6,7 @@ import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.
 import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
 import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Brackets, getConnection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AwsService } from '../../aws/aws.service';
 import { CreateAttachmentInput } from '../dto/create-attachment.input';
 import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
@@ -37,7 +37,8 @@ export class AttachmentsService {
    * @returns  
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
-    const { labOrderNum, policyId, documentTypeId, documentTypeName, practiceId, ...attachmentInput } = createAttachmentInput
+    const { labOrderNum, policyId, documentTypeId, documentTypeName, 
+      practiceId, signedBy, signedAt, comments, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
     let createMetaDataParams = {}
     if (labOrderNum) {
@@ -56,6 +57,10 @@ export class AttachmentsService {
       (createMetaDataParams as any).documentTypeName = documentTypeName
     }
 
+    if (comments) {
+      (createMetaDataParams as any).comments = comments
+    }
+
     if (Object.keys(createMetaDataParams).length) {
       const attachmentMetadata = this.attachmentMetadataRepository.create(createMetaDataParams)
       let documentType
@@ -71,6 +76,7 @@ export class AttachmentsService {
       }
       attachmentMetadata.documentType = documentType
       const createdMetaData = await this.attachmentMetadataRepository.save(attachmentMetadata)
+
       attachmentsResult.attachmentMetadata = createdMetaData
       attachmentsResult.attachmentMetadataId = createdMetaData.id
     }
@@ -209,7 +215,23 @@ export class AttachmentsService {
    */
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
-      return await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, updateAttachmentInput, this.attachmentsRepository)
+      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId,practiceId,...attachmentInputToUpdate } = updateAttachmentInput
+      const attachmentMetadataInput= {comments, labOrderNum, signedAt, signedBy, policyId}
+      const updatedAttachment=  await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
+      let documentType
+      if (documentTypeId) {
+        documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
+      } else if (documentTypeName) {
+        const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
+        if (practiceId) {
+          const practice = await this.practiceService.findOne(practiceId)
+          documentTypeInstance.practice = practice
+        }
+        documentType = await this.documentTypeRepository.save(documentTypeInstance)
+      }
+      updatedAttachment.attachmentMetadata.documentType = documentType
+      const updatedAttachmentMetaData= await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, {...updatedAttachment.attachmentMetadata,...attachmentMetadataInput}, this.attachmentMetadataRepository)
+      return updatedAttachment
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -318,7 +340,7 @@ export class AttachmentsService {
    * @param uploadMedia 
    * @returns  
    */
-  async uploadMedia(attachments: File, { id, type, typeId }: UpdateAttachmentInput) {
+  async uploadMedia(attachments: File, { id, type, typeId, attachmentName }: UpdateAttachmentInput) {
     const { Key, Location } = await this.awsService.uploadFile(attachments, type, typeId);
     return {
       id,
@@ -326,7 +348,7 @@ export class AttachmentsService {
       typeId,
       key: Key,
       url: Location,
-      attachmentName: Key.split("/").pop().split('.').slice(0, -1).join('')
+      attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join('')
     }
   }
 }

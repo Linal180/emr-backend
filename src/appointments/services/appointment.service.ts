@@ -1,27 +1,33 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//packages block
 import { InjectRepository } from '@nestjs/typeorm';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { ServicesService } from 'src/facilities/services/services.service';
-import { createToken } from 'src/lib/helper';
-import { MailerService } from 'src/mailer/mailer.service';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { PatientService } from 'src/patients/services/patient.service';
-import { PaymentService } from 'src/payment/services/payment.service';
-import { GetSlots } from 'src/providers/dto/update-schedule.input';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
-import { Service } from '../../facilities/entities/services.entity';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//entities, services, inputs types, enums
+import { createToken } from 'src/lib/helper';
+import { ContractService } from './contract.service';
+import { UtilsService } from 'src/util/utils.service';
+import { MailerService } from 'src/mailer/mailer.service';
 import AppointmentInput from '../dto/appointment-input.dto';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { GetSlots } from 'src/providers/dto/update-schedule.input';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Service } from '../../facilities/entities/services.entity';
 import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PaymentService } from 'src/payment/services/payment.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { PatientService } from 'src/patients/services/patient.service';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { ServicesService } from 'src/facilities/services/services.service';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
-import { Appointment, AppointmentStatus, BillingStatus } from '../entities/appointment.entity';
+import { Appointment, AppointmentStatus, BillingStatus, PaymentType } from '../entities/appointment.entity';
+import {
+  CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
+  UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
+} from '../dto/update-appointment.input';
 
 @Injectable()
 export class AppointmentService {
@@ -36,6 +42,7 @@ export class AppointmentService {
     private readonly utilsService: UtilsService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService,
+    private readonly contractService: ContractService,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService
   ) { }
@@ -90,6 +97,13 @@ export class AppointmentService {
           appointmentInstance.appointmentType = service
           appointmentInstance.appointmentTypeId = service.id
         }
+        //associate contract
+        if (createAppointmentInput.paymentType === PaymentType.CONTRACT) {
+          const { contractNumber, organizationName } = createAppointmentInput
+          const contract = await this.contractService.create({ contractNumber, organizationName })
+          appointmentInstance.contract = contract
+        }
+        //save appointment & commit transaction
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         await queryRunner.commitTransaction();
         if (patient.phonePermission) {

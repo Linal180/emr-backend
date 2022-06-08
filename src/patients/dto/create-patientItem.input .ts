@@ -5,139 +5,139 @@ import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND,
 export class CreatePatientItemInput {
 
   @Field({ nullable: true })
-  suffix: string;
+  suffix?: string;
 
   @Field({ nullable: true })
-  email: string;
+  email?: string;
 
   @Field({ nullable: true })
-  firstName: string;
+  firstName?: string;
 
   @Field({ nullable: true })
-  patientRecord: string;
+  patientRecord?: string;
 
   @Field({ nullable: true })
-  middleName: string;
+  middleName?: string;
 
   @Field({ nullable: true })
-  lastName: string;
+  lastName?: string;
 
   @Field({ nullable: true })
-  firstNameUsed: string;
+  firstNameUsed?: string;
 
   @Field({ nullable: true })
-  prefferedName: string;
+  prefferedName?: string;
 
   @Field({ nullable: true })
-  previousFirstName: string;
+  previousFirstName?: string;
 
   @Field({ nullable: true })
-  pharmacy: string;
+  pharmacy?: string;
 
   @Field({ nullable: true })
   usualProviderId?: string;
 
   @Field({ nullable: true })
-  previouslastName: string;
+  previouslastName?: string;
 
   @Field({ nullable: true })
-  motherMaidenName: string;
+  motherMaidenName?: string;
 
   @Field({ nullable: true })
-  ssn: string;
+  ssn?: string;
 
   @Field({ nullable: true })
-  dob: string;
+  dob?: string;
 
-  @Field(type => GENDERIDENTITY, { nullable: true })
-  gender: GENDERIDENTITY
-
-  @Field({ nullable: true })
-  registrationDepartment: string
+  @Field(() => GENDERIDENTITY, { nullable: true })
+  gender?: GENDERIDENTITY
 
   @Field({ nullable: true })
-  primaryDepartment: string
+  registrationDepartment?: string
+
+  @Field({ nullable: true })
+  primaryDepartment?: string
 
   @Field({ nullable: true, })
-  registrationDate: string;
+  registrationDate?: string;
 
   @Field({ nullable: true })
-  deceasedDate: string;
+  deceasedDate?: string;
 
   @Field({ nullable: true })
-  privacyNotice: boolean; 
+  privacyNotice?: boolean; 
 
   @Field({ nullable: true })
-  releaseOfInfoBill: boolean;
+  releaseOfInfoBill?: boolean;
 
   @Field({ nullable: true })
-  callToConsent: boolean;
+  callToConsent?: boolean;
 
   @Field({ nullable: true })
   inviteAccepted?: boolean;
 
   @Field({ nullable: true })
-  smsPermission: boolean;
+  smsPermission?: boolean;
 
   @Field({ nullable: true })
-  phonePermission: boolean;
+  phonePermission?: boolean;
 
   @Field({ nullable: true })
-  medicationHistoryAuthority: boolean;
+  medicationHistoryAuthority?: boolean;
 
   @Field({ nullable: true })
-  patientNote: string;
+  patientNote?: string;
 
   @Field({ nullable: true })
-  language: string;
+  language?: string;
   
-  @Field(type => COMMUNICATIONTYPE, { nullable: true })
-  preferredCommunicationMethod: COMMUNICATIONTYPE
+  @Field(() => COMMUNICATIONTYPE, { nullable: true })
+  preferredCommunicationMethod?: COMMUNICATIONTYPE
 
-  @Field(type => RACE, { nullable: true })
-  race: RACE
+  @Field(() => RACE, { nullable: true })
+  race?: RACE
 
-  @Field(type => ETHNICITY, { nullable: true })
-  ethnicity: ETHNICITY
+  @Field(() => ETHNICITY, { nullable: true })
+  ethnicity?: ETHNICITY
 
-  @Field(type => MARITIALSTATUS, { nullable: true })
-  maritialStatus: MARITIALSTATUS
+  @Field(() => MARITIALSTATUS, { nullable: true })
+  maritialStatus?: MARITIALSTATUS
 
-  @Field(type => SEXUALORIENTATION, { nullable: true })
-  sexualOrientation: SEXUALORIENTATION
+  @Field(() => SEXUALORIENTATION, { nullable: true })
+  sexualOrientation?: SEXUALORIENTATION
 
-  @Field(type => GENDERIDENTITY, { nullable: true })
-  genderIdentity: GENDERIDENTITY
+  @Field(() => GENDERIDENTITY, { nullable: true })
+  genderIdentity?: GENDERIDENTITY
 
-  @Field(type => GENDERIDENTITY, { nullable: true })
-  sexAtBirth: GENDERIDENTITY
+  @Field(() => GENDERIDENTITY, { nullable: true })
+  sexAtBirth?: GENDERIDENTITY
 
-  @Field(type => PRONOUNS, { nullable: true })
-  pronouns: PRONOUNS
+  @Field(() => PRONOUNS, { nullable: true })
+  pronouns?: PRONOUNS
 
-  @Field(type => HOMEBOUND, { nullable: true })
-  homeBound: HOMEBOUND
+  @Field(() => HOMEBOUND, { nullable: true })
+  homeBound?: HOMEBOUND
 
-  @Field(type => HOLDSTATEMENT, { nullable: true })
-  holdStatement: HOLDSTATEMENT
-
-  @Field({ nullable: true })
-  statementDelivereOnline: boolean;
+  @Field(() => HOLDSTATEMENT, { nullable: true })
+  holdStatement?: HOLDSTATEMENT
 
   @Field({ nullable: true })
-  statementNote: string;
+  statementDelivereOnline?: boolean;
 
   @Field({ nullable: true })
-  statementNoteDateFrom: string;
+  statementNote?: string;
 
   @Field({ nullable: true })
-  statementNoteDateTo: string;
+  statementNoteDateFrom?: string;
+
+  @Field({ nullable: true })
+  statementNoteDateTo?: string;
 
   @Field({ nullable: true })
   adminId?: string;
 
-  @Field({ nullable: false })
-  facilityId: string;
+  @Field({ nullable: true })
+  facilityId?: string;
 
   @Field({ nullable: true })
   practiceId?: string;

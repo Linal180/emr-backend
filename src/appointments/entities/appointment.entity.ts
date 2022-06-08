@@ -10,10 +10,12 @@ import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { Billing } from 'src/billings/entities/billing.entity';
+import { Contract } from './contract.entity';
 
 export enum PaymentType {
   SELF = "self",
   INSURANCE = "Insurance",
+  CONTRACT = "contract"
 }
 
 registerEnumType(PaymentType, {
@@ -35,8 +37,8 @@ registerEnumType(BillingStatus, {
 export enum AppointmentStatus {
   NO_SHOW = 'no_show',
   INITIATED = "initiated",
-	CHECKED_IN = 'checked_in',
-	SELF_CHECKED_IN = 'self_checked_in',
+  CHECKED_IN = 'checked_in',
+  SELF_CHECKED_IN = 'self_checked_in',
   IN_LOBBY = 'in_lobby',
   IN_SESSION = 'in_session',
   COMPLETED = "completed",
@@ -207,6 +209,10 @@ export class Appointment {
   @Field(() => Invoice, { nullable: true })
   @OneToOne(() => Invoice, (invoice) => invoice.appointment)
   invoice: Invoice;
+
+  @Field(() => Contract, { nullable: true })
+  @OneToOne(() => Contract, (contract) => contract.appointment, { eager: true })
+  contract: Contract;
 
   @Field(() => Billing, { nullable: true })
   @OneToOne(() => Billing, (billing) => billing.appointment)
