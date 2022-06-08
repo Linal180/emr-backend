@@ -13,13 +13,13 @@ export class CreateAttachmentInput {
 
   @Field({ nullable: true })
   subTitle?: string
-  
+
   @Field({ nullable: true })
   signedAt?: string
 
   @Field({ nullable: true })
   signedBy?: string
-    
+
   @Field({ nullable: true })
   attachmentName?: string
 
@@ -52,4 +52,15 @@ export class CreateAttachmentInput {
 
   @Field({ nullable: true })
   documentDate?: string
+}
+
+export interface attachmentInput {
+  labOrderNum?: string
+  documentTypeId?: string
+  policyId?: string
+  documentTypeName?: string
+  comments?: string
+  documentDate?: string
+  signedAt?: string
+  signedBy?: string
 }

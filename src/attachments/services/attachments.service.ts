@@ -8,7 +8,7 @@ import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { AwsService } from '../../aws/aws.service';
-import { CreateAttachmentInput } from '../dto/create-attachment.input';
+import { attachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
 import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
@@ -40,29 +40,29 @@ export class AttachmentsService {
     const { labOrderNum, policyId, documentTypeId, documentTypeName, documentDate,
       practiceId, signedBy, signedAt, comments, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
-    let createMetaDataParams = {}
+    let createMetaDataParams: attachmentInput = {}
     if (labOrderNum) {
-      (createMetaDataParams as any).labOrderNum = labOrderNum
+      createMetaDataParams.labOrderNum = labOrderNum
     }
 
     if (policyId) {
-      (createMetaDataParams as any).policyId = policyId
+      createMetaDataParams.policyId = policyId
     }
 
     if (documentTypeId) {
-      (createMetaDataParams as any).documentTypeId = documentTypeId
+      createMetaDataParams.documentTypeId = documentTypeId
     }
 
     if (documentTypeName) {
-      (createMetaDataParams as any).documentTypeName = documentTypeName
+      createMetaDataParams.documentTypeName = documentTypeName
     }
 
     if (comments) {
-      (createMetaDataParams as any).comments = comments
+      createMetaDataParams.comments = comments
     }
 
     if (documentDate) {
-      (createMetaDataParams as any).documentDate = documentDate
+      createMetaDataParams.documentDate = documentDate
     }
 
     if (Object.keys(createMetaDataParams).length) {
@@ -223,19 +223,19 @@ export class AttachmentsService {
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
       const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, ...attachmentInputToUpdate } = updateAttachmentInput
-      let attachmentMetadataInput = {}
+      let attachmentMetadataInput: attachmentInput = {}
       if (comments)
-        (attachmentMetadataInput as any).comments = comments;
+        attachmentMetadataInput.comments = comments;
       if (labOrderNum)
-        (attachmentMetadataInput as any).labOrderNum = labOrderNum;
+        attachmentMetadataInput.labOrderNum = labOrderNum;
       if (signedAt)
-        (attachmentMetadataInput as any).signedAt = signedAt;
+        attachmentMetadataInput.signedAt = signedAt;
       if (signedBy)
-        (attachmentMetadataInput as any).signedBy = signedBy
+        attachmentMetadataInput.signedBy = signedBy
       if (policyId)
-        (attachmentMetadataInput as any).policyId = policyId
+        attachmentMetadataInput.policyId = policyId
       if (documentDate) {
-        (attachmentMetadataInput as any).documentDate = documentDate;
+        attachmentMetadataInput.documentDate = documentDate;
       }
       const updatedAttachment = await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
       if (updatedAttachment.attachmentMetadata) {
