@@ -16,6 +16,7 @@ export const ElementTypeData = [
   { type: ElementType.SELECT },
   { type: ElementType.TEXT },
   { type: ElementType.TEL },
+  { type: ElementType.CUSTOM },
 ];
 
 
@@ -192,12 +193,12 @@ export enum FormBuilderApiSelector {
   SERVICE_SLOT = 'serviceSlot',
   FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
-  PRACTICE_FACILITIES = 'practiceFacilities'
+  PRACTICE_FACILITIES = 'practiceFacilities',
+  PATIENT_CONSENT = 'patientConsent'
 }
 
 const facilityAppointment = {
   sections: [
-
     {
       id: uuid(),
       col: 8,
@@ -206,7 +207,7 @@ const facilityAppointment = {
         {
           css: "",
           name: "appointmentType",
-          type: ElementType.SELECT,
+          type: ElementType.CUSTOM,
           label: "Appointment Type",
           column: 12,
           apiCall: FormBuilderApiSelector.SERVICE_SELECT,
@@ -232,7 +233,7 @@ const facilityAppointment = {
         {
           css: "",
           name: "slot",
-          type: ElementType.SELECT,
+          type: ElementType.CUSTOM,
           label: "Available Slots",
           column: 12,
           apiCall: FormBuilderApiSelector.SERVICE_SLOT,
@@ -667,6 +668,29 @@ const facilityAppointment = {
           tableContactType: "Self",
         },
       ],
+    },
+    {
+      id: uuid(),
+      col: 12,
+      name: "Privacy",
+      fields: [
+        {
+          css: "",
+          name: "privacy",
+          type: ElementType.CUSTOM,
+          label: "Privacy",
+          column: 12,
+          apiCall: FormBuilderApiSelector.PATIENT_CONSENT,
+          fieldId: uuid(),
+          options: [],
+          errorMsg: "",
+          required: true,
+          textArea: false,
+          placeholder: "",
+          defaultValue: "",
+          isMultiSelect: false,
+        },
+      ]
     },
     {
       id: uuid(),
@@ -1222,7 +1246,7 @@ const facilityAppointment = {
         {
           css: "",
           name: "paymentType",
-          type: ElementType.RADIO,
+          type: ElementType.CUSTOM,
           label: "How will you be covering your visit?",
           column: 12,
           apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
@@ -1245,7 +1269,7 @@ const facilityAppointment = {
         {
           css: "",
           name: "usualProviderId",
-          type: ElementType.SELECT,
+          type: ElementType.CUSTOM,
           label: "Usual Provider ",
           column: 12,
           apiCall: FormBuilderApiSelector.FACILITY_PROVIDERS,
@@ -3671,12 +3695,43 @@ export const FormTemplates = [
             {
               css: "",
               name: "paymentType",
-              type: ElementType.RADIO,
+              type: ElementType.CUSTOM,
               label: "How will you be covering your visit?",
               column: 12,
               apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
               fieldId: uuid(),
               options: PAYMENT_TYPES,
+              errorMsg: "",
+              required: true,
+              textArea: false,
+              placeholder: "",
+              defaultValue: "",
+              isMultiSelect: false,
+            },
+          ]
+        }]
+    }
+  },
+  {
+    name: "Privacy",
+    type: FormType.PRE_DEFINED,
+    isSystemForm: true,
+    layout: {
+      sections: [
+        {
+          id: uuid(),
+          col: 12,
+          name: "Privacy",
+          fields: [
+            {
+              css: "",
+              name: "privacy",
+              type: ElementType.CUSTOM,
+              label: "Privacy",
+              column: 12,
+              apiCall: FormBuilderApiSelector.PATIENT_CONSENT,
+              fieldId: uuid(),
+              options: [],
               errorMsg: "",
               required: true,
               textArea: false,
@@ -3737,7 +3792,7 @@ export const FormTemplates = [
               name: "appointmentType",
               columnName: "appointmentTypeId",
               tableName: "Appointments",
-              type: ElementType.SELECT,
+              type: ElementType.CUSTOM,
               label: "Appointment Type",
               column: 12,
               fieldId: uuid(),
@@ -3770,7 +3825,7 @@ export const FormTemplates = [
               name: "slot",
               columnName: "",
               tableName: "Appointments",
-              type: ElementType.SELECT,
+              type: ElementType.CUSTOM,
               label: "Available Slots",
               column: 12,
               fieldId: uuid(),
@@ -4385,7 +4440,7 @@ export const FormTemplates = [
               columnName: "usualProviderId",
               tableName: "Patients",
               tableContactType: '',
-              type: ElementType.SELECT,
+              type: ElementType.CUSTOM,
               label: "Usual Provider ",
               column: 12,
               fieldId: uuid(),
@@ -4501,7 +4556,7 @@ export const FormTemplates = [
           {
             css: "",
             name: "facilityId",
-            type: ElementType.SELECT,
+            type: ElementType.CUSTOM,
             label: "Facility",
             column: 12,
             apiCall: FormBuilderApiSelector.PRACTICE_FACILITIES,
