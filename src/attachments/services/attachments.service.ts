@@ -65,8 +65,6 @@ export class AttachmentsService {
       (createMetaDataParams as any).documentDate = documentDate
     }
 
-    console.log("createMetaDataParams", createMetaDataParams)
-
     if (Object.keys(createMetaDataParams).length) {
       const attachmentMetadata = this.attachmentMetadataRepository.create(createMetaDataParams)
       let documentType
@@ -103,7 +101,6 @@ export class AttachmentsService {
     updateAttachmentMediaInput.id = attachment.id
     const attachments = await this.uploadMedia(file, updateAttachmentMediaInput)
     const attachmentInfo = await this.attachmentsRepository.findOne({ id: attachment.id })
-    console.log("attachments", attachments)
     const attachmentData = await this.updateAttachmentMedia({ ...attachmentInfo, ...attachments })
     if (attachments.url) {
       return attachmentData
@@ -241,7 +238,6 @@ export class AttachmentsService {
         (attachmentMetadataInput as any).documentDate = documentDate;
       }
       const updatedAttachment = await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
-      console.log("updatedAttachment", updatedAttachment)
       if (updatedAttachment.attachmentMetadata) {
         let documentType
         if (documentTypeId) {
