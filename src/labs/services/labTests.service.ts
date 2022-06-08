@@ -8,11 +8,12 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
+import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
 import LabTestInput from '../dto/lab-test.input';
 import { LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestsPayload } from '../dto/labTests-payload.dto';
-import { RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input';
+import { RemoveLabTest, UpdateLabTestInput, UpdateLabTestItemInput } from '../dto/update-lab-test.input';
 import { LabTests } from '../entities/labTests.entity';
 import { LoincCodesService } from './loincCodes.service';
 import { TestSpecimenService } from './testSpecimen.service';
@@ -39,24 +40,24 @@ export class LabTestsService {
       //get patient 
       const patient = await this.patientService.findOne(createLabTestInput.createLabTestItemInput.patientId)
       //create lab test 
-      const labTestInstance = this.labTestsRepository.create({...createLabTestInput.createLabTestItemInput, labTestStatus:createLabTestInput.createLabTestItemInput.status })
+      const labTestInstance = this.labTestsRepository.create({ ...createLabTestInput.createLabTestItemInput, labTestStatus: createLabTestInput.createLabTestItemInput.status })
       //get appointment 
-      if(createLabTestInput.createLabTestItemInput.appointmentId){
-      const appointment = await this.appointmentService.findOne(createLabTestInput.createLabTestItemInput.appointmentId)
-      labTestInstance.appointment = appointment
+      if (createLabTestInput.createLabTestItemInput.appointmentId) {
+        const appointment = await this.appointmentService.findOne(createLabTestInput.createLabTestItemInput.appointmentId)
+        labTestInstance.appointment = appointment
       }
       //create test specimen 
-      if(createLabTestInput.createSpecimenItemInput){
-        const specimens =  await Promise.all(createLabTestInput.createSpecimenItemInput.map(async (item) => {
+      if (createLabTestInput.createSpecimenItemInput) {
+        const specimens = await Promise.all(createLabTestInput.createSpecimenItemInput.map(async (item) => {
           return await this.testSpecimenService.createTestSpecimen(item)
         }));
         labTestInstance.testSpecimens = specimens
       }
 
-      if(createLabTestInput.diagnoses){
+      if (createLabTestInput.diagnoses) {
         //get diagnoses
-      const diagnoses = await this.problemService.getDiagnoses(createLabTestInput.diagnoses)
-      labTestInstance.diagnoses = diagnoses
+        const diagnoses = await this.problemService.getDiagnoses(createLabTestInput.diagnoses)
+        labTestInstance.diagnoses = diagnoses
       }
 
       labTestInstance.test = testName
@@ -69,23 +70,23 @@ export class LabTestsService {
 
 
   async updateLabTest(updateLabTestInput: UpdateLabTestInput): Promise<LabTests> {
-      try {
+    try {
       //get diagnoses
-     
+
       //get patient 
       const patient = await this.patientService.findOne(updateLabTestInput.updateLabTestItemInput.patientId)
       //create lab test 
-      const labTestInstance = this.labTestsRepository.create({...updateLabTestInput.updateLabTestItemInput, labTestStatus: updateLabTestInput.updateLabTestItemInput.status})
-      
+      const labTestInstance = this.labTestsRepository.create({ ...updateLabTestInput.updateLabTestItemInput, labTestStatus: updateLabTestInput.updateLabTestItemInput.status })
+
       //get appointment 
-      if(updateLabTestInput.updateLabTestItemInput.appointmentId){
+      if (updateLabTestInput.updateLabTestItemInput.appointmentId) {
         const appointment = await this.appointmentService.findOne(updateLabTestInput.updateLabTestItemInput.appointmentId)
         labTestInstance.appointment = appointment
       }
       //create test specimen 
-      if(updateLabTestInput.updateSpecimenItemInput){
-        const specimens =  await Promise.all(updateLabTestInput.updateSpecimenItemInput.map(async (item) => {
-          if(item.id){
+      if (updateLabTestInput.updateSpecimenItemInput) {
+        const specimens = await Promise.all(updateLabTestInput.updateSpecimenItemInput.map(async (item) => {
+          if (item.id) {
             return await this.testSpecimenService.updateTestSpecimen(item)
           }
           const { id, ...createSpecimenInput } = item
@@ -93,21 +94,21 @@ export class LabTestsService {
         }));
 
         labTestInstance.testSpecimens = specimens
-      }else{
-        labTestInstance.testSpecimens=[]
+      } else {
+        labTestInstance.testSpecimens = []
       }
-      
-      if(updateLabTestInput.diagnoses){
+
+      if (updateLabTestInput.diagnoses) {
         const diagnoses = await this.problemService.getDiagnoses(updateLabTestInput.diagnoses)
         labTestInstance.diagnoses = diagnoses
       }
 
-      if(updateLabTestInput.updateLabTestItemInput.doctorId){
+      if (updateLabTestInput.updateLabTestItemInput.doctorId) {
         const doctor = await this.doctorService.findOne(updateLabTestInput.updateLabTestItemInput.doctorId)
         labTestInstance.doctor = doctor
       }
-      
-      if(updateLabTestInput.test){
+
+      if (updateLabTestInput.test) {
         //get test 
         const testName = await this.loincCodesService.findOne(updateLabTestInput.test)
         labTestInstance.test = testName
@@ -115,9 +116,9 @@ export class LabTestsService {
 
       labTestInstance.patient = patient
       return await this.labTestsRepository.save(labTestInstance)
-      } catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async findAllLabTest(labTestInput: LabTestInput): Promise<LabTestsPayload> {
@@ -134,11 +135,13 @@ export class LabTestsService {
     }
   }
 
-  async findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput): Promise<LabTestsPayload>{
-    if(labTestByOrderNumInput.paginationOptions){
+  async findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput): Promise<LabTestsPayload> {
+    if (labTestByOrderNumInput.paginationOptions) {
       try {
-        const paginationResponse = await this.paginationService.willPaginate<LabTests>(this.labTestsRepository, {...labTestByOrderNumInput, 
-          paginationOptions:{ page: labTestByOrderNumInput.paginationOptions.page, limit:labTestByOrderNumInput.paginationOptions.limit }})
+        const paginationResponse = await this.paginationService.willPaginate<LabTests>(this.labTestsRepository, {
+          ...labTestByOrderNumInput,
+          paginationOptions: { page: labTestByOrderNumInput.paginationOptions.page, limit: labTestByOrderNumInput.paginationOptions.limit }
+        })
         return {
           pagination: {
             ...paginationResponse
@@ -149,21 +152,21 @@ export class LabTestsService {
         throw new InternalServerErrorException(error);
       }
     }
-    
-    const labTests= await this.labTestsRepository.find({ orderNumber: labTestByOrderNumInput.orderNumber })
+
+    const labTests = await this.labTestsRepository.find({ orderNumber: labTestByOrderNumInput.orderNumber })
     //Pagination is not required here 
-    if(labTests.length){
+    if (labTests.length) {
       return {
         labTests,
         pagination: {
-          page:0,
-          limit:0,
-          totalCount:0,
-          totalPages:0
+          page: 0,
+          limit: 0,
+          totalCount: 0,
+          totalPages: 0
         }
       }
     }
-    
+
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
       error: 'Lab tests not found',
@@ -172,7 +175,7 @@ export class LabTestsService {
 
   async findOne(id: string): Promise<LabTests> {
     const labTest = await this.labTestsRepository.findOne(id);
-    if(labTest){
+    if (labTest) {
       return labTest
     }
     throw new NotFoundException({
@@ -184,7 +187,7 @@ export class LabTestsService {
   async GetLabTest(id: string): Promise<LabTestPayload> {
     const labTest = await this.findOne(id);
     if (labTest) {
-      return {labTest}
+      return { labTest }
     }
   }
 
@@ -204,4 +207,34 @@ export class LabTestsService {
     }
   }
 
+  async updateLabTestsByOrderNumber(updateLabTestItemInput: CreateLabTestItemInput): Promise<LabTests[]> {
+    try {
+      const labTests = await this.labTestsRepository.find({ orderNumber: updateLabTestItemInput.orderNumber })
+      console.log("labTests",labTests,updateLabTestItemInput)
+      if(!labTests.length){
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          error: 'Lab test not found',
+        });
+      }
+      const { primaryProviderId, referringProviderId, ...labTestInfo } = updateLabTestItemInput
+      const updatedLabTests= await Promise.all(await labTests.map(async (labTest) => {
+        if (primaryProviderId) {
+          const primaryProvider = await this.doctorService.findOne(primaryProviderId)
+          labTest.primaryProvider = primaryProvider
+        }
+
+        if (referringProviderId) {
+          const referringProvider = await this.doctorService.findOne(referringProviderId)
+          labTest.referringProvider = referringProvider
+        }
+
+        return this.labTestsRepository.save({ ...labTest, ...labTestInfo })
+      }))
+
+      return updatedLabTests
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

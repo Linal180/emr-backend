@@ -41,4 +41,13 @@ export default class CreateLabTestItemInput {
 
     @Field({ nullable: true })
     doctorId? : string
+
+    @Field({ nullable: true })
+    primaryProviderId? : string
+
+    @Field({ nullable: true })
+    referringProviderId? : string
+
+    @Field({ nullable: true })
+    providerNotes? : string
 }

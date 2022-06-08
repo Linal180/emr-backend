@@ -254,6 +254,14 @@ export class Doctor {
   @OneToMany(() => LabTests, labTests => labTests.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [LabTests], { nullable: true })
   labTests: LabTests[];
+
+  @OneToMany(() => LabTests, labTests => labTests.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [LabTests], { nullable: true })
+  primaryProviderLabTests: LabTests[];
+
+  @OneToMany(() => LabTests, labTests => labTests.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [LabTests], { nullable: true })
+  referringProviderLabTests: LabTests[];
   
   @OneToMany(() => Policy, policies => policies.referringProvider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Policy], { nullable: true })
