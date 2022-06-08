@@ -37,7 +37,7 @@ export class AttachmentsService {
    * @returns  
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
-    const { labOrderNum, policyId, documentTypeId, documentTypeName, 
+    const { labOrderNum, policyId, documentTypeId, documentTypeName, documentDate,
       practiceId, signedBy, signedAt, comments, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
     let createMetaDataParams = {}
@@ -61,6 +61,12 @@ export class AttachmentsService {
       (createMetaDataParams as any).comments = comments
     }
 
+    if (documentDate) {
+      (createMetaDataParams as any).documentDate = documentDate
+    }
+
+    console.log("createMetaDataParams", createMetaDataParams)
+
     if (Object.keys(createMetaDataParams).length) {
       const attachmentMetadata = this.attachmentMetadataRepository.create(createMetaDataParams)
       let documentType
@@ -76,7 +82,7 @@ export class AttachmentsService {
         documentType = await this.documentTypeRepository.save(documentTypeInstance)
         attachmentMetadata.documentType = documentType
       }
-      
+
       const createdMetaData = await this.attachmentMetadataRepository.save(attachmentMetadata)
 
       attachmentsResult.attachmentMetadata = createdMetaData
@@ -96,7 +102,9 @@ export class AttachmentsService {
     const attachment = await this.createAttachment(updateAttachmentMediaInput)
     updateAttachmentMediaInput.id = attachment.id
     const attachments = await this.uploadMedia(file, updateAttachmentMediaInput)
-    const attachmentData = await this.updateAttachmentMedia(attachments)
+    const attachmentInfo = await this.attachmentsRepository.findOne({ id: attachment.id })
+    console.log("attachments", attachments)
+    const attachmentData = await this.updateAttachmentMedia({ ...attachmentInfo, ...attachments })
     if (attachments.url) {
       return attachmentData
     }
@@ -217,10 +225,24 @@ export class AttachmentsService {
    */
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
-      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId,practiceId,...attachmentInputToUpdate } = updateAttachmentInput
-      const attachmentMetadataInput= {comments, labOrderNum, signedAt, signedBy, policyId}
-      const updatedAttachment=  await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
-      if(updatedAttachment.attachmentMetadata){
+      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, ...attachmentInputToUpdate } = updateAttachmentInput
+      let attachmentMetadataInput = {}
+      if (comments)
+        (attachmentMetadataInput as any).comments = comments;
+      if (labOrderNum)
+        (attachmentMetadataInput as any).labOrderNum = labOrderNum;
+      if (signedAt)
+        (attachmentMetadataInput as any).signedAt = signedAt;
+      if (signedBy)
+        (attachmentMetadataInput as any).signedBy = signedBy
+      if (policyId)
+        (attachmentMetadataInput as any).policyId = policyId
+      if (documentDate) {
+        (attachmentMetadataInput as any).documentDate = documentDate;
+      }
+      const updatedAttachment = await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
+      console.log("updatedAttachment", updatedAttachment)
+      if (updatedAttachment.attachmentMetadata) {
         let documentType
         if (documentTypeId) {
           documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
@@ -233,8 +255,8 @@ export class AttachmentsService {
           }
           documentType = await this.documentTypeRepository.save(documentTypeInstance)
           updatedAttachment.attachmentMetadata.documentType = documentType
-        }    
-        const updatedAttachmentMetaData= await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, {...updatedAttachment.attachmentMetadata,...attachmentMetadataInput}, this.attachmentMetadataRepository)
+        }
+        const updatedAttachmentMetaData = await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, { ...updatedAttachment.attachmentMetadata, ...attachmentMetadataInput }, this.attachmentMetadataRepository)
       }
       return updatedAttachment
     } catch (error) {
@@ -256,9 +278,10 @@ export class AttachmentsService {
    * @returns  
    */
   async removeMedia(id: string) {
-    const attachment = await this.attachmentsRepository.findOne(id);
+    const attachment = await this.attachmentsRepository.findOne({ id });
     if (attachment) {
-      const deletedAttachment = await this.attachmentsRepository.delete(id)
+      const deletedAttachment = await this.attachmentsRepository.delete({ id })
+      const deletedAttachmentMetadata = await this.attachmentMetadataRepository.delete({ id: attachment.attachmentMetadata?.id })
       if (deletedAttachment.affected) {
         return attachment.key ? await this.awsService.removeFile(attachment.key) : '';
       }
@@ -353,7 +376,7 @@ export class AttachmentsService {
       typeId,
       key: Key,
       url: Location,
-      attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join('')
+      attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join(''),
     }
   }
 }

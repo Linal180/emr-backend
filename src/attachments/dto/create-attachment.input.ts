@@ -49,4 +49,7 @@ export class CreateAttachmentInput {
 
   @Field({ nullable: true })
   practiceId?: string
+
+  @Field({ nullable: true })
+  documentDate?: string
 }
