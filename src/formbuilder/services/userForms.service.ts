@@ -67,7 +67,7 @@ export class UserFormsService {
       const patient = {}
       patientElements?.map(({ columnName, fieldId }) => {
         const element = userPatientElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        if(element){
+        if (element) {
           const { value } = element || {}
           return patient[columnName] = value || ''
         }
@@ -301,7 +301,7 @@ export class UserFormsService {
             const { value: doctorId } = providerId || {}
             const patientInput = {
               createPatientItemInput: {
-                ...patientInputs.createContactInput,
+                ...patientInputs.createPatientItemInput,
                 facilityId: facilityElementId || facilityId || null,
               },
               createContactInput: {
@@ -325,7 +325,7 @@ export class UserFormsService {
                 ...patientInputs.createNextOfKinContactInput
               }
             }
-
+            
             const patientInstance = await this.patientService.createPatient(patientInput)
             if (endTime && startTime && patientInstance?.id) {
 
