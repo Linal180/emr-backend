@@ -92,6 +92,10 @@ export class Billing {
   @Field({ nullable: true })
   onsetDate: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  labOrderNumber: string;
+
   @Column({
     type: "enum",
     enum: OtherDateType,

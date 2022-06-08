@@ -73,6 +73,10 @@ export class LabTests {
   @Field({nullable: true})
   testNotes: string;
 
+  @Column("text", { nullable: true })
+  @Field({nullable: true})
+  providerNotes: string;
+
   @Column({nullable: true})
   @Field({nullable: true})
   patientId: string;
@@ -80,6 +84,14 @@ export class LabTests {
   @Column({nullable: true})
   @Field({nullable: true})
   doctorId: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  primaryProviderId: string;
+
+  @Column({nullable: true})
+  @Field({nullable: true})
+  referringProviderId: string;
 
   @Column({nullable: true})
   @Field({nullable: true})
@@ -92,6 +104,14 @@ export class LabTests {
   @ManyToOne(() => Doctor, doctor => doctor.labTests, { onDelete: 'CASCADE' })
   @Field(type => Doctor, { nullable: true })
   doctor: Doctor;
+
+  @ManyToOne(() => Doctor, doctor => doctor.labTests, { onDelete: 'CASCADE' })
+  @Field(() => Doctor, { nullable: true })
+  primaryProvider: Doctor;
+
+  @ManyToOne(() => Doctor, doctor => doctor.labTests, { onDelete: 'CASCADE' })
+  @Field(() => Doctor, { nullable: true })
+  referringProvider: Doctor;
 
   @ManyToOne(() => Appointment, appointment => appointment.labTests, { onDelete: 'CASCADE' })
   @Field(type => Appointment, { nullable: true })

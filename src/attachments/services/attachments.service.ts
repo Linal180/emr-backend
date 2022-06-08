@@ -8,7 +8,7 @@ import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { AwsService } from '../../aws/aws.service';
-import { CreateAttachmentInput } from '../dto/create-attachment.input';
+import { attachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
 import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
@@ -37,28 +37,32 @@ export class AttachmentsService {
    * @returns  
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
-    const { labOrderNum, policyId, documentTypeId, documentTypeName, 
+    const { labOrderNum, policyId, documentTypeId, documentTypeName, documentDate,
       practiceId, signedBy, signedAt, comments, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
-    let createMetaDataParams = {}
+    let createMetaDataParams: attachmentInput = {}
     if (labOrderNum) {
-      (createMetaDataParams as any).labOrderNum = labOrderNum
+      createMetaDataParams.labOrderNum = labOrderNum
     }
 
     if (policyId) {
-      (createMetaDataParams as any).policyId = policyId
+      createMetaDataParams.policyId = policyId
     }
 
     if (documentTypeId) {
-      (createMetaDataParams as any).documentTypeId = documentTypeId
+      createMetaDataParams.documentTypeId = documentTypeId
     }
 
     if (documentTypeName) {
-      (createMetaDataParams as any).documentTypeName = documentTypeName
+      createMetaDataParams.documentTypeName = documentTypeName
     }
 
     if (comments) {
-      (createMetaDataParams as any).comments = comments
+      createMetaDataParams.comments = comments
+    }
+
+    if (documentDate) {
+      createMetaDataParams.documentDate = documentDate
     }
 
     if (Object.keys(createMetaDataParams).length) {
@@ -66,6 +70,7 @@ export class AttachmentsService {
       let documentType
       if (documentTypeId) {
         documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
+        attachmentMetadata.documentType = documentType
       } else if (documentTypeName) {
         const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
         if (practiceId) {
@@ -73,8 +78,9 @@ export class AttachmentsService {
           documentTypeInstance.practice = practice
         }
         documentType = await this.documentTypeRepository.save(documentTypeInstance)
+        attachmentMetadata.documentType = documentType
       }
-      attachmentMetadata.documentType = documentType
+
       const createdMetaData = await this.attachmentMetadataRepository.save(attachmentMetadata)
 
       attachmentsResult.attachmentMetadata = createdMetaData
@@ -94,7 +100,8 @@ export class AttachmentsService {
     const attachment = await this.createAttachment(updateAttachmentMediaInput)
     updateAttachmentMediaInput.id = attachment.id
     const attachments = await this.uploadMedia(file, updateAttachmentMediaInput)
-    const attachmentData = await this.updateAttachmentMedia(attachments)
+    const attachmentInfo = await this.attachmentsRepository.findOne({ id: attachment.id })
+    const attachmentData = await this.updateAttachmentMedia({ ...attachmentInfo, ...attachments })
     if (attachments.url) {
       return attachmentData
     }
@@ -215,22 +222,38 @@ export class AttachmentsService {
    */
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
-      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId,practiceId,...attachmentInputToUpdate } = updateAttachmentInput
-      const attachmentMetadataInput= {comments, labOrderNum, signedAt, signedBy, policyId}
-      const updatedAttachment=  await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
-      let documentType
-      if (documentTypeId) {
-        documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
-      } else if (documentTypeName) {
-        const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
-        if (practiceId) {
-          const practice = await this.practiceService.findOne(practiceId)
-          documentTypeInstance.practice = practice
-        }
-        documentType = await this.documentTypeRepository.save(documentTypeInstance)
+      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, ...attachmentInputToUpdate } = updateAttachmentInput
+      let attachmentMetadataInput: attachmentInput = {}
+      if (comments)
+        attachmentMetadataInput.comments = comments;
+      if (labOrderNum)
+        attachmentMetadataInput.labOrderNum = labOrderNum;
+      if (signedAt)
+        attachmentMetadataInput.signedAt = signedAt;
+      if (signedBy)
+        attachmentMetadataInput.signedBy = signedBy
+      if (policyId)
+        attachmentMetadataInput.policyId = policyId
+      if (documentDate) {
+        attachmentMetadataInput.documentDate = documentDate;
       }
-      updatedAttachment.attachmentMetadata.documentType = documentType
-      const updatedAttachmentMetaData= await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, {...updatedAttachment.attachmentMetadata,...attachmentMetadataInput}, this.attachmentMetadataRepository)
+      const updatedAttachment = await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
+      if (updatedAttachment.attachmentMetadata) {
+        let documentType
+        if (documentTypeId) {
+          documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
+          updatedAttachment.attachmentMetadata.documentType = documentType
+        } else if (documentTypeName) {
+          const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
+          if (practiceId) {
+            const practice = await this.practiceService.findOne(practiceId)
+            documentTypeInstance.practice = practice
+          }
+          documentType = await this.documentTypeRepository.save(documentTypeInstance)
+          updatedAttachment.attachmentMetadata.documentType = documentType
+        }
+        const updatedAttachmentMetaData = await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, { ...updatedAttachment.attachmentMetadata, ...attachmentMetadataInput }, this.attachmentMetadataRepository)
+      }
       return updatedAttachment
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -251,9 +274,10 @@ export class AttachmentsService {
    * @returns  
    */
   async removeMedia(id: string) {
-    const attachment = await this.attachmentsRepository.findOne(id);
+    const attachment = await this.attachmentsRepository.findOne({ id });
     if (attachment) {
-      const deletedAttachment = await this.attachmentsRepository.delete(id)
+      const deletedAttachment = await this.attachmentsRepository.delete({ id })
+      const deletedAttachmentMetadata = await this.attachmentMetadataRepository.delete({ id: attachment.attachmentMetadata?.id })
       if (deletedAttachment.affected) {
         return attachment.key ? await this.awsService.removeFile(attachment.key) : '';
       }
@@ -348,7 +372,7 @@ export class AttachmentsService {
       typeId,
       key: Key,
       url: Location,
-      attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join('')
+      attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join(''),
     }
   }
 }

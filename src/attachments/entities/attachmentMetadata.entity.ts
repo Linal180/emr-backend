@@ -45,6 +45,10 @@ export class AttachmentMetadata {
   @Field({ nullable: true })
   comments: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  documentDate: string;
+
   @Field(() => Attachment, { nullable: true })
   @OneToOne(() => Attachment, (attachment) => attachment.attachmentMetadata, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   attachment: Attachment;
