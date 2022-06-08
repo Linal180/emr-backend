@@ -271,29 +271,37 @@ export class PatientService {
     try {
       const patientInstance = await this.findOne(patientInviteInput.id)
       const patientProviders = await this.usualProvider(patientInstance.id)
-      const usualProvider = patientProviders.find((item) => item.currentProvider)
+      const usualProvider = patientProviders?.find(({ relation }) => relation === DoctorPatientRelationType.PRIMARY_PROVIDER)
       //get patient role
       const allRoles = await this.usersService.findAllRoles()
-      const patientRole = allRoles.find((item) => item.role === 'patient')
+      const patientRole = allRoles?.find(({ role }) => role === 'patient')
       //user registration input
-      if (patientInstance && patientInstance.email) {
+      if (patientInstance && patientInstance?.email) {
+        const { doctor } = usualProvider || {}
+        const { firstName, lastName } = doctor || {}
+        const { role } = patientRole || {}
+
         const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
         if (!userAlreadyExist) {
-          const user = await this.usersService.create({ firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email, password: "admin@123", roleType: patientRole.role, adminId: patientInviteInput.adminId, facilityId: patientInstance.facilityId })
+          const user = await this.usersService.create({
+            firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email,
+            password: "admin@123", roleType: role, adminId: patientInviteInput.adminId,
+            facilityId: patientInstance.facilityId
+          })
           patientInstance.user = user
           const patient = await this.patientRepository.save(patientInstance)
-          await this.usersService.saveUserId(patient.id, user);
-          this.mailerService.sendEmailForgotPassword(user.email, user.id, patientInstance.firstName + ' ' + patientInstance.lastName, usualProvider.doctor.firstName + " " + usualProvider.doctor.lastName, true, user.token, inviteTemplateId)
+          await this.usersService.saveUserId(patient?.id, user);
+          this.mailerService.sendEmailForgotPassword(user?.email, user?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${firstName} ${lastName}`, true, user?.token, inviteTemplateId)
           return patient
         } else {
           const token = createToken();
           userAlreadyExist.token = token;
           await this.usersService.save(userAlreadyExist);
-          this.mailerService.sendEmailForgotPassword(userAlreadyExist.email, userAlreadyExist.id, patientInstance.firstName + ' ' + patientInstance.lastName, usualProvider.doctor.firstName + " " + usualProvider.doctor.lastName, true, token, inviteTemplateId)
+          this.mailerService.sendEmailForgotPassword(userAlreadyExist?.email, userAlreadyExist?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${firstName} ${lastName}`, true, token, inviteTemplateId)
           return patientInstance
         }
-      } else if (patientInstance && !patientInstance.email) {
+      } else if (patientInstance && !patientInstance?.email) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Patient does not have email',
