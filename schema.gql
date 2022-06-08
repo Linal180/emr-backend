@@ -1735,6 +1735,7 @@ enum ElementType {
   PASSWORD
   URL
   WEEK
+  CUSTOM
 }
 
 type SectionsTypes {

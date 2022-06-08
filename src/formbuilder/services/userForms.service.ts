@@ -45,6 +45,8 @@ export class UserFormsService {
 
       const { type, id, facilityId, practiceId } = form;
       const { userFormElements } = userForm;
+      const { userFormElements: userFormElementInputs } = inputs
+
       const formElements = await this.formService.getFormElements(id)
       const patientElements = formElements?.filter(({ tableName }) => tableName === 'Patients')
       const employersElements = formElements?.filter(({ tableName }) => tableName === 'Employers')
@@ -65,8 +67,10 @@ export class UserFormsService {
       const patient = {}
       patientElements?.map(({ columnName, fieldId }) => {
         const element = userPatientElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return patient[columnName] = value || ''
+        if(element){
+          const { value } = element || {}
+          return patient[columnName] = value || ''
+        }
       })
 
       const contacts = {}
@@ -137,6 +141,18 @@ export class UserFormsService {
 
       const { name: employerName, phone: employerPhone, usualOccupation, industry } = employer as CreateEmployerInput
 
+      const privacyElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'privacyNotice')
+      const billingInfoElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'releaseOfInfoBill')
+      const phonePermissionElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'phonePermission')
+      const medicationElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'medicationHistoryAuthority')
+      const smsPermissionElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'smsPermission')
+
+      const { value: smsPermission } = smsPermissionElement || {}
+      const { value: medication } = medicationElement || {}
+      const { value: phonePermission } = phonePermissionElement || {}
+      const { value: billingInfo } = billingInfoElement || {}
+      const { value: privacy } = privacyElement || {}
+
       const patientInputs = {
         createPatientItemInput: {
           deceasedDate: deceasedDate || null,
@@ -152,10 +168,10 @@ export class UserFormsService {
           previousFirstName: previousFirstName || null,
           facilityId: facilityId || null,
           callToConsent: false,
-          privacyNotice: false,
-          releaseOfInfoBill: false,
+          privacyNotice: privacy === 'true' ? true : false,
+          releaseOfInfoBill: billingInfo === 'true' ? true : false,
           practiceId: practiceId || null,
-          medicationHistoryAuthority: false,
+          medicationHistoryAuthority: medication === 'true' ? true : false,
           ethnicity: ethnicity || ETHNICITY.NONE,
           homeBound: homeBound || HOMEBOUND.NO,
           holdStatement: HOLDSTATEMENT.NONE,
@@ -178,8 +194,8 @@ export class UserFormsService {
           registrationDepartment: null,
           patientRecord: null,
           primaryDepartment: null,
-          smsPermission: false,
-          phonePermission: false,
+          smsPermission: smsPermission === 'true' ? true : false,
+          phonePermission: phonePermission === 'true' ? true : false,
           pharmacy: null,
           preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE
         },
@@ -263,7 +279,7 @@ export class UserFormsService {
           const { fieldId } = appointmentElement
           const { fieldId: providerField } = providerElement
           let facilityElementId = ''
-          const { userFormElements: userFormElementInputs } = inputs
+
           const appointmentType = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === fieldId)
           const providerId = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === providerField)
           const scheduleStartTime = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'scheduleEndDateTime')
