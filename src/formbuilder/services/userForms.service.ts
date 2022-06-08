@@ -1,6 +1,8 @@
-import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Connection, Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import {
+  BadRequestException, HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException
+} from "@nestjs/common";
 //user import
 import { FormsService } from "./forms.service";
 import { AwsService } from 'src/aws/aws.service';
@@ -19,6 +21,9 @@ import { ContactType, RelationshipType } from "src/providers/entities/contact.en
 import { UpdateAttachmentMediaInput } from "src/attachments/dto/update-attachment.input";
 import { BillingStatus, PaymentType } from "src/appointments/entities/appointment.entity";
 import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
+import {
+  getCustomElementValue, getTableElements, getUserElementValue, getUserFormElements, pluckFormElementId
+} from "src/lib/helper";
 import {
   COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, Patient, PRONOUNS, RACE,
   SEXUALORIENTATION
@@ -45,71 +50,42 @@ export class UserFormsService {
 
       const { type, id, facilityId, practiceId } = form;
       const { userFormElements } = userForm;
+      const { userFormElements: userFormElementInputs } = inputs
+
       const formElements = await this.formService.getFormElements(id)
-      const patientElements = formElements?.filter(({ tableName }) => tableName === 'Patients')
-      const employersElements = formElements?.filter(({ tableName }) => tableName === 'Employers')
-      const contactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.SELF)
-      const emergenceContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.EMERGENCY)
-      const kinContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.NEXT_OF_KIN)
-      const guardianContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.GUARDIAN)
-      const guarantorContactElements = formElements?.filter(({ tableName, tableContactType }) => tableName === 'Contacts' && tableContactType === ContactType.GUARANDOR)
-
-      const contactInputs = contactElements?.map(({ fieldId }) => fieldId)
-      const patientsInputs = patientElements?.map(({ fieldId }) => fieldId)
-      const employerInputs = employersElements?.map(({ fieldId }) => fieldId)
-
-      const userPatientElements = userFormElements?.filter(({ FormsElementsId }) => patientsInputs?.includes(FormsElementsId))
-      const userContactElements = userFormElements?.filter(({ FormsElementsId }) => contactInputs?.includes(FormsElementsId))
-      const employerElements = userFormElements?.filter(({ FormsElementsId }) => employerInputs?.includes(FormsElementsId))
-
-      const patient = {}
-      patientElements?.map(({ columnName, fieldId }) => {
-        const element = userPatientElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return patient[columnName] = value || ''
-      })
-
-      const contacts = {}
-      contactElements?.map(({ columnName, fieldId }) => {
-        const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return contacts[columnName] = value || ''
-      })
-
-      const employer = {}
-      employersElements?.map(({ columnName, fieldId }) => {
-        const element = employerElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return employer[columnName] = value || ''
-      })
-
-      const emergenceContacts = {}
-      emergenceContactElements?.map(({ columnName, fieldId }) => {
-        const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return emergenceContacts[columnName] = value || ''
-      })
-
-      const kinContacts = {}
-      kinContactElements?.map(({ columnName, fieldId }) => {
-        const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return kinContacts[columnName] = value || ''
-      })
-      const guardianContacts = {}
-      guardianContactElements?.map(({ columnName, fieldId }) => {
-        const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return guardianContacts[columnName] = value || ''
-      })
-
-      const guarantorContacts = {}
-      guarantorContactElements?.map(({ columnName, fieldId }) => {
-        const element = userContactElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
-        const { value } = element || {}
-        return guarantorContacts[columnName] = value || ''
-      })
-
+      //tables elements
+      const patientElements = getTableElements(formElements, 'Patients')
+      const employersElements = getTableElements(formElements, 'Employers')
+      const contactElements = getTableElements(formElements, 'Contacts', ContactType.SELF)
+      const kinContactElements = getTableElements(formElements, 'Contacts', ContactType.NEXT_OF_KIN)
+      const guardianContactElements = getTableElements(formElements, 'Contacts', ContactType.GUARDIAN)
+      const guarantorContactElements = getTableElements(formElements, 'Contacts', ContactType.GUARANDOR)
+      const emergenceContactElements = getTableElements(formElements, 'Contacts', ContactType.EMERGENCY)
+      //pluck form elements ids
+      const contactInputs = pluckFormElementId(contactElements)
+      const patientsInputs = pluckFormElementId(patientElements)
+      const employerInputs = pluckFormElementId(employersElements)
+      const kinContactInputs = pluckFormElementId(kinContactElements)
+      const guardianContactInputs = pluckFormElementId(guardianContactElements)
+      const emergenceContactInputs = pluckFormElementId(emergenceContactElements)
+      const guarantorContactInputs = pluckFormElementId(guarantorContactElements)
+      //get user elements by form elements
+      const userContactElements = getUserFormElements(userFormElements, contactInputs)
+      const userPatientElements = getUserFormElements(userFormElements, patientsInputs)
+      const userEmployersElements = getUserFormElements(userFormElements, employerInputs)
+      const userKinContactElements = getUserFormElements(userFormElements, kinContactInputs)
+      const userGuardianContactInputs = getUserFormElements(userFormElements, guardianContactInputs)
+      const userGuarantorContactElements = getUserFormElements(userFormElements, guarantorContactInputs)
+      const userEmergenceContactElements = getUserFormElements(userFormElements, emergenceContactInputs)
+      //user form values
+      const patient = getUserElementValue(userPatientElements, patientElements)
+      const contacts = getUserElementValue(userContactElements, contactElements)
+      const employer = getUserElementValue(userEmployersElements, employersElements)
+      const kinContacts = getUserElementValue(userKinContactElements, kinContactElements)
+      const guardianContacts = getUserElementValue(userGuardianContactInputs, guardianContactElements)
+      const emergenceContacts = getUserElementValue(userEmergenceContactElements, emergenceContactElements)
+      const guarantorContacts = getUserElementValue(userGuarantorContactElements, guarantorContactElements)
+      //get patient info
       const {
         language, suffix, firstName, lastName, middleName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn, dob, gender, homeBound, race, ethnicity, maritialStatus,
@@ -136,6 +112,12 @@ export class UserFormsService {
       } = guarantorContacts as CreateContactInput || {}
 
       const { name: employerName, phone: employerPhone, usualOccupation, industry } = employer as CreateEmployerInput
+      //get custom element value
+      const smsPermission = getCustomElementValue(userFormElementInputs, 'smsPermission')
+      const medication = getCustomElementValue(userFormElementInputs, 'medicationHistoryAuthority')
+      const phonePermission = getCustomElementValue(userFormElementInputs, 'phonePermission')
+      const billingInfo = getCustomElementValue(userFormElementInputs, 'releaseOfInfoBill')
+      const privacy = getCustomElementValue(userFormElementInputs, 'privacyNotice')
 
       const patientInputs = {
         createPatientItemInput: {
@@ -152,10 +134,10 @@ export class UserFormsService {
           previousFirstName: previousFirstName || null,
           facilityId: facilityId || null,
           callToConsent: false,
-          privacyNotice: false,
-          releaseOfInfoBill: false,
+          privacyNotice: privacy === 'true' ? true : false,
+          releaseOfInfoBill: billingInfo === 'true' ? true : false,
           practiceId: practiceId || null,
-          medicationHistoryAuthority: false,
+          medicationHistoryAuthority: medication === 'true' ? true : false,
           ethnicity: ethnicity || ETHNICITY.NONE,
           homeBound: homeBound || HOMEBOUND.NO,
           holdStatement: HOLDSTATEMENT.NONE,
@@ -178,8 +160,8 @@ export class UserFormsService {
           registrationDepartment: null,
           patientRecord: null,
           primaryDepartment: null,
-          smsPermission: false,
-          phonePermission: false,
+          smsPermission: smsPermission === 'true' ? true : false,
+          phonePermission: phonePermission === 'true' ? true : false,
           pharmacy: null,
           preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE
         },
@@ -263,11 +245,11 @@ export class UserFormsService {
           const { fieldId } = appointmentElement
           const { fieldId: providerField } = providerElement
           let facilityElementId = ''
-          const { userFormElements: userFormElementInputs } = inputs
-          const appointmentType = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === fieldId)
-          const providerId = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === providerField)
-          const scheduleStartTime = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'scheduleEndDateTime')
-          const scheduleEndTimes = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'scheduleStartDateTime')
+
+          const appointmentTypeId = getCustomElementValue(userFormElementInputs, fieldId)
+          const doctorId = getCustomElementValue(userFormElementInputs, providerField)
+          const startTime = getCustomElementValue(userFormElementInputs, 'scheduleEndDateTime')
+          const endTime = getCustomElementValue(userFormElementInputs, 'scheduleStartDateTime')
 
           if (facilityElement) {
             const { fieldId: facilityFieldId } = facilityElement;
@@ -278,14 +260,11 @@ export class UserFormsService {
             }
           }
 
-          if (appointmentType && scheduleEndTimes && scheduleStartTime) {
-            const { value: startTime } = scheduleStartTime || {}
-            const { value: endTime } = scheduleEndTimes || {}
-            const { value: appointmentTypeId } = appointmentType
-            const { value: doctorId } = providerId || {}
+          if (appointmentTypeId && endTime && startTime) {
+
             const patientInput = {
               createPatientItemInput: {
-                ...patientInputs.createContactInput,
+                ...patientInputs.createPatientItemInput,
                 facilityId: facilityElementId || facilityId || null,
               },
               createContactInput: {
@@ -313,13 +292,10 @@ export class UserFormsService {
             const patientInstance = await this.patientService.createPatient(patientInput)
             if (endTime && startTime && patientInstance?.id) {
 
-              const memberElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'memberId')
-              const groupNoElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'groupNumber')
-              const companyNameElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'companyName')
+              const memberId = getCustomElementValue(userFormElementInputs, 'memberId')
+              const groupNumber = getCustomElementValue(userFormElementInputs, 'groupNumber')
+              const companyName = getCustomElementValue(userFormElementInputs, 'companyName')
 
-              const { value: companyName } = companyNameElement || {}
-              const { value: groupNumber } = groupNoElement || {}
-              const { value: memberId } = memberElement || {}
               if (companyName && groupNumber && memberId) {
                 const inputs = {
                   memberId,
@@ -331,11 +307,8 @@ export class UserFormsService {
                 await this.policyService.create(inputs)
               }
 
-              const organizationNameElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'organizationName')
-              const contractNoElement = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === 'contractNumber')
-
-              const { value: organizationName } = organizationNameElement || {}
-              const { value: contractNo } = contractNoElement || {}
+              const organizationName = getCustomElementValue(userFormElementInputs, 'organizationName')
+              const contractNo = getCustomElementValue(userFormElementInputs, 'contractNumber')
 
               const appointmentInputs = {
                 paymentType: companyName ? PaymentType.INSURANCE : contractNo ? PaymentType.CONTRACT : PaymentType.SELF,

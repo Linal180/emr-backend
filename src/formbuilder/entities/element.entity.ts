@@ -20,6 +20,7 @@ export enum ElementType {
   PASSWORD = 'password',
   URL = 'url',
   WEEK = 'week',
+  CUSTOM = 'custom'
 }
 
 registerEnumType(ElementType, {

@@ -1,7 +1,12 @@
 import * as  moment from 'moment';
-import * as bcryptjs from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
+import * as bcryptjs from 'bcryptjs';
 import { HttpException, HttpStatus } from "@nestjs/common";
+//user imports
+import { ContactType } from "src/providers/entities/contact.entity";
+import { FormElement } from 'src/formbuilder/entities/form-elements.entity';
+import { UsersFormsElements } from 'src/formbuilder/entities/userFormElements.entity';
+import { UserFormElementInputs } from 'src/formbuilder/dto/userFormElements.input';
 
 
 export function createToken(): string {
@@ -75,4 +80,43 @@ export const getMonthsRecord = (arr: any[]) => {
 
     return { id, count: monthData?.length, name }
   })
+}
+
+
+export const getUserElementValue = (usersFormsElements: UsersFormsElements[], formElement: FormElement[]) => {
+  const obj = {}
+  formElement?.map(({ columnName, fieldId }) => {
+    const element = usersFormsElements?.find(({ FormsElementsId }) => fieldId === FormsElementsId);
+    if (element) {
+      const { value } = element
+      return obj[columnName] = value
+    }
+  })
+  return obj
+}
+
+export const pluckFormElementId = (arr: FormElement[],) => {
+  return arr?.map(({ fieldId }) => fieldId)
+}
+
+export const getTableElements = (formElements: FormElement[], table: string, tableContactT?: ContactType) => {
+  return formElements?.filter(({ tableName, tableContactType }) => {
+    if (tableContactT) {
+      return tableName === table && tableContactType === tableContactT
+    }
+    return tableName === table
+  })
+}
+
+export const getUserFormElements = (userFormElements: UsersFormsElements[], formElements: string[]) => {
+  return userFormElements?.filter(({ FormsElementsId }) => formElements?.includes(FormsElementsId))
+}
+
+export const getCustomElementValue = (userFormElementInputs: UserFormElementInputs[], formElement: string) => {
+  const element = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === formElement)
+  if (element) {
+    const { value } = element;
+    return value
+  }
+  return null
 }
