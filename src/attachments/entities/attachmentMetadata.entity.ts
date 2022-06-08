@@ -9,7 +9,7 @@ export class AttachmentMetadata {
   @Field()
   id: string;
 
-  @ManyToOne(() => DocumentType, documentType => documentType.attachments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => DocumentType, documentType => documentType.attachments, { onDelete: 'CASCADE', eager: true })
   @Field(type => DocumentType, { nullable: true })
   documentType: DocumentType;
 
@@ -44,6 +44,10 @@ export class AttachmentMetadata {
   @Column({ nullable: true })
   @Field({ nullable: true })
   comments: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  documentDate: string;
 
   @Field(() => Attachment, { nullable: true })
   @OneToOne(() => Attachment, (attachment) => attachment.attachmentMetadata, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
