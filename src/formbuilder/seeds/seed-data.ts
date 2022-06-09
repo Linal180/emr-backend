@@ -194,7 +194,8 @@ export enum FormBuilderApiSelector {
   FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
   PRACTICE_FACILITIES = 'practiceFacilities',
-  PATIENT_CONSENT = 'patientConsent'
+  PATIENT_CONSENT = 'patientConsent',
+  TERMS_CONDITIONS = 'termsConditions'
 }
 
 const facilityAppointment = {
@@ -1550,6 +1551,29 @@ const facilityAppointment = {
         },
       ],
     },
+    {
+      id: uuid(),
+      col: 12,
+      name: "User data privacy & TOS agreement.",
+      fields: [
+        {
+          css: "",
+          name: "terms",
+          type: ElementType.CUSTOM,
+          label: "I agree to all terms and agreement",
+          column: 12,
+          apiCall: FormBuilderApiSelector.TERMS_CONDITIONS,
+          fieldId: uuid(),
+          options: [],
+          errorMsg: "",
+          required: true,
+          textArea: false,
+          placeholder: "",
+          defaultValue: "",
+          isMultiSelect: false,
+        },
+      ]
+    }
   ],
 }
 
@@ -3701,6 +3725,37 @@ export const FormTemplates = [
               apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
               fieldId: uuid(),
               options: PAYMENT_TYPES,
+              errorMsg: "",
+              required: true,
+              textArea: false,
+              placeholder: "",
+              defaultValue: "",
+              isMultiSelect: false,
+            },
+          ]
+        }]
+    }
+  },
+  {
+    name: "Terms & Conditions",
+    type: FormType.PRE_DEFINED,
+    isSystemForm: true,
+    layout: {
+      sections: [
+        {
+          id: uuid(),
+          col: 12,
+          name: "User data privacy & TOS agreement.",
+          fields: [
+            {
+              css: "",
+              name: "terms",
+              type: ElementType.CUSTOM,
+              label: "I agree to all terms and agreement",
+              column: 12,
+              apiCall: FormBuilderApiSelector.TERMS_CONDITIONS,
+              fieldId: uuid(),
+              options: [],
               errorMsg: "",
               required: true,
               textArea: false,
