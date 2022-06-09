@@ -57,7 +57,7 @@ export class BillingService {
         if (createdBilling.id) {
           this.appointmentService.updateAppointment({
             id: appointmentId,
-            status: AppointmentStatus.COMPLETED,
+            status: AppointmentStatus.DISCHARGED,
             checkedOutAt: moment().toISOString()
           })
         }

@@ -35,14 +35,14 @@ registerEnumType(BillingStatus, {
 });
 
 export enum AppointmentStatus {
-  NO_SHOW = 'no_show',
   INITIATED = "initiated",
-  CHECKED_IN = 'checked_in',
-  SELF_CHECKED_IN = 'self_checked_in',
+  CHECK_IN = 'check_in',
+  SELF_CHECK_IN = 'self_check_in',
   IN_LOBBY = 'in_lobby',
   IN_SESSION = 'in_session',
-  COMPLETED = "completed",
   RESCHEDULED = 'rescheduled',
+  NO_SHOW = 'no_show',
+  DISCHARGED = "discharged",
   CANCELLED = "cancelled"
 }
 
