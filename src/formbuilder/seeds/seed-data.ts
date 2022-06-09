@@ -1551,6 +1551,29 @@ const facilityAppointment = {
         },
       ],
     },
+    {
+      id: uuid(),
+      col: 12,
+      name: "User data privacy & TOS agreement.",
+      fields: [
+        {
+          css: "",
+          name: "terms",
+          type: ElementType.CUSTOM,
+          label: "I agree to all terms and agreement",
+          column: 12,
+          apiCall: FormBuilderApiSelector.TERMS_CONDITIONS,
+          fieldId: uuid(),
+          options: [],
+          errorMsg: "",
+          required: true,
+          textArea: false,
+          placeholder: "",
+          defaultValue: "",
+          isMultiSelect: false,
+        },
+      ]
+    }
   ],
 }
 
