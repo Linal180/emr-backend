@@ -73,8 +73,7 @@ export class LabTestsService {
     try {
       //get diagnoses
 
-      //get patient 
-      const patient = await this.patientService.findOne(updateLabTestInput.updateLabTestItemInput.patientId)
+
       //create lab test 
       const labTestInstance = this.labTestsRepository.create({ ...updateLabTestInput.updateLabTestItemInput, labTestStatus: updateLabTestInput.updateLabTestItemInput.status })
 
@@ -114,7 +113,12 @@ export class LabTestsService {
         labTestInstance.test = testName
       }
 
-      labTestInstance.patient = patient
+      if (updateLabTestInput.updateLabTestItemInput.patientId) {
+        //get patient 
+        const patient = await this.patientService.findOne(updateLabTestInput.updateLabTestItemInput.patientId)
+        labTestInstance.patient = patient
+      }
+
       return await this.labTestsRepository.save(labTestInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -210,15 +214,14 @@ export class LabTestsService {
   async updateLabTestsByOrderNumber(updateLabTestItemInput: CreateLabTestItemInput): Promise<LabTests[]> {
     try {
       const labTests = await this.labTestsRepository.find({ orderNumber: updateLabTestItemInput.orderNumber })
-      console.log("labTests",labTests,updateLabTestItemInput)
-      if(!labTests.length){
+      if (!labTests.length) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Lab test not found',
         });
       }
       const { primaryProviderId, referringProviderId, ...labTestInfo } = updateLabTestItemInput
-      const updatedLabTests= await Promise.all(await labTests.map(async (labTest) => {
+      const updatedLabTests = await Promise.all(await labTests.map(async (labTest) => {
         if (primaryProviderId) {
           const primaryProvider = await this.doctorService.findOne(primaryProviderId)
           labTest.primaryProvider = primaryProvider
