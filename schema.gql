@@ -1262,14 +1262,14 @@ enum PaymentType {
 
 """The patient appointment status type assigned"""
 enum AppointmentStatus {
-  NO_SHOW
   INITIATED
-  CHECKED_IN
-  SELF_CHECKED_IN
+  CHECK_IN
+  SELF_CHECK_IN
   IN_LOBBY
   IN_SESSION
-  COMPLETED
   RESCHEDULED
+  NO_SHOW
+  DISCHARGED
   CANCELLED
 }
 
