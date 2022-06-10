@@ -1678,8 +1678,14 @@ type AppointmentPayload {
   appointment: Appointment
 }
 
+type PatientPastUpcomingAppointment {
+  pastAppointment: Appointment
+  upcomingAppointment: Appointment
+}
+
 type PatientPastUpcomingAppointmentPayload {
   response: ResponsePayload
+  appointments: PatientPastUpcomingAppointment
 }
 
 type InvoicePayload {

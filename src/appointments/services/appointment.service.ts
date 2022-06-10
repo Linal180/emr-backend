@@ -472,21 +472,18 @@ export class AppointmentService {
   async getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput): Promise<PatientPastUpcomingAppointment> {
     const currentDate = new Date()
     const pastAppointment = await this.appointmentRepository.findOne({
-      where: [
-        {
-          patientId: getPatientAppointmentInput.patientId,
-          scheduleStartDateTime: LessThan(currentDate)
-        }
-      ]
+      where: {
+        patientId: getPatientAppointmentInput.patientId,
+        scheduleStartDateTime: LessThan(currentDate)
+      }
     })
 
     const upcomingAppointment = await this.appointmentRepository.findOne({
-      where: [
-        {
-          patientId: getPatientAppointmentInput.patientId,
-          scheduleEndDateTime: MoreThan(currentDate)
-        }
-      ]
+      where:
+      {
+        patientId: getPatientAppointmentInput.patientId,
+        scheduleEndDateTime: MoreThan(currentDate)
+      }
     })
 
     const appointment = {
