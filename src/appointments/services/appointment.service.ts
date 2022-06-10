@@ -1,6 +1,6 @@
 //packages block
 import { InjectRepository } from '@nestjs/typeorm';
-import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Connection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 //entities, services, inputs types, enums
 import { createToken } from 'src/lib/helper';
@@ -13,7 +13,6 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { GetSlots } from 'src/providers/dto/update-schedule.input';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from '../../facilities/entities/services.entity';
-import { AppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaymentService } from 'src/payment/services/payment.service';
@@ -23,6 +22,7 @@ import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
+import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appointment-payload.dto';
 import { Appointment, AppointmentStatus, BillingStatus, PaymentType } from '../entities/appointment.entity';
 import {
   CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
@@ -464,6 +464,44 @@ export class AppointmentService {
     });
   }
 
+  /**
+   * Gets patient past upcoming appointment
+   * @param getPatientAppointmentInput 
+   * @returns patient past upcoming appointment 
+   */
+  async getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput): Promise<PatientPastUpcomingAppointment> {
+    const currentDate = new Date()
+    const pastAppointment = await this.appointmentRepository.findOne({
+      where: [
+        {
+          patientId: getPatientAppointmentInput.patientId,
+          scheduleStartDateTime: LessThan(currentDate)
+        }
+      ]
+    })
+
+    const upcomingAppointment = await this.appointmentRepository.findOne({
+      where: [
+        {
+          patientId: getPatientAppointmentInput.patientId,
+          scheduleEndDateTime: MoreThan(currentDate)
+        }
+      ]
+    })
+
+    const appointment = {
+      upcomingAppointment,
+      pastAppointment
+    }
+
+    if (appointment) {
+      return appointment
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Appointment not found',
+    });
+  }
   /**
    * Gets facility appointment
    * @param getFacilityAppointmentsInput

@@ -9,7 +9,7 @@ import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
-import { AppointmentPayload } from '../dto/appointment-payload.dto';
+import { AppointmentPayload, PatientPastUpcomingAppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentService } from '../services/appointment.service';
 import { InvoiceService } from 'src/payment/services/invoice.service';
 import { AppointmentsPayload } from '../dto/appointments-payload.dto';
@@ -147,6 +147,17 @@ export class AppointmentResolver {
   async getPatientAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<AppointmentsPayload> {
     return {
       appointments: await this.appointmentService.getPatientAppointment(getPatientAppointmentInput),
+      response: { status: 200, message: 'Appointment fetched successfully' }
+    };
+  }
+
+  @Query(() => PatientPastUpcomingAppointmentPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientPastUpcomingAppointment')
+  async getPatientPastUpcomingAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<PatientPastUpcomingAppointmentPayload> {
+    const appointments = await this.appointmentService.getPatientPastUpcomingAppointment(getPatientAppointmentInput)
+    return {
+      ...appointments,
       response: { status: 200, message: 'Appointment fetched successfully' }
     };
   }

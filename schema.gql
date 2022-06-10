@@ -1678,6 +1678,10 @@ type AppointmentPayload {
   appointment: Appointment
 }
 
+type PatientPastUpcomingAppointmentPayload {
+  response: ResponsePayload
+}
+
 type InvoicePayload {
   response: ResponsePayload
   invoice: Invoice
@@ -2128,6 +2132,7 @@ type Query {
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
+  getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   getToken: BraintreePayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
