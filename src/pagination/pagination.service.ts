@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Between, Equal, FindConditions, FindManyOptions, FindOperator, In, IsNull, JoinOptions, Not, ObjectLiteral, Raw, Repository, WhereExpressionBuilder} from "typeorm";
+import { Between, Equal, FindConditions, FindManyOptions, FindOperator, In, IsNull, JoinOptions, Not, ObjectLiteral, OrderByCondition, Raw, Repository, WhereExpressionBuilder } from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
 
@@ -31,6 +31,11 @@ interface FilterOptionsResponse {
   join?: JoinOptions
 }
 
+interface OrderByColumn {
+  columnName: string
+  order: 'ASC' | 'DESC'
+}
+
 @Injectable()
 export class PaginationService {
 
@@ -41,7 +46,7 @@ export class PaginationService {
    * @param paginationInput 
    * @returns paginated response PaginationPayloadInterface<T>
    */
-  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[]): Promise<PaginationPayloadInterface<T>> {
+  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[], orderByColumn?: OrderByColumn): Promise<PaginationPayloadInterface<T>> {
     try {
       const { associatedTo, relationField, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
@@ -64,7 +69,9 @@ export class PaginationService {
           },
           skip,
           take,
-          order,
+          order: orderByColumn ? {
+            [orderByColumn.columnName]: orderByColumn.order
+          } : order,
           select
         };
         query.join = filterOption.join;
@@ -75,7 +82,9 @@ export class PaginationService {
           },
           skip,
           take,
-          order,
+          order: orderByColumn ? {
+            [orderByColumn.columnName]: orderByColumn.order
+          } : order,
           select
         }
       }
