@@ -91,11 +91,22 @@ export class SectionsTypes {
     @Field(() => [FieldsTypes])
     fields: FieldsTypes[]
 }
+@ObjectType()
+export class FormTabs {
+    @Field({ nullable: true })
+    id: string;
+
+    @Field({ nullable: true })
+    name: string
+
+    @Field(() => [SectionsTypes])
+    sections: SectionsTypes[]
+}
 
 @ObjectType()
 export class LayoutJSONType {
-    @Field(() => [SectionsTypes])
-    sections: SectionsTypes[]
+    @Field(() => [FormTabs])
+    tabs: FormTabs[]
 }
 
 
