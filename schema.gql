@@ -1754,8 +1754,14 @@ type SectionsTypes {
   fields: [FieldsTypes!]!
 }
 
-type LayoutJSONType {
+type FormTabs {
+  id: String
+  name: String
   sections: [SectionsTypes!]!
+}
+
+type LayoutJSONType {
+  tabs: [FormTabs!]!
 }
 
 type ArrayOfStringsType {
@@ -3830,6 +3836,12 @@ input CreateFormInput {
 }
 
 input LayoutJSONInputType {
+  tabs: [FormTabsInputs!]!
+}
+
+input FormTabsInputs {
+  id: String
+  name: String
   sections: [SectionsInputs!]!
 }
 
