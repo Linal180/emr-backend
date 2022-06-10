@@ -37,8 +37,24 @@ export class Employer {
   @Field({ nullable: true })
   patientId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  city: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  state: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  address: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  zipCode: string
+
   @ManyToOne(() => Patient, patient => patient.contacts, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => Patient, { nullable: true })
+  @Field(() => Patient, { nullable: true })
   patient: Patient;
 
   @CreateDateColumn({ type: 'timestamptz' })

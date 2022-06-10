@@ -4,24 +4,36 @@ import { Field, InputType } from '@nestjs/graphql';
 export class CreateEmployerInput {
 
   @Field({ nullable: true })
-  name: string;
+  name?: string;
 
   @Field({ nullable: true })
-  email: string;
+  email?: string;
 
   @Field({ nullable: true })
-  phone: string;
+  phone?: string;
 
   @Field({ nullable: true })
-  mobile: string;
+  mobile?: string;
 
   @Field({ nullable: true })
-  industry: string;
+  industry?: string;
 
   @Field({ nullable: true })
-  usualOccupation: string;
+  usualOccupation?: string;
 
   @Field({ nullable: true })
   patientId?: string;
+
+  @Field({ nullable: true })
+  city?: string
+
+  @Field({ nullable: true })
+  state?: string
+
+  @Field({ nullable: true })
+  address?: string
+
+  @Field({ nullable: true })
+  zipCode?: string
 
 }
