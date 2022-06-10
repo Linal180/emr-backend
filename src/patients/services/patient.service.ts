@@ -110,17 +110,20 @@ export class PatientService {
         if (createPatientInput?.createPatientItemInput?.facilityId) {
           const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
           patientInstance.facility = facility
-          //get doctor 
-          const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
-          //creating doctorPatient Instance 
-          const doctorPatientInstance = await this.doctorPatientRepository.create({
-            doctorId: doctor.id,
-            currentProvider: true,
-          })
-          doctorPatientInstance.doctor = doctor
-          doctorPatientInstance.doctorId = doctor.id
-          //adding usual provider with patient
-          patientInstance.doctorPatients = [doctorPatientInstance]
+        }
+          //get doctor
+          if(createPatientInput?.createPatientItemInput?.usualProviderId) {
+            const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
+            //creating doctorPatient Instance 
+            const doctorPatientInstance = await this.doctorPatientRepository.create({
+              doctorId: doctor.id,
+              currentProvider: true,
+            })
+            doctorPatientInstance.doctor = doctor
+            doctorPatientInstance.doctorId = doctor.id
+             //adding usual provider with patient
+            patientInstance.doctorPatients = [doctorPatientInstance]
+          }
           //create patient contact 
           const contact = await this.contactService.createContact(createPatientInput.createContactInput)
           //create patient emergency contact 
@@ -136,18 +139,9 @@ export class PatientService {
           patientInstance.employer = [employerContact]
           patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
           const patient = await queryRunner.manager.save(patientInstance);
-          doctorPatientInstance.patient = patient
-          doctorPatientInstance.patientId = patient.id
           await queryRunner.commitTransaction();
-          await this.doctorPatientRepository.save(doctorPatientInstance)
           return patient
-        }
-        else {
-          throw new PreconditionFailedException({
-            status: HttpStatus.PRECONDITION_FAILED,
-            error: 'Facility id cannot be null'
-          })
-        }
+        
       }
 
       throw new ConflictException({
