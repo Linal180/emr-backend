@@ -1,25 +1,29 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Facility } from 'src/facilities/entities/facility.entity';
+//entities , inputs, dtos, services
+import PermissionGuard from 'src/users/auth/role.guard';
+import { Invoice } from 'src/payment/entity/invoice.entity';
+import AppointmentInput from '../dto/appointment-input.dto';
+import { Appointment } from '../entities/appointment.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { Service } from 'src/facilities/entities/services.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { AppointmentPayload } from '../dto/appointment-payload.dto';
+import { AppointmentService } from '../services/appointment.service';
+import { InvoiceService } from 'src/payment/services/invoice.service';
+import { AppointmentsPayload } from '../dto/appointments-payload.dto';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { PatientService } from 'src/patients/services/patient.service';
-import { Invoice } from 'src/payment/entity/invoice.entity';
-import { InvoiceService } from 'src/payment/services/invoice.service';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
-import AppointmentInput from '../dto/appointment-input.dto';
-import { AppointmentPayload } from '../dto/appointment-payload.dto';
-import { AppointmentsPayload } from '../dto/appointments-payload.dto';
-import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { CancelAppointment, GetAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment, UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput } from '../dto/update-appointment.input';
-import { Appointment } from '../entities/appointment.entity';
-import { AppointmentService } from '../services/appointment.service';
+import {
+  CancelAppointment, GetAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment,
+  UpdateAppointmentInput, UpdateAppointmentStatusInput, UpdateAppointmentBillingStatusInput
+} from '../dto/update-appointment.input';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
@@ -29,6 +33,8 @@ export class AppointmentResolver {
     private readonly invoiceService: InvoiceService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService) { }
+
+  //mutations
 
   @Mutation(() => AppointmentPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -48,7 +54,7 @@ export class AppointmentResolver {
     };
   }
 
-  
+
   @Mutation(() => AppointmentPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updateAppointment')
@@ -69,7 +75,33 @@ export class AppointmentResolver {
     };
   }
 
-  @Query(returns => AppointmentsPayload)
+  @Mutation(() => AppointmentPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeAppointment')
+  async removeAppointment(@Args('removeAppointment') removeAppointment: RemoveAppointment) {
+    await this.appointmentService.removeAppointment(removeAppointment);
+    return { response: { status: 200, message: 'Appointment Deleted' } };
+  }
+
+  @Mutation(() => AppointmentPayload)
+  async cancelAppointment(@Args('cancelAppointment') cancelAppointment: CancelAppointment) {
+    await this.appointmentService.cancelAppointment(cancelAppointment);
+    return { response: { status: 200, message: 'Appointment cancelled successfully' } };
+  }
+
+  @Mutation(() => AppointmentPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateAppointmentStatus')
+  async updateAppointmentStatus(@Args('appointmentStatusInput') appointmentStatusInput: UpdateAppointmentStatusInput) {
+    return {
+      appointment: await this.appointmentService.updateAppointmentStatus(appointmentStatusInput),
+      response: { status: 200, message: 'Appointment created successfully' }
+    };
+  }
+
+  //queries
+
+  @Query(() => AppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllAppointments')
   async findAllAppointments(@Args('appointmentInput') appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
@@ -88,42 +120,7 @@ export class AppointmentResolver {
     });
   }
 
-  @ResolveField((returns) => [Patient])
-  async patient(@Parent() appointment: Appointment):  Promise<Patient>  {
-    if (appointment && appointment.patientId) {
-      return await this.patientService.findOne(appointment.patientId);
-    }
-  }
-
-  @ResolveField((returns) => [Doctor])
-  async provider(@Parent() appointment: Appointment): Promise<Doctor> {
-    if (appointment && appointment.providerId) {
-     return await this.doctorService.findOne(appointment.providerId);
-    }
-  }
-
-  @ResolveField((returns) => [Facility])
-  async facility(@Parent() appointment: Appointment): Promise<Facility> {
-    if (appointment && appointment.facilityId) {
-     return await this.facilityService.findOne(appointment.facilityId);
-    }
-  }
-
-  @ResolveField((returns) => [Service])
-  async appointmentType(@Parent() appointment: Appointment): Promise<Service> {
-    if (appointment && appointment.appointmentTypeId) {
-     return await this.servicesService.findOne(appointment.appointmentTypeId);
-    }
-  }
-
-  @ResolveField((returns) => [Invoice]) 
-  async invoice(@Parent() appointment: Appointment): Promise<Invoice> {
-    if (appointment) {
-     return await this.invoiceService.findInvoiceByAppointmentId(appointment.id);
-    }
-  }
-
-  @Query(returns => AppointmentPayload)
+  @Query(() => AppointmentPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getAppointment')
   async getAppointment(@Args('getAppointment') getAppointment: GetAppointment): Promise<AppointmentPayload> {
@@ -134,7 +131,7 @@ export class AppointmentResolver {
     };
   }
 
-  @Query(returns => AppointmentsPayload)
+  @Query(() => AppointmentsPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getAppointments')
   async getAppointments(@Args('getAppointments') getAppointments: GetAppointments): Promise<AppointmentsPayload> {
@@ -144,21 +141,7 @@ export class AppointmentResolver {
     };
   }
 
-  @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'removeAppointment')
-  async removeAppointment(@Args('removeAppointment') removeAppointment: RemoveAppointment) {
-    await this.appointmentService.removeAppointment(removeAppointment);
-    return { response: { status: 200, message: 'Appointment Deleted' } };
-  }
-
-  @Mutation(() => AppointmentPayload)
-  async cancelAppointment(@Args('cancelAppointment') cancelAppointment: CancelAppointment) {
-    await this.appointmentService.cancelAppointment(cancelAppointment);
-    return { response: { status: 200, message: 'Appointment cancelled successfully' } };
-  }
-
-  @Query(returns => AppointmentsPayload)
+  @Query(() => AppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getPatientAppointment')
   async getPatientAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<AppointmentsPayload> {
@@ -168,13 +151,41 @@ export class AppointmentResolver {
     };
   }
 
-  @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updateAppointmentStatus')
-  async updateAppointmentStatus(@Args('appointmentStatusInput') appointmentStatusInput: UpdateAppointmentStatusInput) {
-    return {
-      appointment: await this.appointmentService.updateAppointmentStatus(appointmentStatusInput),
-      response: { status: 200, message: 'Appointment created successfully' }
-    };
+  //resolve fields
+
+  @ResolveField(() => [Patient])
+  async patient(@Parent() appointment: Appointment): Promise<Patient> {
+    if (appointment && appointment.patientId) {
+      return await this.patientService.findOne(appointment.patientId);
+    }
   }
+
+  @ResolveField(() => [Doctor])
+  async provider(@Parent() appointment: Appointment): Promise<Doctor> {
+    if (appointment && appointment.providerId) {
+      return await this.doctorService.findOne(appointment.providerId);
+    }
+  }
+
+  @ResolveField(() => [Facility])
+  async facility(@Parent() appointment: Appointment): Promise<Facility> {
+    if (appointment && appointment.facilityId) {
+      return await this.facilityService.findOne(appointment.facilityId);
+    }
+  }
+
+  @ResolveField(() => [Service])
+  async appointmentType(@Parent() appointment: Appointment): Promise<Service> {
+    if (appointment && appointment.appointmentTypeId) {
+      return await this.servicesService.findOne(appointment.appointmentTypeId);
+    }
+  }
+
+  @ResolveField(() => [Invoice])
+  async invoice(@Parent() appointment: Appointment): Promise<Invoice> {
+    if (appointment) {
+      return await this.invoiceService.findInvoiceByAppointmentId(appointment.id);
+    }
+  }
+
 }

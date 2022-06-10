@@ -285,15 +285,7 @@ export class AppointmentService {
    * @returns appointment by provider id 
    */
   async findAppointmentByProviderId(getSlots: GetSlots, utc_start_date_minus_offset, utc_end_date_minus_offset): Promise<Appointment[]> {
-    if (getSlots.facilityId) {
-      return await this.appointmentRepository.find({
-        where: {
-          scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
-          scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
-          facilityId: getSlots.facilityId,
-        }
-      })
-    } else if (getSlots.providerId)
+    if (getSlots.providerId)
       return await this.appointmentRepository.find({
         where: {
           scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
@@ -301,6 +293,15 @@ export class AppointmentService {
           providerId: getSlots.providerId,
         }
       })
+    else if (getSlots.facilityId) {
+      return await this.appointmentRepository.find({
+        where: {
+          scheduleStartDateTime: MoreThanOrEqual(utc_start_date_minus_offset),
+          scheduleEndDateTime: LessThanOrEqual(utc_end_date_minus_offset),
+          facilityId: getSlots.facilityId,
+        }
+      })
+    }
   }
 
   /**
