@@ -152,8 +152,8 @@ export class AppointmentResolver {
   }
 
   @Query(() => PatientPastUpcomingAppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getPatientPastUpcomingAppointment')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientPastUpcomingAppointment')
   async getPatientPastUpcomingAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<PatientPastUpcomingAppointmentPayload> {
     const appointments = await this.appointmentService.getPatientPastUpcomingAppointment(getPatientAppointmentInput)
     return {
