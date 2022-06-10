@@ -232,9 +232,21 @@ export class AppointmentService {
       const [first] = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
       let paginationResponse
       if (appointmentInput.relationTable) {
-        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: "Services", relationField: 'appointmentType', associatedToField: { columnValue: first, columnName: 'name', columnName2: 'color', columnName3: 'duration', filterType: 'stringFilter' } })
+        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository,
+          {
+            ...appointmentInput, associatedTo: "Services", relationField: 'appointmentType',
+            associatedToField: { columnValue: first, columnName: 'name', columnName2: 'color', columnName3: 'duration', filterType: 'stringFilter' }
+          },
+          undefined,
+          { columnName: 'scheduleStartDateTime', order: 'ASC' })
       } else {
-        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository, { ...appointmentInput, associatedTo: "Patients", relationField: 'patient', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
+        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository,
+          {
+            ...appointmentInput, associatedTo: "Patients", relationField: 'patient',
+            associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' }
+          }
+          , undefined,
+          { columnName: 'scheduleStartDateTime', order: 'ASC' })
       }
 
       return {
