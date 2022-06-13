@@ -45,34 +45,34 @@ export class ScheduleService {
    * @returns schedule 
    */
   async createSchedule(createScheduleInput: CreateScheduleInput[]): Promise<Schedule> {
-     //Transaction start
-     const queryRunner = this.connection.createQueryRunner();
-     await queryRunner.connect();
-     await queryRunner.startTransaction();
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       createScheduleInput.forEach(async (scheduleElement) => {
-      // create schedule
-      const scheduleInstance = this.scheduleRepository.create(scheduleElement)
-      //fetch doctor
-      if (scheduleElement.doctorId) {
-        const doctor = await this.doctorService.findOne(scheduleElement.doctorId)
-        scheduleInstance.doctor = doctor
-        scheduleInstance.doctorId = doctor.id
-      }
-       //fetch facility
-       if (scheduleElement.facilityId) {
-        const facility = await this.facilityService.findOne(scheduleElement.facilityId)
-        scheduleInstance.facility = facility
-        scheduleInstance.facilityId = facility.id
-      }
-      const schedule = await this.scheduleRepository.save(scheduleInstance);
-      if(scheduleElement.servicesIds){
-        const services = await this.servicesService.findByIds(scheduleElement.servicesIds)
-        const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
-        const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
-        scheduleInstance.scheduleServices = serviceSchedule
-        await this.scheduleServicesRepository.save(serviceSchedule)
-       }
+        // create schedule
+        const scheduleInstance = this.scheduleRepository.create(scheduleElement)
+        //fetch doctor
+        if (scheduleElement.doctorId) {
+          const doctor = await this.doctorService.findOne(scheduleElement.doctorId)
+          scheduleInstance.doctor = doctor
+          scheduleInstance.doctorId = doctor.id
+        }
+        //fetch facility
+        if (scheduleElement.facilityId) {
+          const facility = await this.facilityService.findOne(scheduleElement.facilityId)
+          scheduleInstance.facility = facility
+          scheduleInstance.facilityId = facility.id
+        }
+        const schedule = await this.scheduleRepository.save(scheduleInstance);
+        if (scheduleElement.servicesIds) {
+          const services = await this.servicesService.findByIds(scheduleElement.servicesIds)
+          const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
+          const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
+          scheduleInstance.scheduleServices = serviceSchedule
+          await this.scheduleServicesRepository.save(serviceSchedule)
+        }
       });
       await queryRunner.commitTransaction();
       return
@@ -90,12 +90,12 @@ export class ScheduleService {
    * @param scheduleId 
    * @returns  
    */
-  async createScheduleService(services: Service[], scheduleId: string){
-    const scheduleService =  services.map(item => {
-     return {
-      scheduleId: scheduleId,
-      serviceId: item.id
-     }
+  async createScheduleService(services: Service[], scheduleId: string) {
+    const scheduleService = services.map(item => {
+      return {
+        scheduleId: scheduleId,
+        serviceId: item.id
+      }
     })
     return scheduleService
   }
@@ -119,17 +119,17 @@ export class ScheduleService {
         scheduleInstance.doctor = doctor
         scheduleInstance.doctorId = doctor.id
       }
-       //fetch facility
-       if (updateScheduleInput.facilityId) {
+      //fetch facility
+      if (updateScheduleInput.facilityId) {
         const facility = await this.facilityService.findOne(updateScheduleInput.facilityId)
         scheduleInstance.facility = facility
         scheduleInstance.facilityId = facility.id
       }
       scheduleInstance.startAt = updateScheduleInput.startAt;
       scheduleInstance.endAt = updateScheduleInput.endAt;
-      const schedule =  await this.scheduleRepository.save(scheduleInstance);
-      if(updateScheduleInput.servicesIds){
-        await this.scheduleServicesRepository.delete({ scheduleId: scheduleInstance.id})
+      const schedule = await this.scheduleRepository.save(scheduleInstance);
+      if (updateScheduleInput.servicesIds) {
+        await this.scheduleServicesRepository.delete({ scheduleId: scheduleInstance.id })
         const services = await this.servicesService.findByIds(updateScheduleInput.servicesIds)
         const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
         const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
@@ -146,54 +146,54 @@ export class ScheduleService {
     }
   }
 
-   /**
-   * getDoctorSchedule schedule
-   * @param getDoctorSchedule 
-   * @returns schedule  
-   */
-    async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
-      try {
-        const schedules = await this.scheduleRepository.find({
-          where: {
-            doctorId: id
-          }
-        })
-        return { schedules };
-      } catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+  /**
+  * getDoctorSchedule schedule
+  * @param getDoctorSchedule 
+  * @returns schedule  
+  */
+  async getDoctorSchedule({ id }: GetDoctorSchedule): Promise<SchedulesPayload> {
+    try {
+      const schedules = await this.scheduleRepository.find({
+        where: {
+          doctorId: id
+        }
+      })
+      return { schedules };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
-  
+  }
+
   /**
    * Gets facility schedule
    * @param { id } 
    * @returns facility schedule 
    */
   async getFacilitySchedule({ id }: GetFacilitySchedule): Promise<SchedulesPayload> {
-      try {
-        const schedules = await this.scheduleRepository.find({
-          where: {
-            facilityId: id
-          }
-        })
-        return { schedules };
-      } catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+    try {
+      const schedules = await this.scheduleRepository.find({
+        where: {
+          facilityId: id
+        }
+      })
+      return { schedules };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
-    
+  }
+
   /**
    * Gets schedule service
    * @param id 
    * @returns schedule service 
    */
   async getScheduleService(id: string): Promise<ScheduleServices[]> {
-      return await this.scheduleServicesRepository.find({
-        where: {
-          scheduleId: id
-        },
-        relations: ["service"]
-      })
+    return await this.scheduleServicesRepository.find({
+      where: {
+        scheduleId: id
+      },
+      relations: ["service"]
+    })
   }
 
   /**
@@ -204,21 +204,22 @@ export class ScheduleService {
    * @returns doctors schedule 
    */
   async getTodaySchedule(getSlots: GetSlots): Promise<Schedule[]> {
-    if(getSlots.facilityId){
-      return await this.scheduleRepository.find({
-        where: {
-          facilityId: getSlots.facilityId,
-          day: getSlots.day
-        },
-        order: {createdAt: "ASC"}
-      })
-    }else if(getSlots.providerId){
+    if (getSlots.providerId) {
       return await this.scheduleRepository.find({
         where: {
           doctorId: getSlots.providerId,
           day: getSlots.day
         },
-        order: {createdAt: "ASC"}
+        order: { createdAt: "ASC" }
+      })
+    }
+    else if (getSlots.facilityId) {
+      return await this.scheduleRepository.find({
+        where: {
+          facilityId: getSlots.facilityId,
+          day: getSlots.day
+        },
+        order: { createdAt: "ASC" }
       })
     }
   }
@@ -229,26 +230,26 @@ export class ScheduleService {
    * @param serviceId 
    * @returns  
    */
-   async getScheduleServices (schedules: Schedule[], getSlots: GetSlots){
+  async getScheduleServices(schedules: Schedule[], getSlots: GetSlots) {
     const result = []
-    if(getSlots.providerId){
-    await Promise.all(
-      schedules.map(async (item) => {
-      const scheduleItem = await this.getScheduleService(item.id)
-      const isServiceExist = await this.checkService(scheduleItem, getSlots.serviceId)
-      if(isServiceExist){
-        item.scheduleServices = scheduleItem
-        result.push(item)
-      }
-     })
-    );
-    }else if(getSlots.facilityId){
+    if (getSlots.providerId) {
       await Promise.all(
         schedules.map(async (item) => {
-        const scheduleItem = await this.getScheduleService(item.id)
+          const scheduleItem = await this.getScheduleService(item.id)
+          const isServiceExist = await this.checkService(scheduleItem, getSlots.serviceId)
+          if (isServiceExist) {
+            item.scheduleServices = scheduleItem
+            result.push(item)
+          }
+        })
+      );
+    } else if (getSlots.facilityId) {
+      await Promise.all(
+        schedules.map(async (item) => {
+          const scheduleItem = await this.getScheduleService(item.id)
           item.scheduleServices = scheduleItem
           result.push(item)
-       })
+        })
       );
     }
     return result;
@@ -262,31 +263,32 @@ export class ScheduleService {
   async getSlots(getSlots: GetSlots): Promise<SlotsPayload> {
     try {
       const uTcStartDateOffset = moment(new Date(getSlots.currentDate)).startOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
-      const uTcEndDateOffset = moment(new Date (getSlots.currentDate)).endOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
+      const uTcEndDateOffset = moment(new Date(getSlots.currentDate)).endOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
       //fetch doctor's booked appointment 
-      const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots,uTcStartDateOffset,uTcEndDateOffset)
+      const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots, uTcStartDateOffset, uTcEndDateOffset)
       const schedules = await this.getTodaySchedule(getSlots)
       const newSchedule = await this.getScheduleServices(schedules, getSlots)
-      const duration = parseInt(await(await this.servicesService.findOne(getSlots.serviceId)).duration)
+      const services = await this.servicesService.findOne(getSlots?.serviceId)
+      const duration = parseInt(services?.duration)
       //get doctor's remaining time 
-      const slots = await this.RemainingAvailability(newSchedule,appointment,duration)
+      const slots = await this.RemainingAvailability(newSchedule, appointment, duration)
       return slots;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-  } 
+  }
 
   /**
    * Remaining availability
    * @param schedule 
    * @param appointment 
    */
-  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<SlotsPayload>{ 
+  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<SlotsPayload> {
     let times = [];
     times = await Promise.all(schedule.map(async (item) => {
       let slotTime = moment(item.startAt);
       let endTime = moment(item.endAt);
-      while (slotTime < endTime){
+      while (slotTime < endTime) {
         const flag = await this.isInBreak(slotTime, appointment)
         if (!flag) {
           times.push({
@@ -320,10 +322,10 @@ export class ScheduleService {
    * @param serviceId 
    * @returns  
    */
-  async checkService(scheduleItem: ScheduleServices[], serviceId: string){
+  async checkService(scheduleItem: ScheduleServices[], serviceId: string) {
     for (let index = 0; index < scheduleItem.length; index++) {
       const element = scheduleItem[index];
-      if(element.serviceId === serviceId){
+      if (element.serviceId === serviceId) {
         return true;
       }
     }
@@ -365,22 +367,22 @@ export class ScheduleService {
   async removeSchedule({ id }: RemoveSchedule) {
     try {
       const schedule = await this.findOne(id)
-      if(!schedule){
+      if (!schedule) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Schedule not found',
         });
       }
-      if(schedule.doctorId){
-      const appointmentExist = await this.appointmentService.findAppointmentByProviderId({offset: 0, serviceId: '', facilityId: '', providerId: schedule.doctorId, currentDate: ""}, schedule.startAt, schedule.endAt)
-      if(appointmentExist.length){
-        throw new ConflictException({
-          status: HttpStatus.CONFLICT,
-          error: 'Appointment already booked with this schedule, can not delete it.',
-        });
+      if (schedule.doctorId) {
+        const appointmentExist = await this.appointmentService.findAppointmentByProviderId({ offset: 0, serviceId: '', facilityId: '', providerId: schedule.doctorId, currentDate: "" }, schedule.startAt, schedule.endAt)
+        if (appointmentExist.length) {
+          throw new ConflictException({
+            status: HttpStatus.CONFLICT,
+            error: 'Appointment already booked with this schedule, can not delete it.',
+          });
+        }
       }
-    }
-     await this.scheduleRepository.delete(id)
+      await this.scheduleRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
