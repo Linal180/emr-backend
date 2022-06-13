@@ -111,37 +111,37 @@ export class PatientService {
           const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
           patientInstance.facility = facility
         }
-          //get doctor
-          if(createPatientInput?.createPatientItemInput?.usualProviderId) {
-            const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
-            //creating doctorPatient Instance 
-            const doctorPatientInstance = await this.doctorPatientRepository.create({
-              doctorId: doctor.id,
-              currentProvider: true,
-            })
-            doctorPatientInstance.doctor = doctor
-            doctorPatientInstance.doctorId = doctor.id
-             //adding usual provider with patient
-            patientInstance.doctorPatients = [doctorPatientInstance]
-          }
-          //create patient contact 
-          const contact = await this.contactService.createContact(createPatientInput.createContactInput)
-          //create patient emergency contact 
-          const emergencyContact = await this.contactService.createContact(createPatientInput.createEmergencyContactInput)
-          //create patient next of kin contact 
-          const nextOfKinContact = await this.contactService.createContact(createPatientInput.createNextOfKinContactInput)
-          //create patient guarantor contact 
-          const guarantorContact = await this.contactService.createContact(createPatientInput.createGuarantorContactInput)
-          //create patient guardian contact 
-          const guardianContact = await this.contactService.createContact(createPatientInput.createGuardianContactInput)
-          //create patient employer contact 
-          const employerContact = await this.employerService.createEmployer(createPatientInput.createEmployerInput)
-          patientInstance.employer = [employerContact]
-          patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
-          const patient = await queryRunner.manager.save(patientInstance);
-          await queryRunner.commitTransaction();
-          return patient
-        
+        //get doctor
+        if (createPatientInput?.createPatientItemInput?.usualProviderId) {
+          const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
+          //creating doctorPatient Instance 
+          const doctorPatientInstance = await this.doctorPatientRepository.create({
+            doctorId: doctor.id,
+            currentProvider: true,
+          })
+          doctorPatientInstance.doctor = doctor
+          doctorPatientInstance.doctorId = doctor.id
+          //adding usual provider with patient
+          patientInstance.doctorPatients = [doctorPatientInstance]
+        }
+        //create patient contact 
+        const contact = await this.contactService.createContact(createPatientInput.createContactInput)
+        //create patient emergency contact 
+        const emergencyContact = await this.contactService.createContact(createPatientInput.createEmergencyContactInput)
+        //create patient next of kin contact 
+        const nextOfKinContact = await this.contactService.createContact(createPatientInput.createNextOfKinContactInput)
+        //create patient guarantor contact 
+        const guarantorContact = await this.contactService.createContact(createPatientInput.createGuarantorContactInput)
+        //create patient guardian contact 
+        const guardianContact = await this.contactService.createContact(createPatientInput.createGuardianContactInput)
+        //create patient employer contact 
+        const employerContact = await this.employerService.createEmployer(createPatientInput.createEmployerInput)
+        patientInstance.employer = [employerContact]
+        patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
+        const patient = await queryRunner.manager.save(patientInstance);
+        await queryRunner.commitTransaction();
+        return patient
+
       }
 
       throw new ConflictException({
@@ -468,69 +468,47 @@ export class PatientService {
       const { limit, page } = patientInput.paginationOptions
       const { dob, appointmentDate, doctorId, facilityId, practiceId, searchString } = patientInput
 
-      const baseQuery = getConnection()
+      let baseQuery = getConnection()
         .getRepository(Patient)
         .createQueryBuilder('patient')
         .skip((page - 1) * limit)
         .take(limit)
 
       if (appointmentDate) {
-        const [patients, totalCount] = await baseQuery
+        baseQuery = baseQuery
           .innerJoin(Appointment, 'patientWithCertainAppointment', `patient.id = "patientWithCertainAppointment"."patientId" ${appointmentDate ? 'AND "patientWithCertainAppointment"."scheduleStartDateTime"::date = :scDate' : ''}`, { scDate: `%${appointmentDate}%` })
+      }
+
+      if (doctorId) {
+        baseQuery = baseQuery
           .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `patient.id = "patientWithCertainDoctor"."patientId" ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
-          .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
-          .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
-          .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
-          .andWhere(new Brackets(qb => {
-            qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
-          }))
-          .orderBy('patient.createdAt', 'DESC')
-          .getManyAndCount()
+      }
 
-        const totalPages = Math.ceil(totalCount / limit)
+      const [patients, totalCount] = await baseQuery
+        .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
+        .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
+        .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
+        .andWhere(new Brackets(qb => {
+          qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%` }).
+            orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).
+            orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).
+            orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
+            orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
+            orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
+        }))
+        .orderBy('patient.createdAt', 'DESC')
+        .getManyAndCount()
 
-        return {
-          patients: patients,
-          pagination: {
-            totalCount,
-            page,
-            limit,
-            totalPages,
-          },
-        }
-      } else {
-        const [patients, totalCount] = await baseQuery
-          .innerJoin(DoctorPatient, 'patientWithCertainDoctor', `${doctorId ? 'patient.id = "patientWithCertainDoctor"."patientId"' : '1=1'} ${doctorId ? 'AND "patientWithCertainDoctor"."doctorId" = :doctorId' : ''}`, { doctorId: doctorId })
-          .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
-          .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
-          .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
-          .andWhere(new Brackets(qb => {
-            qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
-              orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
-          }))
-          .orderBy('patient.createdAt', 'DESC')
-          .getManyAndCount()
+      const totalPages = Math.ceil(totalCount / limit)
 
-        const totalPages = Math.ceil(totalCount / limit)
-
-        return {
-          patients: patients,
-          pagination: {
-            totalCount,
-            page,
-            limit,
-            totalPages,
-          },
-        }
+      return {
+        patients: patients,
+        pagination: {
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
       }
     } catch (error) {
       throw new InternalServerErrorException(error);
