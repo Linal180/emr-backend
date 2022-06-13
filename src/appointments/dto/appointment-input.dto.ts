@@ -3,7 +3,7 @@ import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { AppointmentStatus } from '../entities/appointment.entity';
 
 @InputType()
-export default class AppointmentInput {
+export class AppointmentInput {
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 
@@ -27,4 +27,19 @@ export default class AppointmentInput {
 
     @Field({nullable: true})
     relationTable?: string
+}
+
+@InputType()
+export class UpComingAppointmentsInput {
+    @Field({nullable: true})
+    patientId?: string
+
+    @Field({nullable: true})
+    practiceId?: string
+
+    @Field({nullable: true})
+    facilityId?: string
+
+    @Field({nullable: true})
+    providerId?: string
 }

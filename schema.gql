@@ -2135,6 +2135,7 @@ type Query {
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
+  findAllUpcomingAppointments(upComingAppointmentsInput: UpComingAppointmentsInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
@@ -2373,6 +2374,13 @@ input AppointmentInput {
   practiceId: String
   facilityId: String
   relationTable: String
+}
+
+input UpComingAppointmentsInput {
+  patientId: String
+  practiceId: String
+  facilityId: String
+  providerId: String
 }
 
 input GetAppointment {
