@@ -1,5 +1,6 @@
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Brackets, getConnection, In, IsNull, LessThan, MoreThan, Not, Raw } from 'typeorm'
 import * as moment from "moment";
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
@@ -127,6 +128,7 @@ export class ScheduleService {
       }
       scheduleInstance.startAt = updateScheduleInput.startAt;
       scheduleInstance.endAt = updateScheduleInput.endAt;
+      scheduleInstance.recurringEndDate= updateScheduleInput.recurringEndDate;
       const schedule = await this.scheduleRepository.save(scheduleInstance);
       if (updateScheduleInput.servicesIds) {
         await this.scheduleServicesRepository.delete({ scheduleId: scheduleInstance.id })
@@ -255,6 +257,39 @@ export class ScheduleService {
     return result;
   }
 
+  async getShouldHaveSlots(getSlots: GetSlots): Promise<boolean> {
+    let flag= true
+    const dateToCompare=moment(getSlots.currentDate).toISOString()
+    if (getSlots.facilityId) {
+      const scheduleRes = await getConnection()
+      .getRepository(Schedule)
+      .createQueryBuilder('Schedule')
+      .where('Schedule.facilityId = :facilityId',{facilityId: getSlots.facilityId})
+      .andWhere('Schedule.day = :day',{day: getSlots.day})
+      .andWhere(new Brackets(qb => {
+        qb.where('Schedule.recurringEndDate is null').
+          orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
+      }))
+      .getCount()
+      console.log("scheduleRes",scheduleRes)
+      flag= !!scheduleRes
+    } else if (getSlots.providerId) {
+      const scheduleRes = await getConnection()
+      .getRepository(Schedule)
+      .createQueryBuilder('Schedule')
+      .where('Schedule.doctorId = :providerId',{providerId: getSlots.providerId})
+      .andWhere('Schedule.day = :day',{day: getSlots.day})
+      .andWhere(new Brackets(qb => {
+        qb.where('Schedule.recurringEndDate IS NULL').
+          orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
+      }))
+      .getCount()
+      flag= !!scheduleRes
+    }
+
+    return flag
+  }
+
   /**
    * Gets slots
    * @param getSlots 
@@ -267,6 +302,10 @@ export class ScheduleService {
       //fetch doctor's booked appointment 
       const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots, uTcStartDateOffset, uTcEndDateOffset)
       const schedules = await this.getTodaySchedule(getSlots)
+      const shouldHaveSlots = await this.getShouldHaveSlots(getSlots)
+      if (!shouldHaveSlots) {
+        return 
+      }
       const newSchedule = await this.getScheduleServices(schedules, getSlots)
       const services = await this.servicesService.findOne(getSlots?.serviceId)
       const duration = parseInt(services?.duration)
