@@ -3901,7 +3901,7 @@ export const FormTemplates = [
               {
                 css: "",
                 name: "facilityId",
-                type: ElementType.SELECT,
+                type: ElementType.CUSTOM,
                 label: "Facility",
                 column: 12,
                 apiCall: FormBuilderApiSelector.PRACTICE_FACILITIES,
