@@ -82,7 +82,7 @@ export class FormElementsService {
     return elements
   }
 
-  
+
   /**
    * Updates form elements service
    * @param inputs 
@@ -119,24 +119,26 @@ export class FormElementsService {
    */
   async updateBulk(inputElements: UpdateFormInput, form: Form) {
     const { layout } = inputElements;
-    const { sections } = layout;
-    Promise.all(sections?.map(async (item) => {
-      const { fields, id } = item
-      const oldFieldsForUpdate = form?.formElements?.filter((page1) => fields.some(page2 => page1.fieldId === page2.fieldId))
-      const oldFieldsForDelete = form?.formElements?.filter((page1) => !fields.some(page2 => page1.fieldId === page2.fieldId))
-      const newFields = fields?.filter((page1) => !form?.formElements.some(page2 => page1.fieldId === page2.fieldId))
-      const newFieldsForUpdate = fields?.filter((page1) => form?.formElements?.some(page2 => page1.fieldId === page2.fieldId))
-      oldFieldsForDelete?.map(async (field) => {
-        if (!field?.isDeleted) await this.del(field.id)
+    const { tabs } = layout;
+    tabs?.map(({ sections }) => {
+      sections?.map(async (item) => {
+        const { fields, id } = item
+        const oldFieldsForUpdate = form?.formElements?.filter((page1) => fields.some(page2 => page1.fieldId === page2.fieldId))
+        const oldFieldsForDelete = form?.formElements?.filter((page1) => !fields.some(page2 => page1.fieldId === page2.fieldId))
+        const newFields = fields?.filter((page1) => !form?.formElements.some(page2 => page1.fieldId === page2.fieldId))
+        const newFieldsForUpdate = fields?.filter((page1) => form?.formElements?.some(page2 => page1.fieldId === page2.fieldId))
+        oldFieldsForDelete?.map(async (field) => {
+          if (!field?.isDeleted) await this.del(field.id)
+        })
+        newFields?.map(async (field) => {
+          await this.create({ ...field, sectionId: id }, form)
+        })
+        newFieldsForUpdate?.map(async (field) => {
+          const element = oldFieldsForUpdate?.find((ele) => ele.fieldId === field.fieldId);
+          if (element) await this.update(field, element.id)
+        })
       })
-      newFields?.map(async (field) => {
-        await this.create({ ...field, sectionId: id }, form)
-      })
-      newFieldsForUpdate?.map(async (field) => {
-        const element = oldFieldsForUpdate?.find((ele) => ele.fieldId === field.fieldId);
-        if (element) await this.update(field, element.id)
-      })
-    }))
+    })
   }
 
   /**

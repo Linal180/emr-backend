@@ -1,5 +1,6 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+//entities guards, inputs, services, dtos
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import RoleGuard from 'src/users/auth/role.guard';
 import { CreateFormInput } from '../dto/create-form.input';
@@ -22,25 +23,8 @@ export class FormResolver {
     private readonly userFormsService: UserFormsService,
   ) { }
 
-  @Mutation(() => FormPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
-  async createForm(@Args('createFormInput') createFormInput: CreateFormInput) {
-    return {
-      form: await this.formsService.createForm(createFormInput),
-      response: { status: 200, message: 'Form is created successfully' }
-    };
-  }
+  //queries
 
-  @Mutation(() => FormPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('roles', ['admin', 'super-admin'])
-  async updateForm(@Args('updateFormInput') updateFormInput: UpdateFormInput) {
-    return {
-      form: await this.formsService.updateForm(updateFormInput),
-      response: { status: 200, message: 'Form updated successfully' }
-    };
-  }
 
   @Query(() => FormsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
@@ -81,14 +65,6 @@ export class FormResolver {
     };
   }
 
-  @Mutation(() => FormPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('roles', ['super-admin', 'admin'])
-  async removeForm(@Args('removeForm') removeForm: RemoveForm) {
-    await this.formsService.removeForm(removeForm);
-    return { response: { status: 200, message: 'Form Deleted successfully.' } };
-  }
-
   @Query(() => UserFormsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   async findAllUsersForms(@Args('userFormInput') userFormInput: UserFormInput): Promise<UserFormsPayload> {
@@ -110,6 +86,36 @@ export class FormResolver {
 
   }
 
+  //mutations
+
+  @Mutation(() => FormPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['super-admin', 'admin'])
+  async createForm(@Args('createFormInput') createFormInput: CreateFormInput) {
+    return {
+      form: await this.formsService.createForm(createFormInput),
+      response: { status: 200, message: 'Form is created successfully' }
+    };
+  }
+
+  @Mutation(() => FormPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  async updateForm(@Args('updateFormInput') updateFormInput: UpdateFormInput) {
+    return {
+      form: await this.formsService.updateForm(updateFormInput),
+      response: { status: 200, message: 'Form updated successfully' }
+    };
+  }
+
+  @Mutation(() => FormPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('roles', ['super-admin', 'admin'])
+  async removeForm(@Args('removeForm') removeForm: RemoveForm) {
+    await this.formsService.removeForm(removeForm);
+    return { response: { status: 200, message: 'Form Deleted successfully.' } };
+  }
+
   @Mutation(() => FormPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   async createFormTemplate(
@@ -125,6 +131,8 @@ export class FormResolver {
       },
     };
   }
+
+  //resolve fields
 
   @ResolveField(() => [FormElement])
   async formElements(@Parent() form: Form) {

@@ -5,8 +5,8 @@ import { FormType } from '../entities/form.entity';
 
 @InputType()
 export class LayoutJSONInputType {
-  @Field(() => [SectionsInputs])
-  sections: SectionsInputs[]
+  @Field(() => [FormTabsInputs])
+  tabs: FormTabsInputs[]
 }
 @InputType()
 export class SectionsInputs {
@@ -114,3 +114,15 @@ export class CreateFormInput {
 }
 
 
+
+@InputType()
+export class FormTabsInputs {
+  @Field({ nullable: true })
+  id: string;
+
+  @Field({ nullable: true })
+  name: string
+
+  @Field(() => [SectionsInputs])
+  sections: SectionsInputs[]
+}
