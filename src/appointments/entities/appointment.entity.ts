@@ -35,9 +35,9 @@ registerEnumType(BillingStatus, {
 });
 
 export enum AppointmentStatus {
-  INITIATED = "initiated",
-  CHECK_IN = 'check_in',
-  SELF_CHECK_IN = 'self_check_in',
+  SCHEDULED = "scheduled",
+  ARRIVED = 'arrived',
+  CHECK_IN_ONLINE = 'check_in_online',
   IN_LOBBY = 'in_lobby',
   IN_SESSION = 'in_session',
   RESCHEDULED = 'rescheduled',
@@ -74,7 +74,7 @@ export class Appointment {
   @Column({
     type: "enum",
     enum: AppointmentStatus,
-    default: AppointmentStatus.INITIATED
+    default: AppointmentStatus.SCHEDULED
   })
   @Field(type => AppointmentStatus)
   status: AppointmentStatus;
