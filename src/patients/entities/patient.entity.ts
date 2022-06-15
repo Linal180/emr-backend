@@ -44,8 +44,9 @@ registerEnumType(RACE, {
 
 export enum ETHNICITY {
   NONE = "none",
-  CENTERAL_AMERICAN = "centeral American",
-  CENTERAL_AMERICAN_INDIAN = "centeral American Indian",
+  HISPANIC_OR_LATINO = "Hispanic or Latino",
+  NOT_HISPANIC_OR_LATINO = "Not Hispanic or Latino",
+  DECLINE_TO_SPECIFY = "Declined to specify"
 }
 
 registerEnumType(ETHNICITY, {
@@ -84,7 +85,7 @@ export enum GENDERIDENTITY {
   FEMALE = "Identifies as Female",
   TRANSGENDER_MALE = "Transgender Male/Female-to-Male (FTM)",
   TRANSGENDER_FEMALE = "Transgender Female/Male-to-Female (MTF)",
-  NOT_EXCLUSIVE = "Gender non-conforming (neither exclusively male nor female)",
+  DECLINE_TO_SPECIFY = "Decline to specify",
   NONE = "Choose not to disclose"
 }
 

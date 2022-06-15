@@ -32,9 +32,13 @@ export class FormsService {
       const formInstance = await this.formsRepository.create({ ...createFormInput, layout: createFormInput.layout });
       const createdForm = await this.formsRepository.save(formInstance);
       //creating elements of form
-      createFormInput?.layout?.sections?.map(async (item) => {
-        await this.formElementsService.createBulk(item.fields, item.id, createdForm)
-      });
+      const { layout } = createFormInput
+      const { tabs } = layout
+      tabs?.map(({ sections }) => {
+        sections?.map(async (item) => {
+          await this.formElementsService.createBulk(item.fields, item.id, createdForm)
+        })
+      })
       return createdForm
     } catch (error) {
       throw new InternalServerErrorException(error);

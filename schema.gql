@@ -670,6 +670,10 @@ type Employer {
   industry: String
   usualOccupation: String
   patientId: String
+  city: String
+  state: String
+  address: String
+  zipCode: String
   patient: Patient
   createdAt: String!
   updatedAt: String!
@@ -822,7 +826,7 @@ enum GENDERIDENTITY {
   FEMALE
   TRANSGENDER_MALE
   TRANSGENDER_FEMALE
-  NOT_EXCLUSIVE
+  DECLINE_TO_SPECIFY
   NONE
 }
 
@@ -847,8 +851,9 @@ enum RACE {
 """The patient's ethnicity type assigned"""
 enum ETHNICITY {
   NONE
-  CENTERAL_AMERICAN
-  CENTERAL_AMERICAN_INDIAN
+  HISPANIC_OR_LATINO
+  NOT_HISPANIC_OR_LATINO
+  DECLINE_TO_SPECIFY
 }
 
 """The patient's maritial status type assigned"""
@@ -1765,8 +1770,14 @@ type SectionsTypes {
   fields: [FieldsTypes!]!
 }
 
-type LayoutJSONType {
+type FormTabs {
+  id: String
+  name: String
   sections: [SectionsTypes!]!
+}
+
+type LayoutJSONType {
+  tabs: [FormTabs!]!
 }
 
 type ArrayOfStringsType {
@@ -3234,6 +3245,10 @@ input CreateEmployerInput {
   industry: String
   usualOccupation: String
   patientId: String
+  city: String
+  state: String
+  address: String
+  zipCode: String
 }
 
 input PatientInfoInput {
@@ -3323,6 +3338,10 @@ input UpdateEmployerItemInput {
   industry: String
   usualOccupation: String
   patientId: String
+  city: String
+  state: String
+  address: String
+  zipCode: String
   id: String
 }
 
@@ -3850,6 +3869,12 @@ input CreateFormInput {
 }
 
 input LayoutJSONInputType {
+  tabs: [FormTabsInputs!]!
+}
+
+input FormTabsInputs {
+  id: String
+  name: String
   sections: [SectionsInputs!]!
 }
 
