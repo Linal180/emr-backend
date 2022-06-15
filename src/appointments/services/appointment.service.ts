@@ -109,6 +109,9 @@ export class AppointmentService {
         if (patient.phonePermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
+        if (patient?.email) {
+          this.triggerSmsNotification(appointment, provider, patient, facility, true)
+        }
         return appointment
       }
       throw new ConflictException({
