@@ -645,6 +645,7 @@ type DoctorPatient {
   patientId: String
   currentProvider: Boolean
   doctor: Doctor
+  patient: Patient
   createdAt: String!
   updatedAt: String!
   otherRelation: String
@@ -1496,6 +1497,12 @@ type PatientsPayload {
   pagination: PaginationPayload
 }
 
+type DoctorPatientsPayload {
+  response: ResponsePayload
+  doctorPatients: [DoctorPatient]
+  pagination: PaginationPayload
+}
+
 type ContactPayload {
   contact: Contact
   response: ResponsePayload
@@ -2137,6 +2144,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getPatientProviders(getPatient: GetPatient!): PatientProviderPayload!
   getPatientProvider(patientProviderInputs: PatientProviderInputs!): PatientDoctorPayload!
+  findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
@@ -2342,6 +2350,11 @@ input GetPatient {
 input PatientProviderInputs {
   patientId: String!
   providerId: String
+}
+
+input DoctorPatientsInput {
+  doctorId: String
+  paginationOptions: PaginationInput!
 }
 
 input GetAttachment {

@@ -37,10 +37,11 @@ export class DoctorPatient {
   currentProvider: boolean;
 
   @ManyToOne(() => Doctor, doctor => doctor.doctorPatients)
-  @Field(type => Doctor, { nullable: true })
+  @Field(() => Doctor, { nullable: true })
   doctor: Doctor;
 
   @ManyToOne(() => Patient, patient => patient.doctorPatients, { onDelete: "CASCADE" })
+  @Field(() => Patient, { nullable: true })
   patient: Patient;
 
   @CreateDateColumn({ type: 'timestamptz' })

@@ -1,5 +1,6 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
@@ -7,18 +8,17 @@ import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { Contact } from 'src/providers/entities/contact.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
 import { ContactService } from 'src/providers/services/contact.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import PatientAttachmentsInput from '../dto/patient-attachments-input.dto';
 import { PatientInfoInput } from '../dto/patient-info.input';
-import PatientInput from '../dto/patient-input.dto';
+import PatientInput, { DoctorPatientsInput } from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientDoctorPayload, PatientPayload, PatientProviderPayload } from '../dto/patient-payload.dto';
 import { PatientAttachmentsPayload } from '../dto/patients-attachments-payload.dto';
-import { PatientsPayload } from '../dto/patients-payload.dto';
+import { DoctorPatientsPayload, PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
@@ -129,8 +129,8 @@ export class PatientResolver {
   //queries
 
   @Query(() => PatientsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllPatient')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllPatient')
   async findAllPatient(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
     const patients = await this.patientService.findAllPatients(patientInput)
     if (patients) {
