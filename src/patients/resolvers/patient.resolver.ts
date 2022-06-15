@@ -129,8 +129,8 @@ export class PatientResolver {
   //queries
 
   @Query(() => PatientsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'findAllPatient')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllPatient')
   async findAllPatient(@Args('patientInput') patientInput: PatientInput): Promise<PatientsPayload> {
     const patients = await this.patientService.findAllPatients(patientInput)
     if (patients) {
@@ -248,6 +248,13 @@ export class PatientResolver {
   async attachments(@Parent() patient: Patient): Promise<Attachment[]> {
     if (patient) {
       return await this.attachmentsService.findAttachments(patient.id, AttachmentType.PATIENT);
+    }
+  }
+
+  @ResolveField(() => String)
+  async profileAttachment(@Parent() patient: Patient): Promise<string> {
+    if (patient) {
+      return await this.attachmentsService.findProfileAttachment(patient.id, AttachmentType.PATIENT);
     }
   }
 

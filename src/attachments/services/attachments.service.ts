@@ -1,6 +1,7 @@
 import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from 'src/aws/dto/file-input.dto';
+import { ATTACHMENT_TITLES } from 'src/lib/constants';
 import { PaginationService } from 'src/pagination/pagination.service';
 import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.dto';
 import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
@@ -154,6 +155,26 @@ export class AttachmentsService {
         where: { typeId: id, type: type },
         order: { createdAt: "ASC" },
       });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  /**
+   * Finds profile attachment
+   * @param id 
+   * @param type 
+   * @returns profile attachment 
+   */
+  async findProfileAttachment(id: string, type: string): Promise<string> {
+    try {
+      const attachment = await this.attachmentsRepository.findOne({
+        where: { typeId: id, type: type, title: ATTACHMENT_TITLES.ProfilePicture },
+      });
+      if (attachment) {
+        return await this.awsService.getFile(attachment.key);
+      }
+      return null
     } catch (error) {
       throw new Error(error);
     }

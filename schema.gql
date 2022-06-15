@@ -796,6 +796,7 @@ type Patient {
   facilityId: String
   practiceId: String
   attachments: [Attachment!]
+  profileAttachment: String
   contacts: [Contact!]
   facility: Facility
   user: User

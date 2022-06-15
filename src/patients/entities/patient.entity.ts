@@ -359,6 +359,9 @@ export class Patient {
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
 
+  @Field({ nullable: true })
+  profileAttachment: string;
+
   @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
@@ -416,7 +419,7 @@ export class Patient {
   @Field(type => Transactions, { nullable: true })
   transaction: Transactions;
 
-  @OneToMany(() => Policy, policy => policy.patient, {onDelete: "CASCADE"})
+  @OneToMany(() => Policy, policy => policy.patient, { onDelete: "CASCADE" })
   @Field(type => [Policy], { nullable: true })
   policies: Policy[];
 
