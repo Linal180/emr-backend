@@ -110,7 +110,7 @@ export class AppointmentService {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
         if (patient?.email) {
-          this.triggerSmsNotification(appointment, provider, patient, facility, true)
+          this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointmentInstance.scheduleStartDateTime, token, patient.id, false)
         }
         return appointment
       }
