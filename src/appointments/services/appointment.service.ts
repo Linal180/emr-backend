@@ -325,7 +325,7 @@ export class AppointmentService {
   async findAppointment(providerId: string, patientId: string) {
     return await this.appointmentRepository.findOne({
       where: [
-        { patientId: patientId, providerId: providerId, status: AppointmentStatus.INITIATED }
+        { patientId: patientId, providerId: providerId, status: AppointmentStatus.SCHEDULED }
       ]
     });
   }
@@ -350,7 +350,7 @@ export class AppointmentService {
     if (getAppointments.doctorId) {
       const appointment = await this.appointmentRepository.find({
         where: [
-          { providerId: getAppointments.doctorId, status: AppointmentStatus.INITIATED }
+          { providerId: getAppointments.doctorId, status: AppointmentStatus.SCHEDULED }
         ]
       })
       if (appointment) {
@@ -359,7 +359,7 @@ export class AppointmentService {
     } else if (getAppointments.facilityId) {
       const appointment = await this.appointmentRepository.find({
         where: [
-          { facilityId: getAppointments.facilityId, status: AppointmentStatus.INITIATED }
+          { facilityId: getAppointments.facilityId, status: AppointmentStatus.SCHEDULED }
         ]
       })
       if (appointment) {
