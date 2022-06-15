@@ -58,11 +58,11 @@ export class Form {
   isActive: boolean;
 
   @OneToMany(() => FormElement, formElement => formElement.element, { onDelete: "CASCADE" })
-  @Field(type => [FormElement], { nullable: true })
+  @Field(() => [FormElement], { nullable: true })
   formElements: FormElement[];
 
   @OneToMany(() => UserForms, formElement => formElement.form)
-  @Field(type => [UserForms], { nullable: true })
+  @Field(() => [UserForms], { nullable: true })
   userForms: UserForms[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
