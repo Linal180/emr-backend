@@ -1,5 +1,7 @@
-import { HttpStatus, NotFoundException } from "@nestjs/common";
+import { HttpStatus, NotFoundException, UseGuards } from "@nestjs/common";
 import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
+import PermissionGuard from "src/users/auth/role.guard";
 import { DoctorPatientsInput } from "../dto/patient-input.dto";
 import { DoctorPatientsPayload } from "../dto/patients-payload.dto";
 import { DoctorPatient } from "../entities/doctorPatient.entity";
@@ -15,9 +17,8 @@ export class DoctorPatientResolver {
 
 	//queries
 
-
 	@Query(() => DoctorPatientsPayload)
-	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+	@UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
 	// @SetMetadata('name', 'findAllDoctorPatients')
 	async findAllDoctorPatients(@Args('doctorPatientsInput') doctorPatientsInput: DoctorPatientsInput): Promise<DoctorPatientsPayload> {
 		const patients = await this.doctorPatientService.findAllDoctorPatients(doctorPatientsInput)
