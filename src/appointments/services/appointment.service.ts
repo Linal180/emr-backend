@@ -7,7 +7,7 @@ import { createToken } from 'src/lib/helper';
 import { ContractService } from './contract.service';
 import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
-import AppointmentInput from '../dto/appointment-input.dto';
+import { AppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { GetSlots } from 'src/providers/dto/update-schedule.input';
@@ -222,6 +222,7 @@ export class AppointmentService {
       });
     }
   }
+
   /**
    * Finds all appointments
    * @param appointmentInput 
@@ -255,6 +256,39 @@ export class AppointmentService {
         },
         appointments: paginationResponse.data,
       }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+ * Finds all upcoming appointments
+ * @param upcomingAppointmentInputs
+ * @returns all upcoming appointments appointments 
+ */
+  async findAllUpcomingAppointments(upComingAppointmentInput: UpComingAppointmentsInput): Promise<Appointment[]> {
+    try {
+      const { facilityId, patientId, practiceId, providerId } = upComingAppointmentInput
+      const query = {
+        ...(facilityId && facilityId !== null && {
+          facilityId
+        }),
+        ...( patientId && patientId !== null && {
+          patientId
+        }),
+        ...( practiceId && practiceId !== null && {
+          practiceId
+        }),
+        ...( providerId && providerId !== null && {
+          providerId
+        })
+      }
+  
+      const appointment = await this.appointmentRepository.find({
+        where: query
+      })
+
+      return appointment
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
