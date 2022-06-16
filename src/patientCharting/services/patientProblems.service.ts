@@ -8,7 +8,7 @@ import { StaffService } from 'src/providers/services/staff.service';
 import { UtilsService } from 'src/util/utils.service';
 import { getConnection, In, Repository } from 'typeorm';
 import { CreateProblemInput } from '../dto/create-problem.input';
-import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
+import { IcdCodesPayload, ICDCodesWithSnowMedCode } from '../dto/icdCodes-payload.dto';
 import PatientProblemInput from '../dto/problem-input.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
@@ -43,8 +43,7 @@ export class ProblemService {
     try {
       //get icdCode
       const icdCode = await this.icdCodeRepository.findOne(createProblemInput.icdCodeId)
-      //get snowMedCode
-      const snowMedCode = await this.snowMedCodeRepository.findOne(createProblemInput.snowMedCodeId)
+
       //get patient 
       const patient = await this.patientService.findOne(createProblemInput.patientId)
       //adding patient problem
@@ -64,7 +63,11 @@ export class ProblemService {
         const staff = await this.staffService.findOne(createProblemInput.staffId)
         patientProblemInstance.staff = staff
       }
-      patientProblemInstance.snowMedCode = snowMedCode
+      //get snowMedCode
+      if (createProblemInput.snowMedCodeId) {
+        const snowMedCode = await this.snowMedCodeRepository.findOne(createProblemInput.snowMedCodeId)
+        patientProblemInstance.snowMedCode = snowMedCode
+      }
       const patientProblem = await this.patientProblemsRepository.save(patientProblemInstance)
       return patientProblem
     } catch (error) {
@@ -134,7 +137,45 @@ export class ProblemService {
       error: 'diagnoses not found',
     });
   }
-  
+
+  async getICDCodesWithSnoMedCodes(icdCodes: ICDCodes[]): Promise<ICDCodesWithSnowMedCode[]> {
+    const iCDCodes = (await Promise.all(
+      icdCodes.map(async (icdCode, i) => {
+        const snoMedCodes = await getConnection()
+          .getRepository(SnoMedCodes)
+          .createQueryBuilder("SnoMedCode")
+          .distinctOn(['SnoMedCode.referencedComponentId'])
+          .where('SnoMedCode.mapTarget = :searchTerm', { searchTerm: icdCode.code })
+          .getMany()
+
+        return {
+          ...icdCode,
+          snoMedCodes
+        }
+      })
+    ))
+
+
+
+    const transformedICDCodes = iCDCodes.reduce((acc, iCDCode, i) => {
+      if (iCDCode.snoMedCodes.length) {
+        const snoValue = iCDCode.snoMedCodes.map((snoMedCode) => {
+          return {
+            ...iCDCode,
+            snoMedCode
+          }
+        })
+        acc.push(...snoValue)
+        return acc
+      }
+
+      acc.push(iCDCode)
+      return acc
+    }, [])
+
+    return transformedICDCodes
+  }
+
   /**
    * Search icd codes
    * @param searchTerm 
@@ -148,6 +189,7 @@ export class ProblemService {
     const snoMedCodes = await getConnection()
       .getRepository(SnoMedCodes)
       .createQueryBuilder("SnoMedCode")
+      .distinctOn(['SnoMedCode.referencedComponentId'])
       .where('SnoMedCode.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` }).getMany()
 
     let IcdCodes = []
@@ -170,9 +212,10 @@ export class ProblemService {
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .getManyAndCount()
+
     const totalPages = Math.ceil(totalCount / limit)
     return {
-      icdCodes: !!snoMedIcdCodes.length ? snoMedIcdCodes : icdCodes,
+      icdCodes: !!snoMedIcdCodes.length ? await this.getICDCodesWithSnoMedCodes(snoMedIcdCodes) : await this.getICDCodesWithSnoMedCodes(icdCodes),
       pagination: {
         totalCount,
         page,
@@ -210,7 +253,7 @@ export class ProblemService {
         pagination: {
           ...paginationResponse
         },
-        icdCodes: this.utilsService.mergeArrayAndRemoveDuplicates(icdCodes, paginationResponse.data, 'code').slice(0,limit),
+        icdCodes: this.utilsService.mergeArrayAndRemoveDuplicates(icdCodes, paginationResponse.data, 'code').slice(0, limit),
       }
     } catch (error) {
       throw new InternalServerErrorException(error);

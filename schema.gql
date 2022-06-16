@@ -1951,8 +1951,19 @@ type ReactionsPayload {
 
 type IcdCodesPayload {
   response: ResponsePayload
-  icdCodes: [ICDCodes]
+  icdCodes: [ICDCodesWithSnowMedCode]
   pagination: PaginationPayload
+}
+
+type ICDCodesWithSnowMedCode {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
+  snoMedCode: SnoMedCodes
 }
 
 type PatientProblemPayload {
