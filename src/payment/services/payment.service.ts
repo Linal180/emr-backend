@@ -348,7 +348,9 @@ export class PaymentService {
       const trans = await braintreeACHPayment({ paymentMethodNonce, customerId, price });
       if (trans) {
         const transactionId = trans as string
-        await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+        if(appointmentId){
+          await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+        }
         const transactionInputs = { transactionId, patientId, doctorId, facilityId, appointmentId, status: TRANSACTIONSTATUS.PAID }
         const transaction = await this.create(transactionInputs)
         return transaction
