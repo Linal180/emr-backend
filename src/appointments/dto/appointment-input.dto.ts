@@ -4,7 +4,7 @@ import { AppointmentStatus } from '../entities/appointment.entity';
 
 @InputType()
 export class AppointmentInput {
-    @Field(type => PaginationInput)
+    @Field(() => PaginationInput)
     paginationOptions: PaginationInput
 
     @Field({nullable: true})
@@ -27,6 +27,9 @@ export class AppointmentInput {
 
     @Field({nullable: true})
     relationTable?: string
+
+    @Field({nullable: true})
+    providerId?: string
 }
 
 @InputType()

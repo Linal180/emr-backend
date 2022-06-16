@@ -2399,6 +2399,7 @@ input AppointmentInput {
   practiceId: String
   facilityId: String
   relationTable: String
+  providerId: String
 }
 
 input UpComingAppointmentsInput {

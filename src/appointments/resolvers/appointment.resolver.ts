@@ -121,8 +121,8 @@ export class AppointmentResolver {
   }
 
   @Query(() => AppointmentsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllAppointments')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllUpcomingAppointments')
   async findAllUpcomingAppointments(@Args('upComingAppointmentsInput') upComingAppointmentsInput: UpComingAppointmentsInput): Promise<UpcomingAppointmentsPayload> {
     const appointments = await this.appointmentService.findAllUpcomingAppointments(upComingAppointmentsInput)
     if (appointments) {
