@@ -492,10 +492,10 @@ enum STATUS {
 type Transactions {
   id: String!
   transactionId: String
-  patientId: String!
+  patientId: String
   doctorId: String
   facilityId: String
-  appointmentId: String!
+  appointmentId: String
   patient: [Patient!]
   doctor: [Doctor!]
   facility: [Facility!]
@@ -3557,12 +3557,12 @@ input UpdateAppointmentStatusInput {
 
 input PaymentInput {
   clientIntent: String
-  price: String!
+  price: String
   providerId: String
   facilityId: String
-  patientId: String!
-  appointmentId: String!
-  serviceId: String!
+  patientId: String
+  appointmentId: String
+  serviceId: String
 }
 
 input PaymentInputsAfterAppointment {
@@ -3584,10 +3584,10 @@ input ACHPaymentInputs {
   firstName: String
   lastName: String
   price: String!
-  patientId: String!
+  patientId: String
   doctorId: String
   facilityId: String
-  appointmentId: String!
+  appointmentId: String
   company: String
   deviceData: String
 }

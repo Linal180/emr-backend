@@ -162,12 +162,14 @@ export class PaymentService {
             const data = { transactionId: brainTrans?.transaction?.id, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
             return await this.create(data);
           } else {
-            const refunded = await this.refund(brainTrans?.transaction?.id, appointmentId);
-            if (refunded?.success) {
-              throw new Error(
-                'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
-              );
-            }
+            const data = { transactionId: brainTrans?.transaction?.id, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
+            return await this.create(data);
+            // const refunded = await this.refund(brainTrans?.transaction?.id, appointmentId);
+            // if (refunded?.success) {
+            //   throw new Error(
+            //     'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
+            //   );
+            // }
           }
         } else {
           throw new Error(brainTrans?.message);

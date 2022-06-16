@@ -38,8 +38,8 @@ export class Transactions {
   @Field({ nullable: true })
   transactionId: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   patientId: string;
 
   @Column({ nullable: true })
@@ -50,8 +50,8 @@ export class Transactions {
   @Field({ nullable: true })
   facilityId: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   appointmentId: string;
 
   @OneToMany(() => Patient, (patient) => patient.id)
