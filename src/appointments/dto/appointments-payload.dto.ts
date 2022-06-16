@@ -11,3 +11,9 @@ export class AppointmentsPayload extends ResponsePayloadResponse {
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
 }
+
+@ObjectType()
+export class UpcomingAppointmentsPayload extends ResponsePayloadResponse {
+    @Field(type => [Appointment], { nullable: 'itemsAndList' })
+    appointments: Appointment[];
+}

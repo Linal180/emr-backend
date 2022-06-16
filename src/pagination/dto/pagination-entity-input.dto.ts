@@ -61,4 +61,5 @@ export class PaginatedEntityInput {
   payerName?: string
   documentPracticeId?: string
   documentTypeName?: string
+  providerId?: string
 }

@@ -3,7 +3,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 //entities , inputs, dtos, services
 import PermissionGuard from 'src/users/auth/role.guard';
 import { Invoice } from 'src/payment/entity/invoice.entity';
-import AppointmentInput from '../dto/appointment-input.dto';
+import { AppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import { Appointment } from '../entities/appointment.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
@@ -12,7 +12,7 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { AppointmentPayload, PatientPastUpcomingAppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentService } from '../services/appointment.service';
 import { InvoiceService } from 'src/payment/services/invoice.service';
-import { AppointmentsPayload } from '../dto/appointments-payload.dto';
+import { AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
@@ -109,6 +109,25 @@ export class AppointmentResolver {
     if (appointments) {
       return {
         ...appointments,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Appointments not found',
+    });
+  }
+
+  @Query(() => AppointmentsPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllUpcomingAppointments')
+  async findAllUpcomingAppointments(@Args('upComingAppointmentsInput') upComingAppointmentsInput: UpComingAppointmentsInput): Promise<UpcomingAppointmentsPayload> {
+    const appointments = await this.appointmentService.findAllUpcomingAppointments(upComingAppointmentsInput)
+    if (appointments) {
+      return {
+        appointments,
         response: {
           message: "OK", status: 200,
         }

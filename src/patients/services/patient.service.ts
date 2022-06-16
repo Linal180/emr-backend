@@ -18,10 +18,10 @@ import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { PatientInfoInput } from '../dto/patient-info.input';
-import PatientInput from '../dto/patient-input.dto';
+import PatientInput, { DoctorPatientsInput } from '../dto/patient-input.dto';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
-import { PatientsPayload } from '../dto/patients-payload.dto';
+import { DoctorPatientsPayload, PatientsPayload } from '../dto/patients-payload.dto';
 import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
@@ -428,7 +428,6 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     }
   }
-
 
   /**
    * Updates patient note info

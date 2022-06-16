@@ -13,8 +13,10 @@ import { Patient } from './entities/patient.entity';
 import { PatientController } from './patient.controller';
 import { PatientSubscriber } from './patient.subscriber';
 import { PatientResolver } from './resolvers/patient.resolver';
+import { DoctorPatientResolver } from './resolvers/doctorPatient.resolver';
 import { EmployerService } from './services/employer.service';
 import { PatientService } from './services/patient.service';
+import { DoctorPatientService } from './services/doctorPatient.service';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { PatientService } from './services/patient.service';
     forwardRef(() => AppointmentModule),
     forwardRef(() => ProviderModule)
   ],
-  providers: [PatientResolver, PatientService, EmployerService, PatientSubscriber],
+  providers: [PatientResolver, PatientService, EmployerService, PatientSubscriber, DoctorPatientService, DoctorPatientResolver],
   controllers: [PatientController],
   exports: [PatientService, TypeOrmModule, EmployerService],
 })

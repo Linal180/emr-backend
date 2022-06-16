@@ -360,6 +360,9 @@ export class Patient {
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
 
+  @Field({ nullable: true })
+  profileAttachment: string;
+
   @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Contact], { nullable: true })
   contacts: Contact[];
