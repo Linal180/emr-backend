@@ -3075,7 +3075,6 @@ input CreateDoctorItemInput {
   lastName: String!
   prefix: String
   suffix: String
-  email: String!
   password: String
 
   """Send doctor Type from the string - Sign-up"""
@@ -3128,7 +3127,6 @@ input UpdateDoctorItemInput {
   lastName: String
   prefix: String
   suffix: String
-  email: String
   password: String
 
   """Send doctor Type from the string - Sign-up"""
