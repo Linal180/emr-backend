@@ -53,12 +53,13 @@ export class DoctorService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      const { email } = createDoctorInput.createContactInput
       // register doctor as user -
-      const user = await this.usersService.create(createDoctorInput.createDoctorItemInput)
+      const user = await this.usersService.create({ ...createDoctorInput.createDoctorItemInput, email })
       //get facility 
       const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
       // Doctor Creation
-      const doctorInstance = this.doctorRepository.create(createDoctorInput.createDoctorItemInput)
+      const doctorInstance = this.doctorRepository.create({ ...createDoctorInput.createDoctorItemInput, email })
       doctorInstance.user = user;
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
@@ -91,16 +92,17 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const doctor = await this.doctorRepository.save({ ...updateDoctorInput.updateDoctorItemInput })
+      const { email } = updateDoctorInput.updateContactInput
+      const doctor = await this.doctorRepository.save({ ...updateDoctorInput.updateDoctorItemInput, email })
       //updating contact details
       await this.contactService.updateContact(updateDoctorInput.updateContactInput)
       //updating billing details
       await this.billingAddressService.updateBillingAddress(updateDoctorInput.updateBillingAddressInput)
-       //update primary contact in user's model 
-       if(updateDoctorInput.updateContactInput.phone){
-         const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
-        await this.usersService.updateUserInfo({phone: updateDoctorInput.updateContactInput.phone, id: user.id})
-     }
+      //update primary contact in user's model 
+      if (updateDoctorInput.updateContactInput.phone) {
+        const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
+        await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, id: user.id })
+      }
       return doctor
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -137,7 +139,6 @@ export class DoctorService {
   async findAllDoctor(doctorInput: DoctorInput): Promise<AllDoctorPayload> {
     try {
       const [first] = doctorInput.searchString ? doctorInput.searchString.split(' ') : ''
-      console.log("first",first);
       const paginationResponse = await this.paginationService.willPaginate<Doctor>(this.doctorRepository, { ...doctorInput, associatedTo: 'Doctor', associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' } })
       return {
         pagination: {
@@ -285,7 +286,7 @@ export class DoctorService {
       throw new InternalServerErrorException(error);
     }
   }
-  
+
   /**
    * Updates doctor media
    * @param file 

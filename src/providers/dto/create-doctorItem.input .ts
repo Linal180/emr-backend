@@ -19,9 +19,6 @@ export class CreateDoctorItemInput {
   @Field({ nullable: true })
   suffix: string;
 
-  @Field({ nullable: false })
-  email: string;
-
   @Field({ nullable: true })
   password: string;
 
