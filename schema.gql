@@ -645,6 +645,7 @@ type DoctorPatient {
   patientId: String
   currentProvider: Boolean
   doctor: Doctor
+  patient: Patient
   createdAt: String!
   updatedAt: String!
   otherRelation: String
@@ -800,6 +801,7 @@ type Patient {
   facilityId: String
   practiceId: String
   attachments: [Attachment!]
+  profileAttachment: String
   contacts: [Contact!]
   facility: Facility
   user: User
@@ -1495,6 +1497,12 @@ type PatientsPayload {
   pagination: PaginationPayload
 }
 
+type DoctorPatientsPayload {
+  response: ResponsePayload
+  doctorPatients: [DoctorPatient]
+  pagination: PaginationPayload
+}
+
 type ContactPayload {
   contact: Contact
   response: ResponsePayload
@@ -1943,8 +1951,19 @@ type ReactionsPayload {
 
 type IcdCodesPayload {
   response: ResponsePayload
-  icdCodes: [ICDCodes]
+  icdCodes: [ICDCodesWithSnowMedCode]
   pagination: PaginationPayload
+}
+
+type ICDCodesWithSnowMedCode {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
+  snoMedCode: SnoMedCodes
 }
 
 type PatientProblemPayload {
@@ -2136,6 +2155,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getPatientProviders(getPatient: GetPatient!): PatientProviderPayload!
   getPatientProvider(patientProviderInputs: PatientProviderInputs!): PatientDoctorPayload!
+  findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
@@ -2146,6 +2166,7 @@ type Query {
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
+  findAllUpcomingAppointments(upComingAppointmentsInput: UpComingAppointmentsInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
@@ -2342,6 +2363,11 @@ input PatientProviderInputs {
   providerId: String
 }
 
+input DoctorPatientsInput {
+  doctorId: String
+  paginationOptions: PaginationInput!
+}
+
 input GetAttachment {
   typeId: String!
 }
@@ -2384,6 +2410,14 @@ input AppointmentInput {
   practiceId: String
   facilityId: String
   relationTable: String
+  providerId: String
+}
+
+input UpComingAppointmentsInput {
+  patientId: String
+  practiceId: String
+  facilityId: String
+  providerId: String
 }
 
 input GetAppointment {
@@ -3041,7 +3075,6 @@ input CreateDoctorItemInput {
   lastName: String!
   prefix: String
   suffix: String
-  email: String!
   password: String
 
   """Send doctor Type from the string - Sign-up"""
@@ -3094,7 +3127,6 @@ input UpdateDoctorItemInput {
   lastName: String
   prefix: String
   suffix: String
-  email: String
   password: String
 
   """Send doctor Type from the string - Sign-up"""

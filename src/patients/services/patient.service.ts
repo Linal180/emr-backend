@@ -111,19 +111,7 @@ export class PatientService {
           const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
           patientInstance.facility = facility
         }
-        //get doctor
-        if (createPatientInput?.createPatientItemInput?.usualProviderId) {
-          const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
-          //creating doctorPatient Instance 
-          const doctorPatientInstance = await this.doctorPatientRepository.create({
-            doctorId: doctor.id,
-            currentProvider: true,
-          })
-          doctorPatientInstance.doctor = doctor
-          doctorPatientInstance.doctorId = doctor.id
-          //adding usual provider with patient
-          patientInstance.doctorPatients = [doctorPatientInstance]
-        }
+
         //create patient contact 
         const contact = await this.contactService.createContact(createPatientInput.createContactInput)
         //create patient emergency contact 
@@ -140,7 +128,22 @@ export class PatientService {
         patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
         const patient = await queryRunner.manager.save(patientInstance);
         await queryRunner.commitTransaction();
-        return patient
+
+        //get doctor
+        if (createPatientInput?.createPatientItemInput?.usualProviderId) {
+          const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
+          console.log("doctor", doctor)
+          //creating doctorPatient Instance 
+          const doctorPatientInstance = await this.doctorPatientRepository.create({
+            currentProvider: true,
+            relation: DoctorPatientRelationType.PRIMARY_PROVIDER
+          })
+          doctorPatientInstance.doctor = doctor
+          doctorPatientInstance.patient = patient
+          await this.doctorPatientRepository.save(doctorPatientInstance)
+        }
+        const updatedPatient = await queryRunner.manager.save(patient);
+        return updatedPatient
 
       }
 
@@ -200,7 +203,22 @@ export class PatientService {
       patientInstance.employer = [employerContact]
       patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
       if (usualProviderId) {
-        await this.updatePatientProvider({ patientId, providerId: usualProviderId })
+        const doctor = await this.doctorService.findOne(usualProviderId)
+        // console.log("doctor",doctor)
+        // const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
+        //updating usual provider with patient
+        const doctorPatientInst= await this.doctorPatientRepository.findOne({ patientId: patientId, doctorId: usualProviderId })
+        if(doctorPatientInst){
+          doctorPatientInst.relation = DoctorPatientRelationType.PRIMARY_PROVIDER
+          await this.doctorPatientRepository.update({patientId: patientId},{ relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          await this.doctorPatientRepository.save(doctorPatientInst)
+        }else{
+          const doctorPatientInstance = await this.doctorPatientRepository.create({ relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
+          doctorPatientInstance.patient = patientInstance
+          doctorPatientInstance.doctor= doctor
+          await this.doctorPatientRepository.update({patientId: patientId},{ relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          await this.doctorPatientRepository.save(doctorPatientInstance)
+        } 
       }
       const patient = await queryRunner.manager.save(patientInstance);
       await queryRunner.commitTransaction();
@@ -428,7 +446,6 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     }
   }
-
 
   /**
    * Updates patient note info

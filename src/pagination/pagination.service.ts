@@ -194,6 +194,7 @@ export class PaginationService {
       orderNumber,
       documentPracticeId,
       documentTypeName,
+      providerId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -234,6 +235,9 @@ export class PaginationService {
         }),
         ...(doctorId && {
           doctorId
+        }),
+        ...(providerId && {
+          providerId
         }),
         ...(FormId && {
           FormId
