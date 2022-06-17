@@ -1074,6 +1074,7 @@ type Doctor {
   middleName: String
   lastName: String
   prefix: String
+  telehealthLink: String
   suffix: String
   email: String
   providerIntials: String
@@ -1220,6 +1221,7 @@ type Appointment {
   paymentType: PaymentType!
   status: AppointmentStatus!
   billingStatus: BillingStatus!
+  appointmentCreateType: AppointmentCreateType
   appointmentCancelReason: String
   checkedInAt: String
   checkedOutAt: String
@@ -1285,6 +1287,12 @@ enum BillingStatus {
   PAID
   DUE
   REFUND
+}
+
+"""The appointment create type assigned"""
+enum AppointmentCreateType {
+  APPOINTMENT
+  TELEHEALTH
 }
 
 type Facility {
@@ -3512,6 +3520,7 @@ input CreateAppointmentInput {
   providerId: String
   patientId: String
   practiceId: String
+  appointmentCreateType: AppointmentCreateType
 }
 
 input CreateExternalAppointmentInput {
@@ -3559,6 +3568,7 @@ input UpdateAppointmentInput {
   providerId: String
   patientId: String
   practiceId: String
+  appointmentCreateType: AppointmentCreateType
   id: String!
   paymentStatus: String
   selfCheckIn: Boolean
