@@ -93,6 +93,30 @@ export class MailerService {
     }
   }
 
+  async sendAppointmentTelehealthEmail(email: string, fullName: string, appointmentTime: string, providerName: string, id: string) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const teleHealthURL = `${patientAppBaseUrl}/telehealth/${id}`
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('APPOINTMENT_TELEHEALTH_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+        appointmentTime,
+        teleHealthURL: teleHealthURL,
+        providerName
+      }
+    };
+    try {
+      await this.sgMail.send(msg);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
   /**
    * Sends verification email to verify email address
    * @param email 

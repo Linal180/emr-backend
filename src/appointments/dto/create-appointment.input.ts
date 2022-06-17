@@ -1,16 +1,16 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
-import { BillingStatus, PaymentType } from '../entities/appointment.entity';
+import { AppointmentCreateType, BillingStatus, PaymentType } from '../entities/appointment.entity';
 import { CreateContractInput } from './contract.input';
 
 @InputType()
-export class CreateAppointmentInput  extends PartialType(CreateContractInput){
-  
+export class CreateAppointmentInput extends PartialType(CreateContractInput) {
+
     @Field(type => PaymentType)
     paymentType: PaymentType;
 
-    @Field(type => BillingStatus,{ nullable: false })
+    @Field(type => BillingStatus, { nullable: false })
     billingStatus?: BillingStatus;
-  
+
     @Field({ nullable: true })
     insuranceCompany?: string;
 
@@ -19,50 +19,52 @@ export class CreateAppointmentInput  extends PartialType(CreateContractInput){
 
     @Field({ nullable: true })
     reason?: string;
-  
+
     @Field({ nullable: true })
     notes?: string;
-  
+
     @Field({ nullable: true })
     employment?: boolean;
-  
+
     @Field({ nullable: true })
     autoAccident?: boolean;
-  
+
     @Field({ nullable: true })
     otherAccident?: boolean;
-  
+
     @Field({ nullable: true })
     otherPartyResponsible?: boolean;
-  
+
     @Field({ nullable: true })
     primaryInsurance?: string;
-  
+
     @Field({ nullable: true })
     secondaryInsurance?: string;
 
     @Field({ nullable: true })
     isExternal: boolean;
-  
+
     @Field({ nullable: false })
     scheduleStartDateTime?: string;
 
     @Field({ nullable: false })
     scheduleEndDateTime?: string;
-  
+
     @Field({ nullable: false })
     appointmentTypeId: string;
-  
+
     @Field({ nullable: true })
     facilityId: string;
-    
+
     @Field({ nullable: true })
     providerId: string;
-  
+
     @Field({ nullable: true })
     patientId: string;
 
     @Field({ nullable: true })
     practiceId?: string;
-    
+
+    @Field(type => AppointmentCreateType, { nullable: true })
+    appointmentCreateType?: AppointmentCreateType
 }

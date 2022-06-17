@@ -23,6 +23,16 @@ registerEnumType(PaymentType, {
   description: "The patient payment type assigned",
 });
 
+export enum AppointmentCreateType {
+  APPOINTMENT = 'Appointment',
+  TELEHEALTH = 'Telehealth'
+}
+
+registerEnumType(AppointmentCreateType, {
+  name: "AppointmentCreateType",
+  description: "The appointment create type assigned",
+});
+
 export enum BillingStatus {
   PAID = "paid",
   DUE = "due",
@@ -86,6 +96,14 @@ export class Appointment {
   })
   @Field(type => BillingStatus)
   billingStatus: BillingStatus;
+
+  @Column({
+    type: "enum",
+    enum: AppointmentCreateType,
+    default: AppointmentCreateType.APPOINTMENT
+  })
+  @Field(type => AppointmentCreateType, { nullable: true })
+  appointmentCreateType: AppointmentCreateType;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
