@@ -237,8 +237,8 @@ export class Appointment {
   @OneToOne(() => Billing, (billing) => billing.appointment)
   billing: Billing;
 
-  @OneToOne(() => Transactions, (transaction) => transaction.appointment)
   @Field(() => Transactions, { nullable: true })
+  @OneToOne(() => Transactions, (transaction) => transaction.appointment)
   transaction: Transactions;
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)

@@ -329,14 +329,31 @@ export class UserFormsService {
               }
 
               const appointmentInstance = await this.appointmentService.createAppointment(appointmentInputs);
+              console.log('appointmentInstance => ', appointmentInstance)
               if (transactionId) {
-                const transaction = await this.transactionService.getTransaction(transactionId)
-                if (transaction) {
-                  appointmentInstance.transaction = transaction
+                console.log('transactionId =>', transactionId)
+                console.log('---------------------------------');
+                const transactionInstance = await this.transactionService.getTransaction(transactionId)
+                console.log('transaction =>', transactionInstance)
+                console.log('---------------------------------');
+
+                if (transactionInstance) {
+                  transactionInstance.appointmentId = appointmentInstance.id
+                  transactionInstance.patientId = patientInstance.id
+                  transactionInstance.doctorId = appointmentInstance.providerId
+                  transactionInstance.facilityId = appointmentInstance.facilityId
+                  
+                  transactionInstance.patient = patientInstance
+                  transactionInstance.doctor = appointmentInstance.provider
+                  transactionInstance.facility = appointmentInstance.facility
+                  // transactionInstance.appointment = appointmentInstance
+                  const updateTransaction = await this.transactionService.updateTransaction(transactionInstance)
+                  console.log('updateTransaction =>', updateTransaction)
+
                 }
+
               }
-              const updatedAppointment = await this.appointmentService.updateAppointment(appointmentInstance)
-              console.log('updatedAppointment => ', updatedAppointment)
+
               return patientInstance
             }
             else {

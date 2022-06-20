@@ -472,7 +472,7 @@ type Invoice {
   appointmentId: String
   createdAt: String
   updatedAt: String
-  transction: Transactions
+  transaction: Transactions
   appointment: Appointment
 }
 
@@ -496,9 +496,9 @@ type Transactions {
   doctorId: String
   facilityId: String
   appointmentId: String
-  patient: [Patient!]
-  doctor: [Doctor!]
-  facility: [Facility!]
+  patient: Patient
+  doctor: Doctor
+  facility: Facility
   appointment: Appointment
   createdAt: String
   updatedAt: String
@@ -815,7 +815,7 @@ type Patient {
   patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!
-  transaction: Transactions
+  transaction: [Transactions!]
   policies: [Policy!]
   policyHolder: PolicyHolder
   policyHolderId: String
@@ -1123,7 +1123,7 @@ type Doctor {
   policyOfPrimaryCareProvider: [Policy!]
   createdAt: String!
   updatedAt: String!
-  transaction: Transactions
+  transaction: [Transactions!]
   attachments: [Attachment!]
 }
 
@@ -1324,7 +1324,7 @@ type Facility {
   schedule: [Schedule!]
   createdAt: String
   updatedAt: String
-  transaction: Transactions
+  transaction: [Transactions!]
 }
 
 """The facility practice type assigned type"""

@@ -47,7 +47,7 @@ export class PaymentService {
     private readonly utilsService: UtilsService,
     @Inject(forwardRef(() => InvoiceService))
     private readonly invoiceService: InvoiceService,
-    private readonly paginationService: PaginationService
+    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -244,6 +244,14 @@ export class PaymentService {
    */
   async getTransaction(id: string): Promise<Transactions> {
     return await this.transactionRepo.findOne(id);
+  }
+
+  async updateTransaction(transaction: Transactions): Promise<Transactions> {
+    try {
+      return await this.utilsService.updateEntityManager(Transactions, transaction.id, transaction, this.transactionRepo)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
