@@ -12,6 +12,7 @@ import { UserForms } from '../entities/userforms.entity';
 import { UserFormElementService } from "./userFormElements.service";
 import { PolicyService } from "src/insurance/services/policy.service";
 import { PaginationService } from "src/pagination/pagination.service";
+import { PaymentService } from "src/payment/services/payment.service";
 import { PatientService } from "src/patients/services/patient.service";
 import { AttachmentType } from "src/attachments/entities/attachment.entity";
 import { CreateContactInput } from "src/providers/dto/create-contact.input";
@@ -42,7 +43,8 @@ export class UserFormsService {
     private readonly awsService: AwsService,
     private readonly patientService: PatientService,
     private readonly appointmentService: AppointmentService,
-    private readonly policyService: PolicyService
+    private readonly policyService: PolicyService,
+    private readonly transactionService: PaymentService
   ) { }
 
   async createPatientAppointment(form: Form, userForm: UserForms, inputs: CreateUserFormInput): Promise<Patient> {
@@ -51,7 +53,7 @@ export class UserFormsService {
       const { type, id, facilityId, practiceId } = form;
       const { userFormElements } = userForm;
       const { userFormElements: userFormElementInputs } = inputs
-
+      console.log('userFormElementInputs => ', userFormElementInputs)
       const formElements = await this.formService.getFormElements(id)
       //tables elements
       const patientElements = getTableElements(formElements, 'Patients')
@@ -250,6 +252,7 @@ export class UserFormsService {
           const doctorId = getCustomElementValue(userFormElementInputs, providerField)
           const startTime = getCustomElementValue(userFormElementInputs, 'scheduleEndDateTime')
           const endTime = getCustomElementValue(userFormElementInputs, 'scheduleStartDateTime')
+          const transactionId = getCustomElementValue(userFormElementInputs, 'transactionId')
 
           if (facilityElement) {
             const { fieldId: facilityFieldId } = facilityElement;
@@ -324,7 +327,16 @@ export class UserFormsService {
                 contractNumber: contractNo || null,
                 organizationName: organizationName || null
               }
-              await this.appointmentService.createAppointment(appointmentInputs)
+
+              const appointmentInstance = await this.appointmentService.createAppointment(appointmentInputs);
+              if (transactionId) {
+                const transaction = await this.transactionService.getTransaction(transactionId)
+                if (transaction) {
+                  appointmentInstance.transaction = transaction
+                }
+              }
+              const updatedAppointment = await this.appointmentService.updateAppointment(appointmentInstance)
+              console.log('updatedAppointment => ', updatedAppointment)
               return patientInstance
             }
             else {

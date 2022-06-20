@@ -54,19 +54,19 @@ export class Transactions {
   @Field({ nullable: true })
   appointmentId: string;
 
-  @OneToMany(() => Patient, (patient) => patient.id)
+  @OneToMany(() => Patient, (patient) => patient.transaction)
   @Field(() => [Patient], { nullable: true })
   patient: Patient[];
 
-  @OneToMany(() => Doctor, (doctor) => doctor.id)
+  @OneToMany(() => Doctor, (doctor) => doctor.transaction)
   @Field(() => [Doctor], { nullable: true })
   doctor: Doctor[];
 
-  @OneToMany(() => Facility, (facility) => facility.id)
+  @OneToMany(() => Facility, (facility) => facility.transaction)
   @Field(() => [Facility], { nullable: true })
   facility: Facility[];
 
-  @OneToOne(() => Appointment)
+  @OneToOne(() => Appointment, (appointment) => appointment.transaction)
   @JoinTable()
   @Field(() => Appointment, { nullable: true })
   appointment: Appointment;

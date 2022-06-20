@@ -14,6 +14,12 @@ export class PaymentResolver {
     return await this.paymentService.getToken();
   }
 
+  @Query(() => TransactionPayload)
+  async getTransaction(@Args('id') id: string): Promise<TransactionPayload> {
+    return { transaction: await this.paymentService.getTransaction(id),
+    }
+  }
+
   @Mutation(() => TransactionPayload)
   async chargePayment(@Args('paymentInput') paymentInput: PaymentInput): Promise<TransactionPayload> {
     return {
@@ -30,13 +36,10 @@ export class PaymentResolver {
     };
   }
 
-  //get all transactions
-
   @Mutation(() => TransactionsPayload)
   async getAllTransactions(@Args('transactionInputs') transactionInputs: GetAllTransactionsInputs): Promise<TransactionsPayload> {
     return await this.paymentService.getAll(transactionInputs);
   }
- 
 
   @Mutation(() => TransactionPayload)
   async achPayment(@Args('achPaymentInputs') achPaymentInputs: ACHPaymentInputs): Promise<TransactionPayload> {
