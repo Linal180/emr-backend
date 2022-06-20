@@ -1,5 +1,6 @@
 //packages block
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { Connection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 //entities, services, inputs types, enums
@@ -23,7 +24,7 @@ import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appointment-payload.dto';
-import { Appointment, AppointmentStatus, BillingStatus, PaymentType } from '../entities/appointment.entity';
+import { Appointment, AppointmentCreateType, AppointmentStatus, BillingStatus, PaymentType } from '../entities/appointment.entity';
 import {
   CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
@@ -108,6 +109,10 @@ export class AppointmentService {
         await queryRunner.commitTransaction();
         if (patient.phonePermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
+        }
+        if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.TELEHEALTH) {
+          const scheduleTime= `${moment(appointmentInstance.scheduleStartDateTime).format("ddd MMM. DD, YYYY")} at ${moment(appointmentInstance.scheduleStartDateTime).format("hh:mm A")}`
+          this.mailerService.sendAppointmentTelehealthEmail(patient.email, patient.firstName + ' ' + patient.lastName,scheduleTime, provider.firstName + ' ' + provider.lastName,appointment.id)
         }
         return appointment
       }
@@ -273,17 +278,17 @@ export class AppointmentService {
         ...(facilityId && facilityId !== null && {
           facilityId
         }),
-        ...( patientId && patientId !== null && {
+        ...(patientId && patientId !== null && {
           patientId
         }),
-        ...( practiceId && practiceId !== null && {
+        ...(practiceId && practiceId !== null && {
           practiceId
         }),
-        ...( providerId && providerId !== null && {
+        ...(providerId && providerId !== null && {
           providerId
         })
       }
-  
+
       const appointment = await this.appointmentRepository.find({
         where: query
       })

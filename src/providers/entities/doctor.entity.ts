@@ -77,6 +77,10 @@ export class Doctor {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  telehealthLink: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   suffix: string;
 
   @Column({ nullable: true })
