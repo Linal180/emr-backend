@@ -283,9 +283,9 @@ export class Doctor {
   @Field()
   updatedAt: string;
 
-  @ManyToOne(() => Transactions, transaction => transaction.id)
-  @Field(type => Transactions, { nullable: true })
-  transaction: Transactions;
+  @OneToMany(() => Transactions, transaction => transaction.doctor)
+  @Field(() => [Transactions], { nullable: true })
+  transaction: Transactions[];
 
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];

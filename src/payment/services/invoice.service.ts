@@ -19,7 +19,7 @@ export class InvoiceService {
       const invoice = this.invoiceRepo.create(createInvoiceInputs);
       if (createInvoiceInputs.paymentTransactionId) {
         const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
-        invoice.transction = transaction;
+        invoice.transaction = transaction;
       }
       const appointment = await this.appointmentService.getAppointment(createInvoiceInputs.appointmentId)
       invoice.appointment = appointment.appointment;
@@ -38,7 +38,7 @@ export class InvoiceService {
       const transaction = await this.transactionService.getPaymentTransactionByBraintreeTransactionId(createInvoiceInputs.paymentTransactionId);
       const invoiceNo = await this.utilService.generateInvoiceNo();
       invoice.invoiceNo = invoiceNo;
-      invoice.transction = transaction;
+      invoice.transaction = transaction;
       return await this.invoiceRepo.save(invoice);
     } catch (error) {
       throw new InternalServerErrorException(error);

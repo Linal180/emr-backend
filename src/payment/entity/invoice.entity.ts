@@ -84,8 +84,8 @@ export class Invoice {
   updatedAt: string;
 
   @Field(() => Transactions, { nullable: true })
-  @ManyToOne(() => Transactions, (transaction) => transaction.appointment)
-  transction: Transactions;
+  @ManyToOne(() => Transactions, (transaction) => transaction.invoice)
+  transaction: Transactions;
 
   @Field(() => Appointment, { nullable: true })
   @OneToOne(() => Appointment, (appointment) => appointment.invoice)

@@ -2,7 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { Appointment } from "src/appointments/entities/appointment.entity";
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
 import { ResponsePayloadResponse } from "src/users/dto/response-payload.dto";
-import {Transactions} from '../entity/payment.entity'
+import { Transactions } from '../entity/payment.entity'
 @ObjectType()
 export class BraintreePayload {
     @Field()
@@ -25,15 +25,15 @@ export class ServicePayload {
 
 @ObjectType()
 export class TransactionsPayload extends ResponsePayloadResponse {
-    @Field(type => [Transactions], { nullable: 'itemsAndList' })
+    @Field(() => [Transactions], { nullable: 'itemsAndList' })
     transactions: Transactions[];
 
-    @Field(type => PaginationPayload, { nullable: true })
+    @Field(() => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
 }
 @ObjectType()
 export class TransactionPayload extends ResponsePayloadResponse {
-    @Field(type => Transactions)
+    @Field(() => Transactions)
     transaction: Transactions;
 
 }

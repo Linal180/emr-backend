@@ -47,7 +47,7 @@ export class PaymentService {
     private readonly utilsService: UtilsService,
     @Inject(forwardRef(() => InvoiceService))
     private readonly invoiceService: InvoiceService,
-    private readonly paginationService: PaginationService
+    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -162,12 +162,14 @@ export class PaymentService {
             const data = { transactionId: brainTrans?.transaction?.id, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
             return await this.create(data);
           } else {
-            const refunded = await this.refund(brainTrans?.transaction?.id, appointmentId);
-            if (refunded?.success) {
-              throw new Error(
-                'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
-              );
-            }
+            const data = { transactionId: brainTrans?.transaction?.id, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
+            return await this.create(data);
+            // const refunded = await this.refund(brainTrans?.transaction?.id, appointmentId);
+            // if (refunded?.success) {
+            //   throw new Error(
+            //     'We are not able to create appointment aganist you request.Your amount is refunded. You will receive shortly or according to you bank policy.'
+            //   );
+            // }
           }
         } else {
           throw new Error(brainTrans?.message);
@@ -240,8 +242,16 @@ export class PaymentService {
    * @param id 
    * @returns  
    */
-  async getTransaction(id: string) {
-    return await this.gateway.transaction.find(id);
+  async getTransaction(id: string): Promise<Transactions> {
+    return await this.transactionRepo.findOne(id);
+  }
+
+  async updateTransaction(transaction: Transactions): Promise<Transactions> {
+    try {
+      return await this.utilsService.updateEntityManager(Transactions, transaction.id, transaction, this.transactionRepo)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
@@ -346,7 +356,9 @@ export class PaymentService {
       const trans = await braintreeACHPayment({ paymentMethodNonce, customerId, price });
       if (trans) {
         const transactionId = trans as string
-        await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+        if (appointmentId) {
+          await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
+        }
         const transactionInputs = { transactionId, patientId, doctorId, facilityId, appointmentId, status: TRANSACTIONSTATUS.PAID }
         const transaction = await this.create(transactionInputs)
         return transaction

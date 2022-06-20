@@ -207,8 +207,8 @@ export class Facility {
   @Field({ nullable: true })
   updatedAt: string;
 
-  @ManyToOne(() => Transactions, transaction => transaction.id)
-  @Field(type => Transactions, { nullable: true })
-  transaction: Transactions;
+  @OneToMany(() => Transactions, transaction => transaction.facility)
+  @Field(() => [Transactions], { nullable: true })
+  transaction: Transactions[];
 
 }
