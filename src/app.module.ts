@@ -23,6 +23,7 @@ import { DashboardModule } from './dashboard/dashboard.module'
 import { InsuranceModule } from './insurance/insurance.module';
 import { BillingModule } from './billings/billing.module';
 import { AppController } from './app.controller';
+import { AgreementModule } from './agreements/agreement.module';
 
 @Module({
   imports: [
@@ -56,7 +57,8 @@ import { AppController } from './app.controller';
     PaymentModule,
     FormBuilderModule,
     InsuranceModule,
-    BillingModule
+    BillingModule,
+    AgreementModule
   ],
   controllers: [AppController],
   providers: [AppService],
