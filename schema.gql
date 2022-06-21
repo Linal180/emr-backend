@@ -2274,6 +2274,7 @@ input GetFacility {
 }
 
 input ServiceInput {
+  practiceId: String
   facilityId: String
   serviceName: String
   isActive: Boolean
@@ -2419,6 +2420,7 @@ input AppointmentInput {
   facilityId: String
   relationTable: String
   providerId: String
+  appointmentTypeId: String
 }
 
 input UpComingAppointmentsInput {

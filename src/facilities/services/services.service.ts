@@ -2,12 +2,13 @@ import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
-import { In, Repository } from 'typeorm';
+import { getConnection, In, ObjectLiteral, Raw, Repository } from 'typeorm';
 import { CreateServiceInput } from '../dto/create-service.input';
 import ServiceInput from '../dto/service-input.dto';
 import { ServicePayload } from '../dto/service-payload.dto';
 import { ServicesPayload } from '../dto/services-payload.dto';
 import { RemoveService, UpdateServiceInput } from '../dto/update-service.input';
+import { Facility } from '../entities/facility.entity';
 import { Service } from '../entities/services.entity';
 import { FacilityService } from './facility.service';
 
@@ -62,13 +63,55 @@ export class ServicesService {
    */
   async findAllServices(serviceInput: ServiceInput): Promise<ServicesPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Service>(this.servicesRepository, serviceInput)
+      const { paginationOptions, practiceId, serviceName, facilityId, isActive } = serviceInput
+      const whereStr = {
+        ...(serviceName && {
+          name: Raw(alias => `${alias} ILIKE '%${serviceName}%'`),
+        }),
+        ...(facilityId && {
+          facilityId
+        }),
+        ...(isActive != null && {
+          isActive
+        }),
+      }
+
+      const { limit, page } = serviceInput.paginationOptions
+
+      let baseQuery = getConnection()
+        .getRepository(Service)
+        .createQueryBuilder('service')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .where(whereStr as ObjectLiteral)
+
+        if(practiceId){
+          baseQuery= baseQuery
+          .innerJoin(Facility, 'serviceWithSpecificFacility', `service.facilityId = "serviceWithSpecificFacility"."id" AND "serviceWithSpecificFacility"."practiceId"= :practiceId`, { practiceId: practiceId })
+
+        }
+
+      const [services, totalCount] = await baseQuery.getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
+
       return {
         pagination: {
-          ...paginationResponse
+          totalCount,
+          page,
+          limit,
+          totalPages,
         },
-        services: paginationResponse.data,
+        services
       }
+
+      // const paginationResponse = await this.paginationService.willPaginate<Service>(this.servicesRepository, serviceInput)
+      // return {
+      //   pagination: {
+      //     ...paginationResponse
+      //   },
+      //   services: paginationResponse.data,
+      // }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
