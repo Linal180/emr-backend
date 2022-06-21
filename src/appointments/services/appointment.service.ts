@@ -235,7 +235,7 @@ export class AppointmentService {
    */
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
-      const { paginationOptions, relationTable, searchString, ...whereObj } = appointmentInput
+      const { paginationOptions, relationTable, searchString, sortBy, ...whereObj } = appointmentInput
       const whereStr = Object.keys(whereObj).reduce((acc, key) => {
         if (whereObj[key]) {
           acc[key] = whereObj[key]
@@ -264,10 +264,10 @@ export class AppointmentService {
               .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
           }))
       }
-
+      console.log('sortBy', sortBy)
       const [appointments, totalCount] = await baseQuery
-      .orderBy('appointment.scheduleStartDateTime','ASC')
-      .getManyAndCount()
+        .orderBy('appointment.scheduleStartDateTime', sortBy ? sortBy as 'ASC' | 'DESC' : 'ASC')
+        .getManyAndCount()
 
       const totalPages = Math.ceil(totalCount / limit)
 
