@@ -27,6 +27,10 @@ export class AttachmentMetadata {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  agreementId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   assignedTo: string;
 
   @Column({ nullable: true })

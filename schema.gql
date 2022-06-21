@@ -472,7 +472,7 @@ type Invoice {
   appointmentId: String
   createdAt: String
   updatedAt: String
-  transction: Transactions
+  transaction: Transactions
   appointment: Appointment
 }
 
@@ -492,13 +492,13 @@ enum STATUS {
 type Transactions {
   id: String!
   transactionId: String
-  patientId: String!
+  patientId: String
   doctorId: String
   facilityId: String
-  appointmentId: String!
-  patient: [Patient!]
-  doctor: [Doctor!]
-  facility: [Facility!]
+  appointmentId: String
+  patient: Patient
+  doctor: Doctor
+  facility: Facility
   appointment: Appointment
   createdAt: String
   updatedAt: String
@@ -815,7 +815,7 @@ type Patient {
   patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!
-  transaction: Transactions
+  transaction: [Transactions!]
   policies: [Policy!]
   policyHolder: PolicyHolder
   policyHolderId: String
@@ -1123,7 +1123,7 @@ type Doctor {
   policyOfPrimaryCareProvider: [Policy!]
   createdAt: String!
   updatedAt: String!
-  transaction: Transactions
+  transaction: [Transactions!]
   attachments: [Attachment!]
 }
 
@@ -1255,6 +1255,7 @@ type Appointment {
   invoice: Invoice
   contract: Contract
   billing: Billing
+  transaction: Transactions
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
   patientVitals: [PatientVitals!]
@@ -1323,7 +1324,7 @@ type Facility {
   schedule: [Schedule!]
   createdAt: String
   updatedAt: String
-  transaction: Transactions
+  transaction: [Transactions!]
 }
 
 """The facility practice type assigned type"""
@@ -1426,6 +1427,7 @@ type AttachmentMetadata {
   documentTypeId: String
   labOrderNum: String
   policyId: String
+  agreementId: String
   assignedTo: String
   providerName: String
   signedBy: String
@@ -2130,6 +2132,28 @@ type BillingPayload {
   response: Response
 }
 
+type Agreement {
+  id: String!
+  title: String
+  body: String
+  signatureRequired: Boolean
+  viewAgreementBeforeAgreeing: Boolean
+  createdAt: String
+  updatedAt: String
+}
+
+type AgreementsPayload {
+  response: ResponsePayload
+  agreements: [Agreement!]!
+  pagination: PaginationPayload
+}
+
+type AgreementPayload {
+  response: ResponsePayload
+  agreement: Agreement!
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -2180,6 +2204,7 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   getToken: BraintreePayload!
+  getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -2218,6 +2243,8 @@ type Query {
   fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
   fetchPolicyHolder(id: String!): PolicyHolder!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
+  fetchAgreement(agreementId: String!): AgreementPayload!
+  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
 }
 
 input UsersInput {
@@ -2274,6 +2301,7 @@ input GetFacility {
 }
 
 input ServiceInput {
+  practiceId: String
   facilityId: String
   serviceName: String
   isActive: Boolean
@@ -2419,6 +2447,7 @@ input AppointmentInput {
   facilityId: String
   relationTable: String
   providerId: String
+  appointmentTypeId: String
 }
 
 input UpComingAppointmentsInput {
@@ -2580,6 +2609,11 @@ input PolicyHolderPaginationInput {
   paginationOptions: PaginationInput!
 }
 
+input AgreementPaginationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -2685,6 +2719,9 @@ type Mutation {
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
   createCopay(createCopayInput: CopayInput!): Copay!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
+  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
+  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
+  removeAgreement(agreementId: String!): AgreementPayload!
 }
 
 input LoginUserInput {
@@ -3434,6 +3471,7 @@ input CreateAttachmentInput {
   documentTypeName: String
   practiceId: String
   documentDate: String
+  agreementId: String
 }
 
 input RemoveAttachment {
@@ -3459,6 +3497,7 @@ input UpdateAttachmentInput {
   documentTypeName: String
   practiceId: String
   documentDate: String
+  agreementId: String
   id: String
 }
 
@@ -3599,12 +3638,12 @@ input UpdateAppointmentStatusInput {
 
 input PaymentInput {
   clientIntent: String
-  price: String!
+  price: String
   providerId: String
   facilityId: String
-  patientId: String!
-  appointmentId: String!
-  serviceId: String!
+  patientId: String
+  appointmentId: String
+  serviceId: String
 }
 
 input PaymentInputsAfterAppointment {
@@ -3626,10 +3665,10 @@ input ACHPaymentInputs {
   firstName: String
   lastName: String
   price: String!
-  patientId: String!
+  patientId: String
   doctorId: String
   facilityId: String
-  appointmentId: String!
+  appointmentId: String
   company: String
   deviceData: String
 }
@@ -4097,4 +4136,19 @@ input CodesInput {
   description: String
   price: String
   codeType: CodeType
+}
+
+input AgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+}
+
+input UpdateAgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  id: String!
 }

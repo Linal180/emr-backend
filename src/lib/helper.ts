@@ -18,15 +18,15 @@ export async function createPasswordHash(password: string): Promise<string> {
 }
 
 export const mediaFilesFilter = (_req, file, callback) => {
-  if (!file.originalname.match(/\.(jpeg|jpg|png|pdf|doc|docx)$/)) {
-    return callback(new HttpException('Only jpeg|jpg|png|svg files are allowed', HttpStatus.FORBIDDEN), false);
+  if (!file.originalname.match(/\.(jpeg|jpg|png|pdf|doc|docx|mp3)$/)) {
+    return callback(new HttpException('Only jpeg|jpg|png|svg|mp3 files are allowed', HttpStatus.FORBIDDEN), false);
   }
   callback(null, true);
 }
 
 export const mediaFilesInter = (_req, file, callback) => {
-  if (file && !file.originalname.match(/\.(jpeg|jpg|png|pdf|doc|docx)$/)) {
-    return callback(new HttpException('Only jpeg|jpg|png|svg files are allowed', HttpStatus.FORBIDDEN), false);
+  if (file && !file.originalname.match(/\.(jpeg|jpg|png|pdf|doc|docx|mp3)$/)) {
+    return callback(new HttpException('Only jpeg|jpg|png|svg|mp3 files are allowed', HttpStatus.FORBIDDEN), false);
   }
   callback(null, true);
 }

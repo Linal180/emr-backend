@@ -22,6 +22,7 @@ import { AwsModule } from 'src/aws/aws.module';
 import { PatientModule } from 'src/patients/patient.module';
 import { AppointmentModule } from 'src/appointments/appointment.module';
 import { InsuranceModule } from 'src/insurance/insurance.module';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { InsuranceModule } from 'src/insurance/insurance.module';
     AwsModule,
     PatientModule,
     AppointmentModule,
-    InsuranceModule
+    InsuranceModule,
+    PaymentModule
   ],
   providers: [
     FormResolver, ElementResolver, FormsService, FormElementsService,

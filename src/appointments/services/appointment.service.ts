@@ -1,7 +1,7 @@
 //packages block
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
-import { Connection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
+import { Brackets, Connection, getConnection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral, Repository } from 'typeorm';
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 //entities, services, inputs types, enums
 import { createToken } from 'src/lib/helper';
@@ -111,8 +111,8 @@ export class AppointmentService {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
         if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.TELEHEALTH) {
-          const scheduleTime= `${moment(appointmentInstance.scheduleStartDateTime).format("ddd MMM. DD, YYYY")} at ${moment(appointmentInstance.scheduleStartDateTime).format("hh:mm A")}`
-          this.mailerService.sendAppointmentTelehealthEmail(patient.email, patient.firstName + ' ' + patient.lastName,scheduleTime, provider.firstName + ' ' + provider.lastName,appointment.id)
+          const scheduleTime = `${moment(appointmentInstance.scheduleStartDateTime).format("ddd MMM. DD, YYYY")} at ${moment(appointmentInstance.scheduleStartDateTime).format("hh:mm A")}`
+          this.mailerService.sendAppointmentTelehealthEmail(patient.email, patient.firstName + ' ' + patient.lastName, scheduleTime, provider.firstName + ' ' + provider.lastName, appointment.id)
         }
         return appointment
       }
@@ -235,31 +235,50 @@ export class AppointmentService {
    */
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
+      const { paginationOptions, relationTable, searchString, ...whereObj } = appointmentInput
+      const whereStr = Object.keys(whereObj).reduce((acc, key) => {
+        if (whereObj[key]) {
+          acc[key] = whereObj[key]
+          return acc
+        }
+        return acc
+      }, {})
+
+      const { limit, page } = appointmentInput.paginationOptions
       const [first] = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
-      let paginationResponse
-      if (appointmentInput.relationTable) {
-        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository,
-          {
-            ...appointmentInput, associatedTo: "Services", relationField: 'appointmentType',
-            associatedToField: { columnValue: first, columnName: 'name', columnName2: 'color', columnName3: 'duration', filterType: 'stringFilter' }
-          },
-          undefined,
-          { columnName: 'scheduleStartDateTime', order: 'ASC' })
-      } else {
-        paginationResponse = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository,
-          {
-            ...appointmentInput, associatedTo: "Patients", relationField: 'patient',
-            associatedToField: { columnValue: first, columnName: 'firstName', columnName2: 'lastName', columnName3: 'email', filterType: 'stringFilter' }
-          }
-          , undefined,
-          { columnName: 'scheduleStartDateTime', order: 'ASC' })
+      let baseQuery = getConnection()
+        .getRepository(Appointment)
+        .createQueryBuilder('appointment')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .where(whereStr as ObjectLiteral)
+
+      if (first) {
+        baseQuery
+          .innerJoin(Patient, 'appointmentWithSpecificPatient', `appointment.patientId = "appointmentWithSpecificPatient"."id"`)
+          .innerJoin(Service, 'appointmentWithSpecificService', `appointment.appointmentTypeId = "appointmentWithSpecificService"."id"`)
+          .andWhere(new Brackets(qb => {
+            qb.where('appointmentWithSpecificPatient.firstName ILIKE :search', { search: `%${first}%` })
+              .orWhere('appointmentWithSpecificPatient.lastName ILIKE :search', { search: `%${first}%` })
+              .orWhere('appointmentWithSpecificPatient.email ILIKE :search', { search: `%${first}%` })
+              .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
+          }))
       }
+
+      const [appointments, totalCount] = await baseQuery
+      .orderBy('appointment.scheduleStartDateTime','ASC')
+      .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
 
       return {
         pagination: {
-          ...paginationResponse
+          totalCount,
+          page,
+          limit,
+          totalPages,
         },
-        appointments: paginationResponse.data,
+        appointments
       }
     } catch (error) {
       throw new InternalServerErrorException(error);

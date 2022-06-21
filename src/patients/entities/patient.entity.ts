@@ -416,9 +416,9 @@ export class Patient {
   @Field()
   updatedAt: string;
 
-  @ManyToOne(() => Transactions, transaction => transaction.id)
-  @Field(type => Transactions, { nullable: true })
-  transaction: Transactions;
+  @OneToMany(() => Transactions, transaction => transaction.patient)
+  @Field(type => [Transactions], { nullable: true })
+  transaction: Transactions[];
 
   @OneToMany(() => Policy, policy => policy.patient, { onDelete: "CASCADE" })
   @Field(type => [Policy], { nullable: true })

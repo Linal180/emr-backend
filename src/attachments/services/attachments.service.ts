@@ -39,7 +39,7 @@ export class AttachmentsService {
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
     const { labOrderNum, policyId, documentTypeId, documentTypeName, documentDate,
-      practiceId, signedBy, signedAt, comments, ...attachmentInput } = createAttachmentInput
+      practiceId, signedBy, signedAt, comments, agreementId, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
     let createMetaDataParams: attachmentInput = {}
     if (labOrderNum) {
@@ -48,6 +48,14 @@ export class AttachmentsService {
 
     if (policyId) {
       createMetaDataParams.policyId = policyId
+    }
+
+    if (policyId) {
+      createMetaDataParams.policyId = policyId
+    }
+
+    if (agreementId) {
+      createMetaDataParams.agreementId = agreementId
     }
 
     if (documentTypeId) {
@@ -243,7 +251,7 @@ export class AttachmentsService {
    */
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
-      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, ...attachmentInputToUpdate } = updateAttachmentInput
+      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, agreementId, ...attachmentInputToUpdate } = updateAttachmentInput
       let attachmentMetadataInput: attachmentInput = {}
       if (comments)
         attachmentMetadataInput.comments = comments;
@@ -257,6 +265,9 @@ export class AttachmentsService {
         attachmentMetadataInput.policyId = policyId
       if (documentDate) {
         attachmentMetadataInput.documentDate = documentDate;
+      }
+      if (agreementId) {
+        attachmentMetadataInput.agreementId = agreementId
       }
       const updatedAttachment = await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
       if (updatedAttachment.attachmentMetadata) {

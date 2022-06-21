@@ -7,22 +7,22 @@ export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) 
   @Field()
   id: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   paymentStatus?: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   selfCheckIn?: boolean;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   checkedInAt?: string;
 
-  @Field(()=>AppointmentStatus,{nullable: true})
+  @Field(() => AppointmentStatus, { nullable: true })
   status?: AppointmentStatus
-  
-  @Field({nullable: true})
+
+  @Field({ nullable: true })
   checkInActiveStep?: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   checkedOutAt?: string;
 }
 
@@ -31,7 +31,7 @@ export class UpdateAppointmentStatusInput {
   @Field()
   id: string;
 
-  @Field(()=>AppointmentStatus,{nullable: false})
+  @Field(() => AppointmentStatus, { nullable: false })
   status: AppointmentStatus
 }
 
@@ -40,7 +40,7 @@ export class UpdateAppointmentBillingStatusInput {
   @Field()
   id: string;
 
-  @Field({nullable: false})
+  @Field({ nullable: false })
   billingStatus: BillingStatus
 }
 
@@ -50,24 +50,24 @@ export class GetAppointment extends PickType(UpdateAppointmentInput, ['id'] as c
 
 @InputType()
 export class GetAppointments {
-  @Field({nullable: true})
+  @Field({ nullable: true })
   doctorId: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   facilityId: string
- }
+}
 
- @InputType()
+@InputType()
 export class GetPatientAppointmentInput {
   @Field()
   patientId: string
- }
+}
 
- @InputType()
- export class GetFacilityAppointmentsInput {
-   @Field()
-   facilityId: string
-  }
+@InputType()
+export class GetFacilityAppointmentsInput {
+  @Field()
+  facilityId: string
+}
 
 @InputType()
 export class RemoveAppointment extends PickType(UpdateAppointmentInput, ['id'] as const) { }
@@ -79,4 +79,4 @@ export class CancelAppointment {
 
   @Field()
   reason: string
- }
+}

@@ -11,6 +11,7 @@ import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { Billing } from 'src/billings/entities/billing.entity';
 import { Contract } from './contract.entity';
+import { Transactions } from 'src/payment/entity/payment.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -235,6 +236,10 @@ export class Appointment {
   @Field(() => Billing, { nullable: true })
   @OneToOne(() => Billing, (billing) => billing.appointment)
   billing: Billing;
+
+  @Field(() => Transactions, { nullable: true })
+  @OneToOne(() => Transactions, (transaction) => transaction.appointment)
+  transaction: Transactions;
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)
   @Field(type => [PatientProblems], { nullable: true })

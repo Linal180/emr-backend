@@ -52,6 +52,9 @@ export class CreateAttachmentInput {
 
   @Field({ nullable: true })
   documentDate?: string
+
+  @Field({ nullable: true })
+  agreementId?: string
 }
 
 export interface attachmentInput {
@@ -63,4 +66,5 @@ export interface attachmentInput {
   documentDate?: string
   signedAt?: string
   signedBy?: string
+  agreementId?: string
 }
