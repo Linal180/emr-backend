@@ -265,7 +265,9 @@ export class AppointmentService {
           }))
       }
 
-      const [appointments, totalCount] = await baseQuery.getManyAndCount()
+      const [appointments, totalCount] = await baseQuery
+      .orderBy('appointment.scheduleStartDateTime','ASC')
+      .getManyAndCount()
 
       const totalPages = Math.ceil(totalCount / limit)
 
