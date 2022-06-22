@@ -237,8 +237,9 @@ export class AppointmentService {
     try {
       const { paginationOptions, relationTable, searchString, sortBy, ...whereObj } = appointmentInput
       const whereStr = Object.keys(whereObj).reduce((acc, key) => {
+        const transformedKey = key === 'appointmentStatus' ? 'status' : key
         if (whereObj[key]) {
-          acc[key] = whereObj[key]
+          acc[transformedKey] = whereObj[key]
           return acc
         }
         return acc
