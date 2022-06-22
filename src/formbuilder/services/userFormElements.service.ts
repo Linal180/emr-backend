@@ -14,8 +14,6 @@ export class UserFormElementService {
     private userFormElementRepository: Repository<UsersFormsElements>,
   ) { }
 
-
-
   /**
    * Creates bulk
    * @param input 
@@ -55,15 +53,32 @@ export class UserFormElementService {
     try {
       const { id: UsersFormsId } = userForm
       const values = await Promise.all(input?.map(async ({ FormsElementsId, arrayOfObjects, arrayOfStrings, value }) => {
+        
         const element = await this.userFormElementRepository.findOne({ where: { UsersFormsId, FormsElementsId } })
-        return {
-          ...element,
-          arrayOfObjects,
-          arrayOfStrings,
-          value
+
+        if(element){
+          return {
+            ...element,
+            arrayOfObjects,
+            arrayOfStrings,
+            value,
+          }
         }
+        else{
+          return {
+            value,
+            UsersFormsId,
+            arrayOfObjects,
+            arrayOfStrings,
+            FormsElementsId
+          }
+        }
+        
       }))
-      return await this.userFormElementRepository.save(values)
+
+      const userFormElements = await this.userFormElementRepository.save(values)
+
+      return userFormElements
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

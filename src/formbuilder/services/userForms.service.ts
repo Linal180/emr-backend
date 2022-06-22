@@ -582,15 +582,20 @@ export class UserFormsService {
       })
       const formInputs = isAppointmentForm ? userFormElements?.filter(({ FormsElementsId }) => isUuid(FormsElementsId)) : userFormElements
       if (!isOldForm) {
+        //create form
         const newUserForms = this.userFormsRepository.create({ ...input, userFormElements: formInputs });
-        const appointment = await this.createPatientAppointment(form, newUserForms, input);
-        const { patientId } = appointment || {}
         newUserForms.form = form
-        newUserForms.PatientId = patientId
-        newUserForms.SubmitterId = patientId
         const userForm = await this.userFormsRepository.save(newUserForms)
-        const userFormEles = formInputs?.map((ele) => ({ ...ele, UsersFormsId: newUserForms?.id }))
-        await this.userFormElementService.createBulk(userFormEles, newUserForms);
+        //create form elements
+        const userFormEles = formInputs?.map((ele) => ({ ...ele, UsersFormsId: userForm?.id }))
+        const formElements = await this.userFormElementService.createBulk(userFormEles, userForm);
+        //create patient & appointment
+        const appointment = await this.createPatientAppointment(form, userForm, input);
+        const { patientId } = appointment || {}
+        userForm.PatientId = patientId
+        userForm.SubmitterId = patientId
+        userForm.userFormElements = formElements
+        const newForm = await this.userFormsRepository.save(newUserForms)
         await queryRunner.commitTransaction();
         return { userForm, appointment }
       }
@@ -602,7 +607,7 @@ export class UserFormsService {
           const userFormEles = formInputs?.map((ele) => ({ ...ele, UsersFormsId: oldForm?.id }))
           const userFormElementInputs = await this.userFormElementService.updateBulk(userFormEles, oldForm);
           oldForm.userFormElements = userFormElementInputs
-          const newUserForms = await this.userFormsRepository.save({ ...oldForm });
+          const newUserForms = await this.userFormsRepository.save(oldForm);
           await queryRunner.commitTransaction();
           return { userForm: newUserForms, appointment }
         }

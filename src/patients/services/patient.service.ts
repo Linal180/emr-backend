@@ -132,7 +132,6 @@ export class PatientService {
         //get doctor
         if (createPatientInput?.createPatientItemInput?.usualProviderId) {
           const doctor = await this.doctorService.findOne(createPatientInput.createPatientItemInput.usualProviderId)
-          console.log("doctor", doctor)
           //creating doctorPatient Instance 
           const doctorPatientInstance = await this.doctorPatientRepository.create({
             currentProvider: true,
@@ -179,8 +178,6 @@ export class PatientService {
 
       //save patient basic info
       await this.utilsService.updateEntityManager(Patient, patientId, patientInfoToUpdate, this.patientRepository)
-      console.log('-----------patient--------------');
-
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(patientId)
 
@@ -227,7 +224,6 @@ export class PatientService {
       patientInstance.contacts = contacts
       if (usualProviderId) {
         const doctor = await this.doctorService.findOne(usualProviderId)
-        // console.log("doctor",doctor)
         // const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
         //updating usual provider with patient
         const doctorPatientInst = await this.doctorPatientRepository.findOne({ patientId: patientId, doctorId: usualProviderId })
