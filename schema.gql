@@ -2448,6 +2448,7 @@ input AppointmentInput {
   relationTable: String
   providerId: String
   appointmentTypeId: String
+  sortBy: String
 }
 
 input UpComingAppointmentsInput {
