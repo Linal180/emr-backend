@@ -15,6 +15,13 @@ export class UserFormElementService {
   ) { }
 
 
+
+  /**
+   * Creates bulk
+   * @param input 
+   * @param userForm 
+   * @returns bulk 
+   */
   async createBulk(input: UserFormElementInputs[], userForm: UserForms): Promise<UsersFormsElements[]> {
     try {
       const userFormElements = this.userFormElementRepository.create(input);
@@ -25,6 +32,12 @@ export class UserFormElementService {
     }
   }
 
+
+  /**
+   * Gets all user form elements
+   * @param id 
+   * @returns all user form elements 
+   */
   async getAllUserFormElements(id: string): Promise<UsersFormsElements[]> {
     try {
       return await this.userFormElementRepository.find({
@@ -38,4 +51,21 @@ export class UserFormElementService {
 
   }
 
+  async updateBulk(input: UserFormElementInputs[], userForm: UserForms): Promise<UsersFormsElements[]> {
+    try {
+      const { id: UsersFormsId } = userForm
+      const values = await Promise.all(input?.map(async ({ FormsElementsId, arrayOfObjects, arrayOfStrings, value }) => {
+        const element = await this.userFormElementRepository.findOne({ where: { UsersFormsId, FormsElementsId } })
+        return {
+          ...element,
+          arrayOfObjects,
+          arrayOfStrings,
+          value
+        }
+      }))
+      return await this.userFormElementRepository.save(values)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

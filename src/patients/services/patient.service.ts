@@ -171,54 +171,77 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-
-      const { id: patientId, usualProviderId, ...patientInfoToUpdate } = updatePatientInput.updatePatientItemInput
+      const {
+        updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
+        updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
+      } = updatePatientInput
+      const { id: patientId, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
 
       //save patient basic info
-      await this.utilsService.updateEntityManager(Patient, updatePatientInput.updatePatientItemInput.id, patientInfoToUpdate, this.patientRepository)
+      await this.utilsService.updateEntityManager(Patient, patientId, patientInfoToUpdate, this.patientRepository)
+      console.log('-----------patient--------------');
 
       //fetch patient
-      const patientInstance = await this.patientRepository.findOne(updatePatientInput.updatePatientItemInput.id)
+      const patientInstance = await this.patientRepository.findOne(patientId)
+
       //get facility 
-      if (updatePatientInput.updatePatientItemInput.facilityId) {
-        const facility = await this.facilityService.findOne(updatePatientInput.updatePatientItemInput.facilityId)
+      if (facilityId) {
+        const facility = await this.facilityService.findOne(facilityId)
         patientInstance.facility = facility
-        const user = await this.usersService.findUserByUserId(updatePatientInput.updatePatientItemInput.id)
+        const user = await this.usersService.findUserByUserId(patientId)
         if (user) {
           await this.usersService.updateFacility(facility, user)
         }
       }
       //update patient contact 
-      const contact = await this.contactService.updateContact(updatePatientInput.updateContactInput)
+      const contacts = []
+      if (updateContactInput) {
+        const contact = await this.contactService.updateContact(updateContactInput)
+        contacts.push(contact)
+      }
       //update patient emergency contact 
-      const emergencyContact = await this.contactService.updateContact(updatePatientInput.updateEmergencyContactInput)
+      if (updateEmergencyContactInput) {
+        const emergencyContact = await this.contactService.updateContact(updateEmergencyContactInput)
+        contacts.push(emergencyContact)
+      }
       //update patient next of kin contact 
-      const nextOfKinContact = await this.contactService.updateContact(updatePatientInput.updateNextOfKinContactInput)
+      if (updateNextOfKinContactInput) {
+        const nextOfKinContact = await this.contactService.updateContact(updateNextOfKinContactInput)
+        contacts.push(nextOfKinContact)
+      }
       //update patient guarantor contact 
-      const guarantorContact = await this.contactService.updateContact(updatePatientInput.updateGuarantorContactInput)
+      if (updateGuarantorContactInput) {
+        const guarantorContact = await this.contactService.updateContact(updateGuarantorContactInput)
+        contacts.push(guarantorContact)
+      }
       //update patient guardian contact 
-      const guardianContact = await this.contactService.updateContact(updatePatientInput.updateGuardianContactInput)
+      if (updateGuardianContactInput) {
+        const guardianContact = await this.contactService.updateContact(updateGuardianContactInput)
+        contacts.push(guardianContact)
+      }
       //update patient employer contact 
-      const employerContact = await this.employerService.updateEmployer(updatePatientInput.updateEmployerInput)
-      patientInstance.employer = [employerContact]
-      patientInstance.contacts = [contact, emergencyContact, nextOfKinContact, guarantorContact, guardianContact]
+      if (updateEmployerInput) {
+        const employerContact = await this.employerService.updateEmployer(updateEmployerInput)
+        patientInstance.employer = [employerContact]
+      }
+      patientInstance.contacts = contacts
       if (usualProviderId) {
         const doctor = await this.doctorService.findOne(usualProviderId)
         // console.log("doctor",doctor)
         // const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
         //updating usual provider with patient
-        const doctorPatientInst= await this.doctorPatientRepository.findOne({ patientId: patientId, doctorId: usualProviderId })
-        if(doctorPatientInst){
+        const doctorPatientInst = await this.doctorPatientRepository.findOne({ patientId: patientId, doctorId: usualProviderId })
+        if (doctorPatientInst) {
           doctorPatientInst.relation = DoctorPatientRelationType.PRIMARY_PROVIDER
-          await this.doctorPatientRepository.update({patientId: patientId},{ relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
           await this.doctorPatientRepository.save(doctorPatientInst)
-        }else{
+        } else {
           const doctorPatientInstance = await this.doctorPatientRepository.create({ relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
           doctorPatientInstance.patient = patientInstance
-          doctorPatientInstance.doctor= doctor
-          await this.doctorPatientRepository.update({patientId: patientId},{ relation: DoctorPatientRelationType.OTHER_PROVIDER })
+          doctorPatientInstance.doctor = doctor
+          await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
           await this.doctorPatientRepository.save(doctorPatientInstance)
-        } 
+        }
       }
       const patient = await queryRunner.manager.save(patientInstance);
       await queryRunner.commitTransaction();

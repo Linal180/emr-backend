@@ -8,22 +8,22 @@ export class UpdatePatientInput {
   @Field()
   updatePatientItemInput: UpdatePatientItemInput
 
-  @Field(type => UpdateContactInput)
+  @Field(() => UpdateContactInput)
   updateContactInput?: UpdateContactInput
 
-  @Field(type => UpdateContactInput)
+  @Field(() => UpdateContactInput)
   updateEmergencyContactInput?: UpdateContactInput
 
-  @Field(type => UpdateContactInput)
+  @Field(() => UpdateContactInput)
   updateNextOfKinContactInput?: UpdateContactInput
 
-  @Field(type => UpdateContactInput)
+  @Field(() => UpdateContactInput)
   updateGuardianContactInput?: UpdateContactInput
 
-  @Field(type => UpdateContactInput)
+  @Field(() => UpdateContactInput)
   updateGuarantorContactInput?: UpdateContactInput
 
-  @Field(type => UpdateEmployerItemInput)
+  @Field(() => UpdateEmployerItemInput)
   updateEmployerInput?: UpdateEmployerItemInput
 }
 

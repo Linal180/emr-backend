@@ -4,7 +4,7 @@ import { CreateEmployerInput } from './create-employer.input';
 @InputType()
 export class UpdateEmployerItemInput extends PartialType(CreateEmployerInput) {
   @Field({nullable: true})
-  id: string;
+  id?: string;
 }
 
 @InputType()

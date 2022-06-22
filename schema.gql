@@ -1892,6 +1892,7 @@ type ResponsePayloadResponse {
 
 type UserFormPayload {
   userForm: UserForms
+  appointment: Appointment
   response: ResponsePayloadResponse
 }
 

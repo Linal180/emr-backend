@@ -25,7 +25,6 @@ export class FormResolver {
 
   //queries
 
-
   @Query(() => FormsPayload)
   @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   @SetMetadata('roles', ['super-admin', 'admin'])

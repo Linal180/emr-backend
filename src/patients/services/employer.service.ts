@@ -66,9 +66,11 @@ export class EmployerService {
    * @returns employer by patient id 
    */
   async getEmployerByPatientId(id: string): Promise<Employer> {
-    return await this.employerRepository.findOne({where: {
-      patientId: id
-    }});
+    return await this.employerRepository.findOne({
+      where: {
+        patientId: id
+      }
+    });
   }
 
   /**
@@ -94,11 +96,11 @@ export class EmployerService {
    */
   async updateEmployer(updateEmployerItemInput: UpdateEmployerItemInput): Promise<Employer> {
     try {
-      if(updateEmployerItemInput.id){
+      if (updateEmployerItemInput?.id) {
         return await this.utilsService.updateEntityManager(Employer, updateEmployerItemInput.id, updateEmployerItemInput, this.employerRepository)
-        }
-        const employerInstance = this.employerRepository.create(updateEmployerItemInput)
-        return await this.employerRepository.save(employerInstance)
+      }
+      const employerInstance = this.employerRepository.create(updateEmployerItemInput)
+      return await this.employerRepository.save(employerInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
