@@ -1427,6 +1427,7 @@ type AttachmentMetadata {
   documentTypeId: String
   labOrderNum: String
   policyId: String
+  agreementId: String
   assignedTo: String
   providerName: String
   signedBy: String
@@ -1587,9 +1588,30 @@ type AttachmentMediaPayload {
   preSignedUrl: String
 }
 
+type AttachmentWithPreSignedUrl {
+  id: String!
+  type: AttachmentType!
+  typeId: String!
+  title: String
+  key: String
+  attachmentName: String
+  url: String
+  attachmentMetadata: AttachmentMetadata
+  attachmentMetadataId: String
+  createdAt: String!
+  updatedAt: String!
+  preSignedUrl: String
+}
+
 type AttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type AttachmentWithPreSignedUrlPayload {
+  response: ResponsePayload
+  attachmentsWithPreSignedUrl: [AttachmentWithPreSignedUrl!]
   pagination: PaginationPayload
 }
 
@@ -2132,6 +2154,28 @@ type BillingPayload {
   response: Response
 }
 
+type Agreement {
+  id: String!
+  title: String
+  body: String
+  signatureRequired: Boolean
+  viewAgreementBeforeAgreeing: Boolean
+  createdAt: String
+  updatedAt: String
+}
+
+type AgreementsPayload {
+  response: ResponsePayload
+  agreements: [Agreement!]!
+  pagination: PaginationPayload
+}
+
+type AgreementPayload {
+  response: ResponsePayload
+  agreement: Agreement!
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -2168,7 +2212,8 @@ type Query {
   findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
-  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
+  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentWithPreSignedUrlPayload!
+  getAttachmentsByAgreementId(getAttachmentsByAgreementId: GetAttachmentsByAgreementId!): AttachmentWithPreSignedUrlPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   fetchDocumentTypes(documentTypeInput: DocumentTypeInput!): DocumentTypesPayload!
   fetchDocumentType(id: String!): DocumentTypesPayload!
@@ -2221,6 +2266,8 @@ type Query {
   fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
   fetchPolicyHolder(id: String!): PolicyHolder!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
+  fetchAgreement(agreementId: String!): AgreementPayload!
+  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
 }
 
 input UsersInput {
@@ -2277,6 +2324,7 @@ input GetFacility {
 }
 
 input ServiceInput {
+  practiceId: String
   facilityId: String
   serviceName: String
   isActive: Boolean
@@ -2393,6 +2441,11 @@ input GetAttachmentsByPolicyId {
   policyId: String!
 }
 
+input GetAttachmentsByAgreementId {
+  typeId: String!
+  agreementId: String!
+}
+
 input GetMedia {
   id: String
 }
@@ -2422,6 +2475,8 @@ input AppointmentInput {
   facilityId: String
   relationTable: String
   providerId: String
+  appointmentTypeId: String
+  sortBy: String
 }
 
 input UpComingAppointmentsInput {
@@ -2583,6 +2638,11 @@ input PolicyHolderPaginationInput {
   paginationOptions: PaginationInput!
 }
 
+input AgreementPaginationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -2688,6 +2748,9 @@ type Mutation {
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
   createCopay(createCopayInput: CopayInput!): Copay!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
+  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
+  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
+  removeAgreement(agreementId: String!): AgreementPayload!
 }
 
 input LoginUserInput {
@@ -3437,6 +3500,7 @@ input CreateAttachmentInput {
   documentTypeName: String
   practiceId: String
   documentDate: String
+  agreementId: String
 }
 
 input RemoveAttachment {
@@ -3462,6 +3526,7 @@ input UpdateAttachmentInput {
   documentTypeName: String
   practiceId: String
   documentDate: String
+  agreementId: String
   id: String
 }
 
@@ -4100,4 +4165,19 @@ input CodesInput {
   description: String
   price: String
   codeType: CodeType
+}
+
+input AgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+}
+
+input UpdateAgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  id: String!
 }

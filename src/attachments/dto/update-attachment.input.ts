@@ -37,6 +37,12 @@ export class GetAttachmentsByPolicyId extends GetAttachment{
   policyId: string
 }
 
+@InputType()
+export class GetAttachmentsByAgreementId extends GetAttachment{
+  @Field()
+  agreementId: string
+}
+
 
 @InputType()
 export class GetMedia extends PickType(UpdateAttachmentInput, ['id'] as const) {

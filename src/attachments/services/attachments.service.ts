@@ -9,8 +9,9 @@ import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { AwsService } from '../../aws/aws.service';
+import { AttachmentWithPreSignedUrl } from '../dto/attachment-payload.dto';
 import { attachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
-import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
+import { GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
 import { DocumentType } from '../entities/documentType.entity';
@@ -39,7 +40,7 @@ export class AttachmentsService {
    */
   async createAttachment(createAttachmentInput: CreateAttachmentInput): Promise<Attachment> {
     const { labOrderNum, policyId, documentTypeId, documentTypeName, documentDate,
-      practiceId, signedBy, signedAt, comments, ...attachmentInput } = createAttachmentInput
+      practiceId, signedBy, signedAt, comments, agreementId, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
     let createMetaDataParams: attachmentInput = {}
     if (labOrderNum) {
@@ -48,6 +49,14 @@ export class AttachmentsService {
 
     if (policyId) {
       createMetaDataParams.policyId = policyId
+    }
+
+    if (policyId) {
+      createMetaDataParams.policyId = policyId
+    }
+
+    if (agreementId) {
+      createMetaDataParams.agreementId = agreementId
     }
 
     if (documentTypeId) {
@@ -223,9 +232,9 @@ export class AttachmentsService {
     });
   }
 
-  async findAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<Attachment[]> {
+  async findAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<AttachmentWithPreSignedUrl[]> {
     const { policyId, typeId } = getAttachmentsByPolicyId
-    return await this.attachmentsRepository.find({
+    const attachments= await this.attachmentsRepository.find({
       relations: ['attachmentMetadata'],
       where: {
         attachmentMetadata: {
@@ -234,6 +243,45 @@ export class AttachmentsService {
         typeId
       }
     });
+
+    const attachmentsWithPreSignedUrl = await Promise.all(
+      attachments.map(async attachment => {
+        const preSignedUrl = await this.getMedia(attachment.id)
+
+        return {
+          ...attachment,
+          preSignedUrl: preSignedUrl
+        }
+      })
+    )
+
+    return attachmentsWithPreSignedUrl
+  }
+
+  async findAttachmentsByAgreementId(getAttachmentsByAttachmentId: GetAttachmentsByAgreementId): Promise<AttachmentWithPreSignedUrl[]> {
+    const { agreementId, typeId } = getAttachmentsByAttachmentId
+    const attachments = await this.attachmentsRepository.find({
+      relations: ['attachmentMetadata'],
+      where: {
+        attachmentMetadata: {
+          agreementId: agreementId,
+        },
+        typeId
+      }
+    });
+
+    const attachmentsWithPreSignedUrl = await Promise.all(
+      attachments.map(async attachment => {
+        const preSignedUrl = await this.getMedia(attachment.id)
+
+        return {
+          ...attachment,
+          preSignedUrl: preSignedUrl
+        }
+      })
+    )
+
+    return attachmentsWithPreSignedUrl
   }
 
   /**
@@ -243,7 +291,7 @@ export class AttachmentsService {
    */
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
-      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, ...attachmentInputToUpdate } = updateAttachmentInput
+      const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, agreementId, ...attachmentInputToUpdate } = updateAttachmentInput
       let attachmentMetadataInput: attachmentInput = {}
       if (comments)
         attachmentMetadataInput.comments = comments;
@@ -257,6 +305,9 @@ export class AttachmentsService {
         attachmentMetadataInput.policyId = policyId
       if (documentDate) {
         attachmentMetadataInput.documentDate = documentDate;
+      }
+      if (agreementId) {
+        attachmentMetadataInput.agreementId = agreementId
       }
       const updatedAttachment = await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
       if (updatedAttachment.attachmentMetadata) {
