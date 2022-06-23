@@ -232,9 +232,9 @@ export class AttachmentsService {
     });
   }
 
-  async findAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<Attachment[]> {
+  async findAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<AttachmentWithPreSignedUrl[]> {
     const { policyId, typeId } = getAttachmentsByPolicyId
-    return await this.attachmentsRepository.find({
+    const attachments= await this.attachmentsRepository.find({
       relations: ['attachmentMetadata'],
       where: {
         attachmentMetadata: {
@@ -243,6 +243,19 @@ export class AttachmentsService {
         typeId
       }
     });
+
+    const attachmentsWithPreSignedUrl = await Promise.all(
+      attachments.map(async attachment => {
+        const preSignedUrl = await this.getMedia(attachment.id)
+
+        return {
+          ...attachment,
+          preSignedUrl: preSignedUrl
+        }
+      })
+    )
+
+    return attachmentsWithPreSignedUrl
   }
 
   async findAttachmentsByAgreementId(getAttachmentsByAttachmentId: GetAttachmentsByAgreementId): Promise<AttachmentWithPreSignedUrl[]> {
