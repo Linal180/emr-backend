@@ -17,7 +17,6 @@ export class DoctorPatientService {
 	async findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput): Promise<DoctorPatientsPayload> {
 		try {
 			const paginationResponse = await this.paginationService.willPaginate<DoctorPatient>(this.doctorPatientRepository, { ...doctorPatientsInput, relationField: 'patient' })
-			console.log('paginationResponse => ', paginationResponse)
 			return {
 				pagination: {
 					...paginationResponse

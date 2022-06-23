@@ -10,9 +10,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
   ) { }
 
   createTypeOrmOptions() {
-    const database =  this.configService.get('database');
-    console.log("....database....in database.config.ts",database);
+    const database = this.configService.get('database');
     return database
-    
   }
 }

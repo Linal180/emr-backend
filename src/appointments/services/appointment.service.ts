@@ -586,4 +586,12 @@ export class AppointmentService {
   async getFacilityAppointmentCount(getFacilityAppointmentsInput: GetFacilityAppointmentsInput) {
     return await this.appointmentRepository.count({ where: { facilityId: getFacilityAppointmentsInput.facilityId } })
   }
+
+  async save(input: UpdateAppointmentInput): Promise<Appointment> {
+    try {
+      return await this.appointmentRepository.save(input)
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
 }

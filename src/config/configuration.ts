@@ -1,5 +1,4 @@
 export default () => {
-  console.log("....entering into configurations....");
   
   let database: any;
   let redis: any;
@@ -20,7 +19,6 @@ export default () => {
         url: process.env.REDIS_URL || "redis://localhost:",
       },
     };
-    console.log("....database....",database);
     
   } else {
     database = {

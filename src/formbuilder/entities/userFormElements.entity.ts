@@ -40,7 +40,7 @@ export class UsersFormsElements {
     updatedAt: string;
 
     @Field(() => UserForms, { nullable: true })
-    @ManyToOne(() => UserForms, userElement => userElement)
+    @ManyToOne(() => UserForms, userElement => userElement.userFormElements)
     userForm: UserForms;
 
 }
