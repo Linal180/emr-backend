@@ -68,6 +68,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.2",
     "socket.io": "^4.4.1",
+    "states-us": "^1.0.2",
     "strip-bom": "^5.0.0",
     "swagger-ui-express": "^4.3.0",
     "twilio": "^3.75.0",

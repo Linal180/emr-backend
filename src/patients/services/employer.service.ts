@@ -117,4 +117,17 @@ export class EmployerService {
       throw new InternalServerErrorException(error);
     }
   }
+
+
+  /**
+   * Gets employer by patient
+   * @param id 
+   */
+  async getEmployerByPatient(id: string) {
+    try {
+      return await this.employerRepository.findOne({ patientId: id })
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }

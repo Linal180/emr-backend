@@ -53,10 +53,10 @@ export class UserFormElementService {
     try {
       const { id: UsersFormsId } = userForm
       const values = await Promise.all(input?.map(async ({ FormsElementsId, arrayOfObjects, arrayOfStrings, value }) => {
-        
+
         const element = await this.userFormElementRepository.findOne({ where: { UsersFormsId, FormsElementsId } })
 
-        if(element){
+        if (element) {
           return {
             ...element,
             arrayOfObjects,
@@ -64,7 +64,7 @@ export class UserFormElementService {
             value,
           }
         }
-        else{
+        else {
           return {
             value,
             UsersFormsId,
@@ -73,7 +73,7 @@ export class UserFormElementService {
             FormsElementsId
           }
         }
-        
+
       }))
 
       const userFormElements = await this.userFormElementRepository.save(values)
@@ -81,6 +81,15 @@ export class UserFormElementService {
       return userFormElements
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getUserFormElements(id: string): Promise<UsersFormsElements[]> {
+    try {
+      return await this.userFormElementRepository.find({ UsersFormsId: id })
+    } catch (error) {
+      throw new Error(error);
+
     }
   }
 }

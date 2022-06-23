@@ -63,8 +63,9 @@ export class UserFormsService {
    */
   async getInputValues(formElements: FormElement[], userForm: UserForms, inputs: CreateUserFormInput): Promise<CreatePatientInput> {
 
-    const { userFormElements } = userForm
+    const { id } = userForm
     const { userFormElements: userFormElementInputs } = inputs
+    const userFormElements = await this.userFormElementService.getUserFormElements(id)
     //tables elements
     const patientElements = getTableElements(formElements, 'Patients')
     const employersElements = getTableElements(formElements, 'Employers')
@@ -156,7 +157,6 @@ export class UserFormsService {
         ssn: ssn || null,
         statementNote: null,
         language: language || null,
-        patientNote: null,
         email: email || null,
         pronouns: pronouns || PRONOUNS.NONE,
         race: race || RACE.OTHER,
@@ -165,12 +165,9 @@ export class UserFormsService {
         genderIdentity: genderIdentity || GENDERIDENTITY.NONE,
         maritialStatus: maritialStatus || MARITIALSTATUS.SINGLE,
         sexualOrientation: SEXUALORIENTATION.NONE,
-        statementDelivereOnline: false,
         dob: dob || null,
-        patientRecord: null,
         smsPermission: smsPermission === 'true' ? true : false,
         phonePermission: phonePermission === 'true' ? true : false,
-        pharmacy: null,
         preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE
       },
       createContactInput: {
@@ -532,7 +529,7 @@ export class UserFormsService {
                 }
 
                 //update patient & appointment
-                await this.patientService.updatePatient(updatePatientInputs)
+                await this.patientService.updatePatientByFormBuilder(updatePatientInputs)
                 const updateAppointment = await this.appointmentService.updateAppointment({ id: appointmentId, ...appointmentInputs })
                 //associate contract
                 if (appointmentContract) {
@@ -603,11 +600,11 @@ export class UserFormsService {
         const oldForm = await this.userFormsRepository.findOne(isOldForm)
         if (oldForm) {
 
-          const appointment = await this.updatePatientAppointment(form, oldForm, input);
           const userFormEles = formInputs?.map((ele) => ({ ...ele, UsersFormsId: oldForm?.id }))
           const userFormElementInputs = await this.userFormElementService.updateBulk(userFormEles, oldForm);
           oldForm.userFormElements = userFormElementInputs
           const newUserForms = await this.userFormsRepository.save(oldForm);
+          const appointment = await this.updatePatientAppointment(form, newUserForms, input);
           await queryRunner.commitTransaction();
           return { userForm: newUserForms, appointment }
         }

@@ -1,4 +1,5 @@
-import { v4 as uuid } from 'uuid'
+import { v4 as uuid } from 'uuid';
+import states from 'states-us'
 
 import { FormType } from "../entities/form.entity";
 import { ElementType } from "../entities/element.entity";
@@ -8,6 +9,7 @@ import { RACE, ETHNICITY, SEXUALORIENTATION, MARITIALSTATUS, GENDERIDENTITY, PRO
 //elements for seed
 export const ElementTypeData = [
   { type: ElementType.CHECKBOX },
+  { type: ElementType.DROPDOWN },
   { type: ElementType.DATE },
   { type: ElementType.FILE },
   { type: ElementType.EMAIL },
@@ -138,56 +140,7 @@ const MAPPED_PRONOUNS = [
   { value: PRONOUNS.NONE, name: PRONOUNS.NONE },
 ];
 
-const MAPPED_STATES = [
-  {
-    name: "Alabama",
-    value: "Alabama - AL",
-  },
-  {
-    name: "Alaska",
-    value: "Alaska - AK",
-  },
-  {
-    name: "American Samoa",
-    value: "American Samoa - AS",
-  },
-  {
-    name: "Arizona",
-    value: "Arizona - AZ",
-  },
-  {
-    name: "Arkansas",
-    value: "Arkansas - AR",
-  },
-  {
-    name: "California",
-    value: "California - CA",
-  },
-  {
-    name: "Colorado",
-    value: "Colorado - CO",
-  },
-  {
-    name: "Connecticut",
-    value: "Connecticut - CT",
-  },
-  {
-    name: "Delaware",
-    value: "Delaware - DE",
-  },
-  {
-    name: "District Of Columbia",
-    value: "District Of Columbia - DC",
-  },
-  {
-    name: "Federated States Of Micronesia",
-    value: "Federated States Of Micronesia - FM",
-  },
-  {
-    name: "Florida",
-    value: "Florida - FL",
-  },
-]
+const MAPPED_STATES = states?.map(({ name, abbreviation }) => ({ value: abbreviation, name: `${name} - ${abbreviation}` }))
 
 export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
@@ -487,7 +440,7 @@ const facilityAppointment = [
         {
           css: "",
           name: "state",
-          type: ElementType.SELECT,
+          type: ElementType.DROPDOWN,
           label: "State",
           column: 4,
           apiCall: "",
@@ -1057,7 +1010,7 @@ const facilityAppointment = [
         {
           css: "",
           name: "state",
-          type: ElementType.SELECT,
+          type: ElementType.DROPDOWN,
           label: "State",
           column: 4,
           apiCall: "",
@@ -3042,7 +2995,7 @@ export const FormTemplates = [
                 name: "state",
                 columnName: "state",
                 tableName: "Contacts",
-                type: ElementType.SELECT,
+                type: ElementType.DROPDOWN,
                 tableContactType: ContactType.SELF,
                 label: "State",
                 column: 4,
@@ -4369,7 +4322,7 @@ export const FormTemplates = [
                 name: "state",
                 columnName: "state",
                 tableName: "Contacts",
-                type: ElementType.SELECT,
+                type: ElementType.DROPDOWN,
                 tableContactType: ContactType.GUARANDOR,
                 label: "State",
                 column: 4,
