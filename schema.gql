@@ -2211,7 +2211,7 @@ type Query {
   findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
-  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
+  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentWithPreSignedUrlPayload!
   getAttachmentsByAgreementId(getAttachmentsByAgreementId: GetAttachmentsByAgreementId!): AttachmentWithPreSignedUrlPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   fetchDocumentTypes(documentTypeInput: DocumentTypeInput!): DocumentTypesPayload!

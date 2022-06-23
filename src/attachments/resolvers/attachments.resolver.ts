@@ -36,13 +36,13 @@ export class AttachmentsResolver {
     };
   }
 
-  @Query(returns => AttachmentsPayload)
+  @Query(returns => AttachmentWithPreSignedUrlPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getAttachments')
-  async getAttachmentsByPolicyId(@Args('getAttachmentsByPolicyId') getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<AttachmentsPayload> {
+  async getAttachmentsByPolicyId(@Args('getAttachmentsByPolicyId') getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<AttachmentWithPreSignedUrlPayload> {
     const attachments = await this.attachmentsService.findAttachmentsByPolicyId(getAttachmentsByPolicyId)
     return {
-      attachments,
+      attachmentsWithPreSignedUrl: attachments,
       response: { status: 200, message: 'Attachments fetched successfully' }
     };
   }
