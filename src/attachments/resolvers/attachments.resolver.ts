@@ -2,9 +2,9 @@ import { UseFilters } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { AttachmentMediaPayload, AttachmentPayload } from '../dto/attachment-payload.dto';
-import { AttachmentsPayload } from '../dto/attachments-payload.dto';
+import { AttachmentsPayload, AttachmentWithPreSignedUrlPayload } from '../dto/attachments-payload.dto';
 import { CreateAttachmentInput } from '../dto/create-attachment.input';
-import { GetAttachment, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetMedia, RemoveAttachment, UpdateAttachmentInput } from '../dto/update-attachment.input';
+import { GetAttachment, GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetMedia, RemoveAttachment, UpdateAttachmentInput } from '../dto/update-attachment.input';
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
 import { AttachmentsService } from '../services/attachments.service';
@@ -47,6 +47,17 @@ export class AttachmentsResolver {
     };
   }
 
+  @Query(returns => AttachmentWithPreSignedUrlPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAttachments')
+  async getAttachmentsByAgreementId(@Args('getAttachmentsByAgreementId') getAttachmentsByAgreementId: GetAttachmentsByAgreementId): Promise<AttachmentWithPreSignedUrlPayload> {
+    const attachments = await this.attachmentsService.findAttachmentsByAgreementId(getAttachmentsByAgreementId)
+    return {
+      attachmentsWithPreSignedUrl: attachments,
+      response: { status: 200, message: 'Attachments fetched successfully' }
+    };
+  }
+
   @Mutation(returns => AttachmentPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'createAttachmentData')
@@ -71,7 +82,7 @@ export class AttachmentsResolver {
   @Mutation(returns => AttachmentPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'removeAttachmentData')
-  async removeAttachmentMedia(@Args('id') id:string) {
+  async removeAttachmentMedia(@Args('id') id: string) {
     await this.attachmentsService.removeMedia(id);
     return {
       response: { status: 200, message: 'Attachment data deleted successfully' }

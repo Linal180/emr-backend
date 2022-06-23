@@ -265,7 +265,6 @@ export class AppointmentService {
               .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
           }))
       }
-      console.log('sortBy', sortBy)
       const [appointments, totalCount] = await baseQuery
         .orderBy('appointment.scheduleStartDateTime', sortBy ? sortBy as 'ASC' | 'DESC' : 'ASC')
         .getManyAndCount()

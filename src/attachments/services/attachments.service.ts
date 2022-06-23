@@ -9,8 +9,9 @@ import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { AwsService } from '../../aws/aws.service';
+import { AttachmentWithPreSignedUrl } from '../dto/attachment-payload.dto';
 import { attachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
-import { GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
+import { GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
 import { DocumentType } from '../entities/documentType.entity';
@@ -242,6 +243,32 @@ export class AttachmentsService {
         typeId
       }
     });
+  }
+
+  async findAttachmentsByAgreementId(getAttachmentsByAttachmentId: GetAttachmentsByAgreementId): Promise<AttachmentWithPreSignedUrl[]> {
+    const { agreementId, typeId } = getAttachmentsByAttachmentId
+    const attachments = await this.attachmentsRepository.find({
+      relations: ['attachmentMetadata'],
+      where: {
+        attachmentMetadata: {
+          agreementId: agreementId,
+        },
+        typeId
+      }
+    });
+
+    const attachmentsWithPreSignedUrl = await Promise.all(
+      attachments.map(async attachment => {
+        const preSignedUrl = await this.getMedia(attachment.id)
+
+        return {
+          ...attachment,
+          preSignedUrl: preSignedUrl
+        }
+      })
+    )
+
+    return attachmentsWithPreSignedUrl
   }
 
   /**

@@ -1588,9 +1588,30 @@ type AttachmentMediaPayload {
   preSignedUrl: String
 }
 
+type AttachmentWithPreSignedUrl {
+  id: String!
+  type: AttachmentType!
+  typeId: String!
+  title: String
+  key: String
+  attachmentName: String
+  url: String
+  attachmentMetadata: AttachmentMetadata
+  attachmentMetadataId: String
+  createdAt: String!
+  updatedAt: String!
+  preSignedUrl: String
+}
+
 type AttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type AttachmentWithPreSignedUrlPayload {
+  response: ResponsePayload
+  attachmentsWithPreSignedUrl: [AttachmentWithPreSignedUrl!]
   pagination: PaginationPayload
 }
 
@@ -2191,6 +2212,7 @@ type Query {
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
+  getAttachmentsByAgreementId(getAttachmentsByAgreementId: GetAttachmentsByAgreementId!): AttachmentWithPreSignedUrlPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   fetchDocumentTypes(documentTypeInput: DocumentTypeInput!): DocumentTypesPayload!
   fetchDocumentType(id: String!): DocumentTypesPayload!
@@ -2416,6 +2438,11 @@ input GetAttachmentsByLabOrder {
 input GetAttachmentsByPolicyId {
   typeId: String!
   policyId: String!
+}
+
+input GetAttachmentsByAgreementId {
+  typeId: String!
+  agreementId: String!
 }
 
 input GetMedia {
