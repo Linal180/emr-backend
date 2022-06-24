@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -38,8 +39,8 @@ export class Transactions {
   @Field({ nullable: true })
   transactionId: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   patientId: string;
 
   @Column({ nullable: true })
@@ -50,25 +51,25 @@ export class Transactions {
   @Field({ nullable: true })
   facilityId: string;
 
-  @Column({ nullable: false })
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   appointmentId: string;
 
-  @OneToMany(() => Patient, (patient) => patient.id)
-  @Field(() => [Patient], { nullable: true })
-  patient: Patient[];
+  @ManyToOne(() => Patient, (patient) => patient.transaction)
+  @Field(() => Patient, { nullable: true })
+  patient: Patient;
 
-  @OneToMany(() => Doctor, (doctor) => doctor.id)
-  @Field(() => [Doctor], { nullable: true })
-  doctor: Doctor[];
+  @ManyToOne(() => Doctor, (doctor) => doctor.transaction)
+  @Field(() => Doctor, { nullable: true })
+  doctor: Doctor;
 
-  @OneToMany(() => Facility, (facility) => facility.id)
-  @Field(() => [Facility], { nullable: true })
-  facility: Facility[];
+  @ManyToOne(() => Facility, (facility) => facility.transaction)
+  @Field(() => Facility, { nullable: true })
+  facility: Facility;
 
-  @OneToOne(() => Appointment)
-  @JoinTable()
   @Field(() => Appointment, { nullable: true })
+  @OneToOne(() => Appointment, (appointment) => appointment.transaction)
+  @JoinTable()
   appointment: Appointment;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
@@ -88,7 +89,7 @@ export class Transactions {
   status: TRANSACTIONSTATUS;
 
   @Field(() => [Invoice], { nullable: true })
-  @OneToMany(() => Invoice, (invoice) => invoice.transction)
+  @OneToMany(() => Invoice, (invoice) => invoice.transaction)
   invoice: Invoice[];
 
 }

@@ -1,0 +1,22 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppointmentModule } from 'src/appointments/appointment.module';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { PatientModule } from 'src/patients/patient.module';
+import { Agreement } from './entities/agreement.entity';
+import { AgreementResolver } from './resolvers/agreement.resolver';
+import { AgreementService } from './services/agreement.service';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([Agreement]),
+    PatientModule,
+    AppointmentModule
+  ],
+  providers: [AgreementResolver, AgreementService, PaginationService],
+  exports: [TypeOrmModule],
+})
+export class AgreementModule { }
+
+
+

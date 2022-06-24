@@ -1,16 +1,16 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from "@nestjs/common";
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { UseGuards } from "@nestjs/common";
+import { Args, Mutation, Parent, ResolveField, Resolver } from "@nestjs/graphql";
 //user imports
-import RoleGuard from 'src/users/auth/role.guard';
-import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
-import { FormAttachmentPayload, FormMediaPayload, UserFormPayload, UserFormsPayload } from "../dto/userForms.dto";
-import { UserForms } from '../entities/userforms.entity';
-import { UserFormsService } from '../services/userForms.service'
-import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
-import { UsersFormsElements } from "../entities/userFormElements.entity";
-import { UserFormElementService } from "../services/userFormElements.service";
-import { FormsService } from "../services/forms.service";
 import { Form } from "../entities/form.entity";
+import RoleGuard from 'src/users/auth/role.guard';
+import { UserForms } from '../entities/userforms.entity';
+import { FormsService } from "../services/forms.service";
+import { UserFormsService } from '../services/userForms.service'
+import { FormMediaPayload, UserFormPayload } from "../dto/userForms.dto";
+import { UsersFormsElements } from "../entities/userFormElements.entity";
+import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
+import { UserFormElementService } from "../services/userFormElements.service";
+import { CreateUserFormInput, GetPublicMediaInput } from "../dto/userForms.input";
 
 @Resolver(() => UserForms)
 
@@ -25,8 +25,10 @@ export class UserFormResolver {
 
   @Mutation(() => UserFormPayload)
   async saveUserFormValues(@Args('createUserFormInput') createUserFormInput: CreateUserFormInput): Promise<UserFormPayload> {
+    const { userForm, appointment } = await this.userFormsService.create(createUserFormInput)
     return {
-      userForm: await this.userFormsService.create(createUserFormInput),
+      userForm: userForm,
+      appointment: appointment,
       response: { status: 200, message: 'User Form Values are created successfully' }
     };
   }

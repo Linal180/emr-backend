@@ -18,7 +18,6 @@ export class DoctorController {
     fileFilter: mediaFilesFilter
   }))
   async uploadMedia(@UploadedFile() file: File, @Body() updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<DoctorPayload> {
-    console.log("updateAttachmentMediaInput1", updateAttachmentMediaInput);
     const doctor = await this.doctorService.uploadDoctorMedia(file, updateAttachmentMediaInput)
     return {
       ...doctor,

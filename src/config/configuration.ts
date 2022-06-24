@@ -1,5 +1,4 @@
 export default () => {
-  console.log("....entering into configurations....");
   
   let database: any;
   let redis: any;
@@ -20,7 +19,6 @@ export default () => {
         url: process.env.REDIS_URL || "redis://localhost:",
       },
     };
-    console.log("....database....",database);
     
   } else {
     database = {
@@ -64,6 +62,7 @@ export default () => {
     INVITATION_TEMPLATE_ID: process.env.FORGOT_PASSWORD_TEMPLATE_ID || "d-c40af5d836ec4f029f9f9da1f9a06515",
     PATIENT_PORTAL_INVITATION_TEMPLATE_ID: process.env.PATIENT_PORTAL_INVITATION_TEMPLATE_ID || "d-0454982d8ec141849f5603a06fdf7b71",
     FORGOT_PASSWORD_TEMPLATE_ID: process.env.FORGOT_PASSWORD_TEMPLATE_ID || "d-56e7f1e73ce1456cb5cf89bec7aa3fb3",
+    APPOINTMENT_TELEHEALTH_TEMPLATE_ID: process.env.APPOINTMENT_TELEHEALTH_TEMPLATE_ID || "d-45a2247d5064414fadbfe62b792b8625",
     APPOINTMENT_CONFIRMATION_TEMPLATE_ID: process.env.APPOINTMENT_CONFIRMATION_TEMPLATE_ID || "d-8f94685c66f6469fa154ee80fe8845c4",
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID || "ACe7e8da1801b74623b48f1e595d9eb79e",
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN || "b7dc30fd3397d41decae99d0f2c1d303",

@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "Benifit",
+        "Braintree",
         "Champus",
         "COMMUNICATIONTYPE",
         "copays",
@@ -12,6 +13,7 @@
         "TELE",
         "Telehealth",
         "timestamptz",
+        "TRANSACTIONSTATUS",
         "typeorm",
         "userforms",
         "VISIR"

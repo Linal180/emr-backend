@@ -51,9 +51,7 @@ export class ServiceResolver {
     });
   }
 
-  @Query(returns => ServicePayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getService')
+  @Query(() => ServicePayload)
   async getService(@Args('getService') getService: GetService): Promise<ServicePayload> {
     const service = await this.servicesService.GetService(getService.id)
     return {

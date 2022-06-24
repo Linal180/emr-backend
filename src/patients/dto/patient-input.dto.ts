@@ -18,12 +18,22 @@ export default class PatientInput {
     @Field({ nullable: true })
     doctorId?: string
 
-    @Field({nullable: true})
+    @Field({ nullable: true })
     patientRecord?: string
 
     @Field({ nullable: true })
     practiceId?: string
 
     @Field(type => PaginationInput)
+    paginationOptions: PaginationInput
+}
+
+@InputType()
+export class DoctorPatientsInput {
+
+    @Field({ nullable: true })
+    doctorId: string
+
+    @Field(() => PaginationInput)
     paginationOptions: PaginationInput
 }

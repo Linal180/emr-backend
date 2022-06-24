@@ -7,7 +7,7 @@ export class PaymentInput {
   @Field({ nullable: true })
   clientIntent: string;
 
-  @Field()
+  @Field({ nullable: true })
   price: string;
 
   @Field({ nullable: true })
@@ -16,13 +16,13 @@ export class PaymentInput {
   @Field({ nullable: true })
   facilityId: string;
 
-  @Field()
+  @Field({ nullable: true })
   patientId: string;
 
-  @Field()
+  @Field({ nullable: true })
   appointmentId: string;
 
-  @Field()
+  @Field({ nullable: true })
   serviceId: string
 
 }
@@ -104,7 +104,7 @@ export class ACHPaymentInputs {
   @Field({ nullable: false })
   price: string
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   patientId: string;
 
   @Field({ nullable: true })
@@ -113,7 +113,7 @@ export class ACHPaymentInputs {
   @Field({ nullable: true })
   facilityId: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   appointmentId: string;
 
   @Field({ nullable: true })

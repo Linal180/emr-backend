@@ -472,7 +472,7 @@ type Invoice {
   appointmentId: String
   createdAt: String
   updatedAt: String
-  transction: Transactions
+  transaction: Transactions
   appointment: Appointment
 }
 
@@ -492,13 +492,13 @@ enum STATUS {
 type Transactions {
   id: String!
   transactionId: String
-  patientId: String!
+  patientId: String
   doctorId: String
   facilityId: String
-  appointmentId: String!
-  patient: [Patient!]
-  doctor: [Doctor!]
-  facility: [Facility!]
+  appointmentId: String
+  patient: Patient
+  doctor: Doctor
+  facility: Facility
   appointment: Appointment
   createdAt: String
   updatedAt: String
@@ -645,6 +645,7 @@ type DoctorPatient {
   patientId: String
   currentProvider: Boolean
   doctor: Doctor
+  patient: Patient
   createdAt: String!
   updatedAt: String!
   otherRelation: String
@@ -800,6 +801,7 @@ type Patient {
   facilityId: String
   practiceId: String
   attachments: [Attachment!]
+  profileAttachment: String
   contacts: [Contact!]
   facility: Facility
   user: User
@@ -813,7 +815,7 @@ type Patient {
   patientVitals: [PatientVitals!]
   createdAt: String!
   updatedAt: String!
-  transaction: Transactions
+  transaction: [Transactions!]
   policies: [Policy!]
   policyHolder: PolicyHolder
   policyHolderId: String
@@ -1072,6 +1074,7 @@ type Doctor {
   middleName: String
   lastName: String
   prefix: String
+  telehealthLink: String
   suffix: String
   email: String
   providerIntials: String
@@ -1120,7 +1123,7 @@ type Doctor {
   policyOfPrimaryCareProvider: [Policy!]
   createdAt: String!
   updatedAt: String!
-  transaction: Transactions
+  transaction: [Transactions!]
   attachments: [Attachment!]
 }
 
@@ -1218,6 +1221,7 @@ type Appointment {
   paymentType: PaymentType!
   status: AppointmentStatus!
   billingStatus: BillingStatus!
+  appointmentCreateType: AppointmentCreateType
   appointmentCancelReason: String
   checkedInAt: String
   checkedOutAt: String
@@ -1251,6 +1255,7 @@ type Appointment {
   invoice: Invoice
   contract: Contract
   billing: Billing
+  transaction: Transactions
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
   patientVitals: [PatientVitals!]
@@ -1285,6 +1290,12 @@ enum BillingStatus {
   REFUND
 }
 
+"""The appointment create type assigned"""
+enum AppointmentCreateType {
+  APPOINTMENT
+  TELEHEALTH
+}
+
 type Facility {
   id: String!
   name: String!
@@ -1313,7 +1324,7 @@ type Facility {
   schedule: [Schedule!]
   createdAt: String
   updatedAt: String
-  transaction: Transactions
+  transaction: [Transactions!]
 }
 
 """The facility practice type assigned type"""
@@ -1416,6 +1427,7 @@ type AttachmentMetadata {
   documentTypeId: String
   labOrderNum: String
   policyId: String
+  agreementId: String
   assignedTo: String
   providerName: String
   signedBy: String
@@ -1495,6 +1507,12 @@ type PatientsPayload {
   pagination: PaginationPayload
 }
 
+type DoctorPatientsPayload {
+  response: ResponsePayload
+  doctorPatients: [DoctorPatient]
+  pagination: PaginationPayload
+}
+
 type ContactPayload {
   contact: Contact
   response: ResponsePayload
@@ -1570,9 +1588,30 @@ type AttachmentMediaPayload {
   preSignedUrl: String
 }
 
+type AttachmentWithPreSignedUrl {
+  id: String!
+  type: AttachmentType!
+  typeId: String!
+  title: String
+  key: String
+  attachmentName: String
+  url: String
+  attachmentMetadata: AttachmentMetadata
+  attachmentMetadataId: String
+  createdAt: String!
+  updatedAt: String!
+  preSignedUrl: String
+}
+
 type AttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type AttachmentWithPreSignedUrlPayload {
+  response: ResponsePayload
+  attachmentsWithPreSignedUrl: [AttachmentWithPreSignedUrl!]
   pagination: PaginationPayload
 }
 
@@ -1875,6 +1914,7 @@ type ResponsePayloadResponse {
 
 type UserFormPayload {
   userForm: UserForms
+  appointment: Appointment
   response: ResponsePayloadResponse
 }
 
@@ -1943,8 +1983,19 @@ type ReactionsPayload {
 
 type IcdCodesPayload {
   response: ResponsePayload
-  icdCodes: [ICDCodes]
+  icdCodes: [ICDCodesWithSnowMedCode]
   pagination: PaginationPayload
+}
+
+type ICDCodesWithSnowMedCode {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
+  snoMedCode: SnoMedCodes
 }
 
 type PatientProblemPayload {
@@ -2103,6 +2154,28 @@ type BillingPayload {
   response: Response
 }
 
+type Agreement {
+  id: String!
+  title: String
+  body: String
+  signatureRequired: Boolean
+  viewAgreementBeforeAgreeing: Boolean
+  createdAt: String
+  updatedAt: String
+}
+
+type AgreementsPayload {
+  response: ResponsePayload
+  agreements: [Agreement!]!
+  pagination: PaginationPayload
+}
+
+type AgreementPayload {
+  response: ResponsePayload
+  agreement: Agreement!
+  pagination: PaginationPayload
+}
+
 type Query {
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
@@ -2136,9 +2209,11 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getPatientProviders(getPatient: GetPatient!): PatientProviderPayload!
   getPatientProvider(patientProviderInputs: PatientProviderInputs!): PatientDoctorPayload!
+  findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
-  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
+  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentWithPreSignedUrlPayload!
+  getAttachmentsByAgreementId(getAttachmentsByAgreementId: GetAttachmentsByAgreementId!): AttachmentWithPreSignedUrlPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   fetchDocumentTypes(documentTypeInput: DocumentTypeInput!): DocumentTypesPayload!
   fetchDocumentType(id: String!): DocumentTypesPayload!
@@ -2146,11 +2221,13 @@ type Query {
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
+  findAllUpcomingAppointments(upComingAppointmentsInput: UpComingAppointmentsInput!): AppointmentsPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   getToken: BraintreePayload!
+  getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -2189,6 +2266,8 @@ type Query {
   fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
   fetchPolicyHolder(id: String!): PolicyHolder!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
+  fetchAgreement(agreementId: String!): AgreementPayload!
+  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
 }
 
 input UsersInput {
@@ -2245,6 +2324,7 @@ input GetFacility {
 }
 
 input ServiceInput {
+  practiceId: String
   facilityId: String
   serviceName: String
   isActive: Boolean
@@ -2342,6 +2422,11 @@ input PatientProviderInputs {
   providerId: String
 }
 
+input DoctorPatientsInput {
+  doctorId: String
+  paginationOptions: PaginationInput!
+}
+
 input GetAttachment {
   typeId: String!
 }
@@ -2354,6 +2439,11 @@ input GetAttachmentsByLabOrder {
 input GetAttachmentsByPolicyId {
   typeId: String!
   policyId: String!
+}
+
+input GetAttachmentsByAgreementId {
+  typeId: String!
+  agreementId: String!
 }
 
 input GetMedia {
@@ -2384,6 +2474,16 @@ input AppointmentInput {
   practiceId: String
   facilityId: String
   relationTable: String
+  providerId: String
+  appointmentTypeId: String
+  sortBy: String
+}
+
+input UpComingAppointmentsInput {
+  patientId: String
+  practiceId: String
+  facilityId: String
+  providerId: String
 }
 
 input GetAppointment {
@@ -2538,6 +2638,11 @@ input PolicyHolderPaginationInput {
   paginationOptions: PaginationInput!
 }
 
+input AgreementPaginationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
 type Mutation {
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -2643,6 +2748,9 @@ type Mutation {
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
   createCopay(createCopayInput: CopayInput!): Copay!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
+  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
+  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
+  removeAgreement(agreementId: String!): AgreementPayload!
 }
 
 input LoginUserInput {
@@ -3041,7 +3149,6 @@ input CreateDoctorItemInput {
   lastName: String!
   prefix: String
   suffix: String
-  email: String!
   password: String
 
   """Send doctor Type from the string - Sign-up"""
@@ -3094,7 +3201,6 @@ input UpdateDoctorItemInput {
   lastName: String
   prefix: String
   suffix: String
-  email: String
   password: String
 
   """Send doctor Type from the string - Sign-up"""
@@ -3394,6 +3500,7 @@ input CreateAttachmentInput {
   documentTypeName: String
   practiceId: String
   documentDate: String
+  agreementId: String
 }
 
 input RemoveAttachment {
@@ -3419,6 +3526,7 @@ input UpdateAttachmentInput {
   documentTypeName: String
   practiceId: String
   documentDate: String
+  agreementId: String
   id: String
 }
 
@@ -3480,6 +3588,7 @@ input CreateAppointmentInput {
   providerId: String
   patientId: String
   practiceId: String
+  appointmentCreateType: AppointmentCreateType
 }
 
 input CreateExternalAppointmentInput {
@@ -3527,6 +3636,7 @@ input UpdateAppointmentInput {
   providerId: String
   patientId: String
   practiceId: String
+  appointmentCreateType: AppointmentCreateType
   id: String!
   paymentStatus: String
   selfCheckIn: Boolean
@@ -3557,12 +3667,12 @@ input UpdateAppointmentStatusInput {
 
 input PaymentInput {
   clientIntent: String
-  price: String!
+  price: String
   providerId: String
   facilityId: String
-  patientId: String!
-  appointmentId: String!
-  serviceId: String!
+  patientId: String
+  appointmentId: String
+  serviceId: String
 }
 
 input PaymentInputsAfterAppointment {
@@ -3584,10 +3694,10 @@ input ACHPaymentInputs {
   firstName: String
   lastName: String
   price: String!
-  patientId: String!
+  patientId: String
   doctorId: String
   facilityId: String
-  appointmentId: String!
+  appointmentId: String
   company: String
   deviceData: String
 }
@@ -4055,4 +4165,19 @@ input CodesInput {
   description: String
   price: String
   codeType: CodeType
+}
+
+input AgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+}
+
+input UpdateAgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  id: String!
 }

@@ -56,7 +56,7 @@ export class ContactService {
    */
   async updateContact(updateContactInput: UpdateContactInput): Promise<Contact> {
     try {
-      if(updateContactInput.id){
+      if (updateContactInput.id) {
         return await this.utilsService.updateEntityManager(Contact, updateContactInput.id, updateContactInput, this.contactRepository)
       }
       const contactInstance = this.contactRepository.create(updateContactInput)
@@ -100,9 +100,11 @@ export class ContactService {
    * @returns contacts by patient id 
    */
   async findContactsByPatientId(id: string): Promise<Contact[]> {
-    return await this.contactRepository.find({where: {
-      patientId: id
-    }});
+    return await this.contactRepository.find({
+      where: {
+        patientId: id
+      }
+    });
   }
 
   /**
@@ -111,9 +113,11 @@ export class ContactService {
    * @returns contacts by facility id 
    */
   async findContactsByFacilityId(id: string): Promise<Contact[]> {
-    return await this.contactRepository.find({where: {
-      facilityId: id
-    }});
+    return await this.contactRepository.find({
+      where: {
+        facilityId: id
+      }
+    });
   }
 
   /**
@@ -123,6 +127,20 @@ export class ContactService {
   async removeContact({ id }: RemoveContact) {
     try {
       await this.contactRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Removes patient contacts
+   * @param { id } 
+   */
+  async removePatientContacts({ id }: RemoveContact) {
+    try {
+      const entities = await this.contactRepository.find({ patientId: id })
+      await this.contactRepository.remove(entities)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

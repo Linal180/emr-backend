@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { Appointment } from "src/appointments/entities/appointment.entity";
 //user import
 import { ResponsePayloadResponse } from "src/customDecorators/response-payload.dto";
 import PaginationPayload from "src/pagination/dto/pagination-payload.dto";
@@ -10,8 +11,20 @@ export class UserFormPayload {
     @Field(() => UserForms, { nullable: true })
     userForm: UserForms;
 
+    @Field(() => Appointment, { nullable: true })
+    appointment?: Appointment
+
     @Field({ nullable: true })
     response?: ResponsePayloadResponse
+}
+
+@ObjectType()
+export class AppointmentUserForm{
+    @Field(() => UserForms, { nullable: true })
+    userForm: UserForms;
+
+    @Field(() => Appointment, { nullable: true })
+    appointment?: Appointment
 }
 
 @ObjectType()

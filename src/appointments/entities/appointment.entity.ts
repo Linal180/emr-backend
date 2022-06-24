@@ -11,6 +11,7 @@ import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { Billing } from 'src/billings/entities/billing.entity';
 import { Contract } from './contract.entity';
+import { Transactions } from 'src/payment/entity/payment.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -21,6 +22,16 @@ export enum PaymentType {
 registerEnumType(PaymentType, {
   name: "PaymentType",
   description: "The patient payment type assigned",
+});
+
+export enum AppointmentCreateType {
+  APPOINTMENT = 'Appointment',
+  TELEHEALTH = 'Telehealth'
+}
+
+registerEnumType(AppointmentCreateType, {
+  name: "AppointmentCreateType",
+  description: "The appointment create type assigned",
 });
 
 export enum BillingStatus {
@@ -86,6 +97,14 @@ export class Appointment {
   })
   @Field(type => BillingStatus)
   billingStatus: BillingStatus;
+
+  @Column({
+    type: "enum",
+    enum: AppointmentCreateType,
+    default: AppointmentCreateType.APPOINTMENT
+  })
+  @Field(type => AppointmentCreateType, { nullable: true })
+  appointmentCreateType: AppointmentCreateType;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -217,6 +236,10 @@ export class Appointment {
   @Field(() => Billing, { nullable: true })
   @OneToOne(() => Billing, (billing) => billing.appointment)
   billing: Billing;
+
+  @Field(() => Transactions, { nullable: true })
+  @OneToOne(() => Transactions, (transaction) => transaction.appointment)
+  transaction: Transactions;
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)
   @Field(type => [PatientProblems], { nullable: true })

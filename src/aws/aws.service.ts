@@ -23,7 +23,6 @@ export class AwsService {
    */
   async uploadFile(file: File, moduleName: string, typeId: string): Promise<ManagedUpload.SendData> {
     try {
-      console.log("file", `${this.Bucket}/${moduleName}/${typeId}`)
       const uploadedFile = await this.s3Client.upload({
         Bucket: `${this.Bucket}/${moduleName}/${typeId}`,
         Key: `${Date.now()}_${file.originalname}`,
