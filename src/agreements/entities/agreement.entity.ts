@@ -1,5 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//entities
+import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
 
 @Entity({ name: 'Agreements' })
 @ObjectType()
@@ -24,6 +26,12 @@ export class Agreement {
   @Field({ nullable: true })
   viewAgreementBeforeAgreeing: boolean;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientConsentId: string;
+
+  //dates
+
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   createdAt: string;
@@ -31,4 +39,10 @@ export class Agreement {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+  //relationships
+
+  @ManyToOne(() => PatientConsent, patientConsent => patientConsent.agreements)
+  @Field(() => PatientConsent, { nullable: true })
+  patientConsent: PatientConsent;
 }

@@ -219,6 +219,22 @@ export class AttachmentsService {
     });
   }
 
+  /**
+   * Gets attachment
+   * @param id 
+   * @returns attachment 
+   */
+  async getAttachment(id: string): Promise<Attachment> {
+    return await this.attachmentsRepository.findOne({
+      where: { id }
+    });
+  }
+
+  /**
+   * Finds attachments by lab order
+   * @param getAttachmentsByLabOrder 
+   * @returns attachments by lab order 
+   */
   async findAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder): Promise<Attachment[]> {
     const { orderNum, typeId } = getAttachmentsByLabOrder
     return await this.attachmentsRepository.find({
@@ -232,9 +248,14 @@ export class AttachmentsService {
     });
   }
 
+  /**
+   * Finds attachments by policy id
+   * @param getAttachmentsByPolicyId 
+   * @returns attachments by policy id 
+   */
   async findAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<AttachmentWithPreSignedUrl[]> {
     const { policyId, typeId } = getAttachmentsByPolicyId
-    const attachments= await this.attachmentsRepository.find({
+    const attachments = await this.attachmentsRepository.find({
       relations: ['attachmentMetadata'],
       where: {
         attachmentMetadata: {
@@ -258,6 +279,11 @@ export class AttachmentsService {
     return attachmentsWithPreSignedUrl
   }
 
+  /**
+   * Finds attachments by agreement id
+   * @param getAttachmentsByAttachmentId 
+   * @returns attachments by agreement id 
+   */
   async findAttachmentsByAgreementId(getAttachmentsByAttachmentId: GetAttachmentsByAgreementId): Promise<AttachmentWithPreSignedUrl[]> {
     const { agreementId, typeId } = getAttachmentsByAttachmentId
     const attachments = await this.attachmentsRepository.find({
@@ -332,6 +358,11 @@ export class AttachmentsService {
     }
   }
 
+  /**
+   * Gets attachment metadata
+   * @param id 
+   * @returns attachment metadata 
+   */
   async getAttachmentMetadata(id: string): Promise<AttachmentMetadata> {
     try {
       return await this.attachmentMetadataRepository.findOne({ id })
@@ -447,4 +478,5 @@ export class AttachmentsService {
       attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join(''),
     }
   }
+
 }

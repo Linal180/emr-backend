@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Connection, Repository } from 'typeorm';
+import { Connection, In, Repository } from 'typeorm';
 import { AgreementInput, AgreementPaginationInput, UpdateAgreementInput } from '../dto/agreement-input.dto';
 import { AgreementsPayload } from '../dto/agreement-payload';
 import { Agreement } from '../entities/agreement.entity';
@@ -17,7 +17,11 @@ export class AgreementService {
     private readonly utilsService: UtilsService
   ) { }
 
-
+  /**
+   * Creates agreement service
+   * @param createAgreementInput 
+   * @returns create 
+   */
   async create(createAgreementInput: AgreementInput): Promise<Agreement> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
@@ -37,13 +41,18 @@ export class AgreementService {
     }
   }
 
+  /**
+   * Updates agreement service
+   * @param updateAgreementInput 
+   * @returns update 
+   */
   async update(updateAgreementInput: UpdateAgreementInput): Promise<Agreement> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       //creating agreement
-      const updatedAgreement= await this.utilsService.updateEntityManager(Agreement, updateAgreementInput.id, updateAgreementInput, this.agreementRepository)
+      const updatedAgreement = await this.utilsService.updateEntityManager(Agreement, updateAgreementInput.id, updateAgreementInput, this.agreementRepository)
       await queryRunner.commitTransaction();
       return updatedAgreement
     } catch (error) {
@@ -54,6 +63,11 @@ export class AgreementService {
     }
   }
 
+  /**
+   * Fetchs all agreements
+   * @param agreementPaginationInput 
+   * @returns all agreements 
+   */
   async fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput): Promise<AgreementsPayload> {
     try {
       const { searchString } = agreementPaginationInput
@@ -69,6 +83,11 @@ export class AgreementService {
     }
   }
 
+  /**
+   * Fetchs agreement
+   * @param agreementId 
+   * @returns agreement 
+   */
   async fetchAgreement(agreementId: string): Promise<Agreement> {
     try {
       return await this.agreementRepository.findOne({ id: agreementId })
@@ -77,9 +96,39 @@ export class AgreementService {
     }
   }
 
+  /**
+   * Removes agreement
+   * @param id 
+   */
   async removeAgreement(id: string) {
     try {
       await this.agreementRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds all agreements
+   * @param agreementId 
+   * @returns all agreements 
+   */
+  async findAllAgreements(agreementId: string[]): Promise<Agreement[]> {
+    try {
+      return await this.agreementRepository.find({ id: In(agreementId) })
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds all agreements by patient consent
+   * @param patientConsentId 
+   * @returns all agreements by patient consent 
+   */
+  async findAllAgreementsByPatientConsent(patientConsentId: string): Promise<Agreement[]> {
+    try {
+      return await this.agreementRepository.find({ patientConsentId: patientConsentId })
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
