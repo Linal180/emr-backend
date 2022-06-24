@@ -190,6 +190,8 @@ export class PaginationService {
       specimenTypeName,
       orderNumber,
       documentPracticeId,
+      agreementFacilityId,
+      agreementPracticeId,
       documentTypeName,
       providerId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
@@ -319,7 +321,13 @@ export class PaginationService {
         }),
         ...(documentPracticeId && {
           practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${documentPracticeId}'`),
-        })
+        }),
+        ...(agreementPracticeId && {
+          practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementPracticeId}'`),
+        }),
+        ...(agreementFacilityId && {
+          facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
+        }),
       }
     };
 
