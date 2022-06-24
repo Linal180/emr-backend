@@ -60,6 +60,8 @@ export class PaginatedEntityInput {
   orderNumber?: string
   payerName?: string
   documentPracticeId?: string
+  agreementFacilityId?: string
+  agreementPracticeId?: string
   documentTypeName?: string
   providerId?: string
 }

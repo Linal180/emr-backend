@@ -4,6 +4,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { DocumentType } from 'src/attachments/entities/documentType.entity';
+import { Agreement } from 'src/agreements/entities/agreement.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
@@ -55,6 +56,10 @@ export class Practice {
   @OneToMany(() => Facility, facility => facility.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Facility], { nullable: true })
   facilities: Facility[];
+
+  @OneToMany(() => Agreement, agreement => agreement.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [Agreement], { nullable: true })
+  agreements: Agreement[];
 
   @OneToMany(() => DocumentType, documentType => documentType.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [DocumentType], { nullable: true })
