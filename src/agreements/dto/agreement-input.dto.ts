@@ -14,10 +14,22 @@ export class AgreementInput {
 
   @Field({ nullable: true })
   signatureRequired: boolean;
+
+  @Field({ nullable: true })
+  facilityId: string
+
+  @Field({ nullable: true })
+  practiceId: string
 }
 
 @InputType()
 export class AgreementPaginationInput {
+  @Field({ nullable: true })
+  agreementFacilityId: string
+
+  @Field({ nullable: true })
+  agreementPracticeId: string
+
   @Field({ nullable: true })
   searchString: string
 
@@ -27,6 +39,6 @@ export class AgreementPaginationInput {
 
 @InputType()
 export class UpdateAgreementInput extends PartialType(AgreementInput) {
-   @Field()
-   id: string
+  @Field()
+  id: string
 }

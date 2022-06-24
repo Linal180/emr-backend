@@ -204,7 +204,6 @@ export class LabTestsObservationsService {
    */
   async updateLabsMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<LabTestObservationPayload> {
     try {
-      console.log("73adae1e-fa83-4f01-a6c6-c4de666ac31c73adae1e-fa83-4f01-a6c6-c4de666ac31c");
       updateAttachmentMediaInput.type = AttachmentType.lab
       const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
       const labTestObservation = await this.ObservationsRepository.findOne(updateAttachmentMediaInput.typeId)

@@ -154,6 +154,11 @@ export class FormsService {
     }
   }
 
+  /**
+   * Creates pre defined component
+   * @param input 
+   * @returns  
+   */
   async createPreDefinedComponent(input: CreateFormInput) {
     try {
       const preDefined = this.formsRepository.create(input);

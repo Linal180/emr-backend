@@ -2,6 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Agreement {
+  id: String!
+  title: String
+  body: String
+  signatureRequired: Boolean
+  viewAgreementBeforeAgreeing: Boolean
+  facility: Facility
+  facilityId: String
+  practice: Practice
+  practiceId: String
+  createdAt: String
+  updatedAt: String
+}
+
 type SnoMedCodes {
   id: String!
   recordId: String
@@ -1316,6 +1330,7 @@ type Facility {
   staff: [Staff!]
   doctors: [Doctor!]
   appointments: [Appointment!]
+  agreements: [Agreement!]
   user: [User!]
   contacts: [Contact!]
   services: [Service!]
@@ -1405,6 +1420,7 @@ type Practice {
   champus: String
   active: Boolean
   facilities: [Facility!]
+  agreements: [Agreement!]
   documentTypes: [DocumentType!]
   attachments: [Attachment!]
   createdAt: String
@@ -1588,9 +1604,30 @@ type AttachmentMediaPayload {
   preSignedUrl: String
 }
 
+type AttachmentWithPreSignedUrl {
+  id: String!
+  type: AttachmentType!
+  typeId: String!
+  title: String
+  key: String
+  attachmentName: String
+  url: String
+  attachmentMetadata: AttachmentMetadata
+  attachmentMetadataId: String
+  createdAt: String!
+  updatedAt: String!
+  preSignedUrl: String
+}
+
 type AttachmentsPayload {
   response: ResponsePayload
   attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
+type AttachmentWithPreSignedUrlPayload {
+  response: ResponsePayload
+  attachmentsWithPreSignedUrl: [AttachmentWithPreSignedUrl!]
   pagination: PaginationPayload
 }
 
@@ -1893,6 +1930,7 @@ type ResponsePayloadResponse {
 
 type UserFormPayload {
   userForm: UserForms
+  appointment: Appointment
   response: ResponsePayloadResponse
 }
 
@@ -2132,16 +2170,6 @@ type BillingPayload {
   response: Response
 }
 
-type Agreement {
-  id: String!
-  title: String
-  body: String
-  signatureRequired: Boolean
-  viewAgreementBeforeAgreeing: Boolean
-  createdAt: String
-  updatedAt: String
-}
-
 type AgreementsPayload {
   response: ResponsePayload
   agreements: [Agreement!]!
@@ -2190,7 +2218,8 @@ type Query {
   findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
-  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentsPayload!
+  getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentWithPreSignedUrlPayload!
+  getAttachmentsByAgreementId(getAttachmentsByAgreementId: GetAttachmentsByAgreementId!): AttachmentWithPreSignedUrlPayload!
   getAttachment(getMedia: GetMedia!): AttachmentMediaPayload!
   fetchDocumentTypes(documentTypeInput: DocumentTypeInput!): DocumentTypesPayload!
   fetchDocumentType(id: String!): DocumentTypesPayload!
@@ -2418,6 +2447,11 @@ input GetAttachmentsByPolicyId {
   policyId: String!
 }
 
+input GetAttachmentsByAgreementId {
+  typeId: String!
+  agreementId: String!
+}
+
 input GetMedia {
   id: String
 }
@@ -2611,6 +2645,8 @@ input PolicyHolderPaginationInput {
 }
 
 input AgreementPaginationInput {
+  agreementFacilityId: String
+  agreementPracticeId: String
   searchString: String
   paginationOptions: PaginationInput!
 }
@@ -4144,6 +4180,8 @@ input AgreementInput {
   body: String
   viewAgreementBeforeAgreeing: Boolean
   signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
 }
 
 input UpdateAgreementInput {
@@ -4151,5 +4189,7 @@ input UpdateAgreementInput {
   body: String
   viewAgreementBeforeAgreeing: Boolean
   signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
   id: String!
 }

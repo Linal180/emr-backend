@@ -14,7 +14,12 @@ export class UserFormElementService {
     private userFormElementRepository: Repository<UsersFormsElements>,
   ) { }
 
-
+  /**
+   * Creates bulk
+   * @param input 
+   * @param userForm 
+   * @returns bulk 
+   */
   async createBulk(input: UserFormElementInputs[], userForm: UserForms): Promise<UsersFormsElements[]> {
     try {
       const userFormElements = this.userFormElementRepository.create(input);
@@ -25,6 +30,12 @@ export class UserFormElementService {
     }
   }
 
+
+  /**
+   * Gets all user form elements
+   * @param id 
+   * @returns all user form elements 
+   */
   async getAllUserFormElements(id: string): Promise<UsersFormsElements[]> {
     try {
       return await this.userFormElementRepository.find({
@@ -38,4 +49,47 @@ export class UserFormElementService {
 
   }
 
+  async updateBulk(input: UserFormElementInputs[], userForm: UserForms): Promise<UsersFormsElements[]> {
+    try {
+      const { id: UsersFormsId } = userForm
+      const values = await Promise.all(input?.map(async ({ FormsElementsId, arrayOfObjects, arrayOfStrings, value }) => {
+
+        const element = await this.userFormElementRepository.findOne({ where: { UsersFormsId, FormsElementsId } })
+
+        if (element) {
+          return {
+            ...element,
+            arrayOfObjects,
+            arrayOfStrings,
+            value,
+          }
+        }
+        else {
+          return {
+            value,
+            UsersFormsId,
+            arrayOfObjects,
+            arrayOfStrings,
+            FormsElementsId
+          }
+        }
+
+      }))
+
+      const userFormElements = await this.userFormElementRepository.save(values)
+
+      return userFormElements
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getUserFormElements(id: string): Promise<UsersFormsElements[]> {
+    try {
+      return await this.userFormElementRepository.find({ UsersFormsId: id })
+    } catch (error) {
+      throw new Error(error);
+
+    }
+  }
 }

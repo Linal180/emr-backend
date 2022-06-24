@@ -44,7 +44,7 @@ export class UserForms {
   form: Form;
 
   @Field(() => [UsersFormsElements], { nullable: true })
-  @OneToMany(() => UsersFormsElements, userElement => userElement)
+  @OneToMany(() => UsersFormsElements, userElement => userElement.userForm)
   userFormElements: UsersFormsElements[];
 
 }

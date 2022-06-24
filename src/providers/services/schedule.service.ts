@@ -271,7 +271,6 @@ export class ScheduleService {
           orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
       }))
       .getCount()
-      console.log("scheduleRes",scheduleRes)
       flag= !!scheduleRes
     } else if (getSlots.providerId) {
       const scheduleRes = await getConnection()

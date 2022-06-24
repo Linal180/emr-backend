@@ -106,7 +106,7 @@ export class PaginationService {
       }
 
     } catch (error) {
-      console.log("error", error)
+     
       throw new InternalServerErrorException(error);
     }
   }
@@ -118,8 +118,6 @@ export class PaginationService {
    */
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
     const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
-    console.log("associatedToField...", columnValue, columnName, columnName2);
-    console.log("relationField", relationField);
 
     const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
     let where = { str: {}, obj: {} }
@@ -137,7 +135,6 @@ export class PaginationService {
     if (relationField) {
       return { join, where };
     } else {
-      console.log("ELSE");
       return { where };
     }
   }
@@ -193,6 +190,8 @@ export class PaginationService {
       specimenTypeName,
       orderNumber,
       documentPracticeId,
+      agreementFacilityId,
+      agreementPracticeId,
       documentTypeName,
       providerId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
@@ -322,10 +321,15 @@ export class PaginationService {
         }),
         ...(documentPracticeId && {
           practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${documentPracticeId}'`),
-        })
+        }),
+        ...(agreementPracticeId && {
+          practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementPracticeId}'`),
+        }),
+        ...(agreementFacilityId && {
+          facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
+        }),
       }
     };
-    console.log("whereOptions", whereOptions);
 
     // Assigned to User
     if (userId) {
