@@ -124,6 +124,7 @@ export class DoctorService {
       doctorInstance.contacts = [contact];
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
+      doctorInstance.practiceId = facility.practiceId
       const doctor = await this.doctorRepository.save(doctorInstance)
       await this.usersService.saveUserId(doctor.id, user);
       return doctor
