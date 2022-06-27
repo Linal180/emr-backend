@@ -3515,7 +3515,6 @@ input CreatePatientConsentInputs {
   patientId: String
   agreementIds: [String!]
   body: String
-  attachmentId: String
 }
 
 input CreatePracticeInput {

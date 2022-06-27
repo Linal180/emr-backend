@@ -22,8 +22,6 @@ export class CreatePatientConsentInputs {
 
   @Field({ nullable: true })
   body: string;
-  
-  @Field({ nullable: true })
-  attachmentId: string
+
 }
 

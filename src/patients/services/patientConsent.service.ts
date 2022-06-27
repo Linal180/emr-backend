@@ -39,9 +39,9 @@ export class PatientConsentService {
    */
   async create(createPatientConsentInputs: CreatePatientConsentInputs) {
     try {
-      const { agreementIds, appointmentId, attachmentId, body, patientId } = createPatientConsentInputs
-      const patientConsentInstance = this.patientConsentRepository.create({ appointmentId, attachmentId, body, patientId })
-
+      const { agreementIds, appointmentId, body, patientId } = createPatientConsentInputs
+      const attachment = await this.patientService.getSignature(patientId)
+      const patientConsentInstance = this.patientConsentRepository.create({ appointmentId, attachmentId: attachment?.id, body, patientId })
       //associate appointment
       if (appointmentId) {
         const appointment = await this.appointmentService.findOne(appointmentId);
