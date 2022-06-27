@@ -50,6 +50,7 @@ export class PatientService {
     private readonly paginationService: PaginationService,
     private readonly connection: Connection,
     private readonly employerService: EmployerService,
+    @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,

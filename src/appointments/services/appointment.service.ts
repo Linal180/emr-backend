@@ -110,10 +110,18 @@ export class AppointmentService {
         if (patient.phonePermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
-        if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.TELEHEALTH) {
-          const scheduleTime = `${moment(appointmentInstance.scheduleStartDateTime).format("ddd MMM. DD, YYYY")} at ${moment(appointmentInstance.scheduleStartDateTime).format("hh:mm A")}`
-          this.mailerService.sendAppointmentTelehealthEmail(patient.email, patient.firstName + ' ' + patient.lastName, scheduleTime, provider.firstName + ' ' + provider.lastName, appointment.id)
+        if (patient?.email) {
+          if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.APPOINTMENT) {
+            this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointmentInstance.scheduleStartDateTime, token, patient.id, false)
+          }
+
+          if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.TELEHEALTH) {
+            const scheduleTime = `${moment(appointmentInstance.scheduleStartDateTime).format("ddd MMM. DD, YYYY")} at ${moment(appointmentInstance.scheduleStartDateTime).format("hh:mm A")}`
+            this.mailerService.sendAppointmentTelehealthEmail(patient.email, patient.firstName + ' ' + patient.lastName, scheduleTime, provider.firstName + ' ' + provider.lastName, appointment.id)
+          }
         }
+
+
         return appointment
       }
       throw new ConflictException({

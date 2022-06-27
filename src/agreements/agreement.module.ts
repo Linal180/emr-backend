@@ -2,9 +2,10 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module, forwardRef } from '@nestjs/common';
 //modules
-import { PatientModule } from 'src/patients/patient.module';
+import { UtilsModule } from 'src/util/utils.module';
+import { PracticeModule } from 'src/practice/practice.module';
+import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
-import { AppointmentModule } from 'src/appointments/appointment.module';
 //services
 import { AgreementService } from './services/agreement.service';
 //entities
@@ -15,9 +16,10 @@ import { AgreementResolver } from './resolvers/agreement.resolver';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Agreement]),
-    forwardRef(() => PatientModule),
     forwardRef(() => PaginationModule),
-    forwardRef(() => AppointmentModule),
+    forwardRef(() => FacilityModule),
+    forwardRef(() => PracticeModule),
+    UtilsModule
   ],
   providers: [AgreementResolver, AgreementService],
   exports: [TypeOrmModule, AgreementService],

@@ -14,19 +14,31 @@ export class AgreementInput {
 
   @Field({ nullable: true })
   signatureRequired: boolean;
+
+  @Field({ nullable: true })
+  facilityId: string
+
+  @Field({ nullable: true })
+  practiceId: string
 }
 
 @InputType()
 export class AgreementPaginationInput {
   @Field({ nullable: true })
-  searchString: string
+  agreementFacilityId?: string
 
-  @Field(type => PaginationInput)
+  @Field({ nullable: true })
+  agreementPracticeId?: string
+
+  @Field({ nullable: true })
+  searchString?: string
+
+  @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 }
 
 @InputType()
 export class UpdateAgreementInput extends PartialType(AgreementInput) {
-   @Field()
-   id: string
+  @Field()
+  id: string
 }

@@ -79,53 +79,272 @@ enum UserStatus {
   ACTIVE
 }
 
-type DoctorPatient {
+type Schedule {
   id: String!
+  startAt: String!
+  endAt: String!
+  day: String
+  recurringEndDate: DateTime
   doctorId: String
-  patientId: String
-  currentProvider: Boolean
+  facilityId: String
   doctor: Doctor
-  patient: Patient
+  facility: Facility
+  scheduleServices: [ScheduleServices!]
   createdAt: String!
   updatedAt: String!
-  otherRelation: String
-  relation: DoctorPatientRelationType
 }
 
-"""The relationship of patient with doctor"""
-enum DoctorPatientRelationType {
-  PREFERRED_PROVIDER
-  BACKUP_PROVIDER
-  PRIMARY_PROVIDER
-  REFERRING_PROVIDER
-  ORDERING_PROVIDER
-  OTHER_PROVIDER
-}
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
-type Agreement {
+type ScheduleServices {
   id: String!
-  title: String
-  body: String
-  signatureRequired: Boolean
-  viewAgreementBeforeAgreeing: Boolean
-  patientConsentId: String
+  serviceId: String
+  scheduleId: String
+  service: Service
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Service {
+  id: String!
+  name: String!
+  serviceType: ServiceType!
+  duration: String!
+  color: String
+  price: String!
+  isActive: Boolean
+  facilityId: String
+  facility: Facility
+  scheduleServices: [ScheduleServices!]
   createdAt: String
   updatedAt: String
-  patientConsent: PatientConsent
 }
 
-type PatientConsent {
+"""The service type assigned type"""
+enum ServiceType {
+  INTERNAL
+  EXTERNAL
+}
+
+type Transactions {
   id: String!
-  body: String
-  attachmentId: String
-  appointmentId: String
+  transactionId: String
   patientId: String
-  createdAt: String!
-  updatedAt: String!
+  doctorId: String
+  facilityId: String
+  appointmentId: String
   patient: Patient
+  doctor: Doctor
+  facility: Facility
   appointment: Appointment
-  agreements: [Agreement!]
-  signature: Attachment
+  createdAt: String
+  updatedAt: String
+  status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
+}
+
+"""The transaction payment status type assigned"""
+enum TRANSACTIONSTATUS {
+  REFUND
+  DUE
+  PAID
+}
+
+type Invoice {
+  id: String!
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  appointmentId: String
+  createdAt: String
+  updatedAt: String
+  transaction: Transactions
+  appointment: Appointment
+}
+
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
+}
+
+type Observations {
+  id: String!
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: AbnormalFlag!
+  description: String
+  labTestId: String
+  attachments: [Attachment!]
+  loincCodes: LoincCodes
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+"""The test result's abnormal flag status assigned"""
+enum AbnormalFlag {
+  NONE
+  BELOW_LOW_NORMAL
+  ABOVE_HIGH_NORMAL
+  BELOW_LOWER_PANIC_LIMIT
+  BELOW_UPPER_PANIC_LIMIT
+  BELOW_ABSOLUTE_LOW_OFF_SCALE
+  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
+  NORMAL
+  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
+  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
+  SIGNIFICANT_CHANGE_UP
+  SIGNIFICANT_CHANGE_DOWN
+  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
+  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
+  SUSCEPTIBLE
+  RESISTANT
+  INTERMEDIATE
+  MODERATELY
+  VERY_SUSCEPTIBLE
+}
+
+type LoincCodes {
+  id: String!
+  loincNum: String
+  component: String
+  property: String
+  timeAspect: String
+  system: String
+  scaleTyp: String
+  methodTyp: String
+  class: String
+  versionLastChanged: String
+  chngType: String
+  definitionDescription: String
+  status: String
+  consumerName: String
+  classType: String
+  formula: String
+  exmplAnswers: String
+  surveyQuestTest: String
+  surveyQuestSRC: String
+  unitsRequired: String
+  submittedUnits: String
+  relatedNames2: String
+  shortName: String
+  orderObs: String
+  cdiscCommonTests: String
+  hl7FieldSubFieldId: String
+  externalCopyRightNotice: String
+  exampleUnits: String
+  longCommonName: String
+  unitsAndRange: String
+  exampleUcumUnits: String
+  exampleSiUcumUnits: String
+  statusReason: String
+  statusText: String
+  changeReasonPublic: String
+  commonTestRank: String
+  commonOrderRank: String
+  commonSiTestRank: String
+  hl7AttachmentStructure: String
+  externalCopyRightLink: String
+  panelType: String
+  askAtOrderEntry: String
+  associationObservations: String
+  versionFirstRelease: String
+  validHl7AttachmentRequest: String
+  displayName: String
+  labTests: [LabTests!]
+  observations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+type SpecimenTypes {
+  id: String!
+  name: String
+  testSpecimens: [TestSpecimens!]
+  createdAt: String
+  updatedAt: String
+}
+
+type TestSpecimens {
+  id: String!
+  collectionDate: String
+  collectionTime: String
+  specimenNotes: String
+  labTestId: String
+  specimenTypes: SpecimenTypes
+  specimenTypesId: String
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+type LabTests {
+  id: String!
+  labTestStatus: LabTestStatus!
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  providerNotes: String
+  patientId: String
+  doctorId: String
+  primaryProviderId: String
+  referringProviderId: String
+  appointmentId: String
+  patient: Patient
+  doctor: Doctor
+  primaryProvider: Doctor
+  referringProvider: Doctor
+  appointment: Appointment
+  diagnoses: [ICDCodes]
+  test: LoincCodes
+  testSpecimens: [TestSpecimens!]
+  testObservations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The lab's test status assigned"""
+enum LabTestStatus {
+  ORDER_ENTERED
+  DISCONTINUED
+  IN_PROGRESS
+  RESULT_RECEIVED
+  RESULT_REVIEWED_WITH_PATIENT
+}
+
+type ICDCodes {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
 }
 
 type SnoMedCodes {
@@ -330,170 +549,6 @@ enum ProblemSeverity {
   ACUTE
 }
 
-type ICDCodes {
-  id: String!
-  code: String!
-  description: String
-  version: String
-  labTests: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-type Observations {
-  id: String!
-  doctorsSignOff: Boolean
-  resultValue: String
-  resultUnit: String
-  normalRange: String
-  normalRangeUnit: String
-  abnormalFlag: AbnormalFlag!
-  description: String
-  labTestId: String
-  attachments: [Attachment!]
-  loincCodes: LoincCodes
-  labTest: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-"""The test result's abnormal flag status assigned"""
-enum AbnormalFlag {
-  NONE
-  BELOW_LOW_NORMAL
-  ABOVE_HIGH_NORMAL
-  BELOW_LOWER_PANIC_LIMIT
-  BELOW_UPPER_PANIC_LIMIT
-  BELOW_ABSOLUTE_LOW_OFF_SCALE
-  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
-  NORMAL
-  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
-  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
-  SIGNIFICANT_CHANGE_UP
-  SIGNIFICANT_CHANGE_DOWN
-  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
-  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
-  SUSCEPTIBLE
-  RESISTANT
-  INTERMEDIATE
-  MODERATELY
-  VERY_SUSCEPTIBLE
-}
-
-type LoincCodes {
-  id: String!
-  loincNum: String
-  component: String
-  property: String
-  timeAspect: String
-  system: String
-  scaleTyp: String
-  methodTyp: String
-  class: String
-  versionLastChanged: String
-  chngType: String
-  definitionDescription: String
-  status: String
-  consumerName: String
-  classType: String
-  formula: String
-  exmplAnswers: String
-  surveyQuestTest: String
-  surveyQuestSRC: String
-  unitsRequired: String
-  submittedUnits: String
-  relatedNames2: String
-  shortName: String
-  orderObs: String
-  cdiscCommonTests: String
-  hl7FieldSubFieldId: String
-  externalCopyRightNotice: String
-  exampleUnits: String
-  longCommonName: String
-  unitsAndRange: String
-  exampleUcumUnits: String
-  exampleSiUcumUnits: String
-  statusReason: String
-  statusText: String
-  changeReasonPublic: String
-  commonTestRank: String
-  commonOrderRank: String
-  commonSiTestRank: String
-  hl7AttachmentStructure: String
-  externalCopyRightLink: String
-  panelType: String
-  askAtOrderEntry: String
-  associationObservations: String
-  versionFirstRelease: String
-  validHl7AttachmentRequest: String
-  displayName: String
-  labTests: [LabTests!]
-  observations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-type SpecimenTypes {
-  id: String!
-  name: String
-  testSpecimens: [TestSpecimens!]
-  createdAt: String
-  updatedAt: String
-}
-
-type TestSpecimens {
-  id: String!
-  collectionDate: String
-  collectionTime: String
-  specimenNotes: String
-  labTestId: String
-  specimenTypes: SpecimenTypes
-  specimenTypesId: String
-  labTest: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-type LabTests {
-  id: String!
-  labTestStatus: LabTestStatus!
-  orderNumber: String
-  collectedDate: String
-  receivedDate: String
-  accessionNumber: String
-  labName: String
-  vendorName: String
-  testDate: String
-  testTime: String
-  testNotes: String
-  providerNotes: String
-  patientId: String
-  doctorId: String
-  primaryProviderId: String
-  referringProviderId: String
-  appointmentId: String
-  patient: Patient
-  doctor: Doctor
-  primaryProvider: Doctor
-  referringProvider: Doctor
-  appointment: Appointment
-  diagnoses: [ICDCodes]
-  test: LoincCodes
-  testSpecimens: [TestSpecimens!]
-  testObservations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The lab's test status assigned"""
-enum LabTestStatus {
-  ORDER_ENTERED
-  DISCONTINUED
-  IN_PROGRESS
-  RESULT_RECEIVED
-  RESULT_REVIEWED_WITH_PATIENT
-}
-
 type Code {
   id: String!
   code: String
@@ -569,29 +624,142 @@ enum OtherDateType {
   LAST_RELATED_VISIT
 }
 
-type Insurance {
+type Contract {
   id: String!
-  payerId: String!
-  payerName: String!
-  enrollmentRequired: Boolean
-  type: InsurancePayerType!
-  lineOfBusiness: String!
-  state: String
-  realTimeEligibility: Boolean
-  realTimeClaimStatus: Boolean
-  electronicRemittanceAdvice: Boolean
-  secondaryCoordinationBenefits: Boolean
-  Note: String
-  contacts: [Contact!]
-  policies: [Policy!]
+  contractNumber: String
+  organizationName: String
+  appointment: Appointment
+}
+
+type Appointment {
+  id: String!
+  isExternal: Boolean
+  paymentType: PaymentType!
+  status: AppointmentStatus!
+  billingStatus: BillingStatus!
+  appointmentCreateType: AppointmentCreateType
+  appointmentCancelReason: String
+  checkedInAt: String
+  checkedOutAt: String
+  selfCheckIn: Boolean
+  checkInActiveStep: String
+  insuranceCompany: String
+  membershipID: String
+  reason: String
+  notes: String
+  token: String
+  appointmentNumber: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  otherPartyResponsible: Boolean
+  primaryInsurance: String
+  secondaryInsurance: String
+  scheduleStartDateTime: String
+  scheduleEndDateTime: String
+  providerId: String
+  patientId: String
+  facilityId: String
+  practiceId: String
+  appointmentTypeId: String
+  invoiceId: String
+  appointmentType: Service
+  facility: Facility
+  provider: Doctor
+  patient: Patient
+  labTests: [LabTests!]
+  invoice: Invoice
+  contract: Contract
+  billing: Billing
+  transaction: Transactions
+  patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
+  patientVitals: [PatientVitals!]
+  patientConsent: PatientConsent
   createdAt: String
   updatedAt: String
 }
 
-"""The insurance payer type"""
-enum InsurancePayerType {
-  P
-  NP
+"""The patient payment type assigned"""
+enum PaymentType {
+  SELF
+  INSURANCE
+  CONTRACT
+}
+
+"""The patient appointment status type assigned"""
+enum AppointmentStatus {
+  SCHEDULED
+  ARRIVED
+  CHECK_IN_ONLINE
+  IN_LOBBY
+  IN_SESSION
+  RESCHEDULED
+  NO_SHOW
+  DISCHARGED
+  CANCELLED
+}
+
+"""The patient billing status assigned"""
+enum BillingStatus {
+  PAID
+  DUE
+  REFUND
+}
+
+"""The appointment create type assigned"""
+enum AppointmentCreateType {
+  APPOINTMENT
+  TELEHEALTH
+}
+
+type Copay {
+  id: String!
+  type: CopayType
+  amount: String
+  policy: Policy
+  policyId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The type of copay"""
+enum CopayType {
+  OFFICE_VISIT
+  SPECIALTY_CARE
+  ALLERGY
+  DERMATOLOGY
+  PT_OT_ST
+  MH_GROUP
+  MH_INDIVIDUAL
+  ER_VISIT
+  OB_GYN
+  URGENT_CARE
+  TELE_HEALTH
+  AMBULATORY_SURGERY
+  AUDIOLOGIST
+  BRAND_DRUG
+  CHIROPRACTIC_COPAYMENT
+  DME
+  DEDUCTIBLE
+  GENERIC_DRUG
+  GLOBAL
+  LAB
+  NON_FORMULARY_DRUG
+  NURSE_VISIT
+  OFFICE_VISIT_FU
+  OFFICE_VISIR_NEW
+  OUT_OF_NETWORK
+  PHYSICIANS_ASSISTANT
+  PODIATRY
+  POST_OP
+  PREFERRED_DRUG
+  PRENATAL_CARE
+  PREVENTIVE_CARE
+  RETAIL_CONVENIENCE
+  ULTRASOUND
+  WELL_CHILD
+  XRAY_IMAGING
 }
 
 type Contact {
@@ -695,58 +863,29 @@ enum ContactType {
   GUARANDOR
 }
 
-type Invoice {
+type Insurance {
   id: String!
-  invoiceNo: String!
-  facilityId: String
-  paymentTransactionId: String
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String
-  status: STATUS!
-  amount: String!
-  appointmentId: String
+  payerId: String!
+  payerName: String!
+  enrollmentRequired: Boolean
+  type: InsurancePayerType!
+  lineOfBusiness: String!
+  state: String
+  realTimeEligibility: Boolean
+  realTimeClaimStatus: Boolean
+  electronicRemittanceAdvice: Boolean
+  secondaryCoordinationBenefits: Boolean
+  Note: String
+  contacts: [Contact!]
+  policies: [Policy!]
   createdAt: String
   updatedAt: String
-  transaction: Transactions
-  appointment: Appointment
 }
 
-"""The invoice payment type"""
-enum BILLING_TYPE {
-  SELF_PAY
-  INSURANCE
-}
-
-"""The invoice status"""
-enum STATUS {
-  PAID
-  INSURANCE_CLAIM
-  PENDING
-}
-
-type Transactions {
-  id: String!
-  transactionId: String
-  patientId: String
-  doctorId: String
-  facilityId: String
-  appointmentId: String
-  patient: Patient
-  doctor: Doctor
-  facility: Facility
-  appointment: Appointment
-  createdAt: String
-  updatedAt: String
-  status: TRANSACTIONSTATUS!
-  invoice: [Invoice!]
-}
-
-"""The transaction payment status type assigned"""
-enum TRANSACTIONSTATUS {
-  REFUND
-  DUE
-  PAID
+"""The insurance payer type"""
+enum InsurancePayerType {
+  P
+  NP
 }
 
 type PolicyHolder {
@@ -779,202 +918,6 @@ enum POLICY_HOLDER_GENDER_IDENTITY {
   TRANSGENDER_FEMALE
   NOT_EXCLUSIVE
   NONE
-}
-
-type Patient {
-  id: String!
-  suffix: String
-  email: String
-  patientRecord: String
-  firstName: String
-  middleName: String
-  lastName: String
-  firstNameUsed: String
-  prefferedName: String
-  previousFirstName: String
-  previouslastName: String
-  motherMaidenName: String
-  ssn: String
-  gender: GENDERIDENTITY!
-  dob: String
-  preferredCommunicationMethod: COMMUNICATIONTYPE!
-  registrationDate: String
-  deceasedDate: String
-  privacyNotice: Boolean!
-  phonePermission: Boolean
-  smsPermission: Boolean
-  releaseOfInfoBill: Boolean!
-  callToConsent: Boolean!
-  medicationHistoryAuthority: Boolean!
-  patientNote: String
-  patientNoteOpen: Boolean
-  language: String
-  pharmacy: String
-  race: RACE
-  ethnicity: ETHNICITY
-  maritialStatus: MARITIALSTATUS
-  sexualOrientation: SEXUALORIENTATION
-  genderIdentity: GENDERIDENTITY
-  sexAtBirth: GENDERIDENTITY
-  pronouns: PRONOUNS
-  homeBound: HOMEBOUND
-  holdStatement: HOLDSTATEMENT
-  statementDelivereOnline: Boolean
-  inviteAccepted: Boolean
-  statementNote: String
-  statementNoteDateFrom: String
-  statementNoteDateTo: String
-  facilityId: String
-  practiceId: String
-  policyHolderId: String
-  attachments: [Attachment!]
-  profileAttachment: String
-  createdAt: String!
-  updatedAt: String!
-  user: User
-  consent: PatientConsent
-  contacts: [Contact!]
-  facility: Facility
-  doctorPatients: [DoctorPatient!]
-  patientAllergies: [PatientAllergies!]
-  patientProblems: [PatientProblems!]
-  appointments: [Appointment!]
-  labTests: [LabTests!]
-  billings: [Billing!]
-  employer: Employer
-  patientVitals: [PatientVitals!]
-  transaction: [Transactions!]
-  policies: [Policy!]
-  policyHolder: PolicyHolder
-}
-
-"""The patient's sexual orientation type assigned"""
-enum GENDERIDENTITY {
-  MALE
-  FEMALE
-  TRANSGENDER_MALE
-  TRANSGENDER_FEMALE
-  DECLINE_TO_SPECIFY
-  NONE
-}
-
-"""The patient's communication method assigned"""
-enum COMMUNICATIONTYPE {
-  PHONE
-  VOICE_MESSAGE
-  MESSAGE
-  EMAIL
-}
-
-"""The user race assigned"""
-enum RACE {
-  WHITE
-  BLACK_AFRICAN_AMERICAN
-  ASIAN
-  AMERICAN_INDIAN_ALASKA_NATIVE
-  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
-  OTHER
-}
-
-"""The patient's ethnicity type assigned"""
-enum ETHNICITY {
-  NONE
-  HISPANIC_OR_LATINO
-  NOT_HISPANIC_OR_LATINO
-  DECLINE_TO_SPECIFY
-}
-
-"""The patient's maritial status type assigned"""
-enum MARITIALSTATUS {
-  SINGLE
-  MARIED
-  WIDOWED
-  SEPARATED
-  DIVORCED
-}
-
-"""The patient's sexual orientation type assigned"""
-enum SEXUALORIENTATION {
-  HOMOSEXUAL
-  HETEROSEXUAL
-  BISEXUAL
-  DONT_KNOW
-  NONE
-}
-
-"""The patient's pronouns type assigned"""
-enum PRONOUNS {
-  HE
-  SHE
-  NONE
-}
-
-"""The patient's homebound type assigned"""
-enum HOMEBOUND {
-  YES
-  NO
-}
-
-"""The patient's hold statement type assigned"""
-enum HOLDSTATEMENT {
-  NONE
-  BAD_ADDRESS
-  NO_FORW_ADDRESS
-  BANKRUPTCY
-  CLAIM_CANCELED
-  INCORRECT_GURANTOR
-  PATIENT_DEASEASED
-  ACCOUNT_TOO_LONG
-  PRACTICE_REQUEST
-}
-
-type Copay {
-  id: String!
-  type: CopayType
-  amount: String
-  policy: Policy
-  policyId: String
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""The type of copay"""
-enum CopayType {
-  OFFICE_VISIT
-  SPECIALTY_CARE
-  ALLERGY
-  DERMATOLOGY
-  PT_OT_ST
-  MH_GROUP
-  MH_INDIVIDUAL
-  ER_VISIT
-  OB_GYN
-  URGENT_CARE
-  TELE_HEALTH
-  AMBULATORY_SURGERY
-  AUDIOLOGIST
-  BRAND_DRUG
-  CHIROPRACTIC_COPAYMENT
-  DME
-  DEDUCTIBLE
-  GENERIC_DRUG
-  GLOBAL
-  LAB
-  NON_FORMULARY_DRUG
-  NURSE_VISIT
-  OFFICE_VISIT_FU
-  OFFICE_VISIR_NEW
-  OUT_OF_NETWORK
-  PHYSICIANS_ASSISTANT
-  PODIATRY
-  POST_OP
-  PREFERRED_DRUG
-  PRENATAL_CARE
-  PREVENTIVE_CARE
-  RETAIL_CONVENIENCE
-  ULTRASOUND
-  WELL_CHILD
-  XRAY_IMAGING
 }
 
 type Policy {
@@ -1185,143 +1128,204 @@ enum Speciality {
   PSYCHIATRY
 }
 
-type Schedule {
+type DoctorPatient {
   id: String!
-  startAt: String!
-  endAt: String!
-  day: String
-  recurringEndDate: DateTime
   doctorId: String
-  facilityId: String
-  doctor: Doctor
-  facility: Facility
-  scheduleServices: [ScheduleServices!]
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type ScheduleServices {
-  id: String!
-  serviceId: String
-  scheduleId: String
-  service: Service
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Service {
-  id: String!
-  name: String!
-  serviceType: ServiceType!
-  duration: String!
-  color: String
-  price: String!
-  isActive: Boolean
-  facilityId: String
-  facility: Facility
-  scheduleServices: [ScheduleServices!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The service type assigned type"""
-enum ServiceType {
-  INTERNAL
-  EXTERNAL
-}
-
-type Contract {
-  id: String!
-  contractNumber: String
-  organizationName: String
-  appointment: Appointment
-}
-
-type Appointment {
-  id: String!
-  isExternal: Boolean
-  paymentType: PaymentType!
-  status: AppointmentStatus!
-  billingStatus: BillingStatus!
-  appointmentCreateType: AppointmentCreateType
-  appointmentCancelReason: String
-  checkedInAt: String
-  checkedOutAt: String
-  selfCheckIn: Boolean
-  checkInActiveStep: String
-  insuranceCompany: String
-  membershipID: String
-  reason: String
-  notes: String
-  token: String
-  appointmentNumber: String
-  employment: Boolean
-  autoAccident: Boolean
-  otherAccident: Boolean
-  otherPartyResponsible: Boolean
-  primaryInsurance: String
-  secondaryInsurance: String
-  scheduleStartDateTime: String
-  scheduleEndDateTime: String
-  providerId: String
   patientId: String
+  currentProvider: Boolean
+  doctor: Doctor
+  patient: Patient
+  createdAt: String!
+  updatedAt: String!
+  otherRelation: String
+  relation: DoctorPatientRelationType
+}
+
+"""The relationship of patient with doctor"""
+enum DoctorPatientRelationType {
+  PREFERRED_PROVIDER
+  BACKUP_PROVIDER
+  PRIMARY_PROVIDER
+  REFERRING_PROVIDER
+  ORDERING_PROVIDER
+  OTHER_PROVIDER
+}
+
+type Patient {
+  id: String!
+  suffix: String
+  email: String
+  patientRecord: String
+  firstName: String
+  middleName: String
+  lastName: String
+  firstNameUsed: String
+  prefferedName: String
+  previousFirstName: String
+  previouslastName: String
+  motherMaidenName: String
+  ssn: String
+  gender: GENDERIDENTITY!
+  dob: String
+  preferredCommunicationMethod: COMMUNICATIONTYPE!
+  registrationDate: String
+  deceasedDate: String
+  privacyNotice: Boolean!
+  phonePermission: Boolean
+  smsPermission: Boolean
+  releaseOfInfoBill: Boolean!
+  callToConsent: Boolean!
+  medicationHistoryAuthority: Boolean!
+  patientNote: String
+  patientNoteOpen: Boolean
+  language: String
+  pharmacy: String
+  race: RACE
+  ethnicity: ETHNICITY
+  maritialStatus: MARITIALSTATUS
+  sexualOrientation: SEXUALORIENTATION
+  genderIdentity: GENDERIDENTITY
+  sexAtBirth: GENDERIDENTITY
+  pronouns: PRONOUNS
+  homeBound: HOMEBOUND
+  holdStatement: HOLDSTATEMENT
+  statementDelivereOnline: Boolean
+  inviteAccepted: Boolean
+  statementNote: String
+  statementNoteDateFrom: String
+  statementNoteDateTo: String
   facilityId: String
   practiceId: String
-  appointmentTypeId: String
-  invoiceId: String
-  appointmentType: Service
+  policyHolderId: String
+  attachments: [Attachment!]
+  profileAttachment: String
+  createdAt: String!
+  updatedAt: String!
+  user: User
+  consent: PatientConsent
+  contacts: [Contact!]
   facility: Facility
-  provider: Doctor
-  patient: Patient
-  labTests: [LabTests!]
-  invoice: Invoice
-  contract: Contract
-  billing: Billing
-  transaction: Transactions
-  patientProblem: [PatientProblems!]
+  doctorPatients: [DoctorPatient!]
   patientAllergies: [PatientAllergies!]
+  patientProblems: [PatientProblems!]
+  appointments: [Appointment!]
+  labTests: [LabTests!]
+  billings: [Billing!]
+  employer: Employer
   patientVitals: [PatientVitals!]
-  patientConsent: PatientConsent
+  transaction: [Transactions!]
+  policies: [Policy!]
+  policyHolder: PolicyHolder
+}
+
+"""The patient's sexual orientation type assigned"""
+enum GENDERIDENTITY {
+  MALE
+  FEMALE
+  TRANSGENDER_MALE
+  TRANSGENDER_FEMALE
+  DECLINE_TO_SPECIFY
+  NONE
+}
+
+"""The patient's communication method assigned"""
+enum COMMUNICATIONTYPE {
+  PHONE
+  VOICE_MESSAGE
+  MESSAGE
+  EMAIL
+}
+
+"""The user race assigned"""
+enum RACE {
+  WHITE
+  BLACK_AFRICAN_AMERICAN
+  ASIAN
+  AMERICAN_INDIAN_ALASKA_NATIVE
+  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
+  OTHER
+}
+
+"""The patient's ethnicity type assigned"""
+enum ETHNICITY {
+  NONE
+  HISPANIC_OR_LATINO
+  NOT_HISPANIC_OR_LATINO
+  DECLINE_TO_SPECIFY
+}
+
+"""The patient's maritial status type assigned"""
+enum MARITIALSTATUS {
+  SINGLE
+  MARIED
+  WIDOWED
+  SEPARATED
+  DIVORCED
+}
+
+"""The patient's sexual orientation type assigned"""
+enum SEXUALORIENTATION {
+  HOMOSEXUAL
+  HETEROSEXUAL
+  BISEXUAL
+  DONT_KNOW
+  NONE
+}
+
+"""The patient's pronouns type assigned"""
+enum PRONOUNS {
+  HE
+  SHE
+  NONE
+}
+
+"""The patient's homebound type assigned"""
+enum HOMEBOUND {
+  YES
+  NO
+}
+
+"""The patient's hold statement type assigned"""
+enum HOLDSTATEMENT {
+  NONE
+  BAD_ADDRESS
+  NO_FORW_ADDRESS
+  BANKRUPTCY
+  CLAIM_CANCELED
+  INCORRECT_GURANTOR
+  PATIENT_DEASEASED
+  ACCOUNT_TOO_LONG
+  PRACTICE_REQUEST
+}
+
+type PatientConsent {
+  id: String!
+  body: String
+  attachmentId: String
+  appointmentId: String
+  patientId: String
+  createdAt: String!
+  updatedAt: String!
+  patient: Patient
+  appointment: Appointment
+  agreements: [Agreement!]
+  signature: Attachment
+}
+
+type Agreement {
+  id: String!
+  title: String
+  body: String
+  signatureRequired: Boolean
+  viewAgreementBeforeAgreeing: Boolean
+  patientConsentId: String
+  practiceId: String
+  facilityId: String
   createdAt: String
   updatedAt: String
-}
-
-"""The patient payment type assigned"""
-enum PaymentType {
-  SELF
-  INSURANCE
-  CONTRACT
-}
-
-"""The patient appointment status type assigned"""
-enum AppointmentStatus {
-  SCHEDULED
-  ARRIVED
-  CHECK_IN_ONLINE
-  IN_LOBBY
-  IN_SESSION
-  RESCHEDULED
-  NO_SHOW
-  DISCHARGED
-  CANCELLED
-}
-
-"""The patient billing status assigned"""
-enum BillingStatus {
-  PAID
-  DUE
-  REFUND
-}
-
-"""The appointment create type assigned"""
-enum AppointmentCreateType {
-  APPOINTMENT
-  TELEHEALTH
+  patientConsent: PatientConsent
+  facility: Facility
+  practice: Practice
 }
 
 type Facility {
@@ -1344,6 +1348,7 @@ type Facility {
   staff: [Staff!]
   doctors: [Doctor!]
   appointments: [Appointment!]
+  agreements: [Agreement!]
   user: [User!]
   contacts: [Contact!]
   services: [Service!]
@@ -1433,6 +1438,7 @@ type Practice {
   champus: String
   active: Boolean
   facilities: [Facility!]
+  agreements: [Agreement!]
   documentTypes: [DocumentType!]
   attachments: [Attachment!]
   createdAt: String
@@ -2533,6 +2539,8 @@ input InvoiceInputs {
 }
 
 input AgreementPaginationInput {
+  agreementFacilityId: String
+  agreementPracticeId: String
   searchString: String
   paginationOptions: PaginationInput!
 }
@@ -3769,6 +3777,8 @@ input AgreementInput {
   body: String
   viewAgreementBeforeAgreeing: Boolean
   signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
 }
 
 input UpdateAgreementInput {
@@ -3776,6 +3786,8 @@ input UpdateAgreementInput {
   body: String
   viewAgreementBeforeAgreeing: Boolean
   signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
   id: String!
 }
 

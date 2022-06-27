@@ -1,11 +1,16 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Connection, In, Repository } from 'typeorm';
-import { AgreementInput, AgreementPaginationInput, UpdateAgreementInput } from '../dto/agreement-input.dto';
-import { AgreementsPayload } from '../dto/agreement-payload';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+//services
+import { UtilsService } from 'src/util/utils.service';
+import { PracticeService } from 'src/practice/practice.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+//entities
 import { Agreement } from '../entities/agreement.entity';
+//dto's payloads
+import { AgreementsPayload } from '../dto/agreement-payload';
+import { AgreementInput, AgreementPaginationInput, UpdateAgreementInput } from '../dto/agreement-input.dto';
 
 @Injectable()
 export class AgreementService {
@@ -14,6 +19,8 @@ export class AgreementService {
     private agreementRepository: Repository<Agreement>,
     private readonly connection: Connection,
     private readonly paginationService: PaginationService,
+    private readonly practiceService: PracticeService,
+    private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService
   ) { }
 
@@ -28,7 +35,18 @@ export class AgreementService {
     await queryRunner.startTransaction();
     try {
       //creating agreement
-      const agreementInstance = this.agreementRepository.create(createAgreementInput)
+      const { facilityId, practiceId, ...agreementInput } = createAgreementInput
+      const agreementInstance = this.agreementRepository.create(agreementInput)
+      if(practiceId){
+        const practice = await this.practiceService.findOne(practiceId)
+        agreementInstance.practice = practice
+      }
+
+      if(facilityId){
+        const facility = await this.facilityService.findOne(facilityId)
+        agreementInstance.facility = facility
+      }
+
       const createdAgreement = await this.agreementRepository.save(agreementInstance)
 
       await queryRunner.commitTransaction();

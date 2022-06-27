@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Agreement } from 'src/agreements/entities/agreement.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
@@ -174,6 +175,10 @@ export class Facility {
   @Field(() => [Appointment], { nullable: true })
   @OneToMany(() => Appointment, appointment => appointment.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   appointments: Appointment[];
+
+  @Field(() => [Agreement], { nullable: true })
+  @OneToMany(() => Agreement, agreement => agreement.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  agreements: Agreement[];
 
   @Field(() => [User], { nullable: true })
   @OneToMany(() => User, user => user.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
