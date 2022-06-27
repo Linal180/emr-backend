@@ -63,6 +63,7 @@ export class DoctorService {
       doctorInstance.user = user;
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
+      doctorInstance.practiceId = facility.practiceId
       //adding contact
       if (createDoctorInput.createContactInput) {
         const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
