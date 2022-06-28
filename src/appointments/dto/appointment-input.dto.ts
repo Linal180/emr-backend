@@ -36,6 +36,9 @@ export class AppointmentInput {
 
     @Field({ nullable: true })
     sortBy?: string
+
+    @Field({ nullable: true })
+    appointmentDate?: string
 }
 
 @InputType()
