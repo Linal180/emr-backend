@@ -186,7 +186,7 @@ export class PatientService {
         updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
         updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
       } = updatePatientInput
-      const { id: patientId, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
+      const { id: patientId, usualProviderId, facilityId, email: patientEmail, ...patientInfoToUpdate } = updatePatientItemInput
       const { email } = updateContactInput || {}
 
       let prevPatient = null;
@@ -276,6 +276,7 @@ export class PatientService {
             `${doctor?.firstName} ${doctor?.lastName}`, true, token, inviteTemplateId
           )
         }
+        patientInstance.email = email
         const patient = await queryRunner.manager.save(patientInstance);
         await queryRunner.commitTransaction();
         return patient
