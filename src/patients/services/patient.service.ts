@@ -108,13 +108,15 @@ export class PatientService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      const { createContactInput } = createPatientInput
+      const { email } = createContactInput || {}
       //create patient 
       let prevPatient = null;
-      if (createPatientInput?.createPatientItemInput?.email) {
-        prevPatient = await this.GetPatientByEmail(createPatientInput?.createPatientItemInput?.email);
+      if (email) {
+        prevPatient = await this.GetPatientByEmail(email);
       }
       if (!prevPatient) {
-        const patientInstance = await this.patientRepository.create(createPatientInput.createPatientItemInput)
+        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email })
         patientInstance.patientRecord = await this.utilsService.generateString(8);
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
@@ -184,7 +186,8 @@ export class PatientService {
         updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
         updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
       } = updatePatientInput
-      const { id: patientId, email, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
+      const { id: patientId, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
+      const { email } = updateContactInput || {}
 
       let prevPatient = null;
       const patientInstance = await this.patientRepository.findOne(patientId)
