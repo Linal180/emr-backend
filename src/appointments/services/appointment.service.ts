@@ -595,11 +595,25 @@ export class AppointmentService {
     return await this.appointmentRepository.count({ where: { facilityId: getFacilityAppointmentsInput.facilityId } })
   }
 
+  /**
+   * Saves appointment service
+   * @param input 
+   * @returns save 
+   */
   async save(input: UpdateAppointmentInput): Promise<Appointment> {
     try {
       return await this.appointmentRepository.save(input)
     } catch (err) {
       throw new Error(err);
     }
+  }
+
+  /**
+   * Gets appointment by patient consent
+   * @param id 
+   * @returns appointment by patient consent 
+   */
+  async getAppointmentByPatientConsent(id: string): Promise<Appointment> {
+    return await this.appointmentRepository.findOne({ where: { patientConsent: id } })
   }
 }
