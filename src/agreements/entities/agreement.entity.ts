@@ -1,8 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { Practice } from 'src/practice/entities/practice.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
+//entities
+import { Practice } from 'src/practice/entities/practice.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
 @Entity({ name: 'Agreements' })
 @ObjectType()
 export class Agreement {
@@ -26,21 +27,19 @@ export class Agreement {
   @Field({ nullable: true })
   viewAgreementBeforeAgreeing: boolean;
 
-  @ManyToOne(() => Facility, facility => facility.agreements, { onDelete: 'CASCADE' })
-  @Field(type => Facility, { nullable: true })
-  facility: Facility;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientConsentId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   facilityId: string;
 
-  @ManyToOne(() => Practice, practice => practice.agreements, { onDelete: 'CASCADE' })
-  @Field(type => Practice, { nullable: true })
-  practice: Practice;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  practiceId: string;
+  //dates
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
@@ -49,4 +48,19 @@ export class Agreement {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+  //relationships
+
+  @ManyToOne(() => PatientConsent, patientConsent => patientConsent.agreements)
+  @Field(() => PatientConsent, { nullable: true })
+  patientConsent: PatientConsent;
+
+  @ManyToOne(() => Facility, facility => facility.agreements, { onDelete: 'CASCADE' })
+  @Field(type => Facility, { nullable: true })
+  facility: Facility;
+
+  @ManyToOne(() => Practice, practice => practice.agreements, { onDelete: 'CASCADE' })
+  @Field(type => Practice, { nullable: true })
+  practice: Practice;
+
 }

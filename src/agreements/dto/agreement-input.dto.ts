@@ -25,15 +25,15 @@ export class AgreementInput {
 @InputType()
 export class AgreementPaginationInput {
   @Field({ nullable: true })
-  agreementFacilityId: string
+  agreementFacilityId?: string
 
   @Field({ nullable: true })
-  agreementPracticeId: string
+  agreementPracticeId?: string
 
   @Field({ nullable: true })
-  searchString: string
+  searchString?: string
 
-  @Field(type => PaginationInput)
+  @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 }
 

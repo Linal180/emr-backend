@@ -30,6 +30,7 @@ export class StaffService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly utilsService: UtilsService,
+    @Inject(forwardRef(() => DoctorService))
     private readonly doctorService: DoctorService,
     @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,

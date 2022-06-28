@@ -1,24 +1,28 @@
-import { Module } from '@nestjs/common';
+//package block
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppointmentModule } from 'src/appointments/appointment.module';
-import { FacilityModule } from 'src/facilities/facility.module';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { PatientModule } from 'src/patients/patient.module';
+import { Module, forwardRef } from '@nestjs/common';
+//modules
+import { UtilsModule } from 'src/util/utils.module';
 import { PracticeModule } from 'src/practice/practice.module';
-import { Agreement } from './entities/agreement.entity';
-import { AgreementResolver } from './resolvers/agreement.resolver';
+import { FacilityModule } from 'src/facilities/facility.module';
+import { PaginationModule } from 'src/pagination/pagination.module';
+//services
 import { AgreementService } from './services/agreement.service';
+//entities
+import { Agreement } from './entities/agreement.entity';
+//resolvers
+import { AgreementResolver } from './resolvers/agreement.resolver';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Agreement]),
-    PatientModule,
-    AppointmentModule,
-    FacilityModule,
-    PracticeModule
+    forwardRef(() => PaginationModule),
+    forwardRef(() => FacilityModule),
+    forwardRef(() => PracticeModule),
+    UtilsModule
   ],
-  providers: [AgreementResolver, AgreementService, PaginationService],
-  exports: [TypeOrmModule],
+  providers: [AgreementResolver, AgreementService],
+  exports: [TypeOrmModule, AgreementService],
 })
 export class AgreementModule { }
 

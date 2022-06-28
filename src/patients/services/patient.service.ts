@@ -1,35 +1,44 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-external-appointment.input';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { AttachmentsService } from 'src/attachments/services/attachments.service';
+import { Brackets, Connection, getConnection, Repository } from 'typeorm';
+import {
+  forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, ConflictException,
+  PreconditionFailedException
+} from '@nestjs/common';
+//inputs
+import { PatientInfoInput } from '../dto/patient-info.input';
+import { RemovePatient } from '../dto/update-patientItem.input';
+import { PatientInviteInput } from '../dto/patient-invite.input';
+import { CreatePatientInput } from '../dto/create-patient.input';
+import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
+import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
+import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-external-appointment.input';
+import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
+//entities
+import { Patient } from '../entities/patient.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
-import { createToken, paginateResponse } from 'src/lib/helper';
+import { DoctorPatient, DoctorPatientRelationType } from '../entities/doctorPatient.entity';
+//services
+import { EmployerService } from './employer.service';
+import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
-import PaginationInput from 'src/pagination/dto/pagination-input.dto';
+import { UsersService } from 'src/users/services/users.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ContactService } from 'src/providers/services/contact.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { UsersService } from 'src/users/services/users.service';
-import { UtilsService } from 'src/util/utils.service';
-import { Brackets, Connection, getConnection, Repository } from 'typeorm';
-import { File } from '../../aws/dto/file-input.dto';
 import { FacilityService } from '../../facilities/services/facility.service';
-import { CreatePatientInput } from '../dto/create-patient.input';
-import { PatientInfoInput } from '../dto/patient-info.input';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
+//constants or enums
+import { ATTACHMENT_TITLES } from '../../lib/constants'
+import { createToken, paginateResponse } from 'src/lib/helper';
+//dto's
+import { File } from '../../aws/dto/file-input.dto';
 import PatientInput from '../dto/patient-input.dto';
-import { PatientInviteInput } from '../dto/patient-invite.input';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
-import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
-import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
-import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
-import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
-import { RemovePatient } from '../dto/update-patientItem.input';
-import { DoctorPatient, DoctorPatientRelationType } from '../entities/doctorPatient.entity';
-import { Patient } from '../entities/patient.entity';
-import { EmployerService } from './employer.service';
+import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 
 @Injectable()
 export class PatientService {
@@ -41,6 +50,7 @@ export class PatientService {
     private readonly paginationService: PaginationService,
     private readonly connection: Connection,
     private readonly employerService: EmployerService,
+    @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
@@ -174,74 +184,99 @@ export class PatientService {
         updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
         updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
       } = updatePatientInput
-      const { id: patientId, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
+      const { id: patientId, email, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
 
-      //save patient basic info
-      await this.utilsService.updateEntityManager(Patient, patientId, patientInfoToUpdate, this.patientRepository)
-      //fetch patient
+      let prevPatient = null;
       const patientInstance = await this.patientRepository.findOne(patientId)
+      const isNewEmail = email !== patientInstance?.email
+      if (isNewEmail) {
+        prevPatient = await this.GetPatientByEmail(email);
+      }
 
-      //get facility 
-      if (facilityId) {
-        const facility = await this.facilityService.findOne(facilityId)
-        patientInstance.facility = facility
+      if (prevPatient) {
+        throw new ConflictException({
+          status: HttpStatus.CONFLICT,
+          error: 'Email already taken'
+        })
+      } else {
+        //save patient basic info
+        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email }, this.patientRepository)
+        //get facility 
         const user = await this.usersService.findUserByUserId(patientId)
-        if (user) {
-          await this.usersService.updateFacility(facility, user)
+        if (facilityId) {
+          const facility = await this.facilityService.findOne(facilityId)
+          if (facility) {
+            patientInstance.facility = facility
+          }
+          if (user) {
+            await this.usersService.updateFacility(facility, user)
+          }
         }
-      }
-      //update patient contact 
-      const contacts = []
-      if (updateContactInput) {
-        const contact = await this.contactService.updateContact(updateContactInput)
-        contacts.push(contact)
-      }
-      //update patient emergency contact 
-      if (updateEmergencyContactInput) {
-        const emergencyContact = await this.contactService.updateContact(updateEmergencyContactInput)
-        contacts.push(emergencyContact)
-      }
-      //update patient next of kin contact 
-      if (updateNextOfKinContactInput) {
-        const nextOfKinContact = await this.contactService.updateContact(updateNextOfKinContactInput)
-        contacts.push(nextOfKinContact)
-      }
-      //update patient guarantor contact 
-      if (updateGuarantorContactInput) {
-        const guarantorContact = await this.contactService.updateContact(updateGuarantorContactInput)
-        contacts.push(guarantorContact)
-      }
-      //update patient guardian contact 
-      if (updateGuardianContactInput) {
-        const guardianContact = await this.contactService.updateContact(updateGuardianContactInput)
-        contacts.push(guardianContact)
-      }
-      //update patient employer contact 
-      if (updateEmployerInput) {
-        const employerContact = await this.employerService.updateEmployer(updateEmployerInput)
-        patientInstance.employer = [employerContact]
-      }
-      patientInstance.contacts = contacts
-      if (usualProviderId) {
-        const doctor = await this.doctorService.findOne(usualProviderId)
-        // const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
-        //updating usual provider with patient
-        const doctorPatientInst = await this.doctorPatientRepository.findOne({ patientId: patientId, doctorId: usualProviderId })
-        if (doctorPatientInst) {
-          doctorPatientInst.relation = DoctorPatientRelationType.PRIMARY_PROVIDER
-          await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
-          await this.doctorPatientRepository.save(doctorPatientInst)
-        } else {
-          const doctorPatientInstance = await this.doctorPatientRepository.create({ relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
-          doctorPatientInstance.patient = patientInstance
-          doctorPatientInstance.doctor = doctor
-          await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
-          await this.doctorPatientRepository.save(doctorPatientInstance)
+        //update patient contact 
+        const contacts = []
+        if (updateContactInput) {
+          const contact = await this.contactService.updateContact(updateContactInput)
+          contacts.push(contact)
         }
+        //update patient emergency contact 
+        if (updateEmergencyContactInput) {
+          const emergencyContact = await this.contactService.updateContact(updateEmergencyContactInput)
+          contacts.push(emergencyContact)
+        }
+        //update patient next of kin contact 
+        if (updateNextOfKinContactInput) {
+          const nextOfKinContact = await this.contactService.updateContact(updateNextOfKinContactInput)
+          contacts.push(nextOfKinContact)
+        }
+        //update patient guarantor contact 
+        if (updateGuarantorContactInput) {
+          const guarantorContact = await this.contactService.updateContact(updateGuarantorContactInput)
+          contacts.push(guarantorContact)
+        }
+        //update patient guardian contact 
+        if (updateGuardianContactInput) {
+          const guardianContact = await this.contactService.updateContact(updateGuardianContactInput)
+          contacts.push(guardianContact)
+        }
+        //update patient employer contact 
+        if (updateEmployerInput) {
+          const employerContact = await this.employerService.updateEmployer(updateEmployerInput)
+          patientInstance.employer = [employerContact]
+        }
+        patientInstance.contacts = contacts
+        //update patient's provider
+        let doctor = null
+        if (usualProviderId) {
+          doctor = await this.doctorService.findOne(usualProviderId)
+          // const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
+          //updating usual provider with patient
+          const doctorPatientInst = await this.doctorPatientRepository.findOne({ patientId: patientId, doctorId: usualProviderId })
+          if (doctorPatientInst) {
+            doctorPatientInst.relation = DoctorPatientRelationType.PRIMARY_PROVIDER
+            await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
+            await this.doctorPatientRepository.save(doctorPatientInst)
+          } else {
+            const doctorPatientInstance = await this.doctorPatientRepository.create({ relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
+            doctorPatientInstance.patient = patientInstance
+            doctorPatientInstance.doctor = doctor
+            await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
+            await this.doctorPatientRepository.save(doctorPatientInstance)
+          }
+        }
+        //send email on updating the email
+        if (isNewEmail && user) {
+          const userInstance = await this.usersService.update({ ...user, email, emailVerified: false });
+          const token = createToken();
+          const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
+          this.mailerService.sendEmailForgotPassword(userInstance?.email, userInstance?.id,
+            patientInstance?.firstName + ' ' + patientInstance?.lastName,
+            `${doctor?.firstName} ${doctor?.lastName}`, true, token, inviteTemplateId
+          )
+        }
+        const patient = await queryRunner.manager.save(patientInstance);
+        await queryRunner.commitTransaction();
+        return patient
       }
-      const patient = await queryRunner.manager.save(patientInstance);
-      await queryRunner.commitTransaction();
-      return patient
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
@@ -751,6 +786,11 @@ export class PatientService {
     });
   }
 
+  /**
+   * Gets patient by email
+   * @param email 
+   * @returns patient by email 
+   */
   async GetPatientByEmail(email: string): Promise<PatientPayload> {
     const patient = await this.patientRepository.findOne({ email: email });
     if (patient) {
@@ -870,6 +910,11 @@ export class PatientService {
     }
   }
 
+  /**
+   * Gets transformed patient
+   * @param patient 
+   * @returns  
+   */
   getTransformedPatient(patient: Patient) {
     const { dbValue, ...patientMartialStatus } = this.patientMartialStatuses.find(({ dbValue }) => dbValue === patient?.maritialStatus)
     const { firstName, lastName, suffix, contacts, gender, dob } = patient ?? {}
@@ -943,6 +988,23 @@ export class PatientService {
       search: {
         mode: "match"
       }
+    }
+  }
+
+
+  /**
+   * Gets signature
+   * @param id 
+   * @returns  
+   */
+  async getSignature(id: string) {
+    try {
+      const attachments = await this.attachmentsService.findAttachmentsById(id)
+      const signature = attachments.find(({ title }) => title === ATTACHMENT_TITLES.Signature)
+      return signature;
+    } catch (error) {
+      throw new Error(error);
+
     }
   }
 }
