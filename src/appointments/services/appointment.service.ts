@@ -273,8 +273,13 @@ export class AppointmentService {
               .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
           }))
       }
+
+      if (appointmentDate) {
+        baseQuery = baseQuery
+          .where('"appointment"."scheduleStartDateTime"::date = :appointmentDate', { appointmentDate: appointmentDate })
+      }
+
       const [appointments, totalCount] = await baseQuery
-        .where('"appointment"."scheduleStartDateTime"::date = :appointmentDate', { appointmentDate: appointmentDate ? appointmentDate : moment() })
         .orderBy('"appointment"."scheduleStartDateTime"', sortBy ? sortBy as 'ASC' | 'DESC' : 'ASC')
         .getManyAndCount()
 
