@@ -24,6 +24,7 @@ import { InsuranceModule } from './insurance/insurance.module';
 import { BillingModule } from './billings/billing.module';
 import { AppController } from './app.controller';
 import { AgreementModule } from './agreements/agreement.module';
+import { LogDatabaseConfig } from './logDatabase.config';
 
 @Module({
   imports: [
@@ -53,6 +54,10 @@ import { AgreementModule } from './agreements/agreement.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: DatabaseConfig
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: LogDatabaseConfig
     }),
     PaymentModule,
     FormBuilderModule,

@@ -2194,6 +2194,7 @@ type Query {
   GetPermission(getPermission: GetPermission!): PermissionPayload!
   getAllRoles(roleInput: RoleInput!): RolesPayload!
   getRole(getRole: GetRole!): RolePayload!
+  findAllPublicFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
   findAllServices(serviceInput: ServiceInput!): ServicesPayload!

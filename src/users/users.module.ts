@@ -13,7 +13,7 @@ import { JwtStrategy } from "./auth/jwt.strategy";
 import { Permission } from "./entities/permissions.entity";
 import { Role } from "./entities/role.entity";
 import { RolePermission } from "./entities/rolePermissions.entity";
-import { UserLog } from "./entities/user-logs.entity";
+import { UserLog } from "./entities/user-logs.logs.entity";
 import { User } from "./entities/user.entity";
 import { PermissionResolver } from "./resolvers/permissions.resolver";
 import { RolePermissionResolver } from "./resolvers/rolePermissions.resolver";

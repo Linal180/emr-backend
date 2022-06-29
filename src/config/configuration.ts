@@ -1,6 +1,7 @@
 export default () => {
   
   let database: any;
+  let logDatabase: any;
   let redis: any;
   if (process.env.NODE_ENV === "production") {
     database = {
@@ -10,7 +11,7 @@ export default () => {
       ssl: {
         rejectUnauthorized: false,
       },
-      logging: true,
+      logging: false,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
@@ -30,9 +31,30 @@ export default () => {
       database: process.env.DATABASE_NAME ||"emr-pro",
       timezone: 'Z',
       migrationsRun: true,
-      logging: true,
+      logging: false,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
+    };
+    redis = {
+      socket: {
+        host: process.env.REDIS_HOST || "127.0.0.1",
+        port: 6379,
+      },
+    };
+
+    logDatabase = {
+      name:'logDatabase',
+      host: process.env.DATABASE_HOST || "localhost",
+      port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
+      type: process.env.DATABASE_TYPE || "postgres",
+      username: process.env.DATABASE_USERNAME || "postgres",
+      password: process.env.DATABASE_PASSWORD || "password",
+      database: process.env.DATABASE__LOG_NAME ||"emr-pro2",
+      timezone: 'Z',
+      migrationsRun: true,
+      logging: false,
+      migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
+      entities: ["dist/src/**/*.logs.entity{.ts,.js}"],
     };
     redis = {
       socket: {
@@ -74,6 +96,7 @@ export default () => {
       "d-0923bc5b5cdb44f9993128a14bbbedd9",
     FROM_EMAIL: process.env.FROM_EMAIL || "ahmad.hassan@alxtel.com",
     database,
+    logDatabase,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || "",
     AWS_S3_REGION: process.env.AWS_S3_REGION || "us-east-1",

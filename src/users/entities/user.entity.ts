@@ -3,7 +3,7 @@ import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from './role.entity';
-import { UserLog } from './user-logs.entity';
+import { UserLog } from './user-logs.logs.entity';
 
 
 export enum UserStatus {
@@ -85,8 +85,9 @@ export class User {
   @JoinTable({ name: 'UserRoles' })
   roles: Role[];
 
-  @OneToMany(() => UserLog, Userlog => Userlog.userId)
-  UserLogs: UserLog[];
+  // @OneToMany(() => UserLog, Userlog => Userlog.user)
+  // @Field(type => [UserLog], { nullable: true })
+  // UserLogs: UserLog[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

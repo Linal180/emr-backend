@@ -1,5 +1,8 @@
+import { SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { Repository } from 'typeorm';
 import BillingInput from '../dto/billing-input.dto';
 import { BillingPayload } from '../dto/billing-payload';
@@ -16,6 +19,8 @@ export class BillingResolver {
   ) { }
 
   @Mutation(() => BillingPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createBilling')
   async createBilling(@Args('createBillingInput') createBillingInput: BillingInput): Promise<BillingPayload> {
     return {
       billing: await this.billingService.create(createBillingInput),
@@ -24,6 +29,8 @@ export class BillingResolver {
   }
 
   @Query(() => BillingPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchBillingDetailsByAppointmentId')
   async fetchBillingDetailsByAppointmentId(@Args('appointmentId') appointmentId: string) {
     return {
       billing: await this.billingService.fetchBillingDetailsByAppointmentId(appointmentId),
@@ -31,7 +38,7 @@ export class BillingResolver {
     };
   }
 
-  @ResolveField((returns) => [Code])
+  @ResolveField(() => [Code])
   async codes(@Parent() billing: Billing): Promise<Code[]> {
     if (billing) {
       return await this.codeRepository.find({

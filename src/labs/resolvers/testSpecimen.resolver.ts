@@ -13,8 +13,8 @@ import { TestSpecimenService } from '../services/testSpecimen.service';
 export class TestSpecimenResolver {
   constructor(private readonly testSpecimenService: TestSpecimenService) { }
   @Query(returns => TestSpecimenTypesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllTestSpecimen')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllTestSpecimenTypes')
   async findAllTestSpecimenTypes(@Args('testSpecimenTypeInput') testSpecimenTypeInput: TestSpecimenTypeInput): Promise<TestSpecimenTypesPayload> {
     const testSpecimenTypes = await this.testSpecimenService.findAllTestSpecimenTypes(testSpecimenTypeInput)
     if (testSpecimenTypes) {
@@ -32,8 +32,8 @@ export class TestSpecimenResolver {
   }
 
   @Query(returns => SpecimenTypes)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllTestSpecimen')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getSpecimenTypeByName')
   async getSpecimenTypeByName(@Args('name') name: string): Promise<SpecimenTypes> {
     const testSpecimenTypes = await this.testSpecimenService.GetSpecimenByName(name)
     if (testSpecimenTypes) {

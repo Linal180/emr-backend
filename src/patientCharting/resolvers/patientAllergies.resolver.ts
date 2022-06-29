@@ -23,11 +23,11 @@ import { ReactionsService } from '../services/reactions.service';
 
 @Resolver(() => PatientAllergies)
 export class PatientAllergiesResolver {
-  constructor(private readonly patientAllergiesService:  PatientAllergiesService,
-    private readonly staffService:  StaffService,
-    private readonly reactionsService:  ReactionsService,
-    private readonly appointmentService:  AppointmentService,
-    private readonly doctorService:  DoctorService) { }
+  constructor(private readonly patientAllergiesService: PatientAllergiesService,
+    private readonly staffService: StaffService,
+    private readonly reactionsService: ReactionsService,
+    private readonly appointmentService: AppointmentService,
+    private readonly doctorService: DoctorService) { }
 
   @Mutation(() => PatientAllergyPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -49,27 +49,6 @@ export class PatientAllergiesResolver {
     };
   }
 
-  @ResolveField((returns) => [Staff])
-  async staff(@Parent() patientAllergies: PatientAllergies):  Promise<Staff>  {
-    if (patientAllergies && patientAllergies.staffId) {
-      return await this.staffService.findOne(patientAllergies.staffId);
-    }
-  }
-
-  @ResolveField((returns) => [Appointment])
-  async appointment(@Parent() patientAllergies: PatientAllergies):  Promise<Appointment>  {
-    if (patientAllergies && patientAllergies.appointmentId) {
-      return await this.appointmentService.findOne(patientAllergies.appointmentId);
-    }
-  }
-
-  @ResolveField((returns) => [Doctor])
-  async doctor(@Parent() patientAllergies: PatientAllergies):  Promise<Doctor>  {
-    if (patientAllergies && patientAllergies.doctorId) {
-      return await this.doctorService.findOne(patientAllergies.doctorId);
-    }
-  }
-  
   @Query(returns => PatientAllergiesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllPatientAllergies')
@@ -127,7 +106,7 @@ export class PatientAllergiesResolver {
     });
   }
 
-  
+
   @Query(returns => PatientAllergyPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getPatientAllergy')
@@ -145,5 +124,26 @@ export class PatientAllergiesResolver {
   async removePatientAllergy(@Args('removePatientAllergy') removePatientAllergy: RemovePatientAllergy) {
     await this.patientAllergiesService.removePatientAllergy(removePatientAllergy);
     return { response: { status: 200, message: 'Patient allergy deleted' } };
+  }
+
+  @ResolveField((returns) => [Staff])
+  async staff(@Parent() patientAllergies: PatientAllergies): Promise<Staff> {
+    if (patientAllergies && patientAllergies.staffId) {
+      return await this.staffService.findOne(patientAllergies.staffId);
+    }
+  }
+
+  @ResolveField((returns) => [Appointment])
+  async appointment(@Parent() patientAllergies: PatientAllergies): Promise<Appointment> {
+    if (patientAllergies && patientAllergies.appointmentId) {
+      return await this.appointmentService.findOne(patientAllergies.appointmentId);
+    }
+  }
+
+  @ResolveField((returns) => [Doctor])
+  async doctor(@Parent() patientAllergies: PatientAllergies): Promise<Doctor> {
+    if (patientAllergies && patientAllergies.doctorId) {
+      return await this.doctorService.findOne(patientAllergies.doctorId);
+    }
   }
 }

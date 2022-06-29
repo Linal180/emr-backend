@@ -26,7 +26,7 @@ import { UserIdInput } from './../dto/user-id-input.dto';
 import UsersInput from './../dto/users-input.dto';
 import { UsersPayload } from './../dto/users-payload.dto';
 import { Role } from './../entities/role.entity';
-import { UserLog } from './../entities/user-logs.entity';
+import { UserLog } from '../entities/user-logs.logs.entity';
 import { User, UserStatus } from './../entities/user.entity';
 import { RolesService } from './roles.service';
 import { File } from 'src/aws/dto/file-input.dto';
@@ -500,7 +500,7 @@ export class UsersService {
   async createToken(user: User, paramPass: string): Promise<AccessUserPayload> {
     const passwordMatch = await bcryptjs.compare(paramPass, user.password)
     if (passwordMatch) {
-      const payload = { email: user.email, sub: user.id };
+      const payload = { email: user.email, sub: user.id, facilityId: user.facilityId, practiceId: user.facility?.practiceId };
       return {
         access_token: this.jwtService.sign(payload),
         userId: user.id,

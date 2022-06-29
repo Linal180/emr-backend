@@ -122,7 +122,7 @@ export class AppointmentResolver {
 
   @Query(() => AppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllUpcomingAppointments')
+  @SetMetadata('name', 'findAllUpcomingAppointments')
   async findAllUpcomingAppointments(@Args('upComingAppointmentsInput') upComingAppointmentsInput: UpComingAppointmentsInput): Promise<UpcomingAppointmentsPayload> {
     const appointments = await this.appointmentService.findAllUpcomingAppointments(upComingAppointmentsInput)
     if (appointments) {
@@ -140,8 +140,8 @@ export class AppointmentResolver {
   }
 
   @Query(() => AppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getAppointment')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getAppointment')
   async getAppointment(@Args('getAppointment') getAppointment: GetAppointment): Promise<AppointmentPayload> {
     const appointment = await this.appointmentService.getAppointment(getAppointment.id)
     return {
@@ -151,8 +151,8 @@ export class AppointmentResolver {
   }
 
   @Query(() => AppointmentsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getAppointments')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getAppointments')
   async getAppointments(@Args('getAppointments') getAppointments: GetAppointments): Promise<AppointmentsPayload> {
     return {
       appointments: await this.appointmentService.getAppointments(getAppointments),
@@ -171,8 +171,8 @@ export class AppointmentResolver {
   }
 
   @Query(() => PatientPastUpcomingAppointmentPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getPatientPastUpcomingAppointment')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientPastUpcomingAppointment')
   async getPatientPastUpcomingAppointment(@Args('getPatientAppointmentInput') getPatientAppointmentInput: GetPatientAppointmentInput): Promise<PatientPastUpcomingAppointmentPayload> {
     const appointments = await this.appointmentService.getPatientPastUpcomingAppointment(getPatientAppointmentInput)
     return {
