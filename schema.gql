@@ -916,7 +916,7 @@ enum POLICY_HOLDER_GENDER_IDENTITY {
   FEMALE
   TRANSGENDER_MALE
   TRANSGENDER_FEMALE
-  NOT_EXCLUSIVE
+  DECLINE_TO_SPECIFY
   NONE
 }
 
@@ -3188,9 +3188,6 @@ input CreateDoctorItemInput {
   prefix: String
   suffix: String
   password: String
-
-  """Send doctor Type from the string - Sign-up"""
-  roleType: String
   adminId: String
   timeZone: String
   facilityId: String!
@@ -3240,9 +3237,6 @@ input UpdateDoctorItemInput {
   prefix: String
   suffix: String
   password: String
-
-  """Send doctor Type from the string - Sign-up"""
-  roleType: String
   adminId: String
   timeZone: String
   facilityId: String
