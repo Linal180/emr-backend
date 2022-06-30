@@ -4,6 +4,7 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { Practice } from 'src/practice/entities/practice.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Doctor } from './doctor.entity';
@@ -78,6 +79,10 @@ export class Staff {
   @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
   @Field(type => Facility, { nullable: true })
   facility: Facility;
+
+  @ManyToOne(() => Practice, practice => practice.staff, { eager: true, onDelete: 'CASCADE' })
+  @Field(type => Practice, { nullable: true })
+  practice: Practice;
 
   @ManyToMany(type => Doctor, doctor => doctor.staff)
   providers: Doctor[];

@@ -10,4 +10,7 @@ export class UserInfoInput {
   phone?: string;
   @Field({ nullable: true })
   autoLogoutTime?: string;
+
+  @Field({ nullable: true })
+  facilityId?: string;
 }

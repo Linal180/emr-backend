@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { Speciality } from "src/providers/entities/doctor.entity";
 import { Between, Equal, FindConditions, FindManyOptions, FindOperator, In, IsNull, JoinOptions, Not, ObjectLiteral, OrderByCondition, Raw, Repository, WhereExpressionBuilder } from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
@@ -194,6 +195,7 @@ export class PaginationService {
       agreementPracticeId,
       documentTypeName,
       providerId,
+      speciality,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -279,6 +281,9 @@ export class PaginationService {
         }),
         ...(documentTypeName && {
           type: Raw(alias => `${alias} ILIKE '%${documentTypeName}%'`),
+        }),
+        ...(speciality && {
+          speciality: speciality as Speciality,
         }),
         ...(practiceId && {
           practiceId: practiceId

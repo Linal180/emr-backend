@@ -5,6 +5,7 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { DocumentType } from 'src/attachments/entities/documentType.entity';
 import { Agreement } from 'src/agreements/entities/agreement.entity';
+import { Staff } from 'src/providers/entities/staff.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
@@ -64,6 +65,10 @@ export class Practice {
   @OneToMany(() => DocumentType, documentType => documentType.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [DocumentType], { nullable: true })
   documentTypes: DocumentType[];
+
+  @OneToMany(() => Staff, staff => staff.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(type => [Staff], { nullable: true })
+  staff: Staff[];
 
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
