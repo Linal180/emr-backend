@@ -1,12 +1,12 @@
 export default () => {
-  
+
   let database: any;
   let logDatabase: any;
   let redis: any;
   if (process.env.NODE_ENV === "production") {
     database = {
       type: process.env.DATABASE_TYPE || "postgres",
-      url: process.env.DATABASE_URL || "postgres://fwphdjqkggapmx:dbcdc903a9f17b3186b96e4d6c3f10a7eb29e7a61d9da2c4ac0192a331dd4fb5@ec2-3-232-22-121.compute-1.amazonaws.com:5432/d9p4m19hkflote",
+      url: process.env.DATABASE_URL || "",
       migrationsRun: true,
       ssl: {
         rejectUnauthorized: false,
@@ -20,7 +20,24 @@ export default () => {
         url: process.env.REDIS_URL || "redis://localhost:",
       },
     };
-    
+
+    logDatabase = {
+      type: process.env.DATABASE_LOG_TYPE || "postgres",
+      url: process.env.DATABASE_LOG_URL || "",
+      migrationsRun: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+      logging: false,
+      migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
+      entities: ["dist/src/**/*.logs.entity{.ts,.js}"],
+    };
+    redis = {
+      socket: {
+        url: process.env.REDIS_URL || "redis://localhost:",
+      },
+    };
+
   } else {
     database = {
       host: process.env.DATABASE_HOST || "localhost",
@@ -28,10 +45,10 @@ export default () => {
       type: process.env.DATABASE_TYPE || "postgres",
       username: process.env.DATABASE_USERNAME || "postgres",
       password: process.env.DATABASE_PASSWORD || "password",
-      database: process.env.DATABASE_NAME ||"emr-pro",
+      database: process.env.DATABASE_NAME || "emr-pro",
       timezone: 'Z',
       migrationsRun: true,
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
@@ -43,22 +60,22 @@ export default () => {
     };
 
     logDatabase = {
-      name:'logDatabase',
-      host: process.env.DATABASE_HOST || "localhost",
-      port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
-      type: process.env.DATABASE_TYPE || "postgres",
-      username: process.env.DATABASE_USERNAME || "postgres",
-      password: process.env.DATABASE_PASSWORD || "password",
-      database: process.env.DATABASE__LOG_NAME ||"emr-pro2",
+      name: 'logDatabase',
+      host: process.env.DATABASE_LOG_HOST || "localhost",
+      port: parseInt(process.env.DATABASE_LOG_PORT, 10) || 5432,
+      type: process.env.DATABASE_LOG_TYPE || "postgres",
+      username: process.env.DATABASE_LOG_USERNAME || "postgres",
+      password: process.env.DATABASE_LOG_PASSWORD || "password",
+      database: process.env.DATABASE_LOG_NAME || "emr-pro-logs",
       timezone: 'Z',
       migrationsRun: true,
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
       entities: ["dist/src/**/*.logs.entity{.ts,.js}"],
     };
     redis = {
       socket: {
-        host: process.env.REDIS_HOST || "127.0.0.1",
+        host: process.env.REDIS_LOG_HOST || "127.0.0.1",
         port: 6379,
       },
     };
