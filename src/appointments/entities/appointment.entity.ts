@@ -12,6 +12,7 @@ import { LabTests } from 'src/labs/entities/labTests.entity';
 import { Billing } from 'src/billings/entities/billing.entity';
 import { Contract } from './contract.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
+import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -206,23 +207,23 @@ export class Appointment {
   invoiceId: string;
 
   @ManyToOne(() => Service, facilityService => facilityService.appointments, { onDelete: 'CASCADE' })
-  @Field(type => Service, { nullable: true })
+  @Field(() => Service, { nullable: true })
   appointmentType: Service;
 
   @ManyToOne(() => Facility, facility => facility.appointments, { onDelete: 'CASCADE' })
-  @Field(type => Facility, { nullable: true })
+  @Field(() => Facility, { nullable: true })
   facility: Facility;
 
   @ManyToOne(() => Doctor, doctor => doctor.appointments, { onDelete: 'CASCADE' })
-  @Field(type => Doctor, { nullable: true })
+  @Field(() => Doctor, { nullable: true })
   provider: Doctor;
 
   @ManyToOne(() => Patient, patient => patient.appointments, { onDelete: 'CASCADE' })
-  @Field(type => Patient, { nullable: true })
+  @Field(() => Patient, { nullable: true })
   patient: Patient;
 
   @OneToMany(() => LabTests, labTests => labTests.appointment, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [LabTests], { nullable: true })
+  @Field(() => [LabTests], { nullable: true })
   labTests: LabTests[];
 
   @Field(() => Invoice, { nullable: true })
@@ -242,16 +243,20 @@ export class Appointment {
   transaction: Transactions;
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.appointment)
-  @Field(type => [PatientProblems], { nullable: true })
+  @Field(() => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
 
   @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.appointment)
-  @Field(type => [PatientAllergies], { nullable: true })
+  @Field(() => [PatientAllergies], { nullable: true })
   patientAllergies: PatientAllergies[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.appointment)
-  @Field(type => [PatientVitals], { nullable: true })
+  @Field(() => [PatientVitals], { nullable: true })
   patientVitals: PatientVitals[];
+
+  @Field(() => PatientConsent, { nullable: true })
+  @OneToOne(() => PatientConsent, consent => consent.appointment)
+  patientConsent: PatientConsent;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

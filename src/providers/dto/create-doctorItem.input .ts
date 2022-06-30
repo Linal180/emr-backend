@@ -22,9 +22,6 @@ export class CreateDoctorItemInput {
   @Field({ nullable: true })
   password: string;
 
-  @Field({ description: 'Send doctor Type from the string - Sign-up', nullable: true })
-  roleType?: string;
-
   @Field({ nullable: true })
   adminId?: string;
 

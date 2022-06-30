@@ -1,20 +1,26 @@
+//packages blocks
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { LabTests } from 'src/labs/entities/labTests.entity';
-import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
-import { PolicyHolder } from 'src/insurance/entities/policy-holder.entity';
-import { Policy } from 'src/insurance/entities/policy.entity';
-import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
-import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
-import { Transactions } from 'src/payment/entity/payment.entity';
-import { Contact } from 'src/providers/entities/contact.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Attachment } from '../../attachments/entities/attachment.entity';
-import { DoctorPatient } from './doctorPatient.entity';
+import {
+  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+//entities
 import { Employer } from './employer.entity';
+import { User } from 'src/users/entities/user.entity';
+import { DoctorPatient } from './doctorPatient.entity';
+import { PatientConsent } from './patientConsent.entity';
+import { LabTests } from 'src/labs/entities/labTests.entity';
+import { Policy } from 'src/insurance/entities/policy.entity';
 import { Billing } from 'src/billings/entities/billing.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
+import { Transactions } from 'src/payment/entity/payment.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment } from '../../attachments/entities/attachment.entity';
+import { PolicyHolder } from 'src/insurance/entities/policy-holder.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -357,56 +363,19 @@ export class Patient {
   @Field({ nullable: true })
   practiceId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  policyHolderId: string;
+
+  //only fields
+
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
 
   @Field({ nullable: true })
   profileAttachment: string;
 
-  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Contact], { nullable: true })
-  contacts: Contact[];
-
-  @ManyToOne(() => Facility, facility => facility.patients, { onDelete: 'CASCADE' })
-  @Field(type => Facility, { nullable: true })
-  facility: Facility;
-
-  @OneToOne(() => User)
-  @JoinColumn()
-  @Field(type => User, { nullable: true })
-  user: User;
-
-  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.doctor, { onDelete: "CASCADE" })
-  @Field(type => [DoctorPatient], { nullable: true })
-  doctorPatients: DoctorPatient[];
-
-  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.patient, { onDelete: "CASCADE" })
-  @Field(type => [PatientAllergies], { nullable: true })
-  patientAllergies: PatientAllergies[];
-
-  @OneToMany(() => PatientProblems, patientProblems => patientProblems.patient, { onDelete: "CASCADE" })
-  @Field(type => [PatientProblems], { nullable: true })
-  patientProblems: PatientProblems[];
-
-  @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Appointment], { nullable: true })
-  appointments: Appointment[];
-
-  @OneToMany(() => LabTests, labTests => labTests.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [LabTests], { nullable: true })
-  labTests: LabTests[];
-
-  @OneToMany(() => Billing, billing => billing.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Billing], { nullable: true })
-  billings: Billing[];
-
-  @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE" })
-  @Field(type => Employer, { nullable: true })
-  employer: Employer[];
-
-  @OneToMany(() => PatientVitals, patientVitals => patientVitals.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [PatientVitals], { nullable: true })
-  patientVitals: PatientVitals[];
+  //dates
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
@@ -416,19 +385,67 @@ export class Patient {
   @Field()
   updatedAt: string;
 
+  //relationships 
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  @Field(() => User, { nullable: true })
+  user: User;
+
+  @OneToOne(() => PatientConsent, consent => consent.patient)
+  @Field(() => PatientConsent, { nullable: true })
+  consent: PatientConsent;
+
+  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Contact], { nullable: true })
+  contacts: Contact[];
+
+  @ManyToOne(() => Facility, facility => facility.patients, { onDelete: 'CASCADE' })
+  @Field(() => Facility, { nullable: true })
+  facility: Facility;
+
+  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.doctor, { onDelete: "CASCADE" })
+  @Field(() => [DoctorPatient], { nullable: true })
+  doctorPatients: DoctorPatient[];
+
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.patient, { onDelete: "CASCADE" })
+  @Field(() => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
+
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.patient, { onDelete: "CASCADE" })
+  @Field(() => [PatientProblems], { nullable: true })
+  patientProblems: PatientProblems[];
+
+  @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Appointment], { nullable: true })
+  appointments: Appointment[];
+
+  @OneToMany(() => LabTests, labTests => labTests.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [LabTests], { nullable: true })
+  labTests: LabTests[];
+
+  @OneToMany(() => Billing, billing => billing.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Billing], { nullable: true })
+  billings: Billing[];
+
+  @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE" })
+  @Field(() => Employer, { nullable: true })
+  employer: Employer[];
+
+  @OneToMany(() => PatientVitals, patientVitals => patientVitals.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PatientVitals], { nullable: true })
+  patientVitals: PatientVitals[];
+
   @OneToMany(() => Transactions, transaction => transaction.patient)
-  @Field(type => [Transactions], { nullable: true })
+  @Field(() => [Transactions], { nullable: true })
   transaction: Transactions[];
 
   @OneToMany(() => Policy, policy => policy.patient, { onDelete: "CASCADE" })
-  @Field(type => [Policy], { nullable: true })
+  @Field(() => [Policy], { nullable: true })
   policies: Policy[];
 
   @ManyToOne(() => PolicyHolder, policyHolder => policyHolder.patients)
-  @Field(type => PolicyHolder, { nullable: true })
+  @Field(() => PolicyHolder, { nullable: true })
   policyHolder: PolicyHolder;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  policyHolderId: string;
 }

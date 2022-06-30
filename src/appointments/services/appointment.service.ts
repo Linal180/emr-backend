@@ -65,7 +65,7 @@ export class AppointmentService {
       if (!appointmentObj) {
         //creating appointment
         const token = createToken();
-        const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: true, token, appointmentNumber })
+        const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: false, token, appointmentNumber })
         //associate provider 
         let provider
         if (createAppointmentInput.providerId) {
@@ -243,7 +243,7 @@ export class AppointmentService {
    */
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
-      const { paginationOptions, relationTable, searchString, sortBy, ...whereObj } = appointmentInput
+      const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, ...whereObj } = appointmentInput
       const whereStr = Object.keys(whereObj).reduce((acc, key) => {
         const transformedKey = key === 'appointmentStatus' ? 'status' : key
         if (whereObj[key]) {
@@ -273,8 +273,14 @@ export class AppointmentService {
               .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
           }))
       }
+
+      if (appointmentDate) {
+        baseQuery = baseQuery
+          .where('"appointment"."scheduleStartDateTime"::date = :appointmentDate', { appointmentDate: appointmentDate })
+      }
+
       const [appointments, totalCount] = await baseQuery
-        .orderBy('appointment.scheduleStartDateTime', sortBy ? sortBy as 'ASC' | 'DESC' : 'ASC')
+        .orderBy('"appointment"."scheduleStartDateTime"', sortBy ? sortBy as 'ASC' | 'DESC' : 'ASC')
         .getManyAndCount()
 
       const totalPages = Math.ceil(totalCount / limit)
@@ -595,11 +601,25 @@ export class AppointmentService {
     return await this.appointmentRepository.count({ where: { facilityId: getFacilityAppointmentsInput.facilityId } })
   }
 
+  /**
+   * Saves appointment service
+   * @param input 
+   * @returns save 
+   */
   async save(input: UpdateAppointmentInput): Promise<Appointment> {
     try {
       return await this.appointmentRepository.save(input)
     } catch (err) {
       throw new Error(err);
     }
+  }
+
+  /**
+   * Gets appointment by patient consent
+   * @param id 
+   * @returns appointment by patient consent 
+   */
+  async getAppointmentByPatientConsent(id: string): Promise<Appointment> {
+    return await this.appointmentRepository.findOne({ where: { patientConsent: id } })
   }
 }

@@ -1,4 +1,4 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, In, Repository } from 'typeorm';
 //user imports
@@ -7,7 +7,6 @@ import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachmen
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { UsersService } from 'src/users/services/users.service';
 import { UtilsService } from 'src/util/utils.service';
 import { FacilityService } from '../../facilities/services/facility.service';
@@ -54,29 +53,43 @@ export class DoctorService {
     await queryRunner.startTransaction();
     try {
       const { email } = createDoctorInput.createContactInput
-      // register doctor as user -
-      const user = await this.usersService.create({ ...createDoctorInput.createDoctorItemInput, email })
-      //get facility 
-      const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
-      // Doctor Creation
-      const doctorInstance = this.doctorRepository.create({ ...createDoctorInput.createDoctorItemInput, email })
-      doctorInstance.user = user;
-      doctorInstance.facility = facility;
-      doctorInstance.facilityId = facility.id
-      //adding contact
-      if (createDoctorInput.createContactInput) {
-        const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
-        doctorInstance.contacts = [contact]
+      let prevDoctor = null
+      if (email) {
+        prevDoctor = await this.findOneByEmail(email)
       }
-      //adding billing address details
-      if (createDoctorInput.createBillingAddressInput) {
-        const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
-        doctorInstance.billingAddress = [billingAddress]
+
+      if (prevDoctor) {
+        throw new ConflictException({
+          status: HttpStatus.CONFLICT,
+          error: 'Provider is ready exist with this email'
+        })
+      } else {
+        // register doctor as user -
+        const user = await this.usersService.create({ ...createDoctorInput.createDoctorItemInput, email })
+        //get facility 
+        const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
+        // Doctor Creation
+        const doctorInstance = this.doctorRepository.create({ ...createDoctorInput.createDoctorItemInput, email })
+        doctorInstance.user = user;
+        doctorInstance.facility = facility;
+        doctorInstance.facilityId = facility.id
+        doctorInstance.practiceId = facility.practiceId
+        //adding contact
+        if (createDoctorInput.createContactInput) {
+          const contact = await this.contactService.createContact(createDoctorInput.createContactInput)
+          doctorInstance.contacts = [contact]
+        }
+        //adding billing address details
+        if (createDoctorInput.createBillingAddressInput) {
+          const billingAddress = await this.billingAddressService.createBillingAddress(createDoctorInput.createBillingAddressInput)
+          doctorInstance.billingAddress = [billingAddress]
+        }
+        const doctor = await queryRunner.manager.save(doctorInstance);
+        await this.usersService.saveUserId(doctor.id, user);
+        await queryRunner.commitTransaction();
+
+        return doctor
       }
-      const doctor = await queryRunner.manager.save(doctorInstance);
-      await this.usersService.saveUserId(doctor.id, user);
-      await queryRunner.commitTransaction();
-      return doctor
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
@@ -93,17 +106,35 @@ export class DoctorService {
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
       const { email } = updateDoctorInput.updateContactInput
-      const doctor = await this.doctorRepository.save({ ...updateDoctorInput.updateDoctorItemInput, email })
-      //updating contact details
-      await this.contactService.updateContact(updateDoctorInput.updateContactInput)
-      //updating billing details
-      await this.billingAddressService.updateBillingAddress(updateDoctorInput.updateBillingAddressInput)
-      //update primary contact in user's model 
-      if (updateDoctorInput.updateContactInput.phone) {
-        const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
-        await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, id: user.id })
+      const { id } = updateDoctorInput.updateDoctorItemInput
+      const doctorInstance = await this.findOne(id)
+
+      let prevDoctor = null
+      const isNewEmail = !!email && email !== doctorInstance?.email
+
+      if (isNewEmail) {
+        prevDoctor = await this.findOneByEmail(email)
       }
-      return doctor
+
+      if (prevDoctor) {
+        throw new ConflictException({
+          status: HttpStatus.CONFLICT,
+          error: 'Provider is ready exist with this email'
+        })
+      } else {
+        const doctor = await this.doctorRepository.save({ ...updateDoctorInput.updateDoctorItemInput, email })
+        //updating contact details
+        await this.contactService.updateContact(updateDoctorInput.updateContactInput)
+        //updating billing details
+        await this.billingAddressService.updateBillingAddress(updateDoctorInput.updateBillingAddressInput)
+        //update primary contact in user's model 
+        if (updateDoctorInput.updateContactInput.phone) {
+          const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
+          await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, email, id: user.id })
+        }
+
+        return doctor
+      }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -123,6 +154,7 @@ export class DoctorService {
       doctorInstance.contacts = [contact];
       doctorInstance.facility = facility;
       doctorInstance.facilityId = facility.id
+      doctorInstance.practiceId = facility.practiceId
       const doctor = await this.doctorRepository.save(doctorInstance)
       await this.usersService.saveUserId(doctor.id, user);
       return doctor
@@ -193,11 +225,11 @@ export class DoctorService {
 
   /**
    * Finds one
-   * @param id 
-   * @returns one 
+   * @param email
+   * @returns doctor 
    */
   async findOneByEmail(email: string): Promise<Doctor> {
-    return await this.doctorRepository.findOne(email);
+    return await this.doctorRepository.findOne({ email });
   }
 
   /**
