@@ -149,7 +149,9 @@ export enum FormBuilderApiSelector {
   PAYMENT_TYPE = 'paymentType',
   PRACTICE_FACILITIES = 'practiceFacilities',
   PATIENT_CONSENT = 'patientConsent',
-  TERMS_CONDITIONS = 'termsConditions'
+  TERMS_CONDITIONS = 'termsConditions',
+  DRIVING_LICENSE = 'drivingLicense',
+  INSURANCE_CARD = 'insuranceCard'
 }
 
 const facilityServicesFields = [
@@ -1415,6 +1417,53 @@ const facilityAppointment = [
         },
       ]
     }],
+  },
+  {
+    id: uuid(),
+    name: "Document Verification",
+    sections: [{
+      id: uuid(),
+      col: 12,
+      name: "Document Verification",
+      fields: [
+        {
+          css: "",
+          name: "drivingLicense",
+          columnName: "",
+          tableName: "",
+          type: ElementType.CUSTOM,
+          label: "Driving License",
+          column: 12,
+          fieldId: uuid(),
+          options: [],
+          errorMsg: "",
+          required: false,
+          textArea: false,
+          placeholder: "Drop your image here, or browse",
+          defaultValue: "",
+          isMultiSelect: false,
+          apiCall: FormBuilderApiSelector.DRIVING_LICENSE
+        },
+        {
+          css: "",
+          name: "insuranceCard",
+          columnName: "insuranceCard",
+          tableName: "",
+          type: ElementType.CUSTOM,
+          label: "Insurance Card",
+          column: 12,
+          fieldId: uuid(),
+          options: [],
+          errorMsg: "",
+          required: false,
+          textArea: false,
+          placeholder: "Drop your image here, or browse",
+          defaultValue: "",
+          isMultiSelect: false,
+          apiCall: FormBuilderApiSelector.INSURANCE_CARD
+        }
+      ]
+    }]
   },
   {
     id: uuid(),
@@ -3785,6 +3834,60 @@ export const FormTemplates = [
               },
             ]
           }]
+      }]
+    }
+  },
+  {
+    name: "Documents",
+    type: FormType.PRE_DEFINED,
+    isSystemForm: true,
+    layout: {
+      tabs: [{
+        id: uuid(),
+        name: "Document Verification",
+        sections: [{
+          id: uuid(),
+          col: 12,
+          name: "Document Verification",
+          fields: [
+            {
+              css: "",
+              name: "drivingLicense",
+              columnName: "",
+              tableName: "",
+              type: ElementType.CUSTOM,
+              label: "Driving License",
+              column: 12,
+              fieldId: uuid(),
+              options: [],
+              errorMsg: "",
+              required: false,
+              textArea: false,
+              placeholder: "Drop your image here, or browse",
+              defaultValue: "",
+              isMultiSelect: false,
+              apiCall: FormBuilderApiSelector.DRIVING_LICENSE
+            },
+            {
+              css: "",
+              name: "insuranceCard",
+              columnName: "insuranceCard",
+              tableName: "",
+              type: ElementType.CUSTOM,
+              label: "Insurance Card",
+              column: 12,
+              fieldId: uuid(),
+              options: [],
+              errorMsg: "",
+              required: false,
+              textArea: false,
+              placeholder: "Drop your image here, or browse",
+              defaultValue: "",
+              isMultiSelect: false,
+              apiCall: FormBuilderApiSelector.INSURANCE_CARD
+            }
+          ]
+        }]
       }]
     }
   },
