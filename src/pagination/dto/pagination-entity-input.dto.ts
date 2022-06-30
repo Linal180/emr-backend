@@ -2,6 +2,7 @@ import { InputType } from "@nestjs/graphql";
 import { AppointmentStatus } from "src/appointments/entities/appointment.entity";
 import { AttachmentType } from "src/attachments/entities/attachment.entity";
 import { FormType } from "src/formbuilder/entities/form.entity";
+import { Speciality } from "src/providers/entities/doctor.entity";
 import { UserStatus } from "src/users/entities/user.entity";
 import PaginationInput from "./pagination-input.dto";
 
@@ -64,4 +65,5 @@ export class PaginatedEntityInput {
   agreementPracticeId?: string
   documentTypeName?: string
   providerId?: string
+  speciality?: Speciality
 }
