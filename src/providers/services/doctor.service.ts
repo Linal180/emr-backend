@@ -105,12 +105,12 @@ export class DoctorService {
    */
   async updateDoctor(updateDoctorInput: UpdateDoctorInput): Promise<Doctor> {
     try {
-      const { email} = updateDoctorInput.updateContactInput
+      const { email } = updateDoctorInput.updateContactInput
       const { id } = updateDoctorInput.updateDoctorItemInput
       const doctorInstance = await this.findOne(id)
 
       let prevDoctor = null
-      const isNewEmail = email !== doctorInstance?.email
+      const isNewEmail = !!email && email !== doctorInstance?.email
 
       if (isNewEmail) {
         prevDoctor = await this.findOneByEmail(email)
@@ -130,8 +130,9 @@ export class DoctorService {
         //update primary contact in user's model 
         if (updateDoctorInput.updateContactInput.phone) {
           const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
-          await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, id: user.id })
+          await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, email, id: user.id })
         }
+
         return doctor
       }
     } catch (error) {

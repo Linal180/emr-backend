@@ -188,10 +188,11 @@ export class PatientService {
       } = updatePatientInput
       const { id: patientId, usualProviderId, facilityId, email: patientEmail, ...patientInfoToUpdate } = updatePatientItemInput
       const { email } = updateContactInput || {}
-
+      
       let prevPatient = null;
       const patientInstance = await this.patientRepository.findOne(patientId)
-      const isNewEmail = email !== patientInstance?.email
+      const isNewEmail = !!email && email !== patientInstance?.email
+
       if (isNewEmail) {
         prevPatient = await this.GetPatientByEmail(email);
       }
@@ -205,6 +206,7 @@ export class PatientService {
         //save patient basic info
         await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email }, this.patientRepository)
         //get facility 
+        const patientInstance = await this.patientRepository.findOne(patientId)
         const user = await this.usersService.findUserByUserId(patientId)
         if (facilityId) {
           const facility = await this.facilityService.findOne(facilityId)
