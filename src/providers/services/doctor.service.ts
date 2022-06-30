@@ -110,7 +110,7 @@ export class DoctorService {
       const doctorInstance = await this.findOne(id)
 
       let prevDoctor = null
-      const isNewEmail = email !== doctorInstance?.email && !!email
+      const isNewEmail = !!email && email !== doctorInstance?.email
 
       if (isNewEmail) {
         prevDoctor = await this.findOneByEmail(email)

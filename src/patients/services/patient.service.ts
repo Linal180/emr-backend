@@ -191,7 +191,7 @@ export class PatientService {
       
       let prevPatient = null;
       const patientInstance = await this.patientRepository.findOne(patientId)
-      const isNewEmail = email !== patientInstance?.email && !!email
+      const isNewEmail = !!email && email !== patientInstance?.email
 
       if (isNewEmail) {
         prevPatient = await this.GetPatientByEmail(email);
