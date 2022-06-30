@@ -20,7 +20,6 @@ import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
-import { AppointmentStatus } from 'src/appointments/entities/appointment.entity';
 
 @Injectable()
 export class DoctorService {
