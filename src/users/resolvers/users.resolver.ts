@@ -75,7 +75,7 @@ export class UsersResolver {
 
   @Query(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'me')
+  // @SetMetadata('name', 'me')
   @SetMetadata('type', 'Read')
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email)

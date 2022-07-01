@@ -1,10 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { User } from './user.entity';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity({ name: 'UserLogs', database: 'logDatabase' })
+@Entity({ name: 'UserLogs', database: process.env.DATABASE_LOG_ID || 'logs' })
 @ObjectType()
-export class UserLog {
+export class UserLogs {
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -21,30 +20,43 @@ export class UserLog {
   @Field({ nullable: true })
   practiceId: string;
 
-  @Column({ array: false, type: 'jsonb', nullable: false })
-  @Field({ nullable: true })
-  reqInfo: string
-
-  @Column({ array: false, type: 'jsonb', nullable: false })
-  @Field({ nullable: true })
-  resInfo: string
-
   @Column({ nullable: true })
   @Field({ nullable: true })
   ipAddress: string;
 
+  // 200, 500
   @Column({ nullable: true })
   @Field({ nullable: true })
-  statusCode: string;
-
-  // @ManyToOne(() => User, user => user.UserLogs)
-  // @Field(type => User)
-  // user: User
+  responseCode: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   userId: string
 
+  // patient, doctor
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  moduleType: string
+
+  // read, create, delete, update
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  operationType: string
+
+  // frontend url
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  refererUrl: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientId: string
+
+  //which columns are update e.g firstName, lastName
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  activityPayload: string
+  
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   createdAt: string;

@@ -48,7 +48,7 @@ export default () => {
       database: process.env.DATABASE_NAME || "emr-pro",
       timezone: 'Z',
       migrationsRun: true,
-      logging: true,
+      logging: false,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
@@ -60,7 +60,7 @@ export default () => {
     };
 
     logDatabase = {
-      name: 'logDatabase',
+      name: process.env.DATABASE_LOG_ID || 'logs',
       host: process.env.DATABASE_LOG_HOST || "localhost",
       port: parseInt(process.env.DATABASE_LOG_PORT, 10) || 5432,
       type: process.env.DATABASE_LOG_TYPE || "postgres",
@@ -69,9 +69,9 @@ export default () => {
       database: process.env.DATABASE_LOG_NAME || "emr-pro-logs",
       timezone: 'Z',
       migrationsRun: true,
-      logging: true,
+      logging: false,
       migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
-      entities: ["dist/src/**/*.logs.entity{.ts,.js}"],
+      entities: ["dist/src/**/*.entity.logs{.ts,.js}"],
     };
     redis = {
       socket: {
