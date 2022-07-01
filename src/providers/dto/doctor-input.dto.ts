@@ -1,10 +1,14 @@
 import { Field, InputType } from '@nestjs/graphql';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
+import { Speciality } from '../entities/doctor.entity';
 
 @InputType()
 export default class DoctorInput {
     @Field({ nullable: true })
     facilityId?: string
+
+    @Field(()=>Speciality, { nullable: true })
+    speciality?: Speciality
 
     @Field({ nullable: true })
     doctorFirstName?: string

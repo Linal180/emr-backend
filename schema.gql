@@ -505,6 +505,7 @@ type Staff {
   gender: Gender!
   user: User
   facility: Facility
+  practice: Practice
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
   patientVitals: PatientVitals
@@ -1440,6 +1441,7 @@ type Practice {
   facilities: [Facility!]
   agreements: [Agreement!]
   documentTypes: [DocumentType!]
+  staff: [Staff!]
   attachments: [Attachment!]
   createdAt: String
   updatedAt: String
@@ -2388,6 +2390,7 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  speciality: Speciality
   doctorFirstName: String
   searchString: String
   practiceId: String
@@ -2833,6 +2836,7 @@ input UserInfoInput {
   email: String
   phone: String
   autoLogoutTime: String
+  facilityId: String
 }
 
 input ResetPasswordInput {
