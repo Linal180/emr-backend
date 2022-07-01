@@ -57,7 +57,6 @@ export class DoctorService {
       if (email) {
         prevDoctor = await this.findOneByEmail(email)
       }
-
       if (prevDoctor) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
@@ -65,7 +64,7 @@ export class DoctorService {
         })
       } else {
         // register doctor as user -
-        const user = await this.usersService.create({ ...createDoctorInput.createDoctorItemInput, email })
+        const user = await this.usersService.create({ ...createDoctorInput.createDoctorItemInput, email, roleType: 'doctor' })
         //get facility 
         const facility = await this.facilityService.findOne(createDoctorInput.createDoctorItemInput.facilityId)
         // Doctor Creation
@@ -107,10 +106,10 @@ export class DoctorService {
     try {
       const { email } = updateDoctorInput.updateContactInput
       const { id } = updateDoctorInput.updateDoctorItemInput
-      const doctorInstance = await this.findOne(id)
+      const { email: providerEmail, appointments } = await this.findOne(id)
 
       let prevDoctor = null
-      const isNewEmail = !!email && email !== doctorInstance?.email
+      const isNewEmail = !!email && email !== providerEmail
 
       if (isNewEmail) {
         prevDoctor = await this.findOneByEmail(email)
@@ -143,7 +142,7 @@ export class DoctorService {
   async addDoctor(createPracticeInput: CreatePracticeInput, facilityId: string, practiceId: string): Promise<Doctor> {
     try {
       // register doctor as user 
-      const user = await this.usersService.create({ ...createPracticeInput.registerUserInput, facilityId })
+      const user = await this.usersService.create({ ...createPracticeInput.registerUserInput, facilityId, roleType: 'doctor' })
       //get facility 
       const facility = await this.facilityService.findOne(facilityId)
       //get contact 

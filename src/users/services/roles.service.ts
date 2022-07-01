@@ -24,15 +24,15 @@ export class RolesService {
   async createRole(roleItemInput: RoleItemInput): Promise<Role> {
     try {
       //check name of role for existing one
-      const role = await this.roleRepository.findOne({role: roleItemInput.role.trim().toLowerCase()})
-      if(role){
+      const role = await this.roleRepository.findOne({ role: roleItemInput.role.trim().toLowerCase() })
+      if (role) {
         throw new ForbiddenException({
           status: HttpStatus.FORBIDDEN,
           error: 'Role already exists with this name',
         });
       }
       // creating role
-      const roleInstance = this.roleRepository.create({...roleItemInput, role: roleItemInput.role.trim().toLowerCase()})
+      const roleInstance = this.roleRepository.create({ ...roleItemInput, role: roleItemInput.role.trim().toLowerCase() })
       //saving role
       return await this.roleRepository.save(roleInstance);
     } catch (error) {
@@ -47,14 +47,14 @@ export class RolesService {
    */
   async updateRole(updateRoleItemInput: UpdateRoleItemInput): Promise<Role> {
     try {
-       //check name of role for existing one
-     const role = await this.roleRepository.findOne({role: updateRoleItemInput.role.trim().toLowerCase()})
-     if(role && role.id !=updateRoleItemInput.id){
-       throw new ForbiddenException({
-         status: HttpStatus.FORBIDDEN,
-         error: 'Role already exists with this name',
-       });
-     }
+      //check name of role for existing one
+      const role = await this.roleRepository.findOne({ role: updateRoleItemInput.role.trim().toLowerCase() })
+      if (role && role.id != updateRoleItemInput.id) {
+        throw new ForbiddenException({
+          status: HttpStatus.FORBIDDEN,
+          error: 'Role already exists with this name',
+        });
+      }
       return await this.utilsService.updateEntityManager(Role, updateRoleItemInput.id, updateRoleItemInput, this.roleRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -69,6 +69,7 @@ export class RolesService {
   async findAllRole(roleInput: RoleInput): Promise<RolesPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Role>(this.roleRepository, { ...roleInput })
+      console.log('paginationResponse', paginationResponse)
       return {
         pagination: {
           ...paginationResponse
@@ -119,7 +120,7 @@ export class RolesService {
 
   async findRolesByUserId() {
     try {
-     return await this.roleRepository.find({relations:['users']})
+      return await this.roleRepository.find({ relations: ['users'] })
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

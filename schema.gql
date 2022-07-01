@@ -106,26 +106,6 @@ enum AttachmentType {
   PRACTICE
 }
 
-type Practice {
-  id: String!
-  name: String!
-  phone: String
-  fax: String
-  practiceId: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  active: Boolean
-  facilities: [Facility!]
-  agreements: [Agreement!]
-  documentTypes: [DocumentType!]
-  attachments: [Attachment!]
-  createdAt: String
-  updatedAt: String
-}
-
 type Copay {
   id: String!
   type: CopayType
@@ -446,159 +426,6 @@ type SnoMedCodes {
   patientProblem: [PatientProblems!]
   createdAt: String
   updatedAt: String
-}
-
-type Allergies {
-  id: String!
-  name: String
-  allergyType: AllergyType!
-  drugAllergyTypes: String
-  patientAllergies: [PatientAllergies!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient's allergy type assigned"""
-enum AllergyType {
-  DRUG
-  FOOD
-  ENVIRONMENT
-}
-
-type Reactions {
-  id: String!
-  name: String!
-  patientAllergies: PatientAllergies
-  createdAt: String
-  updatedAt: String
-}
-
-type PatientAllergies {
-  id: String!
-  allergySeverity: AllergySeverity!
-  allergyOnset: AllergyOnset!
-  allergyStartDate: String
-  comments: String
-  isActive: Boolean
-  staffId: String
-  patientId: String
-  appointmentId: String
-  doctorId: String
-  allergy: Allergies
-  patient: Patient
-  doctor: Doctor
-  staff: Staff
-  appointment: Appointment
-  reactions: [Reactions]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient's allergy severity type assigned"""
-enum AllergySeverity {
-  MILD
-  ACUTE
-  MODERATE
-  VERY_MILD
-}
-
-"""The patient's allergy onset type assigned"""
-enum AllergyOnset {
-  CHILDHOOD
-  ADULTHOOD
-  UNKNOWN
-}
-
-type PatientVitals {
-  id: String!
-  unitType: UnitType!
-  weightUnit: WeightType!
-  headCircumference: HeadCircumferenceType!
-  temperatureUnitType: TempUnitType!
-  smokingStatus: SmokingStatus!
-  patientTemperature: String
-  systolicBloodPressure: String
-  diastolicBloodPressure: String
-  respiratoryRate: String
-  oxygenSaturation: String
-  PatientHeight: String
-  PatientWeight: String
-  PatientBMI: String
-  PainRange: String
-  pulseRate: String
-  patientHeadCircumference: String
-  vitalCreationDate: String
-  patientId: String
-  appointmentId: String
-  appointment: Appointment
-  patient: Patient
-  addedBy: Staff
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient's vital unit type assigned"""
-enum UnitType {
-  INCH
-  CENTIMETER
-}
-
-"""The patient's weight unit type assigned"""
-enum WeightType {
-  POUND
-  KG
-  POUND_OUNCE
-}
-
-"""The patient's head circumference unit type assigned"""
-enum HeadCircumferenceType {
-  INCH
-  CENTIMETER
-}
-
-"""The patient's temperature unit type assigned"""
-enum TempUnitType {
-  DEG_F
-  DEG_C
-}
-
-"""The patient's smoking status type assigned"""
-enum SmokingStatus {
-  NEVER_SMOKED
-  CURRENT_EVERYDAY_SMOKER
-  CURRENT_SOMEDAY_SMOKER
-  FORMER_SMOKER
-  SMOKER_CURRENT_STATUS_UNKNOWN
-  UNKNOWN_IF_EVER_SMOKED
-}
-
-type Staff {
-  id: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-  username: String
-  dob: String
-  phone: String
-  facilityId: String
-  mobile: String
-  practiceId: String
-  gender: Gender!
-  user: User
-  facility: Facility
-  patientProblem: [PatientProblems!]
-  patientAllergies: [PatientAllergies!]
-  patientVitals: PatientVitals
-  createdAt: String!
-  updatedAt: String!
-  attachments: [Attachment!]
-}
-
-"""The user gender assigned"""
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
 }
 
 type PatientProblems {
@@ -1034,6 +861,69 @@ enum ServiceType {
   EXTERNAL
 }
 
+type PatientVitals {
+  id: String!
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
+  patientTemperature: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  pulseRate: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+  patientId: String
+  appointmentId: String
+  appointment: Appointment
+  patient: Patient
+  addedBy: Staff
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's vital unit type assigned"""
+enum UnitType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's weight unit type assigned"""
+enum WeightType {
+  POUND
+  KG
+  POUND_OUNCE
+}
+
+"""The patient's head circumference unit type assigned"""
+enum HeadCircumferenceType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's temperature unit type assigned"""
+enum TempUnitType {
+  DEG_F
+  DEG_C
+}
+
+"""The patient's smoking status type assigned"""
+enum SmokingStatus {
+  NEVER_SMOKED
+  CURRENT_EVERYDAY_SMOKER
+  CURRENT_SOMEDAY_SMOKER
+  FORMER_SMOKER
+  SMOKER_CURRENT_STATUS_UNKNOWN
+  UNKNOWN_IF_EVER_SMOKED
+}
+
 type Code {
   id: String!
   code: String
@@ -1114,6 +1004,20 @@ type Contract {
   contractNumber: String
   organizationName: String
   appointment: Appointment
+}
+
+type PatientConsent {
+  id: String!
+  body: String
+  attachmentId: String
+  appointmentId: String
+  patientId: String
+  createdAt: String!
+  updatedAt: String!
+  patient: Patient
+  appointment: Appointment
+  agreements: [Agreement!]
+  signature: Attachment
 }
 
 type Appointment {
@@ -1198,18 +1102,116 @@ enum AppointmentCreateType {
   TELEHEALTH
 }
 
-type PatientConsent {
+type Allergies {
   id: String!
-  body: String
-  attachmentId: String
-  appointmentId: String
+  name: String
+  allergyType: AllergyType!
+  drugAllergyTypes: String
+  patientAllergies: [PatientAllergies!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's allergy type assigned"""
+enum AllergyType {
+  DRUG
+  FOOD
+  ENVIRONMENT
+}
+
+type Reactions {
+  id: String!
+  name: String!
+  patientAllergies: PatientAllergies
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientAllergies {
+  id: String!
+  allergySeverity: AllergySeverity!
+  allergyOnset: AllergyOnset!
+  allergyStartDate: String
+  comments: String
+  isActive: Boolean
+  staffId: String
   patientId: String
+  appointmentId: String
+  doctorId: String
+  allergy: Allergies
+  patient: Patient
+  doctor: Doctor
+  staff: Staff
+  appointment: Appointment
+  reactions: [Reactions]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's allergy severity type assigned"""
+enum AllergySeverity {
+  MILD
+  ACUTE
+  MODERATE
+  VERY_MILD
+}
+
+"""The patient's allergy onset type assigned"""
+enum AllergyOnset {
+  CHILDHOOD
+  ADULTHOOD
+  UNKNOWN
+}
+
+type Staff {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String
+  dob: String
+  phone: String
+  facilityId: String
+  mobile: String
+  practiceId: String
+  gender: Gender!
+  user: User
+  facility: Facility
+  practice: Practice
+  patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
+  patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
-  patient: Patient
-  appointment: Appointment
+  attachments: [Attachment!]
+}
+
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type Practice {
+  id: String!
+  name: String!
+  phone: String
+  fax: String
+  practiceId: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  active: Boolean
+  facilities: [Facility!]
   agreements: [Agreement!]
-  signature: Attachment
+  documentTypes: [DocumentType!]
+  staff: [Staff!]
+  attachments: [Attachment!]
+  createdAt: String
+  updatedAt: String
 }
 
 type Agreement {
@@ -2419,6 +2421,7 @@ input GetContact {
 
 input DoctorInput {
   facilityId: String
+  speciality: Speciality
   doctorFirstName: String
   searchString: String
   practiceId: String
@@ -2952,6 +2955,7 @@ input UserInfoInput {
   email: String
   phone: String
   autoLogoutTime: String
+  facilityId: String
 }
 
 input ResetPasswordInput {

@@ -17,6 +17,7 @@ import { DisableStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facil
 import { Staff } from '../entities/staff.entity';
 import { File } from 'src/aws/dto/file-input.dto';
 import { DoctorService } from './doctor.service';
+import { PracticeService } from 'src/practice/practice.service';
 
 @Injectable()
 export class StaffService {
@@ -29,6 +30,8 @@ export class StaffService {
     private readonly connection: Connection,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
+    @Inject(forwardRef(() => PracticeService))
+    private readonly practiceService: PracticeService,
     private readonly utilsService: UtilsService,
     @Inject(forwardRef(() => DoctorService))
     private readonly doctorService: DoctorService,
@@ -47,6 +50,8 @@ export class StaffService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      const { staffInput } = createStaffInput
+      const { practiceId } = staffInput
       // register staff as user 
       const user = await this.usersService.create(createStaffInput.staffInput)
       //get facility 
@@ -54,6 +59,11 @@ export class StaffService {
       // Staff Creation
       const providers = await this.doctorService.getDoctors(createStaffInput.providers)
       const staffInstance = this.staffRepository.create(createStaffInput.staffInput)
+      //get practice
+      if (practiceId) {
+        const practice = await this.practiceService.findOne(practiceId)
+        staffInstance.practice = practice
+      }
       staffInstance.providers = providers
       staffInstance.user = user;
       staffInstance.facility = facility;
@@ -86,8 +96,8 @@ export class StaffService {
         });
       }
       //update primary contact in user's model 
-      if(updateStaffInput.updateStaffItemInput.phone){
-         await this.usersService.updateUserInfo({phone: updateStaffInput.updateStaffItemInput.phone, id: staffInstance.user.id})
+      if (staffInstance.user.id) {
+        await this.usersService.updateUserInfo({ phone: updateStaffInput.updateStaffItemInput.phone, id: staffInstance.user.id, facilityId: updateStaffInput.updateStaffItemInput.facilityId })
       }
       // get providers
       if (updateStaffInput.providers) {

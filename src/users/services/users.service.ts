@@ -485,7 +485,15 @@ export class UsersService {
    */
   async updateUserInfo(userInfoInput: UserInfoInput): Promise<User> {
     try {
-      return await this.utilsService.updateEntityManager(User, userInfoInput.id, userInfoInput, this.usersRepository)
+      const { facilityId, ...userToUpdate } = userInfoInput
+      const updatedUser = await this.utilsService.updateEntityManager(User, userInfoInput.id, userToUpdate, this.usersRepository)
+      const userInstance = await this.usersRepository.findOne(userInfoInput.id)
+      if (facilityId) {
+        const facility = await this.facilityService.findOne(facilityId)
+        userInstance.facility = facility
+      }
+      await this.usersRepository.save(userInstance)
+      return updatedUser
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
