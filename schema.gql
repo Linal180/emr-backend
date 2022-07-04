@@ -3367,7 +3367,6 @@ input CreatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String
-  practiceId: String
 }
 
 input CreateEmployerInput {
@@ -3459,7 +3458,6 @@ input UpdatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String
-  practiceId: String
   id: String!
 }
 
