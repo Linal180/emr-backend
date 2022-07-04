@@ -94,7 +94,6 @@ export class FacilityResolver {
   @Query(() => FacilitiesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllFacility')
-  @UseInterceptors()
   async findAllFacility(@Args('facilityInput') facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     const facilities = await this.facilityService.findAllFacilities(facilityInput)
     if (facilities) {
@@ -112,8 +111,8 @@ export class FacilityResolver {
   }
 
   @Query(() => FacilityPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getFacility')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getFacility')
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
     const facility = await this.facilityService.GetFacility(getFacility.id)
     return {

@@ -52,8 +52,8 @@ export class AgreementResolver {
   }
 
   @Query(() => AgreementsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'fetchAllAgreements')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'fetchAllAgreements')
   async fetchAllAgreements(@Args('agreementPaginationInput') agreementPaginationInput: AgreementPaginationInput): Promise<AgreementsPayload> {
     const agreements = await this.agreementService.fetchAllAgreements(agreementPaginationInput)
     return {

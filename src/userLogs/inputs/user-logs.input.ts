@@ -1,7 +1,8 @@
 import { Field, InputType } from "@nestjs/graphql";
+import PaginationInput from "src/pagination/dto/pagination-input.dto";
 
 @InputType()
-export class UserLogInput {
+export class CreateUserLogInput {
 
   @Field({ nullable: true })
   operationName?: string
@@ -36,4 +37,11 @@ export class UserLogInput {
   @Field({ nullable: true })
   activityPayload?: string
 
+}
+
+@InputType()
+export class UserLogsInput {
+
+  @Field(() => PaginationInput, { nullable: true })
+  paginationOptions: PaginationInput
 }

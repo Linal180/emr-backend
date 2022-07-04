@@ -1927,6 +1927,29 @@ type BillingPayload {
   response: Response
 }
 
+type UserLogs {
+  id: String!
+  operationName: String
+  facilityId: String
+  practiceId: String
+  ipAddress: String
+  responseCode: String
+  userId: String
+  moduleType: String
+  operationType: String
+  refererUrl: String
+  patientId: String
+  activityPayload: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type UserLogsPayload {
+  userLogs: [UserLogs]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse!
+}
+
 type FacilitiesUser {
   id: String
   name: String
@@ -2283,6 +2306,7 @@ type Query {
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
+  findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
@@ -2628,6 +2652,10 @@ input PatientVitalInput {
 
 input GetPatientVital {
   id: String!
+}
+
+input UserLogsInput {
+  paginationOptions: PaginationInput
 }
 
 input InsurancePaginationInput {
