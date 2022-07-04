@@ -138,8 +138,4 @@ export class CreatePatientItemInput {
 
   @Field({ nullable: true })
   facilityId?: string;
-
-  @Field({ nullable: true })
-  practiceId?: string;
-
 }
