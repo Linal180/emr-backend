@@ -75,6 +75,8 @@ export class UsersResolver {
 
   @Query(returns => UserPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'me')
+  @SetMetadata('type', 'Read')
   async me(@CurrentUser() user: CurrentUserInterface): Promise<UserPayload> {
     const userFound = await this.usersService.findOne(user.email)
     if (!userFound) {
@@ -120,7 +122,7 @@ export class UsersResolver {
   }
 
   @Query(returns => EmergencyAccessUserPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'fetchEmergencyAccessUsers')
   async fetchEmergencyAccessUsers(@Args('emergencyAccessUsersInput') emergencyAccessUsersInput: EmergencyAccessUserInput): Promise<EmergencyAccessUserPayload> {
     const users = await this.usersService.fetchEmergencyAccessRoleUsers(emergencyAccessUsersInput);

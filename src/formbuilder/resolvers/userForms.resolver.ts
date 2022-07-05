@@ -1,4 +1,4 @@
-import { UseGuards } from "@nestjs/common";
+import { SetMetadata, UseGuards } from "@nestjs/common";
 import { Args, Mutation, Parent, ResolveField, Resolver } from "@nestjs/graphql";
 //user imports
 import { Form } from "../entities/form.entity";
@@ -24,6 +24,8 @@ export class UserFormResolver {
   //mutations
 
   @Mutation(() => UserFormPayload)
+  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  @SetMetadata('name', 'saveUserFormValues')
   async saveUserFormValues(@Args('createUserFormInput') createUserFormInput: CreateUserFormInput): Promise<UserFormPayload> {
     const { userForm, appointment } = await this.userFormsService.create(createUserFormInput)
     return {

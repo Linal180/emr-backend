@@ -16,9 +16,9 @@ import { DocumentTypesResolver } from './resolvers/documentTypes.resolver';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Attachment, AttachmentMetadata, DocumentType]),
-    AwsModule,
     UtilsModule,
     PaginationModule,
+    forwardRef(() => AwsModule),
     forwardRef(() => UsersModule),
     forwardRef(() => PracticeModule),
   ],

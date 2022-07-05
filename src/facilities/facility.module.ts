@@ -1,9 +1,9 @@
-import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { forwardRef, Module } from '@nestjs/common';
 //user imports
 import { UsersModule } from 'src/users/users.module';
-import { Facility } from './entities/facility.entity';
 import { Service } from './entities/services.entity';
+import { Facility } from './entities/facility.entity';
 import { FacilityService } from './services/facility.service';
 import { ServicesService } from './services/services.service';
 import { PracticeModule } from 'src/practice/practice.module';
@@ -16,9 +16,9 @@ import { AppointmentModule } from 'src/appointments/appointment.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Facility, Service]),
-    forwardRef(() => UsersModule),
     PaginationModule,
-    PracticeModule,
+    forwardRef(() => UsersModule),
+    forwardRef(() => PracticeModule),
     forwardRef(() => ProviderModule),
     forwardRef(() => AppointmentModule)
   ],

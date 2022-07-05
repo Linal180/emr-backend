@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Ip, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 //user import
@@ -16,7 +16,7 @@ export class UsersController {
   @UseInterceptors(FileInterceptor('file', {
     fileFilter: mediaFilesFilter
   }))
-  async uploadMedia(@UploadedFile() file: File, @Body() updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<UserPayload> {
+  async uploadMedia(@Ip() ip, @UploadedFile() file: File, @Body() updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<UserPayload> {
     const user = await this.usersService.uploadUserMedia(file, updateAttachmentMediaInput)
     return {
       user,

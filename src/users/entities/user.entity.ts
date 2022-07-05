@@ -1,9 +1,11 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Attachment } from 'src/attachments/entities/attachment.entity';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn
+} from 'typeorm';
+//entities
 import { Role } from './role.entity';
-import { UserLog } from './user-logs.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 
 
 export enum UserStatus {
@@ -14,7 +16,7 @@ export enum UserStatus {
 registerEnumType(UserStatus, {
   name: "UserStatus",
   description: "The user status",
-}); 
+});
 
 @Entity({ name: 'Users' })
 @ObjectType()
@@ -44,8 +46,8 @@ export class User {
   @Field()
   email: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   phone: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
@@ -84,9 +86,6 @@ export class User {
   @ManyToMany(type => Role, role => role.users, { eager: true })
   @JoinTable({ name: 'UserRoles' })
   roles: Role[];
-
-  @OneToMany(() => UserLog, Userlog => Userlog.userId)
-  UserLogs: UserLog[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

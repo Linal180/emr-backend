@@ -52,8 +52,8 @@ export class LabTestsResolver {
   }
 
   @Mutation(() => LabTestsPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updateLabTestsByOrderNum')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updateLabTestsByOrderNum')
   async updateLabTestsByOrderNum(@Args('updateLabTestItemInput') updateLabTestItemInput: CreateLabTestItemInput): Promise<LabTestsPayload> {
     return {
       labTests: await this.labTestsService.updateLabTestsByOrderNumber(updateLabTestItemInput),
@@ -73,8 +73,8 @@ export class LabTestsResolver {
   }
 
   @Query(returns => LabTestsPayload)  
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getLabTest')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findLabTestsByOrderNum')
   async findLabTestsByOrderNum(@Args('labTestByOrderNumInput') labTestByOrderNumInput: LabTestByOrderNumInput): Promise<LabTestsPayload> {
     const labTests = await this.labTestsService.findLabTestsByOrderNum(labTestByOrderNumInput)
     return {

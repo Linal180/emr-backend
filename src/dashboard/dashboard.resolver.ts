@@ -1,4 +1,4 @@
-import { UseGuards } from "@nestjs/common";
+import { SetMetadata, UseGuards } from "@nestjs/common";
 import { Args, Query, Resolver } from "@nestjs/graphql";
 //user imports
 import { DashboardService } from "./dashboard.service";
@@ -19,6 +19,7 @@ export class DashboardResolver {
 
   @Query(() => PracticeFacilitiesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPracticesFacilities')
   async getPracticesFacilities(): Promise<PracticeFacilitiesPayload> {
     return {
       practiceFacilities: await this.dashboardService.getPracticeFacilitiesCount(),
@@ -32,6 +33,7 @@ export class DashboardResolver {
 
   @Query(() => PracticeUsersPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPracticesUser')
   async getPracticesUser(): Promise<PracticeUsersPayload> {
     return {
       practiceUsers: await this.dashboardService.getPracticeUsersCount(),
@@ -45,6 +47,7 @@ export class DashboardResolver {
 
   @Query(() => ActiveInactivePracticesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getActiveInactivePractices')
   async getActiveInactivePractices(): Promise<ActiveInactivePracticesPayload> {
     const practices = await this.dashboardService.getActiveInactivePracticesCount();
 
@@ -60,6 +63,7 @@ export class DashboardResolver {
 
   @Query(() => PracticesViaDatePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPracticesByYear')
   async getPracticesByYear(
     @Args('practicesViaDateInputs') practicesViaDateInputs: PracticesViaDateInputs
   ): Promise<PracticesViaDatePayload> {
@@ -77,7 +81,7 @@ export class DashboardResolver {
 
   @Query(() => PracticeUsersWithRolesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-
+  @SetMetadata('name', 'getPracticeFacilitiesUsersWithRoles')
   async getPracticeFacilitiesUsersWithRoles(@Args('practiceFacilitiesUsersInputs') practiceFacilitiesUsersInputs: PracticeFacilitiesUsersInputs): Promise<PracticeUsersWithRolesPayload> {
     return {
       practiceUsers: await this.dashboardService.getPracticeFacilityUsersWithRolesCount(practiceFacilitiesUsersInputs),
@@ -90,6 +94,7 @@ export class DashboardResolver {
 
   @Query(() => PracticeFacilityAppointmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPracticeFacilityAppointments')
   async getPracticeFacilityAppointments(@Args('practiceFacilityAppointmentsInputs') practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs): Promise<PracticeFacilityAppointmentsPayload> {
     return {
       facilitiesAppointments:  await this.dashboardService.practiceFacilityAppointments(practiceFacilityAppointmentsInputs),
@@ -102,6 +107,7 @@ export class DashboardResolver {
 
   @Query(() => PracticeUserRolesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getUsersWithRoles')
   async getUsersWithRoles(@Args('usersWithRolesInputs') usersWithRolesInputs: UsersWithRolesInputs):
     Promise<PracticeUserRolesPayload> {
     return {
