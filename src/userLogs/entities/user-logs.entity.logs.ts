@@ -1,9 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//entities
+import { User } from 'src/users/entities/user.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 
 @Entity({ name: 'UserLogs', database: process.env.DATABASE_LOG_ID || 'logs' })
 @ObjectType()
 export class UserLogs {
+  
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -56,7 +60,7 @@ export class UserLogs {
   @Column({ nullable: true })
   @Field({ nullable: true })
   activityPayload: string
-  
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   createdAt: string;
@@ -64,5 +68,11 @@ export class UserLogs {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
+
+  @Field({ nullable: true })
+  user: User;
+
+  @Field({ nullable: true })
+  patient: Patient;
 
 }

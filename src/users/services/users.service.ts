@@ -334,6 +334,13 @@ export class UsersService {
     return await this.usersRepository.save(userInstance);
   }
 
+
+  /**
+   * Updates facility
+   * @param facility 
+   * @param userInstance 
+   * @returns facility 
+   */
   async updateFacility(facility: Facility, userInstance: User): Promise<User> {
     userInstance.facility = facility
     return await this.usersRepository.save(userInstance);
@@ -791,6 +798,13 @@ export class UsersService {
     }
   }
 
+
+  /**
+   * Updates user media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns user media 
+   */
   async updateUserMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<User> {
     try {
       updateAttachmentMediaInput.type = AttachmentType.DOCTOR

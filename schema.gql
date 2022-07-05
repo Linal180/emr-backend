@@ -1942,6 +1942,8 @@ type UserLogs {
   activityPayload: String
   createdAt: String!
   updatedAt: String!
+  user: User
+  patient: Patient
 }
 
 type UserLogsPayload {

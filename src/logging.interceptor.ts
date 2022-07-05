@@ -45,13 +45,15 @@ export class LoggingInterceptor implements NestInterceptor {
     let optionalInputs = undefined;
     let patientId = null;
 
-    const execContext = GqlExecutionContext.create(context)
-
+    const execContext = GqlExecutionContext.create(context);
     const { req, user } = execContext.getArgByIndex(2) || {}
     const { body, ip: ipAddress, headers } = req || {}
     const { origin, pathname } = headers || {}
+    const ControllerRequest = context.getArgs() || {}
+    const { headers: controllerHeaders, ip } = ControllerRequest[0] || {}
+    const { origin: originRequest, pathname: pathnameReq } = controllerHeaders || {}
 
-    const refererUrl = origin + pathname
+    const refererUrl = `${origin || originRequest}${pathname || pathnameReq}`
 
     const { operationName, variables } = body || {}
     const moduleType = execContext.getClass().name.split('Resolver')[0]
@@ -88,7 +90,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     const inputs = {
       userId,
-      ipAddress,
+      ipAddress: ipAddress || ip,
       moduleType,
       refererUrl,
       operationType,
@@ -105,12 +107,12 @@ export class LoggingInterceptor implements NestInterceptor {
           const { response } = data || {}
           const { status } = response || {}
           userLogsInstance['responseCode'] = status || '200'
-          await userLogRepo.save(userLogsInstance)
+          moduleType !== 'UserLogs' && await userLogRepo.save(userLogsInstance)
         }),
         catchError(async (err) => {
           const { status } = err || {}
           userLogsInstance['responseCode'] = status
-          await userLogRepo.save(userLogsInstance)
+          moduleType !== 'UserLogs' && await userLogRepo.save(userLogsInstance)
           return throwError(() => err);
         }),
       )
