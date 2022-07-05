@@ -38,7 +38,7 @@ export default () => {
         url: process.env.REDIS_URL || "redis://localhost:",
       },
     };
-    console.log('logDatabase => ', logDatabase)
+    
   } else {
     database = {
       host: process.env.DATABASE_HOST || "localhost",
