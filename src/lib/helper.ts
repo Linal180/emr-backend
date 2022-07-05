@@ -120,3 +120,37 @@ export const getCustomElementValue = (userFormElementInputs: UserFormElementInpu
   }
   return null
 }
+
+
+export const getMutationType = (operationName: string) => {
+
+  if (operationName?.includes('create') || operationName?.includes('Create')) {
+    return 'Create'
+  }
+
+  else if (operationName?.includes('update') || operationName?.includes('Update')) {
+    return 'Update'
+  }
+
+  else if (operationName?.includes('remove') || operationName?.includes('Remove')) {
+    return 'Delete'
+  }
+
+  return operationName
+}
+
+export const getOperationType = (type: string, operationName: string) => {
+ 
+  switch (type) {
+
+    case 'Query':
+      return 'Read';
+
+    case 'Mutation':
+      return getMutationType(operationName)
+
+    default:
+      return ''
+  }
+
+}

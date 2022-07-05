@@ -51,6 +51,8 @@ export class PatientResolver {
   }
 
   @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'patientInfo')
   async patientInfo(@Args('patientInfoInput') patientInfoInput: PatientInfoInput) {
     return {
       patient: await this.patientService.patientInfo(patientInfoInput),
@@ -59,6 +61,8 @@ export class PatientResolver {
   }
 
   @Mutation(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updatePatient')
   async updatePatient(@Args('updatePatientInput') updatePatientInput: UpdatePatientInput) {
     return {
       patient: await this.patientService.updatePatient(updatePatientInput),
@@ -106,7 +110,7 @@ export class PatientResolver {
 
   @Mutation(() => PatientPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updatePatientNoteInfoInputs')
+  @SetMetadata('name', 'updatePatientNoteInfoInputs')
   async updatePatientNoteInfo(@Args('updatePatientNoteInfoInputs')
   updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs): Promise<PatientPayload> {
     return {
@@ -117,7 +121,7 @@ export class PatientResolver {
 
   @Mutation(() => PatientDoctorPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'updatePatientNoteInfoInputs')
+  @SetMetadata('name', 'updatePatientProviderRelation')
   async updatePatientProviderRelation(@Args('updatePatientProviderRelationInputs')
   updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs): Promise<PatientDoctorPayload> {
     return {
@@ -187,6 +191,8 @@ export class PatientResolver {
   }
 
   @Query(() => PatientPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatient')
   async getPatient(@Args('getPatient') getPatient: GetPatient): Promise<PatientPayload> {
     const patients = await this.patientService.GetPatient(getPatient.id)
     return {
@@ -196,6 +202,8 @@ export class PatientResolver {
   }
 
   @Query(() => PatientProviderPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientProviders')
   async getPatientProviders(@Args('getPatient') getPatient: GetPatient): Promise<PatientProviderPayload> {
     const providers = await this.patientService.usualProvider(getPatient.id);
     return {
@@ -205,6 +213,8 @@ export class PatientResolver {
   }
 
   @Query(() => PatientDoctorPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'getPatientProvider')
   async getPatientProvider(@Args('patientProviderInputs') patientProviderInputs: PatientProviderInputs): Promise<PatientDoctorPayload> {
     const provider = await this.patientService.getProvider(patientProviderInputs);
     return {

@@ -1,8 +1,11 @@
+import { SetMetadata, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation, Parent, ResolveField } from '@nestjs/graphql';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
 import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
 import { PoliciesPayload, PolicyPayload } from '../dto/policy-payload.dto';
 import { Copay } from '../entities/copay.entity';
@@ -26,6 +29,8 @@ export class PolicyResolver {
   ) { }
 
   @Query(() => PoliciesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchAllPolicies')
   async fetchAllPolicies(@Args('policyInput') policyInput: PolicyPaginationInput): Promise<PoliciesPayload> {
     const policies = await this.policyService.findAll(policyInput)
     return {
@@ -35,6 +40,8 @@ export class PolicyResolver {
   }
 
   @Query(() => PolicyPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchPolicy')
   async fetchPolicy(@Args('id') id: string): Promise<PolicyPayload> {
     return {
       policy: await this.policyService.findById(id),
@@ -43,6 +50,8 @@ export class PolicyResolver {
   }
 
   @Query(() => PoliciesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'fetchPatientInsurances')
   async fetchPatientInsurances(@Args('id') id: string): Promise<PoliciesPayload> {
     return {
       policies: await this.policyService.fetchPatientInsurances(id),
@@ -51,6 +60,8 @@ export class PolicyResolver {
   }
 
   @Mutation(() => PolicyPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'createPolicy')
   async createPolicy(@Args('createPolicyInput') createPolicyInput: CreatePolicyInput): Promise<PolicyPayload> {
     return {
       policy: await this.policyService.create(createPolicyInput),
@@ -59,6 +70,8 @@ export class PolicyResolver {
   }
 
   @Mutation(() => PolicyPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'updatePolicy')
   async updatePolicy(@Args('updatePolicyInput') updatePolicyInput: UpdatePolicyInput): Promise<PolicyPayload> {
     return {
       policy: await this.policyService.update(updatePolicyInput),

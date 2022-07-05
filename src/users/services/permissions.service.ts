@@ -1,15 +1,22 @@
-import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { UtilsService } from 'src/util/utils.service';
 import { getConnection, In, Repository } from 'typeorm';
-import PermissionInput, { PermissionItemInput, RemovePermission, UpdatePermissionItemInput } from '../dto/permission-input.dto';
-import PermissionsPayload, { PermissionPayload } from '../dto/permissions-payload.dto';
-import { RolePermissionItemInput } from '../dto/rolepermission-input.dto';
-import { Permission } from '../entities/permissions.entity';
+import {
+  ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException
+} from '@nestjs/common';
+//entities
 import { Role } from '../entities/role.entity';
-import { RolePermission } from '../entities/rolePermissions.entity';
 import { RolesService } from './roles.service';
+import { Permission } from '../entities/permissions.entity';
+import { RolePermission } from '../entities/rolePermissions.entity';
+//services
+import { UtilsService } from 'src/util/utils.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+//inputs, dto's
+import { RolePermissionItemInput } from '../dto/rolepermission-input.dto';
+import PermissionsPayload, { PermissionPayload } from '../dto/permissions-payload.dto';
+import {
+  PermissionInput, PermissionItemInput, RemovePermission, UpdatePermissionItemInput
+} from '../dto/permission-input.dto';
 
 @Injectable()
 export class PermissionsService {

@@ -35,8 +35,8 @@ export class LoincCodesResolver {
   }
 
   @Query(returns => LoincCodesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllLoincCodes')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllLoincCodes')
   async findAllLoincCodes(@Args('searchLoincCodesInput') searchLoincCodesInput: SearchLoincCodesInput): Promise<LoincCodesPayload> {
     const loincCodes = await this.loincCodesService.findAllLoincCode(searchLoincCodesInput)
     if (loincCodes) {
@@ -54,8 +54,8 @@ export class LoincCodesResolver {
   }
 
   @Query(returns => LoincCodes)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllLoincCodes')
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findLoincCode')
   async findLoincCode(@Args('id') id: string): Promise<LoincCodes> {
     return await this.loincCodesService.findOne(id)
     
