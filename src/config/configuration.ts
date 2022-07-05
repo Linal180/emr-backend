@@ -11,7 +11,7 @@ export default () => {
       ssl: {
         rejectUnauthorized: false,
       },
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
@@ -22,22 +22,23 @@ export default () => {
     };
 
     logDatabase = {
+      name: process.env.DATABASE_LOG_ID || 'logs-demo',
       type: process.env.DATABASE_LOG_TYPE || "postgres",
-      url: process.env.DATABASE_LOG_URL || "",
+      url: process.env.DATABASE_LOG_TYPE + '://' + process.env.DATABASE_LOG_USERNAME + ':' + process.env.DATABASE_LOG_PASSWORD + '@' + process.env.DATABASE_LOG_HOST + ':' + process.env.DATABASE_LOG_PORT + '/' + process.env.DATABASE_LOG_NAME || "",
       migrationsRun: true,
       ssl: {
         rejectUnauthorized: false,
       },
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
-      entities: ["dist/src/**/*.logs.entity{.ts,.js}"],
+      entities: ["dist/src/**/*.entity.logs{.ts,.js}"],
     };
     redis = {
       socket: {
         url: process.env.REDIS_URL || "redis://localhost:",
       },
     };
-
+    console.log('logDatabase => ', logDatabase)
   } else {
     database = {
       host: process.env.DATABASE_HOST || "localhost",
