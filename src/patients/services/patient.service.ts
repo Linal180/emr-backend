@@ -121,7 +121,12 @@ export class PatientService {
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
           const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
-          patientInstance.facility = facility
+          
+          if(facility){
+            patientInstance.facility = facility
+            patientInstance.facilityId = facility.id
+            patientInstance.practiceId = facility.practiceId
+          }
         }
 
         //create patient contact 
@@ -210,9 +215,13 @@ export class PatientService {
         const user = await this.usersService.findUserByUserId(patientId)
         if (facilityId) {
           const facility = await this.facilityService.findOne(facilityId)
-          if (facility) {
+  
+          if(facility){
             patientInstance.facility = facility
+            patientInstance.facilityId = facility.id
+            patientInstance.practiceId = facility.practiceId
           }
+
           if (user) {
             await this.usersService.updateFacility(facility, user)
           }
@@ -317,7 +326,13 @@ export class PatientService {
       //get facility 
       if (facilityId) {
         const facility = await this.facilityService.findOne(facilityId)
-        patientInstance.facility = facility
+        
+        if(facility){
+          patientInstance.facility = facility
+          patientInstance.facilityId = facility.id
+          patientInstance.practiceId = facility.practiceId
+        }
+
         const user = await this.usersService.findUserByUserId(patientId)
         if (user) {
           await this.usersService.updateFacility(facility, user)
