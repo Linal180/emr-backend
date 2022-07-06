@@ -48,3 +48,42 @@ const PATIENT_LOG_PERMISSIONS = [
 ]
 
 export const PATIENT_LOGGING_PERMISSIONS = PATIENT_LOG_PERMISSIONS?.map((val) => val?.toUpperCase())
+
+export const MODULE_LOGS_TYPES = [
+	"Agreement",
+	"Appointment",
+	"Attachments",
+	"DocumentTypes",
+	"Billing",
+	"Dashboard",
+	"Facility",
+	"Service",
+	"Element",
+	"Form",
+	"UserForm",
+	"Copay",
+	"Insurance",
+	"PolicyHolder",
+	"Policy",
+	"LabTestObservation",
+	"LabTests",
+	"LoincCodes",
+	"TestSpecimen",
+	"PatientAllergies",
+	"Problem",
+	"Vitals",
+	"DoctorPatient",
+	"Patient",
+	"PatientConsent",
+	"Invoice",
+	"Payment",
+	"Practice",
+	"Staff",
+	"Role",
+	"Users",
+	"Doctor",
+	"Contact",
+	"Schedule",
+	"Permission",
+	"RolePermission"
+]
