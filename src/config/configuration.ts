@@ -49,7 +49,7 @@ export default () => {
       database: process.env.DATABASE_NAME || "emr-pro",
       timezone: 'Z',
       migrationsRun: true,
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
     };

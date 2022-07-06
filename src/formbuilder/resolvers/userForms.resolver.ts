@@ -24,8 +24,8 @@ export class UserFormResolver {
   //mutations
 
   @Mutation(() => UserFormPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
-  @SetMetadata('name', 'saveUserFormValues')
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @SetMetadata('name', 'saveUserFormValues')
   async saveUserFormValues(@Args('createUserFormInput') createUserFormInput: CreateUserFormInput): Promise<UserFormPayload> {
     const { userForm, appointment } = await this.userFormsService.create(createUserFormInput)
     return {
@@ -36,7 +36,7 @@ export class UserFormResolver {
   }
 
   @Mutation(() => FormMediaPayload)
-  @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
+  // @UseGuards(JwtAuthGraphQLGuard, RoleGuard)
   async getFormPublicMediaUrl(@Args('getPublicMediaInput') getPublicMediaInput: GetPublicMediaInput): Promise<FormMediaPayload> {
     return {
       publicUrl: await this.userFormsService.getUploadMedia(getPublicMediaInput),

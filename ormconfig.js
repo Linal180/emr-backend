@@ -13,19 +13,19 @@ module.exports = [
       rejectUnauthorized: false,
     },
   },
-  {
-    name: process.env.DATABASE_LOG_ID || 'logDatabase',
-    type: process.env.DATABASE_LOG_TYPE || "postgres",
-    url: process.env.DATABASE_LOG_TYPE + '://' + process.env.DATABASE_LOG_USERNAME + ':' + process.env.DATABASE_LOG_PASSWORD + '@' + process.env.DATABASE_LOG_HOST + ':' + process.env.DATABASE_LOG_PORT + '/' + process.env.DATABASE_LOG_NAME,
-    synchronize: false,
-    migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
-    entities: ["dist/src/**/*.entity.logs{.ts,.js}"],
-    seeds: ["dist/src/**/*.seed.logs{.ts,.js}"],
-    cli: {
-      migrationsDir: "src/migrationsLogs"
-    },
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
+  // {
+  //   name: process.env.DATABASE_LOG_ID || 'logDatabase',
+  //   type: process.env.DATABASE_LOG_TYPE || "postgres",
+  //   url: process.env.DATABASE_LOG_TYPE + '://' + process.env.DATABASE_LOG_USERNAME + ':' + process.env.DATABASE_LOG_PASSWORD + '@' + process.env.DATABASE_LOG_HOST + ':' + process.env.DATABASE_LOG_PORT + '/' + process.env.DATABASE_LOG_NAME,
+  //   synchronize: false,
+  //   migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
+  //   entities: ["dist/src/**/*.entity.logs{.ts,.js}"],
+  //   seeds: ["dist/src/**/*.seed.logs{.ts,.js}"],
+  //   cli: {
+  //     migrationsDir: "src/migrationsLogs"
+  //   },
+  //   ssl: {
+  //     rejectUnauthorized: false,
+  //   },
+  // },
 ]

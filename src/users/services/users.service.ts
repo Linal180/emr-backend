@@ -570,7 +570,9 @@ export class UsersService {
    * @returns  jwt object with roles
    */
   async verify(token: string) {
+    console.log('token in verify', token)
     const secret = await this.jwtService.verify(token);
+    console.log('secret', secret)
     const user = await this.findRolesByUserId(secret.sub)
     return {
       ...secret,

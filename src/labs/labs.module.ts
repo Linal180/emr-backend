@@ -29,6 +29,7 @@ import { TestSpecimenService } from './services/testSpecimen.service';
     TypeOrmModule.forFeature([LoincCodes, LabTests, SpecimenTypes, TestSpecimens, Observations]),
     forwardRef(() => UsersModule),
     PaginationModule,
+    UsersModule,
     PracticeModule,
     ProblemChartingModule,
     PatientModule,
