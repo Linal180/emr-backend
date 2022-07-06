@@ -268,7 +268,13 @@ export class UsersService {
    */
   async findAll(usersInput: UsersInput): Promise<UsersPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<User>(this.usersRepository, usersInput)
+      const { paginationOptions, facilityId, role, searchString, status } = usersInput
+      const paginationResponse = await this.paginationService.willPaginate<User>(this.usersRepository, {
+        paginationOptions, facilityId, role, status, associatedTo: 'User',
+        associatedToField: {
+          columnName: 'email', columnValue: searchString, filterType: 'stringFilter',
+        }
+      })
       return {
         pagination: {
           ...paginationResponse

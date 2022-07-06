@@ -5,12 +5,18 @@ import { UserStatus } from '../entities/user.entity';
 
 @InputType()
 export default class UsersInput {
-  @Field(type => UserStatus, { nullable: true })
+  @Field(() => UserStatus, { nullable: true })
   status?: UserStatus
 
   @Field( { nullable: true })
   role?: string
 
-  @Field(type => PaginationInput)
+  @Field( { nullable: true })
+  facilityId?: string;
+
+  @Field( { nullable: true })
+  searchString?: string;
+
+  @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 }

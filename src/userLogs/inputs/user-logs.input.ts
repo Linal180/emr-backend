@@ -42,6 +42,21 @@ export class CreateUserLogInput {
 @InputType()
 export class UserLogsInput {
 
+  @Field({ nullable: true })
+  patientId?: string;
+
+  @Field({ nullable: true })
+  userId?: string
+
+  @Field({ nullable: true })
+  moduleType?: string
+
+  @Field({ nullable: true })
+  startDate?: string
+
+  @Field({ nullable: true })
+  endDate?: string
+
   @Field(() => PaginationInput, { nullable: true })
   paginationOptions: PaginationInput
 }
