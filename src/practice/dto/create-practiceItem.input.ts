@@ -25,4 +25,10 @@ export class CreatePracticeItemInput {
 
   @Field({ nullable: true })
   champus: string;
+
+  @Field({ nullable: true })
+  npi: string;
+
+  @Field({ nullable: true })
+  taxId: string;
 }
