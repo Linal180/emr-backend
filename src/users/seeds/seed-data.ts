@@ -2,10 +2,9 @@ import { PracticeType, ServiceCode } from '../../facilities/entities/facility.en
 import { UserStatus } from '../entities/user.entity';
 
 export const FacilityData = [
-    {
-        name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232",
-        cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332",
-        tamxonomyCode: "2322332", serviceCode: ServiceCode.EMERGENCY_ROOM_23
+    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", 
+    cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332",
+    tamxonomyCode: "2322332", serviceCode: ServiceCode.Emergency_Room_Hospital_23 
     }
 ];
 

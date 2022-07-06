@@ -32,5 +32,8 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+#PDF and XML FIles
+*.xml
+*.pdf
 
 package-lock.json

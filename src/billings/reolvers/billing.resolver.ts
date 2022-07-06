@@ -6,6 +6,8 @@ import PermissionGuard from 'src/users/auth/role.guard';
 import { Repository } from 'typeorm';
 import BillingInput from '../dto/billing-input.dto';
 import { BillingPayload } from '../dto/billing-payload';
+import ClaimInput from '../dto/claim-input.dto';
+import { ClaimFilePayload, ClaimPayload } from '../dto/claim-payload';
 import { Billing } from '../entities/billing.entity';
 import { Code } from '../entities/code.entity';
 import { BillingService } from '../services/billing.service';
@@ -35,6 +37,22 @@ export class BillingResolver {
     return {
       billing: await this.billingService.fetchBillingDetailsByAppointmentId(appointmentId),
       response: { status: 200, message: "Policy created successfully" }
+    };
+  }
+
+  @Query(() => ClaimPayload)
+  async createClaim(@Args('claimInput') claimInput: ClaimInput): Promise<ClaimPayload> {
+    return {
+      claim: await this.billingService.createClaimInfo(claimInput),
+      response: { status: 200, message: "Policy created successfully" }
+    };
+  }
+
+  @Query(() => ClaimFilePayload)
+  async getClaimFile(@Args('claimInput') claimInput: ClaimInput): Promise<ClaimFilePayload> {
+    return {
+      claimFile: await this.billingService.getClaimFile(claimInput),
+      response: { status: 200, message: "Claim File created successfully" }
     };
   }
 
