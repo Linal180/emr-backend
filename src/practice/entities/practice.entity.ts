@@ -28,6 +28,14 @@ export class Practice {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  taxId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  npi: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   practiceId: string;
 
   @Column({ nullable: true })

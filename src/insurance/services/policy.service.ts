@@ -10,6 +10,7 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
+import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
 
 @Injectable()
 export class PolicyService {
@@ -79,11 +80,13 @@ export class PolicyService {
       if (referringProviderId) {
         const referringProviderInstance = await this.doctorService.findOne(referringProviderId)
         policyInstance.referringProvider = referringProviderInstance
+        this.patientService.updatePatientProvider({ patientId, providerId: referringProviderId, relation:DoctorPatientRelationType.REFERRING_PROVIDER })
       }
 
       if (primaryCareProviderId) {
         const primaryCareProviderInstance = await this.doctorService.findOne(primaryCareProviderId)
         policyInstance.primaryCareProvider = primaryCareProviderInstance
+        this.patientService.updatePatientProvider({ patientId, providerId: primaryCareProviderId, relation:DoctorPatientRelationType.PRIMARY_PROVIDER })
       }
 
       const patient = await this.patientService.findOne(patientId)

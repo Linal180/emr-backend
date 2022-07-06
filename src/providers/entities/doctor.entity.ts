@@ -17,33 +17,64 @@ import { Staff } from './staff.entity';
 
 
 export enum Speciality {
-  PHYSICIAN_ASSISTANT = "Physician Assistant",
-  PHARMACIST = "Pharmacist",
-  PERIODONTICS = "Periodontics",
-  PEDIATRIC_DENTIST = "Pediatric Dentist",
-  PEDIATRIC_DERMATOLOGY = "Pediatric Dermatology",
-  NEUROLOGY = "Neurology",
-  GASTROENTEROLOGY = "Gastroenterology",
-  GENERAL_PRACTICE = "General Practice",
-  GENERAL_SURGERY = "General Surgery",
-  ALLERGY_OR_IMMUNOLOGY = 'Allergy/Immunology',
-  OTOLARYNGOLOGY = "Otolaryngology",
-  ANESTHESIOLOGY = "Anesthesiology",
-  CARDIOLOGY = 'Cardiology',
-  DERMATOLOGY = 'Dermatology',
-  FAMILY_PRACTICE = 'Family Practice',
-  INTERVENTIONAL_PAIN_MANAGEMENT = 'Interventional Pain Management',
-  INTERNAL_MEDICINE = 'Internal Medicine',
-  OSTEOPATHIC_MANIPULATIVE_THERAPY = 'Osteopathic Manipulative Therapy',
-  NEUROSURGERY = "Neurosurgery",
-  OPHTHALMOLOGY = "Ophthalmology",
-  OBSTETRICS_OR_GYNECOLOGY = 'Obstetrics/Gynecology',
-  ORAL_SURGERY = 'Oral Surgery',
-  ORTHOPEDIC_SURGERY = 'Orthopedic Surgery',
-  PATHOLOGY = 'Pathology',
-  PLASTIC_AND_RECONSTRUCTIVE_SURGERY = "Plastic and Reconstructive Surgery",
-  PHYSICAL_MEDICINE_AND_REHABILITATION = 'Physical Medicine and Rehabilitation',
-  PSYCHIATRY = 'Psychiatry'
+  General_Practice_01 = '01 General Practice',
+  General_Surgery_02 = '02 General Surgery',
+  Allergy_Immunology_03 = '03 Allergy/Immunology',
+  Otolaryngology_04 = '04 Otolaryngology',
+  Anesthesiology_05 = '05 Anesthesiology',
+  Cardiology_06 = '06 Cardiology',
+  Dermatology_07 = '07 Dermatology',
+  Family_Practice_08 = '08 Family Practice',
+  Interventional_Pain_Management_09 = '09 Interventional Pain Management',
+  Gastroenterology_10 = '10 Gastroenterology',
+  Internal_Medicine_11 = '11 Internal Medicine',
+  Osteopathic_Manipulative_Therapy_12 = '12 Osteopathic Manipulative Therapy',
+  Neurosurgery_14 = '14 Neurosurgery',
+  Unassigned_15 = '15 Unassigned',
+  Obstetrics_Gynecology_16 = '16 Obstetrics/Gynecology',
+  Unassigned_17 = '17 Unassigned',
+  Ophthalmology_18 = '18 Ophthalmology',
+  Oral_Surgery_dentists_only_19 = '19 Oral Surgery (dentists only)',
+  Orthopedic_Surgery_20 = '20 Orthopedic Surgery',
+  Unassigned_21 = '21 Unassigned',
+  Pathology_22 = '22 Pathology',
+  Unassigned_23 = '23 Unassigned',
+  Plastic_and_Reconstructive_Surgery_24 = '24 Plastic and Reconstructive Surgery',
+  Physical_Medicine_and_Rehabilitation_25 = '25 Physical Medicine and Rehabilitation',
+  Psychiatry_26 = '26 Psychiatry',
+  Unassigned_27 = '27 Unassigned',
+  Colorectal_Surgery_formerly_proctology_28 = '28 Colorectal Surgery (formerly proctology)',
+  Pulmonary_Disease_29 = '29 Pulmonary Disease',
+  Diagnostic_Radiology_30 = '30 Diagnostic Radiology',
+  Unassigned_31 = '31 Unassigned',
+  Thoracic_Surgery_33 = '33 Thoracic Surgery',
+  Urology_34 = '34 Urology',
+  Chiropractic_35 = '35 Chiropractic',
+  Nuclear_Medicine_36 = '36 Nuclear Medicine',
+  Pediatric_Medicine_37 = '37 Pediatric Medicine',
+  Geriatric_Medicine_38 = '38 Geriatric Medicine',
+  Nephrology_39 = '39 Nephrology',
+  Hand_Surgery_40 = '40 Hand Surgery',
+  Optometry_41 = '41 Optometry',
+  Infectious_Disease_44 = '44 Infectious Disease',
+  Endocrinology_46 = '46 Endocrinology',
+  Podiatry_48 = '48 Podiatry',
+  Rheumatology_66 = '66 Rheumatology',
+  Multispecialty_Clinic_or_Group_Practice_70 = '70 Multispecialty Clinic or Group Practice',
+  Pain_Management_72 = '72 Pain Management',
+  Peripheral_Vascular_Disease_76 = '76 Peripheral Vascular Disease',
+  Vascular_Surgery_77 = '77 Vascular Surgery',
+  Cardiac_Surgery_78 = '78 Cardiac Surgery',
+  Addiction_Medicine_79 = '79 Addiction Medicine',
+  Critical_Care_Intensivists_81 = '81 Critical Care (Intensivists)',
+  Hematology_82 = '82 Hematology',
+  Hematology_Oncology_83 = '83 Hematology/Oncology',
+  Preventive_Medicine_84 = '84 Preventive Medicine',
+  Radiation_Oncology_92 = '92 Radiation Oncology',
+  Emergency_Medicine_93 = '93 Emergency Medicine',
+  Interventional_Radiology_94 = '94 Interventional Radiology',
+  Gynecological_Oncology_98 = '98 Gynecological/Oncology',
+  Unknown_Physician_Specialty_99 = '99 Unknown Physician Specialty',
 }
 
 registerEnumType(Speciality, {
@@ -102,7 +133,7 @@ export class Doctor {
   @Column({
     type: "enum",
     enum: Speciality,
-    default: Speciality.GASTROENTEROLOGY
+    default: Speciality.General_Practice_01
   })
   @Field(type => Speciality, { nullable: true })
   speciality: Speciality
@@ -266,7 +297,7 @@ export class Doctor {
   @OneToMany(() => LabTests, labTests => labTests.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [LabTests], { nullable: true })
   referringProviderLabTests: LabTests[];
-  
+
   @OneToMany(() => Policy, policies => policies.referringProvider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Policy], { nullable: true })
   policyOfReferringProvider: Policy[];

@@ -5,7 +5,7 @@ import { Patient } from './patient.entity';
 
 export enum DoctorPatientRelationType {
   PREFERRED_PROVIDER = "Preferred provider in practice",
-  BACKUP_PROVIDER = "Backup provider in practice",
+  RENDERING_PROVIDER = "Rendering provider in practice",
   PRIMARY_PROVIDER = "Primary care provider",
   REFERRING_PROVIDER = "Referring provider",
   ORDERING_PROVIDER = 'Ordering provider',

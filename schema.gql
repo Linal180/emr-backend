@@ -178,7 +178,7 @@ type Contact {
   locationLink: String
   ssn: String
   employerName: String
-  serviceCode: ServiceCodes!
+  serviceCode: ServiceCodes
   relationship: RelationshipType
   contactType: ContactType
   facilityId: String
@@ -194,25 +194,58 @@ type Contact {
 
 """The facility service code type assigned"""
 enum ServiceCodes {
-  AMBULANCE_41
-  AMBULANCE_42
-  AMBULANCE_24
-  ASSISTED_LIVING_13
-  BIRTHING_CENTER_25
-  COMMUNITY_MENTAL_HEALTH_CENTER_53
-  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
-  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
-  CUSTODIAL_CARE_FACILITY_33
-  EMERGENCY_ROOM_23
-  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
-  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
-  GROUP_HOME_14
-  HOMELESS_SHELTER_04
-  HOSPICE_34
-  INDEPENDENT_CLINIC_49
-  INDEPENDENT_LABORATORY_81
-  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
-  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
+  Pharmacy_01
+  Telehealth_02
+  Telehealth_Provided_Other_than_in_Patients_Home_02
+  School_03
+  Homeless_Shelter_04
+  Indian_Health_Service_Free_standing_Facility_05
+  Indian_Health_Service_Provider_based_Facility_06
+  Tribal_638_Free_standing_Facility_07
+  Tribal_638_Provider_based_Facility_08
+  Prison_Correctional_Facility_09
+  Prison_Correctional_Facility_10
+  Telehealth_Provided_in_Patients_Home_10
+  Office_11
+  Home_12
+  Assisted_Living_13
+  Group_Home_14
+  Mobile_Unit_15
+  Temporary_Lodging_16
+  Walk_in_Retail_Health_Clinic_17
+  Place_of_Employment_18
+  Off_Campus_Outpatient_Hospital_19
+  Urgent_Care_20
+  Inpatient_Hospital_21
+  Outpatient_Hospital_22
+  Emergency_Room_Hospital_23
+  Ambulatory_Surgical_Center_24
+  Birthing_Center_25
+  Military_Treatment_Facility_26
+  Skilled_Nursing_Facility_31
+  Nursing_Facility_32
+  Custodial_Care_Facility_33
+  Hospice_34
+  Ambulance_Land_41
+  Ambulance_Air_or_Water_42
+  Independent_Clinic_49
+  Federally_Qualified_Health_Center_50
+  Inpatient_Psychiatric_Facility_51
+  Psychiatric_Facility_Partial_Hospitilzation_52
+  Community_Mental_Health_Center_53
+  Intermediate_Care_Facility_Mentally_Retarded_54
+  Residential_Substance_Abuse_Treatment_Facility_55
+  Psychiatric_Residential_Treatment_Center_56
+  Non_residential_Substance_Abuse_Treatment_Facility_57
+  Non_residential_Opioid_Treatment_Facility_58
+  Mass_Immunization_Center_60
+  Comprehensive_Inpatient_Rehabilitation_Facility_61
+  Comprehensive_Outpatient_Rehabilitation_Facility_62
+  End_Stage_Renal_Disease_Treatment_Facility_65
+  State_or_Local_Public_Health_Clinic_71
+  Rural_Health_Clinic_72
+  Independent_Laboratory_81
+  Other_Unlisted_Facility_99
 }
 
 """The user's relationship assigned"""
@@ -637,7 +670,7 @@ type DoctorPatient {
 """The relationship of patient with doctor"""
 enum DoctorPatientRelationType {
   PREFERRED_PROVIDER
-  BACKUP_PROVIDER
+  RENDERING_PROVIDER
   PRIMARY_PROVIDER
   REFERRING_PROVIDER
   ORDERING_PROVIDER
@@ -782,33 +815,64 @@ type Doctor {
 
 """The doctor's speciality"""
 enum Speciality {
-  PHYSICIAN_ASSISTANT
-  PHARMACIST
-  PERIODONTICS
-  PEDIATRIC_DENTIST
-  PEDIATRIC_DERMATOLOGY
-  NEUROLOGY
-  GASTROENTEROLOGY
-  GENERAL_PRACTICE
-  GENERAL_SURGERY
-  ALLERGY_OR_IMMUNOLOGY
-  OTOLARYNGOLOGY
-  ANESTHESIOLOGY
-  CARDIOLOGY
-  DERMATOLOGY
-  FAMILY_PRACTICE
-  INTERVENTIONAL_PAIN_MANAGEMENT
-  INTERNAL_MEDICINE
-  OSTEOPATHIC_MANIPULATIVE_THERAPY
-  NEUROSURGERY
-  OPHTHALMOLOGY
-  OBSTETRICS_OR_GYNECOLOGY
-  ORAL_SURGERY
-  ORTHOPEDIC_SURGERY
-  PATHOLOGY
-  PLASTIC_AND_RECONSTRUCTIVE_SURGERY
-  PHYSICAL_MEDICINE_AND_REHABILITATION
-  PSYCHIATRY
+  General_Practice_01
+  General_Surgery_02
+  Allergy_Immunology_03
+  Otolaryngology_04
+  Anesthesiology_05
+  Cardiology_06
+  Dermatology_07
+  Family_Practice_08
+  Interventional_Pain_Management_09
+  Gastroenterology_10
+  Internal_Medicine_11
+  Osteopathic_Manipulative_Therapy_12
+  Neurosurgery_14
+  Unassigned_15
+  Obstetrics_Gynecology_16
+  Unassigned_17
+  Ophthalmology_18
+  Oral_Surgery_dentists_only_19
+  Orthopedic_Surgery_20
+  Unassigned_21
+  Pathology_22
+  Unassigned_23
+  Plastic_and_Reconstructive_Surgery_24
+  Physical_Medicine_and_Rehabilitation_25
+  Psychiatry_26
+  Unassigned_27
+  Colorectal_Surgery_formerly_proctology_28
+  Pulmonary_Disease_29
+  Diagnostic_Radiology_30
+  Unassigned_31
+  Thoracic_Surgery_33
+  Urology_34
+  Chiropractic_35
+  Nuclear_Medicine_36
+  Pediatric_Medicine_37
+  Geriatric_Medicine_38
+  Nephrology_39
+  Hand_Surgery_40
+  Optometry_41
+  Infectious_Disease_44
+  Endocrinology_46
+  Podiatry_48
+  Rheumatology_66
+  Multispecialty_Clinic_or_Group_Practice_70
+  Pain_Management_72
+  Peripheral_Vascular_Disease_76
+  Vascular_Surgery_77
+  Cardiac_Surgery_78
+  Addiction_Medicine_79
+  Critical_Care_Intensivists_81
+  Hematology_82
+  Hematology_Oncology_83
+  Preventive_Medicine_84
+  Radiation_Oncology_92
+  Emergency_Medicine_93
+  Interventional_Radiology_94
+  Gynecological_Oncology_98
+  Unknown_Physician_Specialty_99
 }
 
 type Schedule {
@@ -1198,6 +1262,8 @@ type Practice {
   name: String!
   phone: String
   fax: String
+  taxId: String
+  npi: String
   practiceId: String
   ein: String
   upin: String
@@ -1246,7 +1312,7 @@ type Facility {
   mammographyCertificationNumber: String
   npi: String
   practiceId: String
-  serviceCode: ServiceCode!
+  serviceCode: ServiceCode
   staff: [Staff!]
   doctors: [Doctor!]
   appointments: [Appointment!]
@@ -1271,60 +1337,58 @@ enum PracticeType {
 
 """The facility service code type assigned"""
 enum ServiceCode {
-  AMBULANCE_41
-  PHARMACY_01
-  TELEHEALTH_02
-  TELEHEALTH_OTHER_THAN_PATIENT_HOME_02
-  SCHOOL_03
-  TRIBAL_07
-  TRIBAL_08
-  PRISON_09
-  PRISON_10
-  TELEHEALTH_10
-  OFFICE_11
-  HOME_12
-  MOBILE_UNIT_15
-  TEMPORARY_LoOGOING_16
-  WALK_IN_RETAIL_HEALTH_CLINIC
-  PLACE_OF_EMPLOYMENT_18
-  OFF_CAMPUS_OUTPATIENT_HOSPITAL_19
-  URGENT_CARE_20
-  INPATIENT_HOSPITAL_21
-  OUTPATIENT_HOSPITAL_22
-  EMERGENCY_ROOM_HOSPITAL_23
-  AMBULATORY_SURGICAL_CENTER_24
-  MILITARY_TREATMENT_FACILITY_26
-  SKILLED_NURSING_FACILITY_31
-  NURSING_FACILITY_32
-  AMBULANCE_LAND_41
-  INPATIENT_PSYCHIATRIC_FACILITY_51
-  PSYCHIATRIC_FACILITY_PARTIAL_HOSPITILIZATION_52
-  INTERMEDIATE_CARE_FACILITY_MENTALLY_RETARDED_54
-  RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENMT_FACILITY_55
-  PSYCHIATRIC_RESIDENTIAL_TREATMENT_CENTER_56
-  NON_RESIDENTIAL_SUBSTANCE_ABUSE_TREATMENT_FACILITY_57
-  NON_RESIDENTIAL_OPIOID_TREATMENT_FACILITY_58
-  MASS_IMMUNIZATION_CENTER_60
-  AMBULANCE_42
-  AMBULANCE_24
-  ASSISTED_LIVING_13
-  BIRTHING_CENTER_25
-  COMMUNITY_MENTAL_HEALTH_CENTER_53
-  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61
-  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62
-  CUSTODIAL_CARE_FACILITY_33
-  EMERGENCY_ROOM_23
-  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65
-  STATE_OR_LOCAL_PUBLIC_HEALTH_CLINIC_71
-  RURAL_HEALTH_CLINIC_72
-  FEDERALLY_QUALIFIED_HEALTH_CENTER_50
-  GROUP_HOME_14
-  HOMELESS_SHELTER_04
-  HOSPICE_34
-  INDEPENDENT_CLINIC_49
-  INDEPENDENT_LABORATORY_81
-  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05
-  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06
+  Pharmacy_01
+  Telehealth_02
+  Telehealth_Provided_Other_than_in_Patients_Home_02
+  School_03
+  Homeless_Shelter_04
+  Indian_Health_Service_Free_standing_Facility_05
+  Indian_Health_Service_Provider_based_Facility_06
+  Tribal_638_Free_standing_Facility_07
+  Tribal_638_Provider_based_Facility_08
+  Prison_Correctional_Facility_09
+  Prison_Correctional_Facility_10
+  Telehealth_Provided_in_Patients_Home_10
+  Office_11
+  Home_12
+  Assisted_Living_13
+  Group_Home_14
+  Mobile_Unit_15
+  Temporary_Lodging_16
+  Walk_in_Retail_Health_Clinic_17
+  Place_of_Employment_18
+  Off_Campus_Outpatient_Hospital_19
+  Urgent_Care_20
+  Inpatient_Hospital_21
+  Outpatient_Hospital_22
+  Emergency_Room_Hospital_23
+  Ambulatory_Surgical_Center_24
+  Birthing_Center_25
+  Military_Treatment_Facility_26
+  Skilled_Nursing_Facility_31
+  Nursing_Facility_32
+  Custodial_Care_Facility_33
+  Hospice_34
+  Ambulance_Land_41
+  Ambulance_Air_or_Water_42
+  Independent_Clinic_49
+  Federally_Qualified_Health_Center_50
+  Inpatient_Psychiatric_Facility_51
+  Psychiatric_Facility_Partial_Hospitilzation_52
+  Community_Mental_Health_Center_53
+  Intermediate_Care_Facility_Mentally_Retarded_54
+  Residential_Substance_Abuse_Treatment_Facility_55
+  Psychiatric_Residential_Treatment_Center_56
+  Non_residential_Substance_Abuse_Treatment_Facility_57
+  Non_residential_Opioid_Treatment_Facility_58
+  Mass_Immunization_Center_60
+  Comprehensive_Inpatient_Rehabilitation_Facility_61
+  Comprehensive_Outpatient_Rehabilitation_Facility_62
+  End_Stage_Renal_Disease_Treatment_Facility_65
+  State_or_Local_Public_Health_Clinic_71
+  Rural_Health_Clinic_72
+  Independent_Laboratory_81
+  Other_Unlisted_Facility_99
 }
 
 type User {
@@ -1921,10 +1985,87 @@ type InsurancesPayload {
   response: Response
 }
 
+type PoliciesPayload {
+  policies: [Policy!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyPayload {
+  policy: Policy!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyHoldersPayload {
+  policyHolders: [PolicyHolder!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
 type BillingPayload {
   billing: Billing!
   pagination: PaginationPayload
   response: Response
+}
+
+type Charge {
+  proc_code: String
+  diag_ref: String
+  charge: Int
+  units: String
+}
+
+type Claim {
+  claim_form: String
+  payerid: String
+  payer_name: String
+  pcn: String
+  pat_name_l: String
+  pat_name_f: String
+  pat_addr_1: String
+  pat_city: String
+  pat_state: String
+  pat_zip: String
+  pat_dob: String
+  pat_sex: String
+  pat_rel: String
+  ins_number: String
+  accept_assign: String
+  total_charge: Int
+  bill_name: String
+  bill_addr_1: String
+  bill_addr_2: String
+  bill_city: String
+  bill_state: String
+  bill_zip: String
+  bill_phone: String
+  bill_taxid: String
+  bill_taxid_type: String
+  from_date: String
+  diag_1: String
+  diag_2: String
+  diag_3: String
+  diag_4: String
+  diag_5: String
+  diag_6: String
+  diag_7: String
+  diag_8: String
+  diag_9: String
+  diag_10: String
+  diag_11: String
+  diag_12: String
+  charge: [Charge!]
+}
+
+type ClaimPayload {
+  claim: Claim!
+  response: ResponsePayload
+}
+
+type ClaimFilePayload {
+  claimFile: [Int!]
+  response: ResponsePayload
 }
 
 type UserLogs {
@@ -2039,24 +2180,6 @@ type PracticeFacilityAppointmentsPayload {
 type PracticeUserRolesPayload {
   userRoles: [PracticeUserRoles!]
   response: ResponsePayloadResponse
-}
-
-type PoliciesPayload {
-  policies: [Policy!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyPayload {
-  policy: Policy!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyHoldersPayload {
-  policyHolders: [PolicyHolder!]!
-  pagination: PaginationPayload
-  response: Response
 }
 
 type FormPayload {
@@ -2308,7 +2431,8 @@ type Query {
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
-  findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
+  createClaim(claimInput: ClaimInput!): ClaimPayload!
+  getClaimFile(claimInput: ClaimInput!): ClaimFilePayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
@@ -2316,6 +2440,7 @@ type Query {
   fetchPatientInsurances(id: String!): PoliciesPayload!
   fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
   fetchPolicyHolder(id: String!): PolicyHolder!
+  findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
   getActiveInactivePractices: ActiveInactivePracticesPayload!
@@ -2656,8 +2781,24 @@ input GetPatientVital {
   id: String!
 }
 
-input UserLogsInput {
-  paginationOptions: PaginationInput
+input ClaimInput {
+  patientId: String
+  appointmentId: String
+  codes: [CodesInput!]
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  onsetDateType: OnsetDateType
+  onsetDate: String
+  otherDateType: OtherDateType
+  otherDate: String
+}
+
+input CodesInput {
+  code: String
+  description: String
+  price: String
+  codeType: CodeType
 }
 
 input InsurancePaginationInput {
@@ -2672,6 +2813,10 @@ input PolicyPaginationInput {
 
 input PolicyHolderPaginationInput {
   paginationOptions: PaginationInput!
+}
+
+input UserLogsInput {
+  paginationOptions: PaginationInput
 }
 
 input PracticesViaDateInputs {
@@ -3688,6 +3833,8 @@ input CreatePracticeItemInput {
   medicare: String
   medicaid: String
   champus: String
+  npi: String
+  taxId: String
 }
 
 input UpdatePracticeInput {
@@ -3699,6 +3846,8 @@ input UpdatePracticeInput {
   medicare: String
   medicaid: String
   champus: String
+  npi: String
+  taxId: String
   id: String
 }
 
@@ -4065,13 +4214,6 @@ input BillingInput {
   patientId: String
   appointmentId: String
   labOrderNumber: String
-}
-
-input CodesInput {
-  code: String
-  description: String
-  price: String
-  codeType: CodeType
 }
 
 input CreatePolicyInput {
