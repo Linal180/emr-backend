@@ -23,7 +23,6 @@ export class CreateUsers implements Seeder {
         facility = await queryRunner.manager.save(createdFacility);
       }
       //Add Roles
-      console.log('facility', facility, RolesData)
 
       // if (!roles.length) {
       const createdRoles = await Promise.all(await RolesData.map(async (rolesData) => {
@@ -34,7 +33,6 @@ export class CreateUsers implements Seeder {
         }
       }))
       let roles = [...await getRepository(Role).find(), ...createdRoles];
-      // console.log('roles', roles)
 
       //Add Permissions
       const createdPermissions = await Promise.all(await PermissionData.map(async (permissionData) => {
@@ -46,7 +44,6 @@ export class CreateUsers implements Seeder {
       }))
 
       let permissions = [...await getRepository(Permission).find(), ...createdPermissions];
-      console.log('permissions', permissions)
       // if (!permissions.length) {
       //   permissions = getRepository(Permission).create(PermissionData)
       //   permissions = await queryRunner.manager.save(permissions);
@@ -59,11 +56,10 @@ export class CreateUsers implements Seeder {
 
       //Add superAdmin role Permissions
       let superAdminRole = roles.find((item) => item.role === 'super-admin')
-      console.log('superAdminRole', superAdminRole)
       // if (!superAdminRolePermission.length) {
       let superAdminPermissionList = permissions
       let superAdminRolePermissions = await this.rolePermissionPayload(superAdminPermissionList, superAdminRole)
-      // console.log("superAdminRolePermissions", superAdminRolePermissions)
+      // ("superAdminRolePermissions", superAdminRolePermissions)
       await Promise.all(await superAdminRolePermissions.map(async (rolePermissionsData, i) => {
         const getRolePermission = await getRepository(RolePermission).findOne({ roleId: rolePermissionsData.roleId, permissionId: rolePermissionsData.permissionId })
         if (!getRolePermission) {
@@ -386,12 +382,10 @@ export class CreateUsers implements Seeder {
       for (let index = 0; index < UsersData.length; index++) {
         const user = UsersData[index];
         const ifUserExist = await getRepository(User).findOne({ email: user.email })
-        console.log("ifUserExist", ifUserExist)
         if (!ifUserExist) {
           user.password = await createPasswordHash(user.password);
           const UserObj = getRepository(User).create(user)
           const role = roles.filter(obj => obj.role === user.roleType);
-          console.log("role", role)
 
           UserObj.roles = role;
           UserObj.facility = facility[0]
