@@ -2,6 +2,7 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module, forwardRef } from '@nestjs/common';
 //modules
+import { UsersModule } from 'src/users/users.module';
 import { UtilsModule } from 'src/util/utils.module';
 import { PracticeModule } from 'src/practice/practice.module';
 import { FacilityModule } from 'src/facilities/facility.module';
@@ -18,6 +19,7 @@ import { AgreementResolver } from './resolvers/agreement.resolver';
     TypeOrmModule.forFeature([Agreement]),
     forwardRef(() => PaginationModule),
     forwardRef(() => FacilityModule),
+    forwardRef(() => UsersModule),
     forwardRef(() => PracticeModule),
     UtilsModule
   ],

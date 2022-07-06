@@ -11,10 +11,12 @@ import { Billing } from './entities/billing.entity';
 import { Code } from './entities/code.entity';
 import { BillingResolver } from './reolvers/billing.resolver';
 import { BillingService } from './services/billing.service';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Billing,Code]),
+    UsersModule,
     PatientModule,
     AppointmentModule,
     InsuranceModule,

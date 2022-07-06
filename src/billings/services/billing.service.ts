@@ -525,7 +525,6 @@ export class BillingService {
 
   async getClaimFile(claimInput: ClaimInput) {
     const claimInfo = await this.getClaimInfo(claimInput)
-    console.log('claimInfo', claimInfo)
     const file = await fs.readFileSync(path.resolve(__dirname, "../../../../form-1500.pdf"))
     const pdfDoc = await PDFDocument.load(file);
     const form = pdfDoc.getForm()
@@ -643,7 +642,6 @@ export class BillingService {
     const claimInfo = await this.getClaimInfo(claimInput)
     const claimInfoToFormat = Object.keys(claimInfo).reduce((acc, claimInfoKey) => {
       if (claimInfoKey === 'charge') {
-        console.log(claimInfo[claimInfoKey])
         acc[claimInfoKey] = claimInfo[claimInfoKey].map((chargeObj) => {
           return Object.keys(chargeObj).reduce((innerAcc, key) => {
             innerAcc[`@${key}`] = chargeObj[key]
@@ -671,7 +669,6 @@ export class BillingService {
     formdata.append('AccountKey', process.env.CLAIM_MD_ID)
     formdata.append('File', xmlFile)
 
-    console.log('formData', formdata)
     const response = await this.httpService.post('https://www.claim.md/services/upload/', formdata, {
       headers: {
         'Accept': 'text/json'
