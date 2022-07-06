@@ -14,7 +14,7 @@ export class PermissionItemInput {
 }
 
 @InputType()
-export default class PermissionInput {
+export class PermissionInput {
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }

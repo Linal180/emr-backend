@@ -2,7 +2,7 @@ import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/c
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from '../auth/role.guard';
-import PermissionInput, { GetPermission, PermissionItemInput, RemovePermission, UpdatePermissionItemInput } from '../dto/permission-input.dto';
+import { PermissionInput, GetPermission, PermissionItemInput, RemovePermission, UpdatePermissionItemInput } from '../dto/permission-input.dto';
 import PermissionsPayload, { PermissionPayload } from '../dto/permissions-payload.dto';
 import { RolePermissionItemInput } from '../dto/rolepermission-input.dto';
 import { Permission } from '../entities/permissions.entity';
@@ -31,7 +31,7 @@ export class PermissionResolver {
       response: { status: 200, message: 'Permission has been assigned to role successfully' }
     };
   }
-  
+
   @Mutation(() => PermissionPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updatePermission')

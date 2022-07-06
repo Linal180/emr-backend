@@ -50,7 +50,7 @@ export class PatientConsentResolver {
   //mutations
 
   @Mutation(() => PatientConsentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'updatePatientNoteInfoInputs')
   async createPatientConsent(@Args('createPatientConsentInputs')
   createPatientConsentInputs: CreatePatientConsentInputs): Promise<PatientConsentPayload> {

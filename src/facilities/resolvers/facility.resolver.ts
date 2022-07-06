@@ -1,4 +1,4 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 //user imports
 import FacilityInput from '../dto/facility-input.dto';
@@ -75,6 +75,25 @@ export class FacilityResolver {
   @Query(() => FacilitiesPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'findAllFacility')
+  async findAllPublicFacility(@Args('facilityInput') facilityInput: FacilityInput): Promise<FacilitiesPayload> {
+    const facilities = await this.facilityService.findAllFacilities(facilityInput)
+    if (facilities) {
+      return {
+        ...facilities,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Facility not found',
+    });
+  }
+
+  @Query(() => FacilitiesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'findAllFacility')
   async findAllFacility(@Args('facilityInput') facilityInput: FacilityInput): Promise<FacilitiesPayload> {
     const facilities = await this.facilityService.findAllFacilities(facilityInput)
     if (facilities) {
@@ -92,6 +111,8 @@ export class FacilityResolver {
   }
 
   @Query(() => FacilityPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getFacility')
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
     const facility = await this.facilityService.GetFacility(getFacility.id)
     return {

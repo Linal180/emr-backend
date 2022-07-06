@@ -69,7 +69,6 @@ export class RolesService {
   async findAllRole(roleInput: RoleInput): Promise<RolesPayload> {
     try {
       const paginationResponse = await this.paginationService.willPaginate<Role>(this.roleRepository, { ...roleInput })
-      console.log('paginationResponse', paginationResponse)
       return {
         pagination: {
           ...paginationResponse

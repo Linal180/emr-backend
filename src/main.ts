@@ -3,9 +3,11 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PatientModule } from './patients/patient.module';
+import { LoggingInterceptor } from './logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.enableCors();
   //swagger config
   const config = new DocumentBuilder()

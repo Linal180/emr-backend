@@ -70,7 +70,7 @@ export class ProblemResolver {
 
   @Query(returns => IcdCodesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'searchIcdCodes')
+  @SetMetadata('name', 'fetchICDCodes')
   async fetchICDCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
     const icdCodes = await this.problemService.fetchICDCodes(searchIcdCodesInput);
     return {

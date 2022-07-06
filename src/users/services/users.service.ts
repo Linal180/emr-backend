@@ -1,37 +1,40 @@
-import { ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+import * as bcryptjs from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcryptjs from 'bcryptjs';
 import { getConnection, In, Not, Repository } from 'typeorm';
-//user import
-import { AttachmentsService } from 'src/attachments/services/attachments.service';
-import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
-import { AttachmentType } from 'src/attachments/entities/attachment.entity';
+import {
+  ConflictException, ForbiddenException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException,
+  NotFoundException, PreconditionFailedException
+} from '@nestjs/common';
+//entities
+import { Role } from './../entities/role.entity';
+import { User, UserStatus } from './../entities/user.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
+//services
+import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
-import { UtilsService } from 'src/util/utils.service';
 import { FacilityService } from '../../facilities/services/facility.service';
-import { createToken } from '../../lib/helper';
-import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
-import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
+//inputs, dto's, payload
+import { File } from 'src/aws/dto/file-input.dto';
+import UsersInput from './../dto/users-input.dto';
+import { UserIdInput } from './../dto/user-id-input.dto';
+import { UsersPayload } from './../dto/users-payload.dto';
+import { UserInfoInput } from '../dto/user-info-input.dto';
 import { TwoFactorInput } from '../dto/twoFactor-input.dto';
-import { AccessUserPayload, User2FAPayload, User2FAVerifiedPayload } from './../dto/access-user.dto';
+import { UpdateRoleInput } from './../dto/update-role-input.dto';
 import { RegisterUserInput } from './../dto/register-user-input.dto';
 import { UpdatePasswordInput } from './../dto/update-password-input.dto';
-import { UpdateRoleInput } from './../dto/update-role-input.dto';
+import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
+import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
+import { AccessUserPayload, User2FAVerifiedPayload } from './../dto/access-user.dto';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { ResendVerificationEmail, UpdateUserInput } from './../dto/update-user-input.dto';
-import { UserIdInput } from './../dto/user-id-input.dto';
-import UsersInput from './../dto/users-input.dto';
-import { UsersPayload } from './../dto/users-payload.dto';
-import { Role } from './../entities/role.entity';
-import { UserLog } from './../entities/user-logs.entity';
-import { User, UserStatus } from './../entities/user.entity';
-import { RolesService } from './roles.service';
-import { File } from 'src/aws/dto/file-input.dto';
-import { UserInfoInput } from '../dto/user-info-input.dto';
-import { Staff } from 'src/providers/entities/staff.entity';
+//helpers
+import { createToken } from '../../lib/helper';
 
 @Injectable()
 export class UsersService {
@@ -40,21 +43,17 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
-    @InjectRepository(UserLog)
-    private UserLogRepository: Repository<UserLog>,
-    private readonly jwtService: JwtService,
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
-    private readonly paginationService: PaginationService,
-    private readonly mailerService: MailerService,
     @Inject(forwardRef(() => PatientService))
     private readonly patientService: PatientService,
-    private readonly utilsService: UtilsService,
-    private readonly rolesService: RolesService,
     @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,
+    private readonly jwtService: JwtService,
+    private readonly utilsService: UtilsService,
+    private readonly mailerService: MailerService,
+    private readonly paginationService: PaginationService,
   ) { }
-
 
   /**
    * Creates users service
@@ -335,6 +334,13 @@ export class UsersService {
     return await this.usersRepository.save(userInstance);
   }
 
+
+  /**
+   * Updates facility
+   * @param facility 
+   * @param userInstance 
+   * @returns facility 
+   */
   async updateFacility(facility: Facility, userInstance: User): Promise<User> {
     userInstance.facility = facility
     return await this.usersRepository.save(userInstance);
@@ -508,7 +514,7 @@ export class UsersService {
   async createToken(user: User, paramPass: string): Promise<AccessUserPayload> {
     const passwordMatch = await bcryptjs.compare(paramPass, user.password)
     if (passwordMatch) {
-      const payload = { email: user.email, sub: user.id };
+      const payload = { email: user.email, sub: user.id, facilityId: user.facilityId, practiceId: user.facility?.practiceId };
       return {
         access_token: this.jwtService.sign(payload),
         userId: user.id,
@@ -792,6 +798,13 @@ export class UsersService {
     }
   }
 
+
+  /**
+   * Updates user media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns user media 
+   */
   async updateUserMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<User> {
     try {
       updateAttachmentMediaInput.type = AttachmentType.DOCTOR
