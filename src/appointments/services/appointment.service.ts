@@ -65,7 +65,7 @@ export class AppointmentService {
       if (!appointmentObj) {
         //creating appointment
         const token = createToken();
-        const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: true, token, appointmentNumber })
+        const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: false, token, appointmentNumber })
         //associate provider 
         let provider
         if (createAppointmentInput.providerId) {
