@@ -1,6 +1,9 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import {
+  Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral,
+  Raw, Repository, WhereExpressionBuilder, MoreThanOrEqual, LessThanOrEqual
+} from "typeorm";
 import { Speciality } from "src/providers/entities/doctor.entity";
-import { Between, Equal, FindConditions, FindManyOptions, FindOperator, In, IsNull, JoinOptions, Not, ObjectLiteral, OrderByCondition, Raw, Repository, WhereExpressionBuilder } from "typeorm";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
 
@@ -49,7 +52,9 @@ export class PaginationService {
    */
   async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[], orderByColumn?: OrderByColumn): Promise<PaginationPayloadInterface<T>> {
     try {
-      const { associatedTo, relationField, associatedToField } = paginationInput;
+
+
+      const { associatedTo, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
       let filterOption: FilterOptionsResponse = null;
 
@@ -98,6 +103,7 @@ export class PaginationService {
           status: HttpStatus.NOT_FOUND,
           error: 'Page Not Found',
         });
+
       return {
         totalCount,
         page,
@@ -105,9 +111,7 @@ export class PaginationService {
         totalPages,
         data: paginatedData,
       }
-
     } catch (error) {
-     
       throw new InternalServerErrorException(error);
     }
   }
@@ -129,7 +133,7 @@ export class PaginationService {
       };
     } else if (filterType === 'stringFilter') {
       where = {
-        str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data`,
+        str: `${associatedTo}.${columnName} ILIKE :data${columnName2 ? ` OR ${associatedTo}.${columnName2} ILIKE :data` : ''}${columnName3 ? ` OR ${associatedTo}.${columnName3} ILIKE :data` : ''}`,
         obj: { data: `%${columnValue}%` }
       };
     }
@@ -196,6 +200,10 @@ export class PaginationService {
       documentTypeName,
       providerId,
       speciality,
+      moduleType,
+      logUserId,
+      logStartDate,
+      logEndDate,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -204,7 +212,7 @@ export class PaginationService {
     }
     const whereOptions: WhereOptions = {
       where: {
-        ...(patientId && {
+        ...(patientId && patientId != null && {
           patientId
         }),
         ...(appointmentId && {
@@ -285,7 +293,7 @@ export class PaginationService {
         ...(speciality && {
           speciality: speciality as Speciality,
         }),
-        ...(practiceId && {
+        ...(practiceId && practiceId !== null && {
           practiceId: practiceId
         }),
         ...(appointmentStatus && {
@@ -333,6 +341,10 @@ export class PaginationService {
         ...(agreementFacilityId && {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
+        ...(moduleType && moduleType != null && { moduleType }),
+        ...(logUserId && logUserId != null && { userId: logUserId }),
+        ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
+        ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) })
       }
     };
 

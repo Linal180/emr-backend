@@ -5,11 +5,11 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { User } from 'src/users/entities/user.entity'
 import { UserLogsPayload } from "../dto/user-logs.payload";
 import { UserLogs } from "../entities/user-logs.entity.logs";
+import { Patient } from "src/patients/entities/patient.entity";
 import { UsersService } from "src/users/services/users.service";
 import { PaginationService } from "src/pagination/pagination.service";
 import { PatientService } from "src/patients/services/patient.service";
 import { CreateUserLogInput, UserLogsInput } from "../inputs/user-logs.input";
-import { Patient } from "src/patients/entities/patient.entity";
 
 
 @Injectable()
@@ -40,8 +40,12 @@ export class UserLogsService {
 
   async fetchAll(params: UserLogsInput): Promise<UserLogsPayload> {
     try {
-      const { paginationOptions } = params
-      const paginationResponse = await this.paginationService.willPaginate<UserLogs>(this.usersRepository, { paginationOptions })
+      const { paginationOptions, moduleType, patientId, userId, endDate: logEndDate, startDate: logStartDate } = params
+
+      const paginationResponse = await this.paginationService.willPaginate<UserLogs>(this.usersRepository, {
+        paginationOptions, logUserId: userId, patientId, moduleType, logEndDate, logStartDate
+      })
+
       const { data, limit, page, totalCount, totalPages } = paginationResponse
 
       let logUser = ''
@@ -57,7 +61,6 @@ export class UserLogsService {
           let obj = userLogs;
 
           if (userId) {
-
             if (logUser === userId) {
               obj.user = user
             }
@@ -85,7 +88,7 @@ export class UserLogsService {
 
           users.push(obj)
         }
-        
+
         else {
           users.push({
             ...userLogs,

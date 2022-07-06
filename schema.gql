@@ -1749,6 +1749,12 @@ type RolePayload {
   role: Role
 }
 
+type UsersPayload {
+  response: ResponsePayload
+  users: [User]
+  pagination: PaginationPayload
+}
+
 type AccessUserPayload {
   access_token: String
   access_2fa_token: String
@@ -1758,9 +1764,9 @@ type AccessUserPayload {
   response: ResponsePayload
 }
 
-type EmergencyAccessUserPayload {
-  emergencyAccessUsers: [User!]
-  pagination: PaginationPayload
+type UserPayload {
+  user: User
+  access_token: String
   response: ResponsePayload
 }
 
@@ -1768,16 +1774,10 @@ type ForgotPasswordPayload {
   response: ResponsePayload
 }
 
-type UserPayload {
-  user: User
-  access_token: String
-  response: ResponsePayload
-}
-
-type UsersPayload {
-  response: ResponsePayload
-  users: [User]
+type EmergencyAccessUserPayload {
+  emergencyAccessUsers: [User!]
   pagination: PaginationPayload
+  response: ResponsePayload
 }
 
 type PermissionsPayload {
@@ -2492,6 +2492,8 @@ input TestSpecimenTypeInput {
 input UsersInput {
   status: UserStatus
   role: String
+  facilityId: String
+  searchString: String
   paginationOptions: PaginationInput!
 }
 
@@ -2816,6 +2818,11 @@ input PolicyHolderPaginationInput {
 }
 
 input UserLogsInput {
+  patientId: String
+  userId: String
+  moduleType: String
+  startDate: String
+  endDate: String
   paginationOptions: PaginationInput
 }
 

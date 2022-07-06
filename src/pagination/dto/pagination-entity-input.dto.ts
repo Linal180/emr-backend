@@ -65,5 +65,9 @@ export class PaginatedEntityInput {
   agreementPracticeId?: string
   documentTypeName?: string
   providerId?: string
-  speciality?: Speciality
+  speciality?: Speciality;
+  moduleType?: string;
+  logUserId?: string;
+  logStartDate?: string;
+  logEndDate?: string
 }
