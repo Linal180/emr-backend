@@ -65,7 +65,7 @@ export class AppointmentService {
       if (!appointmentObj) {
         //creating appointment
         const token = createToken();
-        const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: false, token, appointmentNumber })
+        const appointmentInstance = this.appointmentRepository.create({ ...createAppointmentInput, isExternal: true, token, appointmentNumber })
         //associate provider 
         let provider
         if (createAppointmentInput.providerId) {
@@ -261,6 +261,7 @@ export class AppointmentService {
         .skip((page - 1) * limit)
         .take(limit)
         .where(whereStr as ObjectLiteral)
+        .andWhere(appointmentDate ? '"appointment"."scheduleStartDateTime"::date = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
 
       if (first) {
         baseQuery
@@ -274,13 +275,8 @@ export class AppointmentService {
           }))
       }
 
-      if (appointmentDate) {
-        baseQuery = baseQuery
-          .where('"appointment"."scheduleStartDateTime"::date = :appointmentDate', { appointmentDate: appointmentDate })
-      }
 
       const [appointments, totalCount] = await baseQuery
-        .orderBy('"appointment"."scheduleStartDateTime"', sortBy ? sortBy as 'ASC' | 'DESC' : 'ASC')
         .getManyAndCount()
 
       const totalPages = Math.ceil(totalCount / limit)

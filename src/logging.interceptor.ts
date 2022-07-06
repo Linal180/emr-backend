@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, InternalServerErrorException } from '@nestjs/common';
 //user import
 import { getOperationType } from './lib/helper';
 import { User } from './users/entities/user.entity';
@@ -113,7 +113,7 @@ export class LoggingInterceptor implements NestInterceptor {
           const { status } = err || {}
           userLogsInstance['responseCode'] = status
           moduleType !== 'UserLogs' && await userLogRepo.save(userLogsInstance)
-          return throwError(() => err);
+          throw new InternalServerErrorException(err)
         }),
       )
   }
