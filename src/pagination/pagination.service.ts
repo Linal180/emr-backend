@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import {
   Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral,
-  Raw, Repository, WhereExpressionBuilder, LessThan, MoreThanOrEqual
+  Raw, Repository, WhereExpressionBuilder, MoreThanOrEqual, LessThanOrEqual
 } from "typeorm";
 import { Speciality } from "src/providers/entities/doctor.entity";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
@@ -344,7 +344,7 @@ export class PaginationService {
         ...(moduleType && moduleType != null && { moduleType }),
         ...(logUserId && logUserId != null && { userId: logUserId }),
         ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
-        ...(logEndDate && logEndDate != null && { createdAt: LessThan(new Date(logEndDate)) })
+        ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) })
       }
     };
 
