@@ -15,10 +15,12 @@ import { CopayResolver } from './resolvers/copay.resolver';
 import { CopayService } from './services/copay.service';
 import { ProviderModule } from 'src/providers/provider.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Insurance, Policy, PolicyHolder, Copay]),
+    UsersModule,
     PatientModule,
     PaginationModule,
     forwardRef(() => ProviderModule),

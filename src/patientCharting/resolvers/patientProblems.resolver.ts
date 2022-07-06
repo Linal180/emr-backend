@@ -56,7 +56,7 @@ export class ProblemResolver {
   }
 
   @Query(returns => IcdCodesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'searchIcdCodes')
   async searchIcdCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
     const icdCodes = await this.problemService.searchIcdCodes(searchIcdCodesInput);
@@ -69,7 +69,7 @@ export class ProblemResolver {
   }
 
   @Query(returns => IcdCodesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'fetchICDCodes')
   async fetchICDCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
     const icdCodes = await this.problemService.fetchICDCodes(searchIcdCodesInput);
@@ -82,7 +82,7 @@ export class ProblemResolver {
   }
 
   @Query(returns => snoMedCodesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'searchSnoMedCodeByIcdCodes')
   async searchSnoMedCodeByIcdCodes(@Args('searchSnoMedCodesInput') searchSnoMedCodesInput: SearchSnoMedCodesInput): Promise<snoMedCodesPayload> {
     const snoMedCodes = await this.problemService.searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput);
@@ -95,7 +95,7 @@ export class ProblemResolver {
   }
 
   @Query(returns => PatientProblemPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'getPatientProblem')
   async getPatientProblem(@Args('getPatientProblem') getPatientProblem: GetPatientProblem): Promise<PatientProblemPayload> {
     const patientProblem = await this.problemService.GetPatientProblem(getPatientProblem.id)
@@ -106,7 +106,7 @@ export class ProblemResolver {
   }
 
   @Mutation(() => PatientProblemPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'removePatientProblem')
   async removePatientProblem(@Args('removeProblem') removeProblem: RemoveProblem) {
     await this.problemService.removePatientProblem(removeProblem);
