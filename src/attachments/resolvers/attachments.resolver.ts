@@ -17,8 +17,8 @@ export class AttachmentsResolver {
   constructor(private readonly attachmentsService: AttachmentsService) { }
 
   @Query(returns => AttachmentsPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getAttachments')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAttachments')
   async getAttachments(@Args('getAttachment') getAttachment: GetAttachment): Promise<AttachmentsPayload> {
     const attachments = await this.attachmentsService.findAttachmentsById(getAttachment.typeId)
     return {
@@ -50,8 +50,8 @@ export class AttachmentsResolver {
   }
 
   @Query(returns => AttachmentWithPreSignedUrlPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'getAttachmentsByAgreementId')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAttachmentsByAgreementId')
   async getAttachmentsByAgreementId(@Args('getAttachmentsByAgreementId') getAttachmentsByAgreementId: GetAttachmentsByAgreementId): Promise<AttachmentWithPreSignedUrlPayload> {
     const attachments = await this.attachmentsService.findAttachmentsByAgreementId(getAttachmentsByAgreementId)
     return {

@@ -29,10 +29,17 @@ export class CreateUsers implements Seeder {
         const getRole = await getRepository(Role).findOne({ role: rolesData.role })
         if (!getRole) {
           const createdRole = getRepository(Role).create(rolesData)
-          return await queryRunner.manager.save(createdRole);
+          const savedRole = await queryRunner.manager.save(createdRole);
+          return savedRole
+        } else {
+          return getRole
         }
       }))
-      let roles = [...await getRepository(Role).find(), ...createdRoles];
+
+      let mergedRoles = [...await getRepository(Role).find(), ...createdRoles];
+      let roles = mergedRoles.filter((role, index, arrayRoles) => index === arrayRoles.findIndex((t) => (
+        t.id === role.id
+      )))
 
       //Add Permissions
       const createdPermissions = await Promise.all(await PermissionData.map(async (permissionData) => {
@@ -40,10 +47,15 @@ export class CreateUsers implements Seeder {
         if (!getPermission) {
           const createdPermission = getRepository(Permission).create(permissionData)
           return await queryRunner.manager.save(createdPermission);
+        } else {
+          return getPermission
         }
       }))
-
-      let permissions = [...await getRepository(Permission).find(), ...createdPermissions];
+      let mergedPermissions = [...await getRepository(Permission).find(), ...createdPermissions]
+      let permissions= mergedPermissions.filter((permission, index, arrayPermissions) => index === arrayPermissions.findIndex((t) => (
+        t.id === permission.id
+      )))
+      // console.log('permissions', permissions)
       // if (!permissions.length) {
       //   permissions = getRepository(Permission).create(PermissionData)
       //   permissions = await queryRunner.manager.save(permissions);
@@ -60,7 +72,7 @@ export class CreateUsers implements Seeder {
       let superAdminPermissionList = permissions
       let superAdminRolePermissions = await this.rolePermissionPayload(superAdminPermissionList, superAdminRole)
       // ("superAdminRolePermissions", superAdminRolePermissions)
-      await Promise.all(await superAdminRolePermissions.map(async (rolePermissionsData, i) => {
+      await Promise.all(await superAdminRolePermissions.map(async (rolePermissionsData) => {
         const getRolePermission = await getRepository(RolePermission).findOne({ roleId: rolePermissionsData.roleId, permissionId: rolePermissionsData.permissionId })
         if (!getRolePermission) {
           const createdRolePermissions = await getRepository(RolePermission).create(rolePermissionsData)
@@ -406,6 +418,7 @@ export class CreateUsers implements Seeder {
   }
   async rolePermissionPayload(permissions: Permission[], role: Role) {
     return permissions.map((item) => {
+      // console.log('item', item)
       return {
         permission: item,
         permissionId: item.id,
