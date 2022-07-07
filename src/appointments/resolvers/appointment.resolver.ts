@@ -37,8 +37,8 @@ export class AppointmentResolver {
   //mutations
 
   @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'createAppointment')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'createAppointment')
   async createAppointment(@Args('createAppointmentInput') createAppointmentInput: CreateAppointmentInput) {
     return {
       appointment: await this.appointmentService.createAppointment(createAppointmentInput),
@@ -56,8 +56,8 @@ export class AppointmentResolver {
 
 
   @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updateAppointment')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateAppointment')
   async updateAppointment(@Args('updateAppointmentInput') updateAppointmentInput: UpdateAppointmentInput) {
     return {
       appointment: await this.appointmentService.updateAppointment(updateAppointmentInput),
@@ -66,8 +66,8 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updateAppointmentBillingStatus')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateAppointmentBillingStatus')
   async updateAppointmentBillingStatus(@Args('updateAppointmentBillingStatusInput') updateAppointmentBillingStatusInput: UpdateAppointmentBillingStatusInput) {
     return {
       appointment: await this.appointmentService.updateAppointmentBillingStatus(updateAppointmentBillingStatusInput),
@@ -90,8 +90,8 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => AppointmentPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'updateAppointmentStatus')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateAppointmentStatus')
   async updateAppointmentStatus(@Args('appointmentStatusInput') appointmentStatusInput: UpdateAppointmentStatusInput) {
     return {
       appointment: await this.appointmentService.updateAppointmentStatus(appointmentStatusInput),
