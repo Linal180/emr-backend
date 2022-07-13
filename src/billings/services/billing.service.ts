@@ -152,7 +152,7 @@ export class BillingService {
       !!secondaryInsurance ? secondaryInsurance :
         tertiaryInsurance
     const { policyHolderRelationship, groupNumber, orderOfBenefit } = insuranceDetail || {}
-    const insurance = await this.insuranceService.findOne(insuranceDetail.insuranceId)
+    const insurance = await this.insuranceService.findOne(insuranceDetail?.insuranceId)
     const { payerId, payerName } = insurance || {}
 
     const { patientRecord, firstName, lastName, dob, gender, middleName, maritialStatus, policyHolderId } = patient || {}
@@ -228,9 +228,9 @@ export class BillingService {
       bill_city: facilityPrimaryContact?.city,
       bill_state: facilityPrimaryContact?.state,
       bill_zip: facilityPrimaryContact?.zipCode,
-      bill_npi: practiceInfo.npi,
+      bill_npi: practiceInfo?.npi,
       bill_phone: facilityPrimaryContact?.phone,
-      bill_taxid: practiceInfo.taxId,
+      bill_taxid: practiceInfo?.taxId,
       bill_taxid_type: 'EIN',
       bill_taxonomy: facilityInfo?.tamxonomyCode,
       from_date: moment(scheduleStartDateTime).format('YYYY-MM-DD'),
@@ -437,16 +437,16 @@ export class BillingService {
       // "chg_prov_npi",
       // "chg_prov_id",
       chg_facility_name: facilityInfo?.name,
-      chg_facility_addr_1: facilityPrimaryContact.address,
-      chg_facility_addr_2: facilityPrimaryContact.address2,
-      chg_facility_city: facilityPrimaryContact.city,
-      chg_facility_state: facilityPrimaryContact.state,
-      chg_facility_zip: facilityPrimaryContact.zipCode,
-      chg_facility_npi: facilityInfo.npi,
+      chg_facility_addr_1: facilityPrimaryContact?.address,
+      chg_facility_addr_2: facilityPrimaryContact?.address2,
+      chg_facility_city: facilityPrimaryContact?.city,
+      chg_facility_state: facilityPrimaryContact?.state,
+      chg_facility_zip: facilityPrimaryContact?.zipCode,
+      chg_facility_npi: facilityInfo?.npi,
       // chg_prior_auth,
       // "epsdt_indicator",
       // "familyplan_indicator",
-      facility_clia: facilityInfo.cliaIdNumber,
+      facility_clia: facilityInfo?.cliaIdNumber,
       // "hospice_employed",
       // "amb_riders",
       // "primary_paid_amount_2",
