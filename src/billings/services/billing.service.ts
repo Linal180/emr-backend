@@ -546,7 +546,6 @@ export class BillingService {
 
   async getClaimFile(claimInput: ClaimInput) {
     const claimInfo = await this.getClaimInfo(claimInput)
-    console.log('claimInfo', claimInfo)
     const file = await fs.readFileSync(path.resolve(__dirname, "../../../../form-1500.pdf"))
     const pdfDoc = await PDFDocument.load(file);
     const form = pdfDoc.getForm()
