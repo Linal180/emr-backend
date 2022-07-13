@@ -71,21 +71,21 @@ export class BillingResolver {
     }
   }
 
-  @ResolveField(() => [Facility])
+  @ResolveField(() => Facility)
   async facility(@Parent() billing: Billing): Promise<Facility> {
     if (billing.facilityId) {
       return await this.facilityService.findOne(billing.facilityId)
     }
   }
 
-  @ResolveField(() => [Doctor])
+  @ResolveField(() => Doctor)
   async servicingProvider(@Parent() billing: Billing): Promise<Doctor> {
     if (billing.servicingProviderId) {
       return await this.doctorService.findOne(billing.servicingProviderId)
     }
   }
 
-  @ResolveField(() => [Doctor])
+  @ResolveField(() => Doctor)
   async renderingProvider(@Parent() billing: Billing): Promise<Doctor> {
     if (billing.renderingProviderId) {
       return await this.doctorService.findOne(billing.renderingProviderId)
