@@ -3206,13 +3206,13 @@ input RemovePermission {
 input RoleItemInput {
   role: String!
   description: String
-  customRole: Boolean = true
+  customRole: Boolean!
 }
 
 input UpdateRoleItemInput {
   role: String
   description: String
-  customRole: Boolean = true
+  customRole: Boolean
   id: String
 }
 

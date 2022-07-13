@@ -9,7 +9,7 @@ export class RoleItemInput {
   @Field({ nullable: true })
   description: string;
 
-  @Field({ nullable: false, defaultValue: true })
+  @Field({ nullable: false })
   customRole?: boolean;
 }
 
