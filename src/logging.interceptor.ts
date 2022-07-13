@@ -1,7 +1,7 @@
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { getRepository } from 'typeorm';
 import { catchError } from 'rxjs/operators';
-import { Observable, throwError } from 'rxjs';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, InternalServerErrorException } from '@nestjs/common';
 //user import
@@ -45,19 +45,19 @@ export class LoggingInterceptor implements NestInterceptor {
     let optionalInputs = undefined;
     let patientId = null;
 
-    const execContext = GqlExecutionContext.create(context);
-    const { req, user } = execContext.getArgByIndex(2) || {}
-    const { body, ip: ipAddress, headers } = req || {}
-    const { origin, pathname } = headers || {}
     const ControllerRequest = context.getArgs() || {}
+    const execContext = GqlExecutionContext.create(context);
+    const execContextInfo = execContext.getInfo()
+    const { req, user } = execContext.getArgByIndex(2) || {}
+    const moduleType = execContext.getClass().name.split('Resolver')[0]
+
+    const { body, ip: ipAddress, headers } = req || {}
+    const { origin, pathname, clientremote } = headers || {}
     const { headers: controllerHeaders, ip } = ControllerRequest[0] || {}
     const { origin: originRequest, pathname: pathnameReq } = controllerHeaders || {}
-
     const refererUrl = `${origin || originRequest}${pathname || pathnameReq}`
 
     const { operationName, variables } = body || {}
-    const moduleType = execContext.getClass().name.split('Resolver')[0]
-    const execContextInfo = execContext.getInfo()
     const { path } = execContextInfo || {};
     const { typename } = path || {}
     if (operationName) {
@@ -90,7 +90,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     const inputs = {
       userId,
-      ipAddress: ipAddress?.toString()?.replace('::ffff:', '') || ip?.toString().replace('::ffff:', ''),
+      ipAddress: clientremote || ipAddress?.toString()?.replace('::ffff:', '') || ip?.toString().replace('::ffff:', ''),
       moduleType,
       refererUrl,
       operationType,
@@ -113,7 +113,7 @@ export class LoggingInterceptor implements NestInterceptor {
           const { status } = err || {}
           userLogsInstance['responseCode'] = status
           moduleType !== 'UserLogs' && !moduleType?.includes('Controller') && await userLogRepo.save(userLogsInstance)
-           throw new InternalServerErrorException(err);
+          throw new InternalServerErrorException(err);
         }),
       )
   }
