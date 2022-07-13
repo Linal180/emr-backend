@@ -42,8 +42,8 @@ export class AgreementResolver {
   }
 
   @Query(() => AgreementPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'fetchAgreement')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'fetchAgreement')
   async fetchAgreement(@Args('agreementId') agreementId: string): Promise<AgreementPayload> {
     return {
       agreement: await this.agreementService.fetchAgreement(agreementId),

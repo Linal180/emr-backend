@@ -1,5 +1,5 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
 import { CreateServiceInput } from '../dto/create-service.input';
@@ -7,12 +7,16 @@ import ServiceInput from '../dto/service-input.dto';
 import { ServicePayload } from '../dto/service-payload.dto';
 import { ServicesPayload } from '../dto/services-payload.dto';
 import { GetService, RemoveService, UpdateServiceInput } from '../dto/update-service.input';
+import { Facility } from '../entities/facility.entity';
 import { Service } from '../entities/services.entity';
+import { FacilityService } from '../services/facility.service';
 import { ServicesService } from '../services/services.service';
 
 @Resolver(() => Service)
 export class ServiceResolver {
-  constructor(private readonly servicesService: ServicesService) { }
+  constructor(
+    private readonly servicesService: ServicesService,
+    private readonly facilityService: FacilityService) { }
 
   @Mutation(() => ServicePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -66,5 +70,12 @@ export class ServiceResolver {
   async removeService(@Args('removeService') removeService: RemoveService) {
     await this.servicesService.removeService(removeService);
     return { response: { status: 200, message: 'Service Deleted' } };
+  }
+
+  @ResolveField(() => [Facility])
+  async facility(@Parent() service: Service): Promise<Facility> {
+    if (service.facilityId) {
+      return await this.facilityService.findOne(service.facilityId)
+    }
   }
 }

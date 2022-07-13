@@ -45,4 +45,25 @@ export default class BillingInput {
 
   @Field({ nullable: true })
   labOrderNumber?: string
+
+  @Field({ nullable: true })
+  claimNo?: string
+
+  @Field({ nullable: true })
+  serviceDate?: string
+
+  @Field({ nullable: true })
+  claimDate?: string
+
+  @Field({ nullable: true })
+  pos?: string
+
+  @Field({ nullable: true })
+  facilityId?: string
+
+  @Field({ nullable: true })
+  servicingProviderId?: string
+
+  @Field({ nullable: true })
+  renderingProviderId?: string
 }

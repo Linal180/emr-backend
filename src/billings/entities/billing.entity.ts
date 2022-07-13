@@ -1,6 +1,8 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Code } from './code.entity';
 
@@ -120,6 +122,22 @@ export class Billing {
   @Field({ nullable: true })
   otherAccident: boolean;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  claimNo: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  serviceDate: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  claimDate: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  pos: string;
+
   @OneToMany(() => Code, code => code.billing, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Code], { nullable: true })
   codes: Code[];
@@ -133,6 +151,18 @@ export class Billing {
   @Field(type => Patient, { nullable: true })
   patient: Patient;
 
+  @ManyToOne(() => Facility, facility => facility.billings, { onDelete: 'CASCADE' })
+  @Field(() => Facility, { nullable: true })
+  facility: Facility;
+
+  @ManyToOne(() => Doctor, doctor => doctor.primaryProviderBillings, { onDelete: 'CASCADE' })
+  @Field(() => Doctor, { nullable: true })
+  servicingProvider: Doctor;
+
+  @ManyToOne(() => Doctor, doctor => doctor.renderingProviderBillings, { onDelete: 'CASCADE' })
+  @Field(() => Doctor, { nullable: true })
+  renderingProvider: Doctor;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientId: string
@@ -140,6 +170,18 @@ export class Billing {
   @Column({ nullable: true })
   @Field({ nullable: true })
   appointmentId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  servicingProviderId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  renderingProviderId: string
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
