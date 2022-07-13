@@ -24,6 +24,8 @@ import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data'
 // const fileToRender = require('./form-cms1500.pdf')
 import * as fs from 'fs'
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PracticeService } from 'src/practice/practice.service';
 const util = require('util')
 const { PDFDocument, createPDFAcroFields } = require('pdf-lib')
 const path = require("path");
@@ -44,6 +46,8 @@ export class BillingService {
     private readonly insuranceService: InsuranceService,
     private readonly facilityService: FacilityService,
     private readonly billingAddressService: BillingAddressService,
+    private readonly doctorService: DoctorService,
+    private readonly practiceService: PracticeService,
     private readonly httpService: HttpService
   ) { }
 
@@ -53,13 +57,28 @@ export class BillingService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { codes, patientId, appointmentId, ...billingInfoToCreate } = createBillingInput
+      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, ...billingInfoToCreate } = createBillingInput
       //creating policy
       const billingInstance = this.billingRepository.create({ ...billingInfoToCreate })
 
       if (patientId) {
         const patient = await this.patientService.findOne(patientId)
         billingInstance.patient = patient
+      }
+
+      if (facilityId) {
+        const facility = await this.facilityService.findOne(facilityId)
+        billingInstance.facility = facility
+      }
+
+      if (servicingProviderId) {
+        const servicingProvider = await this.doctorService.findOne(servicingProviderId)
+        billingInstance.servicingProvider = servicingProvider
+      }
+
+      if (renderingProviderId) {
+        const renderingProvider = await this.doctorService.findOne(renderingProviderId)
+        billingInstance.renderingProvider = renderingProvider
       }
 
       if (appointmentId) {
@@ -120,8 +139,10 @@ export class BillingService {
     const facilityInfo = await this.facilityService.findOne(patient.facilityId)
     const facilityContacts = await this.contactsService.findContactsByFacilityId(patient.facilityId);
     const facilityBillingContact = (await this.billingAddressService.findBillingAddressByFacilityId(patient.facilityId))[0];
-    const facilityPrimaryContact = facilityContacts.find((facilityContact) => facilityContact)
-    const { cliaIdNumber } = facilityInfo
+    const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact)
+    const { cliaIdNumber, practiceId } = facilityInfo || {}
+
+    const practiceInfo = await this.practiceService.findOne(practiceId)
 
     const primaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.PRIMARY)
     const secondaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.SECONDARY)
@@ -134,13 +155,13 @@ export class BillingService {
     const insurance = await this.insuranceService.findOne(insuranceDetail.insuranceId)
     const { payerId, payerName } = insurance || {}
 
-    const { patientRecord, firstName, lastName, dob, gender, middleName, maritialStatus, policyHolderId } = patient
+    const { patientRecord, firstName, lastName, dob, gender, middleName, maritialStatus, policyHolderId } = patient || {}
     const doctorPatients = await this.patientService.usualProvider(patient.id);
     const primaryProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
     const referringProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.REFERRING_PROVIDER)?.doctor
     const orderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.ORDERING_PROVIDER)?.doctor
     const contacts = await this.contactsService.findContactsByPatientId(patient.id);
-    const { address, city, state, zipCode, address2, country, phone } = contacts.find((contact) => contact.primaryContact)
+    const { address, city, state, zipCode, address2, country, phone } = contacts?.find((contact) => contact.primaryContact) || {}
 
     const policyHolder = await this.policyHolderService.findOne(policyHolderId)
     const {
@@ -150,9 +171,9 @@ export class BillingService {
     } = policyHolder || {}
 
     const { scheduleStartDateTime, scheduleEndDateTime } = appointmentInfo
-    const { firstName: billingProviderName, contacts: providerContacts, npi, taxId } = primaryProviderInfo
+    const { firstName: billingProviderName, contacts: providerContacts, npi, taxId } = primaryProviderInfo || {}
     const { address: providerAddress, address2: providerAddress2, city: providerCity, state: providerState, zipCode: providerZipCode, phone: providerPhone } =
-      providerContacts.find((contact) => contact.primaryContact)
+      providerContacts?.find((contact) => contact.primaryContact) || {}
 
     const diagnoses = diagnosesCodes.reduce((acc, diagnosesCode, i) => {
       acc[`diag_${i + 1}`] = diagnosesCode.code
@@ -201,17 +222,17 @@ export class BillingService {
       accept_assign: 'Y',
       total_charge: totalCharges,
       ...diagnoses,
-      bill_name: billingProviderName,
-      bill_addr_1: providerAddress,
-      bill_addr_2: providerAddress2,
-      bill_city: providerCity,
-      bill_state: providerState,
-      bill_zip: providerZipCode,
-      bill_npi: primaryProviderInfo.npi,
-      bill_phone: providerPhone,
-      bill_taxid: taxId,
+      bill_name: facilityInfo?.name,
+      bill_addr_1: facilityPrimaryContact?.address,
+      bill_addr_2: facilityPrimaryContact?.address2,
+      bill_city: facilityPrimaryContact?.city,
+      bill_state: facilityPrimaryContact?.state,
+      bill_zip: facilityPrimaryContact?.zipCode,
+      bill_npi: practiceInfo.npi,
+      bill_phone: facilityPrimaryContact?.phone,
+      bill_taxid: practiceInfo.taxId,
       bill_taxid_type: 'EIN',
-      bill_taxonomy: primaryProviderInfo.taxonomyCode,
+      bill_taxonomy: facilityInfo?.tamxonomyCode,
       from_date: moment(scheduleStartDateTime).format('YYYY-MM-DD'),
       thru_date: moment(scheduleEndDateTime).format('YYYY-MM-DD'),
       charge: procedures,
@@ -265,8 +286,8 @@ export class BillingService {
       ref_npi: referringProviderInfo?.npi,
       cond: onsetDateType,
       onset: otherDateType,
-      cond_date: moment(onsetDate).format('YYYY-MM-DD'),  //this represents current illness in dr.chrono claim page
-      onset_date: moment(otherDate).format('YYYY-MM-DD'), // this represents other as onset in dr.chrono claim page
+      cond_date: onsetDate ? moment(onsetDate).format('YYYY-MM-DD'): '',  //this represents current illness in dr.chrono claim page
+      onset_date: otherDate ? moment(otherDate).format('YYYY-MM-DD'): '', // this represents other as onset in dr.chrono claim page
       // "lastseen_date",
       // "nowork_from_date",
       // "nowork_to_date",
@@ -294,14 +315,14 @@ export class BillingService {
       // "diag_10",
       // "diag_11",
       // "diag_12",
-      facility_name: facilityInfo.name,
-      facility_addr_1: facilityPrimaryContact.address,
-      facility_addr_2: facilityPrimaryContact.address2,
-      facility_city: facilityPrimaryContact.city,
-      facility_state: facilityPrimaryContact.state,
-      facility_zip: facilityPrimaryContact.zipCode,
-      facility_npi: facilityInfo.npi,
-      facility_id: facilityInfo.npi,
+      facility_name: facilityInfo?.name,
+      facility_addr_1: facilityPrimaryContact?.address,
+      facility_addr_2: facilityPrimaryContact?.address2,
+      facility_city: facilityPrimaryContact?.city,
+      facility_state: facilityPrimaryContact?.state,
+      facility_zip: facilityPrimaryContact?.zipCode,
+      facility_npi: facilityInfo?.npi,
+      facility_id: facilityInfo?.npi,
       // "bill_name",
       // "bill_addr_1",
       // "bill_addr_2",
@@ -415,7 +436,7 @@ export class BillingService {
       // "chg_prov_taxonomy",
       // "chg_prov_npi",
       // "chg_prov_id",
-      chg_facility_name: facilityInfo.name,
+      chg_facility_name: facilityInfo?.name,
       chg_facility_addr_1: facilityPrimaryContact.address,
       chg_facility_addr_2: facilityPrimaryContact.address2,
       chg_facility_city: facilityPrimaryContact.city,
@@ -530,10 +551,12 @@ export class BillingService {
     const form = pdfDoc.getForm()
 
     const ins_sex_kids = createPDFAcroFields(form.getCheckBox('ins_sex').acroField.Kids()).map(_ => _[0]);
-    claimInfo.ins_sex === 'M' ? ins_sex_kids[0].setValue(ins_sex_kids[0].getOnValue()) : ins_sex_kids[1].setValue(ins_sex_kids[1].getOnValue());
+    claimInfo.ins_sex === 'M' && ins_sex_kids[0].setValue(ins_sex_kids[0].getOnValue()) 
+    claimInfo.ins_sex === 'F' && ins_sex_kids[1].setValue(ins_sex_kids[1].getOnValue());
 
     const pat_sex_kids = createPDFAcroFields(form.getCheckBox('sex').acroField.Kids()).map(_ => _[0]);
-    claimInfo.pat_sex === 'M' ? pat_sex_kids[0].setValue(pat_sex_kids[0].getOnValue()) : pat_sex_kids[1].setValue(pat_sex_kids[1].getOnValue());
+    claimInfo.pat_sex === 'M' && pat_sex_kids[0].setValue(pat_sex_kids[0].getOnValue()) 
+    claimInfo.pat_sex === 'F' && pat_sex_kids[1].setValue(pat_sex_kids[1].getOnValue());
 
     const rel_to_ins_kids = createPDFAcroFields(form.getCheckBox('rel_to_ins').acroField.Kids()).map(_ => _[0]);
     if (claimInfo.pat_rel === '18') {
@@ -549,76 +572,76 @@ export class BillingService {
     const ins_benefit_plan_kids = createPDFAcroFields(form.getCheckBox('ins_benefit_plan').acroField.Kids()).map(_ => _[0]);
     claimInfo.payer_order ? ins_benefit_plan_kids[0].setValue(ins_benefit_plan_kids[0].getOnValue()) : ins_benefit_plan_kids[1].setValue(ins_benefit_plan_kids[1].getOnValue());
 
-    form.getTextField('pt_name').setText(`${claimInfo.pat_name_l}, ${claimInfo.pat_name_f}, ${claimInfo.pat_name_m}`)
-    form.getTextField('insurance_id').setText(`${claimInfo.payerid}`)
+    form.getTextField('pt_name').setText(`${claimInfo.pat_name_l}, ${claimInfo.pat_name_f}, ${claimInfo.pat_name_m}` )
+    claimInfo.payerid && form.getTextField('insurance_id').setText(`${claimInfo.payerid}`)
     form.getTextField('ins_name').setText(`${claimInfo.ins_name_l} ${claimInfo.ins_name_f} ${claimInfo.ins_name_m}`)
-    form.getTextField('birth_mm').setText(`${moment(claimInfo.pat_dob).format('MM')}`)
-    form.getTextField('birth_dd').setText(`${moment(claimInfo.pat_dob).format('DD')}`)
-    form.getTextField('birth_yy').setText(`${moment(claimInfo.pat_dob).format('YY')}`)
-    form.getTextField('pt_street').setText(claimInfo.pat_addr_1)
-    form.getTextField('pt_city').setText(claimInfo.pat_city)
-    form.getTextField('pt_state').setText(claimInfo.pat_state?.slice(0, 3))
-    form.getTextField('pt_zip').setText(claimInfo.pat_zip)
-    form.getTextField('pt_AreaCode').setText(claimInfo.pat_phone?.slice(0,3))
-    form.getTextField('pt_phone').setText(claimInfo.pat_phone?.slice(3, claimInfo.pat_phone?.length))
-    form.getTextField('ins_street').setText(claimInfo.ins_addr_1)
-    form.getTextField('ins_city').setText(claimInfo.ins_city)
-    form.getTextField('ins_state').setText(claimInfo.ins_state?.slice(0, 3))
-    form.getTextField('ins_zip').setText(claimInfo.ins_zip)
+    claimInfo.pat_dob && form.getTextField('birth_mm').setText(`${moment(claimInfo.pat_dob).format('MM')}`)
+    claimInfo.pat_dob && form.getTextField('birth_dd').setText(`${moment(claimInfo.pat_dob).format('DD')}`)
+    claimInfo.pat_dob && form.getTextField('birth_yy').setText(`${moment(claimInfo.pat_dob).format('YY')}`)
+    claimInfo.pat_addr_1 && form.getTextField('pt_street').setText(`${claimInfo.pat_addr_1}`)
+    claimInfo.pat_city && form.getTextField('pt_city').setText(`${claimInfo.pat_city}`)
+    claimInfo.pat_state && form.getTextField('pt_state').setText(`${claimInfo.pat_state?.slice(0, 3)}`)
+    claimInfo.pat_zip && form.getTextField('pt_zip').setText(`${claimInfo.pat_zip}`)
+    claimInfo.pat_phone && form.getTextField('pt_AreaCode').setText(`${claimInfo.pat_phone?.slice(0,3)}`)
+    claimInfo.pat_phone && form.getTextField('pt_phone').setText(`${claimInfo.pat_phone?.slice(3, claimInfo.pat_phone?.length)}`)
+    claimInfo.ins_addr_1 && form.getTextField('ins_street').setText(`${claimInfo.ins_addr_1}`)
+    claimInfo.ins_city && form.getTextField('ins_city').setText(`${claimInfo.ins_city}`)
+    claimInfo.ins_state && form.getTextField('ins_state').setText(`${claimInfo.ins_state?.slice(0, 3)}`)
+    claimInfo.ins_zip && form.getTextField('ins_zip').setText(`${claimInfo.ins_zip}`)
     form.getTextField('ins_phone area')
     form.getTextField('ins_phone')
-    form.getTextField('ins_policy').setText(claimInfo.ins_group)
-    form.getTextField('ins_dob_mm').setText(`${moment(claimInfo.ins_dob).format('MM')}`)
-    form.getTextField('ins_dob_dd').setText(`${moment(claimInfo.ins_dob).format('DD')}`)
-    form.getTextField('ins_dob_yy').setText(`${moment(claimInfo.ins_dob).format('YY')}`)
+    claimInfo.ins_group && form.getTextField('ins_policy').setText(`${claimInfo.ins_group}`)
+    claimInfo.ins_dob && form.getTextField('ins_dob_mm').setText(`${moment(claimInfo.ins_dob).format('MM')}`)
+    claimInfo.ins_dob && form.getTextField('ins_dob_dd').setText(`${moment(claimInfo.ins_dob).format('DD')}`)
+    claimInfo.ins_dob && form.getTextField('ins_dob_yy').setText(`${moment(claimInfo.ins_dob).format('YY')}`)
     form.getTextField('other_ins_name')
     form.getTextField('other_ins_policy')
     form.getTextField('ins_plan_name')
     form.getTextField('pt_date')
-    form.getTextField('73').setText(claimInfo.cond)
-    form.getTextField('cur_ill_mm').setText(moment(claimInfo.cond_date).format('MM'))
-    form.getTextField('cur_ill_dd').setText(moment(claimInfo.cond_date).format('DD'))
-    form.getTextField('cur_ill_yy').setText(moment(claimInfo.cond_date).format('YY'))
+    claimInfo.cond && form.getTextField('73').setText(`${claimInfo.cond}`)
+    claimInfo.cond_date && form.getTextField('cur_ill_mm').setText(`${moment(claimInfo.cond_date).format('MM')}`)
+    claimInfo.cond_date && form.getTextField('cur_ill_dd').setText(`${moment(claimInfo.cond_date).format('DD')}`)
+    claimInfo.cond_date && form.getTextField('cur_ill_yy').setText(`${moment(claimInfo.cond_date).format('YY')}`)
     form.getTextField('ref_physician')
     form.getTextField('id_physician')
     form.getTextField('physician number 17a1')
     form.getTextField('physician number 17a')
-    form.getTextField('74').setText(claimInfo.onset)
-    form.getTextField('sim_ill_mm').setText(moment(claimInfo.onset_date).format('MM'))
-    form.getTextField('sim_ill_dd').setText(moment(claimInfo.onset_date).format('DD'))
-    form.getTextField('sim_ill_yy').setText(moment(claimInfo.onset_date).format('YY'))
+    claimInfo.onset && form.getTextField('74').setText(`${claimInfo.onset}`)
+    claimInfo.onset_date && form.getTextField('sim_ill_mm').setText(`${moment(claimInfo.onset_date).format('MM')}`)
+    claimInfo.onset_date && form.getTextField('sim_ill_dd').setText(`${moment(claimInfo.onset_date).format('DD')}`)
+    claimInfo.onset_date && form.getTextField('sim_ill_yy').setText(`${moment(claimInfo.onset_date).format('YY')}`)
     claimInfo.employment_related === 'Y' && form.getCheckBox('employment').check(claimInfo.employment_related)
     claimInfo.auto_accident === 'Y' && form.getCheckBox('pt_auto_accident').check(claimInfo.auto_accident)
     claimInfo.other_accident === 'Y' && form.getCheckBox('other_accident').check(claimInfo.other_accident)
-    form.getTextField('diagnosis1').setText(claimInfo.diag_1)
-    form.getTextField('diagnosis2').setText(claimInfo.diag_2)
-    form.getTextField('diagnosis3').setText(claimInfo.diag_3)
-    form.getTextField('diagnosis4').setText(claimInfo.diag_4)
-    form.getTextField('diagnosis5').setText(claimInfo.diag_5)
-    form.getTextField('diagnosis6').setText(claimInfo.diag_6)
-    form.getTextField('diagnosis7').setText(claimInfo.diag_7)
-    form.getTextField('diagnosis8').setText(claimInfo.diag_8)
-    form.getTextField('diagnosis9').setText(claimInfo.diag_9)
-    form.getTextField('diagnosis10').setText(claimInfo.diag_10)
-    form.getTextField('diagnosis11').setText(claimInfo.diag_11)
-    form.getTextField('diagnosis12').setText(claimInfo.diag_12)
-    form.getTextField('tax_id').setText(claimInfo.bill_taxid)
-    form.getCheckBox('276').check(claimInfo.bill_taxid_type)
-    form.getTextField('pt_account').setText(claimInfo.pcn)
-    form.getCheckBox('assignment').check(claimInfo.accept_assign)
-    form.getTextField('fac_name').setText(claimInfo.facility_name)
-    form.getTextField('fac_street').setText(claimInfo.facility_addr_1)
-    form.getTextField('fac_location').setText(claimInfo.facility_city)
-    form.getTextField('doc_name').setText(claimInfo.bill_name)
-    form.getTextField('doc_street').setText(claimInfo.bill_addr_1)
-    form.getTextField('doc_location').setText(claimInfo.bill_city)
-    form.getTextField('doc_phone area').setText(claimInfo.bill_phone?.slice(0, 3))
-    form.getTextField('doc_phone').setText(claimInfo.bill_phone?.slice(3, claimInfo.bill_phone?.length))
-    form.getTextField('pin').setText(claimInfo.bill_npi)
-    form.getTextField('pin1').setText(claimInfo.facility_npi ?? '')
-    form.getTextField('grp').setText(claimInfo.bill_taxid)
-    form.getTextField('grp1').setText(claimInfo.facility_id ?? '')
-    form.getTextField('t_charge').setText(String(claimInfo.total_charge))
+    claimInfo.diag_1 && form.getTextField('diagnosis1').setText(`${claimInfo.diag_1}`)
+    claimInfo.diag_2 && form.getTextField('diagnosis2').setText(`${claimInfo.diag_2}`)
+    claimInfo.diag_3 && form.getTextField('diagnosis3').setText(`${claimInfo.diag_3}`)
+    claimInfo.diag_4 && form.getTextField('diagnosis4').setText(`${claimInfo.diag_4}`)
+    claimInfo.diag_5 && form.getTextField('diagnosis5').setText(`${claimInfo.diag_5}`)
+    claimInfo.diag_6 && form.getTextField('diagnosis6').setText(`${claimInfo.diag_6}`)
+    claimInfo.diag_7 && form.getTextField('diagnosis7').setText(`${claimInfo.diag_7}`)
+    claimInfo.diag_8 && form.getTextField('diagnosis8').setText(`${claimInfo.diag_8}`)
+    claimInfo.diag_9 && form.getTextField('diagnosis9').setText(`${claimInfo.diag_9}`)
+    claimInfo.diag_10 && form.getTextField('diagnosis10').setText(`${claimInfo.diag_10}`)
+    claimInfo.diag_11 && form.getTextField('diagnosis11').setText(`${claimInfo.diag_11}`)
+    claimInfo.diag_12 && form.getTextField('diagnosis12').setText(`${claimInfo.diag_12}`)
+    claimInfo.bill_taxid && form.getTextField('tax_id').setText(`${claimInfo.bill_taxid}`)
+    claimInfo.bill_taxid_type && form.getCheckBox('276').check(`${claimInfo.bill_taxid_type}`)
+    claimInfo.pcn && form.getTextField('pt_account').setText(`${claimInfo.pcn}`)
+    claimInfo.accept_assign && form.getCheckBox('assignment').check(`${claimInfo.accept_assign}`)
+    claimInfo.facility_name && form.getTextField('fac_name').setText(`${claimInfo.facility_name}`)
+    claimInfo.facility_addr_1 && form.getTextField('fac_street').setText(`${claimInfo.facility_addr_1}`)
+    claimInfo.facility_city && form.getTextField('fac_location').setText(`${claimInfo.facility_city}`)
+    claimInfo.bill_name && form.getTextField('doc_name').setText(`${claimInfo.bill_name}`)
+    claimInfo.bill_addr_1 && form.getTextField('doc_street').setText(`${claimInfo.bill_addr_1}`)
+    claimInfo.bill_city && form.getTextField('doc_location').setText(`${claimInfo.bill_city}`)
+    claimInfo.bill_phone && form.getTextField('doc_phone area').setText(`${claimInfo.bill_phone?.slice(0, 3)}`)
+    claimInfo.bill_phone && form.getTextField('doc_phone').setText(`${claimInfo.bill_phone?.slice(3, claimInfo.bill_phone?.length)}`)
+    claimInfo.bill_npi && form.getTextField('pin').setText(`${claimInfo.bill_npi}`)
+    claimInfo.facility_npi && form.getTextField('pin1').setText(claimInfo.facility_npi ?? '')
+    claimInfo.bill_taxid && form.getTextField('grp').setText(`${claimInfo.bill_taxid}`)
+    claimInfo.facility_id && form.getTextField('grp1').setText(claimInfo.facility_id ?? '')
+    claimInfo.total_charge && form.getTextField('t_charge').setText(String(claimInfo.total_charge))
 
     claimInfo.charge.forEach((chargeValue, i) => {
       form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date).format('MM')}`)

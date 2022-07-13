@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
+import { Billing } from 'src/billings/entities/billing.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Policy } from 'src/insurance/entities/policy.entity';
 import { LabTests } from 'src/labs/entities/labTests.entity';
@@ -305,6 +306,14 @@ export class Doctor {
   @OneToMany(() => Policy, policies => policies.primaryCareProvider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Policy], { nullable: true })
   policyOfPrimaryCareProvider: Policy[];
+
+  @OneToMany(() => Billing, billing => billing.servicingProvider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Billing], { nullable: true })
+  primaryProviderBillings: Billing[];
+
+  @OneToMany(() => Billing, billing => billing.renderingProvider, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Billing], { nullable: true })
+  renderingProviderBillings: Billing[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

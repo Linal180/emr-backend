@@ -12,6 +12,7 @@ import { Code } from './entities/code.entity';
 import { BillingResolver } from './reolvers/billing.resolver';
 import { BillingService } from './services/billing.service';
 import { UsersModule } from 'src/users/users.module';
+import { PracticeModule } from 'src/practice/practice.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from 'src/users/users.module';
     InsuranceModule,
     ProviderModule,
     FacilityModule,
+    PracticeModule,
     HttpModule
   ],
   providers: [BillingResolver, BillingService],

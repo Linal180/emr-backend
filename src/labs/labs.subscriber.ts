@@ -15,7 +15,6 @@ export class ObservationsSubscriber implements EntitySubscriberInterface<Observa
   }
   // async afterLoad(entity: ObservationsAttachmentsPayload): Promise<ObservationsAttachmentsPayload> {
   //   const attachments = await this.attachmentsService.findAttachments(entity.id, AttachmentType.lab)
-  //   console.log("attachments",attachments);
   //   entity.attachments = attachments
   //   return entity;
   // }
