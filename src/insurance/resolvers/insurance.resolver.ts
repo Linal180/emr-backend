@@ -12,8 +12,8 @@ export class InsuranceResolver {
   constructor(private readonly insuranceService: InsuranceService) { }
 
   @Query(() => InsurancesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'fetchAllInsurances')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'fetchAllInsurances')
   async fetchAllInsurances(@Args('insuranceInput') insuranceInput: InsurancePaginationInput): Promise<InsurancesPayload> {
     const insurances = await this.insuranceService.findAll(insuranceInput)
 
@@ -24,8 +24,8 @@ export class InsuranceResolver {
   }
 
   @Query(() => InsurancesPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'fetchInsurance')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'fetchInsurance')
   async fetchInsurance(@Args('searchTerm') searchTerm: string): Promise<InsurancesPayload> {
     return {
       insurances: await this.insuranceService.findByPayerNameOrId(searchTerm),
