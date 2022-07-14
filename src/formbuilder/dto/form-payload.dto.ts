@@ -1,7 +1,8 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { ResponsePayload, ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
-import { ElementType } from '../entities/element.entity';
+//user imports
 import { Form } from '../entities/form.entity';
+import { ElementType } from '../entities/element.entity';
+import { ResponsePayload, ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
 
 @ObjectType()
 export class FormPayload extends ResponsePayloadResponse {
@@ -11,8 +12,6 @@ export class FormPayload extends ResponsePayloadResponse {
     @Field({ nullable: true })
     response?: ResponsePayload
 }
-
-
 
 @ObjectType()
 export class FieldOptionsType {
@@ -76,6 +75,9 @@ export class FieldsTypes {
 
     @Field({ nullable: true })
     tableContactType: string;
+
+    @Field({ nullable: true })
+    regex?: string;
 }
 @ObjectType()
 export class SectionsTypes {

@@ -1,34 +1,37 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import * as xmlBuilder from 'xmlbuilder'
+import * as fs from 'fs';
+const path = require("path");
 import * as moment from 'moment';
-import { AppointmentStatus } from 'src/appointments/entities/appointment.entity';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
-import { InsuranceService } from 'src/insurance/services/insurance.service';
-import { PolicyHolderService } from 'src/insurance/services/policy-holder.service';
-import { PolicyService } from 'src/insurance/services/policy.service';
-import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
-import { MARITIALSTATUS } from 'src/patients/entities/patient.entity';
-import { PatientService } from 'src/patients/services/patient.service';
-import { BillingAddressService } from 'src/providers/services/billing-address.service';
-import { ContactService } from 'src/providers/services/contact.service';
+import * as FormData from 'form-data';
+import * as xmlBuilder from 'xmlbuilder';
+import { HttpService } from '@nestjs/axios';
 import { Connection, Repository } from 'typeorm';
-import BillingInput from '../dto/billing-input.dto';
-import ClaimInput from '../dto/claim-input.dto';
-import { Claim } from '../dto/claim-payload';
+import { InjectRepository } from '@nestjs/typeorm';
+const { PDFDocument, createPDFAcroFields } = require('pdf-lib');
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+//entities
 import { Billing } from '../entities/billing.entity';
 import { Code, CodeType } from '../entities/code.entity';
-import { HttpService } from '@nestjs/axios';
-import * as FormData from 'form-data'
-// const fileToRender = require('./form-cms1500.pdf')
-import * as fs from 'fs'
-import { DoctorService } from 'src/providers/services/doctor.service';
+import { MARITIALSTATUS } from 'src/patients/entities/patient.entity';
+import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
+import { AppointmentStatus } from 'src/appointments/entities/appointment.entity';
+import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
+//services
 import { PracticeService } from 'src/practice/practice.service';
-const util = require('util')
-const { PDFDocument, createPDFAcroFields } = require('pdf-lib')
-const path = require("path");
+import { PolicyService } from 'src/insurance/services/policy.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { ContactService } from 'src/providers/services/contact.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { InsuranceService } from 'src/insurance/services/insurance.service';
+import { PolicyHolderService } from 'src/insurance/services/policy-holder.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { BillingAddressService } from 'src/providers/services/billing-address.service';
+//payloads
+import { Claim } from '../dto/claim-payload';
+import ClaimInput from '../dto/claim-input.dto';
+import BillingInput from '../dto/billing-input.dto';
+//helpers
+import { getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
 
 @Injectable()
 export class BillingService {
@@ -51,7 +54,11 @@ export class BillingService {
     private readonly httpService: HttpService
   ) { }
 
-
+  /**
+   * Creates billing service
+   * @param createBillingInput 
+   * @returns create 
+   */
   async create(createBillingInput: BillingInput): Promise<Billing> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
@@ -118,12 +125,22 @@ export class BillingService {
     }
   }
 
+  /**
+   * Fetchs billing details by appointment id
+   * @param appointmentId 
+   * @returns billing details by appointment id 
+   */
   async fetchBillingDetailsByAppointmentId(appointmentId: string): Promise<Billing> {
     return this.billingRepository.findOne({
       appointmentId
     })
   }
 
+  /**
+   * Gets claim info
+   * @param claimInput 
+   * @returns  
+   */
   async getClaimInfo(claimInput: ClaimInput) {
     const { codes, appointmentId, patientId, autoAccident, employment, otherAccident, onsetDate, onsetDateType,
       otherDate, otherDateType } = claimInput
@@ -216,8 +233,8 @@ export class BillingService {
       pat_state: state,
       pat_zip: zipCode,
       pat_dob: moment(dob).format('YYYY-MM-DD'),
-      pat_sex: this.getClaimGender(gender),
-      pat_rel: this.getClaimRelation(policyHolderRelationship),
+      pat_sex: getClaimGender(gender),
+      pat_rel: getClaimRelation(policyHolderRelationship),
       ins_number: groupNumber,
       accept_assign: 'Y',
       total_charge: totalCharges,
@@ -241,7 +258,7 @@ export class BillingService {
       pat_addr_2: address2,
       pat_country: country,
       pat_phone: phone,
-      pat_marital: this.getYesOrNo(maritialStatus === MARITIALSTATUS.MARIED),
+      pat_marital: getYesOrNo(maritialStatus === MARITIALSTATUS.MARRIED),
       // "pat_employment",
       ins_name_l: policyHolderLName,
       ins_name_f: policyHolderFName,
@@ -256,7 +273,7 @@ export class BillingService {
       ins_group: certificationNumber,
       // "ins_plan",
       ins_dob: moment(policyHolderDob).format('YYYY-MM-DD'),
-      ins_sex: this.getClaimGender(gender),
+      ins_sex: getClaimGender(gender),
       // "ins_employer",
       // "other_ins_name_l",
       // "other_ins_name_f",
@@ -275,10 +292,10 @@ export class BillingService {
       // "other_pat_rel",
       // "other_ins_payment_date",
       // "other_ins_medicare_code",
-      employment_related: this.getYesOrNo(employment),
-      auto_accident: this.getYesOrNo(autoAccident),
+      employment_related: getYesOrNo(employment),
+      auto_accident: getYesOrNo(autoAccident),
       // "auto_accident_state",
-      other_accident: this.getYesOrNo(otherAccident),
+      other_accident: getYesOrNo(otherAccident),
       ref_name_l: referringProviderInfo?.lastName,
       ref_name_f: referringProviderInfo?.firstName,
       ref_name_m: referringProviderInfo?.middleName,
@@ -502,48 +519,15 @@ export class BillingService {
       // "chg_amb_purpose_of_rt",
       // "chg_amb_purpose_of_str"
     }
-    
+
     return claimInfo
   }
 
-  getClaimGender(gender: string) {
-    switch (gender) {
-      case 'Identifies as Male':
-        return 'M'
-      case 'Identifies as Female':
-        return 'F'
-      default:
-        return 'U'
-    }
-  }
-
-  getClaimRelation(relation: string) {
-    switch (relation) {
-      case 'Spouse':
-        return '01'
-      case 'Self':
-        return '18'
-      case 'Child':
-        return '19'
-      case 'Employee':
-        return '20'
-      case 'Unknown':
-        return '21'
-      case 'Organ Donor':
-        return '39'
-      case 'Cadaver Donor':
-        return '40'
-      case 'Life Partner':
-        return '53'
-      default:
-        return 'G8'
-    }
-  }
-
-  getYesOrNo(value: boolean) {
-    return value ? 'Y' : 'N'
-  }
-
+  /**
+   * Gets claim file
+   * @param claimInput 
+   * @returns  
+   */
   async getClaimFile(claimInput: ClaimInput) {
     const claimInfo = await this.getClaimInfo(claimInput)
     const file = await fs.readFileSync(path.resolve(__dirname, "../../../../form-1500.pdf"))
@@ -575,19 +559,19 @@ export class BillingService {
     form.getTextField('pt_name').setText(`${claimInfo.pat_name_l}, ${claimInfo.pat_name_f}, ${claimInfo.pat_name_m}` )
     claimInfo.payerid && form.getTextField('insurance_id').setText(`${claimInfo.payerid}`)
     form.getTextField('ins_name').setText(`${claimInfo.ins_name_l} ${claimInfo.ins_name_f} ${claimInfo.ins_name_m}`)
-    claimInfo.pat_dob && form.getTextField('birth_mm').setText(`${moment(claimInfo.pat_dob).format('MM')}`)
-    claimInfo.pat_dob && form.getTextField('birth_dd').setText(`${moment(claimInfo.pat_dob).format('DD')}`)
-    claimInfo.pat_dob && form.getTextField('birth_yy').setText(`${moment(claimInfo.pat_dob).format('YY')}`)
-    claimInfo.pat_addr_1 && form.getTextField('pt_street').setText(`${claimInfo.pat_addr_1}`)
-    claimInfo.pat_city && form.getTextField('pt_city').setText(`${claimInfo.pat_city}`)
-    claimInfo.pat_state && form.getTextField('pt_state').setText(`${claimInfo.pat_state?.slice(0, 3)}`)
-    claimInfo.pat_zip && form.getTextField('pt_zip').setText(`${claimInfo.pat_zip}`)
-    claimInfo.pat_phone && form.getTextField('pt_AreaCode').setText(`${claimInfo.pat_phone?.slice(0,3)}`)
-    claimInfo.pat_phone && form.getTextField('pt_phone').setText(`${claimInfo.pat_phone?.slice(3, claimInfo.pat_phone?.length)}`)
-    claimInfo.ins_addr_1 && form.getTextField('ins_street').setText(`${claimInfo.ins_addr_1}`)
-    claimInfo.ins_city && form.getTextField('ins_city').setText(`${claimInfo.ins_city}`)
-    claimInfo.ins_state && form.getTextField('ins_state').setText(`${claimInfo.ins_state?.slice(0, 3)}`)
-    claimInfo.ins_zip && form.getTextField('ins_zip').setText(`${claimInfo.ins_zip}`)
+    form.getTextField('birth_mm').setText(`${moment(claimInfo.pat_dob).format('MM')}`)
+    form.getTextField('birth_dd').setText(`${moment(claimInfo.pat_dob).format('DD')}`)
+    form.getTextField('birth_yy').setText(`${moment(claimInfo.pat_dob).format('YY')}`)
+    form.getTextField('pt_street').setText(claimInfo.pat_addr_1)
+    form.getTextField('pt_city').setText(claimInfo.pat_city)
+    form.getTextField('pt_state').setText(claimInfo.pat_state?.slice(0, 3))
+    form.getTextField('pt_zip').setText(claimInfo.pat_zip)
+    form.getTextField('pt_AreaCode').setText(claimInfo.pat_phone?.slice(0, 3))
+    form.getTextField('pt_phone').setText(claimInfo.pat_phone?.slice(3, claimInfo.pat_phone?.length))
+    form.getTextField('ins_street').setText(claimInfo.ins_addr_1)
+    form.getTextField('ins_city').setText(claimInfo.ins_city)
+    form.getTextField('ins_state').setText(claimInfo.ins_state?.slice(0, 3))
+    form.getTextField('ins_zip').setText(claimInfo.ins_zip)
     form.getTextField('ins_phone area')
     form.getTextField('ins_phone')
     claimInfo.ins_group && form.getTextField('ins_policy').setText(`${claimInfo.ins_group}`)
@@ -661,6 +645,11 @@ export class BillingService {
     return pdfBytes
   }
 
+  /**
+   * Creates claim info
+   * @param claimInput 
+   * @returns claim info 
+   */
   async createClaimInfo(claimInput: ClaimInput): Promise<Claim> {
     const claimInfo = await this.getClaimInfo(claimInput)
     const claimInfoToFormat = Object.keys(claimInfo).reduce((acc, claimInfoKey) => {
@@ -698,6 +687,6 @@ export class BillingService {
       }
     }).toPromise();
 
-   return claimInfo
+    return claimInfo
   }
 }

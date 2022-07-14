@@ -62,7 +62,7 @@ registerEnumType(ETHNICITY, {
 
 export enum MARITIALSTATUS {
   SINGLE = "single",
-  MARIED = "maried",
+  MARRIED = "married",
   WIDOWED = "Widowed",
   SEPARATED = "Separated",
   DIVORCED = "Divorced"
@@ -281,7 +281,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: MARITIALSTATUS,
-    default: MARITIALSTATUS.SINGLE
+    default: MARITIALSTATUS.SINGLE,
+    nullable: true
   })
   @Field(type => MARITIALSTATUS, { nullable: true })
   maritialStatus: MARITIALSTATUS

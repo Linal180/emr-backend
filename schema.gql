@@ -1537,7 +1537,7 @@ enum ETHNICITY {
 """The patient's maritial status type assigned"""
 enum MARITIALSTATUS {
   SINGLE
-  MARIED
+  MARRIED
   WIDOWED
   SEPARATED
   DIVORCED
@@ -2223,6 +2223,7 @@ type FieldsTypes {
   isMultiSelect: Boolean
   apiCall: String
   tableContactType: String
+  regex: String
 }
 
 """The form's element types"""
@@ -4375,6 +4376,7 @@ input FieldsInputs {
   isMultiSelect: Boolean
   apiCall: String
   tableContactType: String
+  regex: String
 }
 
 input FieldOptionsInputType {

@@ -19,6 +19,7 @@
         "TRANSACTIONSTATUS",
         "typeorm",
         "userforms",
-        "VISIR"
+        "VISIR",
+        "xmlbuilder"
     ]
 }
