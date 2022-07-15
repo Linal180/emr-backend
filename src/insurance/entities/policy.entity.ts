@@ -4,6 +4,7 @@ import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Copay } from './copay.entity';
 import { Insurance } from './insurance.entity';
+import { PolicyEligibility } from './policy-eligibility.entity';
 import { PolicyHolder } from './policy-holder.entity';
 
 export enum OrderOfBenefitType {
@@ -163,6 +164,10 @@ export class Policy {
   @OneToMany(() => Copay, copay => copay.policy, { onDelete: "CASCADE" })
   @Field(() => [Copay], { nullable: true })
   copays?: Copay[];
+
+  @OneToMany(() => PolicyEligibility, policyEligibility => policyEligibility.policy, { onDelete: "CASCADE" })
+  @Field(() => [PolicyEligibility], { nullable: true })
+  policyEligibilities: PolicyEligibility[];
 
   @Column({ nullable: true })
   @Field({ nullable: true })

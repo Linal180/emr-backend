@@ -6,6 +6,7 @@ import { Doctor } from 'src/providers/entities/doctor.entity';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
+import { PolicyEligibilitiesPayload, PolicyEligibilityPayload } from '../dto/policy-eligibility.dto';
 import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
 import { PoliciesPayload, PolicyPayload } from '../dto/policy-payload.dto';
 import { Copay } from '../entities/copay.entity';
@@ -115,3 +116,5 @@ export class PolicyResolver {
     }
   }
 }
+
+
