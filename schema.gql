@@ -1705,6 +1705,25 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
+type PatientsPayload {
+  response: ResponsePayload
+  patients: [Patient]
+  facilityId: String
+  pagination: PaginationPayload
+}
+
+type DoctorPatientsPayload {
+  response: ResponsePayload
+  doctorPatients: [DoctorPatient]
+  pagination: PaginationPayload
+}
+
+type PatientAttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
 type PatientPayload {
   response: ResponsePayload
   patient: Patient
@@ -1718,25 +1737,6 @@ type PatientProviderPayload {
 type PatientDoctorPayload {
   response: ResponsePayload
   provider: DoctorPatient
-}
-
-type PatientAttachmentsPayload {
-  response: ResponsePayload
-  attachments: [Attachment]
-  pagination: PaginationPayload
-}
-
-type PatientsPayload {
-  response: ResponsePayload
-  patients: [Patient]
-  facilityId: String
-  pagination: PaginationPayload
-}
-
-type DoctorPatientsPayload {
-  response: ResponsePayload
-  doctorPatients: [DoctorPatient]
-  pagination: PaginationPayload
 }
 
 type ResponsePayloadResponse {
