@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Insurance } from './entities/insurance.entity';
@@ -16,18 +17,22 @@ import { CopayService } from './services/copay.service';
 import { ProviderModule } from 'src/providers/provider.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { UsersModule } from 'src/users/users.module';
+import { PolicyEligibility } from './entities/policy-eligibility.entity';
+import { PolicyCoverage } from './entities/policy-coverage.entity';
+import { PolicyEligibilityResolver } from './resolvers/policy-eligibilities.resolver';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Insurance, Policy, PolicyHolder, Copay]),
+    TypeOrmModule.forFeature([Insurance, Policy, PolicyHolder, Copay, PolicyEligibility, PolicyCoverage]),
     UsersModule,
     PatientModule,
     PaginationModule,
     forwardRef(() => ProviderModule),
+    HttpModule
   ],
   providers: [
     InsuranceResolver, InsuranceService, PolicyResolver, PolicyService, PolicyHolderService, PolicyHolderResolver,
-    CopayResolver, CopayService
+    CopayResolver, CopayService, PolicyEligibilityResolver
   ],
   exports: [PolicyService, TypeOrmModule, InsuranceService, PolicyHolderService]
 })
