@@ -140,7 +140,7 @@ export const getMutationType = (operationName: string) => {
 }
 
 export const getOperationType = (type: string, operationName: string) => {
- 
+
   switch (type) {
 
     case 'Query':
@@ -153,4 +153,42 @@ export const getOperationType = (type: string, operationName: string) => {
       return ''
   }
 
+}
+
+export const getClaimGender = (gender: string) => {
+  switch (gender) {
+    case 'Identifies as Male':
+      return 'M'
+    case 'Identifies as Female':
+      return 'F'
+    default:
+      return 'U'
+  }
+}
+
+export const getClaimRelation = (relation: string) => {
+  switch (relation) {
+    case 'Spouse':
+      return '01'
+    case 'Self':
+      return '18'
+    case 'Child':
+      return '19'
+    case 'Employee':
+      return '20'
+    case 'Unknown':
+      return '21'
+    case 'Organ Donor':
+      return '39'
+    case 'Cadaver Donor':
+      return '40'
+    case 'Life Partner':
+      return '53'
+    default:
+      return 'G8'
+  }
+}
+
+export const getYesOrNo = (value: boolean) => {
+  return value ? 'Y' : 'N'
 }

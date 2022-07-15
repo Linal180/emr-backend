@@ -1,6 +1,6 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { ElementType } from '../entities/element.entity';
 import { FormType } from '../entities/form.entity';
+import { ElementType } from '../entities/element.entity';
 
 
 @InputType()
@@ -31,7 +31,6 @@ export class FieldOptionsInputType {
   @Field()
   value: string;
 }
-
 
 @InputType()
 export class FieldsInputs {
@@ -86,6 +85,9 @@ export class FieldsInputs {
 
   @Field({ nullable: true })
   tableContactType: string;
+
+  @Field({ nullable: true })
+  regex?: string;
 }
 @InputType()
 export class CreateFormInput {

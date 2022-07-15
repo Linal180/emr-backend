@@ -165,7 +165,7 @@ const facilityServicesFields = [
     fieldId: uuid(),
     options: [],
     errorMsg: "",
-    required: false,
+    required: true,
     textArea: false,
     tableName: "Appointments",
     columnName: "appointmentTypeId",
@@ -381,6 +381,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "Self",
+          regex: '/^\\d*[1-9\\d,-]+$/'
         },
         {
           css: "",
@@ -478,7 +479,7 @@ const facilityAppointment = [
           tableName: "Contacts",
           columnName: "country",
           placeholder: "Please Select a country",
-          defaultValue: "",
+          defaultValue: "United States",
           isMultiSelect: false,
           tableContactType: "Self",
         },
@@ -951,6 +952,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "gurantor",
+          regex: '/^\\d*[1-9\\d,-]+$/'
         },
         {
           css: "",
@@ -1048,7 +1050,7 @@ const facilityAppointment = [
           tableName: "Contacts",
           columnName: "country",
           placeholder: "Please Select a country",
-          defaultValue: "",
+          defaultValue: "United States",
           isMultiSelect: false,
           tableContactType: "gurantor",
         },
@@ -1070,6 +1072,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: null,
+          regex: '/^\\d{3}-\\d{2}-\\d{4}$/'
         },
         {
           css: "",
@@ -1147,7 +1150,6 @@ const facilityAppointment = [
       col: 12,
       name: "Registration Dates",
       fields: [
-
         {
           css: "",
           name: "registrationDate",
@@ -1505,6 +1507,13 @@ const practiceAppointment = facilityAppointment?.map((tab) => {
   }
   return tab
 })
+
+
+const oneStepFacilityForm = facilityAppointment?.map(({ sections }) => sections)?.flat(1)
+?.filter(({ name }) => name !== 'Document Verification' && name !== 'Payment');
+
+const oneStepPracticeForm = practiceAppointment?.map(({ sections }) => sections)?.flat(1)
+?.filter(({ name }) => name !== 'Document Verification' && name !== 'Payment');
 
 //Form template
 export const FormTemplates = [
@@ -2980,7 +2989,8 @@ export const FormTemplates = [
                 placeholder: "Please enter zip code",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^\\d*[1-9\\d,-]+$/'
               },
               {
                 css: "",
@@ -3614,7 +3624,8 @@ export const FormTemplates = [
                 placeholder: "Please enter your SSN",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^\\d{3}-\\d{2}-\\d{4}$/'
               },
               {
                 css: "",
@@ -3825,7 +3836,7 @@ export const FormTemplates = [
                 fieldId: uuid(),
                 options: [],
                 errorMsg: "",
-                required: false,
+                required: true,
                 textArea: false,
                 placeholder: "Please select a Appointment Type",
                 defaultValue: "",
@@ -4361,7 +4372,8 @@ export const FormTemplates = [
                 placeholder: "Please enter zip code",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^\\d*[1-9\\d,-]+$/'
               },
               {
                 css: "",
@@ -4479,7 +4491,8 @@ export const FormTemplates = [
                 placeholder: "Please enter your SSN",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^\\d{3}-\\d{2}-\\d{4}$/'
               },
               {
                 css: "",
@@ -4647,6 +4660,30 @@ export const FormTemplates = [
     type: FormType.TEMPLATE,
     layout: {
       tabs: facilityAppointment
+    }
+  },
+  {
+    name: "Facility Appointment Single Form",
+    isSystemForm: true,
+    type: FormType.TEMPLATE,
+    layout: {
+      tabs: [{
+        id: uuid(),
+        name: "Tab",
+        sections: oneStepFacilityForm
+      }]
+    }
+  },
+  {
+    name: "Practice Appointment Single Form",
+    isSystemForm: true,
+    type: FormType.TEMPLATE,
+    layout: {
+      tabs: [{
+        id: uuid(),
+        name: "Tab",
+        sections: oneStepPracticeForm
+      }]
     }
   },
   {
