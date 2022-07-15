@@ -1,11 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-//user imports
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { Attachment } from 'src/attachments/entities/attachment.entity';
-import { DocumentType } from 'src/attachments/entities/documentType.entity';
-import { Agreement } from 'src/agreements/entities/agreement.entity';
+//entities
 import { Staff } from 'src/providers/entities/staff.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Agreement } from 'src/agreements/entities/agreement.entity';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
+import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
+import { DocumentType } from 'src/attachments/entities/documentType.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
@@ -62,24 +63,34 @@ export class Practice {
   @Field(() => Boolean, { nullable: true })
   active: boolean;
 
+  //facilities
+
   @OneToMany(() => Facility, facility => facility.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Facility], { nullable: true })
+  @Field(() => [Facility], { nullable: true })
   facilities: Facility[];
 
   @OneToMany(() => Agreement, agreement => agreement.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Agreement], { nullable: true })
+  @Field(() => [Agreement], { nullable: true })
   agreements: Agreement[];
 
   @OneToMany(() => DocumentType, documentType => documentType.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [DocumentType], { nullable: true })
+  @Field(() => [DocumentType], { nullable: true })
   documentTypes: DocumentType[];
 
   @OneToMany(() => Staff, staff => staff.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Staff], { nullable: true })
+  @Field(() => [Staff], { nullable: true })
   staff: Staff[];
+
+  @OneToMany(() => FeeSchedule, feeSchedule => feeSchedule.practice, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [FeeSchedule], { nullable: true })
+  feeSchedules: FeeSchedule[];
+
+  //fields
 
   @Field(() => [Attachment], { nullable: true })
   attachments: Attachment[];
+
+  //dates
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

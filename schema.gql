@@ -1269,6 +1269,25 @@ enum Gender {
   OTHER
 }
 
+type FeeSchedule {
+  id: String!
+  name: String
+  procedureCode: String
+  modifier: String
+  cptCode: String
+  effectiveDate: String
+  expireDate: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  practiceId: String
+  practice: Practice
+  createdAt: String
+  updatedAt: String
+}
+
 type Practice {
   id: String!
   name: String!
@@ -1287,6 +1306,7 @@ type Practice {
   agreements: [Agreement!]
   documentTypes: [DocumentType!]
   staff: [Staff!]
+  feeSchedules: [FeeSchedule!]
   attachments: [Attachment!]
   createdAt: String
   updatedAt: String
@@ -1578,6 +1598,18 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type ServicePayload {
+  response: ResponsePayload
+  service: Service
+}
+
 type PaginationPayload {
   page: Int
   limit: Int
@@ -1585,11 +1617,21 @@ type PaginationPayload {
   totalPages: Int
 }
 
-type ResponsePayload {
-  status: Float
-  error: String
-  message: String
-  name: String
+type ServicesPayload {
+  response: ResponsePayload
+  services: [Service]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
+type FacilitiesPayload {
+  response: ResponsePayload
+  facilities: [Facility]
+  pagination: PaginationPayload
 }
 
 type BraintreePayload {
@@ -1804,26 +1846,15 @@ type PermissionPayload {
   permission: Permission
 }
 
-type ServicePayload {
-  response: ResponsePayload
-  service: Service
-}
-
-type ServicesPayload {
-  response: ResponsePayload
-  services: [Service]
+type AllFeeSchedulesPayload {
+  feeSchedules: [FeeSchedule]
   pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
-type FacilityPayload {
-  response: ResponsePayload
-  facility: Facility
-}
-
-type FacilitiesPayload {
-  response: ResponsePayload
-  facilities: [Facility]
-  pagination: PaginationPayload
+type FeeSchedulePayload {
+  feeSchedule: FeeSchedule
+  response: ResponsePayloadResponse
 }
 
 type PracticePayload {
@@ -2428,6 +2459,7 @@ type Query {
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
+  findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
   getToken: BraintreePayload!
   getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
@@ -2735,6 +2767,11 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input FindAllFeeScheduleInput {
+  practiceId: String
+  paginationOptions: PaginationInput!
+}
+
 input InvoiceInputs {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -2958,6 +2995,10 @@ type Mutation {
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
+  createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
+  removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
+  getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
+  updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
@@ -4023,6 +4064,45 @@ input CancelAppointment {
 input UpdateAppointmentStatusInput {
   id: String!
   status: AppointmentStatus!
+}
+
+input CreateFeeScheduleInput {
+  name: String
+  procedureCode: String
+  modifier: String
+  cptCode: String
+  effectiveDate: String
+  expireDate: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  practiceId: String
+}
+
+input RemoveFeeScheduleInput {
+  id: String!
+}
+
+input GetFeeScheduleInput {
+  id: String!
+}
+
+input UpdateFeeScheduleInput {
+  name: String
+  procedureCode: String
+  modifier: String
+  cptCode: String
+  effectiveDate: String
+  expireDate: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  practiceId: String
+  id: String!
 }
 
 input PaymentInput {
