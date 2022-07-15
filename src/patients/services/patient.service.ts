@@ -474,13 +474,13 @@ export class PatientService {
           patientInstance.user = user
           const patient = await this.patientRepository.save(patientInstance)
           await this.usersService.saveUserId(patient?.id, user);
-          this.mailerService.sendEmailForgotPassword(user?.email, user?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${firstName} ${lastName}`, true, user?.token, inviteTemplateId)
+          this.mailerService.sendEmailForgotPassword(user?.email, user?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${patientInstance?.firstName} ${patientInstance?.lastName}`, true, user?.token, inviteTemplateId)
           return patient
         } else {
           const token = createToken();
           userAlreadyExist.token = token;
           await this.usersService.save(userAlreadyExist);
-          this.mailerService.sendEmailForgotPassword(userAlreadyExist?.email, userAlreadyExist?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${firstName} ${lastName}`, true, token, inviteTemplateId)
+          this.mailerService.sendEmailForgotPassword(userAlreadyExist?.email, userAlreadyExist?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${patientInstance?.firstName} ${patientInstance?.lastName}`, true, token, inviteTemplateId)
           return patientInstance
         }
       } else if (patientInstance && !patientInstance?.email) {
@@ -547,6 +547,11 @@ export class PatientService {
     }
   }
 
+  /**
+   * Updates patient provider relation
+   * @param updatePatientProviderRelationInputs 
+   * @returns  
+   */
   async updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs) {
     //Transaction start
     const queryRunner = this.connection.createQueryRunner();
@@ -629,6 +634,11 @@ export class PatientService {
     }
   }
 
+  /**
+   * Fetchs all fhir patients
+   * @param paginationInput 
+   * @returns  
+   */
   async fetchAllFhirPatients(paginationInput: PaginationInput) {
     const take = paginationInput.limit || 10
     const page = paginationInput.page || 1;
@@ -650,6 +660,11 @@ export class PatientService {
     return paginateResponse([transformedPatients, total], page, paginationInput.limit)
   }
 
+  /**
+   * Fetchs all patients
+   * @param patientInput 
+   * @returns all patients 
+   */
   async fetchAllPatients(patientInput: PatientInput): Promise<PatientsPayload> {
     try {
       const { limit, page } = patientInput.paginationOptions

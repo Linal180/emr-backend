@@ -399,6 +399,54 @@ enum InsurancePayerType {
   NP
 }
 
+type PolicyCoverage {
+  id: String!
+  benefitCode: String
+  benefitCoverageCode: String
+  benefitCoverageDescription: String
+  benefitDescription: String
+  benefitNotes: String
+  dateOfLastUpdated: String
+  benefitLevelCode: String
+  benefitLevelCodeDescription: String
+  benefitPeriodCode: String
+  benefitPeriodCodeDescription: String
+  inPlanNetwork: String
+  benefitAmount: String
+  insuranceTypeCode: String
+  insuranceTypeCodeDescription: String
+  benefitPercent: String
+  policyEligibility: PolicyEligibility
+  policyEligibilityId: String
+  createdAt: String
+  updatedAt: String
+}
+
+type PolicyEligibility {
+  id: String!
+  eligibilityResultDate: String
+  payerName: String
+  payerId: String
+  eligibilityResultTime: String
+  eligibilityId: String
+  groupNumber: String
+  insAddress1: String
+  insCity: String
+  insDob: String
+  insFirstName: String
+  insLastName: String
+  insSex: String
+  insState: String
+  insZip: String
+  planBeginDate: String
+  planNumber: String
+  policy: Policy
+  policyCoverages: [PolicyCoverage!]
+  policyId: String
+  createdAt: String
+  updatedAt: String
+}
+
 type PolicyHolder {
   id: String!
   certificationNumber: String
@@ -449,6 +497,7 @@ type Policy {
   policyHolder: PolicyHolder
   patient: Patient
   copays: [Copay!]
+  policyEligibilities: [PolicyEligibility!]
   patientId: String
   policyHolderId: String
   insuranceId: String
@@ -1747,6 +1796,25 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
+type PatientsPayload {
+  response: ResponsePayload
+  patients: [Patient]
+  facilityId: String
+  pagination: PaginationPayload
+}
+
+type DoctorPatientsPayload {
+  response: ResponsePayload
+  doctorPatients: [DoctorPatient]
+  pagination: PaginationPayload
+}
+
+type PatientAttachmentsPayload {
+  response: ResponsePayload
+  attachments: [Attachment]
+  pagination: PaginationPayload
+}
+
 type PatientPayload {
   response: ResponsePayload
   patient: Patient
@@ -1760,25 +1828,6 @@ type PatientProviderPayload {
 type PatientDoctorPayload {
   response: ResponsePayload
   provider: DoctorPatient
-}
-
-type PatientAttachmentsPayload {
-  response: ResponsePayload
-  attachments: [Attachment]
-  pagination: PaginationPayload
-}
-
-type PatientsPayload {
-  response: ResponsePayload
-  patients: [Patient]
-  facilityId: String
-  pagination: PaginationPayload
-}
-
-type DoctorPatientsPayload {
-  response: ResponsePayload
-  doctorPatients: [DoctorPatient]
-  pagination: PaginationPayload
 }
 
 type ResponsePayloadResponse {
@@ -2043,6 +2092,27 @@ type PolicyPayload {
 
 type PolicyHoldersPayload {
   policyHolders: [PolicyHolder!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyEligibilitiesPayload {
+  policyEligibilities: [PolicyEligibility!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyEligibilityPayload {
+  policyEligibility: PolicyEligibility!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyEligibilityWithPatientPayload {
+  policyEligibility: PolicyEligibility!
+  policyHolder: PolicyHolder!
+  patient: Patient!
+  primaryProvider: Doctor!
   pagination: PaginationPayload
   response: Response
 }
@@ -2486,6 +2556,8 @@ type Query {
   fetchPatientInsurances(id: String!): PoliciesPayload!
   fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
   fetchPolicyHolder(id: String!): PolicyHolder!
+  getPoliciesEligibilities(policyEligibilityInput: PolicyEligibilityPaginationInput!): PolicyEligibilitiesPayload!
+  getPoliciesEligibility(id: String!): PolicyEligibilityWithPatientPayload!
   findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
@@ -2868,6 +2940,12 @@ input PolicyHolderPaginationInput {
   paginationOptions: PaginationInput!
 }
 
+input PolicyEligibilityPaginationInput {
+  patientId: String
+  searchTerm: String
+  paginationOptions: PaginationInput!
+}
+
 input UserLogsInput {
   patientId: String
   userId: String
@@ -3023,6 +3101,7 @@ type Mutation {
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
   createCopay(createCopayInput: CopayInput!): Copay!
+  getEligibilityAndCoverage(policyId: String!): PolicyEligibilityPayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
