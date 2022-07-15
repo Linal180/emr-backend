@@ -1,24 +1,24 @@
+import { HttpService } from '@nestjs/axios';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Connection, FindOperator, ILike, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as FormData from 'form-data'
-import * as moment from 'moment'
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CopayService } from './copay.service';
-import { Policy } from '../entities/policy.entity';
-import { InsuranceService } from './insurance.service';
-import { PoliciesPayload } from '../dto/policy-payload.dto';
-import { PolicyHolderService } from './policy-holder.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
+import * as FormData from 'form-data';
+import * as moment from 'moment';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
-import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
-import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
-import { getClaimRelation } from 'src/lib/helper';
-import { HttpService } from '@nestjs/axios';
-import { PolicyEligibility } from '../entities/policy-eligibility.entity';
-import { PolicyCoverage } from '../entities/policy-coverage.entity';
-import { PolicyEligibilitiesPayload, PolicyEligibilityPayload, PolicyEligibilityWithPatientPayload } from '../dto/policy-eligibility.dto';
+import { CopayService } from './copay.service';
+import { InsuranceService } from './insurance.service';
+import { PolicyHolderService } from './policy-holder.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
 import { PolicyEligibilityPaginationInput } from '../dto/policy-eligibility-input';
+import { PolicyEligibilitiesPayload, PolicyEligibilityWithPatientPayload } from '../dto/policy-eligibility.dto';
+import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
+import { PoliciesPayload } from '../dto/policy-payload.dto';
+import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
+import { PolicyCoverage } from '../entities/policy-coverage.entity';
+import { PolicyEligibility } from '../entities/policy-eligibility.entity';
+import { Policy } from '../entities/policy.entity';
+import { getClaimRelation } from 'src/lib/helper';
 
 @Injectable()
 export class PolicyService {
