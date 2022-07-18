@@ -16,22 +16,22 @@ registerEnumType(PatientPaymentType, {
   description: "The patient payment type used to billing",
 });
 
-export enum PatientBillingStatus {
-  PAID_IN_FULL = "Paid In Full",
-  BALANCE_DUE = "Balance Due",
-  SETTLED = 'Settled',
-  INTERNAL_REVIEW = 'Internal Review',
-  BILL_INSURANCE = 'Bill Insurance',
-  BILL_SECONDARY_INSURANCE = 'Bill Secondary Insurance',
-  WORKERS_COMP_CLAIM = "Worker's Comp Claim",
-  AUTO_ACCIDENT_CLAIM = 'Auto Accident Claim',
-  DURABLE_MEDICAL_EQUIPMENT_CLAIM = "Durable Medical Equipment Claim"
-}
+// export enum PatientBillingStatus {
+//   PAID_IN_FULL = "Paid In Full",
+//   BALANCE_DUE = "Balance Due",
+//   SETTLED = 'Settled',
+//   INTERNAL_REVIEW = 'Internal Review',
+//   BILL_INSURANCE = 'Bill Insurance',
+//   BILL_SECONDARY_INSURANCE = 'Bill Secondary Insurance',
+//   WORKERS_COMP_CLAIM = "Worker's Comp Claim",
+//   AUTO_ACCIDENT_CLAIM = 'Auto Accident Claim',
+//   DURABLE_MEDICAL_EQUIPMENT_CLAIM = "Durable Medical Equipment Claim"
+// }
 
-registerEnumType(PatientBillingStatus, {
-  name: "PatientBillingStatus",
-  description: "The patient billing status assigned",
-});
+// registerEnumType(PatientBillingStatus, {
+//   name: "PatientBillingStatus",
+//   description: "The patient billing status assigned",
+// });
 
 export enum OnsetDateType {
   ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS = "Onset of Current Symptoms or Illness",
@@ -69,14 +69,6 @@ export class Billing {
   })
   @Field(type => PatientPaymentType)
   patientPaymentType: PatientPaymentType;
-
-  @Column({
-    type: "enum",
-    enum: PatientBillingStatus,
-    default: PatientBillingStatus.BALANCE_DUE
-  })
-  @Field(type => PatientBillingStatus)
-  patientBillingStatus: PatientBillingStatus;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -137,6 +129,10 @@ export class Billing {
   @Column({ nullable: true })
   @Field({ nullable: true })
   pos: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  uncoveredAmount: string;
 
   @OneToMany(() => Code, code => code.billing, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Code], { nullable: true })

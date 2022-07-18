@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import BillingInput from '../dto/billing-input.dto';
 import { BillingPayload } from '../dto/billing-payload';
 import ClaimInput from '../dto/claim-input.dto';
-import { ClaimFilePayload, ClaimPayload } from '../dto/claim-payload';
+import { ClaimFilePayload, ClaimNumberPayload, ClaimPayload } from '../dto/claim-payload';
 import { Billing } from '../entities/billing.entity';
 import { Code } from '../entities/code.entity';
 import { BillingService } from '../services/billing.service';
@@ -50,6 +50,14 @@ export class BillingResolver {
   async createClaim(@Args('claimInput') claimInput: ClaimInput): Promise<ClaimPayload> {
     return {
       claim: await this.billingService.createClaimInfo(claimInput),
+      response: { status: 200, message: "Claim Created successfully" }
+    };
+  }
+
+  @Query(() => ClaimNumberPayload)
+  async generateClaimNo(): Promise<ClaimNumberPayload> {
+    return {
+      claimNumber: await this.billingService.generateClaimNumber(),
       response: { status: 200, message: "Claim Created successfully" }
     };
   }

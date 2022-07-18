@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { OnsetDateType, OtherDateType, PatientBillingStatus, PatientPaymentType } from '../entities/billing.entity';
+import { OnsetDateType, OtherDateType } from '../entities/billing.entity';
 import CodesInput from './codes-input.dto';
 
 @InputType()

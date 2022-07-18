@@ -192,3 +192,13 @@ export const getClaimRelation = (relation: string) => {
 export const getYesOrNo = (value: boolean) => {
   return value ? 'Y' : 'N'
 }
+
+export const generateString = (numberOfRounds = 2) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  const charactersLength = characters.length - 2;
+  for (let i = 0; i < numberOfRounds; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result + Math.floor(100000 + Math.random() * 9000);
+}
