@@ -37,12 +37,22 @@ export class FeeScheduleResolver {
     });
   }
 
+  @Query(() => FeeSchedulePayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'removeFeeSchedule')
+  async getFeeSchedule(@Args('getFeeScheduleInput') getFeeScheduleInput: GetFeeScheduleInput): Promise<FeeSchedulePayload> {
+    return {
+      feeSchedule: await this.feeScheduleService.findOne(getFeeScheduleInput),
+      response: { status: 200, message: 'FeeSchedule fetched successfully' }
+    };
+  }
+
   //mutations
 
   @Mutation(() => FeeSchedulePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'createFeeSchedule')
-  async createFeeSchedule(@Args('createFeeScheduleInput') createFeeScheduleInput: CreateFeeScheduleInput) {
+  async createFeeSchedule(@Args('createFeeScheduleInput') createFeeScheduleInput: CreateFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.create(createFeeScheduleInput),
       response: { status: 200, message: 'FeeSchedule created successfully' }
@@ -52,7 +62,7 @@ export class FeeScheduleResolver {
   @Mutation(() => FeeSchedulePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'removeFeeSchedule')
-  async removeFeeSchedule(@Args('removeFeeScheduleInput') removeFeeScheduleInput: RemoveFeeScheduleInput) {
+  async removeFeeSchedule(@Args('removeFeeScheduleInput') removeFeeScheduleInput: RemoveFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.remove(removeFeeScheduleInput),
       response: { status: 200, message: 'FeeSchedule deleted successfully' }
@@ -62,18 +72,7 @@ export class FeeScheduleResolver {
   @Mutation(() => FeeSchedulePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'removeFeeSchedule')
-  async getFeeSchedule(@Args('getFeeScheduleInput') getFeeScheduleInput: GetFeeScheduleInput) {
-    return {
-      feeSchedule: await this.feeScheduleService.findOne(getFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule fetched successfully' }
-    };
-  }
-
-
-  @Mutation(() => FeeSchedulePayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'removeFeeSchedule')
-  async updateFeeSchedule(@Args('updateFeeScheduleInput') updateFeeScheduleInput: UpdateFeeScheduleInput) {
+  async updateFeeSchedule(@Args('updateFeeScheduleInput') updateFeeScheduleInput: UpdateFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.updateFeeSchedule(updateFeeScheduleInput),
       response: { status: 200, message: 'FeeSchedule fetched successfully' }

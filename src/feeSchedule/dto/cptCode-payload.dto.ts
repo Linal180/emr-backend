@@ -7,12 +7,23 @@ import { CPTCodes } from "../entities/cptCode.entity";
 
 @ObjectType()
 export class AllCPTCodePayload {
-	@Field(() => [CPTCodes], { nullable: 'itemsAndList' })
-	cptCodes: CPTCodes[];
+  
+  @Field(() => [CPTCodes], { nullable: 'itemsAndList' })
+  cptCodes: CPTCodes[];
 
-	@Field(() => PaginationPayload, { nullable: true })
-	pagination?: PaginationPayload
+  @Field(() => PaginationPayload, { nullable: true })
+  pagination?: PaginationPayload
 
-	@Field(() => ResponsePayloadResponse, { nullable: true })
-	response?: ResponsePayloadResponse
+  @Field(() => ResponsePayloadResponse, { nullable: true })
+  response?: ResponsePayloadResponse
+}
+
+@ObjectType()
+export class CPTCodePayload {
+
+  @Field(() => CPTCodes, { nullable: true })
+  cptCode: CPTCodes
+
+  @Field(() => ResponsePayloadResponse, { nullable: true })
+  response?: ResponsePayloadResponse
 }

@@ -1,15 +1,18 @@
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //entities
 import { CPTCodes } from "../entities/cptCode.entity";
 //inputs
-import { CreateCPTCodesInput, FindAllCPTCodesInput } from "../dto/cptCode.input";
+import { CreateCPTCodeInput, FindAllCPTCodesInput, GetCPTCodeInput, RemoveCPTCodeInput, UpdateCPTCodeInput } from "../dto/cptCode.input";
+//services
+import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
 
 @Injectable()
 export class CptCodeService {
   constructor(@InjectRepository(CPTCodes) private cptCodeRepository: Repository<CPTCodes>,
+    private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
   ) { }
 
@@ -18,7 +21,7 @@ export class CptCodeService {
    * @param params 
    * @returns  
    */
-  async create(params: CreateCPTCodesInput) {
+  async create(params: CreateCPTCodeInput): Promise<CPTCodes> {
     try {
       const cptCode = this.cptCodeRepository.create(params);
       return await this.cptCodeRepository.save(cptCode)
@@ -27,7 +30,25 @@ export class CptCodeService {
     }
   }
 
+  /**
+   * Updates cpt code service
+   * @param params 
+   * @returns update 
+   */
+  async update(params: UpdateCPTCodeInput): Promise<CPTCodes> {
+    try {
+      const cptCode = await this.utilsService.updateEntityManager(CPTCodes, params.id, params, this.cptCodeRepository);
+      return cptCode
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
+  /**
+   * Finds all fee schedule
+   * @param params 
+   * @returns  
+   */
   async findAllFeeSchedule(params: FindAllCPTCodesInput) {
     try {
       const { paginationOptions, code } = params
@@ -43,5 +64,36 @@ export class CptCodeService {
     }
   }
 
+  /**
+   * Finds one
+   * @param params 
+   * @returns one 
+   */
+  async findOne(params: GetCPTCodeInput): Promise<CPTCodes> {
+    try {
+      const { id } = params;
+      const cptCode = await this.cptCodeRepository.findOne(id);
+      return cptCode
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Removes cpt code service
+   * @param params 
+   * @returns remove 
+   */
+  async remove(params: RemoveCPTCodeInput): Promise<CPTCodes> {
+    try {
+      const { id } = params
+      const cptCode = await this.cptCodeRepository.findOne(id);
+      if (!cptCode) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Cpt not found' })
+      await this.cptCodeRepository.delete(id)
+      return cptCode
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
 }

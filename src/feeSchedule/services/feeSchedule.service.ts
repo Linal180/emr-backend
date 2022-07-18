@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //entities
 import { FeeSchedule } from "../entities/feeSchedule.entity";
 //services
@@ -71,7 +71,12 @@ export class FeeScheduleService {
     }
   }
 
-  async updateFeeSchedule(params: UpdateFeeScheduleInput) {
+  /**
+   * Updates fee schedule
+   * @param params 
+   * @returns  
+   */
+  async updateFeeSchedule(params: UpdateFeeScheduleInput): Promise<FeeSchedule> {
     try {
       const feeSchedule = await this.utilsService.updateEntityManager(FeeSchedule, params.id, params, this.feeScheduleRepository)
       if (params?.practiceId) {
@@ -88,10 +93,13 @@ export class FeeScheduleService {
    * Removes fee schedule service
    * @param params 
    */
-  async remove(params: RemoveFeeScheduleInput) {
+  async remove(params: RemoveFeeScheduleInput): Promise<FeeSchedule> {
     try {
-      const { id } = params
-      await this.feeScheduleRepository.delete(id)
+      const { id } = params;
+      const feeSchedule = await this.feeScheduleRepository.findOne(id);
+      if (!feeSchedule) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Fee Schedule not found' })
+      await this.feeScheduleRepository.delete(id);
+      return feeSchedule
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
