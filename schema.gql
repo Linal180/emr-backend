@@ -2530,6 +2530,7 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
+  getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   getToken: BraintreePayload!
   getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
@@ -2844,6 +2845,10 @@ input FindAllFeeScheduleInput {
   paginationOptions: PaginationInput!
 }
 
+input GetFeeScheduleInput {
+  id: String!
+}
+
 input InvoiceInputs {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -3075,7 +3080,6 @@ type Mutation {
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
   removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
-  getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
@@ -4161,10 +4165,6 @@ input CreateFeeScheduleInput {
 }
 
 input RemoveFeeScheduleInput {
-  id: String!
-}
-
-input GetFeeScheduleInput {
   id: String!
 }
 
