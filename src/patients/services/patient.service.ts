@@ -118,7 +118,7 @@ export class PatientService {
         prevPatient = await this.GetPatientByEmail(email);
       }
       if (!prevPatient) {
-        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email })
+        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: new Date(createPatientInput?.createPatientItemInput?.dob)?.toISOString() })
         patientInstance.patientRecord = await this.utilsService.generateString(8);
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
@@ -192,7 +192,7 @@ export class PatientService {
         updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
         updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
       } = updatePatientInput
-      const { id: patientId, usualProviderId, facilityId, email: patientEmail, ...patientInfoToUpdate } = updatePatientItemInput
+      const { id: patientId, usualProviderId, facilityId, email: patientEmail, dob, ...patientInfoToUpdate } = updatePatientItemInput
       const { email } = updateContactInput || {}
 
       let prevPatient = null;
@@ -210,7 +210,7 @@ export class PatientService {
         })
       } else {
         //save patient basic info
-        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email }, this.patientRepository)
+        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: new Date(dob)?.toISOString() }, this.patientRepository)
         //get facility 
         const patientInstance = await this.patientRepository.findOne(patientId)
         const user = await this.usersService.findUserByUserId(patientId)
@@ -316,10 +316,10 @@ export class PatientService {
         updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
         updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
       } = updatePatientInput
-      const { id: patientId, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
+      const { id: patientId, usualProviderId, facilityId, dob, ...patientInfoToUpdate } = updatePatientItemInput
 
       //save patient basic info
-      await this.utilsService.updateEntityManager(Patient, patientId, patientInfoToUpdate, this.patientRepository)
+      await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, dob: new Date(dob)?.toISOString() }, this.patientRepository)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(patientId)
 
