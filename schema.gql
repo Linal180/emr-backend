@@ -1321,7 +1321,6 @@ enum Gender {
 type FeeSchedule {
   id: String!
   name: String
-  procedureCode: String
   modifier: String
   cptCode: String
   effectiveDate: String

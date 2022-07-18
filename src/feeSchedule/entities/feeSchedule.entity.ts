@@ -15,10 +15,6 @@ export class FeeSchedule {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  procedureCode: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   modifier: string;
 
   @Column({ nullable: true })
