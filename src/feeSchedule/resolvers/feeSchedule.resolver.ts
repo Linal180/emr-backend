@@ -1,9 +1,11 @@
 import { HttpStatus, NotFoundException } from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //entities
+import { CPTCodes } from "../entities/cptCode.entity";
 import { FeeSchedule } from "../entities/feeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
 //services
+import { CptCodeService } from "../services/cptCode.service";
 import { PracticeService } from "src/practice/practice.service";
 import { FeeScheduleService } from "../services/feeSchedule.service";
 //inputs
@@ -15,8 +17,10 @@ import { AllFeeSchedulesPayload, FeeSchedulePayload } from "../dto/feeSchedule-p
 
 @Resolver(() => FeeSchedule)
 export class FeeScheduleResolver {
-  constructor(private readonly feeScheduleService: FeeScheduleService,
+  constructor(
+    private readonly cptCodeService: CptCodeService,
     private readonly practiceService: PracticeService,
+    private readonly feeScheduleService: FeeScheduleService,
   ) { }
 
   //Queries 
@@ -37,7 +41,7 @@ export class FeeScheduleResolver {
 
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
-      error: 'FeeSchedules not found',
+      error: 'Fee Schedules not found',
     });
   }
 
@@ -47,7 +51,7 @@ export class FeeScheduleResolver {
   async getFeeSchedule(@Args('getFeeScheduleInput') getFeeScheduleInput: GetFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.findOne(getFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule fetched successfully' }
+      response: { status: 200, message: 'Fee Schedule fetched successfully' }
     };
   }
 
@@ -59,7 +63,7 @@ export class FeeScheduleResolver {
   async createFeeSchedule(@Args('createFeeScheduleInput') createFeeScheduleInput: CreateFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.create(createFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule created successfully' }
+      response: { status: 200, message: 'Fee Schedule created successfully' }
     };
   }
 
@@ -69,7 +73,7 @@ export class FeeScheduleResolver {
   async removeFeeSchedule(@Args('removeFeeScheduleInput') removeFeeScheduleInput: RemoveFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.remove(removeFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule deleted successfully' }
+      response: { status: 200, message: 'Fee Schedule deleted successfully' }
     };
   }
 
@@ -79,9 +83,11 @@ export class FeeScheduleResolver {
   async updateFeeSchedule(@Args('updateFeeScheduleInput') updateFeeScheduleInput: UpdateFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.updateFeeSchedule(updateFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule fetched successfully' }
+      response: { status: 200, message: 'Fee Schedule is updated successfully' }
     };
   }
+
+  //resolve fields
 
   @ResolveField(() => Practice)
   async practice(@Parent() feeSchedule: FeeSchedule): Promise<Practice> {
@@ -89,6 +95,14 @@ export class FeeScheduleResolver {
       const response = await this.practiceService.getPractice(feeSchedule?.practiceId);
       const { practice } = response || {}
       return practice
+    }
+  }
+
+  @ResolveField(() => CPTCodes)
+  async CPTCodes(@Parent() feeSchedule: FeeSchedule): Promise<CPTCodes> {
+    if (feeSchedule?.cptCode) {
+      const response = await this.cptCodeService.findByCode(feeSchedule?.cptCode);
+      return response
     }
   }
 

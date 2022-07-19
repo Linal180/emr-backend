@@ -102,4 +102,18 @@ export class CptCodeService {
     }
   }
 
+  /**
+   * Finds by code
+   * @param code 
+   * @returns by code 
+   */
+  async findByCode(code: string): Promise<CPTCodes> {
+    try {
+      const cptCode = await this.cptCodeRepository.findOne({ code });
+      return cptCode
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
 }

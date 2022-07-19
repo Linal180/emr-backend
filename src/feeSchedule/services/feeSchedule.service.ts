@@ -118,4 +118,18 @@ export class FeeScheduleService {
     }
   }
 
+  /**
+   * Finds by cpt code
+   * @param cptCode 
+   * @returns by cpt code 
+   */
+  async findByCptCode(cptCode: string): Promise<FeeSchedule[]> {
+    try {
+      const feeSchedules = await this.feeScheduleRepository.find({ cptCode })
+      return feeSchedules
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
 }
