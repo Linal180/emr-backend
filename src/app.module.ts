@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 //modules
@@ -21,6 +20,7 @@ import { AgreementModule } from './agreements/agreement.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { FormBuilderModule } from './formbuilder/formbuilder.module'
 import { AttachmentsModule } from './attachments/attachments.module';
+import { FeeScheduleModule } from './feeSchedule/feeSchedule.module';
 import { AppointmentModule } from './appointments/appointment.module';
 import { ProblemChartingModule } from './patientCharting/patientCharting.module';
 //configs, 
@@ -30,7 +30,6 @@ import { LogDatabaseConfig } from './logDatabase.config';
 //services, controller
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
-import { LoggingInterceptor } from './logging.interceptor'
 
 @Module({
   imports: [
@@ -68,6 +67,7 @@ import { LoggingInterceptor } from './logging.interceptor'
     InsuranceModule,
     DashboardModule,
     PaginationModule,
+    FeeScheduleModule,
     AttachmentsModule,
     AppointmentModule,
     FormBuilderModule,

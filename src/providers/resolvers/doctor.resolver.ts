@@ -81,7 +81,7 @@ export class DoctorResolver {
     return { response: { status: 200, message: 'Doctor Disabled' } };
   }
 
-  @ResolveField((returns) => [Attachment])
+  @ResolveField(() => [Attachment])
   async attachments(@Parent() doctor: Doctor): Promise<Attachment[]> {
     if (doctor) {
       return await this.attachmentsService.findAttachments(doctor.id, AttachmentType.DOCTOR);

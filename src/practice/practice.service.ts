@@ -202,63 +202,80 @@ export class PracticeService {
     }
   }
 
-    /**
-  * Updates practice media
-  * @param file 
-  * @param updateAttachmentMediaInput 
-  * @returns practice media 
-  */
-     async updatePracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
-      try {
-        updateAttachmentMediaInput.type = AttachmentType.PRACTICE
-        const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
-        const practice = await this.practiceRepository.findOne(updateAttachmentMediaInput.typeId)
-        if (attachment) {
-          return { practice }
-        }
-        throw new PreconditionFailedException({
-          status: HttpStatus.PRECONDITION_FAILED,
-          error: 'Could not create or upload media',
-        });
+  /**
+* Updates practice media
+* @param file 
+* @param updateAttachmentMediaInput 
+* @returns practice media 
+*/
+  async updatePracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.PRACTICE
+      const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+      const practice = await this.practiceRepository.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { practice }
       }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
     }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
-    async uploadPracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
-      try {
-        updateAttachmentMediaInput.type = AttachmentType.PRACTICE;
-        const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
-        const practice = await this.findOne(updateAttachmentMediaInput.typeId)
-        if (attachment) {
-          return { practice };
-        }
-        throw new PreconditionFailedException({
-          status: HttpStatus.PRECONDITION_FAILED,
-          error: 'Could not create or upload media',
-        });
+  /**
+   * Uploads practice media
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns practice media 
+   */
+  async uploadPracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.PRACTICE;
+      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+      const practice = await this.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { practice };
       }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
     }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
-    async getPracticeMedia(id: string) {
-      try {
-        return await this.attachmentsService.getMedia(id)
-      }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+  /**
+   * Gets practice media
+   * @param id 
+   * @returns  
+   */
+  async getPracticeMedia(id: string) {
+    try {
+      return await this.attachmentsService.getMedia(id)
     }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
-    async removePracticeMedia(id: string) {
-      try {
-        return await this.attachmentsService.removeMedia(id)
-      }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+  /**
+   * Removes practice media
+   * @param id 
+   * @returns  
+   */
+  async removePracticeMedia(id: string) {
+    try {
+      return await this.attachmentsService.removeMedia(id)
     }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+  
 }

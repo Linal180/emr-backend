@@ -1,21 +1,28 @@
-import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AttachmentsModule } from 'src/attachments/attachments.module';
+import { forwardRef, Module } from '@nestjs/common';
+//modules
+import { UsersModule } from 'src/users/users.module';
+import { ProviderModule } from 'src/providers/provider.module';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
-import { ProviderModule } from 'src/providers/provider.module';
-import { UsersModule } from 'src/users/users.module';
-import { Practice } from './entities/practice.entity';
-import { PracticeController } from './practice.controller';
-import { PracticeResolver } from './practice.resolver';
+import { AttachmentsModule } from 'src/attachments/attachments.module';
+import { FeeScheduleModule } from 'src/feeSchedule/feeSchedule.module';
+//services
 import { PracticeService } from './practice.service';
+//entities
+import { Practice } from './entities/practice.entity';
+//controllers
+import { PracticeController } from './practice.controller';
+//resolvers
+import { PracticeResolver } from './practice.resolver';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Practice]),
     PaginationModule,
-    forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule),
+    forwardRef(() => FacilityModule),
     forwardRef(() => ProviderModule),
+    forwardRef(() => FeeScheduleModule),
     forwardRef(() => AttachmentsModule),
   ],
   providers: [PracticeResolver, PracticeService],
