@@ -1,5 +1,5 @@
 import { HttpStatus, NotFoundException } from "@nestjs/common";
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //payload, inputs
 import { AllCPTCodePayload, CPTCodePayload } from "../dto/cptCode-payload.dto";
 import {
@@ -7,12 +7,17 @@ import {
 } from "../dto/cptCode.input";
 //entity
 import { CPTCodes } from "../entities/cptCode.entity";
+import { FeeSchedule } from "../entities/feeSchedule.entity";
 //service
 import { CptCodeService } from "../services/cptCode.service";
+import { FeeScheduleService } from "../services/feeSchedule.service";
 
 @Resolver(() => CPTCodes)
 export class CptCodeResolver {
-  constructor(private readonly cptCodeService: CptCodeService) { }
+  constructor(
+    private readonly cptCodeService: CptCodeService,
+    private readonly feeScheduleService: FeeScheduleService,
+  ) { }
 
   //Queries
 
@@ -76,6 +81,16 @@ export class CptCodeResolver {
       cptCode: await this.cptCodeService.remove(removeCPTCodeInput),
       response: { status: 200, message: 'CPT Code deleted successfully' }
     };
+  }
+
+  // resolve fields
+
+  @ResolveField(() => [FeeSchedule])
+  async feeSchedules(@Parent() cptCodes: CPTCodes): Promise<FeeSchedule[]> {
+    if (cptCodes?.code) {
+      const response = await this.feeScheduleService.findByCptCode(cptCodes?.code);
+      return response
+    }
   }
 
 }

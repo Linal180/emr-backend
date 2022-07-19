@@ -1,9 +1,11 @@
 import { HttpStatus, NotFoundException } from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //entities
+import { CPTCodes } from "../entities/cptCode.entity";
 import { FeeSchedule } from "../entities/feeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
 //services
+import { CptCodeService } from "../services/cptCode.service";
 import { PracticeService } from "src/practice/practice.service";
 import { FeeScheduleService } from "../services/feeSchedule.service";
 //inputs
@@ -15,8 +17,10 @@ import { AllFeeSchedulesPayload, FeeSchedulePayload } from "../dto/feeSchedule-p
 
 @Resolver(() => FeeSchedule)
 export class FeeScheduleResolver {
-  constructor(private readonly feeScheduleService: FeeScheduleService,
+  constructor(
+    private readonly cptCodeService: CptCodeService,
     private readonly practiceService: PracticeService,
+    private readonly feeScheduleService: FeeScheduleService,
   ) { }
 
   //Queries 
@@ -83,12 +87,22 @@ export class FeeScheduleResolver {
     };
   }
 
+  //resolve fields
+
   @ResolveField(() => Practice)
   async practice(@Parent() feeSchedule: FeeSchedule): Promise<Practice> {
     if (feeSchedule?.practiceId) {
       const response = await this.practiceService.getPractice(feeSchedule?.practiceId);
       const { practice } = response || {}
       return practice
+    }
+  }
+
+  @ResolveField(() => CPTCodes)
+  async CPTCodes(@Parent() feeSchedule: FeeSchedule): Promise<CPTCodes> {
+    if (feeSchedule?.cptCode) {
+      const response = await this.cptCodeService.findByCode(feeSchedule?.cptCode);
+      return response
     }
   }
 

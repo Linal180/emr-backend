@@ -1322,6 +1322,18 @@ enum Gender {
   OTHER
 }
 
+type CPTCodes {
+  id: String!
+  code: String
+  category: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  feeSchedules: [FeeSchedule!]
+  createdAt: String
+  updatedAt: String
+}
+
 type FeeSchedule {
   id: String!
   name: String
@@ -1335,9 +1347,10 @@ type FeeSchedule {
   serviceFee: String
   revenueCode: String
   practiceId: String
-  practice: Practice
   createdAt: String
   updatedAt: String
+  practice: Practice
+  CPTCodes: CPTCodes
 }
 
 type Practice {
@@ -1896,17 +1909,6 @@ type PermissionsPayload {
 type PermissionPayload {
   response: ResponsePayload
   permission: Permission
-}
-
-type CPTCodes {
-  id: String!
-  code: String
-  category: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  createdAt: String
-  updatedAt: String
 }
 
 type AllCPTCodePayload {

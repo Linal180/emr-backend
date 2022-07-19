@@ -1,10 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Practice } from "src/practice/entities/practice.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+//entities
+import { CPTCodes } from "./cptCode.entity";
+import { Practice } from "src/practice/entities/practice.entity";
 
 @Entity({ name: 'FeeSchedule' })
 @ObjectType()
 export class FeeSchedule {
+
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -53,12 +56,6 @@ export class FeeSchedule {
   @Field({ nullable: true })
   practiceId: string;
 
-  //relationships
-
-  @ManyToOne(() => Practice, practice => practice.feeSchedules, { onDelete: 'CASCADE' })
-  @Field(() => Practice, { nullable: true })
-  practice: Practice;
-
   //dates
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
@@ -68,5 +65,16 @@ export class FeeSchedule {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+  //relationships
+
+  @ManyToOne(() => Practice, practice => practice.feeSchedules, { onDelete: 'CASCADE' })
+  @Field(() => Practice, { nullable: true })
+  practice: Practice;
+
+  //fields
+  
+  @Field(() => CPTCodes, { nullable: true })
+  CPTCodes: CPTCodes
 
 }
