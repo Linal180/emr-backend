@@ -69,5 +69,6 @@ export class PaginatedEntityInput {
   moduleType?: string;
   logUserId?: string;
   logStartDate?: string;
-  logEndDate?: string
+  logEndDate?: string;
+  code?: string;
 }
