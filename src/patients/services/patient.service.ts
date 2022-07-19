@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { Brackets, Connection, getConnection, Repository } from 'typeorm';
 import {
   forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, ConflictException,
@@ -39,6 +40,7 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
+
 
 @Injectable()
 export class PatientService {
@@ -116,13 +118,12 @@ export class PatientService {
         prevPatient = await this.GetPatientByEmail(email);
       }
       if (!prevPatient) {
-        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email })
+        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: new Date(createPatientInput?.createPatientItemInput?.dob)?.toISOString() })
         patientInstance.patientRecord = await this.utilsService.generateString(8);
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
           const facility = await this.facilityService.findOne(createPatientInput.createPatientItemInput.facilityId)
-          
-          if(facility){
+          if (facility) {
             patientInstance.facility = facility
             patientInstance.facilityId = facility.id
             patientInstance.practiceId = facility.practiceId
@@ -191,9 +192,9 @@ export class PatientService {
         updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
         updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
       } = updatePatientInput
-      const { id: patientId, usualProviderId, facilityId, email: patientEmail, ...patientInfoToUpdate } = updatePatientItemInput
+      const { id: patientId, usualProviderId, facilityId, email: patientEmail, dob, ...patientInfoToUpdate } = updatePatientItemInput
       const { email } = updateContactInput || {}
-      
+
       let prevPatient = null;
       const patientInstance = await this.patientRepository.findOne(patientId)
       const isNewEmail = !!email && email !== patientInstance?.email
@@ -209,14 +210,14 @@ export class PatientService {
         })
       } else {
         //save patient basic info
-        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email }, this.patientRepository)
+        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: new Date(dob)?.toISOString() }, this.patientRepository)
         //get facility 
         const patientInstance = await this.patientRepository.findOne(patientId)
         const user = await this.usersService.findUserByUserId(patientId)
         if (facilityId) {
           const facility = await this.facilityService.findOne(facilityId)
-  
-          if(facility){
+
+          if (facility) {
             patientInstance.facility = facility
             patientInstance.facilityId = facility.id
             patientInstance.practiceId = facility.practiceId
@@ -315,10 +316,10 @@ export class PatientService {
         updatePatientItemInput, updateContactInput, updateEmergencyContactInput, updateNextOfKinContactInput,
         updateGuarantorContactInput, updateGuardianContactInput, updateEmployerInput
       } = updatePatientInput
-      const { id: patientId, usualProviderId, facilityId, ...patientInfoToUpdate } = updatePatientItemInput
+      const { id: patientId, usualProviderId, facilityId, dob, ...patientInfoToUpdate } = updatePatientItemInput
 
       //save patient basic info
-      await this.utilsService.updateEntityManager(Patient, patientId, patientInfoToUpdate, this.patientRepository)
+      await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, dob: new Date(dob)?.toISOString() }, this.patientRepository)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(patientId)
 
@@ -326,8 +327,8 @@ export class PatientService {
       //get facility 
       if (facilityId) {
         const facility = await this.facilityService.findOne(facilityId)
-        
-        if(facility){
+
+        if (facility) {
           patientInstance.facility = facility
           patientInstance.facilityId = facility.id
           patientInstance.practiceId = facility.practiceId
@@ -687,7 +688,7 @@ export class PatientService {
       }
 
       const [patients, totalCount] = await baseQuery
-        .where(dob ? 'patient.dob = :dob' : '1=1', { dob: dob })
+        .where(dob ? 'patient.dob::date = :dob' : '1=1', { dob: moment(new Date(dob)).format("DD/MM/YYYY") })
         .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
         .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
         .andWhere(new Brackets(qb => {

@@ -33,6 +33,30 @@ export class Code {
   @Field({ nullable: true })
   price: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  diagPointer: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  m1: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  m2: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  m3: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  m4: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  unit: string;
+
   @Column({
     type: "enum",
     enum: CodeType,
