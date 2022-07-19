@@ -37,7 +37,7 @@ export class FeeScheduleResolver {
 
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
-      error: 'FeeSchedules not found',
+      error: 'Fee Schedules not found',
     });
   }
 
@@ -47,7 +47,7 @@ export class FeeScheduleResolver {
   async getFeeSchedule(@Args('getFeeScheduleInput') getFeeScheduleInput: GetFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.findOne(getFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule fetched successfully' }
+      response: { status: 200, message: 'Fee Schedule fetched successfully' }
     };
   }
 
@@ -59,7 +59,7 @@ export class FeeScheduleResolver {
   async createFeeSchedule(@Args('createFeeScheduleInput') createFeeScheduleInput: CreateFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.create(createFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule created successfully' }
+      response: { status: 200, message: 'Fee Schedule created successfully' }
     };
   }
 
@@ -69,7 +69,7 @@ export class FeeScheduleResolver {
   async removeFeeSchedule(@Args('removeFeeScheduleInput') removeFeeScheduleInput: RemoveFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.remove(removeFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule deleted successfully' }
+      response: { status: 200, message: 'Fee Schedule deleted successfully' }
     };
   }
 
@@ -79,7 +79,7 @@ export class FeeScheduleResolver {
   async updateFeeSchedule(@Args('updateFeeScheduleInput') updateFeeScheduleInput: UpdateFeeScheduleInput): Promise<FeeSchedulePayload> {
     return {
       feeSchedule: await this.feeScheduleService.updateFeeSchedule(updateFeeScheduleInput),
-      response: { status: 200, message: 'FeeSchedule fetched successfully' }
+      response: { status: 200, message: 'Fee Schedule is updated successfully' }
     };
   }
 
