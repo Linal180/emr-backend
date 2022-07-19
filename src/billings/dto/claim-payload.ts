@@ -7,7 +7,7 @@ export class Charge {
   proc_code: string;
 
   @Field({ nullable: true })
-  diag_ref: string;
+  diagPointer: string;
 
   @Field(() => Int, { nullable: true })
   charge: number;
@@ -149,6 +149,15 @@ export class ClaimPayload {
 export class ClaimFilePayload {
   @Field(() => [Int], { nullable: true })
   claimFile?: number[]
+
+  @Field({ nullable: true })
+  response?: ResponsePayload
+}
+
+@ObjectType()
+export class ClaimNumberPayload {
+  @Field({ nullable: true })
+  claimNumber?: string
 
   @Field({ nullable: true })
   response?: ResponsePayload

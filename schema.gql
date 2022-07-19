@@ -106,11 +106,26 @@ enum AttachmentType {
   PRACTICE
 }
 
+type ClaimStatus {
+  id: String!
+  statusName: String
+  statusId: String
+  billings: [Billing!]
+  createdAt: String
+  updatedAt: String
+}
+
 type Code {
   id: String!
   code: String
   description: String
   price: String
+  diagPointer: String
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  unit: String
   codeType: CodeType!
   billing: Billing
   billingId: String
@@ -129,7 +144,6 @@ enum CodeType {
 type Billing {
   id: String!
   patientPaymentType: PatientPaymentType!
-  patientBillingStatus: PatientBillingStatus!
   amount: String
   onsetDateType: OnsetDateType!
   onsetDate: String
@@ -143,10 +157,12 @@ type Billing {
   serviceDate: String
   claimDate: String
   pos: String
+  uncoveredAmount: String
   codes: [Code!]
   appointment: Appointment
   patient: Patient
   facility: Facility
+  claimStatus: ClaimStatus
   servicingProvider: Doctor
   renderingProvider: Doctor
   patientId: String
@@ -154,6 +170,7 @@ type Billing {
   facilityId: String
   servicingProviderId: String
   renderingProviderId: String
+  claimStatusId: String
   createdAt: String
   updatedAt: String
 }
@@ -162,19 +179,6 @@ type Billing {
 enum PatientPaymentType {
   INSURANCE
   NO_INSURANCE
-}
-
-"""The patient billing status assigned"""
-enum PatientBillingStatus {
-  PAID_IN_FULL
-  BALANCE_DUE
-  SETTLED
-  INTERNAL_REVIEW
-  BILL_INSURANCE
-  BILL_SECONDARY_INSURANCE
-  WORKERS_COMP_CLAIM
-  AUTO_ACCIDENT_CLAIM
-  DURABLE_MEDICAL_EQUIPMENT_CLAIM
 }
 
 """The patient billing status assigned"""
@@ -2094,7 +2098,7 @@ type BillingPayload {
 
 type Charge {
   proc_code: String
-  diag_ref: String
+  diagPointer: String
   charge: Int
   units: String
 }
@@ -2149,6 +2153,22 @@ type ClaimPayload {
 type ClaimFilePayload {
   claimFile: [Int!]
   response: ResponsePayload
+}
+
+type ClaimNumberPayload {
+  claimNumber: String
+  response: ResponsePayload
+}
+
+type ClaimStatusesPayload {
+  claimStatuses: [ClaimStatus!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type ClaimStatusPayload {
+  claimStatus: ClaimStatus!
+  response: Response
 }
 
 type UserLogs {
@@ -2516,7 +2536,10 @@ type Query {
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   createClaim(claimInput: ClaimInput!): ClaimPayload!
+  generateClaimNo: ClaimNumberPayload!
   getClaimFile(claimInput: ClaimInput!): ClaimFilePayload!
+  fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
+  findClaimStatus(id: String!): ClaimStatusPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
@@ -2886,7 +2909,19 @@ input CodesInput {
   code: String
   description: String
   price: String
+  diagPointer: String
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  unit: String
   codeType: CodeType
+}
+
+input ClaimStatusPaginationInput {
+  statusName: String
+  searchString: String
+  paginationOptions: PaginationInput!
 }
 
 input InsurancePaginationInput {
@@ -3056,6 +3091,9 @@ type Mutation {
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
+  createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
+  updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
+  removeClaimStatus(id: String!): ClaimStatusPayload!
   createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
@@ -4301,7 +4339,6 @@ input RemoveVital {
 
 input BillingInput {
   patientPaymentType: PatientPaymentType
-  patientBillingStatus: PatientBillingStatus
   amount: String
   onsetDateType: OnsetDateType
   onsetDate: String
@@ -4318,9 +4355,22 @@ input BillingInput {
   serviceDate: String
   claimDate: String
   pos: String
+  uncoveredAmount: String
   facilityId: String
   servicingProviderId: String
   renderingProviderId: String
+  claimStatusId: String
+}
+
+input ClaimStatusInput {
+  statusName: String
+  statusId: String
+}
+
+input UpdateClaimStatusInput {
+  statusName: String
+  statusId: String
+  id: String
 }
 
 input CreatePolicyInput {

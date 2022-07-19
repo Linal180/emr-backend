@@ -1,5 +1,6 @@
 import * as fs from 'fs';
-const path = require("path");
+import * as path from "path";
+import states from "states-us";
 import * as moment from 'moment';
 import * as FormData from 'form-data';
 import * as xmlBuilder from 'xmlbuilder';
@@ -31,7 +32,8 @@ import { Claim } from '../dto/claim-payload';
 import ClaimInput from '../dto/claim-input.dto';
 import BillingInput from '../dto/billing-input.dto';
 //helpers
-import { getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
+import { generateString, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
+import { ClaimStatusService } from './claimStatus.service';
 
 @Injectable()
 export class BillingService {
@@ -51,6 +53,7 @@ export class BillingService {
     private readonly billingAddressService: BillingAddressService,
     private readonly doctorService: DoctorService,
     private readonly practiceService: PracticeService,
+    private readonly claimStatusService: ClaimStatusService,
     private readonly httpService: HttpService
   ) { }
 
@@ -64,7 +67,7 @@ export class BillingService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, ...billingInfoToCreate } = createBillingInput
+      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, claimStatusId, ...billingInfoToCreate } = createBillingInput
       //creating policy
       const billingInstance = this.billingRepository.create({ ...billingInfoToCreate })
 
@@ -91,6 +94,11 @@ export class BillingService {
       if (appointmentId) {
         const appointment = await this.appointmentService.findOne(appointmentId)
         billingInstance.appointment = appointment
+      }
+
+      if (claimStatusId) {
+        const claimStatus = await this.claimStatusService.findOne(claimStatusId)
+        billingInstance.claimStatus = claimStatus
       }
       const billing = await this.billingRepository.save(billingInstance);
 
@@ -177,6 +185,7 @@ export class BillingService {
     const primaryProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
     const referringProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.REFERRING_PROVIDER)?.doctor
     const orderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.ORDERING_PROVIDER)?.doctor
+    const renderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.RENDERING_PROVIDER)?.doctor
     const contacts = await this.contactsService.findContactsByPatientId(patient.id);
     const { address, city, state, zipCode, address2, country, phone } = contacts?.find((contact) => contact.primaryContact) || {}
 
@@ -212,12 +221,12 @@ export class BillingService {
     })
 
     const procedures = procedureCodes.map((procedureCode) => {
-      const { code, price } = procedureCode
+      const { code, price, diagPointer, m1, m2, m3, m4, unit } = procedureCode
       return {
         proc_code: code,
-        diag_ref: 'A',
         charge: Number(price || 0),
-        units: ''
+        units: '',
+        diagPointer, m1, m2, m3, m4, unit
       }
     })
 
@@ -303,8 +312,8 @@ export class BillingService {
       ref_npi: referringProviderInfo?.npi,
       cond: onsetDateType,
       onset: otherDateType,
-      cond_date: onsetDate ? moment(onsetDate).format('YYYY-MM-DD'): '',  //this represents current illness in dr.chrono claim page
-      onset_date: otherDate ? moment(otherDate).format('YYYY-MM-DD'): '', // this represents other as onset in dr.chrono claim page
+      cond_date: onsetDate ? moment(onsetDate).format('YYYY-MM-DD') : '',  //this represents current illness in dr.chrono claim page
+      onset_date: otherDate ? moment(otherDate).format('YYYY-MM-DD') : '', // this represents other as onset in dr.chrono claim page
       // "lastseen_date",
       // "nowork_from_date",
       // "nowork_to_date",
@@ -352,14 +361,14 @@ export class BillingService {
       // "bill_taxid",
       // "bill_taxid_type",
       // "bill_taxonomy",
-      // "prov_name_l",
-      // "prov_name_f",
-      // "prov_name_m",
-      // "prov_npi",
-      // "prov_id",
-      // "prov_taxonomy",
-      // "prov_taxid",
-      // "prov_taxid_type",
+      prov_name_l: renderingProviderInfo?.lastName,
+      prov_name_f: renderingProviderInfo?.firstName,
+      prov_name_m: referringProviderInfo?.middleName,
+      // prov_npi,
+      // prov_id,
+      // prov_taxonomy,
+      // prov_taxid,
+      // prov_taxid_type,
       ord_name_l: orderingProviderInfo?.lastName,
       ord_name_f: orderingProviderInfo?.firstName,
       ord_name_m: orderingProviderInfo?.middleName,
@@ -535,11 +544,11 @@ export class BillingService {
     const form = pdfDoc.getForm()
 
     const ins_sex_kids = createPDFAcroFields(form.getCheckBox('ins_sex').acroField.Kids()).map(_ => _[0]);
-    claimInfo.ins_sex === 'M' && ins_sex_kids[0].setValue(ins_sex_kids[0].getOnValue()) 
+    claimInfo.ins_sex === 'M' && ins_sex_kids[0].setValue(ins_sex_kids[0].getOnValue())
     claimInfo.ins_sex === 'F' && ins_sex_kids[1].setValue(ins_sex_kids[1].getOnValue());
 
     const pat_sex_kids = createPDFAcroFields(form.getCheckBox('sex').acroField.Kids()).map(_ => _[0]);
-    claimInfo.pat_sex === 'M' && pat_sex_kids[0].setValue(pat_sex_kids[0].getOnValue()) 
+    claimInfo.pat_sex === 'M' && pat_sex_kids[0].setValue(pat_sex_kids[0].getOnValue())
     claimInfo.pat_sex === 'F' && pat_sex_kids[1].setValue(pat_sex_kids[1].getOnValue());
 
     const rel_to_ins_kids = createPDFAcroFields(form.getCheckBox('rel_to_ins').acroField.Kids()).map(_ => _[0]);
@@ -556,22 +565,22 @@ export class BillingService {
     const ins_benefit_plan_kids = createPDFAcroFields(form.getCheckBox('ins_benefit_plan').acroField.Kids()).map(_ => _[0]);
     claimInfo.payer_order ? ins_benefit_plan_kids[0].setValue(ins_benefit_plan_kids[0].getOnValue()) : ins_benefit_plan_kids[1].setValue(ins_benefit_plan_kids[1].getOnValue());
 
-    form.getTextField('pt_name').setText(`${claimInfo.pat_name_l}, ${claimInfo.pat_name_f}, ${claimInfo.pat_name_m}` )
+    form.getTextField('pt_name').setText(`${claimInfo.pat_name_l || ''}, ${claimInfo.pat_name_f || ''}, ${claimInfo.pat_name_m || ''}`)
     claimInfo.payerid && form.getTextField('insurance_id').setText(`${claimInfo.payerid}`)
-    form.getTextField('ins_name').setText(`${claimInfo.ins_name_l} ${claimInfo.ins_name_f} ${claimInfo.ins_name_m}`)
+    form.getTextField('ins_name').setText(`${claimInfo.ins_name_l || ''}, ${claimInfo.ins_name_f || ''}, ${claimInfo.ins_name_m || ''}`)
     form.getTextField('birth_mm').setText(`${moment(claimInfo.pat_dob).format('MM')}`)
     form.getTextField('birth_dd').setText(`${moment(claimInfo.pat_dob).format('DD')}`)
     form.getTextField('birth_yy').setText(`${moment(claimInfo.pat_dob).format('YY')}`)
-    form.getTextField('pt_street').setText(claimInfo.pat_addr_1)
-    form.getTextField('pt_city').setText(claimInfo.pat_city)
-    form.getTextField('pt_state').setText(claimInfo.pat_state?.slice(0, 3))
-    form.getTextField('pt_zip').setText(claimInfo.pat_zip)
-    form.getTextField('pt_AreaCode').setText(claimInfo.pat_phone?.slice(0, 3))
-    form.getTextField('pt_phone').setText(claimInfo.pat_phone?.slice(3, claimInfo.pat_phone?.length))
-    form.getTextField('ins_street').setText(claimInfo.ins_addr_1)
-    form.getTextField('ins_city').setText(claimInfo.ins_city)
-    form.getTextField('ins_state').setText(claimInfo.ins_state?.slice(0, 3))
-    form.getTextField('ins_zip').setText(claimInfo.ins_zip)
+    claimInfo.pat_addr_1 && form.getTextField('pt_street').setText(claimInfo.pat_addr_1)
+    claimInfo.pat_city && form.getTextField('pt_city').setText(claimInfo.pat_city)
+    claimInfo.pat_state && form.getTextField('pt_state').setText(states?.find((state) => state?.name === claimInfo.pat_state)?.abbreviation ?? '')
+    claimInfo.pat_zip && form.getTextField('pt_zip').setText(claimInfo.pat_zip)
+    claimInfo.pat_phone && form.getTextField('pt_AreaCode').setText(claimInfo.pat_phone?.slice(0, 3))
+    claimInfo.pat_phone && form.getTextField('pt_phone').setText(claimInfo.pat_phone?.slice(3, claimInfo.pat_phone?.length))
+    claimInfo.ins_addr_1 && form.getTextField('ins_street').setText(claimInfo.ins_addr_1)
+    claimInfo.ins_city && form.getTextField('ins_city').setText(claimInfo.ins_city)
+    claimInfo.ins_state && form.getTextField('ins_state').setText(states?.find((state) => state?.name === claimInfo.ins_state)?.abbreviation ?? '')
+    claimInfo.ins_zip && form.getTextField('ins_zip').setText(claimInfo.ins_zip)
     form.getTextField('ins_phone area')
     form.getTextField('ins_phone')
     claimInfo.ins_group && form.getTextField('ins_policy').setText(`${claimInfo.ins_group}`)
@@ -627,18 +636,23 @@ export class BillingService {
     claimInfo.facility_id && form.getTextField('grp1').setText(claimInfo.facility_id ?? '')
     claimInfo.total_charge && form.getTextField('t_charge').setText(String(claimInfo.total_charge))
 
-    claimInfo.charge.forEach((chargeValue, i) => {
-      form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date).format('MM')}`)
-      form.getTextField(`sv${i + 1}_dd_from`).setText(`${moment(claimInfo.from_date).format('DD')}`)
-      form.getTextField(`sv${i + 1}_yy_from`).setText(`${moment(claimInfo.from_date).format('YY')}`)
-      form.getTextField(`sv${i + 1}_mm_end`).setText(`${moment(claimInfo.thru_date).format('MM')}`)
-      form.getTextField(`sv${i + 1}_dd_end`).setText(`${moment(claimInfo.thru_date).format('DD')}`)
-      form.getTextField(`sv${i + 1}_yy_end`).setText(`${moment(claimInfo.thru_date).format('YY')}`)
-      form.getTextField(`place${i + 1}`).setText(claimInfo.chg_facility_state?.slice(0, 3) ?? '')
-      form.getTextField(`ch${i + 1}`).setText(String(chargeValue.charge))
-      form.getTextField(`cpt${i + 1}`).setText(chargeValue.proc_code)
-      form.getTextField(`diag${i + 1}`).setText(chargeValue.diag_ref)
-      form.getTextField(`day${i + 1}`).setText(chargeValue.units)
+    claimInfo.charge.length && claimInfo.charge.forEach((chargeValue, i) => {
+      claimInfo.from_date && form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date).format('MM')}`)
+      claimInfo.from_date && form.getTextField(`sv${i + 1}_dd_from`).setText(`${moment(claimInfo.from_date).format('DD')}`)
+      claimInfo.from_date && form.getTextField(`sv${i + 1}_yy_from`).setText(`${moment(claimInfo.from_date).format('YY')}`)
+      claimInfo.thru_date && form.getTextField(`sv${i + 1}_mm_end`).setText(`${moment(claimInfo.thru_date).format('MM')}`)
+      claimInfo.thru_date && form.getTextField(`sv${i + 1}_dd_end`).setText(`${moment(claimInfo.thru_date).format('DD')}`)
+      claimInfo.thru_date && form.getTextField(`sv${i + 1}_yy_end`).setText(`${moment(claimInfo.thru_date).format('YY')}`)
+      claimInfo.chg_facility_state && form.getTextField(`place${i + 1}`).setText(states?.find((state) => state?.name === claimInfo.chg_facility_state)?.abbreviation ?? '')
+      chargeValue.charge && form.getTextField(`ch${i + 1}`).setText(String(chargeValue.charge))
+      chargeValue.proc_code && form.getTextField(`cpt${i + 1}`).setText(chargeValue.proc_code)
+      chargeValue.diagPointer && form.getTextField(`diag${i + 1}`).setText(chargeValue.diagPointer)
+      chargeValue.m1 && form.getTextField(`mod${i + 1}`).setText(chargeValue.m1)
+      chargeValue.m1 && form.getTextField(`mod${i + 1}a`).setText(chargeValue.m2)
+      chargeValue.m1 && form.getTextField(`mod${i + 1}b`).setText(chargeValue.m3)
+      chargeValue.m1 && form.getTextField(`mod${i + 1}c`).setText(chargeValue.m4)
+      chargeValue.unit && form.getTextField(`day${i + 1}`).setText(chargeValue.unit)
+      claimInfo.prov_name_f && form.getTextField(`local${i + 1}`).setText(`${claimInfo.prov_name_f || ''} ${claimInfo.prov_name_m || ''} ${claimInfo.prov_name_l || ''}`)
     })
     // form.flatten()
     const pdfBytes = await pdfDoc.save()
@@ -688,5 +702,9 @@ export class BillingService {
     }).toPromise();
 
     return claimInfo
+  }
+
+  generateClaimNumber() {
+    return generateString(4)
   }
 }
