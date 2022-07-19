@@ -4,6 +4,7 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ClaimStatus } from './claim-status.entity';
 import { Code } from './code.entity';
 
 export enum PatientPaymentType {
@@ -151,6 +152,10 @@ export class Billing {
   @Field(() => Facility, { nullable: true })
   facility: Facility;
 
+  @ManyToOne(() => ClaimStatus, claimStatus => claimStatus.billings, { onDelete: 'CASCADE' })
+  @Field(() => ClaimStatus, { nullable: true })
+  claimStatus: ClaimStatus;
+
   @ManyToOne(() => Doctor, doctor => doctor.primaryProviderBillings, { onDelete: 'CASCADE' })
   @Field(() => Doctor, { nullable: true })
   servicingProvider: Doctor;
@@ -178,6 +183,10 @@ export class Billing {
   @Column({ nullable: true })
   @Field({ nullable: true })
   renderingProviderId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  claimStatusId: string
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

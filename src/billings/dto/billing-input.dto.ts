@@ -66,4 +66,7 @@ export default class BillingInput {
 
   @Field({ nullable: true })
   renderingProviderId?: string
+
+  @Field({ nullable: true })
+  claimStatusId?: string
 }

@@ -33,6 +33,7 @@ import ClaimInput from '../dto/claim-input.dto';
 import BillingInput from '../dto/billing-input.dto';
 //helpers
 import { generateString, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
+import { ClaimStatusService } from './claimStatus.service';
 
 @Injectable()
 export class BillingService {
@@ -52,6 +53,7 @@ export class BillingService {
     private readonly billingAddressService: BillingAddressService,
     private readonly doctorService: DoctorService,
     private readonly practiceService: PracticeService,
+    private readonly claimStatusService: ClaimStatusService,
     private readonly httpService: HttpService
   ) { }
 
@@ -65,7 +67,7 @@ export class BillingService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, ...billingInfoToCreate } = createBillingInput
+      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, claimStatusId, ...billingInfoToCreate } = createBillingInput
       //creating policy
       const billingInstance = this.billingRepository.create({ ...billingInfoToCreate })
 
@@ -92,6 +94,11 @@ export class BillingService {
       if (appointmentId) {
         const appointment = await this.appointmentService.findOne(appointmentId)
         billingInstance.appointment = appointment
+      }
+
+      if (claimStatusId) {
+        const claimStatus = await this.claimStatusService.findOne(claimStatusId)
+        billingInstance.claimStatus = claimStatus
       }
       const billing = await this.billingRepository.save(billingInstance);
 
@@ -178,6 +185,7 @@ export class BillingService {
     const primaryProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
     const referringProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.REFERRING_PROVIDER)?.doctor
     const orderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.ORDERING_PROVIDER)?.doctor
+    const renderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.RENDERING_PROVIDER)?.doctor
     const contacts = await this.contactsService.findContactsByPatientId(patient.id);
     const { address, city, state, zipCode, address2, country, phone } = contacts?.find((contact) => contact.primaryContact) || {}
 
@@ -353,14 +361,14 @@ export class BillingService {
       // "bill_taxid",
       // "bill_taxid_type",
       // "bill_taxonomy",
-      // "prov_name_l",
-      // "prov_name_f",
-      // "prov_name_m",
-      // "prov_npi",
-      // "prov_id",
-      // "prov_taxonomy",
-      // "prov_taxid",
-      // "prov_taxid_type",
+      prov_name_l: renderingProviderInfo?.lastName,
+      prov_name_f: renderingProviderInfo?.firstName,
+      prov_name_m: referringProviderInfo?.middleName,
+      // prov_npi,
+      // prov_id,
+      // prov_taxonomy,
+      // prov_taxid,
+      // prov_taxid_type,
       ord_name_l: orderingProviderInfo?.lastName,
       ord_name_f: orderingProviderInfo?.firstName,
       ord_name_m: orderingProviderInfo?.middleName,
@@ -644,6 +652,7 @@ export class BillingService {
       chargeValue.m1 && form.getTextField(`mod${i + 1}b`).setText(chargeValue.m3)
       chargeValue.m1 && form.getTextField(`mod${i + 1}c`).setText(chargeValue.m4)
       chargeValue.unit && form.getTextField(`day${i + 1}`).setText(chargeValue.unit)
+      claimInfo.prov_name_f && form.getTextField(`local${i + 1}`).setText(`${claimInfo.prov_name_f || ''} ${claimInfo.prov_name_m || ''} ${claimInfo.prov_name_l || ''}`)
     })
     // form.flatten()
     const pdfBytes = await pdfDoc.save()

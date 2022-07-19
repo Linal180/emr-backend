@@ -13,10 +13,14 @@ import { BillingResolver } from './resolvers/billing.resolver';
 import { BillingService } from './services/billing.service';
 import { UsersModule } from 'src/users/users.module';
 import { PracticeModule } from 'src/practice/practice.module';
+import { ClaimStatusResolver } from './resolvers/claimStatus.resolver';
+import { ClaimStatusService } from './services/claimStatus.service';
+import { ClaimStatus } from './entities/claim-status.entity';
+import { PaginationModule } from 'src/pagination/pagination.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Billing,Code]),
+    TypeOrmModule.forFeature([Billing,Code, ClaimStatus]),
     UsersModule,
     PatientModule,
     AppointmentModule,
@@ -24,9 +28,10 @@ import { PracticeModule } from 'src/practice/practice.module';
     ProviderModule,
     FacilityModule,
     PracticeModule,
+    PaginationModule,
     HttpModule
   ],
-  providers: [BillingResolver, BillingService],
+  providers: [BillingResolver, BillingService, ClaimStatusResolver, ClaimStatusService],
   exports: [TypeOrmModule],
 })
 export class BillingModule { }

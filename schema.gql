@@ -106,6 +106,15 @@ enum AttachmentType {
   PRACTICE
 }
 
+type ClaimStatus {
+  id: String!
+  statusName: String
+  statusId: String
+  billings: [Billing!]
+  createdAt: String
+  updatedAt: String
+}
+
 type Code {
   id: String!
   code: String
@@ -153,6 +162,7 @@ type Billing {
   appointment: Appointment
   patient: Patient
   facility: Facility
+  claimStatus: ClaimStatus
   servicingProvider: Doctor
   renderingProvider: Doctor
   patientId: String
@@ -160,6 +170,7 @@ type Billing {
   facilityId: String
   servicingProviderId: String
   renderingProviderId: String
+  claimStatusId: String
   createdAt: String
   updatedAt: String
 }
@@ -2149,6 +2160,17 @@ type ClaimNumberPayload {
   response: ResponsePayload
 }
 
+type ClaimStatusesPayload {
+  claimStatuses: [ClaimStatus!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type ClaimStatusPayload {
+  claimStatus: ClaimStatus!
+  response: Response
+}
+
 type UserLogs {
   id: String!
   operationName: String
@@ -2516,6 +2538,8 @@ type Query {
   createClaim(claimInput: ClaimInput!): ClaimPayload!
   generateClaimNo: ClaimNumberPayload!
   getClaimFile(claimInput: ClaimInput!): ClaimFilePayload!
+  fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
+  findClaimStatus(id: String!): ClaimStatusPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
@@ -2894,6 +2918,12 @@ input CodesInput {
   codeType: CodeType
 }
 
+input ClaimStatusPaginationInput {
+  statusName: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
 input InsurancePaginationInput {
   searchString: String
   paginationOptions: PaginationInput!
@@ -3061,6 +3091,9 @@ type Mutation {
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
+  createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
+  updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
+  removeClaimStatus(id: String!): ClaimStatusPayload!
   createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
@@ -4326,6 +4359,18 @@ input BillingInput {
   facilityId: String
   servicingProviderId: String
   renderingProviderId: String
+  claimStatusId: String
+}
+
+input ClaimStatusInput {
+  statusName: String
+  statusId: String
+}
+
+input UpdateClaimStatusInput {
+  statusName: String
+  statusId: String
+  id: String
 }
 
 input CreatePolicyInput {

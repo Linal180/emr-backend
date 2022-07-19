@@ -13,8 +13,10 @@ import { BillingPayload } from '../dto/billing-payload';
 import ClaimInput from '../dto/claim-input.dto';
 import { ClaimFilePayload, ClaimNumberPayload, ClaimPayload } from '../dto/claim-payload';
 import { Billing } from '../entities/billing.entity';
+import { ClaimStatus } from '../entities/claim-status.entity';
 import { Code } from '../entities/code.entity';
 import { BillingService } from '../services/billing.service';
+import { ClaimStatusService } from '../services/claimStatus.service';
 
 @Resolver(() => Billing)
 export class BillingResolver {
@@ -24,6 +26,7 @@ export class BillingResolver {
     private readonly billingService: BillingService,
     private readonly facilityService: FacilityService,
     private readonly doctorService: DoctorService,
+    private readonly claimStatusService: ClaimStatusService,
   ) { }
 
   @Mutation(() => BillingPayload)
@@ -97,6 +100,13 @@ export class BillingResolver {
   async renderingProvider(@Parent() billing: Billing): Promise<Doctor> {
     if (billing.renderingProviderId) {
       return await this.doctorService.findOne(billing.renderingProviderId)
+    }
+  }
+
+  @ResolveField(() => ClaimStatus)
+  async claimStatus(@Parent() billing: Billing): Promise<ClaimStatus> {
+    if (billing.claimStatusId) {
+      return await this.claimStatusService.findOne(billing.claimStatusId)
     }
   }
 }
