@@ -1,8 +1,10 @@
 import { HttpStatus, NotFoundException } from "@nestjs/common";
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //entities
 import { FeeSchedule } from "../entities/feeSchedule.entity";
+import { Practice } from "src/practice/entities/practice.entity";
 //services
+import { PracticeService } from "src/practice/practice.service";
 import { FeeScheduleService } from "../services/feeSchedule.service";
 //inputs
 import {
@@ -13,7 +15,9 @@ import { AllFeeSchedulesPayload, FeeSchedulePayload } from "../dto/feeSchedule-p
 
 @Resolver(() => FeeSchedule)
 export class FeeScheduleResolver {
-  constructor(private readonly feeScheduleService: FeeScheduleService) { }
+  constructor(private readonly feeScheduleService: FeeScheduleService,
+    private readonly practiceService: PracticeService,
+  ) { }
 
   //Queries 
 
@@ -78,5 +82,15 @@ export class FeeScheduleResolver {
       response: { status: 200, message: 'FeeSchedule fetched successfully' }
     };
   }
+
+  @ResolveField(() => Practice)
+  async practice(@Parent() feeSchedule: FeeSchedule): Promise<Practice> {
+    if (feeSchedule?.practiceId) {
+      const response = await this.practiceService.getPractice(feeSchedule?.practiceId);
+      const { practice } = response || {}
+      return practice
+    }
+  }
+
 
 }

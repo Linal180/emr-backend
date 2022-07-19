@@ -98,7 +98,7 @@ export class PracticeResolver {
     }
   }
 
-  @ResolveField(() => [Attachment])
+  @ResolveField(() => [FeeSchedule])
   async feeSchedules(@Parent() practice: Practice): Promise<FeeSchedule[]> {
     if (practice) {
       return await this.feeScheduleService.getFeeScheduleByPracticeId(practice.id);

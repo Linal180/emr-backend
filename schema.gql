@@ -1894,6 +1894,28 @@ type PermissionPayload {
   permission: Permission
 }
 
+type CPTCodes {
+  id: String!
+  code: String
+  category: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  createdAt: String
+  updatedAt: String
+}
+
+type AllCPTCodePayload {
+  cptCodes: [CPTCodes]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type CPTCodePayload {
+  cptCode: CPTCodes
+  response: ResponsePayloadResponse
+}
+
 type AllFeeSchedulesPayload {
   feeSchedules: [FeeSchedule]
   pagination: PaginationPayload
@@ -2530,6 +2552,8 @@ type Query {
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
+  findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
+  getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   getToken: BraintreePayload!
   getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
@@ -2848,6 +2872,15 @@ input GetFeeScheduleInput {
   id: String!
 }
 
+input FindAllCPTCodesInput {
+  code: String
+  paginationOptions: PaginationInput!
+}
+
+input GetCPTCodeInput {
+  id: String!
+}
+
 input InvoiceInputs {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -3080,6 +3113,9 @@ type Mutation {
   createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
   removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
   updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
+  createCPTCode(createCPTCodeInput: CreateCPTCodeInput!): CPTCodePayload!
+  updateCPTCode(updateCPTCodeInput: UpdateCPTCodeInput!): CPTCodePayload!
+  removeCPTCode(removeCPTCodeInput: RemoveCPTCodeInput!): CPTCodePayload!
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
@@ -4180,6 +4216,27 @@ input UpdateFeeScheduleInput {
   serviceFee: String
   revenueCode: String
   practiceId: String
+  id: String!
+}
+
+input CreateCPTCodeInput {
+  code: String
+  category: String
+  description: String
+  shortDescription: String
+  longDescription: String
+}
+
+input UpdateCPTCodeInput {
+  code: String
+  category: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  id: String!
+}
+
+input RemoveCPTCodeInput {
   id: String!
 }
 
