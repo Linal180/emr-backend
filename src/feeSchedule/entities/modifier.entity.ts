@@ -1,11 +1,10 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-//entities
-import { FeeSchedule } from "./feeSchedule.entity";
 
-@Entity({ name: 'CPTCodes' })
+@Entity({ name: 'Modifier' })
 @ObjectType()
-export class CPTCodes {
+export class Modifier {
+
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -16,24 +15,7 @@ export class CPTCodes {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  category: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   description: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  shortDescription: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  longDescription: string;
-
-  //fields
-
-  @Field(() => [FeeSchedule], { nullable: true })
-  feeSchedules: FeeSchedule[]
 
   //dates
 
@@ -44,5 +26,4 @@ export class CPTCodes {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
-
 }
