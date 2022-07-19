@@ -1,14 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { OnsetDateType, OtherDateType, PatientBillingStatus, PatientPaymentType } from '../entities/billing.entity';
+import { OnsetDateType, OtherDateType, PatientPaymentType } from '../entities/billing.entity';
 import CodesInput from './codes-input.dto';
 
 @InputType()
 export default class BillingInput {
   @Field(type => PatientPaymentType, { nullable: true })
   patientPaymentType?: PatientPaymentType
-
-  @Field(type => PatientBillingStatus, { nullable: true })
-  patientBillingStatus?: PatientBillingStatus
 
   @Field({ nullable: true })
   amount?: string
@@ -59,6 +56,9 @@ export default class BillingInput {
   pos?: string
 
   @Field({ nullable: true })
+  uncoveredAmount: string;
+
+  @Field({ nullable: true })
   facilityId?: string
 
   @Field({ nullable: true })
@@ -66,4 +66,7 @@ export default class BillingInput {
 
   @Field({ nullable: true })
   renderingProviderId?: string
+
+  @Field({ nullable: true })
+  claimStatusId?: string
 }
