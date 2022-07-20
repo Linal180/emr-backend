@@ -97,7 +97,8 @@ export class StaffService {
       }
       //update primary contact in user's model 
       if (staffInstance.user.id) {
-        await this.usersService.updateUserInfo({ phone: updateStaffInput.updateStaffItemInput.phone, id: staffInstance.user.id, facilityId: updateStaffInput.updateStaffItemInput.facilityId })
+        const { email, facilityId, phone } = updateStaffInput.updateStaffItemInput
+        await this.usersService.updateUserInfo({ id: staffInstance.user.id, email, facilityId, phone })
       }
       // get providers
       if (updateStaffInput.providers) {
@@ -188,6 +189,15 @@ export class StaffService {
    */
   async findOnebyUsername(username: string): Promise<Staff> {
     return await this.staffRepository.findOne({ username });
+  }
+
+  /**
+   * Finds staff by practice id
+   * @param practiceId 
+   * @returns staff by practice id 
+   */
+  async findStaffByPracticeId(practiceId: string): Promise<Staff[]> {
+    return await this.staffRepository.find({ practiceId });
   }
 
   /**
