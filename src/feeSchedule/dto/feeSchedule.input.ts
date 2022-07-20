@@ -10,6 +10,12 @@ export class FindAllFeeScheduleInput {
   @Field({ nullable: true })
   practiceId?: string
 
+  @Field({ nullable: true })
+  name?: string
+
+  @Field({ nullable: true })
+  searchString?: string
+
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 

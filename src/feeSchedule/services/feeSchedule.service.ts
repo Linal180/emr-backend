@@ -30,8 +30,13 @@ export class FeeScheduleService {
    */
   async findAllFeeSchedule(params: FindAllFeeScheduleInput): Promise<AllFeeSchedulesPayload> {
     try {
-      const { paginationOptions, practiceId } = params
-      const paginationResponse = await this.paginationService.willPaginate<FeeSchedule>(this.feeScheduleRepository, { paginationOptions, practiceId })
+      const { paginationOptions, practiceId, name, searchString } = params
+      const paginationResponse = await this.paginationService.willPaginate<FeeSchedule>(this.feeScheduleRepository, {
+        paginationOptions, practiceId, feeScheduleName: name,
+        associatedTo: 'FeeSchedule', associatedToField: {
+          columnValue: searchString, columnName: 'cptCode', filterType: 'stringFilter'
+        }
+      })
       return {
         pagination: {
           ...paginationResponse

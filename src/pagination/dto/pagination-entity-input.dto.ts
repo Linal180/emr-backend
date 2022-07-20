@@ -71,4 +71,5 @@ export class PaginatedEntityInput {
   logStartDate?: string;
   logEndDate?: string;
   code?: string;
+  feeScheduleName?: string;
 }

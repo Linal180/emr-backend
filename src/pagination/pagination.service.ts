@@ -205,6 +205,7 @@ export class PaginationService {
       logStartDate,
       logEndDate,
       code,
+      feeScheduleName,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -345,6 +346,7 @@ export class PaginationService {
         ...(moduleType && moduleType != null && { moduleType }),
         ...(code && code != null && { code }),
         ...(logUserId && logUserId != null && { userId: logUserId }),
+        ...(feeScheduleName && feeScheduleName != null && { name: feeScheduleName }),
         ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
         ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) })
       }

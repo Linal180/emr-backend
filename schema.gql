@@ -2911,6 +2911,8 @@ input GetPatientAppointmentInput {
 
 input FindAllFeeScheduleInput {
   practiceId: String
+  name: String
+  searchString: String
   paginationOptions: PaginationInput!
 }
 
