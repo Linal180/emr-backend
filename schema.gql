@@ -1911,6 +1911,14 @@ type PermissionPayload {
   permission: Permission
 }
 
+type Modifier {
+  id: String!
+  code: String
+  description: String
+  createdAt: String
+  updatedAt: String
+}
+
 type AllCPTCodePayload {
   cptCodes: [CPTCodes]
   pagination: PaginationPayload
@@ -1919,6 +1927,17 @@ type AllCPTCodePayload {
 
 type CPTCodePayload {
   cptCode: CPTCodes
+  response: ResponsePayloadResponse
+}
+
+type AllModifiersPayload {
+  modifiers: [Modifier]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type ModifierPayload {
+  modifier: Modifier
   response: ResponsePayloadResponse
 }
 
@@ -2576,6 +2595,8 @@ type Query {
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
+  findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
+  getModifier(getModifierInput: GetModifierInput!): ModifierPayload!
   getToken: BraintreePayload!
   getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
@@ -2906,6 +2927,15 @@ input GetCPTCodeInput {
   id: String!
 }
 
+input FindAllModifierInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetModifierInput {
+  id: String!
+}
+
 input InvoiceInputs {
   facilityId: String
   paginationOptions: PaginationInput!
@@ -3153,6 +3183,9 @@ type Mutation {
   createCPTCode(createCPTCodeInput: CreateCPTCodeInput!): CPTCodePayload!
   updateCPTCode(updateCPTCodeInput: UpdateCPTCodeInput!): CPTCodePayload!
   removeCPTCode(removeCPTCodeInput: RemoveCPTCodeInput!): CPTCodePayload!
+  createModifier(createModifierInput: CreateModifierInput!): ModifierPayload!
+  removeModifier(removeModifierInput: RemoveModifierInput!): ModifierPayload!
+  updateModifier(updateModifierInput: UpdateModifierInput!): ModifierPayload!
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
@@ -4277,6 +4310,21 @@ input UpdateCPTCodeInput {
 }
 
 input RemoveCPTCodeInput {
+  id: String!
+}
+
+input CreateModifierInput {
+  name: String
+  description: String
+}
+
+input RemoveModifierInput {
+  id: String!
+}
+
+input UpdateModifierInput {
+  name: String
+  description: String
   id: String!
 }
 
