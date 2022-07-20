@@ -54,9 +54,8 @@ export class CptCodeService {
       const { paginationOptions, code: searchString } = params
       const paginationResponse = await this.paginationService.willPaginate<CPTCodes>(this.cptCodeRepository, {
         paginationOptions, associatedTo: 'CPTCodes', associatedToField: {
-          columnValue: searchString, columnName: 'code', columnValue2: searchString, columnName2: "description",
-          columnValue3: searchString, columnName3: 'shortDescription',
-          filterType: 'stringFilter'
+          columnValue: searchString, columnName: 'code', columnName2: "description",
+          columnName3: 'shortDescription', filterType: 'stringFilter'
         }
       })
       return {
