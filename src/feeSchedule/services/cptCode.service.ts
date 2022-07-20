@@ -4,7 +4,9 @@ import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException
 //entities
 import { CPTCodes } from "../entities/cptCode.entity";
 //inputs
-import { CreateCPTCodeInput, FindAllCPTCodesInput, GetCPTCodeInput, RemoveCPTCodeInput, UpdateCPTCodeInput } from "../dto/cptCode.input";
+import {
+  CreateCPTCodeInput, FindAllCPTCodesInput, GetCPTCodeInput, RemoveCPTCodeInput, UpdateCPTCodeInput
+} from "../dto/cptCode.input";
 //services
 import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";

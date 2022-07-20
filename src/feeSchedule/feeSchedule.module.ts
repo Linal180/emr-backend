@@ -8,24 +8,28 @@ import { PaginationModule } from "src/pagination/pagination.module";
 import { CPTCodes } from "./entities/cptCode.entity";
 import { Modifier } from "./entities/modifier.entity";
 import { FeeSchedule } from "./entities/feeSchedule.entity";
+import { CptFeeSchedule } from "./entities/cptFeeSchedule.entity";
 //resolvers
 import { CptCodeResolver } from "./resolvers/cptCodes.resolver";
 import { ModifierResolver } from "./resolvers/modifier.resolver";
 import { FeeScheduleResolver } from "./resolvers/feeSchedule.resolver";
+import { CptFeeScheduleResolver } from "./resolvers/cptFeeSchedule.resolver";
 //services
 import { CptCodeService } from "./services/cptCode.service";
 import { ModifierService } from "./services/modifier.service";
 import { FeeScheduleService } from "./services/feeSchedule.service";
+import { CptFeeScheduleService } from "./services/cptFeeSchedule.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([FeeSchedule, CPTCodes, Modifier]),
+    TypeOrmModule.forFeature([FeeSchedule, CPTCodes, Modifier, CptFeeSchedule]),
     UtilsModule,
     PaginationModule,
     forwardRef(() => PracticeModule)
   ],
   providers: [
-    FeeScheduleResolver, FeeScheduleService, CptCodeResolver, CptCodeService, ModifierService, ModifierResolver
+    FeeScheduleResolver, FeeScheduleService, CptCodeResolver, CptCodeService, ModifierService, ModifierResolver,
+    CptFeeScheduleResolver, CptFeeScheduleService
   ],
   exports: [FeeScheduleService, TypeOrmModule]
 })

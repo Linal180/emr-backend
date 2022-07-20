@@ -1,4 +1,4 @@
-import { Raw, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //entities
@@ -30,12 +30,11 @@ export class FeeScheduleService {
    */
   async findAllFeeSchedule(params: FindAllFeeScheduleInput): Promise<AllFeeSchedulesPayload> {
     try {
-      const { paginationOptions, practiceId, name, searchString } = params
+      const { paginationOptions, practiceId, searchString } = params
       const paginationResponse = await this.paginationService.willPaginate<FeeSchedule>(this.feeScheduleRepository, {
-        paginationOptions, practiceId, feeScheduleName: name,
+        paginationOptions, practiceId,
         associatedTo: 'FeeSchedule', associatedToField: {
-          columnValue: searchString, columnName: 'cptCode', columnName2: "description",
-          columnName3: 'shortDescription', filterType: 'stringFilter'
+          columnValue: searchString, columnName: 'name', filterType: 'stringFilter'
         }
       })
       return {
@@ -53,7 +52,7 @@ export class FeeScheduleService {
     try {
       const { paginationOptions, practiceId, searchString } = params;
       const paginationResponse = await this.paginationService.willPaginate<FeeSchedule>(this.feeScheduleRepository, {
-        paginationOptions, practiceId, effectiveDate: "abc", expireDate: "xyz",
+        paginationOptions, practiceId, effectiveDate: "abc", expiryDate: "xyz",
         associatedTo: 'FeeSchedule', associatedToField: {
           columnValue: searchString, columnName: 'cptCode', columnName2: "description",
           columnName3: 'shortDescription', filterType: 'stringFilter'
@@ -150,13 +149,13 @@ export class FeeScheduleService {
    * @param cptCode 
    * @returns by cpt code 
    */
-  async findByCptCode(cptCode: string): Promise<FeeSchedule[]> {
-    try {
-      const feeSchedules = await this.feeScheduleRepository.find({ cptCode })
-      return feeSchedules
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
+  // async findByCptCode(cptCode: string): Promise<FeeSchedule[]> {
+  //   try {
+  //     const feeSchedules = await this.feeScheduleRepository.find({ cptCode })
+  //     return feeSchedules
+  //   } catch (error) {
+  //     throw new InternalServerErrorException(error);
+  //   }
+  // }
 
 }

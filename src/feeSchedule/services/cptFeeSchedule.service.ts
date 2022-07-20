@@ -1,0 +1,146 @@
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+//services
+import { CptCodeService } from "./cptCode.service";
+import { UtilsService } from "src/util/utils.service";
+import { FeeScheduleService } from "./feeSchedule.service";
+import { PaginationService } from "src/pagination/pagination.service";
+//entity
+import { CptFeeSchedule } from "../entities/cptFeeSchedule.entity";
+//inputs, payloads
+import {
+  createCptFeeScheduleInput, findAllCptFeeScheduleInput, getCptFeeScheduleInput, removeCptFeeScheduleInput,
+  updateCptFeeScheduleInput
+} from "../dto/cptFeeSchedule.input";
+import { AllCPTFeeSchedulesPayload } from "../dto/cptFeeSchedule-payload.dto";
+
+@Injectable()
+export class CptFeeScheduleService {
+  constructor(@InjectRepository(CptFeeSchedule) private cptFeeScheduleRepository: Repository<CptFeeSchedule>,
+    private readonly utilsService: UtilsService,
+    private readonly cptCodeService: CptCodeService,
+    private readonly paginationService: PaginationService,
+    private readonly feeScheduleService: FeeScheduleService,
+  ) { }
+
+  /**
+   * Finds all fee schedule
+   * @param params 
+   * @returns all fee schedule 
+   */
+  async findAllCptFeeSchedule(params: findAllCptFeeScheduleInput): Promise<AllCPTFeeSchedulesPayload> {
+    try {
+      const { paginationOptions, practiceId, searchString } = params
+      const paginationResponse = await this.paginationService.willPaginate<CptFeeSchedule>(this.cptFeeScheduleRepository, {
+        paginationOptions, practiceId, associatedTo: 'CptFeeSchedule', associatedToField: {
+          columnValue: searchString, columnName: 'code', columnName2: "description", columnName3: 'shortDescription', filterType: 'stringFilter'
+        }
+      })
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        cptFeeSchedules: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Creates cpt fee schedule service
+   * @param params 
+   * @returns create 
+   */
+  async create(params: createCptFeeScheduleInput): Promise<CptFeeSchedule> {
+    try {
+      const { feeScheduleId, CPTCodesId } = params || {}
+      const cptFeeSchedule = this.cptFeeScheduleRepository.create(params);
+      //associate to fee schedule
+      if (feeScheduleId) {
+        const feeSchedule = await this.feeScheduleService.findOne({ id: feeScheduleId })
+        cptFeeSchedule.feeSchedule = feeSchedule
+      }
+      //associate to cpt code
+      if (CPTCodesId) {
+        const cptCodes = await this.cptCodeService.findOne({ id: CPTCodesId })
+        cptFeeSchedule.cptCodes = cptCodes
+      }
+      return await this.cptFeeScheduleRepository.save(cptFeeSchedule)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds one
+   * @param params 
+   * @returns one 
+   */
+  async findOne(params: getCptFeeScheduleInput): Promise<CptFeeSchedule> {
+    const { id } = params
+    return await this.cptFeeScheduleRepository.findOne(id)
+  }
+
+  /**
+   * Updates cpt fee schedule
+   * @param params 
+   * @returns cpt fee schedule 
+   */
+  async updateCptFeeSchedule(params: updateCptFeeScheduleInput): Promise<CptFeeSchedule> {
+    try {
+      const { CPTCodesId, feeScheduleId } = params || {}
+      const cptFeeSchedule = await this.utilsService.updateEntityManager(CptFeeSchedule, params.id, params, this.cptFeeScheduleRepository)
+      //associate to fee schedule
+      if (feeScheduleId) {
+        const feeSchedule = await this.feeScheduleService.findOne({ id: feeScheduleId })
+        cptFeeSchedule.feeSchedule = feeSchedule
+      }
+      //associate to cpt code
+      if (CPTCodesId) {
+        const cptCodes = await this.cptCodeService.findOne({ id: CPTCodesId })
+        cptFeeSchedule.cptCodes = cptCodes
+      }
+      return await this.cptFeeScheduleRepository.save(cptFeeSchedule)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Removes cpt fee schedule service
+   * @param params 
+   * @returns remove 
+   */
+  async remove(params: removeCptFeeScheduleInput): Promise<CptFeeSchedule> {
+    try {
+      const { id } = params;
+      const cptFeeSchedule = await this.cptFeeScheduleRepository.findOne(id);
+      if (!cptFeeSchedule) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Fee Schedule not found' })
+      await this.cptFeeScheduleRepository.delete(id);
+      return cptFeeSchedule
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds by cpt code
+   * @param cptCodesId 
+   * @returns by cpt code 
+   */
+  async findByCptCode(cptCodesId: string): Promise<CptFeeSchedule[]> {
+    return await this.cptFeeScheduleRepository.find({ cptCodesId })
+  }
+
+  /**
+   * Finds by fee schedule
+   * @param feeScheduleId 
+   * @returns by fee schedule 
+   */
+  async findByFeeSchedule(feeScheduleId: string): Promise<CptFeeSchedule[]> {
+    return await this.cptFeeScheduleRepository.find({ feeScheduleId })
+  }
+
+}
