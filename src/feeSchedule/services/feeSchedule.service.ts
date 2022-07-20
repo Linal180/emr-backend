@@ -34,7 +34,8 @@ export class FeeScheduleService {
       const paginationResponse = await this.paginationService.willPaginate<FeeSchedule>(this.feeScheduleRepository, {
         paginationOptions, practiceId, feeScheduleName: name,
         associatedTo: 'FeeSchedule', associatedToField: {
-          columnValue: searchString, columnName: 'cptCode', filterType: 'stringFilter'
+          columnValue: searchString, columnName: 'cptCode', columnName2: "description",
+          columnName3: 'shortDescription', filterType: 'stringFilter'
         }
       })
       return {
