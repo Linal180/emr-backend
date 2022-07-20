@@ -18,6 +18,20 @@ export class FindAllFeeScheduleInput {
 
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput
+}
+
+
+@InputType()
+export class FindFeeScheduleCPTCodesInput {
+
+  @Field({ nullable: true })
+  practiceId?: string
+
+  @Field({ nullable: true })
+  searchString?: string
+
+  @Field(() => PaginationInput)
+  paginationOptions: PaginationInput
 
 }
 

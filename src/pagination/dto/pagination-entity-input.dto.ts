@@ -20,7 +20,7 @@ export class PaginatedEntityInput {
   appointmentStatus?: AppointmentStatus
   dueToday?: boolean
   facilityId?: string
-  singleFacilityId?:string
+  singleFacilityId?: string
   doctorId?: string
   role?: string
   phychType?: string
@@ -31,17 +31,17 @@ export class PaginatedEntityInput {
   primaryContact?: boolean
   categoryId?: string
   category?: { id: string }
-  associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?:string, filterType: string }
+  associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?: string, filterType: string }
   paginationOptions: PaginationInput
   associatedTo?: string
   relationField?: string
   requestType?: string
   requestStatus?: string
-  facilityName?:string
-  practiceName?:string
-  labTestStatus?:string
-  serviceName?:string
-  searchString?:string
+  facilityName?: string
+  practiceName?: string
+  labTestStatus?: string
+  serviceName?: string
+  searchString?: string
   isPrivate?: boolean
   MembershipPlan?: string
   patientRecord?: string
@@ -72,4 +72,6 @@ export class PaginatedEntityInput {
   logEndDate?: string;
   code?: string;
   feeScheduleName?: string;
+  effectiveDate?: string;
+  expireDate?: string;
 }

@@ -2593,6 +2593,7 @@ type Query {
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
+  findFeeScheduleCPTCodes(findFeeScheduleCPTCodesInput: FindFeeScheduleCPTCodesInput!): AllFeeSchedulesPayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
@@ -2918,6 +2919,12 @@ input FindAllFeeScheduleInput {
 
 input GetFeeScheduleInput {
   id: String!
+}
+
+input FindFeeScheduleCPTCodesInput {
+  practiceId: String
+  searchString: String
+  paginationOptions: PaginationInput!
 }
 
 input FindAllCPTCodesInput {

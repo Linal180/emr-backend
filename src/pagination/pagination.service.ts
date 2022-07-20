@@ -150,7 +150,7 @@ export class PaginationService {
    * @param paginationInput 
    * @returns options 
    */
-  private orchestrateOptions<Entity = any>(paginationInput: PaginatedEntityInput): FindManyOptions {
+  private orchestrateOptions(paginationInput: PaginatedEntityInput): FindManyOptions {
     const {
       status,
       primaryContact,
@@ -206,12 +206,13 @@ export class PaginationService {
       logEndDate,
       code,
       feeScheduleName,
+      effectiveDate,
+      expireDate,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
-    if (searchString) {
+    const today = new Date()
 
-    }
     const whereOptions: WhereOptions = {
       where: {
         ...(patientId && patientId != null && {
@@ -343,12 +344,14 @@ export class PaginationService {
         ...(agreementFacilityId && {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
-        ...(moduleType && moduleType != null && { moduleType }),
         ...(code && code != null && { code }),
+        ...(moduleType && moduleType != null && { moduleType }),
         ...(logUserId && logUserId != null && { userId: logUserId }),
         ...(feeScheduleName && feeScheduleName != null && { name: feeScheduleName }),
+        ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) }),
         ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
-        ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) })
+        ...(expireDate && expireDate != null && { expireDate: Raw(alias => `${alias} Is null OR ${alias} <= '${today}'`) }),
+        ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }), 
       }
     };
 
