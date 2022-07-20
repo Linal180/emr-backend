@@ -1955,6 +1955,7 @@ type FeeSchedulePayload {
 type PracticePayload {
   response: ResponsePayload
   practice: Practice
+  practiceAdmin: Staff
 }
 
 type PracticesPayload {
@@ -3085,6 +3086,7 @@ input UsersWithRolesInputs {
 input FormInput {
   practiceId: String
   facilityId: String
+  searchString: String
   isSystemForm: Boolean
   formType: FormType
   paginationOptions: PaginationInput!
@@ -3420,6 +3422,7 @@ input UpdateUserInput {
   isAdmin: Boolean
   id: String!
   emailVerified: Boolean
+  token: String
 }
 
 input UpdateRoleInput {
@@ -4091,6 +4094,11 @@ input CreatePracticeItemInput {
 }
 
 input UpdatePracticeInput {
+  updatePracticeItemInput: UpdatePracticeItemInput
+  updateUserInput: UpdateUserInput
+}
+
+input UpdatePracticeItemInput {
   name: String
   phone: String
   fax: String

@@ -11,6 +11,9 @@ export default class FormInput {
     @Field({ nullable: true })
     facilityId?: string
 
+    @Field({ nullable: true })
+    searchString?: string
+
     @Field(() => Boolean, { nullable: true })
     isSystemForm?: boolean
 

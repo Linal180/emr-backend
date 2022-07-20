@@ -26,6 +26,7 @@ import { StaffController } from './controllers/staff.controller';
 import { DoctorSubscriber } from './subscribers/doctor.subscriber';
 import { StaffSubscriber } from './subscribers/staff.subscriber';
 import { PracticeModule } from 'src/practice/practice.module';
+import { MailerModule } from 'src/mailer/mailer.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { PracticeModule } from 'src/practice/practice.module';
     forwardRef(() => AppointmentModule),
     forwardRef(() => AttachmentsModule),
     forwardRef(() => PracticeModule),
+    MailerModule
   ],
   providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService,
     DoctorResolver, DoctorService, ScheduleResolver, ScheduleService, DoctorSubscriber, StaffSubscriber],
