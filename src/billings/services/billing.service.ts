@@ -32,7 +32,7 @@ import { Claim } from '../dto/claim-payload';
 import ClaimInput from '../dto/claim-input.dto';
 import BillingInput from '../dto/billing-input.dto';
 //helpers
-import { generateString, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
+import { generateString, generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
 import { ClaimStatusService } from './claimStatus.service';
 
 @Injectable()
@@ -723,6 +723,6 @@ export class BillingService {
   }
 
   generateClaimNumber() {
-    return generateString(4)
+    return generateUniqueNumber()
   }
 }
