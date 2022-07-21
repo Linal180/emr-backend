@@ -1,25 +1,30 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards, UseInterceptors } from '@nestjs/common';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-//user imports
-import FacilityInput from '../dto/facility-input.dto';
-import { Facility } from '../entities/facility.entity';
+//payloads
 import { FacilityPayload } from '../dto/facility-payload.dto';
-import { FacilityService } from '../services/facility.service';
-import { Contact } from 'src/providers/entities/contact.entity';
-import { PracticeService } from 'src/practice/practice.service';
-import { Practice } from 'src/practice/entities/practice.entity';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
-import { CreateFacilityInput } from '../dto/create-facility.input';
-import { UpdateFacilityInput } from '../dto/update-facility.input';
-import { default as PermissionGuard } from 'src/users/auth/role.guard';
-import { ContactService } from 'src/providers/services/contact.service';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import { GetFacility, RemoveFacility } from '../dto/update-facilityItem.input';
+import { PatientsPayload } from 'src/patients/dto/patients-payload.dto';
+import FacilityInput, { GetFacilityPatientsInput } from '../dto/facility-input.dto';
+//entities
+import { Facility } from '../entities/facility.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
+import { Practice } from 'src/practice/entities/practice.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { BillingAddress } from 'src/providers/entities/billing-address.entity';
-import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
+//services
+import { FacilityService } from '../services/facility.service';
+import { PracticeService } from 'src/practice/practice.service';
+import { ContactService } from 'src/providers/services/contact.service';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
+//inputs
+import { CreateFacilityInput } from '../dto/create-facility.input';
+import { UpdateFacilityInput } from '../dto/update-facility.input';
+import { GetFacility, RemoveFacility } from '../dto/update-facilityItem.input';
+import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
+//guards
+import { default as PermissionGuard } from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 
 @Resolver(() => Facility)
 export class FacilityResolver {
@@ -115,6 +120,17 @@ export class FacilityResolver {
   // @SetMetadata('name', 'getFacility')
   async getFacility(@Args('getFacility') getFacility: GetFacility): Promise<FacilityPayload> {
     const facility = await this.facilityService.GetFacility(getFacility.id)
+    return {
+      ...facility,
+      response: { status: 200, message: 'Facility fetched successfully' }
+    };
+  }
+
+  @Query(() => FacilityPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getFacility')
+  async getFacilityPatients(@Args('getFacilityPatientsInput') getFacilityPatientsInput: GetFacilityPatientsInput):  Promise<PatientsPayload> {
+    const facility = await this.facilityService.getFacilityPatients(getFacilityPatientsInput)
     return {
       ...facility,
       response: { status: 200, message: 'Facility fetched successfully' }

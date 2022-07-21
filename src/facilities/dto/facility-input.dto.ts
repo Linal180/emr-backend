@@ -3,19 +3,30 @@ import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 
 @InputType()
 export default class FacilityInput {
-    @Field({ nullable: true })
-    isPrivate?: boolean
+  @Field({ nullable: true })
+  isPrivate?: boolean
 
-    @Field({ nullable: true })
-    practiceId?: string
+  @Field({ nullable: true })
+  practiceId?: string
 
-    @Field({ nullable: true })
-    singleFacilityId?: string
+  @Field({ nullable: true })
+  singleFacilityId?: string
 
-    @Field({ nullable: true })
-    facilityName?: string
+  @Field({ nullable: true })
+  facilityName?: string
 
-    @Field(type => PaginationInput)
-    paginationOptions: PaginationInput
-    
+  @Field(type => PaginationInput)
+  paginationOptions: PaginationInput
+
+}
+
+@InputType()
+export class GetFacilityPatientsInput {
+
+  @Field({ nullable: true })
+  facilityId: string
+
+  @Field(() => PaginationInput)
+  paginationOptions: PaginationInput
+
 }
