@@ -51,30 +51,33 @@ export class ScheduleService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      createScheduleInput.forEach(async (scheduleElement) => {
+      // createScheduleInput.forEach(async (scheduleElement) => {
+      for (let scheduleElement of createScheduleInput) {
         // create schedule
-        const scheduleInstance = this.scheduleRepository.create(scheduleElement)
+        const transformedScheduleElement = await this.getDeduplicateScheduleElement(scheduleElement)
+        const scheduleInstance = this.scheduleRepository.create((transformedScheduleElement as CreateScheduleInput))
         //fetch doctor
-        if (scheduleElement.doctorId) {
-          const doctor = await this.doctorService.findOne(scheduleElement.doctorId)
+        if ((transformedScheduleElement as CreateScheduleInput).doctorId) {
+          const doctor = await this.doctorService.findOne((transformedScheduleElement as CreateScheduleInput).doctorId)
           scheduleInstance.doctor = doctor
           scheduleInstance.doctorId = doctor.id
         }
         //fetch facility
-        if (scheduleElement.facilityId) {
-          const facility = await this.facilityService.findOne(scheduleElement.facilityId)
+        if ((transformedScheduleElement as CreateScheduleInput).facilityId) {
+          const facility = await this.facilityService.findOne((transformedScheduleElement as CreateScheduleInput).facilityId)
           scheduleInstance.facility = facility
           scheduleInstance.facilityId = facility.id
         }
         const schedule = await this.scheduleRepository.save(scheduleInstance);
-        if (scheduleElement.servicesIds) {
-          const services = await this.servicesService.findByIds(scheduleElement.servicesIds)
+        if ((transformedScheduleElement as CreateScheduleInput).servicesIds) {
+          const services = await this.servicesService.findByIds((transformedScheduleElement as CreateScheduleInput).servicesIds)
           const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
           const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
           scheduleInstance.scheduleServices = serviceSchedule
           await this.scheduleServicesRepository.save(serviceSchedule)
+          // }
         }
-      });
+      }
       await queryRunner.commitTransaction();
       return
     } catch (error) {
@@ -83,6 +86,39 @@ export class ScheduleService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getDeduplicateScheduleElement(scheduleElement: CreateScheduleInput | UpdateScheduleInput): Promise<CreateScheduleInput> {
+    let baseQuery = this.connection.getRepository(Schedule)
+      .createQueryBuilder('schedules')
+
+    if (scheduleElement.servicesIds?.length) {
+      baseQuery = baseQuery
+        .innerJoin(ScheduleServices, 'scheduleServices', `scheduleServices.scheduleId = "schedules"."id" AND scheduleServices.serviceId IN (:...data)`, { data: scheduleElement.servicesIds })
+    }
+    let scheduleElementData = await baseQuery
+      .where('"schedules"."startAt"::time <= :endAt', { endAt: moment(scheduleElement.endAt).format('HH:mm:ss') })
+      .andWhere('"schedules"."endAt"::time > :startAt', { startAt: moment(scheduleElement.startAt).format('HH:mm:ss') })
+      .andWhere('"schedules"."day" = :day', { day: scheduleElement.day })
+      .andWhere(scheduleElement.doctorId ? '"schedules"."doctorId" = :doctorId' : '1=1', { doctorId: scheduleElement.doctorId })
+      .andWhere(scheduleElement.facilityId ? '"schedules"."facilityId" = :facilityId' : '1=1', { facilityId: scheduleElement.facilityId })
+      .getMany()
+
+    let transformedScheduleElement
+    if (scheduleElementData) {
+      const startAt = [...scheduleElementData, scheduleElement].sort((a, b) => moment(a.startAt).diff(moment(b.startAt)))[0].startAt
+      const endAt = [...scheduleElementData, scheduleElement].sort((a, b) => moment(b.endAt).diff(moment(a.endAt)))[0].endAt
+      transformedScheduleElement = {
+        ...scheduleElement,
+        startAt: startAt,
+        endAt: endAt
+      }
+    }
+
+    scheduleElementData && scheduleElementData.forEach((scheduleElementDataValues) => {
+      this.removeSchedule({ id: scheduleElementDataValues.id })
+    })
+    return transformedScheduleElement
   }
 
   /**
@@ -112,27 +148,32 @@ export class ScheduleService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      const transformedScheduleElement = await this.getDeduplicateScheduleElement(updateScheduleInput)
+
       // fetch schedule
-      const scheduleInstance = await this.scheduleRepository.findOne(updateScheduleInput.id)
+      const scheduleInstance = await this.scheduleRepository.findOne((transformedScheduleElement as UpdateScheduleInput).id)
+      if (!scheduleInstance) {
+        return await this.createSchedule([transformedScheduleElement])
+      }
       //fetch user
-      if (updateScheduleInput.doctorId) {
-        const doctor = await this.doctorService.findOne(updateScheduleInput.doctorId)
+      if ((transformedScheduleElement as UpdateScheduleInput).doctorId) {
+        const doctor = await this.doctorService.findOne((transformedScheduleElement as UpdateScheduleInput).doctorId)
         scheduleInstance.doctor = doctor
         scheduleInstance.doctorId = doctor.id
       }
       //fetch facility
-      if (updateScheduleInput.facilityId) {
-        const facility = await this.facilityService.findOne(updateScheduleInput.facilityId)
+      if ((transformedScheduleElement as UpdateScheduleInput).facilityId) {
+        const facility = await this.facilityService.findOne((transformedScheduleElement as UpdateScheduleInput).facilityId)
         scheduleInstance.facility = facility
         scheduleInstance.facilityId = facility.id
       }
-      scheduleInstance.startAt = updateScheduleInput.startAt;
-      scheduleInstance.endAt = updateScheduleInput.endAt;
-      scheduleInstance.recurringEndDate= updateScheduleInput.recurringEndDate;
+      scheduleInstance.startAt = (transformedScheduleElement as UpdateScheduleInput).startAt;
+      scheduleInstance.endAt = (transformedScheduleElement as UpdateScheduleInput).endAt;
+      scheduleInstance.recurringEndDate = (transformedScheduleElement as UpdateScheduleInput).recurringEndDate;
       const schedule = await this.scheduleRepository.save(scheduleInstance);
-      if (updateScheduleInput.servicesIds) {
+      if ((transformedScheduleElement as UpdateScheduleInput).servicesIds) {
         await this.scheduleServicesRepository.delete({ scheduleId: scheduleInstance.id })
-        const services = await this.servicesService.findByIds(updateScheduleInput.servicesIds)
+        const services = await this.servicesService.findByIds((transformedScheduleElement as UpdateScheduleInput).servicesIds)
         const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
         const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
         scheduleInstance.scheduleServices = serviceSchedule
@@ -258,32 +299,32 @@ export class ScheduleService {
   }
 
   async getShouldHaveSlots(getSlots: GetSlots): Promise<boolean> {
-    let flag= true
-    const dateToCompare=moment(getSlots.currentDate).toISOString()
+    let flag = true
+    const dateToCompare = moment(getSlots.currentDate).toISOString()
     if (getSlots.facilityId) {
       const scheduleRes = await getConnection()
-      .getRepository(Schedule)
-      .createQueryBuilder('Schedule')
-      .where('Schedule.facilityId = :facilityId',{facilityId: getSlots.facilityId})
-      .andWhere('Schedule.day = :day',{day: getSlots.day})
-      .andWhere(new Brackets(qb => {
-        qb.where('Schedule.recurringEndDate is null').
-          orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
-      }))
-      .getCount()
-      flag= !!scheduleRes
+        .getRepository(Schedule)
+        .createQueryBuilder('Schedule')
+        .where('Schedule.facilityId = :facilityId', { facilityId: getSlots.facilityId })
+        .andWhere('Schedule.day = :day', { day: getSlots.day })
+        .andWhere(new Brackets(qb => {
+          qb.where('Schedule.recurringEndDate is null').
+            orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
+        }))
+        .getCount()
+      flag = !!scheduleRes
     } else if (getSlots.providerId) {
       const scheduleRes = await getConnection()
-      .getRepository(Schedule)
-      .createQueryBuilder('Schedule')
-      .where('Schedule.doctorId = :providerId',{providerId: getSlots.providerId})
-      .andWhere('Schedule.day = :day',{day: getSlots.day})
-      .andWhere(new Brackets(qb => {
-        qb.where('Schedule.recurringEndDate IS NULL').
-          orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
-      }))
-      .getCount()
-      flag= !!scheduleRes
+        .getRepository(Schedule)
+        .createQueryBuilder('Schedule')
+        .where('Schedule.doctorId = :providerId', { providerId: getSlots.providerId })
+        .andWhere('Schedule.day = :day', { day: getSlots.day })
+        .andWhere(new Brackets(qb => {
+          qb.where('Schedule.recurringEndDate IS NULL').
+            orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
+        }))
+        .getCount()
+      flag = !!scheduleRes
     }
 
     return flag
@@ -303,7 +344,7 @@ export class ScheduleService {
       const schedules = await this.getTodaySchedule(getSlots)
       const shouldHaveSlots = await this.getShouldHaveSlots(getSlots)
       if (!shouldHaveSlots) {
-        return 
+        return
       }
       const newSchedule = await this.getScheduleServices(schedules, getSlots)
       const services = await this.servicesService.findOne(getSlots?.serviceId)
@@ -329,9 +370,10 @@ export class ScheduleService {
       while (slotTime < endTime) {
         const flag = await this.isInBreak(slotTime, appointment)
         if (!flag) {
+          const isEndTimeExceeded = moment(slotTime.format()).add(duration, 'minutes').format() > endTime.format()
           times.push({
             startTime: slotTime.format(),
-            endTime: moment(slotTime.format()).add(duration, 'minutes').format()
+            endTime: isEndTimeExceeded ? endTime.format() : moment(slotTime.format()).add(duration, 'minutes').format()
           });
         }
         slotTime = slotTime.add(duration, 'minutes');
