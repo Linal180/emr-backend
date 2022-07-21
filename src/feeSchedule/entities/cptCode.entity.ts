@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
-import { FeeSchedule } from "./feeSchedule.entity";
+import { CptFeeSchedule } from "./cptFeeSchedule.entity";
 
 @Entity({ name: 'CPTCodes' })
 @ObjectType()
@@ -32,8 +32,9 @@ export class CPTCodes {
 
   //fields
 
-  @Field(() => [FeeSchedule], { nullable: true })
-  feeSchedules: FeeSchedule[]
+  @OneToMany(() => CptFeeSchedule, cptFeeSchedule => cptFeeSchedule.cptCodes, { onDelete: 'CASCADE' })
+  @Field(() => [CptFeeSchedule], { nullable: true })
+  cptFeeSchedule: CptFeeSchedule[]
 
   //dates
 

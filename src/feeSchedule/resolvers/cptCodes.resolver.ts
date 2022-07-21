@@ -7,16 +7,16 @@ import {
 } from "../dto/cptCode.input";
 //entity
 import { CPTCodes } from "../entities/cptCode.entity";
-import { FeeSchedule } from "../entities/feeSchedule.entity";
+import { CptFeeSchedule } from "../entities/cptFeeSchedule.entity";
 //service
 import { CptCodeService } from "../services/cptCode.service";
-import { FeeScheduleService } from "../services/feeSchedule.service";
+import { CptFeeScheduleService } from "../services/cptFeeSchedule.service";
 
 @Resolver(() => CPTCodes)
 export class CptCodeResolver {
   constructor(
     private readonly cptCodeService: CptCodeService,
-    private readonly feeScheduleService: FeeScheduleService,
+    private readonly cptFeeScheduleService: CptFeeScheduleService,
   ) { }
 
   //Queries
@@ -85,10 +85,10 @@ export class CptCodeResolver {
 
   // resolve fields
 
-  @ResolveField(() => [FeeSchedule])
-  async feeSchedules(@Parent() cptCodes: CPTCodes): Promise<FeeSchedule[]> {
-    if (cptCodes?.code) {
-      const response = await this.feeScheduleService.findByCptCode(cptCodes?.code);
+  @ResolveField(() => [CptFeeSchedule])
+  async cptFeeSchedule(@Parent() cptCodes: CPTCodes): Promise<CptFeeSchedule[]> {
+    if (cptCodes?.id) {
+      const response = await this.cptFeeScheduleService.findByCptCode(cptCodes?.id);
       return response
     }
   }

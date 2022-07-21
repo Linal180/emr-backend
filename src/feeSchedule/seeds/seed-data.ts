@@ -1,4 +1,4 @@
-export const feeScheduleData = [{
+const feeSchedules = [{
   cptCode: "0011A", serviceFee: "50", revenueCode: "Injection", shortDescription: "ADM SARSCOV2 100MCG/0.5ML1ST"
 }, {
   cptCode: "0012A", serviceFee: "60", revenueCode: "Injection", shortDescription: "ADM SARSCOV2 100MCG/0.5ML2ND"
@@ -1876,7 +1876,52 @@ export const feeScheduleData = [{
   cptCode: "ZAID", serviceFee: "0", revenueCode: "Medicine", shortDescription: "Dr. Zaid's patient(out side lab)"
 }]
 
-export const cptCodeData = feeScheduleData?.map(({ cptCode, serviceFee, shortDescription }) => ({ code: cptCode, shortDescription, serviceFee }));
+export const feeScheduleData = feeSchedules?.map(({ shortDescription, ...rest }) => ({ shortDescription: shortDescription?.trim(), ...rest }))
+
+const covidCPTCodes = [{
+  cptCode: "86318",
+  shortDescription: "Immunoassay for infectious agent antibody(ies), qualitative or semiquantitative, single-step method (eg, reagent strip);"
+},
+{
+  cptCode: "86408",
+  shortDescription: "Neutralizing antibody, severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]); screen"
+},
+{
+  cptCode: "86413",
+  shortDescription: "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]) antibody, quantitative"
+},
+{
+  cptCode: "86769",
+  shortDescription: "Antibody; severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19])"
+},
+{
+  cptCode: "87301",
+  shortDescription: "Infectious agent antigen detection by immunoassay technique, (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]) qualitative or semiquantitative; adenovirus enteric types 40/41"
+},
+{
+  cptCode: "0223U",
+  shortDescription: "Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen reported as detected or not detected"
+},
+{
+  cptCode: "0226U",
+  shortDescription: "Surrogate viral neutralization test (sVNT), severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (Coronavirus disease [COVID-19]), ELISA, plasma, serum"
+},
+{
+  cptCode: "0240U",
+  shortDescription: "Infectious disease (viral respiratory tract infection), pathogen-specific RNA, 3 targets (severe acute respiratory syndrome coronavirus 2 [SARS-CoV-2], influenza A, influenza B), upper respiratory specimen, each pathogen reported as detected or not detected"
+},
+{
+  cptCode: "99072",
+  shortDescription: "Additional supplies, materials, and clinical staff time over and above those usually included in an office visit or other non-facility service(s), when performed during a Public Health Emergency, as defined by law, due to respiratory-transmitted infectious disease"
+},
+{
+  cptCode: "0001A",
+  shortDescription: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
+}]
+
+const feeCPTCodes = feeScheduleData?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription }));
+
+export const cptCodeData = [...feeCPTCodes, ...covidCPTCodes]
 
 export const modifiersData = [
   {

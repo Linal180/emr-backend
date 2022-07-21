@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
-import { CPTCodes } from "./cptCode.entity";
+import { CptFeeSchedule } from "./cptFeeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
 
 @Entity({ name: 'FeeSchedule' })
@@ -18,43 +18,16 @@ export class FeeSchedule {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  modifier: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  cptCode: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   effectiveDate: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  expireDate: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  description: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  shortDescription: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  longDescription: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  serviceFee: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  revenueCode: string;
+  expiryDate: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   practiceId: string;
+
 
   //dates
 
@@ -72,9 +45,14 @@ export class FeeSchedule {
   @Field(() => Practice, { nullable: true })
   practice: Practice;
 
+
+  @OneToMany(() => CptFeeSchedule, cptFeeSchedule => cptFeeSchedule.feeSchedule, { onDelete: 'CASCADE' })
+  @Field(() => [CptFeeSchedule], { nullable: true })
+  cptFeeSchedule: CptFeeSchedule[]
+
   //fields
-  
-  @Field(() => CPTCodes, { nullable: true })
-  CPTCodes: CPTCodes
+
+  @Field(() => Number, { nullable: true })
+  cptFeeScheduleCount: Number
 
 }

@@ -1,16 +1,16 @@
 import { HttpStatus, NotFoundException } from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //entities
-import { CPTCodes } from "../entities/cptCode.entity";
 import { FeeSchedule } from "../entities/feeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
+import { CptFeeSchedule } from "../entities/cptFeeSchedule.entity";
 //services
-import { CptCodeService } from "../services/cptCode.service";
 import { PracticeService } from "src/practice/practice.service";
 import { FeeScheduleService } from "../services/feeSchedule.service";
+import { CptFeeScheduleService } from "../services/cptFeeSchedule.service";
 //inputs
 import {
-  CreateFeeScheduleInput, FindAllFeeScheduleInput, GetFeeScheduleInput, RemoveFeeScheduleInput, UpdateFeeScheduleInput
+  CreateFeeScheduleInput, FindAllFeeScheduleInput, FindFeeScheduleCPTCodesInput, GetFeeScheduleInput, RemoveFeeScheduleInput, UpdateFeeScheduleInput
 } from "../dto/feeSchedule.input";
 //payloads
 import { AllFeeSchedulesPayload, FeeSchedulePayload } from "../dto/feeSchedule-payload.dto";
@@ -18,9 +18,9 @@ import { AllFeeSchedulesPayload, FeeSchedulePayload } from "../dto/feeSchedule-p
 @Resolver(() => FeeSchedule)
 export class FeeScheduleResolver {
   constructor(
-    private readonly cptCodeService: CptCodeService,
     private readonly practiceService: PracticeService,
     private readonly feeScheduleService: FeeScheduleService,
+    private readonly cptFeeScheduleService: CptFeeScheduleService,
   ) { }
 
   //Queries 
@@ -53,6 +53,26 @@ export class FeeScheduleResolver {
       feeSchedule: await this.feeScheduleService.findOne(getFeeScheduleInput),
       response: { status: 200, message: 'Fee Schedule fetched successfully' }
     };
+  }
+
+  @Query(() => AllFeeSchedulesPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllFacility')
+  async findFeeScheduleCPTCodes(@Args('findFeeScheduleCPTCodesInput') findFeeScheduleCPTCodesInput: FindFeeScheduleCPTCodesInput): Promise<AllFeeSchedulesPayload> {
+    const feeSchedules = await this.feeScheduleService.findFeeScheduleCPTCodes(findFeeScheduleCPTCodesInput);
+    if (feeSchedules) {
+      return {
+        ...feeSchedules,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Fee Schedules not found',
+    });
   }
 
   //mutations
@@ -98,13 +118,20 @@ export class FeeScheduleResolver {
     }
   }
 
-  @ResolveField(() => CPTCodes)
-  async CPTCodes(@Parent() feeSchedule: FeeSchedule): Promise<CPTCodes> {
-    if (feeSchedule?.cptCode) {
-      const response = await this.cptCodeService.findByCode(feeSchedule?.cptCode);
+  @ResolveField(() => [CptFeeSchedule])
+  async cptFeeSchedule(@Parent() feeSchedule: FeeSchedule): Promise<CptFeeSchedule[]> {
+    if (feeSchedule?.id) {
+      const response = await this.cptFeeScheduleService.findByCptCode(feeSchedule?.id);
       return response
     }
   }
 
+  @ResolveField(() => Number)
+  async cptFeeScheduleCount(@Parent() feeSchedule: FeeSchedule): Promise<Number> {
+    if (feeSchedule?.id) {
+      const response = await this.cptFeeScheduleService.findAndCountByFeeSchedule(feeSchedule?.id);
+      return response
+    }
+  }
 
 }
