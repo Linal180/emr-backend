@@ -2969,8 +2969,7 @@ input GetModifierInput {
 }
 
 input FindAllCptFeeScheduleInput {
-  practiceId: String
-  name: String
+  feeScheduleId: String
   searchString: String
   paginationOptions: PaginationInput!
 }
@@ -4383,7 +4382,7 @@ input CreateCptFeeScheduleInput {
   serviceFee: String
   revenueCode: String
   feeScheduleId: String
-  CPTCodesId: String
+  cptCodesId: String
 }
 
 input RemoveCptFeeScheduleInput {
@@ -4399,7 +4398,7 @@ input UpdateCptFeeScheduleInput {
   serviceFee: String
   revenueCode: String
   feeScheduleId: String
-  CPTCodesId: String
+  cptCodesId: String
   id: String!
 }
 

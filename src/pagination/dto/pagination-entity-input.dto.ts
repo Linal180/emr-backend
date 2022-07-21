@@ -74,4 +74,5 @@ export class PaginatedEntityInput {
   feeScheduleName?: string;
   effectiveDate?: string;
   expiryDate?: string;
+  feeScheduleId?: string;
 }

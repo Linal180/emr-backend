@@ -31,9 +31,9 @@ export class CptFeeScheduleService {
    */
   async findAllCptFeeSchedule(params: FindAllCptFeeScheduleInput): Promise<AllCPTFeeSchedulesPayload> {
     try {
-      const { paginationOptions, practiceId, searchString } = params
+      const { paginationOptions, searchString, feeScheduleId } = params
       const paginationResponse = await this.paginationService.willPaginate<CptFeeSchedule>(this.cptFeeScheduleRepository, {
-        paginationOptions, practiceId, associatedTo: 'CptFeeSchedule', associatedToField: {
+        paginationOptions, feeScheduleId, associatedTo: 'CptFeeSchedule', associatedToField: {
           columnValue: searchString, columnName: 'code', columnName2: "description", columnName3: 'shortDescription', filterType: 'stringFilter'
         }
       })
@@ -55,7 +55,7 @@ export class CptFeeScheduleService {
    */
   async create(params: CreateCptFeeScheduleInput): Promise<CptFeeSchedule> {
     try {
-      const { feeScheduleId, CPTCodesId } = params || {}
+      const { feeScheduleId, cptCodesId } = params || {}
       const cptFeeSchedule = this.cptFeeScheduleRepository.create(params);
       //associate to fee schedule
       if (feeScheduleId) {
@@ -63,8 +63,8 @@ export class CptFeeScheduleService {
         cptFeeSchedule.feeSchedule = feeSchedule
       }
       //associate to cpt code
-      if (CPTCodesId) {
-        const cptCodes = await this.cptCodeService.findOne({ id: CPTCodesId })
+      if (cptCodesId) {
+        const cptCodes = await this.cptCodeService.findOne({ id: cptCodesId })
         cptFeeSchedule.cptCodes = cptCodes
       }
       return await this.cptFeeScheduleRepository.save(cptFeeSchedule)
@@ -90,7 +90,7 @@ export class CptFeeScheduleService {
    */
   async updateCptFeeSchedule(params: UpdateCptFeeScheduleInput): Promise<CptFeeSchedule> {
     try {
-      const { CPTCodesId, feeScheduleId } = params || {}
+      const { cptCodesId, feeScheduleId } = params || {}
       const cptFeeSchedule = await this.utilsService.updateEntityManager(CptFeeSchedule, params.id, params, this.cptFeeScheduleRepository)
       //associate to fee schedule
       if (feeScheduleId) {
@@ -98,8 +98,8 @@ export class CptFeeScheduleService {
         cptFeeSchedule.feeSchedule = feeSchedule
       }
       //associate to cpt code
-      if (CPTCodesId) {
-        const cptCodes = await this.cptCodeService.findOne({ id: CPTCodesId })
+      if (cptCodesId) {
+        const cptCodes = await this.cptCodeService.findOne({ id: cptCodesId })
         cptFeeSchedule.cptCodes = cptCodes
       }
       return await this.cptFeeScheduleRepository.save(cptFeeSchedule)

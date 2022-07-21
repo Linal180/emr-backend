@@ -5,10 +5,7 @@ import PaginationInput from "src/pagination/dto/pagination-input.dto"
 export class FindAllCptFeeScheduleInput {
 
   @Field({ nullable: true })
-  practiceId?: string
-
-  @Field({ nullable: true })
-  name?: string
+  feeScheduleId?: string
 
   @Field({ nullable: true })
   searchString?: string
@@ -47,7 +44,7 @@ export class CreateCptFeeScheduleInput {
   feeScheduleId: string;
 
   @Field({ nullable: true })
-  CPTCodesId: string;
+  cptCodesId: string;
 }
 
 @InputType()

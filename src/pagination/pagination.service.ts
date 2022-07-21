@@ -208,6 +208,7 @@ export class PaginationService {
       feeScheduleName,
       effectiveDate,
       expiryDate,
+      feeScheduleId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -345,13 +346,14 @@ export class PaginationService {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
         ...(code && code != null && { code }),
+        ...(feeScheduleId && feeScheduleId != null && { feeScheduleId }),
         ...(moduleType && moduleType != null && { moduleType }),
         ...(logUserId && logUserId != null && { userId: logUserId }),
         ...(feeScheduleName && feeScheduleName != null && { name: feeScheduleName }),
         ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) }),
         ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
         ...(expiryDate && expiryDate != null && { expiryDate: Raw(alias => `${alias} Is null OR ${alias} <= '${today}'`) }),
-        ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }), 
+        ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }),
       }
     };
 
