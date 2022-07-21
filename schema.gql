@@ -15,6 +15,7 @@ type Employer {
   state: String
   address: String
   zipCode: String
+  country: String
   patient: Patient
   createdAt: String!
   updatedAt: String!
@@ -3931,6 +3932,7 @@ input CreateEmployerInput {
   state: String
   address: String
   zipCode: String
+  country: String
 }
 
 input PatientInfoInput {
@@ -4023,6 +4025,7 @@ input UpdateEmployerItemInput {
   state: String
   address: String
   zipCode: String
+  country: String
   id: String
 }
 
