@@ -20,6 +20,8 @@ import { UsersModule } from 'src/users/users.module';
 import { PolicyEligibility } from './entities/policy-eligibility.entity';
 import { PolicyCoverage } from './entities/policy-coverage.entity';
 import { PolicyEligibilityResolver } from './resolvers/policy-eligibilities.resolver';
+import { FacilityModule } from 'src/facilities/facility.module';
+import { PracticeModule } from 'src/practice/practice.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { PolicyEligibilityResolver } from './resolvers/policy-eligibilities.reso
     PatientModule,
     PaginationModule,
     forwardRef(() => ProviderModule),
+    FacilityModule,
+    PracticeModule,
     HttpModule
   ],
   providers: [

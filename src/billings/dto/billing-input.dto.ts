@@ -69,4 +69,10 @@ export default class BillingInput {
 
   @Field({ nullable: true })
   claimStatusId?: string
+
+  @Field({ nullable: true })
+  from?: string
+
+  @Field({ nullable: true })
+  to?: string
 }
