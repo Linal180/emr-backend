@@ -55,7 +55,6 @@ export class CreateUsers implements Seeder {
       let permissions= mergedPermissions.filter((permission, index, arrayPermissions) => index === arrayPermissions.findIndex((t) => (
         t.id === permission.id
       )))
-      // console.log('permissions', permissions)
       // if (!permissions.length) {
       //   permissions = getRepository(Permission).create(PermissionData)
       //   permissions = await queryRunner.manager.save(permissions);
@@ -418,7 +417,6 @@ export class CreateUsers implements Seeder {
   }
   async rolePermissionPayload(permissions: Permission[], role: Role) {
     return permissions.map((item) => {
-      // console.log('item', item)
       return {
         permission: item,
         permissionId: item.id,

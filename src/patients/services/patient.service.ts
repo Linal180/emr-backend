@@ -197,6 +197,7 @@ export class PatientService {
 
       let prevPatient = null;
       const patientInstance = await this.patientRepository.findOne(patientId)
+      const patientUser = await this.usersService.findUserByUserId(patientId)
       let userExist = await this.usersService.findOneByEmail(email)
       const isNewEmail = !!email && email !== patientInstance?.email
 
@@ -204,18 +205,18 @@ export class PatientService {
         prevPatient = await this.GetPatientByEmail(email);
       }
 
-      if (prevPatient || userExist) {
+      if (prevPatient || (userExist && userExist?.email !== patientUser?.email)) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
           error: 'Email already taken'
         })
       } else {
-         let user = await this.usersService.findUserByUserId(patientId)
+        let user = await this.usersService.findUserByUserId(patientId)
         //save patient basic info
         await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: new Date(dob)?.toISOString() }, this.patientRepository)
         //get facility 
         const patientInstance = await this.patientRepository.findOne(patientId)
-       
+
         if (facilityId) {
           const facility = await this.facilityService.findOne(facilityId)
 

@@ -121,7 +121,7 @@ export class DoctorService {
         prevDoctor = await this.findOneByEmail(email)
       }
 
-      if (prevDoctor || userExist?.email !== user?.email) {
+      if (prevDoctor || (userExist && userExist?.email !== user?.email)) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
           error: 'Provider is already exist with this email'
