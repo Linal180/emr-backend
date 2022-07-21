@@ -33,4 +33,10 @@ export default class ClaimInput {
 
   @Field({ nullable: true })
   otherDate?: string
+
+  @Field({ nullable: true })
+  from?: string
+
+  @Field({ nullable: true })
+  to?: string
 }

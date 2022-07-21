@@ -35,9 +35,8 @@ registerEnumType(PatientPaymentType, {
 // });
 
 export enum OnsetDateType {
-  ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS = "Onset of Current Symptoms or Illness",
   DATE_OF_ACCIDENT = "Date of Accident",
-  LAST_MENSTRUAL_PERIOD = 'Last Menstrual Period',
+  DATE_OF_HOSPITALIZATION = "Date of Hospitalization"
 }
 
 registerEnumType(OnsetDateType, {
@@ -78,7 +77,7 @@ export class Billing {
   @Column({
     type: "enum",
     enum: OnsetDateType,
-    default: OnsetDateType.ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS
+    default: OnsetDateType.DATE_OF_ACCIDENT
   })
   @Field(type => OnsetDateType)
   onsetDateType: OnsetDateType;
@@ -86,6 +85,14 @@ export class Billing {
   @Column({ nullable: true })
   @Field({ nullable: true })
   onsetDate: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  to: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  from: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
