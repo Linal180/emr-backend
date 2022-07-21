@@ -116,11 +116,12 @@ export class DoctorService {
       let prevDoctor = null
       const isNewEmail = !!email && email !== providerEmail
 
+
       if (isNewEmail) {
         prevDoctor = await this.findOneByEmail(email)
       }
 
-      if (prevDoctor || userExist) {
+      if (prevDoctor || userExist?.email !== user?.email) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
           error: 'Provider is already exist with this email'
@@ -140,10 +141,10 @@ export class DoctorService {
           let isAdmin = false
           let isInvite = 'INVITATION_TEMPLATE_ID';
           let userInstance = await this.usersService.update({ ...user, email, emailVerified: false });
-          if(!userInstance.token){
+          if (!userInstance.token) {
             userInstance = await this.usersService.update({ ...userInstance, token: createToken() });
           }
-          const token= userInstance.token || createToken()
+          const token = userInstance.token || createToken()
           this.mailerService.sendEmailForgotPassword(userInstance.email, user.id, userInstance.email, '', isAdmin, userInstance.token, isInvite)
         }
         return doctor

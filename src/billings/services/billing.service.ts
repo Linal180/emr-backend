@@ -151,7 +151,7 @@ export class BillingService {
    */
   async getClaimInfo(claimInput: ClaimInput) {
     const { codes, appointmentId, patientId, autoAccident, employment, otherAccident, onsetDate, onsetDateType,
-      otherDate, otherDateType } = claimInput
+      otherDate, otherDateType, from, to } = claimInput
     const diagnosesCodes = codes?.filter(code => code.codeType === CodeType.ICD_10_CODE)
     const procedureCodes = codes?.filter(code => code.codeType === CodeType.CPT_CODE)
     const totalCharges = codes.reduce((acc, code) => {
@@ -317,8 +317,8 @@ export class BillingService {
       // "lastseen_date",
       // "nowork_from_date",
       // "nowork_to_date",
-      // "hosp_from_date",
-      // "hosp_thru_date",
+      hosp_from_date: from,
+      hosp_thru_date: to,
       // "chiro_manifest_date",
       // "info_release",
       // "special_identifier",
@@ -363,8 +363,8 @@ export class BillingService {
       // "bill_taxonomy",
       prov_name_l: renderingProviderInfo?.lastName,
       prov_name_f: renderingProviderInfo?.firstName,
-      prov_name_m: referringProviderInfo?.middleName,
-      // prov_npi,
+      prov_name_m: renderingProviderInfo?.middleName,
+      prov_npi: renderingProviderInfo?.npi,
       // prov_id,
       // prov_taxonomy,
       // prov_taxid,
@@ -551,6 +551,18 @@ export class BillingService {
     claimInfo.pat_sex === 'M' && pat_sex_kids[0].setValue(pat_sex_kids[0].getOnValue())
     claimInfo.pat_sex === 'F' && pat_sex_kids[1].setValue(pat_sex_kids[1].getOnValue());
 
+    const employment_kids = createPDFAcroFields(form.getCheckBox('employment').acroField.Kids()).map(_ => _[0]);
+    claimInfo.employment_related === 'Y' && employment_kids[0].setValue(employment_kids[0].getOnValue())
+    claimInfo.employment_related === 'N' && employment_kids[1].setValue(employment_kids[1].getOnValue());
+
+    const pt_auto_accident_kids = createPDFAcroFields(form.getCheckBox('pt_auto_accident').acroField.Kids()).map(_ => _[0]);
+    claimInfo.auto_accident === 'Y' && pt_auto_accident_kids[0].setValue(pt_auto_accident_kids[0].getOnValue())
+    claimInfo.auto_accident === 'N' && pt_auto_accident_kids[1].setValue(pt_auto_accident_kids[1].getOnValue());
+
+    const other_accident_kids = createPDFAcroFields(form.getCheckBox('other_accident').acroField.Kids()).map(_ => _[0]);
+    claimInfo.other_accident === 'Y' && other_accident_kids[0].setValue(other_accident_kids[0].getOnValue())
+    claimInfo.other_accident === 'N' && other_accident_kids[1].setValue(other_accident_kids[1].getOnValue());
+
     const rel_to_ins_kids = createPDFAcroFields(form.getCheckBox('rel_to_ins').acroField.Kids()).map(_ => _[0]);
     if (claimInfo.pat_rel === '18') {
       rel_to_ins_kids[0].setValue(rel_to_ins_kids[0].getOnValue())
@@ -587,11 +599,17 @@ export class BillingService {
     claimInfo.ins_dob && form.getTextField('ins_dob_mm').setText(`${moment(claimInfo.ins_dob).format('MM')}`)
     claimInfo.ins_dob && form.getTextField('ins_dob_dd').setText(`${moment(claimInfo.ins_dob).format('DD')}`)
     claimInfo.ins_dob && form.getTextField('ins_dob_yy').setText(`${moment(claimInfo.ins_dob).format('YY')}`)
+    claimInfo.hosp_from_date && form.getTextField('hosp_mm_from').setText(`${moment(claimInfo.hosp_from_date).format('MM')}`)
+    claimInfo.hosp_from_date && form.getTextField('hosp_dd_from').setText(`${moment(claimInfo.hosp_from_date).format('DD')}`)
+    claimInfo.hosp_from_date && form.getTextField('hosp_yy_from').setText(`${moment(claimInfo.hosp_from_date).format('YY')}`)
+    claimInfo.hosp_thru_date && form.getTextField('hosp_mm_end').setText(`${moment(claimInfo.hosp_from_date).format('MM')}`)
+    claimInfo.hosp_thru_date && form.getTextField('hosp_dd_end').setText(`${moment(claimInfo.hosp_from_date).format('DD')}`)
+    claimInfo.hosp_thru_date && form.getTextField('hosp_yy_end').setText(`${moment(claimInfo.hosp_from_date).format('YY')}`)
     form.getTextField('other_ins_name')
     form.getTextField('other_ins_policy')
     form.getTextField('ins_plan_name')
     form.getTextField('pt_date')
-    claimInfo.cond && form.getTextField('73').setText(`${claimInfo.cond}`)
+    // claimInfo.cond && form.getTextField('73').setText(`${claimInfo.cond}`)
     claimInfo.cond_date && form.getTextField('cur_ill_mm').setText(`${moment(claimInfo.cond_date).format('MM')}`)
     claimInfo.cond_date && form.getTextField('cur_ill_dd').setText(`${moment(claimInfo.cond_date).format('DD')}`)
     claimInfo.cond_date && form.getTextField('cur_ill_yy').setText(`${moment(claimInfo.cond_date).format('YY')}`)
@@ -603,9 +621,9 @@ export class BillingService {
     claimInfo.onset_date && form.getTextField('sim_ill_mm').setText(`${moment(claimInfo.onset_date).format('MM')}`)
     claimInfo.onset_date && form.getTextField('sim_ill_dd').setText(`${moment(claimInfo.onset_date).format('DD')}`)
     claimInfo.onset_date && form.getTextField('sim_ill_yy').setText(`${moment(claimInfo.onset_date).format('YY')}`)
-    claimInfo.employment_related === 'Y' && form.getCheckBox('employment').check(claimInfo.employment_related)
-    claimInfo.auto_accident === 'Y' && form.getCheckBox('pt_auto_accident').check(claimInfo.auto_accident)
-    claimInfo.other_accident === 'Y' && form.getCheckBox('other_accident').check(claimInfo.other_accident)
+    // claimInfo.employment_related === 'Y' && form.getCheckBox('employment').check(claimInfo.employment_related)
+    // claimInfo.auto_accident === 'Y' && form.getCheckBox('pt_auto_accident').check(claimInfo.auto_accident)
+    // claimInfo.other_accident === 'Y' && form.getCheckBox('other_accident').check(claimInfo.other_accident)
     claimInfo.diag_1 && form.getTextField('diagnosis1').setText(`${claimInfo.diag_1}`)
     claimInfo.diag_2 && form.getTextField('diagnosis2').setText(`${claimInfo.diag_2}`)
     claimInfo.diag_3 && form.getTextField('diagnosis3').setText(`${claimInfo.diag_3}`)
@@ -652,9 +670,9 @@ export class BillingService {
       chargeValue.m1 && form.getTextField(`mod${i + 1}b`).setText(chargeValue.m3)
       chargeValue.m1 && form.getTextField(`mod${i + 1}c`).setText(chargeValue.m4)
       chargeValue.unit && form.getTextField(`day${i + 1}`).setText(chargeValue.unit)
-      claimInfo.prov_name_f && form.getTextField(`local${i + 1}`).setText(`${claimInfo.prov_name_f || ''} ${claimInfo.prov_name_m || ''} ${claimInfo.prov_name_l || ''}`)
+      claimInfo.prov_npi && form.getTextField(`local${i + 1}`).setText(claimInfo.prov_npi)
     })
-    // form.flatten()
+    // form.flatten()    //This makes the form readonly but also uncheck the checkboxes values
     const pdfBytes = await pdfDoc.save()
     return pdfBytes
   }

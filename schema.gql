@@ -147,6 +147,8 @@ type Billing {
   amount: String
   onsetDateType: OnsetDateType!
   onsetDate: String
+  to: String
+  from: String
   labOrderNumber: String
   otherDateType: OtherDateType!
   otherDate: String
@@ -183,9 +185,8 @@ enum PatientPaymentType {
 
 """The patient billing status assigned"""
 enum OnsetDateType {
-  ONSET_OF_CURRENT_SYMPTOMS_OR_ILLNESS
   DATE_OF_ACCIDENT
-  LAST_MENSTRUAL_PERIOD
+  DATE_OF_HOSPITALIZATION
 }
 
 """The patient billing status assigned"""
@@ -3010,6 +3011,8 @@ input ClaimInput {
   onsetDate: String
   otherDateType: OtherDateType
   otherDate: String
+  from: String
+  to: String
 }
 
 input CodesInput {
@@ -4554,6 +4557,8 @@ input BillingInput {
   servicingProviderId: String
   renderingProviderId: String
   claimStatusId: String
+  from: String
+  to: String
 }
 
 input ClaimStatusInput {
