@@ -69,7 +69,9 @@ export class FormsService {
    */
   async findAllForms(formInput: FormInput): Promise<FormsPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<Form>(this.formsRepository, { ...formInput })
+      const { searchString } = formInput || {}
+      const first = searchString ? searchString.split(' ')[0] : ''
+      const paginationResponse = await this.paginationService.willPaginate<Form>(this.formsRepository, { ...formInput, associatedTo: 'Form', associatedToField: { columnValue: first, columnName: 'name', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse

@@ -6,8 +6,8 @@ import { cptCodeData } from "./seed-data";
 import { CPTCodes } from "../entities/cptCode.entity";
 
 @Injectable()
-export class CreateFeeSchedule implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<void> {
+export class CreateCPTCodes implements Seeder {
+  public async run(_: Factory, connection: Connection): Promise<void> {
     const queryRunner = connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

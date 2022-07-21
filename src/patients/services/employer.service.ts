@@ -1,27 +1,34 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
+import { UtilsService } from 'src/util/utils.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+//inputs
 import { CreateEmployerInput } from '../dto/create-employer.input';
+import { RemoveEmployer, UpdateEmployerItemInput } from '../dto/update-employer.input';
+//payloads
 import EmployerInput from '../dto/employer-input.dto';
 import { EmployerPayload } from '../dto/employer-payload.dto';
 import { EmployersPayload } from '../dto/employers-payload.dto';
-import { RemoveEmployer, UpdateEmployerItemInput } from '../dto/update-employer.input';
+//entities
 import { Employer } from '../entities/employer.entity';
-import { PatientService } from './patient.service';
 
 @Injectable()
 export class EmployerService {
   constructor(
     @InjectRepository(Employer)
     private employerRepository: Repository<Employer>,
-    private readonly paginationService: PaginationService,
-    @Inject(forwardRef(() => PatientService))
-    private readonly patientService: PatientService,
     private readonly utilsService: UtilsService,
+    private readonly paginationService: PaginationService,
   ) { }
 
+
+  /**
+   * Creates employer
+   * @param createEmployerInput 
+   * @returns employer 
+   */
   async createEmployer(createEmployerInput: CreateEmployerInput): Promise<Employer> {
     try {
       // create employer

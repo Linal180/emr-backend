@@ -10,6 +10,23 @@ export class FindAllFeeScheduleInput {
   @Field({ nullable: true })
   practiceId?: string
 
+  @Field({ nullable: true })
+  searchString?: string
+
+  @Field(() => PaginationInput)
+  paginationOptions: PaginationInput
+}
+
+
+@InputType()
+export class FindFeeScheduleCPTCodesInput {
+
+  @Field({ nullable: true })
+  practiceId?: string
+
+  @Field({ nullable: true })
+  searchString?: string
+
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 
@@ -34,7 +51,7 @@ export class CreateFeeScheduleInput {
   effectiveDate: string;
 
   @Field({ nullable: true })
-  expireDate: string;
+  expiryDate: string;
 
   @Field({ nullable: true })
   description: string;

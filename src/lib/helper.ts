@@ -202,3 +202,7 @@ export const generateString = (numberOfRounds = 2) => {
   }
   return result + Math.floor(100000 + Math.random() * 9000);
 }
+
+export const generateUniqueNumber = () => {
+  return String(Math.floor(1000000000 + Math.random() * 9000000000)*(new Date().getMilliseconds())).slice(0, 10)
+}

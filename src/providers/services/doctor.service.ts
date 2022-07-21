@@ -20,6 +20,8 @@ import { Doctor } from '../entities/doctor.entity';
 import { BillingAddressService } from './billing-address.service';
 import { ContactService } from './contact.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
+import { createToken } from 'src/lib/helper';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class DoctorService {
@@ -39,6 +41,7 @@ export class DoctorService {
     private readonly utilsService: UtilsService,
     @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,
+    private readonly mailerService: MailerService,
   ) { }
 
   /**
@@ -60,7 +63,7 @@ export class DoctorService {
       if (prevDoctor) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
-          error: 'Provider is ready exist with this email'
+          error: 'Provider is already exist with this email'
         })
       } else {
         // register doctor as user -
@@ -106,19 +109,22 @@ export class DoctorService {
     try {
       const { email } = updateDoctorInput.updateContactInput
       const { id } = updateDoctorInput.updateDoctorItemInput
-      const { email: providerEmail, appointments } = await this.findOne(id)
+      const { email: providerEmail } = await this.findOne(id)
+      const user = await this.usersService.findUserByUserId(id)
+      const userExist = await this.usersService.findOneByEmail(email)
 
       let prevDoctor = null
       const isNewEmail = !!email && email !== providerEmail
+
 
       if (isNewEmail) {
         prevDoctor = await this.findOneByEmail(email)
       }
 
-      if (prevDoctor) {
+      if (prevDoctor || (userExist && userExist?.email !== user?.email)) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
-          error: 'Provider is ready exist with this email'
+          error: 'Provider is already exist with this email'
         })
       } else {
         const doctor = await this.doctorRepository.save({ ...updateDoctorInput.updateDoctorItemInput, email })
@@ -131,7 +137,16 @@ export class DoctorService {
           const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
           await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, email, id: user.id })
         }
-
+        if (isNewEmail) {
+          let isAdmin = false
+          let isInvite = 'INVITATION_TEMPLATE_ID';
+          let userInstance = await this.usersService.update({ ...user, email, emailVerified: false });
+          if (!userInstance.token) {
+            userInstance = await this.usersService.update({ ...userInstance, token: createToken() });
+          }
+          const token = userInstance.token || createToken()
+          this.mailerService.sendEmailForgotPassword(userInstance.email, user.id, userInstance.email, '', isAdmin, userInstance.token, isInvite)
+        }
         return doctor
       }
     } catch (error) {

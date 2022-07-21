@@ -1,10 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+//entities
+import { CptFeeSchedule } from "./cptFeeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({ name: 'FeeSchedule' })
 @ObjectType()
 export class FeeSchedule {
+
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -15,49 +18,16 @@ export class FeeSchedule {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  modifier: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  cptCode: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   effectiveDate: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  expireDate: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  description: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  shortDescription: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  longDescription: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  serviceFee: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  revenueCode: string;
+  expiryDate: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   practiceId: string;
 
-  //relationships
-
-  @ManyToOne(() => Practice, practice => practice.feeSchedules, { onDelete: 'CASCADE' })
-  @Field(() => Practice, { nullable: true })
-  practice: Practice;
 
   //dates
 
@@ -68,5 +38,21 @@ export class FeeSchedule {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   updatedAt: string;
+
+  //relationships
+
+  @ManyToOne(() => Practice, practice => practice.feeSchedules, { onDelete: 'CASCADE' })
+  @Field(() => Practice, { nullable: true })
+  practice: Practice;
+
+
+  @OneToMany(() => CptFeeSchedule, cptFeeSchedule => cptFeeSchedule.feeSchedule, { onDelete: 'CASCADE' })
+  @Field(() => [CptFeeSchedule], { nullable: true })
+  cptFeeSchedule: CptFeeSchedule[]
+
+  //fields
+
+  @Field(() => Number, { nullable: true })
+  cptFeeScheduleCount: Number
 
 }

@@ -131,8 +131,10 @@ export class PracticeService {
    */
   async getPractice(id: string): Promise<PracticePayload> {
     const practice = await this.findOne(id);
+    const staffs = await this.staffService.findStaffByPracticeId(id)
+    const staffInfo = staffs.find((staff) => staff.user.userType === 'practice-admin')
     if (practice) {
-      return { practice }
+      return { practice, practiceAdmin: staffInfo }
     }
   }
 
@@ -143,7 +145,10 @@ export class PracticeService {
    */
   async updatePractice(updatePracticeInput: UpdatePracticeInput): Promise<Practice> {
     try {
-      const practice = await this.practiceRepository.save(updatePracticeInput)
+      const { updatePracticeItemInput, updateUserInput } = updatePracticeInput
+      const { firstName, lastName, phone, id, email } = updateUserInput
+      await this.staffService.updateStaff({ updateStaffItemInput: { id, firstName, lastName, phone, email } })
+      const practice = await this.practiceRepository.save(updatePracticeItemInput)
       return practice
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -277,5 +282,5 @@ export class PracticeService {
       throw new InternalServerErrorException(error);
     }
   }
-  
+
 }

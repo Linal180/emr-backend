@@ -4,7 +4,9 @@ import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException
 //entities
 import { CPTCodes } from "../entities/cptCode.entity";
 //inputs
-import { CreateCPTCodeInput, FindAllCPTCodesInput, GetCPTCodeInput, RemoveCPTCodeInput, UpdateCPTCodeInput } from "../dto/cptCode.input";
+import {
+  CreateCPTCodeInput, FindAllCPTCodesInput, GetCPTCodeInput, RemoveCPTCodeInput, UpdateCPTCodeInput
+} from "../dto/cptCode.input";
 //services
 import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
@@ -54,9 +56,8 @@ export class CptCodeService {
       const { paginationOptions, code: searchString } = params
       const paginationResponse = await this.paginationService.willPaginate<CPTCodes>(this.cptCodeRepository, {
         paginationOptions, associatedTo: 'CPTCodes', associatedToField: {
-          columnValue: searchString, columnName: 'code', columnValue2: searchString, columnName2: "description",
-          columnValue3: searchString, columnName3: 'shortDescription',
-          filterType: 'stringFilter'
+          columnValue: searchString, columnName: 'code', columnName2: "description",
+          columnName3: 'shortDescription', filterType: 'stringFilter'
         }
       })
       return {
@@ -96,6 +97,20 @@ export class CptCodeService {
       const cptCode = await this.cptCodeRepository.findOne(id);
       if (!cptCode) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Cpt not found' })
       await this.cptCodeRepository.delete(id)
+      return cptCode
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds by code
+   * @param code 
+   * @returns by code 
+   */
+  async findByCode(code: string): Promise<CPTCodes> {
+    try {
+      const cptCode = await this.cptCodeRepository.findOne({ code });
       return cptCode
     } catch (error) {
       throw new InternalServerErrorException(error);

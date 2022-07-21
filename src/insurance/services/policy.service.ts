@@ -19,6 +19,8 @@ import { PolicyCoverage } from '../entities/policy-coverage.entity';
 import { PolicyEligibility } from '../entities/policy-eligibility.entity';
 import { Policy } from '../entities/policy.entity';
 import { getClaimRelation } from 'src/lib/helper';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { PracticeService } from 'src/practice/practice.service';
 
 @Injectable()
 export class PolicyService {
@@ -36,6 +38,8 @@ export class PolicyService {
     private readonly policyHolderService: PolicyHolderService,
     private readonly copayService: CopayService,
     private readonly doctorService: DoctorService,
+    private readonly facilityService: FacilityService,
+    private readonly practiceService: PracticeService,
     private readonly httpService: HttpService
   ) { }
 
@@ -252,10 +256,13 @@ export class PolicyService {
       const { policyHolderRelationship, patientId, insuranceId, policyHolderId } = policyInfo || {}
       const { payerId, payerName } = await this.insuranceService.findOne(insuranceId) || {}
       const { firstName, lastName } = await this.policyHolderService.findOne(policyHolderId) || {}
-      const patientProviders = await this.patientService.usualProvider(patientId)
-      const { doctor } = patientProviders.find(patientProvider => patientProvider.relation === DoctorPatientRelationType.PRIMARY_PROVIDER) || {}
-      const { npi } = doctor || {}
       const patRelationshipCode = getClaimRelation(policyHolderRelationship)
+      const patientInfo = await this.patientService.findOne(patientId)
+      const facility = await this.facilityService.findOne(patientInfo.facilityId)
+      const { npi } = await this.practiceService.findOne(facility.practiceId)
+      if (!npi) {
+        throw new Error("Please provide a valid group NPI");
+      }
 
       const formData = new FormData()
       formData.append('AccountKey', process.env.CLAIM_MD_ID)
@@ -264,7 +271,7 @@ export class PolicyService {
       formData.append('payerid', payerId)
       formData.append('pat_rel', patRelationshipCode)
       formData.append('fdos', moment().format('YYYY-MM-DD'))
-      formData.append('prov_npi', '1427080589')
+      formData.append('prov_npi', npi)
 
       const response = await this.httpService.post('https://www.claim.md/services/eligxml/', formData, {
         headers: {
