@@ -1361,6 +1361,7 @@ type FeeSchedule {
   updatedAt: String
   practice: Practice
   cptFeeSchedule: [CptFeeSchedule!]
+  cptFeeScheduleCount: Float
 }
 
 type Practice {
@@ -2619,8 +2620,8 @@ type Query {
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
   getModifier(getModifierInput: GetModifierInput!): ModifierPayload!
-  findAllCptFeeSchedule(findAllCptFeeScheduleInput: findAllCptFeeScheduleInput!): AllCPTFeeSchedulesPayload!
-  getCptFeeSchedule(getCptFeeScheduleInput: getCptFeeScheduleInput!): CPTFeeSchedulePayload!
+  findAllCptFeeSchedule(findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!): AllCPTFeeSchedulesPayload!
+  getCptFeeSchedule(getCptFeeScheduleInput: GetCptFeeScheduleInput!): CPTFeeSchedulePayload!
   getToken: BraintreePayload!
   getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
@@ -2967,14 +2968,14 @@ input GetModifierInput {
   id: String!
 }
 
-input findAllCptFeeScheduleInput {
+input FindAllCptFeeScheduleInput {
   practiceId: String
   name: String
   searchString: String
   paginationOptions: PaginationInput!
 }
 
-input getCptFeeScheduleInput {
+input GetCptFeeScheduleInput {
   id: String!
 }
 
@@ -3228,9 +3229,9 @@ type Mutation {
   createModifier(createModifierInput: CreateModifierInput!): ModifierPayload!
   removeModifier(removeModifierInput: RemoveModifierInput!): ModifierPayload!
   updateModifier(updateModifierInput: UpdateModifierInput!): ModifierPayload!
-  createCptFeeSchedule(createCptFeeScheduleInput: createCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  removeCptFeeSchedule(removeCptFeeScheduleInput: removeCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  updateCptFeeSchedule(updateCptFeeScheduleInput: updateCptFeeScheduleInput!): CPTFeeSchedulePayload!
+  createCptFeeSchedule(createCptFeeScheduleInput: CreateCptFeeScheduleInput!): CPTFeeSchedulePayload!
+  removeCptFeeSchedule(removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!): CPTFeeSchedulePayload!
+  updateCptFeeSchedule(updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!): CPTFeeSchedulePayload!
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
@@ -4373,7 +4374,7 @@ input UpdateModifierInput {
   id: String!
 }
 
-input createCptFeeScheduleInput {
+input CreateCptFeeScheduleInput {
   modifier: String
   code: String
   description: String
@@ -4385,11 +4386,11 @@ input createCptFeeScheduleInput {
   CPTCodesId: String
 }
 
-input removeCptFeeScheduleInput {
+input RemoveCptFeeScheduleInput {
   id: String!
 }
 
-input updateCptFeeScheduleInput {
+input UpdateCptFeeScheduleInput {
   modifier: String
   code: String
   description: String

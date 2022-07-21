@@ -3,8 +3,8 @@ import { Args, Mutation, Resolver, Query, ResolveField, Parent } from "@nestjs/g
 //payloads, inputs
 import { AllCPTFeeSchedulesPayload, CPTFeeSchedulePayload } from "../dto/cptFeeSchedule-payload.dto";
 import {
-  createCptFeeScheduleInput, findAllCptFeeScheduleInput, getCptFeeScheduleInput, removeCptFeeScheduleInput,
-  updateCptFeeScheduleInput
+  CreateCptFeeScheduleInput, FindAllCptFeeScheduleInput, GetCptFeeScheduleInput, RemoveCptFeeScheduleInput,
+  UpdateCptFeeScheduleInput
 } from "../dto/cptFeeSchedule.input";
 //entities
 import { CPTCodes } from "../entities/cptCode.entity";
@@ -28,7 +28,7 @@ export class CptFeeScheduleResolver {
   @Query(() => AllCPTFeeSchedulesPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'findAllFacility')
-  async findAllCptFeeSchedule(@Args('findAllCptFeeScheduleInput') findAllCptFeeScheduleInput: findAllCptFeeScheduleInput): Promise<AllCPTFeeSchedulesPayload> {
+  async findAllCptFeeSchedule(@Args('findAllCptFeeScheduleInput') findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput): Promise<AllCPTFeeSchedulesPayload> {
     const feeSchedules = await this.cptFeeScheduleService.findAllCptFeeSchedule(findAllCptFeeScheduleInput);
     if (feeSchedules) {
       return {
@@ -48,7 +48,7 @@ export class CptFeeScheduleResolver {
   @Query(() => CPTFeeSchedulePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'removeFeeSchedule')
-  async getCptFeeSchedule(@Args('getCptFeeScheduleInput') getCptFeeScheduleInput: getCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
+  async getCptFeeSchedule(@Args('getCptFeeScheduleInput') getCptFeeScheduleInput: GetCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
     return {
       cptFeeSchedule: await this.cptFeeScheduleService.findOne(getCptFeeScheduleInput),
       response: { status: 200, message: ' CPT Fee Schedule fetched successfully' }
@@ -60,7 +60,7 @@ export class CptFeeScheduleResolver {
   @Mutation(() => CPTFeeSchedulePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'createFeeSchedule')
-  async createCptFeeSchedule(@Args('createCptFeeScheduleInput') createCptFeeScheduleInput: createCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
+  async createCptFeeSchedule(@Args('createCptFeeScheduleInput') createCptFeeScheduleInput: CreateCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
     return {
       cptFeeSchedule: await this.cptFeeScheduleService.create(createCptFeeScheduleInput),
       response: { status: 200, message: 'CPT Fee Schedule created successfully' }
@@ -70,7 +70,7 @@ export class CptFeeScheduleResolver {
   @Mutation(() => CPTFeeSchedulePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'removeFeeSchedule')
-  async removeCptFeeSchedule(@Args('removeCptFeeScheduleInput') removeCptFeeScheduleInput: removeCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
+  async removeCptFeeSchedule(@Args('removeCptFeeScheduleInput') removeCptFeeScheduleInput: RemoveCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
     return {
       cptFeeSchedule: await this.cptFeeScheduleService.remove(removeCptFeeScheduleInput),
       response: { status: 200, message: 'CPT Fee Schedule deleted successfully' }
@@ -80,7 +80,7 @@ export class CptFeeScheduleResolver {
   @Mutation(() => CPTFeeSchedulePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'removeFeeSchedule')
-  async updateCptFeeSchedule(@Args('updateCptFeeScheduleInput') updateCptFeeScheduleInput: updateCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
+  async updateCptFeeSchedule(@Args('updateCptFeeScheduleInput') updateCptFeeScheduleInput: UpdateCptFeeScheduleInput): Promise<CPTFeeSchedulePayload> {
     return {
       cptFeeSchedule: await this.cptFeeScheduleService.updateCptFeeSchedule(updateCptFeeScheduleInput),
       response: { status: 200, message: 'CPT Fee Schedule is updated successfully' }

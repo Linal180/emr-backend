@@ -2,7 +2,7 @@ import { Field, InputType, PartialType, PickType } from "@nestjs/graphql"
 import PaginationInput from "src/pagination/dto/pagination-input.dto"
 
 @InputType()
-export class findAllCptFeeScheduleInput {
+export class FindAllCptFeeScheduleInput {
 
   @Field({ nullable: true })
   practiceId?: string
@@ -20,7 +20,7 @@ export class findAllCptFeeScheduleInput {
 
 
 @InputType()
-export class createCptFeeScheduleInput {
+export class CreateCptFeeScheduleInput {
 
   @Field({ nullable: true })
   modifier: string;
@@ -51,13 +51,13 @@ export class createCptFeeScheduleInput {
 }
 
 @InputType()
-export class updateCptFeeScheduleInput extends PartialType(createCptFeeScheduleInput) {
+export class UpdateCptFeeScheduleInput extends PartialType(CreateCptFeeScheduleInput) {
   @Field()
   id: string;
 }
 
 @InputType()
-export class getCptFeeScheduleInput extends PickType(updateCptFeeScheduleInput, ['id'] as const) { }
+export class GetCptFeeScheduleInput extends PickType(UpdateCptFeeScheduleInput, ['id'] as const) { }
 
 @InputType()
-export class removeCptFeeScheduleInput extends PickType(updateCptFeeScheduleInput, ['id'] as const) { }
+export class RemoveCptFeeScheduleInput extends PickType(UpdateCptFeeScheduleInput, ['id'] as const) { }

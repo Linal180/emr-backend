@@ -10,8 +10,8 @@ import { PaginationService } from "src/pagination/pagination.service";
 import { CptFeeSchedule } from "../entities/cptFeeSchedule.entity";
 //inputs, payloads
 import {
-  createCptFeeScheduleInput, findAllCptFeeScheduleInput, getCptFeeScheduleInput, removeCptFeeScheduleInput,
-  updateCptFeeScheduleInput
+  CreateCptFeeScheduleInput, FindAllCptFeeScheduleInput, GetCptFeeScheduleInput, RemoveCptFeeScheduleInput,
+  UpdateCptFeeScheduleInput
 } from "../dto/cptFeeSchedule.input";
 import { AllCPTFeeSchedulesPayload } from "../dto/cptFeeSchedule-payload.dto";
 
@@ -29,7 +29,7 @@ export class CptFeeScheduleService {
    * @param params 
    * @returns all fee schedule 
    */
-  async findAllCptFeeSchedule(params: findAllCptFeeScheduleInput): Promise<AllCPTFeeSchedulesPayload> {
+  async findAllCptFeeSchedule(params: FindAllCptFeeScheduleInput): Promise<AllCPTFeeSchedulesPayload> {
     try {
       const { paginationOptions, practiceId, searchString } = params
       const paginationResponse = await this.paginationService.willPaginate<CptFeeSchedule>(this.cptFeeScheduleRepository, {
@@ -53,7 +53,7 @@ export class CptFeeScheduleService {
    * @param params 
    * @returns create 
    */
-  async create(params: createCptFeeScheduleInput): Promise<CptFeeSchedule> {
+  async create(params: CreateCptFeeScheduleInput): Promise<CptFeeSchedule> {
     try {
       const { feeScheduleId, CPTCodesId } = params || {}
       const cptFeeSchedule = this.cptFeeScheduleRepository.create(params);
@@ -78,7 +78,7 @@ export class CptFeeScheduleService {
    * @param params 
    * @returns one 
    */
-  async findOne(params: getCptFeeScheduleInput): Promise<CptFeeSchedule> {
+  async findOne(params: GetCptFeeScheduleInput): Promise<CptFeeSchedule> {
     const { id } = params
     return await this.cptFeeScheduleRepository.findOne(id)
   }
@@ -88,7 +88,7 @@ export class CptFeeScheduleService {
    * @param params 
    * @returns cpt fee schedule 
    */
-  async updateCptFeeSchedule(params: updateCptFeeScheduleInput): Promise<CptFeeSchedule> {
+  async updateCptFeeSchedule(params: UpdateCptFeeScheduleInput): Promise<CptFeeSchedule> {
     try {
       const { CPTCodesId, feeScheduleId } = params || {}
       const cptFeeSchedule = await this.utilsService.updateEntityManager(CptFeeSchedule, params.id, params, this.cptFeeScheduleRepository)
@@ -113,7 +113,7 @@ export class CptFeeScheduleService {
    * @param params 
    * @returns remove 
    */
-  async remove(params: removeCptFeeScheduleInput): Promise<CptFeeSchedule> {
+  async remove(params: RemoveCptFeeScheduleInput): Promise<CptFeeSchedule> {
     try {
       const { id } = params;
       const cptFeeSchedule = await this.cptFeeScheduleRepository.findOne(id);
@@ -133,6 +133,11 @@ export class CptFeeScheduleService {
   async findByCptCode(cptCodesId: string): Promise<CptFeeSchedule[]> {
     return await this.cptFeeScheduleRepository.find({ cptCodesId })
   }
+
+  async findAndCountByCptCode(cptCodesId: string): Promise<Number> {
+    return await this.cptFeeScheduleRepository.count({ cptCodesId })
+  }
+
 
   /**
    * Finds by fee schedule

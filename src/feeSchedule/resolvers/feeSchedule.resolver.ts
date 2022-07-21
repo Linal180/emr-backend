@@ -126,4 +126,12 @@ export class FeeScheduleResolver {
     }
   }
 
+  @ResolveField(() => Number)
+  async cptFeeScheduleCount(@Parent() feeSchedule: FeeSchedule): Promise<Number> {
+    if (feeSchedule?.id) {
+      const response = await this.cptFeeScheduleService.findAndCountByCptCode(feeSchedule?.id);
+      return response
+    }
+  }
+
 }

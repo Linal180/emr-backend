@@ -45,9 +45,14 @@ export class FeeSchedule {
   @Field(() => Practice, { nullable: true })
   practice: Practice;
 
-  //fields
+
   @OneToMany(() => CptFeeSchedule, cptFeeSchedule => cptFeeSchedule.feeSchedule, { onDelete: 'CASCADE' })
   @Field(() => [CptFeeSchedule], { nullable: true })
   cptFeeSchedule: CptFeeSchedule[]
+
+  //fields
+
+  @Field(() => Number, { nullable: true })
+  cptFeeScheduleCount: Number
 
 }
