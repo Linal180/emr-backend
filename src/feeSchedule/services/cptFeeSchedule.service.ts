@@ -134,8 +134,9 @@ export class CptFeeScheduleService {
     return await this.cptFeeScheduleRepository.find({ cptCodesId })
   }
 
-  async findAndCountByCptCode(cptCodesId: string): Promise<Number> {
-    return await this.cptFeeScheduleRepository.count({ cptCodesId })
+  async findAndCountByFeeSchedule(feeScheduleId: string): Promise<Number> {
+    const count = await this.cptFeeScheduleRepository.count({ feeScheduleId })
+    return count
   }
 
 
