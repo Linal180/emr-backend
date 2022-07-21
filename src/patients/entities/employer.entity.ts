@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Patient } from './patient.entity';
 
 @Entity({ name: 'Employers' })
@@ -52,6 +52,10 @@ export class Employer {
   @Column({ nullable: true })
   @Field({ nullable: true })
   zipCode: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  country: string
 
   @ManyToOne(() => Patient, patient => patient.contacts, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => Patient, { nullable: true })
