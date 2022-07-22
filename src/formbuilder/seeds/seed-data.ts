@@ -63,19 +63,19 @@ const MAPPED_RELATIONSHIP_TYPE = [
   { value: RelationshipType.LIFE_PARTNER, name: RelationshipType.LIFE_PARTNER },
   { value: RelationshipType.GRANDPARENT, name: RelationshipType.GRANDPARENT },
   { value: RelationshipType.NEPHEW_NIECE, name: RelationshipType.NEPHEW_NIECE },
-  { value: RelationshipType.FOSTHER_CHILD, name: RelationshipType.FOSTHER_CHILD },
+  { value: RelationshipType.FOSTER_CHILD, name: RelationshipType.FOSTER_CHILD },
   { value: RelationshipType.CADAVER_DONOR, name: RelationshipType.CADAVER_DONOR },
   { value: RelationshipType.SIGNIFICANT_OTHER, name: RelationshipType.SIGNIFICANT_OTHER },
   { value: RelationshipType.EMANCIPATED_MINOR, name: RelationshipType.EMANCIPATED_MINOR },
-  { value: RelationshipType.INJURED_PLAINTIIFF, name: RelationshipType.INJURED_PLAINTIIFF },
+  { value: RelationshipType.INJURED_PLAINTIFF, name: RelationshipType.INJURED_PLAINTIFF },
   { value: RelationshipType.SPONSORED_DEPENDENT, name: RelationshipType.SPONSORED_DEPENDENT },
   { value: RelationshipType.STEPSON_STEPDAUGHTER, name: RelationshipType.STEPSON_STEPDAUGHTER },
   { value: RelationshipType.CHILD_MOTHER_INSURANCE, name: RelationshipType.CHILD_MOTHER_INSURANCE },
   { value: RelationshipType.HANDICAPPED_DEPENDENT, name: RelationshipType.HANDICAPPED_DEPENDENT },
   { value: RelationshipType.CHILD_FATHER_INSURANCE, name: RelationshipType.CHILD_FATHER_INSURANCE },
   { value: RelationshipType.DEPENDENT_OF_MINOR_DEPENDENT, name: RelationshipType.DEPENDENT_OF_MINOR_DEPENDENT },
-  { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE, },
-  { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE, },
+  { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE, },
+  { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE, },
 ];
 
 const MAPPED_RACE = [
