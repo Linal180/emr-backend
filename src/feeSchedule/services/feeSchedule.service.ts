@@ -9,7 +9,7 @@ import { PracticeService } from "src/practice/practice.service";
 import { PaginationService } from "src/pagination/pagination.service";
 //inputs
 import {
-  CreateFeeScheduleInput, FindAllFeeScheduleInput, FindFeeScheduleCPTCodesInput, GetFeeScheduleInput, RemoveFeeScheduleInput, UpdateFeeScheduleInput
+  CreateFeeScheduleInput, FindAllFeeScheduleInput, GetFeeScheduleInput, RemoveFeeScheduleInput, UpdateFeeScheduleInput
 } from "../dto/feeSchedule.input";
 //payloads
 import { AllFeeSchedulesPayload } from "../dto/feeSchedule-payload.dto";
@@ -35,27 +35,6 @@ export class FeeScheduleService {
         paginationOptions, practiceId,
         associatedTo: 'FeeSchedule', associatedToField: {
           columnValue: searchString, columnName: 'name', filterType: 'stringFilter'
-        }
-      })
-      return {
-        pagination: {
-          ...paginationResponse
-        },
-        feeSchedules: paginationResponse.data,
-      }
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
-
-  async findFeeScheduleCPTCodes(params: FindFeeScheduleCPTCodesInput): Promise<AllFeeSchedulesPayload> {
-    try {
-      const { paginationOptions, practiceId, searchString } = params;
-      const paginationResponse = await this.paginationService.willPaginate<FeeSchedule>(this.feeScheduleRepository, {
-        paginationOptions, practiceId, effectiveDate: "abc", expiryDate: "xyz",
-        associatedTo: 'FeeSchedule', associatedToField: {
-          columnValue: searchString, columnName: 'cptCode', columnName2: "description",
-          columnName3: 'shortDescription', filterType: 'stringFilter'
         }
       })
       return {

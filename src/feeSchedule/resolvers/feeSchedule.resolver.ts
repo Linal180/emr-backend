@@ -10,7 +10,7 @@ import { FeeScheduleService } from "../services/feeSchedule.service";
 import { CptFeeScheduleService } from "../services/cptFeeSchedule.service";
 //inputs
 import {
-  CreateFeeScheduleInput, FindAllFeeScheduleInput, FindFeeScheduleCPTCodesInput, GetFeeScheduleInput, RemoveFeeScheduleInput, UpdateFeeScheduleInput
+  CreateFeeScheduleInput, FindAllFeeScheduleInput, GetFeeScheduleInput, RemoveFeeScheduleInput, UpdateFeeScheduleInput
 } from "../dto/feeSchedule.input";
 //payloads
 import { AllFeeSchedulesPayload, FeeSchedulePayload } from "../dto/feeSchedule-payload.dto";
@@ -53,26 +53,6 @@ export class FeeScheduleResolver {
       feeSchedule: await this.feeScheduleService.findOne(getFeeScheduleInput),
       response: { status: 200, message: 'Fee Schedule fetched successfully' }
     };
-  }
-
-  @Query(() => AllFeeSchedulesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllFacility')
-  async findFeeScheduleCPTCodes(@Args('findFeeScheduleCPTCodesInput') findFeeScheduleCPTCodesInput: FindFeeScheduleCPTCodesInput): Promise<AllFeeSchedulesPayload> {
-    const feeSchedules = await this.feeScheduleService.findFeeScheduleCPTCodes(findFeeScheduleCPTCodesInput);
-    if (feeSchedules) {
-      return {
-        ...feeSchedules,
-        response: {
-          message: "OK", status: 200,
-        }
-      }
-    }
-
-    throw new NotFoundException({
-      status: HttpStatus.NOT_FOUND,
-      error: 'Fee Schedules not found',
-    });
   }
 
   //mutations

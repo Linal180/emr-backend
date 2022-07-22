@@ -2579,7 +2579,6 @@ type Query {
   findAllPublicFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   findAllFacility(facilityInput: FacilityInput!): FacilitiesPayload!
   getFacility(getFacility: GetFacility!): FacilityPayload!
-  getFacilityPatients(getFacilityPatientsInput: GetFacilityPatientsInput!): FacilityPayload!
   findAllServices(serviceInput: ServiceInput!): ServicesPayload!
   getService(getService: GetService!): ServicePayload!
   findAllStaff(staffInput: StaffInput!): AllStaffPayload!
@@ -2599,6 +2598,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getPatientProviders(getPatient: GetPatient!): PatientProviderPayload!
   getPatientProvider(patientProviderInputs: PatientProviderInputs!): PatientDoctorPayload!
+  getFacilityPatients(getFacilityPatientsInput: GetFacilityPatientsInput!): PatientsPayload!
   findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   findPatientConsent(patientInput: PatientConsentInput!): PatientConsentPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
@@ -2619,18 +2619,17 @@ type Query {
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
-  findFeeScheduleCPTCodes(findFeeScheduleCPTCodesInput: FindFeeScheduleCPTCodesInput!): AllFeeSchedulesPayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
   getModifier(getModifierInput: GetModifierInput!): ModifierPayload!
   findAllCptFeeSchedule(findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!): AllCPTFeeSchedulesPayload!
   getCptFeeSchedule(getCptFeeScheduleInput: GetCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  fetchAgreement(agreementId: String!): AgreementPayload!
-  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
   getToken: BraintreePayload!
   getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  fetchAgreement(agreementId: String!): AgreementPayload!
+  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   fetchICDCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
@@ -2756,11 +2755,6 @@ input GetFacility {
   id: String!
 }
 
-input GetFacilityPatientsInput {
-  facilityId: String
-  paginationOptions: PaginationInput!
-}
-
 input ServiceInput {
   practiceId: String
   facilityId: String
@@ -2861,6 +2855,11 @@ input PatientProviderInputs {
   providerId: String
 }
 
+input GetFacilityPatientsInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 input DoctorPatientsInput {
   doctorId: String
   paginationOptions: PaginationInput!
@@ -2953,12 +2952,6 @@ input GetFeeScheduleInput {
   id: String!
 }
 
-input FindFeeScheduleCPTCodesInput {
-  practiceId: String
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
 input FindAllCPTCodesInput {
   code: String
   paginationOptions: PaginationInput!
@@ -2987,15 +2980,15 @@ input GetCptFeeScheduleInput {
   id: String!
 }
 
+input InvoiceInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 input AgreementPaginationInput {
   agreementFacilityId: String
   agreementPracticeId: String
   searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input InvoiceInputs {
-  facilityId: String
   paginationOptions: PaginationInput!
 }
 
@@ -3243,9 +3236,6 @@ type Mutation {
   createCptFeeSchedule(createCptFeeScheduleInput: CreateCptFeeScheduleInput!): CPTFeeSchedulePayload!
   removeCptFeeSchedule(removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!): CPTFeeSchedulePayload!
   updateCptFeeSchedule(updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
-  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
-  removeAgreement(agreementId: String!): AgreementPayload!
   chargePayment(paymentInput: PaymentInput!): TransactionPayload!
   chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
   getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
@@ -3253,6 +3243,9 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
+  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
+  removeAgreement(agreementId: String!): AgreementPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
@@ -4422,25 +4415,6 @@ input UpdateCptFeeScheduleInput {
   id: String!
 }
 
-input AgreementInput {
-  title: String
-  body: String
-  viewAgreementBeforeAgreeing: Boolean
-  signatureRequired: Boolean
-  facilityId: String
-  practiceId: String
-}
-
-input UpdateAgreementInput {
-  title: String
-  body: String
-  viewAgreementBeforeAgreeing: Boolean
-  signatureRequired: Boolean
-  facilityId: String
-  practiceId: String
-  id: String!
-}
-
 input PaymentInput {
   clientIntent: String
   price: String
@@ -4501,6 +4475,25 @@ input CreateExternalInvoiceInputs {
 
 input InvoiceStatusInputs {
   status: STATUS!
+  id: String!
+}
+
+input AgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
+}
+
+input UpdateAgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
   id: String!
 }
 

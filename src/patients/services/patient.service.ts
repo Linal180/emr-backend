@@ -743,6 +743,12 @@ export class PatientService {
     }
   }
 
+
+  /**
+   * Gets provider
+   * @param patientProviderInputs 
+   * @returns provider 
+   */
   async getProvider(patientProviderInputs: PatientProviderInputs): Promise<DoctorPatient> {
     try {
       const usualProvider = await this.doctorPatientRepository.findOne({
@@ -1048,7 +1054,11 @@ export class PatientService {
     }
   }
 
-
+  /**
+   * Gets facility patients
+   * @param params 
+   * @returns facility patients 
+   */
   async getFacilityPatients(params: GetFacilityPatientsInput): Promise<PatientsPayload> {
     try {
       const { paginationOptions, facilityId } = params

@@ -1,10 +1,9 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 //payloads
+import FacilityInput from '../dto/facility-input.dto';
 import { FacilityPayload } from '../dto/facility-payload.dto';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
-import { PatientsPayload } from 'src/patients/dto/patients-payload.dto';
-import FacilityInput, { GetFacilityPatientsInput } from '../dto/facility-input.dto';
 //entities
 import { Facility } from '../entities/facility.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
@@ -126,17 +125,6 @@ export class FacilityResolver {
     };
   }
 
-  @Query(() => FacilityPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'getFacility')
-  async getFacilityPatients(@Args('getFacilityPatientsInput') getFacilityPatientsInput: GetFacilityPatientsInput):  Promise<PatientsPayload> {
-    const facility = await this.facilityService.getFacilityPatients(getFacilityPatientsInput)
-    return {
-      ...facility,
-      response: { status: 200, message: 'Facility fetched successfully' }
-    };
-  }
-
   //resolve fields
 
   @ResolveField(() => [Contact])
@@ -166,5 +154,5 @@ export class FacilityResolver {
       return await this.appointmentService.getFacilityAppointments({ facilityId: facility.id });
     }
   }
-  
+
 }

@@ -15,10 +15,9 @@ import { CreateFacilityInput } from '../dto/create-facility.input';
 import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
 import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
 //payloads
-import FacilityInput, { GetFacilityPatientsInput } from '../dto/facility-input.dto';
+import FacilityInput from '../dto/facility-input.dto';
 import { FacilityPayload } from '../dto/facility-payload.dto';
 import { FacilitiesPayload } from '../dto/facilities-payload.dto';
-import { PatientsPayload } from 'src/patients/dto/patients-payload.dto';
 //entities
 import { Facility } from '../entities/facility.entity';
 
@@ -30,7 +29,6 @@ export class FacilityService {
     private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
     private readonly billingAddressService: BillingAddressService,
-    private readonly patientService: PatientService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
     @Inject(forwardRef(() => PracticeService))
@@ -136,15 +134,6 @@ export class FacilityService {
     }
   }
 
-  
-  /**
-   * Gets facility patients
-   * @param params 
-   * @returns facility patients 
-   */
-  async getFacilityPatients(params: GetFacilityPatientsInput): Promise<PatientsPayload> {
-    return await this.patientService.getFacilityPatients(params)
-  }
 
   /**
    * Updates facility

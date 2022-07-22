@@ -8,7 +8,6 @@ import { FacilityService } from './services/facility.service';
 import { ServicesService } from './services/services.service';
 //modules
 import { UsersModule } from 'src/users/users.module';
-import { PatientModule } from 'src/patients/patient.module';
 import { PracticeModule } from 'src/practice/practice.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
@@ -22,7 +21,6 @@ import { FacilityResolver } from './resolvers/facility.resolver';
     TypeOrmModule.forFeature([Facility, Service]),
     PaginationModule,
     forwardRef(() => UsersModule),
-    forwardRef(() => PatientModule),
     forwardRef(() => PracticeModule),
     forwardRef(() => ProviderModule),
     forwardRef(() => AppointmentModule),
