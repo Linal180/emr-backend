@@ -32,15 +32,18 @@ import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRela
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { PatientAttachmentsPayload } from '../dto/patients-attachments-payload.dto';
 import { PatientDoctorPayload, PatientPayload, PatientProviderPayload } from '../dto/patient-payload.dto';
+import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
 
 @Resolver(() => Patient)
 export class PatientResolver {
-  constructor(private readonly patientService: PatientService,
-    private readonly attachmentsService: AttachmentsService,
-    private readonly employerService: EmployerService,
+  constructor(
+    private readonly patientService: PatientService,
     private readonly contactService: ContactService,
+    private readonly facilityService: FacilityService,
+    private readonly employerService: EmployerService,
+    private readonly attachmentsService: AttachmentsService,
     private readonly appointmentService: AppointmentService,
-    private readonly facilityService: FacilityService) { }
+  ) { }
 
   //mutations
 
@@ -224,6 +227,17 @@ export class PatientResolver {
     return {
       provider,
       response: { status: 200, message: 'Patient fetched successfully' }
+    };
+  }
+
+  @Query(() => PatientsPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getFacility')
+  async getFacilityPatients(@Args('getFacilityPatientsInput') getFacilityPatientsInput: GetFacilityPatientsInput): Promise<PatientsPayload> {
+    const facility = await this.patientService.getFacilityPatients(getFacilityPatientsInput)
+    return {
+      ...facility,
+      response: { status: 200, message: 'Facility fetched successfully' }
     };
   }
 

@@ -2598,6 +2598,7 @@ type Query {
   getPatient(getPatient: GetPatient!): PatientPayload!
   getPatientProviders(getPatient: GetPatient!): PatientProviderPayload!
   getPatientProvider(patientProviderInputs: PatientProviderInputs!): PatientDoctorPayload!
+  getFacilityPatients(getFacilityPatientsInput: GetFacilityPatientsInput!): PatientsPayload!
   findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   findPatientConsent(patientInput: PatientConsentInput!): PatientConsentPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
@@ -2618,7 +2619,6 @@ type Query {
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
-  findFeeScheduleCPTCodes(findFeeScheduleCPTCodesInput: FindFeeScheduleCPTCodesInput!): AllFeeSchedulesPayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
@@ -2855,6 +2855,11 @@ input PatientProviderInputs {
   providerId: String
 }
 
+input GetFacilityPatientsInput {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
 input DoctorPatientsInput {
   doctorId: String
   paginationOptions: PaginationInput!
@@ -2945,12 +2950,6 @@ input FindAllFeeScheduleInput {
 
 input GetFeeScheduleInput {
   id: String!
-}
-
-input FindFeeScheduleCPTCodesInput {
-  practiceId: String
-  searchString: String
-  paginationOptions: PaginationInput!
 }
 
 input FindAllCPTCodesInput {

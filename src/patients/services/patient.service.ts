@@ -40,6 +40,7 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
+import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
 
 
 @Injectable()
@@ -742,6 +743,12 @@ export class PatientService {
     }
   }
 
+
+  /**
+   * Gets provider
+   * @param patientProviderInputs 
+   * @returns provider 
+   */
   async getProvider(patientProviderInputs: PatientProviderInputs): Promise<DoctorPatient> {
     try {
       const usualProvider = await this.doctorPatientRepository.findOne({
@@ -1031,7 +1038,6 @@ export class PatientService {
     }
   }
 
-
   /**
    * Gets signature
    * @param id 
@@ -1045,6 +1051,26 @@ export class PatientService {
     } catch (error) {
       throw new Error(error);
 
+    }
+  }
+
+  /**
+   * Gets facility patients
+   * @param params 
+   * @returns facility patients 
+   */
+  async getFacilityPatients(params: GetFacilityPatientsInput): Promise<PatientsPayload> {
+    try {
+      const { paginationOptions, facilityId } = params
+      const paginationResponse = await this.paginationService.willPaginate<Patient>(this.patientRepository, { paginationOptions, facilityId })
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        patients: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 }
