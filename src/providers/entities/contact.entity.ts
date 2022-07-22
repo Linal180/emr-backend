@@ -1,9 +1,12 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//entities
+import { Doctor } from './doctor.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Insurance } from 'src/insurance/entities/insurance.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Doctor } from './doctor.entity';
+
+//enums
 
 export enum ServiceCodes {
   Pharmacy_01 = '01 - Pharmacy',
@@ -67,32 +70,37 @@ registerEnumType(ServiceCodes, {
 
 export enum RelationshipType {
   SELF = "Self",
-  SPOUSE = "Spouse",
+  WARD = "Ward",
   CHILD = "Child",
+  OTHER = "Other",
+  SPOUSE = "Spouse",
+  FRIEND = "Friend",
+  MOTHER = "Mother",
+  PARENT = "Parent",
+  FATHER = "Father",
+  COUSIN = "Cousin",
+  UNKNOWN = "Unknown",
+  SIBLING = "Sibling",
+  EMPLOYEE = "Employee",
+  GUARDIAN = "guardian",
+  GRANDCHILD = "Grandchild",
+  ORGAN_DONOR = "Organ Donor",
+  GRANDPARENT = "Grandparent",
+  LIFE_PARTNER = "Life partner",
+  FOSTER_CHILD = "Foster Child",
+  CADAVER_DONOR = "Cadaver Donor",
+  NEPHEW_NIECE = "Nephew or Niece",
+  EMANCIPATED_MINOR = "Emancipated Minor",
+  INJURED_PLAINTIFF = "Injured Plaintiff",
+  SIGNIFICANT_OTHER = "Significant Other",
+  SPONSORED_DEPENDENT = "Sponsored Dependent",
+  HANDICAPPED_DEPENDENT = "Handicapped Dependent",
+  STEPSON_STEPDAUGHTER = "Stepson or Stepdaughter",
   CHILD_MOTHER_INSURANCE = "Child (Mother's Insurance)",
   CHILD_FATHER_INSURANCE = "Child (Father's Insurance)",
-  OTHER = "Other",
-  GRANDPARENT = "Grandparent",
-  GRANDCHILD = "Grandchild",
-  NEPHEW_NIECE = "Nephew or Niece",
-  FOSTHER_CHILD = "Foster Child",
-  WARD = "Ward",
-  STEPSON_STEPDAUGHTER = "Stepson or Stepdaughter",
-  STEPSON_STEPDAUGHTER_STEPMOTHER_INSRTANCE = "Stepson or Stepdaughter (Stepmother's Insurance)",
-  STEPSON_STEPDAUGHTER_STEPFATHER_INSRTANCE = "Stepson or Stepdaughter (Stepfather's Insurance)",
-  EMPLOYEE = "Employee",
-  UNKNOWN = "Unknown",
-  HANDICAPPED_DEPENDENT = "Handicapped Dependent",
-  SPONSORED_DEPENDENT = "Sponsored Dependent",
   DEPENDENT_OF_MINOR_DEPENDENT = "Dependent of a Minor Dependent",
-  SIGNIFICANT_OTHER = "Significant Other",
-  MOTHER = "Mother",
-  FATHER = "Father",
-  EMANCIPATED_MINOR = "Emancipated Minor",
-  ORGAN_DONOR = "Organ Donor",
-  CADAVER_DONOR = "Cadaver Donor",
-  INJURED_PLAINTIIFF = "Injured Plaintiff",
-  LIFE_PARTNER = "Life partner"
+  STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE = "Stepson or Stepdaughter (Stepmother's Insurance)",
+  STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE = "Stepson or Stepdaughter (Stepfather's Insurance)",
 }
 
 registerEnumType(RelationshipType, {
@@ -113,7 +121,6 @@ registerEnumType(ContactType, {
   name: "ContactType",
   description: "The user's contact type assigned",
 });
-
 
 @Entity({ name: 'Contacts' })
 @ObjectType()
