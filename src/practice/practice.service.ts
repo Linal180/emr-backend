@@ -146,8 +146,10 @@ export class PracticeService {
   async updatePractice(updatePracticeInput: UpdatePracticeInput): Promise<Practice> {
     try {
       const { updatePracticeItemInput, updateUserInput } = updatePracticeInput
-      const { firstName, lastName, phone, id, email } = updateUserInput
-      await this.staffService.updateStaff({ updateStaffItemInput: { id, firstName, lastName, phone, email } })
+      if (updateUserInput) {
+        const { firstName, lastName, phone, id, email } = updateUserInput
+        await this.staffService.updateStaff({ updateStaffItemInput: { id, firstName, lastName, phone, email } })
+      }
       const practice = await this.practiceRepository.save(updatePracticeItemInput)
       return practice
     } catch (error) {
