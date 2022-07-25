@@ -384,25 +384,20 @@ type Insurance {
   id: String!
   payerId: String!
   payerName: String!
-  enrollmentRequired: Boolean
-  type: InsurancePayerType!
-  lineOfBusiness: String!
+  workersComp: String
+  type: String
+  ubClaims: String!
   state: String
-  realTimeEligibility: Boolean
-  realTimeClaimStatus: Boolean
-  electronicRemittanceAdvice: Boolean
-  secondaryCoordinationBenefits: Boolean
-  Note: String
+  eligibility: String
+  claimFee: String
+  electronicRemittanceAdvice: String
+  secondaryCoordinationBenefits: String
+  remitFee: String
+  attachment: String
   contacts: [Contact!]
   policies: [Policy!]
   createdAt: String
   updatedAt: String
-}
-
-"""The insurance payer type"""
-enum InsurancePayerType {
-  P
-  NP
 }
 
 type PolicyCoverage {

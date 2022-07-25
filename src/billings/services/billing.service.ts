@@ -165,7 +165,12 @@ export class BillingService {
     const facilityContacts = await this.contactsService.findContactsByFacilityId(patient.facilityId);
     const facilityBillingContact = (await this.billingAddressService.findBillingAddressByFacilityId(patient.facilityId))[0];
     const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact)
-    const { cliaIdNumber, practiceId } = facilityInfo || {}
+    const { cliaIdNumber, practiceId, serviceCode } = facilityInfo || {}
+    const serviceC = serviceCode?.split('-')
+    const pos = serviceC.length ? serviceC[0] : '';
+    const { state: facilityState } = facilityPrimaryContact || {}
+    const facilitySt = states?.find(({ name }) => name === facilityState);
+    const { abbreviation: facilityStateCode } = facilitySt || {}
 
     const practiceInfo = await this.practiceService.findOne(practiceId)
 
@@ -187,21 +192,26 @@ export class BillingService {
     const orderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.ORDERING_PROVIDER)?.doctor
     const renderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.RENDERING_PROVIDER)?.doctor
     const contacts = await this.contactsService.findContactsByPatientId(patient.id);
-    const { address, city, state, zipCode, address2, country, phone } = contacts?.find((contact) => contact.primaryContact) || {}
+    const { address, city, state: unFormat, zipCode, address2, phone } = contacts?.find((contact) => contact.primaryContact) || {}
+    const unFormateState = states?.find(({ name }) => name === unFormat)
+    const { abbreviation: state } = unFormateState || {}
 
     const policyHolder = await this.policyHolderService.findOne(policyHolderId)
     const {
       address: policyHolderAddress, addressCTD, firstName: policyHolderFName, lastName: policyHolderLName,
-      middleName: policyHolderMName, city: policyHolderCity, state: policyHolderState, zipCode: policyHolderZipCode,
+      middleName: policyHolderMName, city: policyHolderCity, state: policyHolderSt, zipCode: policyHolderZipCode,
       certificationNumber, sex: policyHolderGender, dob: policyHolderDob
     } = policyHolder || {}
 
-    const { scheduleStartDateTime, scheduleEndDateTime } = appointmentInfo
+    const unFormatePolicy = states?.find(({ name }) => name === policyHolderSt);
+    const { abbreviation: policyHolderState } = unFormatePolicy || {}
+
+    const { scheduleStartDateTime, scheduleEndDateTime } = appointmentInfo || {}
     const { firstName: billingProviderName, contacts: providerContacts, npi, taxId } = primaryProviderInfo || {}
     const { address: providerAddress, address2: providerAddress2, city: providerCity, state: providerState, zipCode: providerZipCode, phone: providerPhone } =
       providerContacts?.find((contact) => contact.primaryContact) || {}
 
-    const diagnoses = diagnosesCodes.reduce((acc, diagnosesCode, i) => {
+    const diagnoses = diagnosesCodes?.reduce((acc, diagnosesCode, i) => {
       acc[`diag_${i + 1}`] = diagnosesCode.code
       return acc
     }, {} as {
@@ -220,13 +230,14 @@ export class BillingService {
 
     })
 
-    const procedures = procedureCodes.map((procedureCode) => {
+    const procedures = procedureCodes?.map((procedureCode) => {
       const { code, price, diagPointer, m1, m2, m3, m4, unit } = procedureCode
       return {
         proc_code: code,
         charge: Number(price || 0),
-        units: '',
-        diagPointer, m1, m2, m3, m4, unit
+        units: unit,
+        diagPointer, m1, m2, m3, m4, unit,
+        diag_ref: diagPointer || ''
       }
     })
 
@@ -241,7 +252,7 @@ export class BillingService {
       pat_city: city,
       pat_state: state,
       pat_zip: zipCode,
-      pat_dob: moment(dob).format('YYYY-MM-DD'),
+      pat_dob: moment(dob).format('MM-DD-YYYY'),
       pat_sex: getClaimGender(gender),
       pat_rel: getClaimRelation(policyHolderRelationship),
       ins_number: groupNumber,
@@ -252,20 +263,20 @@ export class BillingService {
       bill_addr_1: facilityPrimaryContact?.address,
       bill_addr_2: facilityPrimaryContact?.address2,
       bill_city: facilityPrimaryContact?.city,
-      bill_state: facilityPrimaryContact?.state,
+      bill_state: facilityStateCode,
       bill_zip: facilityPrimaryContact?.zipCode,
       bill_npi: practiceInfo?.npi,
       bill_phone: facilityPrimaryContact?.phone,
       bill_taxid: practiceInfo?.taxId,
-      bill_taxid_type: 'EIN',
+      bill_taxid_type: 'E',
       bill_taxonomy: facilityInfo?.tamxonomyCode,
-      from_date: moment(scheduleStartDateTime).format('YYYY-MM-DD'),
-      thru_date: moment(scheduleEndDateTime).format('YYYY-MM-DD'),
+      from_date_1: moment(scheduleStartDateTime).format('MM-DD-YYYY'),
+      thru_date: moment(scheduleEndDateTime).format('MM-DD-YYYY'),
       charge: procedures,
       payer_order: orderOfBenefit,
       pat_name_m: middleName,
       pat_addr_2: address2,
-      pat_country: country,
+      pat_country: 'us',
       pat_phone: phone,
       pat_marital: getYesOrNo(maritialStatus === MARITIALSTATUS.MARRIED),
       // "pat_employment",
@@ -281,7 +292,7 @@ export class BillingService {
       // "ins_phone",
       ins_group: certificationNumber,
       // "ins_plan",
-      ins_dob: moment(policyHolderDob).format('YYYY-MM-DD'),
+      ins_dob: moment(policyHolderDob).format('MM-DD-YYYY'),
       ins_sex: getClaimGender(gender),
       // "ins_employer",
       // "other_ins_name_l",
@@ -312,8 +323,8 @@ export class BillingService {
       ref_npi: referringProviderInfo?.npi,
       cond: onsetDateType,
       onset: otherDateType,
-      cond_date: onsetDate ? moment(onsetDate).format('YYYY-MM-DD') : '',  //this represents current illness in dr.chrono claim page
-      onset_date: otherDate ? moment(otherDate).format('YYYY-MM-DD') : '', // this represents other as onset in dr.chrono claim page
+      cond_date: onsetDate ? moment(onsetDate).format('MM-DD-YYYY') : '',  //this represents current illness in dr.chrono claim page
+      onset_date: otherDate ? moment(otherDate).format('MM-DD_YYYY') : '', // this represents other as onset in dr.chrono claim page
       // "lastseen_date",
       // "nowork_from_date",
       // "nowork_to_date",
@@ -345,9 +356,9 @@ export class BillingService {
       facility_addr_1: facilityPrimaryContact?.address,
       facility_addr_2: facilityPrimaryContact?.address2,
       facility_city: facilityPrimaryContact?.city,
-      facility_state: facilityPrimaryContact?.state,
+      facility_state: facilityStateCode,
       facility_zip: facilityPrimaryContact?.zipCode,
-      facility_npi: facilityInfo?.npi,
+      facility_npi: practiceInfo?.npi,
       facility_id: facilityInfo?.npi,
       // "bill_name",
       // "bill_addr_1",
@@ -419,9 +430,9 @@ export class BillingService {
       // "pay_state",
       // "pay_zip",
       // "remote_chgid",
-      // "from_date",
+      // from_date: scheduleStartDateTime,
       // "thru_date",
-      // "place_of_service",
+      place_of_service_1: pos?.trim(),
       // "proc_code",
       // "mod1",
       // "mod2",
@@ -466,7 +477,7 @@ export class BillingService {
       chg_facility_addr_1: facilityPrimaryContact?.address,
       chg_facility_addr_2: facilityPrimaryContact?.address2,
       chg_facility_city: facilityPrimaryContact?.city,
-      chg_facility_state: facilityPrimaryContact?.state,
+      chg_facility_state: facilityStateCode,
       chg_facility_zip: facilityPrimaryContact?.zipCode,
       chg_facility_npi: facilityInfo?.npi,
       // chg_prior_auth,
@@ -655,9 +666,9 @@ export class BillingService {
     claimInfo.total_charge && form.getTextField('t_charge').setText(String(claimInfo.total_charge))
 
     claimInfo.charge.length && claimInfo.charge.forEach((chargeValue, i) => {
-      claimInfo.from_date && form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date).format('MM')}`)
-      claimInfo.from_date && form.getTextField(`sv${i + 1}_dd_from`).setText(`${moment(claimInfo.from_date).format('DD')}`)
-      claimInfo.from_date && form.getTextField(`sv${i + 1}_yy_from`).setText(`${moment(claimInfo.from_date).format('YY')}`)
+      claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date_1).format('MM')}`)
+      claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_dd_from`).setText(`${moment(claimInfo.from_date_1).format('DD')}`)
+      claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_yy_from`).setText(`${moment(claimInfo.from_date_1).format('YY')}`)
       claimInfo.thru_date && form.getTextField(`sv${i + 1}_mm_end`).setText(`${moment(claimInfo.thru_date).format('MM')}`)
       claimInfo.thru_date && form.getTextField(`sv${i + 1}_dd_end`).setText(`${moment(claimInfo.thru_date).format('DD')}`)
       claimInfo.thru_date && form.getTextField(`sv${i + 1}_yy_end`).setText(`${moment(claimInfo.thru_date).format('YY')}`)
