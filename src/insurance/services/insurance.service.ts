@@ -22,7 +22,7 @@ export class InsuranceService {
   async findAll(insuranceInput: InsurancePaginationInput): Promise<InsurancesPayload> {
     try {
       const { searchString } = insuranceInput
-      const paginationResponse = await this.paginationService.willPaginate<Insurance>(this.insuranceRepository, { ...insuranceInput, associatedTo: 'Insurance', associatedToField: { columnValue: searchString, columnName: 'payerName', columnName2: 'payerId', columnName3: 'lineOfBusiness', filterType: 'stringFilter' } })
+      const paginationResponse = await this.paginationService.willPaginate<Insurance>(this.insuranceRepository, { ...insuranceInput, associatedTo: 'Insurance', associatedToField: { columnValue: searchString, columnName: 'payerName', columnName2: 'payerId', filterType: 'stringFilter' } })
       return {
         pagination: {
           ...paginationResponse

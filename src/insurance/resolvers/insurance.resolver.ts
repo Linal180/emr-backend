@@ -1,11 +1,11 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
+//service
 import { InsuranceService } from '../services/insurance.service';
+//entity
 import { Insurance } from '../entities/insurance.entity';
+//payload
 import { InsurancesPayload } from '../dto/insurances-payload.dto';
 import { InsurancePaginationInput } from '../dto/insurances-input.dto';
-import { SetMetadata, UseGuards } from '@nestjs/common';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
 
 @Resolver(() => Insurance)
 export class InsuranceResolver {
