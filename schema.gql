@@ -107,11 +107,62 @@ enum AttachmentType {
   PRACTICE
 }
 
+type CPTCodes {
+  id: String!
+  code: String
+  category: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  cptFeeSchedule: [CptFeeSchedule!]
+  createdAt: String
+  updatedAt: String
+}
+
+type CptFeeSchedule {
+  id: String!
+  modifier: String
+  code: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  feeScheduleId: String
+  cptCodesId: String
+  createdAt: String
+  updatedAt: String
+  feeSchedule: FeeSchedule
+  cptCodes: CPTCodes
+}
+
+type FeeSchedule {
+  id: String!
+  name: String
+  effectiveDate: String
+  expiryDate: String
+  practiceId: String
+  createdAt: String
+  updatedAt: String
+  practice: Practice
+  billing: [Billing!]
+  cptFeeSchedule: [CptFeeSchedule!]
+  cptFeeScheduleCount: Float
+}
+
 type ClaimStatus {
   id: String!
   statusName: String
   statusId: String
   billings: [Billing!]
+  createdAt: String
+  updatedAt: String
+}
+
+type Modifier {
+  id: String!
+  code: String
+  description: String
   createdAt: String
   updatedAt: String
 }
@@ -126,6 +177,10 @@ type Code {
   m2: String
   m3: String
   m4: String
+  modifier1: Modifier
+  modifier2: Modifier
+  modifier3: Modifier
+  modifier4: Modifier
   unit: String
   codeType: CodeType!
   billing: Billing
@@ -168,7 +223,9 @@ type Billing {
   claimStatus: ClaimStatus
   servicingProvider: Doctor
   renderingProvider: Doctor
+  feeSchedule: FeeSchedule
   patientId: String
+  feeScheduleId: String
   appointmentId: String
   facilityId: String
   servicingProviderId: String
@@ -1329,48 +1386,6 @@ enum Gender {
   OTHER
 }
 
-type CPTCodes {
-  id: String!
-  code: String
-  category: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  cptFeeSchedule: [CptFeeSchedule!]
-  createdAt: String
-  updatedAt: String
-}
-
-type CptFeeSchedule {
-  id: String!
-  modifier: String
-  code: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  serviceFee: String
-  revenueCode: String
-  feeScheduleId: String
-  cptCodesId: String
-  createdAt: String
-  updatedAt: String
-  feeSchedule: FeeSchedule
-  cptCodes: CPTCodes
-}
-
-type FeeSchedule {
-  id: String!
-  name: String
-  effectiveDate: String
-  expiryDate: String
-  practiceId: String
-  createdAt: String
-  updatedAt: String
-  practice: Practice
-  cptFeeSchedule: [CptFeeSchedule!]
-  cptFeeScheduleCount: Float
-}
-
 type Practice {
   id: String!
   name: String!
@@ -1929,14 +1944,6 @@ type PermissionPayload {
   permission: Permission
 }
 
-type Modifier {
-  id: String!
-  code: String
-  description: String
-  createdAt: String
-  updatedAt: String
-}
-
 type AllCPTCodePayload {
   cptCodes: [CPTCodes]
   pagination: PaginationPayload
@@ -2260,6 +2267,16 @@ type ClaimFilePayload {
 
 type ClaimNumberPayload {
   claimNumber: String
+  response: ResponsePayload
+}
+
+type SuperBillPayload {
+  appointmentInfo: Appointment
+  providerInfo: Doctor
+  insuranceDetail: Policy
+  policyHolderInfo: PolicyHolder
+  billingInfo: Billing
+  patientInfo: Patient
   response: ResponsePayload
 }
 
@@ -2618,6 +2635,7 @@ type Query {
   fetchDocumentTypeByName(name: String!): DocumentTypePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
   findAllUpcomingAppointments(upComingAppointmentsInput: UpComingAppointmentsInput!): AppointmentsPayload!
+  findPatientLastAppointment(lastVisitedAppointmentInput: LastVisitedAppointmentInput!): AppointmentPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
@@ -2650,6 +2668,7 @@ type Query {
   createClaim(claimInput: ClaimInput!): ClaimPayload!
   generateClaimNo: ClaimNumberPayload!
   getClaimFile(claimInput: ClaimInput!): ClaimFilePayload!
+  getSuperBillInfo(superBillInput: SuperBillInput!): SuperBillPayload!
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
@@ -2934,6 +2953,10 @@ input UpComingAppointmentsInput {
   providerId: String
 }
 
+input LastVisitedAppointmentInput {
+  patientId: String
+}
+
 input GetAppointment {
   id: String!
 }
@@ -3073,6 +3096,10 @@ input CodesInput {
   m4: String
   unit: String
   codeType: CodeType
+}
+
+input SuperBillInput {
+  appointmentId: String
 }
 
 input ClaimStatusPaginationInput {
@@ -4640,6 +4667,8 @@ input BillingInput {
   claimStatusId: String
   from: String
   to: String
+  feeScheduleId: String
+  shouldCheckout: Boolean
 }
 
 input ClaimStatusInput {
