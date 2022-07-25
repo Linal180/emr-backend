@@ -29,9 +29,9 @@ import { CptFeeScheduleService } from "./services/cptFeeSchedule.service";
   ],
   providers: [
     FeeScheduleResolver, FeeScheduleService, CptCodeResolver, CptCodeService, ModifierService, ModifierResolver,
-    CptFeeScheduleResolver, CptFeeScheduleService
+    CptFeeScheduleResolver, CptFeeScheduleService,
   ],
-  exports: [FeeScheduleService, TypeOrmModule]
+  exports: [FeeScheduleService, TypeOrmModule, ModifierService]
 })
 
 

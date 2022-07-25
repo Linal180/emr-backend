@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Modifier } from 'src/feeSchedule/entities/modifier.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Billing } from './billing.entity';
 
@@ -52,6 +53,18 @@ export class Code {
   @Column({ nullable: true })
   @Field({ nullable: true })
   m4: string;
+
+  @Field({ nullable: true })
+  modifier1: Modifier;
+
+  @Field({ nullable: true })
+  modifier2: Modifier;
+
+  @Field({ nullable: true })
+  modifier3: Modifier;
+
+  @Field({ nullable: true })
+  modifier4: Modifier;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

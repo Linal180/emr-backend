@@ -34,6 +34,9 @@ import BillingInput from '../dto/billing-input.dto';
 //helpers
 import { generateString, generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
 import { ClaimStatusService } from './claimStatus.service';
+import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
+import { UtilsService } from 'src/util/utils.service';
+import { SuperBillPayload } from '../dto/super-bill-payload';
 
 @Injectable()
 export class BillingService {
@@ -54,6 +57,8 @@ export class BillingService {
     private readonly doctorService: DoctorService,
     private readonly practiceService: PracticeService,
     private readonly claimStatusService: ClaimStatusService,
+    private readonly feeScheduleService: FeeScheduleService,
+    private readonly utilsService: UtilsService,
     private readonly httpService: HttpService
   ) { }
 
@@ -67,9 +72,16 @@ export class BillingService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, claimStatusId, ...billingInfoToCreate } = createBillingInput
-      //creating policy
-      const billingInstance = this.billingRepository.create({ ...billingInfoToCreate })
+      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, claimStatusId, feeScheduleId, shouldCheckout, ...billingInfoToCreate } = createBillingInput
+      const billingInfo = await this.billingRepository.findOne({ appointmentId })
+      let billingInstance: Billing
+      if (billingInfo) {
+        //updating billing
+        billingInstance = await this.utilsService.updateEntityManager(Billing, billingInfo.id, billingInfoToCreate, this.billingRepository)
+      } else {
+        //creating billing
+        billingInstance = await this.billingRepository.create({ ...billingInfoToCreate })
+      }
 
       if (patientId) {
         const patient = await this.patientService.findOne(patientId)
@@ -79,6 +91,11 @@ export class BillingService {
       if (facilityId) {
         const facility = await this.facilityService.findOne(facilityId)
         billingInstance.facility = facility
+      }
+
+      if (feeScheduleId) {
+        const feeSchedule = await this.feeScheduleService.findOne({ id: feeScheduleId })
+        billingInstance.feeSchedule = feeSchedule
       }
 
       if (servicingProviderId) {
@@ -101,7 +118,6 @@ export class BillingService {
         billingInstance.claimStatus = claimStatus
       }
       const billing = await this.billingRepository.save(billingInstance);
-
       //associate codes
       if (codes) {
         const createdCodes = await Promise.all(codes?.map(async (codeToCreate) => {
@@ -113,7 +129,7 @@ export class BillingService {
       }
 
       const createdBilling = await this.billingRepository.save(billing);
-      if (appointmentId) {
+      if (appointmentId && shouldCheckout) {
         if (createdBilling.id) {
           this.appointmentService.updateAppointment({
             id: appointmentId,
@@ -722,7 +738,39 @@ export class BillingService {
     return claimInfo
   }
 
+  /**
+   * Generates claim number
+   * @returns  
+   */
   generateClaimNumber() {
     return generateUniqueNumber()
   }
+
+  async getSuperBillInfo(appointmentId): Promise<SuperBillPayload> {
+    const billingInfo = await this.fetchBillingDetailsByAppointmentId(appointmentId)
+    const appointmentInfo = await this.appointmentService.findOne(appointmentId)
+    const patientInfo = await this.patientService.findOne(appointmentInfo.patientId)
+    const providersInfo = await this.patientService.usualProvider(patientInfo.id)
+    const insuranceDetails = await this.policyService.fetchPatientInsurances(patientInfo.id)
+    const primaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.PRIMARY)
+    const secondaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.SECONDARY)
+    const tertiaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.TERTIARY)
+    const insuranceDetail = !!primaryInsurance ? primaryInsurance :
+      !!secondaryInsurance ? secondaryInsurance :
+        tertiaryInsurance
+    const policyHolderInfo = await this.policyHolderService.findOne(insuranceDetail.policyHolderId)
+
+    const primaryProvider = providersInfo.find((providerInfo) => providerInfo.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
+
+
+    return {
+      appointmentInfo,
+      providerInfo: primaryProvider,
+      insuranceDetail,
+      policyHolderInfo,
+      patientInfo,
+      billingInfo
+    }
+  }
+
 }

@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
@@ -171,9 +172,17 @@ export class Billing {
   @Field(() => Doctor, { nullable: true })
   renderingProvider: Doctor;
 
+  @ManyToOne(() => FeeSchedule, feeSchedule => feeSchedule.billing, { onDelete: 'CASCADE' })
+  @Field(() => FeeSchedule, { nullable: true })
+  feeSchedule: FeeSchedule;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  feeScheduleId: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
