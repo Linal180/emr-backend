@@ -16,7 +16,7 @@ RUN npm ci --only=production
 # Bundle app source
 ADD . /app
 # COPY . .
-RUN npm run seed:run
+# RUN npm run seed:run
 ENV PORT 3000
 EXPOSE 8080
 CMD [ "npm", "run", "start:prod" ]
