@@ -55,3 +55,9 @@ export class UpComingAppointmentsInput {
     @Field({ nullable: true })
     providerId?: string
 }
+
+@InputType()
+export class LastVisitedAppointmentInput {
+    @Field({ nullable: true })
+    patientId?: string
+}

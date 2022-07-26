@@ -3,7 +3,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 //entities , inputs, dtos, services
 import PermissionGuard from 'src/users/auth/role.guard';
 import { Invoice } from 'src/payment/entity/invoice.entity';
-import { AppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
+import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import { Appointment } from '../entities/appointment.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
@@ -128,6 +128,25 @@ export class AppointmentResolver {
     if (appointments) {
       return {
         appointments,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Appointments not found',
+    });
+  }
+
+  @Query(() => AppointmentPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findPatientLastAppointment')
+  async findPatientLastAppointment(@Args('lastVisitedAppointmentInput') lastVisitedAppointmentInput: LastVisitedAppointmentInput): Promise<AppointmentPayload> {
+    const appointment = await this.appointmentService.findPatientLastAppointment(lastVisitedAppointmentInput)
+    if (appointment) {
+      return {
+        appointment,
         response: {
           message: "OK", status: 200,
         }

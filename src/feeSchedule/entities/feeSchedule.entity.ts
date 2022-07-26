@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGenerate
 //entities
 import { CptFeeSchedule } from "./cptFeeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
+import { Billing } from "src/billings/entities/billing.entity";
 
 @Entity({ name: 'FeeSchedule' })
 @ObjectType()
@@ -45,6 +46,9 @@ export class FeeSchedule {
   @Field(() => Practice, { nullable: true })
   practice: Practice;
 
+  @OneToMany(() => Billing, billing => billing.feeSchedule, { onDelete: 'CASCADE' })
+  @Field(() => [Billing], { nullable: true })
+  billing: Billing[]
 
   @OneToMany(() => CptFeeSchedule, cptFeeSchedule => cptFeeSchedule.feeSchedule, { onDelete: 'CASCADE' })
   @Field(() => [CptFeeSchedule], { nullable: true })
