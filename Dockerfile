@@ -19,4 +19,4 @@ ADD . /app
 # RUN npm run seed:run
 ENV PORT 3000
 EXPOSE 8080
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "npm", "run", "start" ]
