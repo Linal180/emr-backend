@@ -2288,6 +2288,19 @@ type ClaimNumberPayload {
   response: ResponsePayload
 }
 
+type ChargeItem {
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  unit: String!
+  units: String!
+  charge: Float!
+  diag_ref: String!
+  proc_code: String!
+  diagPointer: String!
+}
+
 type SuperBillPayload {
   appointmentInfo: Appointment
   providerInfo: Doctor
