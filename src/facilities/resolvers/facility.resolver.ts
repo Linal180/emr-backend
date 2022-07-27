@@ -24,6 +24,8 @@ import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.inpu
 //guards
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import { Taxonomy } from '../entities/taxonomy.entity';
+import { TaxonomiesService } from '../services/taxonomy.service';
 
 @Resolver(() => Facility)
 export class FacilityResolver {
@@ -32,6 +34,7 @@ export class FacilityResolver {
     private readonly billingAddressService: BillingAddressService,
     private readonly practiceService: PracticeService,
     private readonly appointmentService: AppointmentService,
+    private readonly taxonomiesService: TaxonomiesService,
   ) { }
 
   //mutations
@@ -152,6 +155,13 @@ export class FacilityResolver {
   async appointments(@Parent() facility: Facility): Promise<Appointment[]> {
     if (facility) {
       return await this.appointmentService.getFacilityAppointments({ facilityId: facility.id });
+    }
+  }
+
+  @ResolveField(() => [Taxonomy])
+  async taxonomyCode(@Parent() facility: Facility): Promise<Taxonomy> {
+    if (facility.tamxonomyCode) {
+      return await this.taxonomiesService.findOne(facility.tamxonomyCode);
     }
   }
 

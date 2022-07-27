@@ -8,7 +8,7 @@ import { createToken } from 'src/lib/helper';
 import { ContractService } from './contract.service';
 import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
-import { AppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
+import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { GetSlots } from 'src/providers/dto/update-schedule.input';
@@ -320,6 +320,30 @@ export class AppointmentService {
 
       const appointment = await this.appointmentRepository.find({
         where: query
+      })
+
+      return appointment
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds patient last appointment
+   * @param lastVisitedAppointmentInput 
+   * @returns patient last appointment 
+   */
+  async findPatientLastAppointment(lastVisitedAppointmentInput: LastVisitedAppointmentInput): Promise<Appointment> {
+    try {
+      const { patientId } = lastVisitedAppointmentInput
+
+      const appointment = await this.appointmentRepository.findOne({
+        where: {
+          patientId
+        },
+        order: {
+          scheduleStartDateTime: 'DESC'
+        },
       })
 
       return appointment
