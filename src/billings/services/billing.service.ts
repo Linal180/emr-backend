@@ -34,6 +34,7 @@ import BillingInput from '../dto/billing-input.dto';
 //helpers
 import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
 import { ClaimStatusService } from './claimStatus.service';
+import { claimMedValidation } from 'src/lib/validations';
 
 @Injectable()
 export class BillingService {
@@ -696,6 +697,8 @@ export class BillingService {
   async createClaimInfo(claimInput: ClaimInput): Promise<Claim> {
     try {
       const claimInfo = await this.getClaimInfo(claimInput)
+
+      const validation = claimMedValidation
       
       const claimInfoToFormat = Object.keys(claimInfo).reduce((acc, claimInfoKey) => {
         if (claimInfoKey === 'charge') {
