@@ -107,6 +107,54 @@ enum AttachmentType {
   PRACTICE
 }
 
+type Modifier {
+  id: String!
+  code: String
+  description: String
+  createdAt: String
+  updatedAt: String
+}
+
+type Code {
+  id: String!
+  code: String
+  description: String
+  price: String
+  diagPointer: String
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  modifier1: Modifier
+  modifier2: Modifier
+  modifier3: Modifier
+  modifier4: Modifier
+  unit: String
+  codeType: CodeType!
+  billing: Billing
+  billingId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The code type assigned with the code"""
+enum CodeType {
+  ICD_10_CODE
+  CPT_CODE
+  HCPCS_CODE
+  CUSTOM_CODE
+}
+
+type ClaimStatus {
+  id: String!
+  statusName: String
+  statusId: String
+  system: Boolean!
+  billings: [Billing!]
+  createdAt: String
+  updatedAt: String
+}
+
 type CPTCodes {
   id: String!
   code: String
@@ -148,53 +196,6 @@ type FeeSchedule {
   billing: [Billing!]
   cptFeeSchedule: [CptFeeSchedule!]
   cptFeeScheduleCount: Float
-}
-
-type ClaimStatus {
-  id: String!
-  statusName: String
-  statusId: String
-  billings: [Billing!]
-  createdAt: String
-  updatedAt: String
-}
-
-type Modifier {
-  id: String!
-  code: String
-  description: String
-  createdAt: String
-  updatedAt: String
-}
-
-type Code {
-  id: String!
-  code: String
-  description: String
-  price: String
-  diagPointer: String
-  m1: String
-  m2: String
-  m3: String
-  m4: String
-  modifier1: Modifier
-  modifier2: Modifier
-  modifier3: Modifier
-  modifier4: Modifier
-  unit: String
-  codeType: CodeType!
-  billing: Billing
-  billingId: String
-  createdAt: String
-  updatedAt: String
-}
-
-"""The code type assigned with the code"""
-enum CodeType {
-  ICD_10_CODE
-  CPT_CODE
-  HCPCS_CODE
-  CUSTOM_CODE
 }
 
 type Billing {
@@ -2224,6 +2225,16 @@ type BillingPayload {
   response: Response
 }
 
+type SuperBillPayload {
+  appointmentInfo: Appointment
+  providerInfo: Doctor
+  insuranceDetail: Policy
+  policyHolderInfo: PolicyHolder
+  billingInfo: Billing
+  patientInfo: Patient
+  response: ResponsePayload
+}
+
 type Charge {
   proc_code: String
   diagPointer: String
@@ -2301,14 +2312,16 @@ type ChargeItem {
   diagPointer: String!
 }
 
-type SuperBillPayload {
-  appointmentInfo: Appointment
-  providerInfo: Doctor
-  insuranceDetail: Policy
-  policyHolderInfo: PolicyHolder
-  billingInfo: Billing
-  patientInfo: Patient
-  response: ResponsePayload
+type ClaimChargeType {
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  units: String!
+  charge: Float!
+  diag_ref: String!
+  proc_code: String!
+  diagPointer: String!
 }
 
 type ClaimStatusesPayload {

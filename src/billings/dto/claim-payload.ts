@@ -511,3 +511,34 @@ export class ClaimMdPayload {
   @Field(() => String, { nullable: true })
   diag_12?: string
 }
+@ObjectType()
+export class ClaimChargeType {
+
+  @Field(() => String, { nullable: true })
+  m1?: string;
+
+  @Field(() => String, { nullable: true })
+  m2?: string;
+
+  @Field(() => String, { nullable: true })
+  m3?: string;
+
+  @Field(() => String, { nullable: true })
+  m4?: string;
+
+  @Field(() => String, { nullable: false })
+  units?: string;
+
+  @Field(() => Number, { nullable: false })
+  charge: number;
+
+  @Field(() => String, { nullable: false })
+  diag_ref: string;
+
+  @Field(() => String, { nullable: false })
+  proc_code: string;
+
+  @Field(() => String, { nullable: false })
+  diagPointer: string
+
+}

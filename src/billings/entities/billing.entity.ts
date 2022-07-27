@@ -1,12 +1,16 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
+import {
+  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+//entities
+import { Code } from './code.entity';
+import { ClaimStatus } from './claim-status.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { ClaimStatus } from './claim-status.entity';
-import { Code } from './code.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 export enum PatientPaymentType {
   INSURANCE = "Insurance",
@@ -68,7 +72,7 @@ export class Billing {
     enum: PatientPaymentType,
     default: PatientPaymentType.NO_INSURANCE
   })
-  @Field(type => PatientPaymentType)
+  @Field(() => PatientPaymentType)
   patientPaymentType: PatientPaymentType;
 
   @Column({ nullable: true })
@@ -80,7 +84,7 @@ export class Billing {
     enum: OnsetDateType,
     default: OnsetDateType.DATE_OF_ACCIDENT
   })
-  @Field(type => OnsetDateType)
+  @Field(() => OnsetDateType)
   onsetDateType: OnsetDateType;
 
   @Column({ nullable: true })
@@ -104,7 +108,7 @@ export class Billing {
     enum: OtherDateType,
     default: OtherDateType.INITIAL_VISIT_DATE
   })
-  @Field(type => OtherDateType)
+  @Field(() => OtherDateType)
   otherDateType: OtherDateType;
 
   @Column({ nullable: true })
@@ -144,7 +148,7 @@ export class Billing {
   uncoveredAmount: string;
 
   @OneToMany(() => Code, code => code.billing, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Code], { nullable: true })
+  @Field(() => [Code], { nullable: true })
   codes: Code[];
 
   @Field(() => Appointment, { nullable: true })
@@ -153,7 +157,7 @@ export class Billing {
   appointment: Appointment;
 
   @ManyToOne(() => Patient, patient => patient.billings, { onDelete: 'CASCADE' })
-  @Field(type => Patient, { nullable: true })
+  @Field(() => Patient, { nullable: true })
   patient: Patient;
 
   @ManyToOne(() => Facility, facility => facility.billings, { onDelete: 'CASCADE' })

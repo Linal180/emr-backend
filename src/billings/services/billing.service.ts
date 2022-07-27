@@ -263,8 +263,404 @@ export class BillingService {
         proc_code: code,
         charge: Number(price || 0),
         units: Number(unit || 0),
+        diag_ref: diagPointer || '',
         diagPointer, m1, m2, m3, m4, unit,
-        diag_ref: diagPointer || ''
+      }
+    })
+
+    const claimInfo = {
+      claim_form: '1500',
+      payerid: payerId,
+      payer_name: payerName,
+      pcn: patientRecord,
+      pat_name_l: lastName,
+      pat_name_f: firstName,
+      pat_addr_1: address,
+      pat_city: city,
+      pat_state: state,
+      pat_zip: zipCode,
+      pat_dob: moment(dob).format('MM-DD-YYYY'),
+      pat_sex: getClaimGender(gender),
+      pat_rel: getClaimRelation(policyHolderRelationship),
+      ins_number: groupNumber,
+      accept_assign: 'Y',
+      total_charge: totalCharges,
+      ...diagnoses,
+      bill_name: facilityInfo?.name,
+      bill_addr_1: facilityPrimaryContact?.address,
+      bill_addr_2: facilityPrimaryContact?.address2,
+      bill_city: facilityPrimaryContact?.city,
+      bill_state: facilityStateCode,
+      bill_zip: facilityPrimaryContact?.zipCode,
+      bill_npi: practiceInfo?.npi,
+      bill_phone: facilityPrimaryContact?.phone,
+      bill_taxid: practiceInfo?.taxId,
+      bill_taxid_type: 'E',
+      bill_taxonomy: taxonomyCode ? taxonomyCode.code : '',
+      from_date_1: moment(scheduleStartDateTime).format('MM-DD-YYYY'),
+      thru_date: moment(scheduleEndDateTime).format('MM-DD-YYYY'),
+      charge: procedures,
+      payer_order: orderOfBenefit,
+      pat_name_m: middleName,
+      pat_addr_2: address2,
+      pat_country: 'us',
+      pat_phone: phone,
+      pat_marital: getYesOrNo(maritialStatus === MARITIALSTATUS.MARRIED),
+      // "pat_employment",
+      ins_name_l: policyHolderLName,
+      ins_name_f: policyHolderFName,
+      ins_name_m: policyHolderMName,
+      ins_addr_1: policyHolderAddress,
+      ins_addr_2: addressCTD,
+      ins_city: policyHolderCity,
+      ins_state: policyHolderState,
+      ins_zip: policyHolderZipCode,
+      // ins_country: polic,
+      // "ins_phone",
+      ins_group: certificationNumber,
+      // "ins_plan",
+      ins_dob: moment(policyHolderDob).format('MM-DD-YYYY'),
+      ins_sex: getClaimGender(gender),
+      // "ins_employer",
+      // "other_ins_name_l",
+      // "other_ins_name_f",
+      // "other_ins_name_m",
+      // "other_ins_number",
+      // "other_payer_name",
+      // "other_claimfilingcode",
+      // "other_payerid",
+      // "other_payer_addr_1",
+      // "other_payer_addr_2",
+      // "other_payer_city",
+      // "other_payer_state",
+      // "other_payer_zip",
+      // "other_ins_dob",
+      // "other_ins_sex",
+      // "other_pat_rel",
+      // "other_ins_payment_date",
+      // "other_ins_medicare_code",
+      employment_related: getYesOrNo(employment),
+      auto_accident: getYesOrNo(autoAccident),
+      // "auto_accident_state",
+      other_accident: getYesOrNo(otherAccident),
+      ref_name_l: referringProviderInfo?.lastName,
+      ref_name_f: referringProviderInfo?.firstName,
+      ref_name_m: referringProviderInfo?.middleName,
+      ref_id: referringProviderInfo?.npi,
+      ref_npi: referringProviderInfo?.npi,
+      cond: onsetDateType,
+      onset: otherDateType,
+      cond_date: onsetDate ? moment(onsetDate).format('MM-DD-YYYY') : '',  //this represents current illness in dr.chrono claim page
+      onset_date: otherDate ? moment(otherDate).format('MM-DD-YYYY') : '', // this represents other as onset in dr.chrono claim page
+      // "lastseen_date",
+      // "nowork_from_date",
+      // "nowork_to_date",
+      hosp_from_date: from,
+      hosp_thru_date: to,
+      // "chiro_manifest_date",
+      // "info_release",
+      // "special_identifier",
+      // "prior_auth",
+      clia_number: cliaIdNumber,
+      // "referral_number",
+      // "clinical_trial_number",
+      // "accept_assign",
+      // "total_charge",
+      // "amount_paid",
+      // "diag_1",
+      // "diag_2",
+      // "diag_3",
+      // "diag_4",
+      // "diag_5",
+      // "diag_6",
+      // "diag_7",
+      // "diag_8",
+      // "diag_9",
+      // "diag_10",
+      // "diag_11",
+      // "diag_12",
+      facility_name: facilityInfo?.name,
+      facility_addr_1: facilityPrimaryContact?.address,
+      facility_addr_2: facilityPrimaryContact?.address2,
+      facility_city: facilityPrimaryContact?.city,
+      facility_state: facilityStateCode,
+      facility_zip: facilityPrimaryContact?.zipCode,
+      facility_npi: practiceInfo?.npi,
+      facility_id: facilityInfo?.npi,
+      // "bill_name",
+      // "bill_addr_1",
+      // "bill_addr_2",
+      // "bill_city",
+      // "bill_state",
+      // "bill_zip",
+      // "bill_npi",
+      // "bill_id",
+      // "bill_phone",
+      // "bill_taxid",
+      // "bill_taxid_type",
+      // "bill_taxonomy",
+      prov_name_l: renderingProviderInfo?.lastName,
+      prov_name_f: renderingProviderInfo?.firstName,
+      prov_name_m: renderingProviderInfo?.middleName,
+      prov_npi: renderingProviderInfo?.npi,
+      // prov_id,
+      // prov_taxonomy,
+      // prov_taxid,
+      // prov_taxid_type,
+      ord_name_l: orderingProviderInfo?.lastName,
+      ord_name_f: orderingProviderInfo?.firstName,
+      ord_name_m: orderingProviderInfo?.middleName,
+      ord_npi: orderingProviderInfo?.npi,
+      // "remote_fileid",
+      // "remote_batchid",
+      // "remote_claimid",
+      // "chiro_condition",
+      // "chiro_xray_available",
+      // "chiro_xray_date",
+      // "initial_treatment_date",
+      // "narrative",
+      // "homebound",
+      // "mrn",
+      // "cond_code_1",
+      // "cond_code_2",
+      // "cond_code_3",
+      // "icn_dcn_1",
+      // "total_non_covered",
+      // "amb_purpose_of_rt",
+      // "amb_purpose_of_str",
+      // "ambulance",
+      // "amb_patient_weight",
+      // "amb_to_for",
+      // "amb_stretcher",
+      // "amb_bed_confined_before",
+      // "amb_bed_confined_after",
+      // "amb_shock",
+      // "amb_emergency",
+      // "amb_restraint",
+      // "amb_vis_hemor",
+      // "amb_patient_admitted",
+      // "amb_miles",
+      // "pickup_addr_1",
+      // "pickup_addr_2",
+      // "pickup_city",
+      // "pickup_state",
+      // "pickup_zip",
+      // "dropoff_addr_1",
+      // "dropoff_addr_2",
+      // "dropoff_city",
+      // "dropoff_state",
+      // "dropoff_zip",
+      // "pay_name",
+      // "pay_addr_1",
+      // "pay_addr_2",
+      // "pay_city",
+      // "pay_state",
+      // "pay_zip",
+      // "remote_chgid",
+      // from_date: scheduleStartDateTime,
+      // "thru_date",
+      place_of_service_1: pos?.trim(),
+      // "proc_code",
+      // "mod1",
+      // "mod2",
+      // "mod3",
+      // "mod4",
+      // "diag_ref",
+      // "charge",
+      // "charge_record_type",
+      // "units",
+      // "emergency_indicator",
+      // "narrative",
+      // "primary_paid_amount",
+      // "primary_allowed_amount",
+      // "primary_paid_date",
+      // "ndc_code",
+      // "ndc_dosage",
+      // "ndc_measure",
+      // "ndc_price",
+      // "adj_code_1",
+      // "adj_code_2",
+      // "adj_code_3",
+      // "adj_code_4",
+      // "adj_code_5",
+      // "adj_code_6",
+      // "adj_code_7",
+      // "adj_code_8",
+      // "adj_amt_1",
+      // "adj_amt_2",
+      // "adj_amt_3",
+      // "adj_amt_4",
+      // "adj_amt_5",
+      // "adj_amt_6",
+      // "adj_amt_7",
+      // "adj_amt_8",
+      // "chg_prov_name_l",
+      // "chg_prov_name_f",
+      // "chg_prov_name_m",
+      // "chg_prov_taxonomy",
+      // "chg_prov_npi",
+      // "chg_prov_id",
+      chg_facility_name: facilityInfo?.name,
+      chg_facility_addr_1: facilityPrimaryContact?.address,
+      chg_facility_addr_2: facilityPrimaryContact?.address2,
+      chg_facility_city: facilityPrimaryContact?.city,
+      chg_facility_state: facilityStateCode,
+      chg_facility_zip: facilityPrimaryContact?.zipCode,
+      chg_facility_npi: facilityInfo?.npi,
+      // chg_prior_auth,
+      // "epsdt_indicator",
+      // "familyplan_indicator",
+      facility_clia: facilityInfo?.cliaIdNumber,
+      // "hospice_employed",
+      // "amb_riders",
+      // "primary_paid_amount_2",
+      // "primary_paid_date_2",
+      // "adj_code_1_2",
+      // "adj_amt_1_2",
+      // "adj_code_2_2",
+      // "adj_amt_2_2",
+      // "adj_code_3_2",
+      // "adj_amt_3_2",
+      // "adj_code_4_2",
+      // "adj_amt_4_2",
+      // "adj_code_5_2",
+      // "adj_amt_5_2",
+      // "adj_code_6_2",
+      // "adj_amt_6_2",
+      // "adj_code_7_2",
+      // "adj_amt_8_2",
+      // "adj_code_8_2",
+      // "adj_amt_8_2",
+      ord_prov_name_l: orderingProviderInfo?.lastName,
+      ord_prov_name_f: orderingProviderInfo?.firstName,
+      ord_prov_name_m: orderingProviderInfo?.middleName,
+      ord_prov_npi: orderingProviderInfo?.npi,
+      // ord_prov_addr_1: orderingProvider,
+      // "ord_prov_addr_2",
+      // "ord_prov_city",
+      // "ord_prov_state",
+      // "ord_prov_zip",
+      // "ord_prov_contact_name",
+      // "ord_prov_contact_phone",
+      // "ord_prov_contact_fax",
+      // "chg_supv_prov_name_l",
+      // "chg_supv_prov_name_f",
+      // "chg_supv_prov_name_m",
+      // "chg_supv_prov_npi",
+      // "chg_supv_prov_id",
+      // "chg_pickup_addr_1",
+      // "chg_pickup_addr_2",
+      // "chg_pickup_city",
+      // "chg_pickup_state",
+      // "chg_pickup_zip",
+      // "chg_dropoff_name",
+      // "chg_dropoff_addr_1",
+      // "chg_dropoff_addr_2",
+      // "chg_dropoff_city",
+      // "chg_dropoff_state",
+      // "chg_dropoff_zip",
+      // "obstetric_additional_units",
+      // "chg_amb_patient_weight",
+      // "chg_amb_to_for",
+      // "chg_amb_miles",
+      // "chg_amb_purpose_of_rt",
+      // "chg_amb_purpose_of_str"
+    }
+
+    return claimInfo
+  }
+
+  async getMdClaimInfo(claimInput: ClaimInput) {
+    const { codes, appointmentId, patientId, autoAccident, employment, otherAccident, onsetDate, onsetDateType,
+      otherDate, otherDateType, from, to } = claimInput
+    const diagnosesCodes = codes?.filter(code => code.codeType === CodeType.ICD_10_CODE)
+    const procedureCodes = codes?.filter(code => code.codeType === CodeType.CPT_CODE)
+    const totalCharges = codes.reduce((acc, code) => {
+      return acc += Number(code.price || 0)
+    }, 0)
+    const insuranceDetails = await this.policyService.fetchPatientInsurances(patientId)
+    const appointmentInfo = await this.appointmentService.findOne(appointmentId)
+    const patient = await this.patientService.findOne(patientId)
+
+    const { patientRecord, firstName, lastName, dob, gender, middleName, maritialStatus, policyHolderId, facilityId } = patient || {}
+
+    const facilityInfo = await this.facilityService.findOne(facilityId)
+    const facilityContacts = await this.contactsService.findContactsByFacilityId(facilityId);
+    const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact)
+    const { cliaIdNumber, practiceId, serviceCode } = facilityInfo || {}
+    const serviceC = serviceCode?.split('-')
+    const pos = serviceC.length ? serviceC[0] : '';
+    const { state: facilityState } = facilityPrimaryContact || {}
+    const facilitySt = states?.find(({ name }) => name === facilityState);
+    const { abbreviation: facilityStateCode } = facilitySt || {}
+
+    const practiceInfo = await this.practiceService.findOne(practiceId)
+
+    let taxonomyCode
+    if (practiceInfo.taxonomyCodeId) {
+      taxonomyCode = await this.taxonomiesService.findOne(practiceInfo.taxonomyCodeId)
+    }
+
+    const primaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.PRIMARY)
+    const secondaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.SECONDARY)
+    const tertiaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.TERTIARY)
+
+    const insuranceDetail = !!primaryInsurance ? primaryInsurance :
+      !!secondaryInsurance ? secondaryInsurance :
+        tertiaryInsurance
+    const { policyHolderRelationship, groupNumber, orderOfBenefit } = insuranceDetail || {}
+    const insurance = await this.insuranceService.findOne(insuranceDetail?.insuranceId)
+    const { payerId, payerName } = insurance || {}
+
+    const doctorPatients = await this.patientService.usualProvider(patient.id);
+    const referringProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.REFERRING_PROVIDER)?.doctor
+    const orderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.ORDERING_PROVIDER)?.doctor
+    const renderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.RENDERING_PROVIDER)?.doctor
+    const contacts = await this.contactsService.findContactsByPatientId(patient.id);
+    const { address, city, state: unFormat, zipCode, address2, phone } = contacts?.find((contact) => contact.primaryContact) || {}
+    const unFormateState = states?.find(({ name }) => name === unFormat)
+    const { abbreviation: state } = unFormateState || {}
+
+    const policyHolder = await this.policyHolderService.findOne(policyHolderId)
+    const {
+      address: policyHolderAddress, addressCTD, firstName: policyHolderFName, lastName: policyHolderLName,
+      middleName: policyHolderMName, city: policyHolderCity, state: policyHolderSt, zipCode: policyHolderZipCode,
+      certificationNumber, dob: policyHolderDob
+    } = policyHolder || {}
+
+    const unFormatePolicy = states?.find(({ name }) => name === policyHolderSt);
+    const { abbreviation: policyHolderState } = unFormatePolicy || {}
+
+    const { scheduleStartDateTime, scheduleEndDateTime } = appointmentInfo || {}
+
+    const diagnoses = diagnosesCodes?.reduce((acc, diagnosesCode, i) => {
+      const { code } = diagnosesCode || {}
+      acc[`diag_${i + 1}`] = code
+      return acc
+    }, {} as {
+      diag_1?: string
+      diag_2?: string
+      diag_3?: string
+      diag_4?: string
+      diag_5?: string
+      diag_6?: string
+      diag_7?: string
+      diag_8?: string
+      diag_9?: string
+      diag_10?: string
+      diag_11?: string
+      diag_12?: string
+
+    })
+
+    const procedures = procedureCodes?.map((procedureCode) => {
+      const { code, price, diagPointer, m1, m2, m3, m4, unit } = procedureCode
+      return {
+        proc_code: code,
+        charge: Number(price || 0),
+        units: Number(unit || 0),
+        diag_ref: diagPointer || '',
+        diagPointer, m1, m2, m3, m4, unit,
       }
     })
 

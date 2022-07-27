@@ -1,26 +1,31 @@
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
-import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
-import { Repository } from 'typeorm';
-import BillingInput from '../dto/billing-input.dto';
-import { BillingPayload } from '../dto/billing-payload';
-import ClaimInput from '../dto/claim-input.dto';
-import { ClaimFilePayload, ClaimNumberPayload, ClaimPayload } from '../dto/claim-payload';
-import SuperBillInput from '../dto/super-bill-input.dto';
-import { SuperBillPayload } from '../dto/super-bill-payload';
-import { Billing } from '../entities/billing.entity';
-import { ClaimStatus } from '../entities/claim-status.entity';
+//entities
 import { Code } from '../entities/code.entity';
+import { Billing } from '../entities/billing.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { ClaimStatus } from '../entities/claim-status.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
+//services
 import { BillingService } from '../services/billing.service';
 import { ClaimStatusService } from '../services/claimStatus.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
+//guards
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import PermissionGuard from 'src/users/auth/role.guard';
+//inputs
+import ClaimInput from '../dto/claim-input.dto';
+import BillingInput from '../dto/billing-input.dto';
+import SuperBillInput from '../dto/super-bill-input.dto';
+//payloads
+import { BillingPayload } from '../dto/billing-payload';
+import { SuperBillPayload } from '../dto/super-bill-payload';
+import { ClaimFilePayload, ClaimNumberPayload, ClaimPayload } from '../dto/claim-payload';
 
 @Resolver(() => Billing)
 export class BillingResolver {
@@ -34,6 +39,8 @@ export class BillingResolver {
     private readonly feeScheduleService: FeeScheduleService,
   ) { }
 
+  //mutations
+
   @Mutation(() => BillingPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'createBilling')
@@ -43,6 +50,8 @@ export class BillingResolver {
       response: { status: 200, message: "Policy created successfully" }
     };
   }
+
+  //queries
 
   @Query(() => BillingPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -85,6 +94,8 @@ export class BillingResolver {
       response: { status: 200, message: "Claim File created successfully" }
     };
   }
+
+  //resolve fields
 
   @ResolveField(() => [Code])
   async codes(@Parent() billing: Billing): Promise<Code[]> {
