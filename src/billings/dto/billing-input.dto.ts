@@ -75,4 +75,10 @@ export default class BillingInput {
 
   @Field({ nullable: true })
   to?: string
+
+  @Field({ nullable: true })
+  feeScheduleId?: string
+
+  @Field({ nullable: true })
+  shouldCheckout?: boolean
 }

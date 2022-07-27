@@ -12,11 +12,14 @@ import { UpdateDoctorInput } from '../dto/update-doctor.input';
 import { DisableDoctor, GetDoctor, RemoveDoctor } from '../dto/update-doctorItem.input';
 import { Doctor } from '../entities/doctor.entity';
 import { DoctorService } from '../services/doctor.service';
+import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
+import { TaxonomiesService } from 'src/facilities/services/taxonomy.service';
 
 @Resolver(() => Doctor)
 export class DoctorResolver {
   constructor(private readonly doctorService: DoctorService,
-    private readonly attachmentsService: AttachmentsService) { }
+    private readonly attachmentsService: AttachmentsService,
+    private readonly taxonomiesService: TaxonomiesService) { }
 
   @Mutation(() => DoctorPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -85,6 +88,13 @@ export class DoctorResolver {
   async attachments(@Parent() doctor: Doctor): Promise<Attachment[]> {
     if (doctor) {
       return await this.attachmentsService.findAttachments(doctor.id, AttachmentType.DOCTOR);
+    }
+  }
+
+  @ResolveField(() => [Taxonomy])
+  async taxCode(@Parent() doctor: Doctor): Promise<Taxonomy> {
+    if (doctor.taxonomyCode) {
+      return await this.taxonomiesService.findOne(doctor.taxonomyCode);
     }
   }
 }

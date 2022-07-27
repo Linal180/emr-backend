@@ -7,6 +7,7 @@ import { Agreement } from 'src/agreements/entities/agreement.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
 import { DocumentType } from 'src/attachments/entities/documentType.entity';
+import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
@@ -58,6 +59,13 @@ export class Practice {
   @Column({ nullable: true })
   @Field({ nullable: true })
   champus: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  taxonomyCodeId: string;
+
+  @Field({ nullable: true })
+  taxonomyCode: Taxonomy;
 
   @Column({ type: "boolean", default: true })
   @Field(() => Boolean, { nullable: true })
