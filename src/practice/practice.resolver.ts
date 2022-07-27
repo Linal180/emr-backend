@@ -18,6 +18,8 @@ import PracticeInput from './dto/practice-input.dto';
 import { PracticePayload } from './dto/practice-payload.dto';
 import { PracticesPayload } from './dto/practices-payload.dto';
 import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
+import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
+import { TaxonomiesService } from 'src/facilities/services/taxonomy.service';
 
 @Resolver(() => Practice)
 export class PracticeResolver {
@@ -25,6 +27,7 @@ export class PracticeResolver {
     private readonly practiceService: PracticeService,
     private readonly attachmentsService: AttachmentsService,
     private readonly feeScheduleService: FeeScheduleService,
+    private readonly taxonomiesService: TaxonomiesService,
   ) { }
 
   //queries
@@ -102,6 +105,13 @@ export class PracticeResolver {
   async feeSchedules(@Parent() practice: Practice): Promise<FeeSchedule[]> {
     if (practice) {
       return await this.feeScheduleService.getFeeScheduleByPracticeId(practice.id);
+    }
+  }
+
+  @ResolveField(() => Taxonomy)
+  async taxonomyCode(@Parent() practice: Practice): Promise<Taxonomy> {
+    if (practice.taxonomyCodeId) {
+      return await this.taxonomiesService.findOne(practice.taxonomyCodeId);
     }
   }
 }

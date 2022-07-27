@@ -1,5 +1,33 @@
 import * as Joi from 'joi'
 
 export const claimMedValidation = Joi.object({
-
-})
+  bill_npi: Joi.string().max(10).required(),
+  payerid: Joi.string().required().messages({ 'any.required': "Insurance is missing" }),
+  payer_name: Joi.string().required().messages({ 'any.required': "Insurance is missing" }),
+  pat_name_l: Joi.string().required().messages({ "any.required": "Patient last name is missing" }),
+  pat_name_f: Joi.string().required().messages({ "any.required": "Patient first name is missing" }),
+  pat_dob: Joi.string().required().messages({ "any.required": "Patient dob is missing" }),
+  pat_sex: Joi.string().required().messages({ "any.required": "Patient gender is missing" }),
+  ins_name_l: Joi.string().required().messages({ "any.required": "Insurance last name is missing" }),
+  ins_name_f: Joi.string().required().messages({ "any.required": "Insurance first name is missing" }),
+  pat_addr_1: Joi.string().required().messages({ "any.required": "Patient address is missing" }),
+  pat_city: Joi.string().required().messages({ "any.required": "Patient city is missing" }),
+  pat_state: Joi.string().required().messages({ "any.required": "Patient state is missing" }),
+  pat_zip: Joi.string().required().messages({ "any.required": "Patient zipCode is missing" }),
+  ins_addr_1: Joi.string().required().messages({ "any.required": "Insurance address is missing" }),
+  ins_city: Joi.string().required().messages({ "any.required": "Insurance city is missing" }),
+  ins_state: Joi.string().required().messages({ "any.required": "Insurance state is missing" }),
+  ins_zip: Joi.string().required().messages({ "any.required": "Insurance zipCode is missing" }),
+  diag_1: Joi.string().required().messages({ "any.required": "Atleast one diagnose is required" }),
+  place_of_service_1: Joi.string().required().messages({ "any.required": "POS code is missing" }),
+  from_date_1: Joi.string().required().messages({ "any.required": "Date of service is missing" }),
+  facility_name: Joi.string().required().messages({ "any.required": "Facility name is missing" }),
+  facility_addr_1: Joi.string().required().messages({ "any.required": "Facility address is missing" }),
+  facility_city: Joi.string().required().messages({ "any.required": "Facility city is missing" }),
+  facility_state: Joi.string().required().messages({ "any.required": "Facility state is missing" }),
+  facility_zip: Joi.string().required().messages({ "any.required": "Facility zipCode is missing" }),
+  facility_npi: Joi.string().required().messages({ "any.required": "Facility NPI is missing" }),
+  bill_taxid: Joi.string().required().messages({ "any.required": "Facility taxId is missing" }),
+}).options({
+  abortEarly: false,
+});

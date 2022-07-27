@@ -12,8 +12,8 @@ export class Charge {
   @Field(() => Int, { nullable: true })
   charge: number;
 
-  @Field({ nullable: true })
-  units: string;
+  @Field(() => Int, { nullable: true })
+  units: number;
 }
 
 @ObjectType()
