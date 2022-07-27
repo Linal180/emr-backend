@@ -8,7 +8,7 @@ import { HttpService } from '@nestjs/axios';
 import { Connection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 const { PDFDocument, createPDFAcroFields } = require('pdf-lib');
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 //entities
 import { Billing } from '../entities/billing.entity';
 import { Code, CodeType } from '../entities/code.entity';
@@ -32,11 +32,13 @@ import { Claim } from '../dto/claim-payload';
 import ClaimInput from '../dto/claim-input.dto';
 import BillingInput from '../dto/billing-input.dto';
 //helpers
-import { generateString, generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
+import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
 import { ClaimStatusService } from './claimStatus.service';
 import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
 import { UtilsService } from 'src/util/utils.service';
 import { SuperBillPayload } from '../dto/super-bill-payload';
+import { claimMedValidation } from 'src/lib/validations';
+import { TaxonomiesService } from 'src/facilities/services/taxonomy.service';
 
 @Injectable()
 export class BillingService {
@@ -59,6 +61,7 @@ export class BillingService {
     private readonly claimStatusService: ClaimStatusService,
     private readonly feeScheduleService: FeeScheduleService,
     private readonly utilsService: UtilsService,
+    private readonly taxonomiesService: TaxonomiesService,
     private readonly httpService: HttpService
   ) { }
 
@@ -177,13 +180,25 @@ export class BillingService {
     const appointmentInfo = await this.appointmentService.findOne(appointmentId)
     const patient = await this.patientService.findOne(patientId)
 
-    const facilityInfo = await this.facilityService.findOne(patient.facilityId)
-    const facilityContacts = await this.contactsService.findContactsByFacilityId(patient.facilityId);
-    const facilityBillingContact = (await this.billingAddressService.findBillingAddressByFacilityId(patient.facilityId))[0];
+    const { patientRecord, firstName, lastName, dob, gender, middleName, maritialStatus, policyHolderId, facilityId } = patient || {}
+
+    const facilityInfo = await this.facilityService.findOne(facilityId)
+    const facilityContacts = await this.contactsService.findContactsByFacilityId(facilityId);
+    const facilityBillingContact = (await this.billingAddressService.findBillingAddressByFacilityId(facilityId))[0];
     const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact)
-    const { cliaIdNumber, practiceId } = facilityInfo || {}
+    const { cliaIdNumber, practiceId, serviceCode } = facilityInfo || {}
+    const serviceC = serviceCode?.split('-')
+    const pos = serviceC.length ? serviceC[0] : '';
+    const { state: facilityState } = facilityPrimaryContact || {}
+    const facilitySt = states?.find(({ name }) => name === facilityState);
+    const { abbreviation: facilityStateCode } = facilitySt || {}
 
     const practiceInfo = await this.practiceService.findOne(practiceId)
+
+    let taxonomyCode
+    if (practiceInfo.taxonomyCodeId) {
+      taxonomyCode = await this.taxonomiesService.findOne(practiceInfo.taxonomyCodeId)
+    }
 
     const primaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.PRIMARY)
     const secondaryInsurance = insuranceDetails.find((insurance) => insurance.orderOfBenefit === OrderOfBenefitType.SECONDARY)
@@ -196,28 +211,34 @@ export class BillingService {
     const insurance = await this.insuranceService.findOne(insuranceDetail?.insuranceId)
     const { payerId, payerName } = insurance || {}
 
-    const { patientRecord, firstName, lastName, dob, gender, middleName, maritialStatus, policyHolderId } = patient || {}
     const doctorPatients = await this.patientService.usualProvider(patient.id);
     const primaryProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
     const referringProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.REFERRING_PROVIDER)?.doctor
     const orderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.ORDERING_PROVIDER)?.doctor
     const renderingProviderInfo = doctorPatients.find((doctorPatient) => doctorPatient.relation === DoctorPatientRelationType.RENDERING_PROVIDER)?.doctor
     const contacts = await this.contactsService.findContactsByPatientId(patient.id);
-    const { address, city, state, zipCode, address2, country, phone } = contacts?.find((contact) => contact.primaryContact) || {}
+    const { address, city, state: unFormat, zipCode, address2, phone } = contacts?.find((contact) => contact.primaryContact) || {}
+    const unFormateState = states?.find(({ name }) => name === unFormat)
+    const { abbreviation: state } = unFormateState || {}
 
     const policyHolder = await this.policyHolderService.findOne(policyHolderId)
     const {
       address: policyHolderAddress, addressCTD, firstName: policyHolderFName, lastName: policyHolderLName,
-      middleName: policyHolderMName, city: policyHolderCity, state: policyHolderState, zipCode: policyHolderZipCode,
+      middleName: policyHolderMName, city: policyHolderCity, state: policyHolderSt, zipCode: policyHolderZipCode,
       certificationNumber, sex: policyHolderGender, dob: policyHolderDob
     } = policyHolder || {}
 
-    const { scheduleStartDateTime, scheduleEndDateTime } = appointmentInfo
+    const unFormatePolicy = states?.find(({ name }) => name === policyHolderSt);
+    const { abbreviation: policyHolderState } = unFormatePolicy || {}
+
+    const { scheduleStartDateTime, scheduleEndDateTime } = appointmentInfo || {}
     const { firstName: billingProviderName, contacts: providerContacts, npi, taxId } = primaryProviderInfo || {}
     const { address: providerAddress, address2: providerAddress2, city: providerCity, state: providerState, zipCode: providerZipCode, phone: providerPhone } =
       providerContacts?.find((contact) => contact.primaryContact) || {}
 
-    const diagnoses = diagnosesCodes.reduce((acc, diagnosesCode, i) => {
+    const diagnoses = diagnosesCodes?.reduce((acc, diagnosesCode, i) => {
+      const { code } = diagnosesCode || {}
+      const codeValue = `${code.split('.')[0]}.${code.split('.')[1] === '0' ? '00' : code.split('.')[1]}`
       acc[`diag_${i + 1}`] = diagnosesCode.code
       return acc
     }, {} as {
@@ -236,13 +257,14 @@ export class BillingService {
 
     })
 
-    const procedures = procedureCodes.map((procedureCode) => {
+    const procedures = procedureCodes?.map((procedureCode) => {
       const { code, price, diagPointer, m1, m2, m3, m4, unit } = procedureCode
       return {
         proc_code: code,
         charge: Number(price || 0),
-        units: '',
-        diagPointer, m1, m2, m3, m4, unit
+        units: Number(unit || 0),
+        diagPointer, m1, m2, m3, m4, unit,
+        diag_ref: diagPointer || ''
       }
     })
 
@@ -257,7 +279,7 @@ export class BillingService {
       pat_city: city,
       pat_state: state,
       pat_zip: zipCode,
-      pat_dob: moment(dob).format('YYYY-MM-DD'),
+      pat_dob: moment(dob).format('MM-DD-YYYY'),
       pat_sex: getClaimGender(gender),
       pat_rel: getClaimRelation(policyHolderRelationship),
       ins_number: groupNumber,
@@ -268,20 +290,20 @@ export class BillingService {
       bill_addr_1: facilityPrimaryContact?.address,
       bill_addr_2: facilityPrimaryContact?.address2,
       bill_city: facilityPrimaryContact?.city,
-      bill_state: facilityPrimaryContact?.state,
+      bill_state: facilityStateCode,
       bill_zip: facilityPrimaryContact?.zipCode,
       bill_npi: practiceInfo?.npi,
       bill_phone: facilityPrimaryContact?.phone,
       bill_taxid: practiceInfo?.taxId,
-      bill_taxid_type: 'EIN',
-      bill_taxonomy: facilityInfo?.tamxonomyCode,
-      from_date: moment(scheduleStartDateTime).format('YYYY-MM-DD'),
-      thru_date: moment(scheduleEndDateTime).format('YYYY-MM-DD'),
+      bill_taxid_type: 'E',
+      bill_taxonomy: taxonomyCode ? taxonomyCode.code : '',
+      from_date_1: moment(scheduleStartDateTime).format('MM-DD-YYYY'),
+      thru_date: moment(scheduleEndDateTime).format('MM-DD-YYYY'),
       charge: procedures,
       payer_order: orderOfBenefit,
       pat_name_m: middleName,
       pat_addr_2: address2,
-      pat_country: country,
+      pat_country: 'us',
       pat_phone: phone,
       pat_marital: getYesOrNo(maritialStatus === MARITIALSTATUS.MARRIED),
       // "pat_employment",
@@ -297,7 +319,7 @@ export class BillingService {
       // "ins_phone",
       ins_group: certificationNumber,
       // "ins_plan",
-      ins_dob: moment(policyHolderDob).format('YYYY-MM-DD'),
+      ins_dob: moment(policyHolderDob).format('MM-DD-YYYY'),
       ins_sex: getClaimGender(gender),
       // "ins_employer",
       // "other_ins_name_l",
@@ -328,8 +350,8 @@ export class BillingService {
       ref_npi: referringProviderInfo?.npi,
       cond: onsetDateType,
       onset: otherDateType,
-      cond_date: onsetDate ? moment(onsetDate).format('YYYY-MM-DD') : '',  //this represents current illness in dr.chrono claim page
-      onset_date: otherDate ? moment(otherDate).format('YYYY-MM-DD') : '', // this represents other as onset in dr.chrono claim page
+      cond_date: onsetDate ? moment(onsetDate).format('MM-DD-YYYY') : '',  //this represents current illness in dr.chrono claim page
+      onset_date: otherDate ? moment(otherDate).format('MM-DD-YYYY') : '', // this represents other as onset in dr.chrono claim page
       // "lastseen_date",
       // "nowork_from_date",
       // "nowork_to_date",
@@ -361,9 +383,9 @@ export class BillingService {
       facility_addr_1: facilityPrimaryContact?.address,
       facility_addr_2: facilityPrimaryContact?.address2,
       facility_city: facilityPrimaryContact?.city,
-      facility_state: facilityPrimaryContact?.state,
+      facility_state: facilityStateCode,
       facility_zip: facilityPrimaryContact?.zipCode,
-      facility_npi: facilityInfo?.npi,
+      facility_npi: practiceInfo?.npi,
       facility_id: facilityInfo?.npi,
       // "bill_name",
       // "bill_addr_1",
@@ -435,9 +457,9 @@ export class BillingService {
       // "pay_state",
       // "pay_zip",
       // "remote_chgid",
-      // "from_date",
+      // from_date: scheduleStartDateTime,
       // "thru_date",
-      // "place_of_service",
+      place_of_service_1: pos?.trim(),
       // "proc_code",
       // "mod1",
       // "mod2",
@@ -482,7 +504,7 @@ export class BillingService {
       chg_facility_addr_1: facilityPrimaryContact?.address,
       chg_facility_addr_2: facilityPrimaryContact?.address2,
       chg_facility_city: facilityPrimaryContact?.city,
-      chg_facility_state: facilityPrimaryContact?.state,
+      chg_facility_state: facilityStateCode,
       chg_facility_zip: facilityPrimaryContact?.zipCode,
       chg_facility_npi: facilityInfo?.npi,
       // chg_prior_auth,
@@ -671,9 +693,9 @@ export class BillingService {
     claimInfo.total_charge && form.getTextField('t_charge').setText(String(claimInfo.total_charge))
 
     claimInfo.charge.length && claimInfo.charge.forEach((chargeValue, i) => {
-      claimInfo.from_date && form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date).format('MM')}`)
-      claimInfo.from_date && form.getTextField(`sv${i + 1}_dd_from`).setText(`${moment(claimInfo.from_date).format('DD')}`)
-      claimInfo.from_date && form.getTextField(`sv${i + 1}_yy_from`).setText(`${moment(claimInfo.from_date).format('YY')}`)
+      claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date_1).format('MM')}`)
+      claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_dd_from`).setText(`${moment(claimInfo.from_date_1).format('DD')}`)
+      claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_yy_from`).setText(`${moment(claimInfo.from_date_1).format('YY')}`)
       claimInfo.thru_date && form.getTextField(`sv${i + 1}_mm_end`).setText(`${moment(claimInfo.thru_date).format('MM')}`)
       claimInfo.thru_date && form.getTextField(`sv${i + 1}_dd_end`).setText(`${moment(claimInfo.thru_date).format('DD')}`)
       claimInfo.thru_date && form.getTextField(`sv${i + 1}_yy_end`).setText(`${moment(claimInfo.thru_date).format('YY')}`)
@@ -682,9 +704,9 @@ export class BillingService {
       chargeValue.proc_code && form.getTextField(`cpt${i + 1}`).setText(chargeValue.proc_code)
       chargeValue.diagPointer && form.getTextField(`diag${i + 1}`).setText(chargeValue.diagPointer)
       chargeValue.m1 && form.getTextField(`mod${i + 1}`).setText(chargeValue.m1)
-      chargeValue.m1 && form.getTextField(`mod${i + 1}a`).setText(chargeValue.m2)
-      chargeValue.m1 && form.getTextField(`mod${i + 1}b`).setText(chargeValue.m3)
-      chargeValue.m1 && form.getTextField(`mod${i + 1}c`).setText(chargeValue.m4)
+      chargeValue.m2 && form.getTextField(`mod${i + 1}a`).setText(chargeValue.m2)
+      chargeValue.m3 && form.getTextField(`mod${i + 1}b`).setText(chargeValue.m3)
+      chargeValue.m4 && form.getTextField(`mod${i + 1}c`).setText(chargeValue.m4)
       chargeValue.unit && form.getTextField(`day${i + 1}`).setText(chargeValue.unit)
       claimInfo.prov_npi && form.getTextField(`local${i + 1}`).setText(claimInfo.prov_npi)
     })
@@ -699,43 +721,68 @@ export class BillingService {
    * @returns claim info 
    */
   async createClaimInfo(claimInput: ClaimInput): Promise<Claim> {
-    const claimInfo = await this.getClaimInfo(claimInput)
-    const claimInfoToFormat = Object.keys(claimInfo).reduce((acc, claimInfoKey) => {
-      if (claimInfoKey === 'charge') {
-        acc[claimInfoKey] = claimInfo[claimInfoKey].map((chargeObj) => {
-          return Object.keys(chargeObj).reduce((innerAcc, key) => {
-            innerAcc[`@${key}`] = chargeObj[key]
-            return innerAcc
-          }, {})
-        })
-
+    try {
+      const claimInfo = await this.getClaimInfo(claimInput)
+      const claimMedValidationKeys = Object.keys(claimMedValidation.describe().keys)
+      const transformedClaimInfo = Object.keys(claimInfo).reduce((acc, key) => {
+        if (claimMedValidationKeys.includes(key)) {
+          acc[key] = claimInfo[key]
+          return acc
+        }
         return acc
+      }, {})
+
+      const result = claimMedValidation.validate(transformedClaimInfo)
+      if (result.error) {
+        const errorMessages = [...result.error.details.map((d) => d.message), !claimInfo.charge.length ? 'Procedure code is missing' : ''].join();
+        throw new BadRequestException(errorMessages);
       }
 
-      acc[`@${claimInfoKey}`] = claimInfo[claimInfoKey]
-      return acc
-    }, {})
+      const claimInfoToFormat = Object.keys(claimInfo).reduce((acc, claimInfoKey) => {
+        if (claimInfoKey === 'charge') {
+          acc[claimInfoKey] = claimInfo[claimInfoKey].map((chargeObj) => {
+            return Object.keys(chargeObj).reduce((innerAcc, key) => {
+              innerAcc[`@${key}`] = chargeObj[key]
+              return innerAcc
+            }, {})
+          })
 
-    var feed = xmlBuilder.create({ claims: { claim: claimInfoToFormat } }, { headless: true });
-    var feed1 = feed.end({ pretty: true });
-    let fullName = "./sample123.xml"
-    fs.writeFile(fullName, feed1, (err) => {
-      if (err) throw err;
-    });
+          return acc
+        }
 
-    const xmlFile = await fs.createReadStream(path.resolve(__dirname, "../../../../sample123.xml"))
+        acc[`@${claimInfoKey}`] = claimInfo[claimInfoKey]
+        return acc
+      }, {})
 
-    const formdata = new FormData()
-    formdata.append('AccountKey', process.env.CLAIM_MD_ID)
-    formdata.append('File', xmlFile)
+      var feed = xmlBuilder.create({ claims: { claim: claimInfoToFormat } }, { headless: true });
+      var feed1 = feed.end({ pretty: true });
+      let fullName = `./sample_${generateUniqueNumber()}.xml`
+      fs.writeFile(fullName, feed1, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
 
-    const response = await this.httpService.post('https://www.claim.md/services/upload/', formdata, {
-      headers: {
-        'Accept': 'text/json'
-      }
-    }).toPromise();
+      const xmlFile = await fs.createReadStream(path.resolve(__dirname, `../../../../${fullName}`));
+      console.log("xmlFile", xmlFile)
 
-    return claimInfo
+      const formData = new FormData()
+      formData.append('AccountKey', process.env.CLAIM_MD_ID)
+      formData.append('File', xmlFile)
+
+      const response = await this.httpService.post('https://www.claim.md/services/upload/', formData, {
+        headers: {
+          'Accept': 'text/json'
+        }
+      })?.toPromise()
+
+      fs.unlinkSync(path.resolve(__dirname, `../../../../${fullName}`))
+
+      return claimInfo
+
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
   }
 
   /**

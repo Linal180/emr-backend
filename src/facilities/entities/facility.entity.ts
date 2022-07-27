@@ -13,6 +13,7 @@ import { Staff } from 'src/providers/entities/staff.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Service } from './services.entity';
+import { Taxonomy } from './taxonomy.entity';
 
 export enum PracticeType {
   HOSPITAL = "hospital",
@@ -135,6 +136,9 @@ export class Facility {
   @Column({ nullable: true })
   @Field({ nullable: true })
   tamxonomyCode: string;
+
+  @Field({ nullable: true })
+  taxonomyCode: Taxonomy;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
