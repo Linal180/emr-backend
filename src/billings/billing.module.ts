@@ -29,19 +29,26 @@ import { ClaimStatusService } from './services/claimStatus.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Billing, Code, ClaimStatus, Claim]),
+    HttpModule,
     UsersModule,
     PatientModule,
-    AppointmentModule,
-    InsuranceModule,
     ProviderModule,
     FacilityModule,
     PracticeModule,
+    InsuranceModule,
     PaginationModule,
     FeeScheduleModule,
-    HttpModule
+    AppointmentModule,
   ],
-  providers: [BillingResolver, BillingService, ClaimStatusResolver, ClaimStatusService, CodeResolver,
-    ClaimResolver, ClaimService],
+  providers: [
+    CodeResolver,
+    ClaimService,
+    ClaimResolver,
+    BillingService,
+    BillingResolver,
+    ClaimStatusService,
+    ClaimStatusResolver,
+  ],
   exports: [TypeOrmModule],
 })
 export class BillingModule { }

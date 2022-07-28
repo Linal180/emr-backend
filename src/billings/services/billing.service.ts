@@ -17,6 +17,8 @@ import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
 import { AppointmentStatus } from 'src/appointments/entities/appointment.entity';
 import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
 //services
+import { UtilsService } from 'src/util/utils.service';
+import { ClaimStatusService } from './claimStatus.service';
 import { PracticeService } from 'src/practice/practice.service';
 import { PolicyService } from 'src/insurance/services/policy.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
@@ -24,21 +26,20 @@ import { PatientService } from 'src/patients/services/patient.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { InsuranceService } from 'src/insurance/services/insurance.service';
+import { TaxonomiesService } from 'src/facilities/services/taxonomy.service';
+import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
 import { PolicyHolderService } from 'src/insurance/services/policy-holder.service';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 //payloads
-import BillingInput from '../dto/billing-input.dto';
-import { CreateClaimInput } from '../dto/claim-input.dto';
-import { ClaimMd, ClaimMdPayload } from '../dto/claim-payload';
-//helpers
-import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
-import { ClaimStatusService } from './claimStatus.service';
-import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
-import { UtilsService } from 'src/util/utils.service';
 import { SuperBillPayload } from '../dto/super-bill-payload';
+import { ClaimMd, ClaimMdPayload } from '../dto/claim-payload';
+//inputs
+import { BillingInput } from '../dto/billing-input.dto';
+import { CreateClaimInput, GetClaimFileInput } from '../dto/claim-input.dto';
+//helpers
 import { claimMedValidation } from 'src/lib/validations';
-import { TaxonomiesService } from 'src/facilities/services/taxonomy.service';
+import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
 
 @Injectable()
 export class BillingService {
@@ -773,8 +774,8 @@ export class BillingService {
    * @param claimInput 
    * @returns  
    */
-  async getClaimFile(claimInput: CreateClaimInput) {
-    const claimInfo = await this.getClaimInfo(claimInput)
+  async getClaimFile(claimInput: GetClaimFileInput) {
+    const claimInfo = await this.getClaimInfo({ ...claimInput })
     const file = await fs.readFileSync(path.resolve(__dirname, "../../../../form-1500.pdf"))
     const pdfDoc = await PDFDocument.load(file);
     const form = pdfDoc.getForm()

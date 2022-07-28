@@ -548,6 +548,11 @@ type ClaimPayload {
   response: ResponsePayload
 }
 
+type ClaimFilePayload {
+  claimFile: [Int!]
+  response: ResponsePayload
+}
+
 type ClaimNumberPayload {
   claimNumber: String
   response: ResponsePayload
@@ -2810,6 +2815,7 @@ type Query {
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
+  getClaimFile(getClaimFileInput: GetClaimFileInput!): ClaimFilePayload!
   getSuperBillInfo(superBillInput: SuperBillInput!): SuperBillPayload!
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
@@ -3217,6 +3223,34 @@ input GetPatientVital {
   id: String!
 }
 
+input GetClaimFileInput {
+  patientId: String
+  appointmentId: String
+  codes: [CodesInput!]
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  onsetDateType: OnsetDateType
+  onsetDate: String
+  otherDateType: OtherDateType
+  otherDate: String
+  from: String
+  to: String
+}
+
+input CodesInput {
+  code: String
+  description: String
+  price: String
+  diagPointer: String
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  unit: String
+  codeType: CodeType
+}
+
 input SuperBillInput {
   appointmentId: String
 }
@@ -3406,11 +3440,11 @@ type Mutation {
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
   createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
   updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
   removeClaimStatus(id: String!): ClaimStatusPayload!
-  createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
@@ -4764,6 +4798,33 @@ input RemoveVital {
   id: String!
 }
 
+input CreateClaimInput {
+  patientId: String
+  appointmentId: String
+  codes: [CodesInput!]
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  onsetDateType: OnsetDateType
+  onsetDate: String
+  otherDateType: OtherDateType
+  otherDate: String
+  from: String
+  to: String
+  feeScheduleId: String
+  shouldCheckout: Boolean
+  uncoveredAmount: String
+  facilityId: String
+  servicingProviderId: String
+  renderingProviderId: String
+  pos: String
+  serviceDate: String
+  claimDate: String
+  labOrderNumber: String
+  claimNo: String
+  amount: String
+}
+
 input BillingInput {
   patientPaymentType: PatientPaymentType
   amount: String
@@ -4793,19 +4854,6 @@ input BillingInput {
   shouldCheckout: Boolean
 }
 
-input CodesInput {
-  code: String
-  description: String
-  price: String
-  diagPointer: String
-  m1: String
-  m2: String
-  m3: String
-  m4: String
-  unit: String
-  codeType: CodeType
-}
-
 input ClaimStatusInput {
   statusName: String
   statusId: String
@@ -4815,33 +4863,6 @@ input UpdateClaimStatusInput {
   statusName: String
   statusId: String
   id: String
-}
-
-input CreateClaimInput {
-  patientId: String
-  appointmentId: String
-  codes: [CodesInput!]
-  employment: Boolean
-  autoAccident: Boolean
-  otherAccident: Boolean
-  onsetDateType: OnsetDateType
-  onsetDate: String
-  otherDateType: OtherDateType
-  otherDate: String
-  from: String
-  to: String
-  feeScheduleId: String
-  shouldCheckout: Boolean
-  uncoveredAmount: String
-  facilityId: String
-  servicingProviderId: String
-  renderingProviderId: String
-  pos: String
-  serviceDate: String
-  claimDate: String
-  labOrderNumber: String
-  claimNo: String
-  amount: String
 }
 
 input CreatePolicyInput {

@@ -16,15 +16,16 @@ import { DoctorService } from 'src/providers/services/doctor.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
 //guards
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 //inputs
-import BillingInput from '../dto/billing-input.dto';
+import { BillingInput } from '../dto/billing-input.dto';
 import SuperBillInput from '../dto/super-bill-input.dto';
+import { GetClaimFileInput } from '../dto/claim-input.dto';
 //payloads
 import { BillingPayload } from '../dto/billing-payload';
 import { SuperBillPayload } from '../dto/super-bill-payload';
-import { ClaimNumberPayload } from '../dto/claim-payload';
+import { ClaimFilePayload, ClaimNumberPayload } from '../dto/claim-payload';
 
 @Resolver(() => Billing)
 export class BillingResolver {
@@ -78,13 +79,13 @@ export class BillingResolver {
     };
   }
 
-  // @Query(() => ClaimFilePayload)
-  // async getClaimFile(@Args('claimInput') claimInput: ClaimInput): Promise<ClaimFilePayload> {
-  //   return {
-  //     claimFile: await this.billingService.getClaimFile(claimInput),
-  //     response: { status: 200, message: "Claim File created successfully" }
-  //   };
-  // }
+  @Query(() => ClaimFilePayload)
+  async getClaimFile(@Args('getClaimFileInput') getClaimFileInput: GetClaimFileInput): Promise<ClaimFilePayload> {
+    return {
+      claimFile: await this.billingService.getClaimFile(getClaimFileInput),
+      response: { status: 200, message: "Claim File created successfully" }
+    };
+  }
 
   @Query(() => SuperBillPayload)
   async getSuperBillInfo(@Args('superBillInput') superBillInput: SuperBillInput): Promise<SuperBillPayload> {

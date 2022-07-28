@@ -51,7 +51,7 @@ export class CreateClaimInput {
   shouldCheckout?: boolean
 
   @Field({ nullable: true })
-  uncoveredAmount: string;
+  uncoveredAmount?: string;
 
   @Field({ nullable: true })
   facilityId?: string
@@ -82,6 +82,46 @@ export class CreateClaimInput {
 
 }
 
+
+@InputType()
+export class GetClaimFileInput {
+  @Field({ nullable: true })
+  patientId?: string
+
+  @Field({ nullable: true })
+  appointmentId?: string
+
+  @Field(() => [CodesInput], { nullable: true })
+  codes: CodesInput[]
+
+  @Field({ nullable: true })
+  employment: boolean;
+
+  @Field({ nullable: true })
+  autoAccident: boolean;
+
+  @Field({ nullable: true })
+  otherAccident: boolean;
+
+  @Field(() => OnsetDateType, { nullable: true })
+  onsetDateType?: OnsetDateType
+
+  @Field({ nullable: true })
+  onsetDate?: string
+
+  @Field(() => OtherDateType, { nullable: true })
+  otherDateType?: OtherDateType
+
+  @Field({ nullable: true })
+  otherDate?: string
+
+  @Field({ nullable: true })
+  from?: string
+
+  @Field({ nullable: true })
+  to?: string
+
+}
 
 @InputType()
 export class ClaimChargeInput {
