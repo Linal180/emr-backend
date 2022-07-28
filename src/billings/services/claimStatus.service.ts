@@ -96,4 +96,12 @@ export class ClaimStatusService {
   async findByName(statusName: string): Promise<ClaimStatus> {
     return await this.claimStatusRepository.findOne({ statusName })
   }
+
+  async findByStatusId(statusId: string): Promise<ClaimStatus> {
+    try {
+      return await this.claimStatusRepository.findOne({ statusId })
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

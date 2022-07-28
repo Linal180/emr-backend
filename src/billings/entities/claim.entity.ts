@@ -1,20 +1,38 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities enums
-import { OrderOfBenefitType as OrderOfBenefit } from "src/insurance/entities/policy.entity";
-import { OnsetDateType as OnsetDate, OtherDateType as OtherDate } from "./billing.entity";
 import { ClaimChargeType } from "../dto/claim-payload";
 import { ClaimStatus } from "./claim-status.entity";
+
+
+export enum OrderOfBenefit {
+  PRIMARY = "Primary",
+  SECONDARY = "Secondary",
+  TERTIARY = "Tertiary"
+}
 
 registerEnumType(OrderOfBenefit, {
   name: "OrderOfBenefit",
   description: "The order of benefit type",
 })
 
+export enum OtherDate {
+  INITIAL_VISIT_DATE = "Initial Visit Date",
+  INITIAL_TREATMENT_DATE = "Initial Treatment Date",
+  LAST_RELATED_VISIT = 'Last Related Visit',
+}
+
+
 registerEnumType(OtherDate, {
   name: "OtherDate",
   description: "The patient billing status assigned",
 });
+
+export enum OnsetDate {
+  DATE_OF_ACCIDENT = "Date of Accident",
+  DATE_OF_HOSPITALIZATION = "Date of Hospitalization"
+}
+
 
 registerEnumType(OnsetDate, {
   name: "OnsetDate",

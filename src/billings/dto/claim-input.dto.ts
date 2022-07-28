@@ -1,8 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql';
-//entities
-import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
+
 import { OnsetDateType, OtherDateType } from '../entities/billing.entity';
 import { ClaimStatus } from '../entities/claim-status.entity';
+import { OnsetDate, OrderOfBenefit, OtherDate } from '../entities/claim.entity';
 //inputs
 import CodesInput from './codes-input.dto';
 
@@ -32,7 +32,7 @@ export class CreateClaimInput {
   @Field({ nullable: true })
   onsetDate?: string
 
-  @Field(type => OtherDateType, { nullable: true })
+  @Field(() => OtherDateType, { nullable: true })
   otherDateType?: OtherDateType
 
   @Field({ nullable: true })
@@ -43,6 +43,42 @@ export class CreateClaimInput {
 
   @Field({ nullable: true })
   to?: string
+
+  @Field({ nullable: true })
+  feeScheduleId?: string
+
+  @Field({ nullable: true })
+  shouldCheckout?: boolean
+
+  @Field({ nullable: true })
+  uncoveredAmount: string;
+
+  @Field({ nullable: true })
+  facilityId?: string
+
+  @Field({ nullable: true })
+  servicingProviderId?: string
+
+  @Field({ nullable: true })
+  renderingProviderId?: string
+
+  @Field({ nullable: true })
+  pos?: string
+
+  @Field({ nullable: true })
+  serviceDate?: string
+
+  @Field({ nullable: true })
+  claimDate?: string
+
+  @Field({ nullable: true })
+  labOrderNumber?: string
+
+  @Field({ nullable: true })
+  claimNo?: string
+
+  @Field({ nullable: true })
+  amount?: string
 
 }
 
@@ -346,14 +382,14 @@ export class ClaimInput {
   @Field({ nullable: true })
   ref_npi?: string;
 
-  @Field(() => OnsetDateType, { nullable: true })
-  cond?: OnsetDateType
+  @Field(() => OnsetDate, { nullable: true })
+  cond?: OnsetDate
 
-  @Field(() => OtherDateType, { nullable: true })
-  onset?: OtherDateType
+  @Field(() => OtherDate, { nullable: true })
+  onset?: OtherDate
 
-  @Field(() => OrderOfBenefitType, { nullable: true })
-  payer_order?: OrderOfBenefitType
+  @Field(() => OrderOfBenefit, { nullable: true })
+  payer_order?: OrderOfBenefit
 
   @Field({ nullable: true })
   claim_form?: string;

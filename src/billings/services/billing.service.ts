@@ -28,9 +28,9 @@ import { PolicyHolderService } from 'src/insurance/services/policy-holder.servic
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 //payloads
-import { ClaimMd, ClaimMdPayload } from '../dto/claim-payload';
-import { ClaimInput, CreateClaimInput } from '../dto/claim-input.dto';
 import BillingInput from '../dto/billing-input.dto';
+import { CreateClaimInput } from '../dto/claim-input.dto';
+import { ClaimMd, ClaimMdPayload } from '../dto/claim-payload';
 //helpers
 import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
 import { ClaimStatusService } from './claimStatus.service';

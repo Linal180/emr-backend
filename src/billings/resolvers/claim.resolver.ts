@@ -10,7 +10,7 @@ import { Claim } from "../entities/claim.entity";
 
 
 @Resolver(() => Claim)
-export class BillingResolver {
+export class ClaimResolver {
   constructor(
     private readonly claimService: ClaimService) { }
 
