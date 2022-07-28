@@ -19,6 +19,7 @@ import { Schedule } from '../entities/schedule.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
 import { ContactService } from './contact.service';
 import { DoctorService } from './doctor.service';
+import { Slots } from '../dto/slots-payload.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -335,7 +336,7 @@ export class ScheduleService {
    * @param getSlots 
    * @returns slots 
    */
-  async getSlots(getSlots: GetSlots): Promise<SlotsPayload> {
+  async getSlots(getSlots: GetSlots): Promise<Slots[]> {
     try {
       const uTcStartDateOffset = moment(new Date(getSlots.currentDate)).startOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
       const uTcEndDateOffset = moment(new Date(getSlots.currentDate)).endOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
@@ -351,7 +352,15 @@ export class ScheduleService {
       const duration = parseInt(services?.duration)
       //get doctor's remaining time 
       const slots = await this.RemainingAvailability(newSchedule, appointment, duration)
-      return slots;
+      const deduplicateSlots = slots?.filter((value, index, self) =>
+        index === slots?.findIndex((t) => {
+          return (
+            moment(t.startTime).format('HH:mm') === moment(value.startTime).format('HH:mm')
+          )
+        })
+      ) ?? []
+
+      return deduplicateSlots
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -362,7 +371,7 @@ export class ScheduleService {
    * @param schedule 
    * @param appointment 
    */
-  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<SlotsPayload> {
+  async RemainingAvailability(schedule: Schedule[], appointment: Appointment[], duration: number): Promise<Slots[]> {
     let times = [];
     times = await Promise.all(schedule.map(async (item) => {
       let slotTime = moment(item.startAt);
