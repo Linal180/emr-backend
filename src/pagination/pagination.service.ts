@@ -6,6 +6,7 @@ import {
 import { Speciality } from "src/providers/entities/doctor.entity";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
+import * as moment from "moment";
 
 interface whereConditionInput {
   status?: string | number
@@ -209,6 +210,11 @@ export class PaginationService {
       effectiveDate,
       expiryDate,
       feeScheduleId,
+      claimFeedFacilityName,
+      claimFeedPatientName,
+      claimFeedPayerId,
+      claimFeedFromDate,
+      claimFeedToDate,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -354,6 +360,11 @@ export class PaginationService {
         ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
         ...(expiryDate && expiryDate != null && { expiryDate: Raw(alias => `${alias} Is null OR ${alias} <= '${today}'`) }),
         ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }),
+        ...(claimFeedFacilityName && { provName: Raw(alias => `${alias} ILIKE '%${claimFeedFacilityName}%'`) }),
+        ...(claimFeedPatientName && { patientFullName: Raw(alias => `${alias} ILIKE '%${claimFeedPatientName}%'`) }),
+        ...(claimFeedPayerId && { payerId: Raw(alias => `${alias} ILIKE '%${claimFeedPayerId}%'`) }),
+        ...(claimFeedFromDate && { fromDos: Raw(alias => `${alias} = '${moment(claimFeedFromDate).format("YYYYMMDD")}'`) }),
+        ...(claimFeedToDate && { thruDos: Raw(alias => `${alias} = '${moment(claimFeedToDate).format("YYYYMMDD")}'`) }),
       }
     };
 

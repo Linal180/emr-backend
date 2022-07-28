@@ -776,6 +776,8 @@ export class BillingService {
         }
       })?.toPromise()
 
+      console.log("response", response)
+
       fs.unlinkSync(path.resolve(__dirname, `../../../../${fullName}`))
 
       return claimInfo
