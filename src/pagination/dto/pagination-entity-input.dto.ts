@@ -75,4 +75,9 @@ export class PaginatedEntityInput {
   effectiveDate?: string;
   expiryDate?: string;
   feeScheduleId?: string;
+  claimFeedFacilityName?: string
+  claimFeedPatientName?: string
+  claimFeedPayerId?: string
+  claimFeedFromDate?: string
+  claimFeedToDate?: string
 }
