@@ -38,7 +38,7 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-RUN npm run seed:run
+# RUN npm run seed:run
 
 ENV PORT 3000
 EXPOSE 3000
