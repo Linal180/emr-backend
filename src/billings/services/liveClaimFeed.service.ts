@@ -41,7 +41,6 @@ export class LiveClaimFeedService {
           'Accept': 'text/json'
         }
       })?.toPromise()
-      console.log("allEraResponse", allEraResponse.data.era)
 
       const individualEras = await Promise.all(allEraResponse.data.era.map(async (eraData) => {
         const formDataChild = new FormData()
@@ -98,7 +97,6 @@ export class LiveClaimFeedService {
         }
         return liveClaimFeed || itemExist
       }))
-      console.log('individualEras', individualEras)
       await queryRunner.commitTransaction();
       return createdLiveClaimFeeds
     } catch (error) {

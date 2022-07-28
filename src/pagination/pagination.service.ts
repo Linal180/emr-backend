@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import {
   Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral,
@@ -6,7 +7,6 @@ import {
 import { Speciality } from "src/providers/entities/doctor.entity";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
-import * as moment from "moment";
 
 interface whereConditionInput {
   status?: string | number
