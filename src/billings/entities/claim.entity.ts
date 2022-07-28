@@ -1,9 +1,25 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities enums
-import { OrderOfBenefitType } from "src/insurance/entities/policy.entity";
-import { OnsetDateType, OtherDateType } from "./billing.entity";
+import { OrderOfBenefitType as OrderOfBenefit } from "src/insurance/entities/policy.entity";
+import { OnsetDateType as OnsetDate, OtherDateType as OtherDate } from "./billing.entity";
 import { ClaimChargeType } from "../dto/claim-payload";
+import { ClaimStatus } from "./claim-status.entity";
+
+registerEnumType(OrderOfBenefit, {
+  name: "OrderOfBenefit",
+  description: "The order of benefit type",
+})
+
+registerEnumType(OtherDate, {
+  name: "OtherDate",
+  description: "The patient billing status assigned",
+});
+
+registerEnumType(OnsetDate, {
+  name: "OnsetDate",
+  description: "The patient billing status assigned",
+});
 
 @Entity({ name: 'claim' })
 @ObjectType()
@@ -15,20 +31,20 @@ export class Claim {
 
   //response columns
 
-  @Column({ nullable: true, type: "int" })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   claimMdId: number
 
-  @Column({ nullable: true, type: "int" })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   batchId: number
 
-  @Column({ nullable: true, type: "int" })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   billNpi: number
 
-  @Column({ nullable: true, type: "int" })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   billTaxId: number
 
   @Column({ nullable: true })
@@ -43,16 +59,16 @@ export class Claim {
   @Field({ nullable: true })
   fileName: string
 
-  @Column({ nullable: true, type: 'int' })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   fileId: number
 
-  @Column({ nullable: true, type: 'int' })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   insuranceNumber: number
 
-  @Column({ nullable: true, type: 'int' })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   receivePayerId: number
 
   @Column({ nullable: true })
@@ -72,8 +88,8 @@ export class Claim {
   senderId: string
 
 
-  @Column({ nullable: true, type: 'int' })
-  @Field(() => Int, { nullable: true })
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
   totalCharge: number;
 
   //polymorphic columns of claimStatus
@@ -364,17 +380,17 @@ export class Claim {
   @Field({ nullable: true })
   ref_npi: string;
 
-  @Column({ enum: OnsetDateType, type: "enum", nullable: true })
-  @Field(() => OnsetDateType, { nullable: true })
-  cond: OnsetDateType
+  @Column({ enum: OnsetDate, type: "enum", nullable: true })
+  @Field(() => OnsetDate, { nullable: true })
+  cond: OnsetDate
 
-  @Column({ enum: OtherDateType, type: "enum", nullable: true })
-  @Field(() => OtherDateType, { nullable: true })
-  onset: OtherDateType
+  @Column({ enum: OtherDate, type: "enum", nullable: true })
+  @Field(() => OtherDate, { nullable: true })
+  onset: OtherDate
 
-  @Column({ enum: OrderOfBenefitType, type: "enum", nullable: true })
-  @Field(() => OrderOfBenefitType, { nullable: true })
-  payer_order: OrderOfBenefitType
+  @Column({ enum: OrderOfBenefit, type: "enum", nullable: true })
+  @Field(() => OrderOfBenefit, { nullable: true })
+  payer_order: OrderOfBenefit
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -432,9 +448,9 @@ export class Claim {
   @Field({ nullable: true })
   accept_assign: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  total_charge: string;
+  @Column({ nullable: true, type: "float" })
+  @Field(() => Number, { nullable: true })
+  total_charge: number;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -491,6 +507,13 @@ export class Claim {
   @Column({ array: false, type: "jsonb", nullable: true })
   @Field(() => [ClaimChargeType], { nullable: true })
   charge: ClaimChargeType[]
+
+  //relationship 
+
+  @OneToOne(() => ClaimStatus, claimStatus => claimStatus.claim)
+  @JoinColumn()
+  @Field(() => ClaimStatus, { nullable: true })
+  claimStatus: ClaimStatus;
 
   //dates
 

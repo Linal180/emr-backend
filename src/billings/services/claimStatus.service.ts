@@ -1,16 +1,15 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-//user imports
-import { PracticeService } from "src/practice/practice.service";
-import { UsersService } from "src/users/services/users.service";
-import { FacilityService } from "src/facilities/services/facility.service";
-import { AppointmentService } from "src/appointments/services/appointment.service";
-import { ClaimStatusInput, ClaimStatusPaginationInput, UpdateClaimStatusInput } from "../dto/claim-status-input.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ClaimStatus } from "../entities/claim-status.entity";
 import { Repository } from "typeorm";
-import { PaginationService } from "src/pagination/pagination.service";
-import { ClaimStatusesPayload } from "../dto/claimStatus-payload";
+import { InjectRepository } from "@nestjs/typeorm";
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+//inputs
+import { ClaimStatusInput, ClaimStatusPaginationInput, UpdateClaimStatusInput } from "../dto/claim-status-input.dto";
+//entities
+import { ClaimStatus } from "../entities/claim-status.entity";
+//services
 import { UtilsService } from "src/util/utils.service";
+import { PaginationService } from "src/pagination/pagination.service";
+//payloads
+import { ClaimStatusesPayload } from "../dto/claimStatus-payload";
 
 @Injectable()
 export class ClaimStatusService {
@@ -63,6 +62,11 @@ export class ClaimStatusService {
     }
   }
 
+  /**
+   * Fetch all claim statuses
+   * @param claimStatusPaginationInput 
+   * @returns all claim statuses 
+   */
   async fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput): Promise<ClaimStatusesPayload> {
     const { searchString } = claimStatusPaginationInput
     const paginationResponse = await this.paginationService.willPaginate<ClaimStatus>(this.claimStatusRepository, { ...claimStatusPaginationInput, associatedTo: 'ClaimStatus', associatedToField: { columnValue: searchString, columnName: 'statusName', filterType: 'stringFilter' } })
@@ -74,7 +78,22 @@ export class ClaimStatusService {
     }
   }
 
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
   async findOne(id): Promise<ClaimStatus> {
-    return this.claimStatusRepository.findOne({ id })
+    return await this.claimStatusRepository.findOne({ id })
+  }
+
+  /**
+   * Finds by name
+   * @param statusName 
+   * @returns  
+   */
+  async findByName(statusName: string): Promise<ClaimStatus> {
+    return await this.claimStatusRepository.findOne({ statusName })
   }
 }

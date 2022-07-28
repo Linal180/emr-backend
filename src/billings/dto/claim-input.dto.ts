@@ -1,12 +1,13 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 //entities
 import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
 import { OnsetDateType, OtherDateType } from '../entities/billing.entity';
+import { ClaimStatus } from '../entities/claim-status.entity';
 //inputs
 import CodesInput from './codes-input.dto';
 
 @InputType()
-export default class ClaimInput {
+export class CreateClaimInput {
   @Field({ nullable: true })
   patientId?: string
 
@@ -25,7 +26,7 @@ export default class ClaimInput {
   @Field({ nullable: true })
   otherAccident: boolean;
 
-  @Field(type => OnsetDateType, { nullable: true })
+  @Field(() => OnsetDateType, { nullable: true })
   onsetDateType?: OnsetDateType
 
   @Field({ nullable: true })
@@ -42,6 +43,7 @@ export default class ClaimInput {
 
   @Field({ nullable: true })
   to?: string
+
 }
 
 
@@ -60,8 +62,8 @@ export class ClaimChargeInput {
   @Field(() => String, { nullable: true })
   m4?: string;
 
-  @Field(() => String, { nullable: false })
-  units?: string;
+  @Field(() => Number, { nullable: false })
+  units?: number;
 
   @Field(() => Number, { nullable: false })
   charge: number;
@@ -78,20 +80,20 @@ export class ClaimChargeInput {
 }
 
 @InputType()
-export class CreateClaimInput {
+export class ClaimInput {
 
   //response columns
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   claimMdId?: number
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   batchId?: number
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   billNpi?: number
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   billTaxId?: number
 
   @Field({ nullable: true })
@@ -103,13 +105,13 @@ export class CreateClaimInput {
   @Field({ nullable: true })
   fileName?: string
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   fileId?: number
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   insuranceNumber?: number
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   receivePayerId?: number
 
   @Field(() => String, { nullable: true })
@@ -124,7 +126,7 @@ export class CreateClaimInput {
   @Field({ nullable: true })
   senderId?: string
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   totalCharge?: number;
 
   //polymorphic columns of claimStatus
@@ -395,8 +397,8 @@ export class CreateClaimInput {
   @Field({ nullable: true })
   accept_assign?: string;
 
-  @Field({ nullable: true })
-  total_charge?: string;
+  @Field(() => Number, { nullable: true })
+  total_charge?: number;
 
   @Field({ nullable: true })
   bill_name?: string;
@@ -439,5 +441,8 @@ export class CreateClaimInput {
 
   @Field(() => [ClaimChargeInput], { nullable: true })
   charge?: ClaimChargeInput[];
+
+  @Field(() => ClaimStatus, { nullable: true })
+  claimStatus?: ClaimStatus
 
 }
