@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType, Float } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities enums
 import { ClaimChargeType } from "../dto/claim-payload";
@@ -50,19 +50,19 @@ export class Claim {
   //response columns
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   claimMdId: number
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   batchId: number
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   billNpi: number
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   billTaxId: number
 
   @Column({ nullable: true })
@@ -78,19 +78,19 @@ export class Claim {
   fileName: string
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   fileId: number
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   insuranceNumber: number
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   receivePayerId: number
 
   @Column({ nullable: true })
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   pcn: string
 
   @Column({ nullable: true })
@@ -107,7 +107,7 @@ export class Claim {
 
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   totalCharge: number;
 
   //polymorphic columns of claimStatus
@@ -467,7 +467,7 @@ export class Claim {
   accept_assign: string;
 
   @Column({ nullable: true, type: "float" })
-  @Field(() => Number, { nullable: true })
+  @Field(() => Float, { nullable: true })
   total_charge: number;
 
   @Column({ nullable: true })

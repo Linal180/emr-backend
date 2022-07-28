@@ -992,6 +992,11 @@ export class BillingService {
     return generateUniqueNumber()
   }
 
+  /**
+   * Gets super bill info
+   * @param appointmentId 
+   * @returns super bill info 
+   */
   async getSuperBillInfo(appointmentId): Promise<SuperBillPayload> {
     const billingInfo = await this.fetchBillingDetailsByAppointmentId(appointmentId)
     const appointmentInfo = await this.appointmentService.findOne(appointmentId)
@@ -1017,6 +1022,15 @@ export class BillingService {
       patientInfo,
       billingInfo
     }
+  }
+
+  /**
+   * Gets billing by apt
+   * @param appointmentId 
+   * @returns billing by apt 
+   */
+  async getBillingByApt(appointmentId: string): Promise<Billing> {
+    return await this.billingRepository.findOne({ appointmentId })
   }
 
 }

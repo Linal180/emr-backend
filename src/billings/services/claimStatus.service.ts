@@ -79,12 +79,13 @@ export class ClaimStatusService {
   }
 
 
+  
   /**
    * Finds one
    * @param id 
    * @returns one 
    */
-  async findOne(id): Promise<ClaimStatus> {
+  async findOne(id: string): Promise<ClaimStatus> {
     return await this.claimStatusRepository.findOne({ id })
   }
 
@@ -97,6 +98,11 @@ export class ClaimStatusService {
     return await this.claimStatusRepository.findOne({ statusName })
   }
 
+  /**
+   * Finds by status id
+   * @param statusId 
+   * @returns by status id 
+   */
   async findByStatusId(statusId: string): Promise<ClaimStatus> {
     try {
       return await this.claimStatusRepository.findOne({ statusId })
