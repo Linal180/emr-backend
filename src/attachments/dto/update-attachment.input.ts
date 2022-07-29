@@ -23,6 +23,18 @@ export class GetAttachment {
 
   @Field({ nullable: true })
   attachmentName?: string;
+
+  @Field({ nullable: true, defaultValue: false })
+  signedBy?: boolean;
+
+  @Field(() => PaginationInput)
+  paginationOptions: PaginationInput
+}
+
+@InputType()
+export class GetAttachmentSignature {
+  @Field()
+  typeId: string;
 }
 
 @InputType()
@@ -35,13 +47,19 @@ export class GetAttachmentsByLabOrder {
 }
 
 @InputType()
-export class GetAttachmentsByPolicyId extends GetAttachment {
+export class GetAttachmentsByPolicyId {
+  @Field()
+  typeId: string;
+
   @Field()
   policyId: string
 }
 
 @InputType()
-export class GetAttachmentsByAgreementId extends GetAttachment {
+export class GetAttachmentsByAgreementId {
+  @Field()
+  typeId: string;
+
   @Field()
   agreementId: string
 }

@@ -1,8 +1,10 @@
 import { SetMetadata, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { InjectRepository } from '@nestjs/typeorm';
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
+import { Repository } from 'typeorm';
 import { AttachmentMediaPayload, AttachmentPayload } from '../dto/attachment-payload.dto';
 import { AttachmentsPayload, AttachmentWithPreSignedUrlPayload } from '../dto/attachments-payload.dto';
 import { CreateAttachmentInput } from '../dto/create-attachment.input';
@@ -14,7 +16,10 @@ import { AttachmentsService } from '../services/attachments.service';
 @Resolver(Attachment)
 @UseFilters(HttpExceptionFilterGql)
 export class AttachmentsResolver {
-  constructor(private readonly attachmentsService: AttachmentsService) { }
+  constructor(
+    @InjectRepository(AttachmentMetadata)
+    private attachmentMetadataRepository: Repository<AttachmentMetadata>,
+    private readonly attachmentsService: AttachmentsService) { }
 
   @Query(returns => AttachmentsPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -22,7 +27,7 @@ export class AttachmentsResolver {
   async getAttachments(@Args('getAttachment') getAttachment: GetAttachment): Promise<AttachmentsPayload> {
     const attachments = await this.attachmentsService.findAttachmentsById(getAttachment)
     return {
-      attachments,
+      ...attachments,
       response: { status: 200, message: 'Attachments fetched successfully' }
     };
   }
@@ -115,6 +120,8 @@ export class AttachmentsResolver {
 
   @ResolveField((returns) => AttachmentMetadata)
   async attachmentMetadata(@Parent() attachment: Attachment): Promise<AttachmentMetadata> {
-    return attachment.attachmentMetadata
+    if(attachment.attachmentMetadata){
+      return this.attachmentMetadataRepository.findOne(attachment.attachmentMetadata)
+    }
   }
 }

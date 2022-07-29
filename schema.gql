@@ -2987,6 +2987,8 @@ input GetPractice {
 input GetAttachment {
   typeId: String!
   attachmentName: String
+  signedBy: Boolean = false
+  paginationOptions: PaginationInput!
 }
 
 input GetAttachmentsByLabOrder {
@@ -2996,13 +2998,11 @@ input GetAttachmentsByLabOrder {
 
 input GetAttachmentsByPolicyId {
   typeId: String!
-  attachmentName: String
   policyId: String!
 }
 
 input GetAttachmentsByAgreementId {
   typeId: String!
-  attachmentName: String
   agreementId: String!
 }
 
