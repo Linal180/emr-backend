@@ -2412,6 +2412,44 @@ type PolicyEligibilityWithPatientPayload {
   response: Response
 }
 
+type LiveClaimFeed {
+  id: String!
+  paidDate: String
+  provAddress1: String
+  provState: String
+  provCompanyId: String
+  provCity: String
+  payerAddress1: String
+  provRouting: String
+  payerRouting: String
+  payerCity: String
+  eraId: String
+  paymentFormat: String
+  payerName: String
+  provTaxId: String
+  fromDos: String
+  patientFullName: String
+  InsuranceFullName: String
+  totalPaid: String
+  thruDos: String
+  crossOverCarrier: String
+  crossOverId: String
+  pcn: String
+  provNpi: String
+  totalCharge: String
+  charge: String!
+  paidAmount: String
+  provAccount: String
+  payerAccount: String
+  provZip: String
+  paymentMethod: String
+  provName: String
+  payerId: String
+  checkNumber: String
+  createdAt: String
+  updatedAt: String
+}
+
 type BillingPayload {
   billing: Billing!
   pagination: PaginationPayload
@@ -2437,6 +2475,12 @@ type ClaimStatusesPayload {
 type ClaimStatusPayload {
   claimStatus: ClaimStatus!
   response: Response
+}
+
+type LiveClaimFeedPayload {
+  liveClaimFeeds: [LiveClaimFeed!]
+  pagination: PaginationPayload
+  response: ResponsePayload
 }
 
 type UserLogs {
@@ -2820,6 +2864,7 @@ type Query {
   getSuperBillInfo(superBillInput: SuperBillInput!): SuperBillPayload!
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
+  findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
@@ -3266,6 +3311,15 @@ input ClaimStatusPaginationInput {
   paginationOptions: PaginationInput!
 }
 
+input LiveClaimFeedInput {
+  claimFeedFacilityName: String
+  claimFeedPatientName: String
+  claimFeedPayerId: String
+  claimFeedFromDate: String
+  claimFeedToDate: String
+  paginationOptions: PaginationInput!
+}
+
 input InsurancePaginationInput {
   searchString: String
   paginationOptions: PaginationInput!
@@ -3450,6 +3504,7 @@ type Mutation {
   createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
   updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
   removeClaimStatus(id: String!): ClaimStatusPayload!
+  createLiveClaimFeed: [LiveClaimFeed!]!
   createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!

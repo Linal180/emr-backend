@@ -963,7 +963,6 @@ export class BillingService {
       });
 
       const xmlFile = await fs.createReadStream(path.resolve(__dirname, `../../../../${fullName}`));
-      console.log("xmlFile", xmlFile)
 
       const formData = new FormData()
       formData.append('AccountKey', process.env.CLAIM_MD_ID)

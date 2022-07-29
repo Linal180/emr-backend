@@ -13,22 +13,24 @@ import { FeeScheduleModule } from 'src/feeSchedule/feeSchedule.module';
 import { AppointmentModule } from 'src/appointments/appointment.module';
 //entity
 import { Code } from './entities/code.entity';
-import { Claim } from './entities/claim.entity';
 import { Billing } from './entities/billing.entity';
 import { ClaimStatus } from './entities/claim-status.entity';
+import { LiveClaimFeed } from './entities/liveClaimFeed.entity';
 //resolvers
 import { CodeResolver } from './resolvers/codes.resolver';
 import { ClaimResolver } from './resolvers/claim.resolver';
 import { BillingResolver } from './resolvers/billing.resolver';
 import { ClaimStatusResolver } from './resolvers/claimStatus.resolver';
+import { LiveClaimFeedResolver } from './resolvers/liveClaimFeed.resolver';
 //services
 import { ClaimService } from './services/claim.service';
 import { BillingService } from './services/billing.service';
 import { ClaimStatusService } from './services/claimStatus.service';
+import { LiveClaimFeedService } from './services/liveClaimFeed.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, Claim]),
+    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, LiveClaimFeed]),
     HttpModule,
     UsersModule,
     PatientModule,
@@ -48,6 +50,8 @@ import { ClaimStatusService } from './services/claimStatus.service';
     BillingResolver,
     ClaimStatusService,
     ClaimStatusResolver,
+    LiveClaimFeedService,
+    LiveClaimFeedResolver,
   ],
   exports: [TypeOrmModule],
 })
