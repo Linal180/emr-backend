@@ -2986,6 +2986,9 @@ input GetPractice {
 
 input GetAttachment {
   typeId: String!
+  attachmentName: String
+  signedBy: Boolean = false
+  paginationOptions: PaginationInput!
 }
 
 input GetAttachmentsByLabOrder {

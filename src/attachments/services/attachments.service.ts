@@ -7,11 +7,12 @@ import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.
 import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
 import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { getConnection, ILike, ObjectLiteral, Repository } from 'typeorm';
 import { AwsService } from '../../aws/aws.service';
 import { AttachmentWithPreSignedUrl } from '../dto/attachment-payload.dto';
+import { AttachmentsPayload } from '../dto/attachments-payload.dto';
 import { attachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
-import { GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
+import { GetAttachment, GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetAttachmentSignature, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
 import { DocumentType } from '../entities/documentType.entity';
@@ -213,9 +214,55 @@ export class AttachmentsService {
    * @param id 
    * @returns attachments by id 
    */
-  async findAttachmentsById(id: string): Promise<Attachment[]> {
+  async findAttachmentsById(getAttachment: GetAttachment): Promise<AttachmentsPayload> {
+    try {
+      const { paginationOptions, signedBy, typeId, attachmentName } = getAttachment
+
+      const { page, limit } = paginationOptions
+
+
+      const baseQuery = getConnection()
+        .getRepository(Attachment)
+        .createQueryBuilder('attachment')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .where('attachment.typeId = :typeId', { typeId: typeId })
+        .andWhere(attachmentName ? 'attachment.attachmentName ILIKE :attachmentName' : '1=1', { attachmentName: `%${attachmentName}%` })
+
+      if (signedBy) {
+        baseQuery
+          .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is not null`)
+      } else {
+        baseQuery
+          .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is null`)
+      }
+
+      const [attachments, totalCount] = await baseQuery
+        .loadAllRelationIds()
+        .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
+
+      return {
+        pagination: {
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        attachments
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getAttachmentSignature(getAttachment: GetAttachmentSignature) {
+    const { typeId } = getAttachment
     return await this.attachmentsRepository.find({
-      where: { typeId: id }
+      where: {
+        typeId
+      }
     });
   }
 
@@ -335,7 +382,8 @@ export class AttachmentsService {
       if (agreementId) {
         attachmentMetadataInput.agreementId = agreementId
       }
-      const updatedAttachment = await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
+      await this.utilsService.updateEntityManager(Attachment, updateAttachmentInput.id, attachmentInputToUpdate, this.attachmentsRepository)
+      const updatedAttachment = await this.attachmentsRepository.findOne(updateAttachmentInput.id, { relations: ['attachmentMetadata'] })
       if (updatedAttachment.attachmentMetadata) {
         let documentType
         if (documentTypeId) {
