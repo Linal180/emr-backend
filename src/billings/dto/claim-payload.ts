@@ -1,6 +1,7 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 //entities
 import { Claim } from "../entities/claim.entity";
+import { ClaimStatus } from "../entities/claim-status.entity";
 import { OnsetDateType, OtherDateType } from "../entities/billing.entity";
 import { OrderOfBenefitType } from "src/insurance/entities/policy.entity";
 //payload
@@ -144,7 +145,10 @@ export class ClaimMd {
 @ObjectType()
 export class ClaimPayload {
   @Field(() => Claim)
-  claim: Claim;
+  claim?: Claim;
+
+  @Field(() => ClaimStatus)
+  claimStatus?: ClaimStatus;
 
   @Field({ nullable: true })
   response?: ResponsePayload

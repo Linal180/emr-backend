@@ -10,7 +10,8 @@ import { BillingService } from "./billing.service";
 import { ClaimStatusService } from "./claimStatus.service";
 //helpers
 import { claimMedValidation } from 'src/lib/validations';
-
+//payload
+import { ClaimPayload } from "../dto/claim-payload";
 @Injectable()
 export class ClaimService {
   constructor(
@@ -45,7 +46,7 @@ export class ClaimService {
    * @param params 
    * @returns  
    */
-  async createClaim(params: CreateClaimInput): Promise<Claim> {
+  async createClaim(params: CreateClaimInput): Promise<ClaimPayload> {
     try {
       const { claimStatusId } = params || {}
       const claimMd = await this.billingService.getMdClaimInfo(params);
@@ -80,7 +81,7 @@ export class ClaimService {
         payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
         onset: onset as unknown as OtherDate,
       })
-      return claim;
+      return { claim, claimStatus };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

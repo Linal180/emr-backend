@@ -24,8 +24,10 @@ export class ClaimResolver {
   //  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   //  @SetMetadata('name', 'createClaim')
   async createClaim(@Args('createClaimInput') createClaimInput: CreateClaimInput): Promise<ClaimPayload> {
+    const claimResponse = await this.claimService.createClaim(createClaimInput);
     return {
-      claim: await this.claimService.createClaim(createClaimInput),
+      claim: claimResponse?.claim,
+      claimStatus: claimResponse?.claimStatus,
       response: { status: 200, message: "Claim created successfully" }
     };
   }

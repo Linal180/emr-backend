@@ -598,6 +598,7 @@ type Charge {
 
 type ClaimPayload {
   claim: Claim!
+  claimStatus: ClaimStatus!
   response: ResponsePayload
 }
 

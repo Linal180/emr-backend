@@ -181,7 +181,7 @@ export class Billing {
   @Field(() => FeeSchedule, { nullable: true })
   feeSchedule: FeeSchedule;
 
-  @OneToOne(() => Claim, feeSchedule => feeSchedule.billing, { onDelete: 'CASCADE' })
+  @OneToOne(() => Claim, claim => claim.billing, { onDelete: 'CASCADE' })
   @Field(() => Claim, { nullable: true })
   claim: Claim;
 
