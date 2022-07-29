@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 //entity
 import { Claim, OnsetDate, OrderOfBenefit, OtherDate } from "../entities/claim.entity";
 //inputs
@@ -8,6 +8,8 @@ import { ClaimInput, CreateClaimInput, GetClaimInput } from "../dto/claim-input.
 //services
 import { BillingService } from "./billing.service";
 import { ClaimStatusService } from "./claimStatus.service";
+//helpers
+import { claimMedValidation } from 'src/lib/validations';
 
 @Injectable()
 export class ClaimService {
@@ -25,12 +27,12 @@ export class ClaimService {
    */
   async create(params: ClaimInput): Promise<Claim> {
     try {
-      const { claimStatusId, claimStatus, ...rest } = params || {}
+      const { billingId, billing, ...rest } = params || {}
       const claim = this.claimRepo.create({
-        ...rest, claimStatusId
+        ...rest
       });
-      if (claimStatusId && claimStatus) {
-        claim.claimStatus = claimStatus
+      if (billing && billingId) {
+        claim.billing = billing
       }
       return await this.claimRepo.save(claim)
     } catch (error) {
@@ -45,18 +47,36 @@ export class ClaimService {
    */
   async createClaim(params: CreateClaimInput): Promise<Claim> {
     try {
-      const { appointmentId } = params || {}
-      const billingInfo = await this.billingService.getBillingByApt(appointmentId)
-      if (billingInfo) {
-        throw new Error('Billing is already created against this appointment.');
+      const { claimStatusId } = params || {}
+      const claimMd = await this.billingService.getMdClaimInfo(params);
+      //getting keys
+      const claimMedValidationKeys = Object.keys(claimMedValidation.describe().keys)
+      const transformedClaimInfo = Object.keys(claimMd).reduce((acc, key) => {
+        if (claimMedValidationKeys.includes(key)) {
+          acc[key] = claimMd[key]
+          return acc
+        }
+        return acc
+      }, {})
+      //validating keys
+      const result = claimMedValidation.validate(transformedClaimInfo)
+      if (result.error) {
+        const errorMessages = [...result.error.details.map((d) => d.message), !claimMd.charge.length ? 'Procedure code is missing' : ''].join();
+        throw new BadRequestException(errorMessages);
+      }
+      let claimStatus = null;
+      if (!claimStatusId) {
+        claimStatus = await this.claimStatusService.findByStatusId('ready_to_claim');
       }
 
-      const claimMd = await this.billingService.getMdClaimInfo(params);
-      const claimStatus = await this.claimStatusService.findByStatusId('ready_to_claim');
-      await this.billingService.create({ ...params, claimStatusId: claimStatus.id })
+      if (claimStatusId) {
+        claimStatus = await this.claimStatusService.findOne(claimStatusId);
+      }
+      const billing = await this.billingService.create({ ...params, claimStatusId: claimStatus.id });
+
       const { onset, cond, payer_order } = claimMd || {}
       const claim = await this.create({
-        ...claimMd, claimStatusId: claimStatus?.id, claimStatus,
+        ...claimMd, billingId: billing?.id, billing,
         payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
         onset: onset as unknown as OtherDate,
       })
@@ -80,9 +100,14 @@ export class ClaimService {
     }
   }
 
-  async getClaimByClaimStatusId(claimStatusId: string): Promise<Claim> {
+  /**
+   * Gets claim by billing id
+   * @param billingId 
+   * @returns claim by billing id 
+   */
+  async getClaimByBillingId(billingId: string): Promise<Claim> {
     try {
-      return await this.claimRepo.findOne({ claimStatusId });
+      return await this.claimRepo.findOne({ billingId });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

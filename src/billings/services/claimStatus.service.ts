@@ -16,8 +16,8 @@ export class ClaimStatusService {
   constructor(
     @InjectRepository(ClaimStatus)
     private claimStatusRepository: Repository<ClaimStatus>,
+    private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
-    private readonly utilsService: UtilsService
   ) { }
 
   /**

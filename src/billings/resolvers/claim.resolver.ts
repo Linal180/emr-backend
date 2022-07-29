@@ -5,17 +5,17 @@ import { CreateClaimInput, GetClaimInput } from "../dto/claim-input.dto";
 import { ClaimPayload } from "../dto/claim-payload";
 //service
 import { ClaimService } from "../services/claim.service";
-import { ClaimStatusService } from "../services/claimStatus.service";
+import { BillingService } from "../services/billing.service";
 //entity
 import { Claim } from "../entities/claim.entity";
-import { ClaimStatus } from "../entities/claim-status.entity";
+import { Billing } from "../entities/billing.entity";
 
 
 @Resolver(() => Claim)
 export class ClaimResolver {
   constructor(
     private readonly claimService: ClaimService,
-    private readonly claimStatusService: ClaimStatusService,
+    private readonly billingService: BillingService
   ) { }
 
   //mutations
@@ -44,10 +44,10 @@ export class ClaimResolver {
 
   //resolve fields
 
-  @ResolveField(() => ClaimStatus)
-  async claimStatus(@Parent() claim: Claim): Promise<ClaimStatus> {
-    if (claim?.claimStatusId) {
-      return await this.claimStatusService.findOne(claim?.claimStatusId)
+  @ResolveField(() => Billing)
+  async billing(@Parent() claim: Claim): Promise<Billing> {
+    if (claim?.billingId) {
+      return await this.billingService.findOne(claim?.billingId)
     }
   }
 }

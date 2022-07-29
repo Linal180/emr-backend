@@ -2,6 +2,7 @@ import { Field, ObjectType, registerEnumType, Float } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities enums
 import { ClaimChargeType } from "../dto/claim-payload";
+import { Billing } from "./billing.entity";
 import { ClaimStatus } from "./claim-status.entity";
 
 
@@ -109,12 +110,6 @@ export class Claim {
   @Column({ nullable: true, type: "float" })
   @Field(() => Float, { nullable: true })
   totalCharge: number;
-
-  //polymorphic columns of claimStatus
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  claimStatusId: string;
 
   //request columns
 
@@ -528,10 +523,16 @@ export class Claim {
 
   //relationship 
 
-  @OneToOne(() => ClaimStatus, claimStatus => claimStatus.claim)
+  @OneToOne(() => Billing, billing => billing.claim)
   @JoinColumn()
-  @Field(() => ClaimStatus, { nullable: true })
-  claimStatus: ClaimStatus;
+  @Field(() => Billing, { nullable: true })
+  billing: Billing;
+
+  //polymorphic columns of claimStatus
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  billingId: string;
 
   //dates
 

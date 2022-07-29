@@ -44,26 +44,26 @@ import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } fr
 @Injectable()
 export class BillingService {
   constructor(
-    @InjectRepository(Billing)
-    private billingRepository: Repository<Billing>,
     @InjectRepository(Code)
     private codeRepository: Repository<Code>,
+    @InjectRepository(Billing)
+    private billingRepository: Repository<Billing>,
     private readonly connection: Connection,
+    private readonly httpService: HttpService,
+    private readonly utilsService: UtilsService,
+    private readonly policyService: PolicyService,
+    private readonly doctorService: DoctorService,
     private readonly patientService: PatientService,
     private readonly contactsService: ContactService,
-    private readonly appointmentService: AppointmentService,
-    private readonly policyService: PolicyService,
-    private readonly policyHolderService: PolicyHolderService,
-    private readonly insuranceService: InsuranceService,
     private readonly facilityService: FacilityService,
-    private readonly billingAddressService: BillingAddressService,
-    private readonly doctorService: DoctorService,
     private readonly practiceService: PracticeService,
-    private readonly claimStatusService: ClaimStatusService,
-    private readonly feeScheduleService: FeeScheduleService,
-    private readonly utilsService: UtilsService,
+    private readonly insuranceService: InsuranceService,
     private readonly taxonomiesService: TaxonomiesService,
-    private readonly httpService: HttpService
+    private readonly feeScheduleService: FeeScheduleService,
+    private readonly appointmentService: AppointmentService,
+    private readonly claimStatusService: ClaimStatusService,
+    private readonly policyHolderService: PolicyHolderService,
+    private readonly billingAddressService: BillingAddressService,
   ) { }
 
   /**
@@ -985,14 +985,6 @@ export class BillingService {
   }
 
   /**
-   * Generates claim number
-   * @returns  
-   */
-  generateClaimNumber() {
-    return generateUniqueNumber()
-  }
-
-  /**
    * Gets super bill info
    * @param appointmentId 
    * @returns super bill info 
@@ -1031,6 +1023,23 @@ export class BillingService {
    */
   async getBillingByApt(appointmentId: string): Promise<Billing> {
     return await this.billingRepository.findOne({ appointmentId })
+  }
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<Billing> {
+    return await this.billingRepository.findOne({ id })
+  }
+
+  /**
+   * Generates claim number
+   * @returns  
+   */
+  generateClaimNumber() {
+    return generateUniqueNumber()
   }
 
 }

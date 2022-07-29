@@ -1,7 +1,7 @@
 import { Field, InputType, PartialType, PickType, Float } from '@nestjs/graphql';
 //entities
 import { ClaimStatus } from '../entities/claim-status.entity';
-import { OnsetDateType, OtherDateType } from '../entities/billing.entity';
+import { Billing, OnsetDateType, OtherDateType } from '../entities/billing.entity';
 import { OnsetDate, OrderOfBenefit, OtherDate } from '../entities/claim.entity';
 //inputs
 import CodesInput from './codes-input.dto';
@@ -78,11 +78,12 @@ export class CreateClaimInput {
   claimNo?: string
 
   @Field({ nullable: true })
-  amount?: string
+  amount?: string;
+
+  @Field({ nullable: true })
+  claimStatusId?: string
 
 }
-
-
 @InputType()
 export class UpdateClaimInput extends PartialType(CreateClaimInput) {
   @Field()
@@ -217,7 +218,7 @@ export class ClaimInput {
   //polymorphic columns of claimStatus
 
   @Field({ nullable: true })
-  claimStatusId: string;
+  billingId?: string;
 
   //request columns
 
@@ -527,7 +528,7 @@ export class ClaimInput {
   @Field(() => [ClaimChargeInput], { nullable: true })
   charge?: ClaimChargeInput[];
 
-  @Field(() => ClaimStatus, { nullable: true })
-  claimStatus?: ClaimStatus
+  @Field(() => Billing, { nullable: true })
+  billing?: Billing
 
 }

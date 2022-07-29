@@ -11,6 +11,7 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { Claim } from './claim.entity';
 
 export enum PatientPaymentType {
   INSURANCE = "Insurance",
@@ -179,6 +180,10 @@ export class Billing {
   @ManyToOne(() => FeeSchedule, feeSchedule => feeSchedule.billing, { onDelete: 'CASCADE' })
   @Field(() => FeeSchedule, { nullable: true })
   feeSchedule: FeeSchedule;
+
+  @OneToOne(() => Claim, feeSchedule => feeSchedule.billing, { onDelete: 'CASCADE' })
+  @Field(() => Claim, { nullable: true })
+  claim: Claim;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

@@ -145,6 +145,59 @@ enum CodeType {
   CUSTOM_CODE
 }
 
+type ClaimStatus {
+  id: String!
+  statusName: String
+  statusId: String
+  system: Boolean!
+  billings: [Billing!]
+  createdAt: String
+  updatedAt: String
+}
+
+type CPTCodes {
+  id: String!
+  code: String
+  category: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  cptFeeSchedule: [CptFeeSchedule!]
+  createdAt: String
+  updatedAt: String
+}
+
+type CptFeeSchedule {
+  id: String!
+  modifier: String
+  code: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  feeScheduleId: String
+  cptCodesId: String
+  createdAt: String
+  updatedAt: String
+  feeSchedule: FeeSchedule
+  cptCodes: CPTCodes
+}
+
+type FeeSchedule {
+  id: String!
+  name: String
+  effectiveDate: String
+  expiryDate: String
+  practiceId: String
+  createdAt: String
+  updatedAt: String
+  practice: Practice
+  billing: [Billing!]
+  cptFeeSchedule: [CptFeeSchedule!]
+  cptFeeScheduleCount: Float
+}
+
 type Copay {
   id: String!
   type: CopayType
@@ -600,7 +653,6 @@ type Claim {
   senderName: String
   senderId: String
   totalCharge: Float
-  claimStatusId: String
   cond_date: String
   onset_date: String
   hosp_from_date: String
@@ -703,7 +755,8 @@ type Claim {
   from_date_1: String
   thru_date: String
   charge: [ClaimChargeType!]
-  claimStatus: ClaimStatus
+  billing: Billing
+  billingId: String
   createdAt: String
   updatedAt: String
 }
@@ -726,61 +779,6 @@ enum OrderOfBenefit {
   PRIMARY
   SECONDARY
   TERTIARY
-}
-
-type ClaimStatus {
-  id: String!
-  statusName: String
-  statusId: String
-  system: Boolean!
-  billings: [Billing!]
-  claim: Claim
-  createdAt: String
-  updatedAt: String
-  claimStatus: Claim!
-}
-
-type CPTCodes {
-  id: String!
-  code: String
-  category: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  cptFeeSchedule: [CptFeeSchedule!]
-  createdAt: String
-  updatedAt: String
-}
-
-type CptFeeSchedule {
-  id: String!
-  modifier: String
-  code: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  serviceFee: String
-  revenueCode: String
-  feeScheduleId: String
-  cptCodesId: String
-  createdAt: String
-  updatedAt: String
-  feeSchedule: FeeSchedule
-  cptCodes: CPTCodes
-}
-
-type FeeSchedule {
-  id: String!
-  name: String
-  effectiveDate: String
-  expiryDate: String
-  practiceId: String
-  createdAt: String
-  updatedAt: String
-  practice: Practice
-  billing: [Billing!]
-  cptFeeSchedule: [CptFeeSchedule!]
-  cptFeeScheduleCount: Float
 }
 
 type Billing {
@@ -810,6 +808,7 @@ type Billing {
   servicingProvider: Doctor
   renderingProvider: Doctor
   feeSchedule: FeeSchedule
+  claim: Claim
   patientId: String
   feeScheduleId: String
   appointmentId: String
@@ -4829,6 +4828,7 @@ input CreateClaimInput {
   labOrderNumber: String
   claimNo: String
   amount: String
+  claimStatusId: String
 }
 
 input BillingInput {

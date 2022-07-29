@@ -1,8 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 //entities
 import { Billing } from './billing.entity';
-import { Claim } from './claim.entity';
 
 @Entity({ name: 'claimStatus' })
 @ObjectType()
@@ -26,10 +25,6 @@ export class ClaimStatus {
   @OneToMany(() => Billing, billing => billing.claimStatus, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [Billing], { nullable: true })
   billings: Billing[];
-
-  @OneToOne(() => Claim, claim => claim.claimStatus)
-  @Field(() => Claim, { nullable: true })
-  claim: Claim;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
