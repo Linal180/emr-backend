@@ -13,6 +13,7 @@ import { FeeScheduleModule } from 'src/feeSchedule/feeSchedule.module';
 import { AppointmentModule } from 'src/appointments/appointment.module';
 //entity
 import { Code } from './entities/code.entity';
+import { Claim } from './entities/claim.entity';
 import { Billing } from './entities/billing.entity';
 import { ClaimStatus } from './entities/claim-status.entity';
 import { LiveClaimFeed } from './entities/liveClaimFeed.entity';
@@ -30,7 +31,7 @@ import { LiveClaimFeedService } from './services/liveClaimFeed.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, LiveClaimFeed]),
+    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, LiveClaimFeed,Claim]),
     HttpModule,
     UsersModule,
     PatientModule,
