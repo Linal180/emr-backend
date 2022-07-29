@@ -20,7 +20,7 @@ export class AttachmentsResolver {
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getAttachments')
   async getAttachments(@Args('getAttachment') getAttachment: GetAttachment): Promise<AttachmentsPayload> {
-    const attachments = await this.attachmentsService.findAttachmentsById(getAttachment.typeId)
+    const attachments = await this.attachmentsService.findAttachmentsById(getAttachment)
     return {
       attachments,
       response: { status: 200, message: 'Attachments fetched successfully' }

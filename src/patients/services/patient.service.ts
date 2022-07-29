@@ -1045,7 +1045,7 @@ export class PatientService {
    */
   async getSignature(id: string) {
     try {
-      const attachments = await this.attachmentsService.findAttachmentsById(id)
+      const attachments = await this.attachmentsService.findAttachmentsById({ typeId: id })
       const signature = attachments.find(({ title }) => title === ATTACHMENT_TITLES.Signature)
       return signature;
     } catch (error) {

@@ -7,11 +7,11 @@ import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.
 import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
 import { PracticeService } from 'src/practice/practice.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { AwsService } from '../../aws/aws.service';
 import { AttachmentWithPreSignedUrl } from '../dto/attachment-payload.dto';
 import { attachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
-import { GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
+import { GetAttachment, GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
 import { DocumentType } from '../entities/documentType.entity';
@@ -213,9 +213,19 @@ export class AttachmentsService {
    * @param id 
    * @returns attachments by id 
    */
-  async findAttachmentsById(id: string): Promise<Attachment[]> {
+  async findAttachmentsById(getAttachment: GetAttachment): Promise<Attachment[]> {
+    const { typeId, attachmentName } = getAttachment
+    let whereOptions = {}
+    if (typeId) {
+      (whereOptions as any).typeId = typeId
+    }
+
+    if (attachmentName) {
+      (whereOptions as any).attachmentName = ILike(`%${attachmentName}%`)
+    }
+
     return await this.attachmentsRepository.find({
-      where: { typeId: id }
+      where: whereOptions
     });
   }
 

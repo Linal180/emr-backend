@@ -20,6 +20,9 @@ export class UpdateAttachmentMediaInput extends PickType(CreateAttachmentInput, 
 export class GetAttachment {
   @Field()
   typeId: string;
+
+  @Field({ nullable: true })
+  attachmentName?: string;
 }
 
 @InputType()
@@ -32,13 +35,13 @@ export class GetAttachmentsByLabOrder {
 }
 
 @InputType()
-export class GetAttachmentsByPolicyId extends GetAttachment{
+export class GetAttachmentsByPolicyId extends GetAttachment {
   @Field()
   policyId: string
 }
 
 @InputType()
-export class GetAttachmentsByAgreementId extends GetAttachment{
+export class GetAttachmentsByAgreementId extends GetAttachment {
   @Field()
   agreementId: string
 }
