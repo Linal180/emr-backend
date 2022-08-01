@@ -1,8 +1,7 @@
 import { Field, InputType, PartialType, PickType, Float } from '@nestjs/graphql';
 //entities
-import { ClaimStatus } from '../entities/claim-status.entity';
-import { Billing, OnsetDateType, OtherDateType } from '../entities/billing.entity';
 import { OnsetDate, OrderOfBenefit, OtherDate } from '../entities/claim.entity';
+import { Billing, OnsetDateType, OtherDateType } from '../entities/billing.entity';
 //inputs
 import CodesInput from './codes-input.dto';
 
@@ -80,18 +79,9 @@ export class CreateClaimInput {
   @Field({ nullable: true })
   amount?: string;
 
-  @Field({ nullable: true })
-  claimStatusId?: string
-
-}
-@InputType()
-export class UpdateClaimInput extends PartialType(CreateClaimInput) {
-  @Field()
-  id: string
 }
 
-@InputType()
-export class GetClaimInput extends PickType(UpdateClaimInput, ['id'] as const) { }
+
 
 @InputType()
 export class GetClaimFileInput {
@@ -532,3 +522,13 @@ export class ClaimInput {
   billing?: Billing
 
 }
+
+
+@InputType()
+export class UpdateClaimInput extends PartialType(ClaimInput) {
+  @Field()
+  id: string
+}
+
+@InputType()
+export class GetClaimInput extends PickType(UpdateClaimInput, ['id'] as const) { }

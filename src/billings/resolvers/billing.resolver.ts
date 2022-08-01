@@ -4,12 +4,14 @@ import { SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
 //entities
 import { Code } from '../entities/code.entity';
+import { Claim } from '../entities/claim.entity';
 import { Billing } from '../entities/billing.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { ClaimStatus } from '../entities/claim-status.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
 //services
+import { ClaimService } from '../services/claim.service';
 import { BillingService } from '../services/billing.service';
 import { ClaimStatusService } from '../services/claimStatus.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
@@ -32,10 +34,11 @@ export class BillingResolver {
   constructor(
     @InjectRepository(Code)
     private codeRepository: Repository<Code>,
+    private readonly doctorService: DoctorService,
     private readonly billingService: BillingService,
     private readonly facilityService: FacilityService,
-    private readonly doctorService: DoctorService,
     private readonly claimStatusService: ClaimStatusService,
+    private readonly claimService: ClaimService,
     private readonly feeScheduleService: FeeScheduleService,
   ) { }
 
@@ -62,14 +65,6 @@ export class BillingResolver {
       response: { status: 200, message: "Policy created successfully" }
     };
   }
-
-  // @Query(() => ClaimPayload)
-  // async createClaim(@Args('claimInput') claimInput: ClaimInput): Promise<ClaimPayload> {
-  //   return {
-  //     claim: await this.billingService.createClaimInfo(claimInput),
-  //     response: { status: 200, message: "Claim Created successfully" }
-  //   };
-  // }
 
   @Query(() => ClaimNumberPayload)
   async generateClaimNo(): Promise<ClaimNumberPayload> {
@@ -138,6 +133,13 @@ export class BillingResolver {
   async feeSchedule(@Parent() billing: Billing): Promise<FeeSchedule> {
     if (billing.feeScheduleId) {
       return await this.feeScheduleService.findOne({ id: billing.feeScheduleId })
+    }
+  }
+
+  @ResolveField(() => Claim)
+  async claim(@Parent() billing: Billing): Promise<Claim> {
+    if (billing?.id) {
+      return await this.claimService.getClaimByBillingId(billing?.id)
     }
   }
 }

@@ -1,17 +1,19 @@
+import { SystemBillingStatuses } from "src/lib/constants";
+
 export const systemClaimStatus = [
   {
     statusName: "Ready to Claim",
     system: true,
-    statusId: "ready_to_claim"
+    statusId: SystemBillingStatuses.READY_TO_CLAIM
   },
   {
     statusName: "Rejected",
     system: true,
-    statusId: "rejected"
+    statusId: SystemBillingStatuses.REJECTED
   },
   {
     statusName: "Acknowledged",
     system: true,
-    statusId: "acknowledged"
+    statusId: SystemBillingStatuses.ACKNOWLEDGED
   }
 ]

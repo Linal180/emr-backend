@@ -36,10 +36,10 @@ import { SuperBillPayload } from '../dto/super-bill-payload';
 import { ClaimMd, ClaimMdPayload } from '../dto/claim-payload';
 //inputs
 import { BillingInput } from '../dto/billing-input.dto';
-import { CreateClaimInput, GetClaimFileInput } from '../dto/claim-input.dto';
+import { ClaimInput, CreateClaimInput, GetClaimFileInput } from '../dto/claim-input.dto';
 //helpers
 import { claimMedValidation } from 'src/lib/validations';
-import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper'
+import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper';
 
 @Injectable()
 export class BillingService {
@@ -65,6 +65,16 @@ export class BillingService {
     private readonly policyHolderService: PolicyHolderService,
     private readonly billingAddressService: BillingAddressService,
   ) { }
+
+
+  /**
+   * Gets by appointment id
+   * @param appointmentId 
+   * @returns by appointment id 
+   */
+  async getByAppointmentId(appointmentId: string): Promise<Billing> {
+    return await this.billingRepository.findOne({ appointmentId })
+  }
 
   /**
    * Creates billing service
@@ -1031,6 +1041,65 @@ export class BillingService {
    */
   async findOne(id: string): Promise<Billing> {
     return await this.billingRepository.findOne({ id })
+  }
+
+  /**
+   * Submits claim to claim md
+   * @param claimInfo 
+   * @returns  
+   */
+  async submitClaimToClaimMd(claimInfo: ClaimInput) {
+    try {
+      const claimInfoToFormat = Object.keys(claimInfo).reduce((acc, claimInfoKey) => {
+        if (claimInfoKey === 'charge') {
+          acc[claimInfoKey] = claimInfo[claimInfoKey].map((chargeObj) => {
+            return Object.keys(chargeObj).reduce((innerAcc, key) => {
+              innerAcc[`@${key}`] = chargeObj[key]
+              return innerAcc
+            }, {})
+          })
+
+          return acc
+        }
+
+        acc[`@${claimInfoKey}`] = claimInfo[claimInfoKey]
+        return acc
+      }, {})
+
+      var feed = xmlBuilder.create({ claims: { claim: claimInfoToFormat } }, { headless: true });
+      var feed1 = feed.end({ pretty: true });
+      let fullName = `./sample_${generateUniqueNumber()}.xml`
+      fs.writeFile(fullName, feed1, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+
+      const xmlFile = await fs.createReadStream(path.resolve(__dirname, `../../../../${fullName}`));
+
+      const formData = new FormData()
+      formData.append('AccountKey', process.env.CLAIM_MD_ID)
+      formData.append('File', xmlFile)
+
+      const response = await this.httpService.post('https://www.claim.md/services/upload/', formData, {
+        headers: {
+          'Accept': 'text/json'
+        }
+      })?.toPromise()
+
+      fs.unlinkSync(path.resolve(__dirname, `../../../../${fullName}`))
+
+      const { data } = response || {}
+      const { claim, error } = data || {}
+
+      if (error) {
+        return { error, claim: null }
+      }
+      return { error: null, claim }
+
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
   }
 
   /**

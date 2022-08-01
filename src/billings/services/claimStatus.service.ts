@@ -77,8 +77,6 @@ export class ClaimStatusService {
       claimStatuses: paginationResponse.data,
     }
   }
-
-
   
   /**
    * Finds one
@@ -110,4 +108,5 @@ export class ClaimStatusService {
       throw new InternalServerErrorException(error);
     }
   }
+
 }
