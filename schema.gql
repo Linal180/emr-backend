@@ -3029,10 +3029,19 @@ input AppointmentInput {
 }
 
 input UpComingAppointmentsInput {
+  paginationOptions: PaginationInput!
+  appointmentNumber: String
+  appointmentStatus: String
   patientId: String
+  searchString: String
   practiceId: String
   facilityId: String
+  relationTable: String
   providerId: String
+  appointmentTypeId: String
+  sortBy: String
+  appointmentDate: String
+  shouldFetchPast: Boolean = false
 }
 
 input LastVisitedAppointmentInput {

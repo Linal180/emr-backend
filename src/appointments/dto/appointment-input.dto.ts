@@ -42,7 +42,7 @@ export class AppointmentInput {
 }
 
 @InputType()
-export class UpComingAppointmentsInput {
+export class UpComingAppointmentsInput extends AppointmentInput {
     @Field({ nullable: true })
     patientId?: string
 
@@ -54,6 +54,9 @@ export class UpComingAppointmentsInput {
 
     @Field({ nullable: true })
     providerId?: string
+
+    @Field({ nullable: true, defaultValue: false })
+    shouldFetchPast?: boolean
 }
 
 @InputType()
