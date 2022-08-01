@@ -107,6 +107,54 @@ enum AttachmentType {
   PRACTICE
 }
 
+type Modifier {
+  id: String!
+  code: String
+  description: String
+  createdAt: String
+  updatedAt: String
+}
+
+type Code {
+  id: String!
+  code: String
+  description: String
+  price: String
+  diagPointer: String
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  modifier1: Modifier
+  modifier2: Modifier
+  modifier3: Modifier
+  modifier4: Modifier
+  unit: String
+  codeType: CodeType!
+  billing: Billing
+  billingId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The code type assigned with the code"""
+enum CodeType {
+  ICD_10_CODE
+  CPT_CODE
+  HCPCS_CODE
+  CUSTOM_CODE
+}
+
+type ClaimStatus {
+  id: String!
+  statusName: String
+  statusId: String
+  system: Boolean!
+  billings: [Billing!]
+  createdAt: String
+  updatedAt: String
+}
+
 type CPTCodes {
   id: String!
   code: String
@@ -148,123 +196,6 @@ type FeeSchedule {
   billing: [Billing!]
   cptFeeSchedule: [CptFeeSchedule!]
   cptFeeScheduleCount: Float
-}
-
-type ClaimStatus {
-  id: String!
-  statusName: String
-  statusId: String
-  billings: [Billing!]
-  createdAt: String
-  updatedAt: String
-}
-
-type Modifier {
-  id: String!
-  code: String
-  description: String
-  createdAt: String
-  updatedAt: String
-}
-
-type Code {
-  id: String!
-  code: String
-  description: String
-  price: String
-  diagPointer: String
-  m1: String
-  m2: String
-  m3: String
-  m4: String
-  modifier1: Modifier
-  modifier2: Modifier
-  modifier3: Modifier
-  modifier4: Modifier
-  unit: String
-  codeType: CodeType!
-  billing: Billing
-  billingId: String
-  createdAt: String
-  updatedAt: String
-}
-
-"""The code type assigned with the code"""
-enum CodeType {
-  ICD_10_CODE
-  CPT_CODE
-  HCPCS_CODE
-  CUSTOM_CODE
-}
-
-type Billing {
-  id: String!
-  patientPaymentType: PatientPaymentType!
-  amount: String
-  onsetDateType: OnsetDateType!
-  onsetDate: String
-  to: String
-  from: String
-  labOrderNumber: String
-  otherDateType: OtherDateType!
-  otherDate: String
-  employment: Boolean
-  autoAccident: Boolean
-  otherAccident: Boolean
-  claimNo: String
-  serviceDate: String
-  claimDate: String
-  pos: String
-  uncoveredAmount: String
-  codes: [Code!]
-  appointment: Appointment
-  patient: Patient
-  facility: Facility
-  claimStatus: ClaimStatus
-  servicingProvider: Doctor
-  renderingProvider: Doctor
-  feeSchedule: FeeSchedule
-  patientId: String
-  feeScheduleId: String
-  appointmentId: String
-  facilityId: String
-  servicingProviderId: String
-  renderingProviderId: String
-  claimStatusId: String
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient payment type used to billing"""
-enum PatientPaymentType {
-  INSURANCE
-  NO_INSURANCE
-}
-
-"""The patient billing status assigned"""
-enum OnsetDateType {
-  DATE_OF_ACCIDENT
-  DATE_OF_HOSPITALIZATION
-}
-
-"""The patient billing status assigned"""
-enum OtherDateType {
-  INITIAL_VISIT_DATE
-  INITIAL_TREATMENT_DATE
-  LAST_RELATED_VISIT
-}
-
-type Taxonomy {
-  id: String!
-  code: String!
-  classification: String!
-  specialization: String
-  definition: String!
-  notes: String
-  displayName: String
-  section: String
-  createdAt: String
-  updatedAt: String
 }
 
 type Copay {
@@ -649,6 +580,277 @@ enum PricingProductType {
   TITLE_V
   VETERANS_AFFAIRS_PLAN
   WORKERS_COMPENSATION_HEALTH_CLAIM
+}
+
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type Charge {
+  proc_code: String
+  diagPointer: String
+  charge: Int
+  units: Int
+}
+
+type ClaimPayload {
+  claim: Claim!
+  claimStatus: ClaimStatus!
+  response: ResponsePayload
+}
+
+type ClaimFilePayload {
+  claimFile: [Int!]
+  response: ResponsePayload
+}
+
+type ClaimNumberPayload {
+  claimNumber: String
+  response: ResponsePayload
+}
+
+type ChargeItem {
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  unit: String!
+  units: Float!
+  charge: Float!
+  diag_ref: String!
+  proc_code: String!
+  diagPointer: String!
+}
+
+type ClaimChargeType {
+  m1: String
+  m2: String
+  m3: String
+  m4: String
+  units: Float!
+  charge: Float!
+  diag_ref: String!
+  proc_code: String!
+  diagPointer: String!
+}
+
+type Claim {
+  id: String!
+  claimMdId: Float
+  batchId: Float
+  billNpi: Float
+  billTaxId: Float
+  claimId: String
+  facilityDateOfService: String
+  fileName: String
+  fileId: Float
+  insuranceNumber: Float
+  receivePayerId: Float
+  pcn: String
+  sendIcn: String
+  senderName: String
+  senderId: String
+  totalCharge: Float
+  cond_date: String
+  onset_date: String
+  hosp_from_date: String
+  hosp_thru_date: String
+  clia_number: String
+  facility_name: String
+  facility_addr_1: String
+  facility_addr_2: String
+  facility_city: String
+  facility_state: String
+  facility_zip: String
+  facility_npi: String
+  facility_id: String
+  prov_name_l: String
+  prov_name_f: String
+  prov_name_m: String
+  prov_npi: String
+  ord_name_l: String
+  ord_name_f: String
+  ord_name_m: String
+  ord_npi: String
+  place_of_service_1: String
+  chg_facility_name: String
+  chg_facility_addr_1: String
+  chg_facility_addr_2: String
+  chg_facility_city: String
+  chg_facility_state: String
+  chg_facility_zip: String
+  chg_facility_npi: String
+  facility_clia: String
+  ord_prov_name_l: String
+  ord_prov_name_f: String
+  ord_prov_name_m: String
+  ord_prov_npi: String
+  diag_1: String
+  diag_2: String
+  diag_3: String
+  diag_4: String
+  diag_5: String
+  diag_6: String
+  diag_7: String
+  diag_8: String
+  diag_9: String
+  diag_10: String
+  diag_11: String
+  diag_12: String
+  pat_name_m: String
+  pat_addr_2: String
+  pat_country: String
+  pat_phone: String
+  pat_marital: String
+  ins_name_l: String
+  ins_name_f: String
+  ins_name_m: String
+  ins_addr_1: String
+  ins_addr_2: String
+  ins_city: String
+  ins_state: String
+  ins_zip: String
+  ins_group: String
+  ins_dob: String
+  ins_sex: String
+  employment_related: String
+  auto_accident: String
+  other_accident: String
+  ref_name_l: String
+  ref_name_f: String
+  ref_name_m: String
+  ref_id: String
+  ref_npi: String
+  cond: OnsetDate
+  onset: OtherDate
+  payer_order: OrderOfBenefit
+  claim_form: String
+  payerid: String
+  payer_name: String
+  pat_name_l: String
+  pat_name_f: String
+  pat_addr_1: String
+  pat_city: String
+  pat_state: String
+  pat_zip: String
+  pat_dob: String
+  pat_sex: String
+  pat_rel: String
+  ins_number: String
+  accept_assign: String
+  total_charge: Float
+  bill_name: String
+  bill_addr_1: String
+  bill_addr_2: String
+  bill_city: String
+  bill_state: String
+  bill_zip: String
+  bill_npi: String
+  bill_phone: String
+  bill_taxid: String
+  bill_taxid_type: String
+  bill_taxonomy: String
+  from_date_1: String
+  thru_date: String
+  charge: [ClaimChargeType!]
+  billing: Billing
+  billingId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient billing status assigned"""
+enum OnsetDate {
+  DATE_OF_ACCIDENT
+  DATE_OF_HOSPITALIZATION
+}
+
+"""The patient billing status assigned"""
+enum OtherDate {
+  INITIAL_VISIT_DATE
+  INITIAL_TREATMENT_DATE
+  LAST_RELATED_VISIT
+}
+
+"""The order of benefit type"""
+enum OrderOfBenefit {
+  PRIMARY
+  SECONDARY
+  TERTIARY
+}
+
+type Billing {
+  id: String!
+  patientPaymentType: PatientPaymentType!
+  amount: String
+  onsetDateType: OnsetDateType!
+  onsetDate: String
+  to: String
+  from: String
+  labOrderNumber: String
+  otherDateType: OtherDateType!
+  otherDate: String
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  claimNo: String
+  serviceDate: String
+  claimDate: String
+  pos: String
+  uncoveredAmount: String
+  codes: [Code!]
+  appointment: Appointment
+  patient: Patient
+  facility: Facility
+  claimStatus: ClaimStatus
+  servicingProvider: Doctor
+  renderingProvider: Doctor
+  feeSchedule: FeeSchedule
+  claim: Claim
+  patientId: String
+  feeScheduleId: String
+  appointmentId: String
+  facilityId: String
+  servicingProviderId: String
+  renderingProviderId: String
+  claimStatusId: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient payment type used to billing"""
+enum PatientPaymentType {
+  INSURANCE
+  NO_INSURANCE
+}
+
+"""The patient billing status assigned"""
+enum OnsetDateType {
+  DATE_OF_ACCIDENT
+  DATE_OF_HOSPITALIZATION
+}
+
+"""The patient billing status assigned"""
+enum OtherDateType {
+  INITIAL_VISIT_DATE
+  INITIAL_TREATMENT_DATE
+  LAST_RELATED_VISIT
+}
+
+type Taxonomy {
+  id: String!
+  code: String!
+  classification: String!
+  specialization: String
+  definition: String!
+  notes: String
+  displayName: String
+  section: String
+  createdAt: String
+  updatedAt: String
 }
 
 type SnoMedCodes {
@@ -1708,13 +1910,6 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
-type ResponsePayload {
-  status: Float
-  error: String
-  message: String
-  name: String
-}
-
 type ServicePayload {
   response: ResponsePayload
   service: Service
@@ -2262,83 +2457,6 @@ type BillingPayload {
   response: Response
 }
 
-type Charge {
-  proc_code: String
-  diagPointer: String
-  charge: Int
-  units: Int
-}
-
-type Claim {
-  claim_form: String
-  payerid: String
-  payer_name: String
-  pcn: String
-  pat_name_l: String
-  pat_name_f: String
-  pat_addr_1: String
-  pat_city: String
-  pat_state: String
-  pat_zip: String
-  pat_dob: String
-  pat_sex: String
-  pat_rel: String
-  ins_number: String
-  accept_assign: String
-  total_charge: Int
-  bill_name: String
-  bill_addr_1: String
-  bill_addr_2: String
-  bill_city: String
-  bill_state: String
-  bill_zip: String
-  bill_phone: String
-  bill_taxid: String
-  bill_taxid_type: String
-  from_date: String
-  diag_1: String
-  diag_2: String
-  diag_3: String
-  diag_4: String
-  diag_5: String
-  diag_6: String
-  diag_7: String
-  diag_8: String
-  diag_9: String
-  diag_10: String
-  diag_11: String
-  diag_12: String
-  charge: [Charge!]
-}
-
-type ClaimPayload {
-  claim: Claim!
-  response: ResponsePayload
-}
-
-type ClaimFilePayload {
-  claimFile: [Int!]
-  response: ResponsePayload
-}
-
-type ClaimNumberPayload {
-  claimNumber: String
-  response: ResponsePayload
-}
-
-type ChargeItem {
-  m1: String
-  m2: String
-  m3: String
-  m4: String
-  unit: String!
-  units: String!
-  charge: Float!
-  diag_ref: String!
-  proc_code: String!
-  diagPointer: String!
-}
-
 type SuperBillPayload {
   appointmentInfo: Appointment
   providerInfo: Doctor
@@ -2740,10 +2858,10 @@ type Query {
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
+  getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
-  createClaim(claimInput: ClaimInput!): ClaimPayload!
   generateClaimNo: ClaimNumberPayload!
-  getClaimFile(claimInput: ClaimInput!): ClaimFilePayload!
+  getClaimFile(getClaimFileInput: GetClaimFileInput!): ClaimFilePayload!
   getSuperBillInfo(superBillInput: SuperBillInput!): SuperBillPayload!
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
@@ -3155,7 +3273,11 @@ input GetPatientVital {
   id: String!
 }
 
-input ClaimInput {
+input GetClaimInput {
+  id: String!
+}
+
+input GetClaimFileInput {
   patientId: String
   appointmentId: String
   codes: [CodesInput!]
@@ -3381,6 +3503,7 @@ type Mutation {
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
   createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
   updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
@@ -4737,6 +4860,33 @@ input UpdateVitalInput {
 
 input RemoveVital {
   id: String!
+}
+
+input CreateClaimInput {
+  patientId: String
+  appointmentId: String
+  codes: [CodesInput!]
+  employment: Boolean
+  autoAccident: Boolean
+  otherAccident: Boolean
+  onsetDateType: OnsetDateType
+  onsetDate: String
+  otherDateType: OtherDateType
+  otherDate: String
+  from: String
+  to: String
+  feeScheduleId: String
+  shouldCheckout: Boolean
+  uncoveredAmount: String
+  facilityId: String
+  servicingProviderId: String
+  renderingProviderId: String
+  pos: String
+  serviceDate: String
+  claimDate: String
+  labOrderNumber: String
+  claimNo: String
+  amount: String
 }
 
 input BillingInput {
