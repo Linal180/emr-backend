@@ -1,4 +1,5 @@
 import { InputType } from "@nestjs/graphql";
+//entity
 import { AppointmentStatus } from "src/appointments/entities/appointment.entity";
 import { AttachmentType } from "src/attachments/entities/attachment.entity";
 import { FormType } from "src/formbuilder/entities/form.entity";
@@ -31,7 +32,10 @@ export class PaginatedEntityInput {
   primaryContact?: boolean
   categoryId?: string
   category?: { id: string }
-  associatedToField?: { id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string, columnName?: string, columnName2?: string, columnName3?: string, filterType: string }
+  associatedToField?: {
+    id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string,
+    columnName?: string, columnName2?: string, columnName3?: string, filterType: string
+  }
   paginationOptions: PaginationInput
   associatedTo?: string
   relationField?: string
@@ -79,5 +83,7 @@ export class PaginatedEntityInput {
   claimFeedPatientName?: string
   claimFeedPayerId?: string
   claimFeedFromDate?: string
-  claimFeedToDate?: string
+  claimFeedToDate?: string;
+  claimStatusId?: string;
+  claimNo?: string;
 }
