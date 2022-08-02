@@ -31,4 +31,7 @@ export class CreatePracticeItemInput {
 
   @Field({ nullable: true })
   taxId: string;
+
+  @Field({ nullable: true })
+  taxonomyCodeId: string;
 }

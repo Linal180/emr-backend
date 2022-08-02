@@ -1,18 +1,8 @@
-import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Contact } from 'src/providers/entities/contact.entity';
+//entities
 import { Policy } from './policy.entity';
-
-export enum InsurancePayerType {
-  P = "Par",
-  NP = "Non-Par"
-}
-
-registerEnumType(InsurancePayerType, {
-  name: "InsurancePayerType",
-  description: "The insurance payer type",
-});
-
+import { Contact } from 'src/providers/entities/contact.entity';
 @Entity({ name: 'Insurances' })
 @ObjectType()
 export class Insurance {
@@ -28,50 +18,52 @@ export class Insurance {
   @Field()
   payerName: string
 
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true })
   @Field({ nullable: true })
-  enrollmentRequired: boolean
+  workersComp: string
 
-  @Column({
-    type: "enum", enum: InsurancePayerType
-  })
-  @Field(type => InsurancePayerType)
-  type: InsurancePayerType;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  type: string;
 
   @Column()
   @Field()
-  lineOfBusiness: string
+  ubClaims: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   state: string
 
-  @Column({ nullable: true, default: false })
+  @Column({ nullable: true })
   @Field({ nullable: true })
-  realTimeEligibility: boolean
-
-  @Column({ nullable: true, default: false })
-  @Field({ nullable: true })
-  realTimeClaimStatus: boolean
-
-  @Column({ nullable: true, default: false })
-  @Field({ nullable: true })
-  electronicRemittanceAdvice: boolean
-
-  @Column({ nullable: true, default: false })
-  @Field({ nullable: true })
-  secondaryCoordinationBenefits: boolean
+  eligibility: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  Note: string
+  claimFee: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  electronicRemittanceAdvice: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  secondaryCoordinationBenefits: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  remitFee: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  attachment: string
 
   @OneToMany(() => Contact, contact => contact.insurance, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Contact], { nullable: true })
+  @Field(() => [Contact], { nullable: true })
   contacts: Contact[];
 
   @OneToMany(() => Policy, policy => policy.insurance, { onDelete: "CASCADE" })
-  @Field(type => [Policy], { nullable: true })
+  @Field(() => [Policy], { nullable: true })
   policies: Policy[];
 
   @CreateDateColumn({ type: 'timestamptz' })

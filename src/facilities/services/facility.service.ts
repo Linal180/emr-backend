@@ -1,19 +1,24 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
-import { PracticeService } from 'src/practice/practice.service';
-import { BillingAddressService } from 'src/providers/services/billing-address.service';
-import { ContactService } from 'src/providers/services/contact.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
+import { UtilsService } from 'src/util/utils.service';
+import { PracticeService } from 'src/practice/practice.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { ContactService } from 'src/providers/services/contact.service';
+import { BillingAddressService } from 'src/providers/services/billing-address.service';
+//inputs
+import { RemoveFacility } from '../dto/update-facilityItem.input';
+import { UpdateFacilityInput } from '../dto/update-facility.input';
 import { CreateFacilityInput } from '../dto/create-facility.input';
-import { FacilitiesPayload } from '../dto/facilities-payload.dto';
+import { CreatePracticeInput } from 'src/practice/dto/create-practice.input';
+import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
+//payloads
 import FacilityInput from '../dto/facility-input.dto';
 import { FacilityPayload } from '../dto/facility-payload.dto';
-import { UpdateFacilityInput } from '../dto/update-facility.input';
-import { RemoveFacility } from '../dto/update-facilityItem.input';
-import { UpdateFacilityTimeZoneInput } from '../dto/update-facilityTimeZone.input';
+import { FacilitiesPayload } from '../dto/facilities-payload.dto';
+//entities
 import { Facility } from '../entities/facility.entity';
 
 @Injectable()
@@ -21,13 +26,13 @@ export class FacilityService {
   constructor(
     @InjectRepository(Facility)
     private facilityRepository: Repository<Facility>,
+    private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
+    private readonly billingAddressService: BillingAddressService,
     @Inject(forwardRef(() => ContactService))
     private readonly contactService: ContactService,
     @Inject(forwardRef(() => PracticeService))
     private readonly practiceService: PracticeService,
-    private readonly billingAddressService: BillingAddressService,
-    private readonly utilsService: UtilsService
   ) { }
 
   /** 
@@ -96,6 +101,11 @@ export class FacilityService {
     });
   }
 
+  /**
+   * Adds facility
+   * @param createPracticeInput 
+   * @returns facility 
+   */
   async addFacility(createPracticeInput: CreatePracticeInput): Promise<Facility> {
     try {
       //adding new facility
@@ -123,6 +133,7 @@ export class FacilityService {
       return { facility }
     }
   }
+
 
   /**
    * Updates facility
@@ -184,11 +195,21 @@ export class FacilityService {
   }
 
 
+  /**
+   * Gets practice facilities
+   * @param practiceId 
+   * @returns  
+   */
   async getPracticeFacilities(practiceId: string) {
     return await this.facilityRepository.find({ where: { practiceId }, select: ['id', 'name'] })
   }
 
+  /**
+   * Gets practice facilities appointments
+   * @param practiceId 
+   * @returns  
+   */
   async getPracticeFacilitiesAppointments(practiceId: string) {
-    return await this.facilityRepository.find({ where: { practiceId }, select:  ['id', 'name'] })
+    return await this.facilityRepository.find({ where: { practiceId }, select: ['id', 'name'] })
   }
 }

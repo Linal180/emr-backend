@@ -50,6 +50,15 @@ export class ModifierService {
   }
 
   /**
+   * Finds modifier by code
+   * @param codeName 
+   * @returns modifier by code 
+   */
+  async findModifierByCode(codeName: string): Promise<Modifier> {
+    return await this.modifierRepository.findOne({ code: codeName })
+  }
+
+  /**
    * Creates modifier service
    * @param params 
    * @returns create 

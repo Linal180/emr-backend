@@ -51,7 +51,7 @@ export class Attachment {
   url: string;
 
   @Field(() => AttachmentMetadata, { nullable: true, })
-  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete:'CASCADE', onUpdate:'CASCADE', eager:true })
+  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete:'CASCADE', onUpdate:'CASCADE' })
   @JoinColumn()
   attachmentMetadata: AttachmentMetadata;
 

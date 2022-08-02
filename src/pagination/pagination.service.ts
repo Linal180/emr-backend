@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import {
   Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral,
@@ -209,6 +210,11 @@ export class PaginationService {
       effectiveDate,
       expiryDate,
       feeScheduleId,
+      claimFeedFacilityName,
+      claimFeedPatientName,
+      claimFeedPayerId,
+      claimFeedFromDate,
+      claimFeedToDate,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -354,6 +360,11 @@ export class PaginationService {
         ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
         ...(expiryDate && expiryDate != null && { expiryDate: Raw(alias => `${alias} Is null OR ${alias} <= '${today}'`) }),
         ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }),
+        ...(claimFeedFacilityName && { provName: Raw(alias => `${alias} ILIKE '%${claimFeedFacilityName}%'`) }),
+        ...(claimFeedPatientName && { patientFullName: Raw(alias => `${alias} ILIKE '%${claimFeedPatientName}%'`) }),
+        ...(claimFeedPayerId && { payerId: Raw(alias => `${alias} ILIKE '%${claimFeedPayerId}%'`) }),
+        ...(claimFeedFromDate && { fromDos: Raw(alias => `${alias} = '${moment(claimFeedFromDate).format("YYYYMMDD")}'`) }),
+        ...(claimFeedToDate && { thruDos: Raw(alias => `${alias} = '${moment(claimFeedToDate).format("YYYYMMDD")}'`) }),
       }
     };
 

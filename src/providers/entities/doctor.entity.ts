@@ -3,6 +3,7 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { Billing } from 'src/billings/entities/billing.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
 import { Policy } from 'src/insurance/entities/policy.entity';
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
@@ -150,6 +151,9 @@ export class Doctor {
   @Column({ nullable: true })
   @Field({ nullable: true })
   taxonomyCode: string;
+
+  @Field({ nullable: true })
+  taxCode: Taxonomy;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
