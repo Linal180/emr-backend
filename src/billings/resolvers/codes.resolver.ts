@@ -1,15 +1,12 @@
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Modifier } from 'src/feeSchedule/entities/modifier.entity';
-import { ModifierService } from 'src/feeSchedule/services/modifier.service';
-import { Repository } from 'typeorm';
+//entities
 import { Code } from '../entities/code.entity';
-
+import { Modifier } from 'src/feeSchedule/entities/modifier.entity';
+//services
+import { ModifierService } from 'src/feeSchedule/services/modifier.service';
 @Resolver(() => Code)
 export class CodeResolver {
   constructor(
-    @InjectRepository(Code)
-    private codeRepository: Repository<Code>,
     private readonly modifierService: ModifierService
   ) { }
 

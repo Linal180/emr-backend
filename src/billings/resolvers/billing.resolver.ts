@@ -1,38 +1,48 @@
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
-import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
-import { Repository } from 'typeorm';
-import BillingInput from '../dto/billing-input.dto';
-import { BillingPayload } from '../dto/billing-payload';
-import ClaimInput from '../dto/claim-input.dto';
-import { ClaimFilePayload, ClaimNumberPayload, ClaimPayload } from '../dto/claim-payload';
-import SuperBillInput from '../dto/super-bill-input.dto';
-import { SuperBillPayload } from '../dto/super-bill-payload';
-import { Billing } from '../entities/billing.entity';
-import { ClaimStatus } from '../entities/claim-status.entity';
+//entities
 import { Code } from '../entities/code.entity';
+import { Claim } from '../entities/claim.entity';
+import { Billing } from '../entities/billing.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { ClaimStatus } from '../entities/claim-status.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
+//services
+import { ClaimService } from '../services/claim.service';
 import { BillingService } from '../services/billing.service';
 import { ClaimStatusService } from '../services/claimStatus.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
+//guards
+import PermissionGuard from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//inputs
+import { BillingInput } from '../dto/billing-input.dto';
+import SuperBillInput from '../dto/super-bill-input.dto';
+import { GetClaimFileInput } from '../dto/claim-input.dto';
+//payloads
+import { BillingPayload } from '../dto/billing-payload';
+import { SuperBillPayload } from '../dto/super-bill-payload';
+import { ClaimFilePayload, ClaimNumberPayload } from '../dto/claim-payload';
 
 @Resolver(() => Billing)
 export class BillingResolver {
   constructor(
     @InjectRepository(Code)
     private codeRepository: Repository<Code>,
+    private readonly doctorService: DoctorService,
     private readonly billingService: BillingService,
     private readonly facilityService: FacilityService,
-    private readonly doctorService: DoctorService,
     private readonly claimStatusService: ClaimStatusService,
+    private readonly claimService: ClaimService,
     private readonly feeScheduleService: FeeScheduleService,
   ) { }
+
+  //mutations
 
   @Mutation(() => BillingPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -44,6 +54,8 @@ export class BillingResolver {
     };
   }
 
+  //queries
+
   @Query(() => BillingPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'fetchBillingDetailsByAppointmentId')
@@ -51,14 +63,6 @@ export class BillingResolver {
     return {
       billing: await this.billingService.fetchBillingDetailsByAppointmentId(appointmentId),
       response: { status: 200, message: "Policy created successfully" }
-    };
-  }
-
-  @Query(() => ClaimPayload)
-  async createClaim(@Args('claimInput') claimInput: ClaimInput): Promise<ClaimPayload> {
-    return {
-      claim: await this.billingService.createClaimInfo(claimInput),
-      response: { status: 200, message: "Claim Created successfully" }
     };
   }
 
@@ -71,9 +75,9 @@ export class BillingResolver {
   }
 
   @Query(() => ClaimFilePayload)
-  async getClaimFile(@Args('claimInput') claimInput: ClaimInput): Promise<ClaimFilePayload> {
+  async getClaimFile(@Args('getClaimFileInput') getClaimFileInput: GetClaimFileInput): Promise<ClaimFilePayload> {
     return {
-      claimFile: await this.billingService.getClaimFile(claimInput),
+      claimFile: await this.billingService.getClaimFile(getClaimFileInput),
       response: { status: 200, message: "Claim File created successfully" }
     };
   }
@@ -85,6 +89,8 @@ export class BillingResolver {
       response: { status: 200, message: "Claim File created successfully" }
     };
   }
+
+  //resolve fields
 
   @ResolveField(() => [Code])
   async codes(@Parent() billing: Billing): Promise<Code[]> {
@@ -127,6 +133,13 @@ export class BillingResolver {
   async feeSchedule(@Parent() billing: Billing): Promise<FeeSchedule> {
     if (billing.feeScheduleId) {
       return await this.feeScheduleService.findOne({ id: billing.feeScheduleId })
+    }
+  }
+
+  @ResolveField(() => Claim)
+  async claim(@Parent() billing: Billing): Promise<Claim> {
+    if (billing?.id) {
+      return await this.claimService.getClaimByBillingId(billing?.id)
     }
   }
 }
