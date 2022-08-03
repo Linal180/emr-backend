@@ -217,6 +217,8 @@ export class PaginationService {
       claimFeedToDate,
       claimStatusId,
       claimNo,
+      billingFromDate,
+      billingToDate,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -355,6 +357,8 @@ export class PaginationService {
         }),
         ...(claimNo && claimNo != null && { claimNo }),
         ...(claimStatusId && claimStatusId != null && { claimStatusId }),
+        ...(billingFromDate && billingFromDate != null && { from: billingFromDate }),
+        ...(billingToDate && billingToDate != null && { to: billingToDate }),
         ...(code && code != null && { code }),
         ...(feeScheduleId && feeScheduleId != null && { feeScheduleId }),
         ...(moduleType && moduleType != null && { moduleType }),

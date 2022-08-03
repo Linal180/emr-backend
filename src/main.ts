@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+//user imports
 import { AppModule } from './app.module';
 import { PatientModule } from './patients/patient.module';
 import { LoggingInterceptor } from './logging.interceptor';
@@ -8,6 +10,7 @@ import { LoggingInterceptor } from './logging.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
   //swagger config
   const config = new DocumentBuilder()
@@ -17,7 +20,7 @@ async function bootstrap() {
     .addTag('EMR')
     .build();
   const document = SwaggerModule.createDocument(app, config, {
-    include:[PatientModule],
+    include: [PatientModule],
   });
   SwaggerModule.setup('api', app, document,);
 

@@ -86,4 +86,6 @@ export class PaginatedEntityInput {
   claimFeedToDate?: string;
   claimStatusId?: string;
   claimNo?: string;
+  billingToDate?: string;
+  billingFromDate?: string;
 }

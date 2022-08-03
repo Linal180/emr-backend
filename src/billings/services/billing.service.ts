@@ -1114,7 +1114,7 @@ export class BillingService {
     try {
       const { paginationOptions, facilityId, claimNo, claimStatusId, patientId, from, to } = params
       const paginationResponse = await this.paginationService.willPaginate<Billing>(this.billingRepository, {
-        paginationOptions, facilityId, patientId, from, to, claimStatusId, claimNo
+        paginationOptions, facilityId, patientId, claimStatusId, claimNo, billingToDate: to, billingFromDate: from
       })
       return {
         billings: paginationResponse.data,

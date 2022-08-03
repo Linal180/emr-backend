@@ -102,7 +102,7 @@ export class FetchBillingClaimStatusesInput {
   @Field({ nullable: true })
   claimStatusId?: string
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   from?: string
 
   @Field({ nullable: true })

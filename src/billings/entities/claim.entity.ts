@@ -106,10 +106,14 @@ export class Claim {
   @Field({ nullable: true })
   senderId: string
 
-
   @Column({ nullable: true, type: "float" })
   @Field(() => Float, { nullable: true })
   totalCharge: number;
+
+  // @Column({ nullable: true, type: 'jsonb', array: false })
+  // @Field(() => [String], { nullable: true })
+  // errorMessages: string[]
+
 
   //request columns
 

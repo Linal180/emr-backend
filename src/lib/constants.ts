@@ -93,3 +93,5 @@ export enum SystemBillingStatuses {
   REJECTED = 'rejected',
   ACKNOWLEDGED = 'acknowledged'
 }
+
+export const ClaimFromDateRegex = /^\d{2}[/]\d{2}[/]\d{4}$/
