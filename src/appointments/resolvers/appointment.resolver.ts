@@ -127,7 +127,7 @@ export class AppointmentResolver {
     const appointments = await this.appointmentService.findAllUpcomingAppointments(upComingAppointmentsInput)
     if (appointments) {
       return {
-        appointments,
+        ...appointments,
         response: {
           message: "OK", status: 200,
         }

@@ -133,10 +133,9 @@ export class DoctorService {
         //updating billing details
         await this.billingAddressService.updateBillingAddress(updateDoctorInput.updateBillingAddressInput)
         //update primary contact in user's model 
-        if (updateDoctorInput.updateContactInput.phone) {
-          const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
-          await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, email, id: user.id })
-        }
+        const user = await this.usersService.findUserByUserId(updateDoctorInput.updateDoctorItemInput.id)
+        await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, email, id: user.id })
+
         if (isNewEmail) {
           let isAdmin = false
           let isInvite = 'INVITATION_TEMPLATE_ID';
