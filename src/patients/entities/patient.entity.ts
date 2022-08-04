@@ -92,7 +92,7 @@ export enum GENDERIDENTITY {
   TRANSGENDER_MALE = "Transgender Male/Female-to-Male (FTM)",
   TRANSGENDER_FEMALE = "Transgender Female/Male-to-Female (MTF)",
   DECLINE_TO_SPECIFY = "Decline to specify",
-  NONE = "Choose not to disclose"
+  NONE = "Other"
 }
 
 registerEnumType(GENDERIDENTITY, {

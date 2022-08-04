@@ -1017,7 +1017,6 @@ export class BillingService {
 
     const primaryProvider = providersInfo.find((providerInfo) => providerInfo.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
 
-
     return {
       appointmentInfo,
       providerInfo: primaryProvider,
