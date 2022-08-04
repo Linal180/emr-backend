@@ -2634,6 +2634,8 @@ type FieldsTypes {
   apiCall: String
   tableContactType: String
   regex: String
+  futureEnable: Boolean
+  pastEnable: Boolean
 }
 
 """The form's element types"""
@@ -5090,6 +5092,8 @@ input FieldsInputs {
   apiCall: String
   tableContactType: String
   regex: String
+  futureEnable: Boolean
+  pastEnable: Boolean
 }
 
 input FieldOptionsInputType {
