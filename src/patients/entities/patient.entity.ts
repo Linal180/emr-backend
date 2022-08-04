@@ -92,7 +92,7 @@ export enum GENDERIDENTITY {
   TRANSGENDER_MALE = "Transgender Male/Female-to-Male (FTM)",
   TRANSGENDER_FEMALE = "Transgender Female/Male-to-Female (MTF)",
   DECLINE_TO_SPECIFY = "Decline to specify",
-  NONE = "Choose not to disclose"
+  NONE = "Other"
 }
 
 registerEnumType(GENDERIDENTITY, {
@@ -197,7 +197,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.MALE
+    default: GENDERIDENTITY.MALE,
+    nullable: true,
   })
   @Field(type => GENDERIDENTITY)
   gender: GENDERIDENTITY
@@ -291,7 +292,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: SEXUALORIENTATION,
-    default: SEXUALORIENTATION.NONE
+    default: SEXUALORIENTATION.NONE,
+    nullable: true,
   })
   @Field(type => SEXUALORIENTATION, { nullable: true })
   sexualOrientation: SEXUALORIENTATION
@@ -299,7 +301,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.NONE
+    default: GENDERIDENTITY.NONE,
+    nullable: true,
   })
   @Field(type => GENDERIDENTITY, { nullable: true })
   genderIdentity: GENDERIDENTITY

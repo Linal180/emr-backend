@@ -35,4 +35,4 @@ lerna-debug.log*
 #PDF and XML FIles
 *.xml
 
-package-lock.json
+*.env

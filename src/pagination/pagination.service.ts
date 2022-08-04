@@ -215,6 +215,11 @@ export class PaginationService {
       claimFeedPayerId,
       claimFeedFromDate,
       claimFeedToDate,
+      claimStatusId,
+      claimNo,
+      billingFromDate,
+      billingToDate,
+      selfId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -351,6 +356,10 @@ export class PaginationService {
         ...(agreementFacilityId && {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
+        ...(claimNo && claimNo != null && { claimNo }),
+        ...(claimStatusId && claimStatusId != null && { claimStatusId }),
+        ...(billingFromDate && billingFromDate != null && { from: billingFromDate }),
+        ...(billingToDate && billingToDate != null && { to: billingToDate }),
         ...(code && code != null && { code }),
         ...(feeScheduleId && feeScheduleId != null && { feeScheduleId }),
         ...(moduleType && moduleType != null && { moduleType }),
@@ -372,6 +381,11 @@ export class PaginationService {
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status
       whereOptions.where.user = { id: userId }
+    }
+
+    if (selfId) {
+      !Number.isInteger(status) && !status && delete whereOptions.where.status
+      whereOptions.where.user = { id: selfId }
     }
 
     // FROM - TO Filter
