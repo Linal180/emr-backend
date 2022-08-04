@@ -78,6 +78,12 @@ export class FieldsTypes {
 
     @Field({ nullable: true })
     regex?: string;
+
+    @Field(() => Boolean, { nullable: true })
+    futureEnable?: boolean;
+
+    @Field(() => Boolean, { nullable: true })
+    pastEnable?: boolean;
 }
 @ObjectType()
 export class SectionsTypes {

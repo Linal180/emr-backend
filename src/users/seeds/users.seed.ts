@@ -326,6 +326,8 @@ export class CreateUsers implements Seeder {
       await queryRunner.release();
     }
   }
+
+
   async rolePermissionPayload(permissions: Permission[], role: Role) {
     return permissions.map((item) => {
       return {
@@ -337,4 +339,5 @@ export class CreateUsers implements Seeder {
       }
     })
   }
+  
 }
