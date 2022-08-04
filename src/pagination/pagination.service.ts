@@ -215,6 +215,7 @@ export class PaginationService {
       claimFeedPayerId,
       claimFeedFromDate,
       claimFeedToDate,
+      selfId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -372,6 +373,11 @@ export class PaginationService {
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status
       whereOptions.where.user = { id: userId }
+    }
+
+    if (selfId) {
+      !Number.isInteger(status) && !status && delete whereOptions.where.status
+      whereOptions.where.user = { id: selfId }
     }
 
     // FROM - TO Filter
