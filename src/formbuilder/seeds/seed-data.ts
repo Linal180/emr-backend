@@ -333,6 +333,7 @@ const facilityAppointment = [
             defaultValue: "",
             isMultiSelect: false,
             tableContactType: null,
+            futureEnable: false
           },
           {
             css: "",
@@ -3657,7 +3658,8 @@ export const FormTemplates = [
                 placeholder: "Please select your date of birth",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                futureEnable: false
               },
               {
                 css: "",

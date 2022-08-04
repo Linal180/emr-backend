@@ -88,6 +88,12 @@ export class FieldsInputs {
 
   @Field({ nullable: true })
   regex?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  futureEnable?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  pastEnable?: boolean;
 }
 @InputType()
 export class CreateFormInput {
