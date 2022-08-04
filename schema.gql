@@ -654,6 +654,7 @@ type Claim {
   senderName: String
   senderId: String
   totalCharge: Float
+  errorMessages: [String!]
   cond_date: String
   onset_date: String
   hosp_from_date: String

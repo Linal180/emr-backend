@@ -99,7 +99,7 @@ export class ClaimService {
         let claimStatus = await this.claimStatusService.findOne(billingInfo?.claimStatusId);
 
         let claim = null;
-        let claimMdErrMessages = [];
+        let claimMdErrMessages: null | string[] = null;
         let response = null
 
         if (!!claimInfo?.id) {
@@ -133,7 +133,7 @@ export class ClaimService {
                   claimMdErrMessages = messages?.map((msgItem) => {
                     const { message } = msgItem || {}
                     msgErr = msgErr + `, ${message}`
-                    return message
+                    return `${message}`
                   })
                   error_msgs = msgErr
                 })
@@ -172,7 +172,7 @@ export class ClaimService {
           claim = await this.update({
             id: claimInfo?.id, ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
             payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
-            onset: onset as unknown as OtherDate,
+            onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages
           })
 
           return { claim, claimStatus };
@@ -182,7 +182,7 @@ export class ClaimService {
           claim = await this.create({
             ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
             payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
-            onset: onset as unknown as OtherDate,
+            onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages
           })
           //get claim status
           if (!claimStatus) {
@@ -200,7 +200,7 @@ export class ClaimService {
         const claim = await this.create({
           ...claimMd, billingId: billing?.id, billing,
           payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
-          onset: onset as unknown as OtherDate,
+          onset: onset as unknown as OtherDate, errorMessages: null
         })
         return { claim, claimStatus }
       }
