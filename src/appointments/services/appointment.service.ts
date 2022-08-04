@@ -301,6 +301,11 @@ export class AppointmentService {
     }
   }
 
+  /**
+   * Finds all upcoming appointments
+   * @param upComingAppointmentInput 
+   * @returns all upcoming appointments 
+   */
   async findAllUpcomingAppointments(upComingAppointmentInput: UpComingAppointmentsInput): Promise<UpcomingAppointmentsPayload> {
     try {
       const { paginationOptions } = upComingAppointmentInput
@@ -308,7 +313,7 @@ export class AppointmentService {
       const { page, limit } = paginationOptions
       const baseQuery = await this.findAppointmentQuery(appointmentInput)
       const [appointments, totalCount] = await baseQuery
-        .andWhere(`"appointment"."scheduleStartDateTime"::date ${shouldFetchPast ? '<' : '>'}= :appointmentTime`, { appointmentTime: moment().format("YYYYMMDD") })
+        .andWhere(`"appointment"."scheduleStartDateTime" ${shouldFetchPast ? '<' : '>'}= :appointmentTime`, { appointmentTime: moment() })
         .getManyAndCount()
 
       const totalPages = Math.ceil(totalCount / limit)
@@ -326,39 +331,6 @@ export class AppointmentService {
       throw new InternalServerErrorException(error);
     }
   }
-
-  //   /**
-  //  * Finds all upcoming appointments
-  //  * @param upcomingAppointmentInputs
-  //  * @returns all upcoming appointments appointments 
-  //  */
-  //   async findAllUpcomingAppointments(upComingAppointmentInput: UpComingAppointmentsInput): Promise<Appointment[]> {
-  //     try {
-  //       const { facilityId, patientId, practiceId, providerId } = upComingAppointmentInput
-  //       const query = {
-  //         ...(facilityId && facilityId !== null && {
-  //           facilityId
-  //         }),
-  //         ...(patientId && patientId !== null && {
-  //           patientId
-  //         }),
-  //         ...(practiceId && practiceId !== null && {
-  //           practiceId
-  //         }),
-  //         ...(providerId && providerId !== null && {
-  //           providerId
-  //         })
-  //       }
-
-  //       const appointment = await this.appointmentRepository.find({
-  //         where: query
-  //       })
-
-  //       return appointment
-  //     } catch (error) {
-  //       throw new InternalServerErrorException(error);
-  //     }
-  //   }
 
   /**
    * Finds patient last appointment
