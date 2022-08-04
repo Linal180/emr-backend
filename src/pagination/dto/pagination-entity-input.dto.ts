@@ -80,4 +80,5 @@ export class PaginatedEntityInput {
   claimFeedPayerId?: string
   claimFeedFromDate?: string
   claimFeedToDate?: string
+  selfId?: string
 }
