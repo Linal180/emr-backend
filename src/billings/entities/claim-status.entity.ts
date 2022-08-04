@@ -1,7 +1,7 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//entities
 import { Billing } from './billing.entity';
-
 
 @Entity({ name: 'claimStatus' })
 @ObjectType()
@@ -16,7 +16,11 @@ export class ClaimStatus {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  statusId?: string
+  statusId?: string;
+
+  @Column({ type: "boolean", default: false })
+  @Field(() => Boolean)
+  system: boolean
 
   @OneToMany(() => Billing, billing => billing.claimStatus, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [Billing], { nullable: true })

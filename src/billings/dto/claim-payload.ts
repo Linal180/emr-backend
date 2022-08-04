@@ -1,7 +1,11 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+//entities
+import { Claim } from "../entities/claim.entity";
+import { ClaimStatus } from "../entities/claim-status.entity";
+import { OnsetDateType, OtherDateType } from "../entities/billing.entity";
 import { OrderOfBenefitType } from "src/insurance/entities/policy.entity";
+//payload
 import { ResponsePayload } from "src/users/dto/response-payload.dto";
-import { OnsetDateType } from "../entities/billing.entity";
 
 @ObjectType()
 export class Charge {
@@ -19,7 +23,7 @@ export class Charge {
 }
 
 @ObjectType()
-export class Claim {
+export class ClaimMd {
   @Field({ nullable: true })
   claim_form?: string
 
@@ -140,8 +144,11 @@ export class Claim {
 
 @ObjectType()
 export class ClaimPayload {
-  @Field(type => Claim)
-  claim: Claim;
+  @Field(() => Claim)
+  claim?: Claim;
+
+  @Field(() => ClaimStatus)
+  claimStatus?: ClaimStatus;
 
   @Field({ nullable: true })
   response?: ResponsePayload
@@ -183,8 +190,8 @@ export class ChargeItem {
   @Field(() => String, { nullable: false })
   unit: string;
 
-  @Field(() => String, { nullable: false })
-  units: string;
+  @Field(() => Number, { nullable: false })
+  units: number;
 
   @Field(() => Number, { nullable: false })
   charge: number;
@@ -292,7 +299,7 @@ export class ClaimMdPayload {
   charge: ChargeItem[]
 
   @Field(() => OrderOfBenefitType, { nullable: false })
-  payer_order: string
+  payer_order: OrderOfBenefitType
 
   @Field(() => String, { nullable: true })
   pat_name_m: string
@@ -369,8 +376,8 @@ export class ClaimMdPayload {
   @Field(() => OnsetDateType, { nullable: false })
   cond: OnsetDateType
 
-  @Field(() => OnsetDateType, { nullable: false })
-  onset: OnsetDateType
+  @Field(() => OtherDateType, { nullable: false })
+  onset: OtherDateType
 
   @Field(() => String, { nullable: false })
   cond_date: string
@@ -510,4 +517,35 @@ export class ClaimMdPayload {
 
   @Field(() => String, { nullable: true })
   diag_12?: string
+}
+@ObjectType()
+export class ClaimChargeType {
+
+  @Field(() => String, { nullable: true })
+  m1?: string;
+
+  @Field(() => String, { nullable: true })
+  m2?: string;
+
+  @Field(() => String, { nullable: true })
+  m3?: string;
+
+  @Field(() => String, { nullable: true })
+  m4?: string;
+
+  @Field(() => Number, { nullable: false })
+  units?: number;
+
+  @Field(() => Number, { nullable: false })
+  charge: number;
+
+  @Field(() => String, { nullable: false })
+  diag_ref: string;
+
+  @Field(() => String, { nullable: false })
+  proc_code: string;
+
+  @Field(() => String, { nullable: false })
+  diagPointer: string
+
 }
