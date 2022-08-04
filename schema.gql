@@ -654,6 +654,7 @@ type Claim {
   senderName: String
   senderId: String
   totalCharge: Float
+  errorMessages: [String!]
   cond_date: String
   onset_date: String
   hosp_from_date: String
@@ -2451,12 +2452,6 @@ type LiveClaimFeed {
   updatedAt: String
 }
 
-type BillingPayload {
-  billing: Billing!
-  pagination: PaginationPayload
-  response: Response
-}
-
 type SuperBillPayload {
   appointmentInfo: Appointment
   providerInfo: Doctor
@@ -2465,6 +2460,18 @@ type SuperBillPayload {
   billingInfo: Billing
   patientInfo: Patient
   response: ResponsePayload
+}
+
+type BillingsPayload {
+  billings: [Billing!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type BillingPayload {
+  billing: Billing!
+  pagination: PaginationPayload
+  response: Response
 }
 
 type ClaimStatusesPayload {
@@ -2863,6 +2870,7 @@ type Query {
   generateClaimNo: ClaimNumberPayload!
   getClaimFile(getClaimFileInput: GetClaimFileInput!): ClaimFilePayload!
   getSuperBillInfo(superBillInput: SuperBillInput!): SuperBillPayload!
+  fetchBillingClaimStatuses(fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!): BillingsPayload!
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
   findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
@@ -3308,6 +3316,16 @@ input CodesInput {
 
 input SuperBillInput {
   appointmentId: String
+}
+
+input FetchBillingClaimStatusesInput {
+  facilityId: String
+  patientId: String
+  claimNo: String
+  claimStatusId: String
+  from: String
+  to: String
+  paginationOptions: PaginationInput!
 }
 
 input ClaimStatusPaginationInput {

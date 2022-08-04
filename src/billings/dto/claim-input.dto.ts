@@ -205,6 +205,9 @@ export class ClaimInput {
   @Field(() => Float, { nullable: true })
   totalCharge?: number;
 
+  @Field(() => [String], { nullable: true })
+  errorMessages: string[]
+
   //polymorphic columns of claimStatus
 
   @Field({ nullable: true })

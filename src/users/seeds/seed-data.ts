@@ -25,7 +25,7 @@ export const RolesData = [
 
 export const UsersData = [
     {
-        firstName: "Khalid", lastName: "Rasool", password: "super123", email: "khalid.rasool@kwanso.com", status: UserStatus.ACTIVE,
+        firstName: "Super", lastName: "Admin", password: "super123", email: "admin@alxtel.com", status: UserStatus.ACTIVE,
         phone: "+923426851938", userType: 'super-admin', roleType: 'super-admin', zipCode: "54000", emailVerified: true
     },
 ];
@@ -204,6 +204,7 @@ export const PermissionData = [
     { name: 'findLabTestsByOrderNum', moduleType: 'Lab Test' },
     { name: 'fetchICDCodes', moduleType: 'Lab Test' },
 ];
+
 export const permissionDataNew = [
     { name: 'findPatientAttachments', moduleType: 'Patient' },
     { name: 'fetchAllPatients', moduleType: 'Patient' },
