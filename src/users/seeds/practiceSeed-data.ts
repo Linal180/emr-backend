@@ -1,4 +1,6 @@
-export const PracticeInfo = { name: 'Express Healthcare', npi: '1598994733', taxId: '010788495', active: true }
+import { seedPractice } from "src/lib/constants"
+
+export const PracticeInfo = { name: 'Express Healthcare', npi: '1598994733', taxId: '010788495', active: true, practiceId: seedPractice.EXPRESS_HEALTH_CARE }
 export const PracticeAdminInfo = { email: 'anegeda+ehc@alxtel.com', firstName: 'Alaa', lastName: 'Negeda' }
 
 export const FacilitiesData = [

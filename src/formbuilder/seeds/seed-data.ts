@@ -274,6 +274,7 @@ const facilityAppointment = [
             defaultValue: "",
             isMultiSelect: false,
             tableContactType: null,
+            regex: '/^[A-Za-z\\s]+$/'
           },
           {
             css: "",
@@ -293,6 +294,7 @@ const facilityAppointment = [
             defaultValue: "",
             isMultiSelect: false,
             tableContactType: null,
+            regex: '/^[A-Za-z\\s]+$/'
           },
           {
             css: "",
@@ -664,6 +666,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "guardian",
+          regex: '/^[A-Za-z\\s]+$/'
         },
         {
           css: "",
@@ -683,6 +686,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "guardian",
+          regex: '/^[A-Za-z\\s]+$/'
         },
         {
           css: "",
@@ -702,6 +706,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "guardian",
+          regex: '/^[A-Za-z\\s]+$/'
         },
         {
           css: "",
@@ -876,6 +881,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "guardian",
+          regex: '/^[A-Za-z\\s]+$/'
         },
         {
           css: "",
@@ -895,6 +901,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "guardian",
+          regex: '/^[A-Za-z\\s]+$/'
         },
         {
           css: "",
@@ -914,6 +921,7 @@ const facilityAppointment = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "guardian",
+          regex: '/^[A-Za-z\\s]+$/'
         },
         {
           css: "",
@@ -1510,10 +1518,10 @@ const practiceAppointment = facilityAppointment?.map((tab) => {
 
 
 const oneStepFacilityForm = facilityAppointment?.map(({ sections }) => sections)?.flat(1)
-?.filter(({ name }) => name !== 'Document Verification' && name !== 'Payment');
+  ?.filter(({ name }) => name !== 'Document Verification' && name !== 'Payment');
 
 const oneStepPracticeForm = practiceAppointment?.map(({ sections }) => sections)?.flat(1)
-?.filter(({ name }) => name !== 'Document Verification' && name !== 'Payment');
+  ?.filter(({ name }) => name !== 'Document Verification' && name !== 'Payment');
 
 //Form template
 export const FormTemplates = [
@@ -3480,7 +3488,8 @@ export const FormTemplates = [
                 placeholder: "Please enter your First Name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",
@@ -3498,7 +3507,8 @@ export const FormTemplates = [
                 placeholder: "Please enter your Middle Name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",
@@ -3516,7 +3526,8 @@ export const FormTemplates = [
                 placeholder: "Please enter your Last Name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",
@@ -3534,7 +3545,9 @@ export const FormTemplates = [
                 placeholder: "Please enter your First Name Used",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
+
               },
               {
                 css: "",
@@ -3588,7 +3601,8 @@ export const FormTemplates = [
                 placeholder: "Please enter your Previous Last Name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",
@@ -4066,7 +4080,9 @@ export const FormTemplates = [
                 placeholder: "Please enter first name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
+
               },
               {
                 css: "",
@@ -4085,7 +4101,9 @@ export const FormTemplates = [
                 placeholder: "Please enter middle name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
+
               },
               {
                 css: "",
@@ -4104,7 +4122,8 @@ export const FormTemplates = [
                 placeholder: "Please enter last name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",
@@ -4296,7 +4315,8 @@ export const FormTemplates = [
                 placeholder: "Please enter first name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",
@@ -4315,7 +4335,8 @@ export const FormTemplates = [
                 placeholder: "Please enter middle name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",
@@ -4334,7 +4355,8 @@ export const FormTemplates = [
                 placeholder: "Please enter last name",
                 defaultValue: "",
                 isMultiSelect: false,
-                apiCall: ''
+                apiCall: '',
+                regex: '/^[A-Za-z\\s]+$/'
               },
               {
                 css: "",

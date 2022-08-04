@@ -98,16 +98,12 @@ export class ClaimService {
         const claimInfo = await this.getClaimByBillingId(billingInfo?.id);
         let claimStatus = await this.claimStatusService.findOne(billingInfo?.claimStatusId);
 
-        //update claim
-        let claim = null
+        let claim = null;
+        let claimMdErrMessages: null | string[] = null;
+        let response = null
+
         if (!!claimInfo?.id) {
           let error_msgs = null
-          claim = await this.update({
-            id: claimInfo?.id, ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
-            payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
-            onset: onset as unknown as OtherDate,
-          })
-
           //get claim status
           if (!!claimStatus?.statusId) {
             //delete some properties 
@@ -134,9 +130,10 @@ export class ClaimService {
                 claim?.map((item) => {
                   const { messages } = item || {}
                   let msgErr = null
-                  messages?.map((msgItem) => {
+                  claimMdErrMessages = messages?.map((msgItem) => {
                     const { message } = msgItem || {}
                     msgErr = msgErr + `, ${message}`
+                    return `${message}`
                   })
                   error_msgs = msgErr
                 })
@@ -145,6 +142,23 @@ export class ClaimService {
               //not found error in claim ; get claim status
               if (noError) {
                 claimStatus = await this.claimStatusService.findByStatusId(SystemBillingStatuses.ACKNOWLEDGED);
+                response = {
+                  claimMdId: "number",
+                  batchId: "number",
+                  billNpi: "number",
+                  billTaxId: "number",
+                  claimId: "string",
+                  facilityDateOfService: "string",
+                  fileName: 'string',
+                  fileId: "number",
+                  insuranceNumber: "number",
+                  receivePayerId: "number",
+                  pcn: "string",
+                  sendIcn: "string",
+                  senderName: "string",
+                  senderId: "string",
+                  totalCharge: 'number'
+                }
               }
             }
 
@@ -154,6 +168,13 @@ export class ClaimService {
           if (error_msgs) {
             throw new InternalServerErrorException(error_msgs);
           }
+          //update claim
+          claim = await this.update({
+            id: claimInfo?.id, ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
+            payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
+            onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages
+          })
+
           return { claim, claimStatus };
         }
         //create claim
@@ -161,7 +182,7 @@ export class ClaimService {
           claim = await this.create({
             ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
             payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
-            onset: onset as unknown as OtherDate,
+            onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages
           })
           //get claim status
           if (!claimStatus) {
@@ -179,7 +200,7 @@ export class ClaimService {
         const claim = await this.create({
           ...claimMd, billingId: billing?.id, billing,
           payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
-          onset: onset as unknown as OtherDate,
+          onset: onset as unknown as OtherDate, errorMessages: null
         })
         return { claim, claimStatus }
       }

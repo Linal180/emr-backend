@@ -34,3 +34,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 #PDF and XML FIles
 *.xml
+
+*.env

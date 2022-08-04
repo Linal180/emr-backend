@@ -1876,7 +1876,7 @@ const feeSchedules = [{
   cptCode: "ZAID", serviceFee: "0", revenueCode: "Medicine", shortDescription: "Dr. Zaid's patient(out side lab)"
 }]
 
-export const feeScheduleData = feeSchedules?.map(({ shortDescription, ...rest }) => ({ shortDescription: shortDescription?.trim(), ...rest }))
+export const cptFeeScheduleData = feeSchedules?.map(({ shortDescription, ...rest }) => ({ shortDescription: shortDescription?.trim(), ...rest }))
 
 const covidCPTCodes = [{
   cptCode: "86318",
@@ -1919,7 +1919,7 @@ const covidCPTCodes = [{
   shortDescription: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
 }]
 
-const feeCPTCodes = feeScheduleData?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription }));
+const feeCPTCodes = cptFeeScheduleData?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription }));
 
 export const cptCodeData = [...feeCPTCodes, ...covidCPTCodes]
 

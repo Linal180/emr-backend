@@ -7,7 +7,10 @@ export default class DoctorInput {
     @Field({ nullable: true })
     facilityId?: string
 
-    @Field(()=>Speciality, { nullable: true })
+    @Field({ nullable: true })
+    selfId?: string
+
+    @Field(() => Speciality, { nullable: true })
     speciality?: Speciality
 
     @Field({ nullable: true })

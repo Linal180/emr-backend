@@ -144,4 +144,18 @@ export class LabTestsResolver {
     await this.labTestsService.removeLabTest(removeLabTest);
     return { response: { status: 200, message: 'Lab test Deleted' } };
   }
+
+  @ResolveField((returns) => Doctor)
+  async primaryProvider(@Parent() labTests: LabTests): Promise<Doctor> {
+    if (labTests.primaryProviderId) {
+     return await this.doctorService.findOne(labTests.primaryProviderId);
+    }
+  }
+
+  @ResolveField((returns) => Doctor)
+  async referringProvider(@Parent() labTests: LabTests): Promise<Doctor> {
+    if (labTests.referringProviderId) {
+     return await this.doctorService.findOne(labTests.referringProviderId);
+    }
+  }
 }

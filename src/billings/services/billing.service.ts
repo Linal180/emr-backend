@@ -22,6 +22,7 @@ import { ClaimStatusService } from './claimStatus.service';
 import { PracticeService } from 'src/practice/practice.service';
 import { PolicyService } from 'src/insurance/services/policy.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
+import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
@@ -32,10 +33,11 @@ import { PolicyHolderService } from 'src/insurance/services/policy-holder.servic
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 //payloads
+import { BillingsPayload } from '../dto/billing-payload';
 import { SuperBillPayload } from '../dto/super-bill-payload';
 import { ClaimMd, ClaimMdPayload } from '../dto/claim-payload';
 //inputs
-import { BillingInput } from '../dto/billing-input.dto';
+import { BillingInput, FetchBillingClaimStatusesInput } from '../dto/billing-input.dto';
 import { ClaimInput, CreateClaimInput, GetClaimFileInput } from '../dto/claim-input.dto';
 //helpers
 import { claimMedValidation } from 'src/lib/validations';
@@ -58,10 +60,11 @@ export class BillingService {
     private readonly facilityService: FacilityService,
     private readonly practiceService: PracticeService,
     private readonly insuranceService: InsuranceService,
+    private readonly paginationService: PaginationService,
     private readonly taxonomiesService: TaxonomiesService,
-    private readonly feeScheduleService: FeeScheduleService,
     private readonly appointmentService: AppointmentService,
     private readonly claimStatusService: ClaimStatusService,
+    private readonly feeScheduleService: FeeScheduleService,
     private readonly policyHolderService: PolicyHolderService,
     private readonly billingAddressService: BillingAddressService,
   ) { }
@@ -1014,7 +1017,6 @@ export class BillingService {
 
     const primaryProvider = providersInfo.find((providerInfo) => providerInfo.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
 
-
     return {
       appointmentInfo,
       providerInfo: primaryProvider,
@@ -1101,6 +1103,27 @@ export class BillingService {
       throw new InternalServerErrorException(error)
     }
   }
+
+  /**
+   * Fetchs claim status
+   * @param params 
+   * @returns claim status 
+   */
+  async fetchClaimStatus(params: FetchBillingClaimStatusesInput): Promise<BillingsPayload> {
+    try {
+      const { paginationOptions, facilityId, claimNo, claimStatusId, patientId, from, to } = params
+      const paginationResponse = await this.paginationService.willPaginate<Billing>(this.billingRepository, {
+        paginationOptions, facilityId, patientId, claimStatusId, claimNo, billingToDate: to, billingFromDate: from
+      })
+      return {
+        billings: paginationResponse.data,
+        pagination: { ...paginationResponse }
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
 
   /**
    * Generates claim number

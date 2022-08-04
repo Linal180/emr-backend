@@ -1,13 +1,13 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Connection, getRepository } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
+import { Connection, getRepository } from "typeorm";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //user imports
 import { Element } from '../entities/element.entity';
 import { ElementTypeData } from '../seeds/seed-data'
 //class
 @Injectable()
 export class CreateElements implements Seeder {
-	public async run(factory: Factory, connection: Connection): Promise<void> {
+	public async run(_: Factory, connection: Connection): Promise<void> {
 		const queryRunner = connection.createQueryRunner();
 		await queryRunner.connect();
 		await queryRunner.startTransaction();

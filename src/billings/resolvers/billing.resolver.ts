@@ -8,25 +8,29 @@ import { Claim } from '../entities/claim.entity';
 import { Billing } from '../entities/billing.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { ClaimStatus } from '../entities/claim-status.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 //services
 import { ClaimService } from '../services/claim.service';
 import { BillingService } from '../services/billing.service';
 import { ClaimStatusService } from '../services/claimStatus.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
+import { PatientService } from 'src/patients/services/patient.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
 //guards
 import PermissionGuard from 'src/users/auth/role.guard';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 //inputs
-import { BillingInput } from '../dto/billing-input.dto';
 import SuperBillInput from '../dto/super-bill-input.dto';
 import { GetClaimFileInput } from '../dto/claim-input.dto';
+import { BillingInput, FetchBillingClaimStatusesInput } from '../dto/billing-input.dto';
 //payloads
-import { BillingPayload } from '../dto/billing-payload';
 import { SuperBillPayload } from '../dto/super-bill-payload';
+import { BillingPayload, BillingsPayload } from '../dto/billing-payload';
 import { ClaimFilePayload, ClaimNumberPayload } from '../dto/claim-payload';
 
 @Resolver(() => Billing)
@@ -34,11 +38,13 @@ export class BillingResolver {
   constructor(
     @InjectRepository(Code)
     private codeRepository: Repository<Code>,
+    private readonly claimService: ClaimService,
     private readonly doctorService: DoctorService,
+    private readonly patientService: PatientService,
     private readonly billingService: BillingService,
     private readonly facilityService: FacilityService,
     private readonly claimStatusService: ClaimStatusService,
-    private readonly claimService: ClaimService,
+    private readonly appointmentService: AppointmentService,
     private readonly feeScheduleService: FeeScheduleService,
   ) { }
 
@@ -87,6 +93,15 @@ export class BillingResolver {
     return {
       ...(await this.billingService.getSuperBillInfo(superBillInput.appointmentId)),
       response: { status: 200, message: "Claim File created successfully" }
+    };
+  }
+
+  @Query(() => BillingsPayload)
+  async fetchBillingClaimStatuses(@Args('fetchBillingClaimStatusesInput') fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput): Promise<BillingsPayload> {
+    const billingStatus = await this.billingService.fetchClaimStatus(fetchBillingClaimStatusesInput)
+    return {
+      ...billingStatus,
+      response: { status: 200, message: "Claim fetch successfully" }
     };
   }
 
@@ -140,6 +155,21 @@ export class BillingResolver {
   async claim(@Parent() billing: Billing): Promise<Claim> {
     if (billing?.id) {
       return await this.claimService.getClaimByBillingId(billing?.id)
+    }
+  }
+
+  @ResolveField(() => Appointment)
+  async appointment(@Parent() billing: Billing): Promise<Appointment> {
+    if (billing?.appointmentId) {
+      return await this.appointmentService.findOne(billing?.appointmentId)
+    }
+  }
+
+  @ResolveField(() => Patient)
+  async patient(@Parent() billing: Billing): Promise<Patient> {
+    if (billing?.patientId) {
+      const { patient } = await this.patientService.GetPatient(billing?.patientId);
+      return patient;
     }
   }
 }
