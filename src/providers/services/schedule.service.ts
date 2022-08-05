@@ -107,6 +107,10 @@ export class ScheduleService {
 
     let transformedScheduleElement
     if (scheduleElementData) {
+      const scheduleValues = (scheduleElement as UpdateScheduleInput)
+      if (scheduleValues.id) {
+        scheduleElementData = scheduleElementData.filter((scheduleElementValues) => scheduleElementValues.id !== scheduleValues.id)
+      }
       const startAt = [...scheduleElementData, scheduleElement].sort((a, b) => moment(a.startAt).diff(moment(b.startAt)))[0].startAt
       const endAt = [...scheduleElementData, scheduleElement].sort((a, b) => moment(b.endAt).diff(moment(a.endAt)))[0].endAt
       transformedScheduleElement = {
