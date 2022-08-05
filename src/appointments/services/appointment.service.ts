@@ -488,7 +488,7 @@ export class AppointmentService {
    */
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
-      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, updateAppointmentInput, this.appointmentRepository)
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, { ...updateAppointmentInput, token: createToken() }, this.appointmentRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
