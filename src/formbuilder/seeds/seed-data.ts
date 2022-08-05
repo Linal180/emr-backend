@@ -221,7 +221,7 @@ const facilityAppointment = [
     sections: [
       {
         id: uuid(),
-        col: 8,
+        col: 9,
         name: "Select Services",
         fields: facilityServicesFields
       },
