@@ -24,6 +24,9 @@ export class UpdateAppointmentInput extends PartialType(CreateAppointmentInput) 
 
   @Field({ nullable: true })
   checkedOutAt?: string;
+
+  @Field({ nullable: true })
+  insuranceStatus?: string
 }
 
 @InputType()
