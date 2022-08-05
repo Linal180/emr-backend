@@ -333,7 +333,8 @@ const facilityAppointment = [
             defaultValue: "",
             isMultiSelect: false,
             tableContactType: null,
-            futureEnable: false
+            futureEnable: false,
+            pastEnable: true
           },
           {
             css: "",
@@ -3846,7 +3847,8 @@ export const FormTemplates = [
                 defaultValue: "",
                 isMultiSelect: false,
                 apiCall: '',
-                futureEnable: false
+                futureEnable: false,
+                pastEnable: true
               },
               {
                 css: "",
