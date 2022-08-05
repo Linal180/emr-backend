@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 const { PDFDocument, createPDFAcroFields } = require('pdf-lib');
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 //entities
-import { Billing } from '../entities/billing.entity';
+import { Billing, PatientPaymentType } from '../entities/billing.entity';
 import { Code, CodeType } from '../entities/code.entity';
 import { MARITIALSTATUS } from 'src/patients/entities/patient.entity';
 import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
@@ -89,7 +89,11 @@ export class BillingService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, claimStatusId, feeScheduleId, shouldCheckout, ...billingInfoToCreate } = createBillingInput
+      const { codes, patientId, appointmentId, facilityId, servicingProviderId, renderingProviderId, claimStatusId, feeScheduleId, shouldCheckout, patientPaymentType, ...billingInfoToCreate } = createBillingInput
+      if (patientPaymentType) {
+        const insuranceStatus = patientPaymentType === PatientPaymentType.INSURANCE ? 'insurance' : 'noInsurance'
+        await this.appointmentService.updateAppointment({ id: appointmentId, insuranceStatus })
+      }
       const billingInfo = await this.billingRepository.findOne({ appointmentId })
       let billingInstance: Billing
       if (billingInfo) {
@@ -202,7 +206,7 @@ export class BillingService {
     const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact)
     const { cliaIdNumber, practiceId, serviceCode } = facilityInfo || {}
     const serviceC = serviceCode?.split('-')
-    const pos = serviceC.length ? serviceC[0] : '';
+    const pos = serviceC?.length ? serviceC?.[0] : '';
     const { state: facilityState } = facilityPrimaryContact || {}
     const facilitySt = states?.find(({ name }) => name === facilityState);
     const { abbreviation: facilityStateCode } = facilitySt || {}
@@ -609,7 +613,7 @@ export class BillingService {
     const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact)
     const { cliaIdNumber, practiceId, serviceCode } = facilityInfo || {}
     const serviceC = serviceCode?.split('-')
-    const pos = serviceC.length ? serviceC[0] : '';
+    const pos = serviceC?.length ? serviceC?.[0] : '';
     const { state: facilityState } = facilityPrimaryContact || {}
     const facilitySt = states?.find(({ name }) => name === facilityState);
     const { abbreviation: facilityStateCode } = facilitySt || {}
@@ -904,7 +908,7 @@ export class BillingService {
     claimInfo.facility_id && form.getTextField('grp1').setText(claimInfo.facility_id ?? '')
     claimInfo.total_charge && form.getTextField('t_charge').setText(String(claimInfo.total_charge))
 
-    claimInfo.charge.length && claimInfo.charge.forEach((chargeValue, i) => {
+    claimInfo.charge?.length && claimInfo.charge.forEach((chargeValue, i) => {
       claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_mm_from`).setText(`${moment(claimInfo.from_date_1).format('MM')}`)
       claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_dd_from`).setText(`${moment(claimInfo.from_date_1).format('DD')}`)
       claimInfo.from_date_1 && form.getTextField(`sv${i + 1}_yy_from`).setText(`${moment(claimInfo.from_date_1).format('YY')}`)
@@ -946,7 +950,7 @@ export class BillingService {
 
       const result = claimMedValidation.validate(transformedClaimInfo)
       if (result.error) {
-        const errorMessages = [...result.error.details.map((d) => d.message), !claimInfo.charge.length ? 'Procedure code is missing' : ''].join();
+        const errorMessages = [...result.error.details.map((d) => d.message), !claimInfo.charge?.length ? 'Procedure code is missing' : ''].join();
         throw new BadRequestException(errorMessages);
       }
 

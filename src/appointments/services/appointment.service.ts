@@ -14,7 +14,7 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { GetSlots } from 'src/providers/dto/update-schedule.input';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from '../../facilities/entities/services.entity';
-import { AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
+import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaymentService } from 'src/payment/services/payment.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -363,6 +363,19 @@ export class AppointmentService {
    */
   async findOne(id: string): Promise<Appointment> {
     return await this.appointmentRepository.findOne(id);
+  }
+
+  /**
+ * Finds one
+ * @param id 
+ * @returns one 
+ */
+  async findAppointmentInsuranceStatus(id: string): Promise<AppointmentInsuranceStatus> {
+    const appointment = await this.appointmentRepository.findOne(id, { select: ['insuranceStatus', 'id'] });
+    return {
+      id: appointment.id,
+      insuranceStatus: appointment.insuranceStatus
+    }
   }
 
   /**
