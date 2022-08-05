@@ -253,7 +253,7 @@ const facilityAppointment = [
       },
       {
         id: uuid(),
-        col: 12,
+        col: 10,
         name: "Patient Info",
         fields: [
           {
@@ -379,7 +379,7 @@ const facilityAppointment = [
       },
       {
         id: uuid(),
-        col: 12,
+        col: 10,
         name: "Demographics",
         fields: [
           {
