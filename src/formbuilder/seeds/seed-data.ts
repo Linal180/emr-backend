@@ -227,7 +227,7 @@ const facilityAppointment = [
       },
       {
         id: uuid(),
-        col: 4,
+        col: 3,
         name: "Available Slots",
         fields: [
           {
