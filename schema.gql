@@ -5034,7 +5034,7 @@ input UpdateCopayInput {
   amount: String
   policy: CreatePolicyInput
   policyId: String
-  id: String!
+  id: String
 }
 
 input UpdatePolicyHolderInput {
