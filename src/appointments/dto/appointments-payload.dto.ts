@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, PartialType } from '@nestjs/graphql';
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
 import { ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
 import { Appointment } from '../entities/appointment.entity';
@@ -19,4 +19,13 @@ export class UpcomingAppointmentsPayload extends ResponsePayloadResponse {
 
     @Field(type => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
+}
+
+@ObjectType()
+export class AppointmentInsuranceStatus extends ResponsePayloadResponse {
+    @Field()
+    id: string;
+
+    @Field({ nullable: true })
+    insuranceStatus?: string;
 }
