@@ -1433,6 +1433,7 @@ type Appointment {
   billingStatus: BillingStatus!
   appointmentCreateType: AppointmentCreateType
   appointmentCancelReason: String
+  insuranceStatus: String
   checkedInAt: String
   checkedOutAt: String
   selfCheckIn: Boolean
@@ -1991,6 +1992,12 @@ type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
   pagination: PaginationPayload
+}
+
+type AppointmentInsuranceStatus {
+  response: ResponsePayload
+  id: String!
+  insuranceStatus: String
 }
 
 type ContactPayload {
@@ -2841,6 +2848,7 @@ type Query {
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
+  findAppointmentInsuranceStatus(appointmentId: String!): AppointmentInsuranceStatus!
   findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
@@ -4574,6 +4582,7 @@ input UpdateAppointmentInput {
   status: AppointmentStatus
   checkInActiveStep: String
   checkedOutAt: String
+  insuranceStatus: String
 }
 
 input UpdateAppointmentBillingStatusInput {
