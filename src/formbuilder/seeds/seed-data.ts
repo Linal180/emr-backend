@@ -1355,6 +1355,8 @@ const facilityAppointment = [
           placeholder: "",
           defaultValue: "",
           isMultiSelect: false,
+          tableName: "Appointments",
+          columnName: "insuranceStatus",
         },
       ]
     }]
@@ -3936,6 +3938,8 @@ export const FormTemplates = [
                 apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
                 fieldId: uuid(),
                 options: PAYMENT_TYPES,
+                tableName: "Appointments",
+                columnName: "insuranceStatus",
                 errorMsg: "",
                 required: true,
                 textArea: false,
