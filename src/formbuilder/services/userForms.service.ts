@@ -34,6 +34,8 @@ import {
   SEXUALORIENTATION
 } from "src/patients/entities/patient.entity";
 import { ContractService } from "src/appointments/services/contract.service";
+import { OrderOfBenefit } from "src/billings/entities/claim.entity";
+import { OrderOfBenefitType } from "src/insurance/entities/policy.entity";
 
 @Injectable()
 export class UserFormsService {
@@ -337,7 +339,8 @@ export class UserFormsService {
                   groupNumber,
                   insuranceId: companyName,
                   patientId: patientInstance.id,
-                  primaryCareProviderId: doctorId || null
+                  primaryCareProviderId: doctorId || null,
+                  orderOfBenefit: OrderOfBenefitType.PRIMARY
                 }
                 await this.policyService.create(inputs)
               }
@@ -494,7 +497,8 @@ export class UserFormsService {
                     groupNumber,
                     insuranceId: companyName,
                     patientId: patientId,
-                    primaryCareProviderId: doctorId || null
+                    primaryCareProviderId: doctorId || null,
+                    orderOfBenefit: OrderOfBenefitType.PRIMARY
                   }
                   await this.policyService.create(inputs)
                 }

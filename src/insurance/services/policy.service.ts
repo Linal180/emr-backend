@@ -17,10 +17,11 @@ import { PoliciesPayload } from '../dto/policy-payload.dto';
 import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
 import { PolicyCoverage } from '../entities/policy-coverage.entity';
 import { PolicyEligibility } from '../entities/policy-eligibility.entity';
-import { Policy } from '../entities/policy.entity';
+import { OrderOfBenefitType, Policy } from '../entities/policy.entity';
 import { getClaimRelation } from 'src/lib/helper';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { PracticeService } from 'src/practice/practice.service';
+import { UtilsService } from 'src/util/utils.service';
 
 @Injectable()
 export class PolicyService {
@@ -40,6 +41,7 @@ export class PolicyService {
     private readonly doctorService: DoctorService,
     private readonly facilityService: FacilityService,
     private readonly practiceService: PracticeService,
+    private readonly utilsService: UtilsService,
     private readonly httpService: HttpService
   ) { }
 
@@ -90,7 +92,19 @@ export class PolicyService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { referringProviderId, patientId, primaryCareProviderId, ...policyInfoToCreate } = createPolicyInput
+      const { referringProviderId, patientId, primaryCareProviderId, insuranceId, ...policyInfoToCreate } = createPolicyInput
+      const primaryInsurance = await this.policyRepository.findOne({ where: { patientId, orderOfBenefit: createPolicyInput.orderOfBenefit } })
+      const secondaryInsurance = await this.policyRepository.findOne({ where: { patientId, orderOfBenefit: createPolicyInput.orderOfBenefit } })
+      const tertiaryInsurance = await this.policyRepository.findOne({ where: { patientId, orderOfBenefit: createPolicyInput.orderOfBenefit } })
+      if (primaryInsurance) {
+        return await this.update({ ...createPolicyInput, id: primaryInsurance.id, policyHolderInfo: { ...createPolicyInput.policyHolderInfo, id: primaryInsurance.policyHolderId } })
+      }
+      if (secondaryInsurance) {
+        return await this.update({ ...createPolicyInput, id: secondaryInsurance.id, policyHolderInfo: { ...createPolicyInput.policyHolderInfo, id: secondaryInsurance.policyHolderId } })
+      }
+      if (tertiaryInsurance) {
+        return await this.update({ ...createPolicyInput, id: tertiaryInsurance.id, policyHolderInfo: { ...createPolicyInput.policyHolderInfo, id: tertiaryInsurance.policyHolderId } })
+      }
       //creating policy
       const policyInstance = this.policyRepository.create({ ...policyInfoToCreate })
 
