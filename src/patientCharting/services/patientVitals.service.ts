@@ -28,19 +28,19 @@ export class VitalsService {
   async addPatientVital(createVitalInput: CreateVitalInput): Promise<PatientVitals> {
     try {
       //create patient vital instance
-      const patientVitalInstance =  this.patientVitalsRepository.create(createVitalInput)
+      const patientVitalInstance = this.patientVitalsRepository.create(createVitalInput)
       //get appointment & associate with vital
-      if(createVitalInput.appointmentId){
+      if (createVitalInput.appointmentId) {
         const appointment = await this.appointmentService.findOne(createVitalInput.appointmentId)
         patientVitalInstance.appointment = appointment
       }
       //get patient & associate with vital
-      if(createVitalInput.patientId){
-        const patient  = await this.patientService.findOne(createVitalInput.patientId)
+      if (createVitalInput.patientId) {
+        const patient = await this.patientService.findOne(createVitalInput.patientId)
         patientVitalInstance.patient = patient
       }
       //get staff & associate with vital
-      if(createVitalInput.staffId){
+      if (createVitalInput.staffId) {
         const staff = await this.staffService.findOne(createVitalInput.staffId)
         patientVitalInstance.addedBy = staff
       }
@@ -91,7 +91,7 @@ export class VitalsService {
    */
   async findOne(id: string): Promise<PatientVitals> {
     const patientVital = await this.patientVitalsRepository.findOne(id);
-    if(patientVital){
+    if (patientVital) {
       return patientVital
     }
     throw new NotFoundException({
@@ -107,6 +107,20 @@ export class VitalsService {
    */
   async GetPatientVital(id: string): Promise<PatientVitals> {
     return await this.findOne(id);
+  }
+
+  /**
+   * Params vitals service
+   * @param patientId 
+   * @returns patient latest vital 
+   */
+  async GetPatientLatestVital(patientId: string): Promise<PatientVitals> {
+    const patientLatestVital = await this.patientVitalsRepository.find({
+      where: { patientId },
+      order: { vitalCreationDate: -1 },
+    })
+
+    return patientLatestVital[0]
   }
 
   /**
