@@ -1912,9 +1912,157 @@ enum HOLDSTATEMENT {
   PRACTICE_REQUEST
 }
 
-type ServicePayload {
+type FormElement {
+  id: String!
+  placeholder: String
+  defaultValue: String
+  required: Boolean
+  errorMsg: String
+  name: String!
+  label: String
+  columnName: String
+  tableName: String
+  tableContactType: String
+  fieldId: String!
+  sectionId: String!
+  isDeleted: Boolean!
+  element: Element
+  createdAt: String
+  updatedAt: String
+}
+
+type Element {
+  id: String!
+  type: ElementType!
+  createdAt: String
+  updatedAt: String
+}
+
+"""The form's element types"""
+enum ElementType {
+  TEXT
+  NUMBER
+  DROPDOWN
+  RADIO
+  DATE
+  FILE
+  TIME
+  SELECT
+  CHECKBOX
+  TEL
+  EMAIL
+  COLOR
+  IMAGE
+  MONTH
+  PASSWORD
+  URL
+  WEEK
+  CUSTOM
+}
+
+type FormPayload {
   response: ResponsePayload
-  service: Service
+  form: Form
+}
+
+type FieldOptionsType {
+  name: String!
+  value: String!
+}
+
+type FieldsTypes {
+  label: String!
+  name: String!
+  type: ElementType!
+  css: String!
+  column: Int!
+  placeholder: String!
+  defaultValue: String!
+  required: Boolean!
+  errorMsg: String!
+  tableName: String
+  columnName: String
+  fieldId: String!
+  options: [FieldOptionsType!]!
+  textArea: Boolean!
+  isMultiSelect: Boolean
+  apiCall: String
+  tableContactType: String
+  regex: String
+  futureEnable: Boolean
+  pastEnable: Boolean
+}
+
+type SectionsTypes {
+  id: String!
+  col: Int!
+  name: String!
+  fields: [FieldsTypes!]!
+}
+
+type FormTabs {
+  id: String
+  name: String
+  sections: [SectionsTypes!]!
+}
+
+type LayoutJSONType {
+  tabs: [FormTabs!]!
+}
+
+type ArrayOfStringsType {
+  name: String!
+  value: Boolean!
+}
+
+type UsersFormsElements {
+  id: String!
+  UsersFormsId: String!
+  FormsElementsId: String!
+  value: String
+  arrayOfObjects: [ArrayOfStringsType!]!
+  arrayOfStrings: [String!]!
+  createdAt: String
+  updatedAt: String
+  userForm: UserForms
+}
+
+type UserForms {
+  id: String!
+  PatientId: String
+  DoctorId: String
+  StaffId: String
+  FormId: String!
+  SubmitterId: String
+  createdAt: String
+  updatedAt: String
+  form: Form
+  userFormElements: [UsersFormsElements!]
+}
+
+type Form {
+  id: String!
+  name: String
+  type: FormType!
+  facilityId: String
+  practiceId: String
+  layout: LayoutJSONType!
+  isSystemForm: Boolean
+  isActive: Boolean
+  formElements: [FormElement!]
+  userForms: [UserForms!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The form's types"""
+enum FormType {
+  APPOINTMENT
+  DOCTOR
+  PATIENT
+  STAFF
+  TEMPLATE
+  PRE_DEFINED
 }
 
 type PaginationPayload {
@@ -1922,6 +2070,74 @@ type PaginationPayload {
   limit: Int
   totalCount: Int
   totalPages: Int
+}
+
+type ResponsePayloadResponse {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type AllCPTCodePayload {
+  cptCodes: [CPTCodes]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type CPTCodePayload {
+  cptCode: CPTCodes
+  response: ResponsePayloadResponse
+}
+
+type AllModifiersPayload {
+  modifiers: [Modifier]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type ModifierPayload {
+  modifier: Modifier
+  response: ResponsePayloadResponse
+}
+
+type AllFeeSchedulesPayload {
+  feeSchedules: [FeeSchedule]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type FeeSchedulePayload {
+  feeSchedule: FeeSchedule
+  response: ResponsePayloadResponse
+}
+
+type AllCPTFeeSchedulesPayload {
+  cptFeeSchedules: [CptFeeSchedule]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type CPTFeeSchedulePayload {
+  cptFeeSchedule: CptFeeSchedule
+  response: ResponsePayloadResponse
+}
+
+type PracticePayload {
+  response: ResponsePayload
+  practice: Practice
+  practiceAdmin: Staff
+}
+
+type PracticesPayload {
+  response: ResponsePayload
+  practices: [Practice]
+  pagination: PaginationPayload
+}
+
+type ServicePayload {
+  response: ResponsePayload
+  service: Service
 }
 
 type ServicesPayload {
@@ -2100,13 +2316,6 @@ type PatientDoctorPayload {
   provider: DoctorPatient
 }
 
-type ResponsePayloadResponse {
-  status: Float
-  error: String
-  message: String
-  name: String
-}
-
 type PatientConsentPayload {
   patientConsent: PatientConsent
   response: ResponsePayloadResponse
@@ -2163,62 +2372,6 @@ type PermissionsPayload {
 type PermissionPayload {
   response: ResponsePayload
   permission: Permission
-}
-
-type AllCPTCodePayload {
-  cptCodes: [CPTCodes]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type CPTCodePayload {
-  cptCode: CPTCodes
-  response: ResponsePayloadResponse
-}
-
-type AllModifiersPayload {
-  modifiers: [Modifier]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type ModifierPayload {
-  modifier: Modifier
-  response: ResponsePayloadResponse
-}
-
-type AllFeeSchedulesPayload {
-  feeSchedules: [FeeSchedule]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type FeeSchedulePayload {
-  feeSchedule: FeeSchedule
-  response: ResponsePayloadResponse
-}
-
-type AllCPTFeeSchedulesPayload {
-  cptFeeSchedules: [CptFeeSchedule]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type CPTFeeSchedulePayload {
-  cptFeeSchedule: CptFeeSchedule
-  response: ResponsePayloadResponse
-}
-
-type PracticePayload {
-  response: ResponsePayload
-  practice: Practice
-  practiceAdmin: Staff
-}
-
-type PracticesPayload {
-  response: ResponsePayload
-  practices: [Practice]
-  pagination: PaginationPayload
 }
 
 type AttachmentPayload {
@@ -2610,159 +2763,6 @@ type PracticeFacilityAppointmentsPayload {
 type PracticeUserRolesPayload {
   userRoles: [PracticeUserRoles!]
   response: ResponsePayloadResponse
-}
-
-type FormPayload {
-  response: ResponsePayload
-  form: Form
-}
-
-type FieldOptionsType {
-  name: String!
-  value: String!
-}
-
-type FieldsTypes {
-  label: String!
-  name: String!
-  type: ElementType!
-  css: String!
-  column: Int!
-  placeholder: String!
-  defaultValue: String!
-  required: Boolean!
-  errorMsg: String!
-  tableName: String
-  columnName: String
-  fieldId: String!
-  options: [FieldOptionsType!]!
-  textArea: Boolean!
-  isMultiSelect: Boolean
-  apiCall: String
-  tableContactType: String
-  regex: String
-  futureEnable: Boolean
-  pastEnable: Boolean
-}
-
-"""The form's element types"""
-enum ElementType {
-  TEXT
-  NUMBER
-  DROPDOWN
-  RADIO
-  DATE
-  FILE
-  TIME
-  SELECT
-  CHECKBOX
-  TEL
-  EMAIL
-  COLOR
-  IMAGE
-  MONTH
-  PASSWORD
-  URL
-  WEEK
-  CUSTOM
-}
-
-type SectionsTypes {
-  id: String!
-  col: Int!
-  name: String!
-  fields: [FieldsTypes!]!
-}
-
-type FormTabs {
-  id: String
-  name: String
-  sections: [SectionsTypes!]!
-}
-
-type LayoutJSONType {
-  tabs: [FormTabs!]!
-}
-
-type ArrayOfStringsType {
-  name: String!
-  value: Boolean!
-}
-
-type UsersFormsElements {
-  id: String!
-  UsersFormsId: String!
-  FormsElementsId: String!
-  value: String
-  arrayOfObjects: [ArrayOfStringsType!]!
-  arrayOfStrings: [String!]!
-  createdAt: String
-  updatedAt: String
-  userForm: UserForms
-}
-
-type UserForms {
-  id: String!
-  PatientId: String
-  DoctorId: String
-  StaffId: String
-  FormId: String!
-  SubmitterId: String
-  createdAt: String
-  updatedAt: String
-  form: Form
-  userFormElements: [UsersFormsElements!]
-}
-
-type Form {
-  id: String!
-  name: String
-  type: FormType!
-  facilityId: String
-  practiceId: String
-  layout: LayoutJSONType!
-  isSystemForm: Boolean
-  isActive: Boolean
-  formElements: [FormElement!]
-  userForms: [UserForms!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The form's types"""
-enum FormType {
-  APPOINTMENT
-  DOCTOR
-  PATIENT
-  STAFF
-  TEMPLATE
-  PRE_DEFINED
-}
-
-type FormElement {
-  id: String!
-  placeholder: String
-  defaultValue: String
-  required: Boolean
-  errorMsg: String
-  name: String!
-  label: String
-  columnName: String
-  tableName: String
-  tableContactType: String
-  fieldId: String!
-  sectionId: String!
-  isDeleted: Boolean!
-  element: Element
-  createdAt: String
-  updatedAt: String
-}
-
-type Element {
-  id: String!
-  type: ElementType!
-  createdAt: String
-  updatedAt: String
 }
 
 type FormsPayload {
@@ -4529,6 +4529,7 @@ input CreateAppointmentInput {
   patientId: String
   practiceId: String
   appointmentCreateType: AppointmentCreateType
+  insuranceStatus: String
 }
 
 input CreateExternalAppointmentInput {
@@ -4577,6 +4578,7 @@ input UpdateAppointmentInput {
   patientId: String
   practiceId: String
   appointmentCreateType: AppointmentCreateType
+  insuranceStatus: String
   id: String!
   paymentStatus: String
   selfCheckIn: Boolean
@@ -4584,7 +4586,6 @@ input UpdateAppointmentInput {
   status: AppointmentStatus
   checkInActiveStep: String
   checkedOutAt: String
-  insuranceStatus: String
 }
 
 input UpdateAppointmentBillingStatusInput {

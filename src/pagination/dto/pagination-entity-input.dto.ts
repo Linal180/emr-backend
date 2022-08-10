@@ -36,8 +36,13 @@ export class PaginatedEntityInput {
     id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string,
     columnName?: string, columnName2?: string, columnName3?: string, filterType: string
   }
+  associatedTo?: string;
+  associatedToField1?: {
+    columnValue?: string, columnValue2?: string, columnValue3?: string,
+    columnName?: string, columnName2?: string, columnName3?: string,
+  }
+  associatedTo1?: string;
   paginationOptions: PaginationInput
-  associatedTo?: string
   relationField?: string
   requestType?: string
   requestStatus?: string

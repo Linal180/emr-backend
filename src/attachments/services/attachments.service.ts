@@ -1,36 +1,40 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { getConnection, Repository } from 'typeorm';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+//payloads
 import { File } from 'src/aws/dto/file-input.dto';
-import { ATTACHMENT_TITLES } from 'src/lib/constants';
-import { PaginationService } from 'src/pagination/pagination.service';
-import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.dto';
-import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
-import { PracticeService } from 'src/practice/practice.service';
-import { UtilsService } from 'src/util/utils.service';
-import { getConnection, ILike, ObjectLiteral, Repository } from 'typeorm';
-import { AwsService } from '../../aws/aws.service';
-import { AttachmentWithPreSignedUrl } from '../dto/attachment-payload.dto';
 import { AttachmentsPayload } from '../dto/attachments-payload.dto';
-import { attachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
-import { GetAttachment, GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetAttachmentSignature, UpdateAttachmentInput, UpdateAttachmentMediaInput } from '../dto/update-attachment.input';
+import { AttachmentWithPreSignedUrl } from '../dto/attachment-payload.dto';
+import { PatientAttachmentsPayload } from 'src/patients/dto/patients-attachments-payload.dto';
+//inputs
+import PatientAttachmentsInput from 'src/patients/dto/patient-attachments-input.dto';
+import { AttachmentInput, CreateAttachmentInput } from '../dto/create-attachment.input';
+import {
+  GetAttachment, GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId,
+  GetAttachmentSignature, UpdateAttachmentInput, UpdateAttachmentMediaInput
+} from '../dto/update-attachment.input';
+//entities
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
-import { DocumentType } from '../entities/documentType.entity';
+//services
+import { AwsService } from '../../aws/aws.service';
+import { UtilsService } from 'src/util/utils.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { AttachmentMetaDataService } from './attachmentMetaData.service';
+//helpers
+import { ATTACHMENT_TITLES } from 'src/lib/constants';
+import { DocumentTypesService } from './documentType.service';
 
 @Injectable()
 export class AttachmentsService {
   constructor(
     @InjectRepository(Attachment)
     private attachmentsRepository: Repository<Attachment>,
-    @InjectRepository(AttachmentMetadata)
-    private attachmentMetadataRepository: Repository<AttachmentMetadata>,
-    @InjectRepository(DocumentType)
-    private documentTypeRepository: Repository<DocumentType>,
     private readonly awsService: AwsService,
     private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
-    @Inject(forwardRef(() => PracticeService))
-    private readonly practiceService: PracticeService,
+    private readonly documentTypeService: DocumentTypesService,
+    private readonly attachmentMetaDataService: AttachmentMetaDataService
   ) { }
 
   /**
@@ -43,7 +47,7 @@ export class AttachmentsService {
     const { labOrderNum, policyId, documentTypeId, documentTypeName, documentDate,
       practiceId, signedBy, signedAt, comments, agreementId, ...attachmentInput } = createAttachmentInput
     const attachmentsResult = this.attachmentsRepository.create(attachmentInput)
-    let createMetaDataParams: attachmentInput = {}
+    let createMetaDataParams: AttachmentInput = {}
     if (labOrderNum) {
       createMetaDataParams.labOrderNum = labOrderNum
     }
@@ -77,25 +81,9 @@ export class AttachmentsService {
     }
 
     if (Object.keys(createMetaDataParams).length) {
-      const attachmentMetadata = this.attachmentMetadataRepository.create(createMetaDataParams)
-      let documentType
-      if (documentTypeId) {
-        documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
-        attachmentMetadata.documentType = documentType
-      } else if (documentTypeName) {
-        const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
-        if (practiceId) {
-          const practice = await this.practiceService.findOne(practiceId)
-          documentTypeInstance.practice = practice
-        }
-        documentType = await this.documentTypeRepository.save(documentTypeInstance)
-        attachmentMetadata.documentType = documentType
-      }
-
-      const createdMetaData = await this.attachmentMetadataRepository.save(attachmentMetadata)
-
-      attachmentsResult.attachmentMetadata = createdMetaData
-      attachmentsResult.attachmentMetadataId = createdMetaData.id
+      const attachmentMetadata = await this.attachmentMetaDataService.create(createMetaDataParams)
+      attachmentsResult.attachmentMetadata = attachmentMetadata
+      attachmentsResult.attachmentMetadataId = attachmentMetadata?.id
     }
 
     return await this.attachmentsRepository.save(attachmentsResult)
@@ -219,7 +207,69 @@ export class AttachmentsService {
       const { paginationOptions, signedBy, typeId, attachmentName } = getAttachment
 
       const { page, limit } = paginationOptions
+      const paginationResponse = await this.paginationService.willPaginate<Attachment>(
+        this.attachmentsRepository, {
+        paginationOptions, typeId, associatedTo: 'Attachment', associatedToField: {
+          columnValue: attachmentName, columnName: 'attachmentName', filterType: 'stringFilter'
+        }
+        , associatedTo1: "AttachmentMetadata", associatedToField1: {
+          columnValue: attachmentName, columnName: 'attachmentName'
+        }
+      })
+      // return {
+      //   pagination: {
+      //     ...paginationResponse
+      //   },
+      //   documentTypes: paginationResponse.data,
+      // }
 
+      const baseQuery = getConnection()
+        .getRepository(Attachment)
+        .createQueryBuilder('attachment')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .where('attachment.typeId = :typeId', { typeId: typeId })
+        .andWhere(attachmentName ? 'attachment.attachmentName ILIKE :attachmentName' : '1=1', { attachmentName: `%${attachmentName}%` })
+
+      // if (signedBy) {
+      //   baseQuery
+      //     .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is not null`)
+      // } else {
+      //   baseQuery
+      //     .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is null`)
+      // }
+
+      const [attachments, totalCount] = await baseQuery
+        .loadAllRelationIds()
+        .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
+
+      return {
+        pagination: {
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        attachments
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Finds attachments by id new
+   * @param getAttachment 
+   * @returns attachments by id new 
+   */
+  async findAttachmentsByIdNew(getAttachment: GetAttachment): Promise<AttachmentsPayload> {
+    try {
+      const { paginationOptions, signedBy, typeId, attachmentName } = getAttachment
+
+      const { page, limit } = paginationOptions
 
       const baseQuery = getConnection()
         .getRepository(Attachment)
@@ -257,6 +307,12 @@ export class AttachmentsService {
     }
   }
 
+
+  /**
+   * Gets attachment signature
+   * @param getAttachment 
+   * @returns  
+   */
   async getAttachmentSignature(getAttachment: GetAttachmentSignature) {
     const { typeId } = getAttachment
     return await this.attachmentsRepository.find({
@@ -365,7 +421,7 @@ export class AttachmentsService {
   async updateAttachmentMedia(updateAttachmentInput: UpdateAttachmentInput): Promise<Attachment> {
     try {
       const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, agreementId, ...attachmentInputToUpdate } = updateAttachmentInput
-      let attachmentMetadataInput: attachmentInput = {}
+      let attachmentMetadataInput: AttachmentInput = {}
       if (comments)
         attachmentMetadataInput.comments = comments;
       if (labOrderNum)
@@ -387,18 +443,13 @@ export class AttachmentsService {
       if (updatedAttachment.attachmentMetadata) {
         let documentType
         if (documentTypeId) {
-          documentType = await this.documentTypeRepository.findOne({ id: documentTypeId })
+          documentType = await this.documentTypeService.findOneById(documentTypeId)
           updatedAttachment.attachmentMetadata.documentType = documentType
         } else if (documentTypeName) {
-          const documentTypeInstance = this.documentTypeRepository.create({ type: documentTypeName })
-          if (practiceId) {
-            const practice = await this.practiceService.findOne(practiceId)
-            documentTypeInstance.practice = practice
-          }
-          documentType = await this.documentTypeRepository.save(documentTypeInstance)
+          documentType = await this.documentTypeService.create({ type: documentTypeName })
           updatedAttachment.attachmentMetadata.documentType = documentType
         }
-        const updatedAttachmentMetaData = await this.utilsService.updateEntityManager(AttachmentMetadata, updatedAttachment.attachmentMetadata.id, { ...updatedAttachment.attachmentMetadata, ...attachmentMetadataInput }, this.attachmentMetadataRepository)
+        await this.attachmentMetaDataService.update(updatedAttachment.attachmentMetadata.id, { attachmentMetaData: updatedAttachment.attachmentMetadata, attachmentInput: attachmentMetadataInput })
       }
       return updatedAttachment
     } catch (error) {
@@ -413,7 +464,7 @@ export class AttachmentsService {
    */
   async getAttachmentMetadata(id: string): Promise<AttachmentMetadata> {
     try {
-      return await this.attachmentMetadataRepository.findOne({ id })
+      return await this.attachmentMetaDataService.findOneById(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -428,7 +479,7 @@ export class AttachmentsService {
     const attachment = await this.attachmentsRepository.findOne({ id });
     if (attachment) {
       const deletedAttachment = await this.attachmentsRepository.delete({ id })
-      const deletedAttachmentMetadata = await this.attachmentMetadataRepository.delete({ id: attachment.attachmentMetadata?.id })
+      const deletedAttachmentMetadata = await this.attachmentMetaDataService.remove(attachment.attachmentMetadata?.id)
       if (deletedAttachment.affected) {
         return attachment.key ? await this.awsService.removeFile(attachment.key) : '';
       }
