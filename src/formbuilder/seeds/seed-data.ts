@@ -221,13 +221,13 @@ const facilityAppointment = [
     sections: [
       {
         id: uuid(),
-        col: 8,
+        col: 9,
         name: "Select Services",
         fields: facilityServicesFields
       },
       {
         id: uuid(),
-        col: 4,
+        col: 3,
         name: "Available Slots",
         fields: [
           {
@@ -253,7 +253,7 @@ const facilityAppointment = [
       },
       {
         id: uuid(),
-        col: 12,
+        col: 9,
         name: "Patient Info",
         fields: [
           {
@@ -379,7 +379,7 @@ const facilityAppointment = [
       },
       {
         id: uuid(),
-        col: 12,
+        col: 9,
         name: "Demographics",
         fields: [
           {
@@ -1355,6 +1355,8 @@ const facilityAppointment = [
           placeholder: "",
           defaultValue: "",
           isMultiSelect: false,
+          tableName: "Appointments",
+          columnName: "insuranceStatus",
         },
       ]
     }]
@@ -3936,6 +3938,8 @@ export const FormTemplates = [
                 apiCall: FormBuilderApiSelector.PAYMENT_TYPE,
                 fieldId: uuid(),
                 options: PAYMENT_TYPES,
+                tableName: "Appointments",
+                columnName: "insuranceStatus",
                 errorMsg: "",
                 required: true,
                 textArea: false,

@@ -5,10 +5,10 @@ import { CreateContractInput } from './contract.input';
 @InputType()
 export class CreateAppointmentInput extends PartialType(CreateContractInput) {
 
-    @Field(type => PaymentType)
+    @Field(() => PaymentType)
     paymentType: PaymentType;
 
-    @Field(type => BillingStatus, { nullable: false })
+    @Field(() => BillingStatus, { nullable: false })
     billingStatus?: BillingStatus;
 
     @Field({ nullable: true })
@@ -65,6 +65,9 @@ export class CreateAppointmentInput extends PartialType(CreateContractInput) {
     @Field({ nullable: true })
     practiceId?: string;
 
-    @Field(type => AppointmentCreateType, { nullable: true })
+    @Field(() => AppointmentCreateType, { nullable: true })
     appointmentCreateType?: AppointmentCreateType
+
+    @Field(() => String, { nullable: true })
+    insuranceStatus?: string
 }

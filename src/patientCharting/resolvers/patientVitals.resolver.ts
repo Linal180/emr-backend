@@ -64,6 +64,17 @@ export class VitalsResolver {
     };
   }
 
+  @Query(returns => PatientVitalPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getPatientVital')
+  async getPatientLatestVital(@Args('patientId') patientId: string): Promise<PatientVitalPayload> {
+    const patientVital = await this.vitalsService.GetPatientLatestVital(patientId)
+    return {
+      patientVital,
+      response: { status: 200, message: 'Patient vital fetched successfully' }
+    };
+  }
+
   @Mutation(() => PatientVitalPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'removePatientVital')
