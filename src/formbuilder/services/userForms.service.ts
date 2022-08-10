@@ -9,6 +9,7 @@ import {
 import { UserForms } from '../entities/userforms.entity';
 import { Form, FormType } from "../entities/form.entity";
 import { FormElement } from "../entities/form-elements.entity";
+import { OrderOfBenefitType } from "src/insurance/entities/policy.entity";
 import { AttachmentType } from "src/attachments/entities/attachment.entity";
 import { ContactType, RelationshipType } from "src/providers/entities/contact.entity";
 import { Appointment, BillingStatus, PaymentType } from "src/appointments/entities/appointment.entity";
@@ -353,7 +354,8 @@ export class UserFormsService {
                   groupNumber,
                   insuranceId: companyName,
                   patientId: patientInstance.id,
-                  primaryCareProviderId: doctorId || null
+                  primaryCareProviderId: doctorId || null,
+                  orderOfBenefit: OrderOfBenefitType.PRIMARY
                 }
                 await this.policyService.create(inputs)
               }
@@ -522,7 +524,8 @@ export class UserFormsService {
                     groupNumber,
                     insuranceId: companyName,
                     patientId: patientId,
-                    primaryCareProviderId: doctorId || null
+                    primaryCareProviderId: doctorId || null,
+                    orderOfBenefit: OrderOfBenefitType.PRIMARY
                   }
                   await this.policyService.create(inputs)
                 }

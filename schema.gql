@@ -2875,6 +2875,7 @@ type Query {
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
+  getPatientLatestVital(patientId: String!): PatientVitalPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -5035,7 +5036,7 @@ input UpdateCopayInput {
   amount: String
   policy: CreatePolicyInput
   policyId: String
-  id: String!
+  id: String
 }
 
 input UpdatePolicyHolderInput {
