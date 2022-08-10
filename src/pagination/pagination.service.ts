@@ -123,10 +123,9 @@ export class PaginationService {
    * @returns options 
    */
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
-    const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField, associatedTo1, associatedToField1 } = paginationInput;
+    const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
 
-    let join: JoinOptions;
-    join = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
+    const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
     let where = { str: {}, obj: {} }
     if (filterType === 'enumFilter') {
       where = {
@@ -139,19 +138,6 @@ export class PaginationService {
         obj: { data: `%${columnValue}%` }
       };
     }
-
-    if (associatedTo1) {
-      if (associatedToField1.columnName && associatedToField1.columnName2 && associatedToField1.columnName3) {
-        join = { alias: 'thisTable1', innerJoinAndSelect: { [associatedTo1]: `thisTable.${relationField}` } };
-      }
-      else if (associatedToField1.columnName && associatedToField1.columnName2) {
-        join = { alias: 'thisTable1', innerJoinAndSelect: { [associatedTo1]: `thisTable.${relationField}` } };
-      }
-      else if (associatedToField1.columnName) {
-        join = { alias: 'thisTable1', innerJoinAndSelect: { [associatedTo1]: `thisTable.${relationField}` } };
-      }
-    }
-
     if (relationField) {
       return { join, where };
     } else {

@@ -80,11 +80,11 @@ export class AttachmentsService {
       createMetaDataParams.documentDate = documentDate
     }
 
-    if (Object.keys(createMetaDataParams).length) {
-      const attachmentMetadata = await this.attachmentMetaDataService.create(createMetaDataParams)
-      attachmentsResult.attachmentMetadata = attachmentMetadata
-      attachmentsResult.attachmentMetadataId = attachmentMetadata?.id
-    }
+    //create attachment meta data
+    const attachmentMetadata = await this.attachmentMetaDataService.create(createMetaDataParams)
+    attachmentsResult.attachmentMetadata = attachmentMetadata
+    attachmentsResult.attachmentMetadataId = attachmentMetadata?.id
+
 
     return await this.attachmentsRepository.save(attachmentsResult)
   }
@@ -207,21 +207,6 @@ export class AttachmentsService {
       const { paginationOptions, signedBy, typeId, attachmentName } = getAttachment
 
       const { page, limit } = paginationOptions
-      const paginationResponse = await this.paginationService.willPaginate<Attachment>(
-        this.attachmentsRepository, {
-        paginationOptions, typeId, associatedTo: 'Attachment', associatedToField: {
-          columnValue: attachmentName, columnName: 'attachmentName', filterType: 'stringFilter'
-        }
-        , associatedTo1: "AttachmentMetadata", associatedToField1: {
-          columnValue: attachmentName, columnName: 'attachmentName'
-        }
-      })
-      // return {
-      //   pagination: {
-      //     ...paginationResponse
-      //   },
-      //   documentTypes: paginationResponse.data,
-      // }
 
       const baseQuery = getConnection()
         .getRepository(Attachment)
@@ -231,13 +216,13 @@ export class AttachmentsService {
         .where('attachment.typeId = :typeId', { typeId: typeId })
         .andWhere(attachmentName ? 'attachment.attachmentName ILIKE :attachmentName' : '1=1', { attachmentName: `%${attachmentName}%` })
 
-      // if (signedBy) {
-      //   baseQuery
-      //     .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is not null`)
-      // } else {
-      //   baseQuery
-      //     .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is null`)
-      // }
+      if (signedBy) {
+        baseQuery
+          .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is not null`)
+      } else {
+        baseQuery
+          .innerJoinAndSelect(AttachmentMetadata, 'attachmentMetaData', `attachment.attachmentMetadataId = "attachmentMetaData"."id" AND "attachmentMetaData"."signedBy" is null`)
+      }
 
       const [attachments, totalCount] = await baseQuery
         .loadAllRelationIds()

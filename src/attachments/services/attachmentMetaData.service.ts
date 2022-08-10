@@ -76,7 +76,7 @@ export class AttachmentMetaDataService {
    */
   async update(id: string, params: UpdateAttachmentMetaDataInput): Promise<AttachmentMetadata> {
     try {
-      return await this.utilsService.updateEntityManager(AttachmentMetadata, id, { ...params.attachmentMetaData, ...params.attachmentInput, ...params }, this.attachmentMetadataRepository)
+      return await this.utilsService.updateEntityManager(AttachmentMetadata, id, { ...params.attachmentMetaData, ...params.attachmentInput }, this.attachmentMetadataRepository)
     } catch (error) {
       throw new InternalServerErrorException(error)
     }
