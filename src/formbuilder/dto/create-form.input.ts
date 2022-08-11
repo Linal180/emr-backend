@@ -16,7 +16,7 @@ export class SectionsInputs {
   @Field({ nullable: false })
   name: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: true })
   sectionId?: string;
 
   @Field(() => Int, { nullable: false })

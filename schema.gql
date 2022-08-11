@@ -5083,7 +5083,7 @@ input FormTabsInputs {
 input SectionsInputs {
   id: String!
   name: String!
-  sectionId: String!
+  sectionId: String
   col: Int!
   fields: [FieldsInputs!]!
 }
