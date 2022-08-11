@@ -1997,12 +1997,14 @@ type SectionsTypes {
   id: String!
   col: Int!
   name: String!
+  sectionId: String
   fields: [FieldsTypes!]!
 }
 
 type FormTabs {
   id: String
   name: String
+  tabId: String
   sections: [SectionsTypes!]!
 }
 
@@ -5074,12 +5076,14 @@ input LayoutJSONInputType {
 input FormTabsInputs {
   id: String
   name: String
+  tabId: String
   sections: [SectionsInputs!]!
 }
 
 input SectionsInputs {
   id: String!
   name: String!
+  sectionId: String
   col: Int!
   fields: [FieldsInputs!]!
 }

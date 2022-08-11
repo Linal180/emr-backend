@@ -5,6 +5,8 @@ import { FormType } from "../entities/form.entity";
 import { ElementType } from "../entities/element.entity";
 import { ContactType, RelationshipType } from 'src/providers/entities/contact.entity';
 import { RACE, ETHNICITY, SEXUALORIENTATION, MARITIALSTATUS, GENDERIDENTITY, PRONOUNS, HOMEBOUND } from 'src/patients/entities/patient.entity'
+import { formTemplateTabIds } from 'src/lib/constants';
+import { FormTabs } from '../dto/form-payload.dto';
 
 //elements for seed
 export const ElementTypeData = [
@@ -214,10 +216,11 @@ const practiceServicesFields = [{
   columnName: "facilityId",
 }, ...facilityServicesFields]
 
-const facilityAppointment = [
+const facilityAppointment: FormTabs[] = [
   {
     id: uuid(),
     name: "Select Services",
+    tabId: formTemplateTabIds.SELECT_SERVICES,
     sections: [
       {
         id: uuid(),
@@ -569,6 +572,7 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Contact Info",
+    tabId: formTemplateTabIds.CONTACT_INFO,
     sections: [{
       id: uuid(),
       col: 12,
@@ -738,6 +742,7 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Privacy Policy",
+    tabId: formTemplateTabIds.PRIVACY_POLICY,
     sections: [{
       id: uuid(),
       col: 12,
@@ -758,6 +763,9 @@ const facilityAppointment = [
           placeholder: "",
           defaultValue: "",
           isMultiSelect: false,
+          tableContactType: null,
+          columnName: null,
+          tableName: null
         },
       ]
     }]
@@ -765,10 +773,12 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Emergency Contact",
+    tabId: formTemplateTabIds.EMERGENCY_CONTACT,
     sections: [{
       id: uuid(),
       col: 12,
       name: "Emergency Contact",
+      sectionId: formTemplateTabIds.EMERGENCY_CONTACT,
       fields: [
         {
           css: "",
@@ -852,10 +862,12 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Guardian Contact",
+    tabId: formTemplateTabIds.GUARDIAN_CONTACT,
     sections: [{
       id: uuid(),
       col: 12,
       name: "Guardian",
+      sectionId: formTemplateTabIds.GUARDIAN_CONTACT,
       fields: [
         {
           css: "",
@@ -942,10 +954,12 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Employment Info",
+    tabId: formTemplateTabIds.EMPLOYMENT_INFO,
     sections: [{
       id: uuid(),
       col: 12,
       name: "Employment",
+      sectionId: formTemplateTabIds.EMPLOYMENT_INFO,
       fields: [
         {
           css: "",
@@ -1029,10 +1043,12 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Guarantor Contact",
+    tabId: formTemplateTabIds.GUARANTOR_CONTACT,
     sections: [{
       id: uuid(),
       col: 12,
       name: "Guarantor",
+      sectionId: formTemplateTabIds.GUARANTOR_CONTACT,
       fields: [
         {
           css: "",
@@ -1335,6 +1351,7 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Payment Info",
+    tabId: formTemplateTabIds.PAYMENT_INFO,
     sections: [{
       id: uuid(),
       col: 12,
@@ -1357,6 +1374,7 @@ const facilityAppointment = [
           isMultiSelect: false,
           tableName: "Appointments",
           columnName: "insuranceStatus",
+          tableContactType: null
         },
       ]
     }]
@@ -1642,6 +1660,7 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Document Verification",
+    tabId: formTemplateTabIds.DOCUMENT_VERIFICATION,
     sections: [{
       id: uuid(),
       col: 12,
@@ -1663,7 +1682,8 @@ const facilityAppointment = [
           placeholder: "Drop your image here, or browse",
           defaultValue: "",
           isMultiSelect: false,
-          apiCall: FormBuilderApiSelector.DRIVING_LICENSE
+          apiCall: FormBuilderApiSelector.DRIVING_LICENSE,
+          tableContactType: null
         },
         {
           css: "",
@@ -1681,7 +1701,8 @@ const facilityAppointment = [
           placeholder: "Drop your image here, or browse",
           defaultValue: "",
           isMultiSelect: false,
-          apiCall: FormBuilderApiSelector.INSURANCE_CARD
+          apiCall: FormBuilderApiSelector.INSURANCE_CARD,
+          tableContactType: null
         }
       ]
     }]
@@ -1689,6 +1710,7 @@ const facilityAppointment = [
   {
     id: uuid(),
     name: "Privacy & TOS agreement",
+    tabId: formTemplateTabIds.PRIVACY_AGREEMENT,
     sections:
       [{
         id: uuid(),
@@ -1710,6 +1732,9 @@ const facilityAppointment = [
             placeholder: "",
             defaultValue: "",
             isMultiSelect: false,
+            tableContactType: null,
+            columnName: null,
+            tableName: null
           },
         ]
       }]
@@ -3185,6 +3210,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Tabs",
+        tabId: formTemplateTabIds.CONTACT_INFO,
         sections: [
           {
             id: uuid(),
@@ -3382,6 +3408,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Tabs",
+        tabId: formTemplateTabIds.EMERGENCY_CONTACT,
         sections: [
           {
             id: uuid(),
@@ -3477,6 +3504,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Tabs",
+        tabId: formTemplateTabIds.DEMOGRAPHICS,
         sections: [
           {
             id: uuid(),
@@ -3658,6 +3686,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Tabs",
+        tabId: formTemplateTabIds.PATIENT_INFO,
         sections: [
           {
             id: uuid(),
@@ -3923,6 +3952,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Tabs",
+        tabId: formTemplateTabIds.PAYMENT_INFO,
         sections: [
           {
             id: uuid(),
@@ -3960,6 +3990,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Tabs",
+        tabId: formTemplateTabIds.TERMS_CONDITIONS,
         sections: [
           {
             id: uuid(),
@@ -3995,6 +4026,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Tabs",
+        tabId: formTemplateTabIds.PRIVACY_AGREEMENT,
         sections: [
           {
             id: uuid(),
@@ -4291,11 +4323,13 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Guardian",
+        tabId: formTemplateTabIds.GUARANTOR_CONTACT,
         sections: [
           {
             id: uuid(),
             col: 12,
             name: "Guardian",
+            sectionId: formTemplateTabIds.GUARANTOR_CONTACT,
             fields: [
               {
                 css: "",
@@ -4392,11 +4426,13 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Employment",
+        tabId: formTemplateTabIds.EMPLOYMENT_INFO,
         sections: [
           {
             id: uuid(),
             col: 12,
             name: "Employment",
+            sectionId: formTemplateTabIds.EMPLOYMENT_INFO,
             fields: [
               {
                 css: "",
@@ -4488,6 +4524,7 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Guarantor",
+        tabId: formTemplateTabIds.GUARANTOR_CONTACT,
         sections: [
           {
             id: uuid(),
