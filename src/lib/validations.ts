@@ -1,6 +1,7 @@
 import * as Joi from 'joi';
 import { OnsetDateType, OtherDateType } from 'src/billings/entities/billing.entity';
 import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
+import { stringCustomErrorMessage } from './helper';
 
 const chargeItem = Joi.object().keys({
   m1: Joi.string().required(),
@@ -122,7 +123,18 @@ export const claimValidation = Joi.object({
 })
 
 export const claimMedValidation = Joi.object({
-  bill_npi: Joi.string().max(10).required(),
+  bill_npi: Joi.string().max(10).required().error((errors) => {
+    errors.forEach(err => {
+      switch (err.code) {
+        case "any.required":
+          err.message = "Value should not be empty!";
+          break;
+        default:
+          break;
+      }
+    });
+    return errors;
+  }),
   payerid: Joi.string().required().messages({ 'any.required': "Insurance is missing" }),
   payer_name: Joi.string().required().messages({ 'any.required': "Insurance is missing" }),
   pat_name_l: Joi.string().required().messages({ "any.required": "Patient last name is missing" }),
