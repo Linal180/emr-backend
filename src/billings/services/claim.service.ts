@@ -86,7 +86,7 @@ export class ClaimService {
       //validating keys
       const result = claimMedValidation.validate(transformedClaimInfo)
       if (result.error) {
-        const errorMessages = [...result.error.details.map((d) => d.message), !claimMd.charge.length ? 'Procedure code is missing' : ''].join();
+        const errorMessages = [...result.error.details.map((d) => d.message), !claimMd.charge.length ? 'Procedure code is missing' : ''].join('.\n');
         throw new BadRequestException(errorMessages);
       }
 

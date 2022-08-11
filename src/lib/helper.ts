@@ -1,3 +1,4 @@
+import * as Joi from 'joi';
 import * as  moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcryptjs from 'bcryptjs';
@@ -216,4 +217,17 @@ export const getInsuranceStatus = (value: string) => {
     default:
       return 'noInsurance'
   }
+}
+
+export const stringCustomErrorMessage = (errors: Joi.ErrorReport[], name: string) => {
+  errors.forEach(err => {
+    switch (err.code) {
+      case "any.empty":
+        err.message = `${name} is required.`;
+        break;
+      default:
+        break;
+    }
+  });
+  return errors;
 }
