@@ -16,6 +16,9 @@ export class SectionsInputs {
   @Field({ nullable: false })
   name: string;
 
+  @Field({ nullable: false })
+  sectionId?: string;
+
   @Field(() => Int, { nullable: false })
   col: number;
 
@@ -130,6 +133,9 @@ export class FormTabsInputs {
 
   @Field({ nullable: true })
   name: string
+
+  @Field({ nullable: true })
+  tabId?: string
 
   @Field(() => [SectionsInputs])
   sections: SectionsInputs[]

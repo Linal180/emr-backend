@@ -96,6 +96,9 @@ export class SectionsTypes {
     @Field({ nullable: false })
     name: string;
 
+    @Field({ nullable: true })
+    sectionId?: string;
+
     @Field(() => [FieldsTypes])
     fields: FieldsTypes[]
 }
@@ -106,6 +109,9 @@ export class FormTabs {
 
     @Field({ nullable: true })
     name: string
+
+    @Field({ nullable: true })
+    tabId?: string
 
     @Field(() => [SectionsTypes])
     sections: SectionsTypes[]
