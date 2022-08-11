@@ -1,16 +1,24 @@
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { SetMetadata, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { InjectRepository } from '@nestjs/typeorm';
-import { HttpExceptionFilterGql } from 'src/exception-filter';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
-import { Repository } from 'typeorm';
-import { AttachmentMediaPayload, AttachmentPayload } from '../dto/attachment-payload.dto';
-import { AttachmentsPayload, AttachmentWithPreSignedUrlPayload } from '../dto/attachments-payload.dto';
-import { CreateAttachmentInput } from '../dto/create-attachment.input';
-import { GetAttachment, GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetMedia, RemoveAttachment, UpdateAttachmentInput } from '../dto/update-attachment.input';
+//entities
 import { Attachment } from '../entities/attachment.entity';
 import { AttachmentMetadata } from '../entities/attachmentMetadata.entity';
+//guards
+import PermissionGuard from 'src/users/auth/role.guard';
+import { HttpExceptionFilterGql } from 'src/exception-filter';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//payloads
+import { AttachmentMediaPayload, AttachmentPayload } from '../dto/attachment-payload.dto';
+import { AttachmentsPayload, AttachmentWithPreSignedUrlPayload } from '../dto/attachments-payload.dto';
+//inputs
+import { CreateAttachmentInput } from '../dto/create-attachment.input';
+import {
+  GetAttachment, GetAttachmentsByAgreementId, GetAttachmentsByLabOrder, GetAttachmentsByPolicyId, GetMedia,
+  RemoveAttachment, UpdateAttachmentInput
+} from '../dto/update-attachment.input';
+//services
 import { AttachmentsService } from '../services/attachments.service';
 
 @Resolver(Attachment)
@@ -21,7 +29,7 @@ export class AttachmentsResolver {
     private attachmentMetadataRepository: Repository<AttachmentMetadata>,
     private readonly attachmentsService: AttachmentsService) { }
 
-  @Query(returns => AttachmentsPayload)
+  @Query(() => AttachmentsPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getAttachments')
   async getAttachments(@Args('getAttachment') getAttachment: GetAttachment): Promise<AttachmentsPayload> {
@@ -32,7 +40,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Query(returns => AttachmentsPayload)
+  @Query(() => AttachmentsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getAttachmentsByLabOrder')
   async getAttachmentsByLabOrder(@Args('getAttachmentsByLabOrder') getAttachmentsByLabOrder: GetAttachmentsByLabOrder): Promise<AttachmentsPayload> {
@@ -43,7 +51,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Query(returns => AttachmentWithPreSignedUrlPayload)
+  @Query(() => AttachmentWithPreSignedUrlPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getAttachmentsByPolicyId')
   async getAttachmentsByPolicyId(@Args('getAttachmentsByPolicyId') getAttachmentsByPolicyId: GetAttachmentsByPolicyId): Promise<AttachmentWithPreSignedUrlPayload> {
@@ -120,7 +128,7 @@ export class AttachmentsResolver {
 
   @ResolveField((returns) => AttachmentMetadata)
   async attachmentMetadata(@Parent() attachment: Attachment): Promise<AttachmentMetadata> {
-    if(attachment.attachmentMetadata){
+    if (attachment.attachmentMetadata) {
       return this.attachmentMetadataRepository.findOne(attachment.attachmentMetadata)
     }
   }

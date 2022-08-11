@@ -57,14 +57,32 @@ export class CreateAttachmentInput {
   agreementId?: string
 }
 
-export interface attachmentInput {
-  labOrderNum?: string
-  documentTypeId?: string
-  policyId?: string
-  documentTypeName?: string
-  comments?: string
+@InputType()
+export class AttachmentInput {
+  @Field({ nullable: true })
+  labOrderNum?: string;
+
+  @Field({ nullable: true })
+  documentTypeId?: string;
+
+  @Field({ nullable: true })
+  policyId?: string;
+
+  @Field({ nullable: true })
+  documentTypeName?: string;
+
+  @Field({ nullable: true })
+  comments?: string;
+
+  @Field({ nullable: true })
   documentDate?: string
-  signedAt?: string
-  signedBy?: string
+  
+  @Field({ nullable: true })
+  signedAt?: string;
+
+  @Field({ nullable: true })
+  signedBy?: string;
+
+  @Field({ nullable: true })
   agreementId?: string
 }
