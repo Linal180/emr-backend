@@ -221,13 +221,13 @@ const facilityAppointment = [
     sections: [
       {
         id: uuid(),
-        col: 9,
+        col: 6,
         name: "Select Services",
         fields: facilityServicesFields
       },
       {
         id: uuid(),
-        col: 3,
+        col: 6,
         name: "Available Slots",
         fields: [
           {
@@ -253,7 +253,7 @@ const facilityAppointment = [
       },
       {
         id: uuid(),
-        col: 9,
+        col: 12,
         name: "Patient Info",
         fields: [
           {
@@ -379,7 +379,7 @@ const facilityAppointment = [
       },
       {
         id: uuid(),
-        col: 9,
+        col: 12,
         name: "Demographics",
         fields: [
           {
