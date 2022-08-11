@@ -2065,16 +2065,79 @@ enum FormType {
   PRE_DEFINED
 }
 
-type ServicePayload {
-  response: ResponsePayload
-  service: Service
-}
-
 type PaginationPayload {
   page: Int
   limit: Int
   totalCount: Int
   totalPages: Int
+}
+
+type ResponsePayloadResponse {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type AllCPTCodePayload {
+  cptCodes: [CPTCodes]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type CPTCodePayload {
+  cptCode: CPTCodes
+  response: ResponsePayloadResponse
+}
+
+type AllModifiersPayload {
+  modifiers: [Modifier]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type ModifierPayload {
+  modifier: Modifier
+  response: ResponsePayloadResponse
+}
+
+type AllFeeSchedulesPayload {
+  feeSchedules: [FeeSchedule]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type FeeSchedulePayload {
+  feeSchedule: FeeSchedule
+  response: ResponsePayloadResponse
+}
+
+type AllCPTFeeSchedulesPayload {
+  cptFeeSchedules: [CptFeeSchedule]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type CPTFeeSchedulePayload {
+  cptFeeSchedule: CptFeeSchedule
+  response: ResponsePayloadResponse
+}
+
+type PracticePayload {
+  response: ResponsePayload
+  practice: Practice
+  practiceAdmin: Staff
+}
+
+type PracticesPayload {
+  response: ResponsePayload
+  practices: [Practice]
+  pagination: PaginationPayload
+}
+
+type ServicePayload {
+  response: ResponsePayload
+  service: Service
 }
 
 type ServicesPayload {
@@ -2253,13 +2316,6 @@ type PatientDoctorPayload {
   provider: DoctorPatient
 }
 
-type ResponsePayloadResponse {
-  status: Float
-  error: String
-  message: String
-  name: String
-}
-
 type PatientConsentPayload {
   patientConsent: PatientConsent
   response: ResponsePayloadResponse
@@ -2316,62 +2372,6 @@ type PermissionsPayload {
 type PermissionPayload {
   response: ResponsePayload
   permission: Permission
-}
-
-type AllCPTCodePayload {
-  cptCodes: [CPTCodes]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type CPTCodePayload {
-  cptCode: CPTCodes
-  response: ResponsePayloadResponse
-}
-
-type AllModifiersPayload {
-  modifiers: [Modifier]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type ModifierPayload {
-  modifier: Modifier
-  response: ResponsePayloadResponse
-}
-
-type AllFeeSchedulesPayload {
-  feeSchedules: [FeeSchedule]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type FeeSchedulePayload {
-  feeSchedule: FeeSchedule
-  response: ResponsePayloadResponse
-}
-
-type AllCPTFeeSchedulesPayload {
-  cptFeeSchedules: [CptFeeSchedule]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
-type CPTFeeSchedulePayload {
-  cptFeeSchedule: CptFeeSchedule
-  response: ResponsePayloadResponse
-}
-
-type PracticePayload {
-  response: ResponsePayload
-  practice: Practice
-  practiceAdmin: Staff
-}
-
-type PracticesPayload {
-  response: ResponsePayload
-  practices: [Practice]
-  pagination: PaginationPayload
 }
 
 type AttachmentPayload {
