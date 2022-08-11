@@ -1,7 +1,6 @@
 import * as Joi from 'joi';
 import { OnsetDateType, OtherDateType } from 'src/billings/entities/billing.entity';
 import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
-import { stringCustomErrorMessage } from './helper';
 
 const chargeItem = Joi.object().keys({
   m1: Joi.string().required(),
