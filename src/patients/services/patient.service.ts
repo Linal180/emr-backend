@@ -272,13 +272,13 @@ export class PatientService {
           const doctorPatientInst = await this.doctorPatientRepository.findOne({ patientId: patientId, doctorId: usualProviderId })
           if (doctorPatientInst) {
             doctorPatientInst.relation = DoctorPatientRelationType.PRIMARY_PROVIDER
-            await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
+            await this.doctorPatientRepository.update({ patientId: patientId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
             await this.doctorPatientRepository.save(doctorPatientInst)
           } else {
             const doctorPatientInstance = await this.doctorPatientRepository.create({ relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
             doctorPatientInstance.patient = patientInstance
             doctorPatientInstance.doctor = doctor
-            await this.doctorPatientRepository.update({ patientId: patientId }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
+            await this.doctorPatientRepository.update({ patientId: patientId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER }, { relation: DoctorPatientRelationType.OTHER_PROVIDER })
             await this.doctorPatientRepository.save(doctorPatientInstance)
           }
         }
@@ -519,23 +519,17 @@ export class PatientService {
       //get patient
       const patient = await this.findOne(patientId)
       if (patient) {
-        //get previous Provider of patient
-        const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ doctorId: providerId, patientId: patientId }] })
+        const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, doctorId: providerId }] })
         if (previousProvider) {
-          return patient
+          await this.doctorPatientRepository.delete({ id: previousProvider?.id })
         }
-        //get primary provider
-        if (relation === DoctorPatientRelationType.PRIMARY_PROVIDER) {
-          const previousProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER }] })
-          if (previousProvider) {
-            await this.doctorPatientRepository.save({ id: previousProvider.id, relation: DoctorPatientRelationType.OTHER_PROVIDER })
-          }
+        const previousRelationProvider = await this.doctorPatientRepository.findOne({ where: [{ patientId: patientId, relation }] })
+        if (previousRelationProvider) {
+          await this.doctorPatientRepository.delete({ id: previousRelationProvider?.id })
         }
-        //create patient provider
         const doctorPatientInstance = await this.doctorPatientRepository.create({
           doctorId: providerId, patientId: patientId, otherRelation: otherRelation, relation: relation
         })
-        //save 
         await queryRunner.manager.save(doctorPatientInstance);
         await queryRunner.commitTransaction();
         return patient
