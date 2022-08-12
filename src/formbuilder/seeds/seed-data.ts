@@ -142,7 +142,7 @@ const MAPPED_PRONOUNS = [
   { value: PRONOUNS.NONE, name: PRONOUNS.NONE },
 ];
 
-const MAPPED_STATES = states?.map(({ name, abbreviation }) => ({ value: abbreviation, name: `${name} - ${abbreviation}` }))
+const MAPPED_STATES = states?.map(({ name, abbreviation }) => ({ value: name, name: `${name} - ${abbreviation}` }))
 
 export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
@@ -1301,7 +1301,7 @@ const facilityAppointment: FormTabs[] = [
           textArea: false,
           tableName: "Contacts",
           columnName: "ssn",
-          placeholder: "Please enter your SSN",
+          placeholder: "Please enter your SSN. e.g; (000-00-0000)",
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: null,
@@ -3894,7 +3894,7 @@ export const FormTemplates = [
                 errorMsg: "",
                 required: true,
                 textArea: false,
-                placeholder: "Please enter your SSN",
+                placeholder: "Please enter your SSN.e.g; (000-00-0000)",
                 defaultValue: "",
                 isMultiSelect: false,
                 apiCall: '',
@@ -4781,7 +4781,7 @@ export const FormTemplates = [
                 errorMsg: "",
                 required: true,
                 textArea: false,
-                placeholder: "Please enter your SSN",
+                placeholder: "Please enter your SSN. e.g; (000-00-0000)",
                 defaultValue: "",
                 isMultiSelect: false,
                 apiCall: '',
