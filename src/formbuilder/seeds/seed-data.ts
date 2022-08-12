@@ -142,7 +142,7 @@ const MAPPED_PRONOUNS = [
   { value: PRONOUNS.NONE, name: PRONOUNS.NONE },
 ];
 
-const MAPPED_STATES = states?.map(({ name, abbreviation }) => ({ value: abbreviation, name: `${name} - ${abbreviation}` }))
+const MAPPED_STATES = states?.map(({ name, abbreviation }) => ({ value: name, name: `${name} - ${abbreviation}` }))
 
 export enum FormBuilderApiSelector {
   SERVICE_SELECT = 'serviceSelect',
