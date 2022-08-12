@@ -178,11 +178,13 @@ export class PolicyService {
       if (referringProviderId) {
         const referringProviderInstance = await this.doctorService.findOne(referringProviderId)
         policyInstance.referringProvider = referringProviderInstance
+        this.patientService.updatePatientProvider({ patientId, providerId: referringProviderId, relation: DoctorPatientRelationType.REFERRING_PROVIDER })
       }
 
       if (primaryCareProviderId) {
         const primaryCareProviderInstance = await this.doctorService.findOne(primaryCareProviderId)
         policyInstance.primaryCareProvider = primaryCareProviderInstance
+        this.patientService.updatePatientProvider({ patientId, providerId: primaryCareProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
       }
 
       const patient = await this.patientService.findOne(patientId)
