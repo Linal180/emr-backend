@@ -2445,3 +2445,12 @@ export const modifiersData = [
   },
   { code: "8P", description: "Action not performed, Reason NOS" },
 ];
+
+export const expressFeeSchedule = [
+  {
+    name: "standard"
+  },
+  {
+    name: "self pay"
+  }
+]

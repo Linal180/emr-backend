@@ -53,8 +53,6 @@ export class PaginationService {
    */
   async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[], orderByColumn?: OrderByColumn): Promise<PaginationPayloadInterface<T>> {
     try {
-
-
       const { associatedTo, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
       let filterOption: FilterOptionsResponse = null;

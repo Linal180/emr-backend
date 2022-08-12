@@ -2,7 +2,7 @@ import { Factory, Seeder } from "typeorm-seeding";
 import { Connection, getRepository } from "typeorm";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //entities, data
-import { cptFeeScheduleData } from "./seed-data";
+import { cptFeeScheduleData, expressFeeSchedule } from "./seed-data";
 import { FeeSchedule } from "../entities/feeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
 import { seedPractice } from "src/lib/constants";
@@ -35,16 +35,20 @@ export class CreateFeeSchedule implements Seeder {
         //fee schedule
         const oldFeeSchedule = await feeRepo.find({ practiceId: practice?.id })
         if (!oldFeeSchedule?.length) {
-          const newFeeSchedule = feeRepo.create({ name: 'standard' })
-          newFeeSchedule.practice = practice
-          newFeeSchedule.practiceId = practice.id
-          //create cpt fee schedule
-          newFeeSchedule.cptFeeSchedule = await Promise.all(cptFeeScheduleData?.map(async (item) => {
-            const cptFeeSchedule = cptFeeRepo.create({ ...item, code: item?.cptCode });
-            return await cptFeeRepo.save(cptFeeSchedule);
+          const feeSchedules = await Promise.all(expressFeeSchedule?.map(async ({ name }) => {
+            const newFeeSchedule = feeRepo.create({ name })
+            newFeeSchedule.practice = practice
+            newFeeSchedule.practiceId = practice.id
+            //create cpt fee schedule
+            newFeeSchedule.cptFeeSchedule = await Promise.all(cptFeeScheduleData?.map(async (item) => {
+              const cptFeeSchedule = cptFeeRepo.create({ ...item, code: item?.cptCode });
+              return await cptFeeRepo.save(cptFeeSchedule);
+            }))
+            await feeRepo.save(newFeeSchedule)
+            return newFeeSchedule
           }))
 
-          await queryRunner.manager.save(newFeeSchedule);
+          await queryRunner.manager.save(feeSchedules);
         }
       }
       else {
