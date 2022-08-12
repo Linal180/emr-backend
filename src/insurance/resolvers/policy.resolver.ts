@@ -112,7 +112,7 @@ export class PolicyResolver {
   @ResolveField(() => [Doctor])
   referringProvider(@Parent() policy: Policy): Promise<Doctor> {
     if (policy) {
-      return this.doctorService.findOne(policy.primaryCareProviderId)
+      return this.doctorService.findOne(policy.referringProviderId)
     }
   }
 }
