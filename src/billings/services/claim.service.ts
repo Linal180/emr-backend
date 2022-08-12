@@ -165,15 +165,17 @@ export class ClaimService {
           }
           //update billing
           await this.billingService.create({ ...params, claimStatusId: claimStatus?.id });
-          if (error_msgs) {
-            throw new InternalServerErrorException(error_msgs);
-          }
+          
           //update claim
           claim = await this.update({
             id: claimInfo?.id, ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
             payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
             onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages
           })
+
+          if (error_msgs) {
+            throw new InternalServerErrorException(error_msgs);
+          }
 
           return { claim, claimStatus };
         }
