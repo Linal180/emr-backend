@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 //modules
 import { AwsModule } from './aws/aws.module';
+import { SmsModule } from './sms/sms.module';
 import { LabModule } from './labs/labs.module';
 import { UtilsModule } from './util/utils.module';
 import { UsersModule } from './users/users.module';
@@ -27,8 +28,9 @@ import { ProblemChartingModule } from './patientCharting/patientCharting.module'
 import { DatabaseConfig } from './database.config';
 import configuration from './config/configuration';
 import { LogDatabaseConfig } from './logDatabase.config';
-//services, controller
+//services
 import { AppService } from './app.service';
+//controller
 import { AppController } from './app.controller';
 
 @Module({
@@ -54,6 +56,7 @@ import { AppController } from './app.controller';
     }),
     LabModule,
     AwsModule,
+    SmsModule,
     UsersModule,
     UtilsModule,
     MailerModule,
