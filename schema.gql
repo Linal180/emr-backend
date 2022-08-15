@@ -2428,6 +2428,11 @@ type DocumentTypePayload {
   pagination: PaginationPayload
 }
 
+type SmsPayload {
+  sms: String
+  response: ResponsePayloadResponse
+}
+
 type AllergiesPayload {
   response: ResponsePayload
   allergies: [Allergies]
@@ -3547,6 +3552,7 @@ type Mutation {
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
   createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
@@ -4910,6 +4916,11 @@ input UpdateVitalInput {
 
 input RemoveVital {
   id: String!
+}
+
+input SendSmsInput {
+  message: String
+  to: String
 }
 
 input CreateClaimInput {
