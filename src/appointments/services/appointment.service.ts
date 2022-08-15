@@ -107,7 +107,7 @@ export class AppointmentService {
         //save appointment & commit transaction
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         await queryRunner.commitTransaction();
-        if (patient.phonePermission) {
+        if (patient.phoneEmailPermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
         if (patient?.email) {
@@ -186,7 +186,7 @@ export class AppointmentService {
       const appointment = await this.appointmentRepository.save(appointmentInstance);
       this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName + ' ' + patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id, false)
       await queryRunner.commitTransaction();
-      if (patientInstance.phonePermission) {
+      if (patientInstance.phoneEmailPermission) {
         this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
       }
       return appointment
@@ -543,7 +543,7 @@ export class AppointmentService {
         const patient = await this.patientService.findOne(appointment.patientId)
         const provider = await this.doctorService.findOne(appointment.providerId)
         const facility = await this.facilityService.findOne(appointment.facilityId)
-        if (patient.phonePermission) {
+        if (patient.phoneEmailPermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, false)
         }
         if (appointment.billingStatus === BillingStatus.PAID) {
