@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppointmentModule } from 'src/appointments/appointment.module';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
+import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { ProblemChartingModule } from 'src/patientCharting/patientCharting.module';
 import { PatientModule } from 'src/patients/patient.module';
@@ -35,6 +36,7 @@ import { TestSpecimenService } from './services/testSpecimen.service';
     PatientModule,
     AttachmentsModule,
     AppointmentModule,
+    FacilityModule,
     forwardRef(() => ProviderModule)
   ],
   controllers: [LabTestsObservationsController],

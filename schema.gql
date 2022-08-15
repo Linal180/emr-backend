@@ -2506,6 +2506,14 @@ type LabTestPayload {
   labTest: LabTests
 }
 
+type LabResultPayload {
+  response: ResponsePayload
+  patientInfo: Patient
+  facilityInfo: Facility
+  doctor: Doctor
+  labTests: [LabTests!]
+}
+
 type LabTestsPayload {
   response: ResponsePayload
   labTests: [LabTests]
@@ -2799,6 +2807,7 @@ type Query {
   getLabTest(getLabTest: GetLabTest!): LabTestPayload!
   findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput!): LabTestsPayload!
   findAllLabTest(labTestInput: LabTestInput!): LabTestsPayload!
+  findLabResultInfo(orderNumber: String!): LabResultPayload!
   findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
   getSpecimenTypeByName(name: String!): SpecimenTypes!
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
@@ -3447,6 +3456,7 @@ type Mutation {
   removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
   createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
+  syncLabResults: LabTestObservationPayload!
   removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!

@@ -12,7 +12,7 @@ import CreateLabTestInput from '../dto/create-lab-test-input.dto';
 import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
 import LabTestInput from '../dto/lab-test.input';
-import { LabTestPayload } from '../dto/labTest-payload.dto';
+import { LabResultPayload, LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestsPayload } from '../dto/labTests-payload.dto';
 import { GetLabTest, RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input';
 import { LabTests } from '../entities/labTests.entity';
@@ -39,7 +39,7 @@ export class LabTestsResolver {
       labTest: await this.labTestsService.createLabTest(createLabTestInput),
       response: { status: 200, message: 'Lab test created successfully' }
     };
-  } 
+  }
 
   @Mutation(() => LabTestPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -60,8 +60,8 @@ export class LabTestsResolver {
       response: { status: 200, message: 'Lab test updated successfully' }
     };
   }
-  
-  @Query(returns => LabTestPayload)  
+
+  @Query(returns => LabTestPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getLabTest')
   async getLabTest(@Args('getLabTest') getLabTest: GetLabTest): Promise<LabTestPayload> {
@@ -72,7 +72,7 @@ export class LabTestsResolver {
     };
   }
 
-  @Query(returns => LabTestsPayload)  
+  @Query(returns => LabTestsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findLabTestsByOrderNum')
   async findLabTestsByOrderNum(@Args('labTestByOrderNumInput') labTestByOrderNumInput: LabTestByOrderNumInput): Promise<LabTestsPayload> {
@@ -86,35 +86,35 @@ export class LabTestsResolver {
   @ResolveField((returns) => Appointment)
   async appointment(@Parent() labTests: LabTests): Promise<Appointment> {
     if (labTests && labTests.appointmentId) {
-     return await this.appointmentService.findOne(labTests.appointmentId);
+      return await this.appointmentService.findOne(labTests.appointmentId);
     }
   }
 
   @ResolveField((returns) => Patient)
   async patient(@Parent() labTests: LabTests): Promise<Patient> {
     if (labTests && labTests.patientId) {
-     return await this.patientService.findOne(labTests.patientId);
+      return await this.patientService.findOne(labTests.patientId);
     }
   }
 
   @ResolveField((returns) => Doctor)
   async doctor(@Parent() labTests: LabTests): Promise<Doctor> {
     if (labTests && labTests.doctorId) {
-     return await this.doctorService.findOne(labTests.doctorId);
+      return await this.doctorService.findOne(labTests.doctorId);
     }
   }
 
   @ResolveField((returns) => [TestSpecimens])
   async testSpecimens(@Parent() labTests: LabTests): Promise<TestSpecimens[]> {
     if (labTests) {
-     return await this.testSpecimenService.GetSpecimensByLabTestId(labTests.id);
+      return await this.testSpecimenService.GetSpecimensByLabTestId(labTests.id);
     }
   }
 
   @ResolveField((returns) => [Observations])
   async testObservations(@Parent() labTests: LabTests): Promise<Observations[]> {
     if (labTests) {
-     return await this.labTestsObservationsService.GetLabTestObservations(labTests.id);
+      return await this.labTestsObservationsService.GetLabTestObservations(labTests.id);
     }
   }
 
@@ -137,6 +137,25 @@ export class LabTestsResolver {
     });
   }
 
+  @Query(returns => LabResultPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllLabTest')
+  async findLabResultInfo(@Args('orderNumber') orderNumber: string): Promise<LabResultPayload> {
+    const labResultInfo = await this.labTestsService.findLabResultInfo(orderNumber)
+    if (labResultInfo) {
+      return {
+        ...labResultInfo,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Lab Test not found',
+    });
+  }
+
   @Mutation(() => LabTestPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'removeLabTest')
@@ -148,14 +167,14 @@ export class LabTestsResolver {
   @ResolveField((returns) => Doctor)
   async primaryProvider(@Parent() labTests: LabTests): Promise<Doctor> {
     if (labTests.primaryProviderId) {
-     return await this.doctorService.findOne(labTests.primaryProviderId);
+      return await this.doctorService.findOne(labTests.primaryProviderId);
     }
   }
 
   @ResolveField((returns) => Doctor)
   async referringProvider(@Parent() labTests: LabTests): Promise<Doctor> {
     if (labTests.referringProviderId) {
-     return await this.doctorService.findOne(labTests.referringProviderId);
+      return await this.doctorService.findOne(labTests.referringProviderId);
     }
   }
 }

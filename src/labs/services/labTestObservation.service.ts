@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+import * as moment from 'moment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
@@ -9,8 +10,8 @@ import { File } from '../../aws/dto/file-input.dto';
 import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
 import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
 import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
-import { LabTests } from '../entities/labTests.entity';
-import { Observations } from '../entities/observations.entity';
+import { LabTests, LabTestStatus } from '../entities/labTests.entity';
+import { Observations, AbnormalFlag } from '../entities/observations.entity';
 import { LabTestsService } from './labTests.service';
 import { LoincCodesService } from './loincCodes.service';
 
@@ -50,8 +51,8 @@ export class LabTestsObservationsService {
    * @param labTest 
    * @returns  
    */
-  async mapLabTestWithResults(labTestObservationInstance: Observations[], labTest: LabTests){
-    return labTestObservationInstance.map((item)=> {
+  async mapLabTestWithResults(labTestObservationInstance: Observations[], labTest: LabTests) {
+    return labTestObservationInstance.map((item) => {
       item.labTest = labTest
       return item
     })
@@ -63,35 +64,83 @@ export class LabTestsObservationsService {
    * @returns lab test observation 
    */
   async updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput): Promise<Observations[]> {
-      try {
+    try {
       //updating multiple records of lab test observations
       for (let index = 0; index < updateLabTestObservationInput.updateLabTestObservationItemInput.length; index++) {
-         const element = updateLabTestObservationInput.updateLabTestObservationItemInput[index];
-         if(element.id){
-           await this.utilsService.updateEntityManager(Observations, element.id, element, this.ObservationsRepository)
+        const element = updateLabTestObservationInput.updateLabTestObservationItemInput[index];
+        if (element.id) {
+          await this.utilsService.updateEntityManager(Observations, element.id, element, this.ObservationsRepository)
 
-         }else{
-          const createItemInput= [element].map((createItem)=>{
+        } else {
+          const createItemInput = [element].map((createItem) => {
             return {
-             resultValue: createItem.resultValue,
-             resultUnit: createItem.resultUnit,
-             normalRange: createItem.normalRange,
-             normalRangeUnit: createItem.normalRangeUnit,
-             abnormalFlag: createItem.abnormalFlag,
-             description: createItem.description,
+              resultValue: createItem.resultValue,
+              resultUnit: createItem.resultUnit,
+              normalRange: createItem.normalRange,
+              normalRangeUnit: createItem.normalRangeUnit,
+              abnormalFlag: createItem.abnormalFlag,
+              description: createItem.description,
             }
           })
-  
-           await this.createLabTestObservation({
-             createLabTestObservationItemInput: createItemInput,
-             labTestId: updateLabTestObservationInput.labTestId
-           })
-         }
-       }
-      return
-      } catch (error) {
-        throw new InternalServerErrorException(error);
+
+          await this.createLabTestObservation({
+            createLabTestObservationItemInput: createItemInput,
+            labTestId: updateLabTestObservationInput.labTestId
+          })
+        }
       }
+      return
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async syncLabResults(): Promise<Observations[]> {
+    try {
+      //updating multiple records of lab test observations
+      const labTests = await this.labTestsService.find()
+      labTests.forEach(async (labTest) => {
+        const testObservations = await this.GetLabTestObservations(labTest.id)
+        const { id } = testObservations?.[0] || {}
+
+        if (id) {
+          await this.utilsService.updateEntityManager(Observations, id, testObservations?.[0], this.ObservationsRepository)
+        } else {
+          const element = {
+            resultValue: 'Detected',
+            resultUnit: '',
+            normalRange: '',
+            normalRangeUnit: '',
+            abnormalFlag: AbnormalFlag.NONE,
+            description: '',
+          }
+          const createItemInput = [element].map((createItem) => {
+            return {
+              resultValue: createItem.resultValue,
+              resultUnit: createItem.resultUnit,
+              normalRange: createItem.normalRange,
+              normalRangeUnit: createItem.normalRangeUnit,
+              abnormalFlag: createItem.abnormalFlag,
+              description: createItem.description,
+            }
+          })
+
+          await this.createLabTestObservation({
+            createLabTestObservationItemInput: createItemInput,
+            labTestId: labTest.id
+          })
+        }
+
+        await this.labTestsService.updateLabTest({
+          updateLabTestItemInput:
+            { id: labTest.id, collectedDate: moment().format('MM-DD-YYYY'), receivedDate: moment().format('MM-DD-YYYY'), status: LabTestStatus.RESULT_RECEIVED }
+        })
+      })
+      return
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
@@ -101,7 +150,7 @@ export class LabTestsObservationsService {
    */
   async findOne(id: string): Promise<Observations> {
     const labTestObservation = await this.ObservationsRepository.findOne(id);
-    if(labTestObservation){
+    if (labTestObservation) {
       return labTestObservation
     }
     throw new NotFoundException({
@@ -118,7 +167,7 @@ export class LabTestsObservationsService {
   async GetLabTestObservation(id: string): Promise<LabTestObservationPayload> {
     const labTestObservation = await this.findOne(id);
     if (labTestObservation) {
-      return {labTestObservation}
+      return { labTestObservation }
     }
   }
 
@@ -165,21 +214,21 @@ export class LabTestsObservationsService {
    * @returns labs media 
    */
   async uploadLabsMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<LabTestObservationPayload> {
-      try {
-        updateAttachmentMediaInput.type = AttachmentType.lab;
-        const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
-        const labTestObservation = await this.findOne(updateAttachmentMediaInput.typeId)
-        if (attachment) {
-          return { labTestObservation };
-        }
-        throw new PreconditionFailedException({
-          status: HttpStatus.PRECONDITION_FAILED,
-          error: 'Could not create or upload media',
-        });
+    try {
+      updateAttachmentMediaInput.type = AttachmentType.lab;
+      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+      const labTestObservation = await this.findOne(updateAttachmentMediaInput.typeId)
+      if (attachment) {
+        return { labTestObservation };
       }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not create or upload media',
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
@@ -188,12 +237,12 @@ export class LabTestsObservationsService {
    * @returns  
    */
   async removeLabsMedia(id: string) {
-      try {
-        return await this.attachmentsService.removeMedia(id)
-      }
-      catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+    try {
+      return await this.attachmentsService.removeMedia(id)
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
@@ -220,12 +269,12 @@ export class LabTestsObservationsService {
     }
   }
 
- /**
-  * Gets labs media
-  * @param id 
-  * @returns  
-  */
- async getLabsMedia(id: string) {
+  /**
+   * Gets labs media
+   * @param id 
+   * @returns  
+   */
+  async getLabsMedia(id: string) {
     try {
       return await this.attachmentsService.getMedia(id)
     }

@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ProblemService } from 'src/patientCharting/services/patientProblems.service';
 import { PatientService } from 'src/patients/services/patient.service';
@@ -11,7 +12,7 @@ import CreateLabTestInput from '../dto/create-lab-test-input.dto';
 import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
 import LabTestInput from '../dto/lab-test.input';
-import { LabTestPayload } from '../dto/labTest-payload.dto';
+import { LabResultPayload, LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestsPayload } from '../dto/labTests-payload.dto';
 import { RemoveLabTest, UpdateLabTestInput, UpdateLabTestItemInput } from '../dto/update-lab-test.input';
 import { LabTests } from '../entities/labTests.entity';
@@ -29,6 +30,7 @@ export class LabTestsService {
     private readonly loincCodesService: LoincCodesService,
     private readonly patientService: PatientService,
     private readonly doctorService: DoctorService,
+    private readonly facilityService: FacilityService,
     private readonly testSpecimenService: TestSpecimenService,
     private readonly appointmentService: AppointmentService
   ) { }
@@ -239,5 +241,24 @@ export class LabTestsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async findLabResultInfo(orderNumber): Promise<LabResultPayload> {
+    const labTests = await this.labTestsRepository.find({ orderNumber })
+    const { patientId, primaryProviderId } = labTests?.[0] || {}
+    const doctor = await this.doctorService.findOne(primaryProviderId)
+    const patientInfo = await this.patientService.findOne(patientId)
+    const facilityInfo = await this.facilityService.findOne(patientInfo.facilityId)
+
+    return {
+      patientInfo,
+      facilityInfo,
+      doctor,
+      labTests
+    }
+  }
+
+  async find() {
+    return this.labTestsRepository.find()
   }
 }

@@ -33,6 +33,16 @@ export class LabTestObservationResolver {
   }
 
   @Mutation(() => LabTestObservationPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateLabTestObservation')
+  async syncLabResults() {
+    return {
+      labTestObservation: await this.labTestsObservationsService.syncLabResults(),
+      response: { status: 200, message: 'Lab test observations synced successfully' }
+    };
+  }
+
+  @Mutation(() => LabTestObservationPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'removeLabTestObservation')
   async removeLabTestObservation(@Args('removeLabTestObservation') removeLabTestObservation: RemoveLabTestObservation) {
