@@ -255,18 +255,18 @@ export class UserFormsService {
     try {
 
       const { type, id, facilityId, practiceId } = form;
-      const { userFormElements: userFormElementInputs } = inputs
-      const formElements = await this.formService.getFormElements(id)
-      //get patient inputs
-      const patientInputs = await this.getInputValues(formElements, userForm, inputs)
-      const { createPatientItemInput } = patientInputs
-      const { email } = createPatientItemInput
-
-      const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
-      const insuranceStatusElement = formElements?.find(({ columnName }) => columnName === 'insuranceStatus')
       if (type === FormType.APPOINTMENT) {
-        const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
+        const { userFormElements: userFormElementInputs } = inputs
+        const formElements = await this.formService.getFormElements(id)
+        //get patient inputs
+        const patientInputs = await this.getInputValues(formElements, userForm, inputs)
+        const { createPatientItemInput } = patientInputs
+        const { email } = createPatientItemInput
+
+        const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
         const providerElement = formElements?.find(({ columnName }) => columnName === 'usualProviderId')
+        const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
+        const insuranceStatusElement = formElements?.find(({ columnName }) => columnName === 'insuranceStatus')
 
         if (appointmentElement) {
           const { fieldId } = appointmentElement
