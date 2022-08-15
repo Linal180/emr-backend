@@ -247,6 +247,30 @@ export class Patient {
   @Field()
   medicationHistoryAuthority: boolean;
 
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  phoneEmailPermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  cellPhonePermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  medicalPermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  resultConsent: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  immunizationConsent: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  medicationHistoryConsent: boolean;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientNote: string;

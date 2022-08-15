@@ -1790,6 +1790,12 @@ type Patient {
   releaseOfInfoBill: Boolean!
   callToConsent: Boolean!
   medicationHistoryAuthority: Boolean!
+  phoneEmailPermission: Boolean
+  cellPhonePermission: Boolean
+  medicalPermission: Boolean
+  resultConsent: Boolean
+  immunizationConsent: Boolean
+  medicationHistoryConsent: Boolean
   patientNote: String
   patientNoteOpen: Boolean
   language: String
@@ -4256,6 +4262,12 @@ input CreatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String
+  phoneEmailPermission: Boolean
+  cellPhonePermission: Boolean
+  medicalPermission: Boolean
+  resultConsent: Boolean
+  immunizationConsent: Boolean
+  medicationHistoryConsent: Boolean
 }
 
 input CreateEmployerInput {
@@ -4348,6 +4360,12 @@ input UpdatePatientItemInput {
   statementNoteDateTo: String
   adminId: String
   facilityId: String
+  phoneEmailPermission: Boolean
+  cellPhonePermission: Boolean
+  medicalPermission: Boolean
+  resultConsent: Boolean
+  immunizationConsent: Boolean
+  medicationHistoryConsent: Boolean
   id: String!
 }
 
