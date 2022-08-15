@@ -1785,11 +1785,8 @@ type Patient {
   registrationDate: String
   deceasedDate: String
   privacyNotice: Boolean!
-  phonePermission: Boolean
-  smsPermission: Boolean
   releaseOfInfoBill: Boolean!
   callToConsent: Boolean!
-  medicationHistoryAuthority: Boolean!
   phoneEmailPermission: Boolean
   cellPhonePermission: Boolean
   medicalPermission: Boolean
@@ -4241,9 +4238,6 @@ input CreatePatientItemInput {
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
   inviteAccepted: Boolean
-  smsPermission: Boolean
-  phonePermission: Boolean
-  medicationHistoryAuthority: Boolean
   patientNote: String
   language: String
   preferredCommunicationMethod: COMMUNICATIONTYPE
@@ -4294,8 +4288,6 @@ input PatientInfoInput {
 input PatientInfoItemInput {
   pharmacy: String
   ssn: String
-  smsPermission: Boolean
-  phonePermission: Boolean
   language: String
   preferredCommunicationMethod: COMMUNICATIONTYPE
   race: RACE
@@ -4339,9 +4331,6 @@ input UpdatePatientItemInput {
   releaseOfInfoBill: Boolean
   callToConsent: Boolean
   inviteAccepted: Boolean
-  smsPermission: Boolean
-  phonePermission: Boolean
-  medicationHistoryAuthority: Boolean
   patientNote: String
   language: String
   preferredCommunicationMethod: COMMUNICATIONTYPE

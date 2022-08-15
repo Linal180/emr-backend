@@ -77,15 +77,6 @@ export class CreatePatientItemInput {
   inviteAccepted?: boolean;
 
   @Field({ nullable: true })
-  smsPermission?: boolean;
-
-  @Field({ nullable: true })
-  phonePermission?: boolean;
-
-  @Field({ nullable: true })
-  medicationHistoryAuthority?: boolean;
-
-  @Field({ nullable: true })
   patientNote?: string;
 
   @Field({ nullable: true })
