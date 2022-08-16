@@ -2686,6 +2686,20 @@ type UserLogsPayload {
   response: ResponsePayloadResponse!
 }
 
+type ShortUrl {
+  id: String!
+  shortLink: String
+  longLink: String
+  urlCode: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type ShortUrlResponse {
+  shortUrl: ShortUrl
+  response: ResponsePayloadResponse
+}
+
 type FacilitiesUser {
   id: String
   name: String
@@ -2916,6 +2930,7 @@ type Query {
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
   findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
+  getShortUrl(getShortUrlInput: GetShortUrlInput!): ShortUrlResponse!
 }
 
 input SearchLoincCodesInput {
@@ -3443,6 +3458,10 @@ input UserFormInput {
   paginationOptions: PaginationInput!
 }
 
+input GetShortUrlInput {
+  urlCode: String
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -3571,6 +3590,7 @@ type Mutation {
   createElement(inputs: ElementInputs!): Element!
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
+  createShortUrl(createShortUrlInput: CreateShortUrlInput!): ShortUrlResponse!
 }
 
 input LoincCodeInput {
@@ -5177,4 +5197,8 @@ input ArrayOfStringsTypeInput {
 input GetPublicMediaInput {
   url: String!
   formId: String!
+}
+
+input CreateShortUrlInput {
+  longLink: String
 }

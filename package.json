@@ -73,6 +73,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.2",
+    "shortid": "^2.2.16",
     "socket.io": "^4.4.1",
     "states-us": "^1.0.2",
     "strip-bom": "^5.0.0",
@@ -81,6 +82,7 @@
     "typeorm": "^0.2.45",
     "typeorm-seeding": "^1.6.1",
     "uuid": "^8.3.2",
+    "valid-url": "^1.0.9",
     "xmlbuilder": "^15.1.1"
   },
   "devDependencies": {
@@ -95,8 +97,10 @@
     "@types/node": "^16.11.21",
     "@types/passport-jwt": "^3.0.6",
     "@types/redis": "^2.8.32",
+    "@types/shortid": "0.0.29",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^8.3.4",
+    "@types/valid-url": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.30.0",
