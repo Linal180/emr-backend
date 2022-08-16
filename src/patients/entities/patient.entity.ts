@@ -228,14 +228,6 @@ export class Patient {
   privacyNotice: boolean;
 
   @Column({ nullable: true, default: false })
-  @Field(() => Boolean, { nullable: true })
-  phonePermission: boolean;
-
-  @Column({ nullable: true, default: false })
-  @Field(() => Boolean, { nullable: true })
-  smsPermission: boolean;
-
-  @Column({ nullable: true, default: false })
   @Field()
   releaseOfInfoBill: boolean;
 
@@ -244,8 +236,28 @@ export class Patient {
   callToConsent: boolean;
 
   @Column({ nullable: true, default: false })
-  @Field()
-  medicationHistoryAuthority: boolean;
+  @Field({ nullable: true })
+  phoneEmailPermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  cellPhonePermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  medicalPermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  resultConsent: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  immunizationConsent: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  medicationHistoryConsent: boolean;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
