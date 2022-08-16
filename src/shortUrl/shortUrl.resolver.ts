@@ -4,9 +4,11 @@ import { CreateShortUrlInput, GetShortUrlInput } from './dto/shortUrl.input';
 //services
 import { ShortUrlService } from './shortUrl.service';
 //payload
-import { ShortUrlResponse } from './dto/shortUrl.payload'
+import { ShortUrlResponse } from './dto/shortUrl.payload';
+//entities
+import { ShortUrl } from './shortUrl.entity';
 
-@Resolver()
+@Resolver(() => ShortUrl)
 export class ShortUrlResolver {
   constructor(private readonly shortUrlService: ShortUrlService) { }
 

@@ -6,6 +6,8 @@ import { ShortUrlService } from './shortUrl.service';
 import { ShortUrlResolver } from './shortUrl.resolver';
 //entities
 import { ShortUrl } from './shortUrl.entity';
+//controller
+import { ShortUrlController } from './shortUrl.controller'
 
 @Module({
   imports: [TypeOrmModule.forFeature([ShortUrl])],
@@ -14,5 +16,6 @@ import { ShortUrl } from './shortUrl.entity';
     ShortUrlResolver
   ],
   exports: [TypeOrmModule],
+  controllers: [ShortUrlController]
 })
 export class ShortUrlModule { }
