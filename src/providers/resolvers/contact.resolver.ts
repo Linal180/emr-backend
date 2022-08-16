@@ -1,17 +1,23 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+//guards
 import PermissionGuard from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//inputs
 import ContactInput from '../dto/contact-input.dto';
-import { ContactPayload } from '../dto/contact-payload.dto';
-import { ContactsPayload } from '../dto/contacts-payload.dto';
 import { CreateContactInput } from '../dto/create-contact.input';
 import { GetContact, RemoveContact, UpdateContactInput } from '../dto/update-contact.input';
+//payloads
+import { ContactPayload } from '../dto/contact-payload.dto';
+import { ContactsPayload } from '../dto/contacts-payload.dto';
+//services
 import { ContactService } from '../services/contact.service';
 
 @Resolver('contact')
 export class ContactResolver {
   constructor(private readonly contactService: ContactService) { }
+
+  //mutations
 
   @Mutation(() => ContactPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -33,7 +39,17 @@ export class ContactResolver {
     };
   }
 
-  @Query(returns => ContactsPayload)
+  @Mutation(() => ContactPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeContact')
+  async removeContact(@Args('removeContact') removeContact: RemoveContact) {
+    await this.contactService.removeContact(removeContact);
+    return { response: { status: 200, message: 'Contact Deleted' } };
+  }
+
+  //queries
+
+  @Query(() => ContactsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllContacts')
   async findAllContacts(@Args('contactInput') contactInput: ContactInput): Promise<ContactsPayload> {
@@ -53,7 +69,7 @@ export class ContactResolver {
     });
   }
 
-  @Query(returns => ContactPayload)
+  @Query(() => ContactPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getContact')
   async getContact(@Args('getContact') getContact: GetContact): Promise<ContactPayload> {
@@ -63,11 +79,5 @@ export class ContactResolver {
     };
   }
 
-  @Mutation(() => ContactPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'removeContact')
-  async removeContact(@Args('removeContact') removeContact: RemoveContact) {
-    await this.contactService.removeContact(removeContact);
-    return { response: { status: 200, message: 'Contact Deleted' } };
-  }
+
 }

@@ -13,10 +13,11 @@ import { PaymentModule } from './payment/payment.module';
 import { BillingModule } from './billings/billing.module';
 import { UserLogsModule } from './userLogs/userLogs.module'
 import { PracticeModule } from './practice/practice.module';
+import { ShortUrlModule } from './shortUrl/shortUrl.module';
 import { ProviderModule } from './providers/provider.module';
-import { DashboardModule } from './dashboard/dashboard.module'
 import { FacilityModule } from './facilities/facility.module';
 import { InsuranceModule } from './insurance/insurance.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { AgreementModule } from './agreements/agreement.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { FormBuilderModule } from './formbuilder/formbuilder.module'
@@ -75,6 +76,7 @@ import { AppController } from './app.controller';
     AppointmentModule,
     FormBuilderModule,
     ProblemChartingModule,
+    ShortUrlModule,
   ],
   controllers: [AppController],
   providers: [AppService],
