@@ -20,9 +20,9 @@ export class ShortUrlService {
       if (!isValidUrl) {
         throw new Error('Invalid URL')
       }
-      const baseUrl = process.env.PORTAL_APP_BASE_URL || '';
+      const baseUrl = process.env.API_BASE_URL || '';
       const urlCode = generate()
-      const shortUrl = this.shortUrlRepo.create({ urlCode, longLink, shortLink: `${baseUrl}/${urlCode}` });
+      const shortUrl = this.shortUrlRepo.create({ urlCode, longLink, shortLink: `${baseUrl}/shortUrl/${urlCode}` });
       return await this.shortUrlRepo.save(shortUrl)
     } catch (error) {
       throw new InternalServerErrorException(error)
