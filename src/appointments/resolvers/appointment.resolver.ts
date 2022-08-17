@@ -12,7 +12,7 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { AppointmentPayload, PatientPastUpcomingAppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentService } from '../services/appointment.service';
 import { InvoiceService } from 'src/payment/services/invoice.service';
-import { AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
+import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
@@ -127,7 +127,7 @@ export class AppointmentResolver {
     const appointments = await this.appointmentService.findAllUpcomingAppointments(upComingAppointmentsInput)
     if (appointments) {
       return {
-        appointments,
+        ...appointments,
         response: {
           message: "OK", status: 200,
         }
@@ -198,6 +198,17 @@ export class AppointmentResolver {
       appointments,
       response: { status: 200, message: 'Appointment fetched successfully' }
     };
+  }
+
+  @Query(() => AppointmentInsuranceStatus)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getPatientPastUpcomingAppointment')
+  async findAppointmentInsuranceStatus(@Args('appointmentId') appointmentId: string): Promise<AppointmentInsuranceStatus> {
+    const appointment = await this.appointmentService.findAppointmentInsuranceStatus(appointmentId)
+    return {
+      ...appointment,
+      response: { status: 200, message: "Appointment Insurance Status Fetched Successfully" }
+    }
   }
 
   //resolve fields

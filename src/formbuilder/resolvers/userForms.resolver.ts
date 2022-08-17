@@ -1,16 +1,16 @@
-import { SetMetadata, UseGuards } from "@nestjs/common";
 import { Args, Mutation, Parent, ResolveField, Resolver } from "@nestjs/graphql";
-//user imports
+//entities
 import { Form } from "../entities/form.entity";
-import RoleGuard from 'src/users/auth/role.guard';
 import { UserForms } from '../entities/userforms.entity';
+import { UsersFormsElements } from "../entities/userFormElements.entity";
+//service
 import { FormsService } from "../services/forms.service";
 import { UserFormsService } from '../services/userForms.service'
-import { FormMediaPayload, UserFormPayload } from "../dto/userForms.dto";
-import { UsersFormsElements } from "../entities/userFormElements.entity";
-import { JwtAuthGraphQLGuard } from "src/users/auth/jwt-auth-graphql.guard";
 import { UserFormElementService } from "../services/userFormElements.service";
+//inputs
 import { CreateUserFormInput, GetPublicMediaInput } from "../dto/userForms.input";
+//payload
+import { FormMediaPayload, UserFormPayload } from "../dto/userForms.dto";
 
 @Resolver(() => UserForms)
 

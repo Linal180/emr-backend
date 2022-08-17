@@ -1,10 +1,9 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { AttachmentType } from '../../attachments/entities/attachment.entity';
+import { InputType, Field, PartialType } from '@nestjs/graphql';
 @InputType()
 export class CreateAttachmentMetaDataInput {
   @Field({ nullable: true })
   assignedTo?: string
-  
+
   @Field({ nullable: true })
   pending?: boolean
 
@@ -18,5 +17,8 @@ export class CreateAttachmentMetaDataInput {
   documentTypeId?: string
 
   @Field({ nullable: true })
-  documentTypeName?: string
+  documentTypeName?: string;
+
+  @Field({ nullable: true })
+  practiceId?: string;
 }

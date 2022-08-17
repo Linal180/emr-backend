@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import {
   Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral,
@@ -52,8 +53,6 @@ export class PaginationService {
    */
   async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[], orderByColumn?: OrderByColumn): Promise<PaginationPayloadInterface<T>> {
     try {
-
-
       const { associatedTo, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
       let filterOption: FilterOptionsResponse = null;
@@ -209,6 +208,16 @@ export class PaginationService {
       effectiveDate,
       expiryDate,
       feeScheduleId,
+      claimFeedFacilityName,
+      claimFeedPatientName,
+      claimFeedPayerId,
+      claimFeedFromDate,
+      claimFeedToDate,
+      claimStatusId,
+      claimNo,
+      billingFromDate,
+      billingToDate,
+      selfId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -345,6 +354,10 @@ export class PaginationService {
         ...(agreementFacilityId && {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
+        ...(claimNo && claimNo != null && { claimNo }),
+        ...(claimStatusId && claimStatusId != null && { claimStatusId }),
+        ...(billingFromDate && billingFromDate != null && { from: billingFromDate }),
+        ...(billingToDate && billingToDate != null && { to: billingToDate }),
         ...(code && code != null && { code }),
         ...(feeScheduleId && feeScheduleId != null && { feeScheduleId }),
         ...(moduleType && moduleType != null && { moduleType }),
@@ -354,6 +367,11 @@ export class PaginationService {
         ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
         ...(expiryDate && expiryDate != null && { expiryDate: Raw(alias => `${alias} Is null OR ${alias} <= '${today}'`) }),
         ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }),
+        ...(claimFeedFacilityName && { provName: Raw(alias => `${alias} ILIKE '%${claimFeedFacilityName}%'`) }),
+        ...(claimFeedPatientName && { patientFullName: Raw(alias => `${alias} ILIKE '%${claimFeedPatientName}%'`) }),
+        ...(claimFeedPayerId && { payerId: Raw(alias => `${alias} ILIKE '%${claimFeedPayerId}%'`) }),
+        ...(claimFeedFromDate && { fromDos: Raw(alias => `${alias} = '${moment(claimFeedFromDate).format("YYYYMMDD")}'`) }),
+        ...(claimFeedToDate && { thruDos: Raw(alias => `${alias} = '${moment(claimFeedToDate).format("YYYYMMDD")}'`) }),
       }
     };
 
@@ -361,6 +379,11 @@ export class PaginationService {
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status
       whereOptions.where.user = { id: userId }
+    }
+
+    if (selfId) {
+      !Number.isInteger(status) && !status && delete whereOptions.where.status
+      whereOptions.where.user = { id: selfId }
     }
 
     // FROM - TO Filter

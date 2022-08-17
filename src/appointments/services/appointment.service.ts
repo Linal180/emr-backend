@@ -1,7 +1,7 @@
 //packages block
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
-import { Brackets, Connection, getConnection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral, Repository } from 'typeorm';
+import { Brackets, Connection, getConnection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 //entities, services, inputs types, enums
 import { createToken } from 'src/lib/helper';
@@ -14,7 +14,7 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { GetSlots } from 'src/providers/dto/update-schedule.input';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from '../../facilities/entities/services.entity';
-import { AppointmentsPayload } from '../dto/appointments-payload.dto';
+import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaymentService } from 'src/payment/services/payment.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -107,7 +107,7 @@ export class AppointmentService {
         //save appointment & commit transaction
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         await queryRunner.commitTransaction();
-        if (patient.phonePermission) {
+        if (patient.phoneEmailPermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
         if (patient?.email) {
@@ -186,7 +186,7 @@ export class AppointmentService {
       const appointment = await this.appointmentRepository.save(appointmentInstance);
       this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName + ' ' + patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id, false)
       await queryRunner.commitTransaction();
-      if (patientInstance.phonePermission) {
+      if (patientInstance.phoneEmailPermission) {
         this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
       }
       return appointment
@@ -236,6 +236,42 @@ export class AppointmentService {
     }
   }
 
+  async findAppointmentQuery(appointmentInput: AppointmentInput): Promise<SelectQueryBuilder<Appointment>> {
+    const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, ...whereObj } = appointmentInput
+    const whereStr = Object.keys(whereObj).reduce((acc, key) => {
+      const transformedKey = key === 'appointmentStatus' ? 'status' : key
+      if (whereObj[key]) {
+        acc[transformedKey] = whereObj[key]
+        return acc
+      }
+      return acc
+    }, {})
+
+    const { limit, page } = appointmentInput.paginationOptions
+    const [first] = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
+    let baseQuery = getConnection()
+      .getRepository(Appointment)
+      .createQueryBuilder('appointment')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .where(whereStr as ObjectLiteral)
+      .andWhere(appointmentDate ? '"appointment"."scheduleStartDateTime"::date = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
+
+    if (first) {
+      baseQuery
+        .innerJoin(Patient, 'appointmentWithSpecificPatient', `appointment.patientId = "appointmentWithSpecificPatient"."id"`)
+        .innerJoin(Service, 'appointmentWithSpecificService', `appointment.appointmentTypeId = "appointmentWithSpecificService"."id"`)
+        .andWhere(new Brackets(qb => {
+          qb.where('appointmentWithSpecificPatient.firstName ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.lastName ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.email ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
+        }))
+    }
+
+    return baseQuery
+  }
+
   /**
    * Finds all appointments
    * @param appointmentInput 
@@ -243,39 +279,9 @@ export class AppointmentService {
    */
   async findAllAppointments(appointmentInput: AppointmentInput): Promise<AppointmentsPayload> {
     try {
-      const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, ...whereObj } = appointmentInput
-      const whereStr = Object.keys(whereObj).reduce((acc, key) => {
-        const transformedKey = key === 'appointmentStatus' ? 'status' : key
-        if (whereObj[key]) {
-          acc[transformedKey] = whereObj[key]
-          return acc
-        }
-        return acc
-      }, {})
-
-      const { limit, page } = appointmentInput.paginationOptions
-      const [first] = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
-      let baseQuery = getConnection()
-        .getRepository(Appointment)
-        .createQueryBuilder('appointment')
-        .skip((page - 1) * limit)
-        .take(limit)
-        .where(whereStr as ObjectLiteral)
-        .andWhere(appointmentDate ? '"appointment"."scheduleStartDateTime"::date = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
-
-      if (first) {
-        baseQuery
-          .innerJoin(Patient, 'appointmentWithSpecificPatient', `appointment.patientId = "appointmentWithSpecificPatient"."id"`)
-          .innerJoin(Service, 'appointmentWithSpecificService', `appointment.appointmentTypeId = "appointmentWithSpecificService"."id"`)
-          .andWhere(new Brackets(qb => {
-            qb.where('appointmentWithSpecificPatient.firstName ILIKE :search', { search: `%${first}%` })
-              .orWhere('appointmentWithSpecificPatient.lastName ILIKE :search', { search: `%${first}%` })
-              .orWhere('appointmentWithSpecificPatient.email ILIKE :search', { search: `%${first}%` })
-              .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
-          }))
-      }
-
-
+      const { paginationOptions } = appointmentInput
+      const { page, limit } = paginationOptions
+      const baseQuery = await this.findAppointmentQuery(appointmentInput)
       const [appointments, totalCount] = await baseQuery
         .getManyAndCount()
 
@@ -296,33 +302,31 @@ export class AppointmentService {
   }
 
   /**
- * Finds all upcoming appointments
- * @param upcomingAppointmentInputs
- * @returns all upcoming appointments appointments 
- */
-  async findAllUpcomingAppointments(upComingAppointmentInput: UpComingAppointmentsInput): Promise<Appointment[]> {
+   * Finds all upcoming appointments
+   * @param upComingAppointmentInput 
+   * @returns all upcoming appointments 
+   */
+  async findAllUpcomingAppointments(upComingAppointmentInput: UpComingAppointmentsInput): Promise<UpcomingAppointmentsPayload> {
     try {
-      const { facilityId, patientId, practiceId, providerId } = upComingAppointmentInput
-      const query = {
-        ...(facilityId && facilityId !== null && {
-          facilityId
-        }),
-        ...(patientId && patientId !== null && {
-          patientId
-        }),
-        ...(practiceId && practiceId !== null && {
-          practiceId
-        }),
-        ...(providerId && providerId !== null && {
-          providerId
-        })
+      const { paginationOptions } = upComingAppointmentInput
+      const { shouldFetchPast, ...appointmentInput } = upComingAppointmentInput
+      const { page, limit } = paginationOptions
+      const baseQuery = await this.findAppointmentQuery(appointmentInput)
+      const [appointments, totalCount] = await baseQuery
+        .andWhere(`"appointment"."scheduleStartDateTime" ${shouldFetchPast ? '<' : '>'}= :appointmentTime`, { appointmentTime: moment() })
+        .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
+
+      return {
+        pagination: {
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        appointments
       }
-
-      const appointment = await this.appointmentRepository.find({
-        where: query
-      })
-
-      return appointment
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -359,6 +363,19 @@ export class AppointmentService {
    */
   async findOne(id: string): Promise<Appointment> {
     return await this.appointmentRepository.findOne(id);
+  }
+
+  /**
+ * Finds one
+ * @param id 
+ * @returns one 
+ */
+  async findAppointmentInsuranceStatus(id: string): Promise<AppointmentInsuranceStatus> {
+    const appointment = await this.appointmentRepository.findOne(id, { select: ['insuranceStatus', 'id'] });
+    return {
+      id: appointment.id,
+      insuranceStatus: appointment.insuranceStatus
+    }
   }
 
   /**
@@ -471,7 +488,7 @@ export class AppointmentService {
    */
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
-      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, updateAppointmentInput, this.appointmentRepository)
+      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, { ...updateAppointmentInput, token: createToken() }, this.appointmentRepository)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -526,7 +543,7 @@ export class AppointmentService {
         const patient = await this.patientService.findOne(appointment.patientId)
         const provider = await this.doctorService.findOne(appointment.providerId)
         const facility = await this.facilityService.findOne(appointment.facilityId)
-        if (patient.phonePermission) {
+        if (patient.phoneEmailPermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, false)
         }
         if (appointment.billingStatus === BillingStatus.PAID) {

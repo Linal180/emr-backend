@@ -12,3 +12,13 @@ export default class DocumentTypeInput {
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }
+
+@InputType()
+export class CreateDocumentTypeInput {
+    @Field({ nullable: true })
+    type: string;
+
+    @Field({ nullable: true })
+    practiceId?: string;
+
+}

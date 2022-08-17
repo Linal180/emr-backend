@@ -4,36 +4,42 @@ import { validate as isUuid } from 'uuid'
 import {
   BadRequestException, HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException
 } from "@nestjs/common";
-//user import
-import { FormsService } from "./forms.service";
-import { AwsService } from 'src/aws/aws.service';
-import { File } from 'src/aws/dto/file-input.dto';
-import { Form, FormType } from "../entities/form.entity";
+//entities
+
 import { UserForms } from '../entities/userforms.entity';
-import { AppointmentUserForm } from "../dto/userForms.dto";
+import { Form, FormType } from "../entities/form.entity";
 import { FormElement } from "../entities/form-elements.entity";
-import { UserFormElementService } from "./userFormElements.service";
-import { PolicyService } from "src/insurance/services/policy.service";
-import { PaginationService } from "src/pagination/pagination.service";
-import { PaymentService } from "src/payment/services/payment.service";
-import { PatientService } from "src/patients/services/patient.service";
-import { CreatePatientInput } from "src/patients/dto/create-patient.input";
+import { OrderOfBenefitType } from "src/insurance/entities/policy.entity";
 import { AttachmentType } from "src/attachments/entities/attachment.entity";
-import { CreateContactInput } from "src/providers/dto/create-contact.input";
-import { CreateEmployerInput } from "src/patients/dto/create-employer.input";
-import { AppointmentService } from "src/appointments/services/appointment.service";
 import { ContactType, RelationshipType } from "src/providers/entities/contact.entity";
-import { UpdateAttachmentMediaInput } from "src/attachments/dto/update-attachment.input";
 import { Appointment, BillingStatus, PaymentType } from "src/appointments/entities/appointment.entity";
-import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
-import {
-  getCustomElementValue, getTableElements, getUserElementValue, getUserFormElements, pluckFormElementId
-} from "src/lib/helper";
 import {
   COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, Patient, PRONOUNS, RACE,
   SEXUALORIENTATION
 } from "src/patients/entities/patient.entity";
+//services
+import { FormsService } from "./forms.service";
+import { AwsService } from 'src/aws/aws.service';
+import { UserFormElementService } from "./userFormElements.service";
+import { PaymentService } from "src/payment/services/payment.service";
+import { PolicyService } from "src/insurance/services/policy.service";
+import { PaginationService } from "src/pagination/pagination.service";
+import { PatientService } from "src/patients/services/patient.service";
 import { ContractService } from "src/appointments/services/contract.service";
+import { AppointmentService } from "src/appointments/services/appointment.service";
+//inputs
+import { File } from 'src/aws/dto/file-input.dto';
+import { CreatePatientInput } from "src/patients/dto/create-patient.input";
+import { CreateContactInput } from "src/providers/dto/create-contact.input";
+import { CreateEmployerInput } from "src/patients/dto/create-employer.input";
+import { UpdateAttachmentMediaInput } from "src/attachments/dto/update-attachment.input";
+import { CreateUserFormInput, GetPublicMediaInput, UserFormInput } from "../dto/userForms.input";
+//payloads
+import { AppointmentUserForm } from "../dto/userForms.dto";
+//helpers
+import {
+  getCustomElementValue, getInsuranceStatus, getTableElements, getUserElementValue, getUserFormElements, pluckFormElementId
+} from "src/lib/helper";
 
 @Injectable()
 export class UserFormsService {
@@ -42,15 +48,15 @@ export class UserFormsService {
     @InjectRepository(UserForms)
     private userFormsRepository: Repository<UserForms>,
     private readonly connection: Connection,
-    private readonly paginationService: PaginationService,
-    private readonly userFormElementService: UserFormElementService,
-    private readonly formService: FormsService,
     private readonly awsService: AwsService,
-    private readonly patientService: PatientService,
-    private readonly appointmentService: AppointmentService,
+    private readonly formService: FormsService,
     private readonly policyService: PolicyService,
+    private readonly patientService: PatientService,
+    private readonly contractService: ContractService,
     private readonly transactionService: PaymentService,
-    private readonly contractService: ContractService
+    private readonly paginationService: PaginationService,
+    private readonly appointmentService: AppointmentService,
+    private readonly userFormElementService: UserFormElementService,
   ) { }
 
 
@@ -126,9 +132,8 @@ export class UserFormsService {
 
     const { name: employerName, phone: employerPhone, usualOccupation, industry } = employer as CreateEmployerInput
     //get custom element value
-    const smsPermission = getCustomElementValue(userFormElementInputs, 'smsPermission')
-    const medication = getCustomElementValue(userFormElementInputs, 'medicationHistoryAuthority')
-    const phonePermission = getCustomElementValue(userFormElementInputs, 'phonePermission')
+    const medication = getCustomElementValue(userFormElementInputs, 'medicationHistoryConsent')
+    const phoneEmailPermission = getCustomElementValue(userFormElementInputs, 'phoneEmailPermission')
     const billingInfo = getCustomElementValue(userFormElementInputs, 'releaseOfInfoBill')
     const privacy = getCustomElementValue(userFormElementInputs, 'privacyNotice')
 
@@ -148,7 +153,7 @@ export class UserFormsService {
         callToConsent: false,
         privacyNotice: privacy === 'true' ? true : false,
         releaseOfInfoBill: billingInfo === 'true' ? true : false,
-        medicationHistoryAuthority: medication === 'true' ? true : false,
+        medicationHistoryConsent: medication === 'true' ? true : false,
         ethnicity: ethnicity || ETHNICITY.NONE,
         homeBound: homeBound || HOMEBOUND.NO,
         holdStatement: HOLDSTATEMENT.NONE,
@@ -166,8 +171,7 @@ export class UserFormsService {
         maritialStatus: maritialStatus || MARITIALSTATUS.SINGLE,
         sexualOrientation: SEXUALORIENTATION.NONE,
         dob: dob || null,
-        smsPermission: smsPermission === 'true' ? true : false,
-        phonePermission: phonePermission === 'true' ? true : false,
+        phoneEmailPermission: phoneEmailPermission === 'true' ? true : false,
         preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE
       },
       createContactInput: {
@@ -249,22 +253,24 @@ export class UserFormsService {
     try {
 
       const { type, id, facilityId, practiceId } = form;
-      const { userFormElements: userFormElementInputs } = inputs
-      const formElements = await this.formService.getFormElements(id)
-      //get patient inputs
-      const patientInputs = await this.getInputValues(formElements, userForm, inputs)
-      const { createPatientItemInput } = patientInputs
-      const { email } = createPatientItemInput
-
-      const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
       if (type === FormType.APPOINTMENT) {
-        const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
+        const { userFormElements: userFormElementInputs } = inputs
+        const formElements = await this.formService.getFormElements(id)
+        //get patient inputs
+        const patientInputs = await this.getInputValues(formElements, userForm, inputs)
+        const { createPatientItemInput } = patientInputs
+        const { email } = createPatientItemInput
+
+        const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
         const providerElement = formElements?.find(({ columnName }) => columnName === 'usualProviderId')
+        const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
+        const insuranceStatusElement = formElements?.find(({ columnName }) => columnName === 'insuranceStatus')
 
         if (appointmentElement) {
           const { fieldId } = appointmentElement
           const { fieldId: providerField } = providerElement || {}
           let facilityElementId = ''
+          let insuranceStatus = ''
 
           const appointmentTypeId = getCustomElementValue(userFormElementInputs, fieldId)
           const doctorId = getCustomElementValue(userFormElementInputs, providerField)
@@ -278,6 +284,15 @@ export class UserFormsService {
               const facilityItem = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === facilityFieldId)
               const { value } = facilityItem || {}
               facilityElementId = value
+            }
+          }
+
+          if (insuranceStatusElement) {
+            const { fieldId: insuranceStatusFieldId } = insuranceStatusElement;
+            if (insuranceStatusFieldId) {
+              const insuranceStatusItem = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === insuranceStatusFieldId)
+              const { value } = insuranceStatusItem || {}
+              insuranceStatus = value ? getInsuranceStatus(value) : ''
             }
           }
 
@@ -337,7 +352,8 @@ export class UserFormsService {
                   groupNumber,
                   insuranceId: companyName,
                   patientId: patientInstance.id,
-                  primaryCareProviderId: doctorId || null
+                  primaryCareProviderId: doctorId || null,
+                  orderOfBenefit: OrderOfBenefitType.PRIMARY
                 }
                 await this.policyService.create(inputs)
               }
@@ -357,7 +373,8 @@ export class UserFormsService {
                 patientId: patientInstance.id,
                 practiceId: practiceId || null,
                 contractNumber: contractNo || null,
-                organizationName: organizationName || null
+                organizationName: organizationName || null,
+                insuranceStatus
               }
 
               const appointmentInstance = await this.appointmentService.createAppointment(appointmentInputs);
@@ -410,9 +427,10 @@ export class UserFormsService {
       const formElements = await this.formService.getFormElements(id)
       //get patient inputs
       const patientInputs = await this.getInputValues(formElements, userForm, inputs)
-      const { createPatientItemInput } = patientInputs
-      const { email } = createPatientItemInput
+
       const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
+      const insuranceStatusElement = formElements?.find(({ columnName }) => columnName === 'insuranceStatus');
+
       if (type === FormType.APPOINTMENT) {
         const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
         const providerElement = formElements?.find(({ columnName }) => columnName === 'usualProviderId')
@@ -421,6 +439,7 @@ export class UserFormsService {
           const { fieldId } = appointmentElement
           const { fieldId: providerField } = providerElement || {}
           let facilityElementId = ''
+          let insuranceStatus = ''
 
           if (facilityElement) {
             const { fieldId: facilityFieldId } = facilityElement;
@@ -428,6 +447,15 @@ export class UserFormsService {
               const facilityItem = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === facilityFieldId)
               const { value } = facilityItem || {}
               facilityElementId = value
+            }
+          }
+
+          if (insuranceStatusElement) {
+            const { fieldId: insuranceStatusFieldId } = insuranceStatusElement;
+            if (insuranceStatusFieldId) {
+              const insuranceStatusItem = userFormElementInputs?.find(({ FormsElementsId }) => FormsElementsId === insuranceStatusFieldId)
+              const { value } = insuranceStatusItem || {}
+              insuranceStatus = value ? getInsuranceStatus(value) : ''
             }
           }
 
@@ -494,7 +522,8 @@ export class UserFormsService {
                     groupNumber,
                     insuranceId: companyName,
                     patientId: patientId,
-                    primaryCareProviderId: doctorId || null
+                    primaryCareProviderId: doctorId || null,
+                    orderOfBenefit: OrderOfBenefitType.PRIMARY
                   }
                   await this.policyService.create(inputs)
                 }
@@ -511,7 +540,7 @@ export class UserFormsService {
                   providerId: doctorId || null,
                   patientId: patientId,
                   practiceId: practiceId || null,
-
+                  insuranceStatus
                 }
                 let appointmentContract = null
                 if (organizationName && contractNo) {

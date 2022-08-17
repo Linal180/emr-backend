@@ -1,26 +1,31 @@
-import { HttpService } from '@nestjs/axios';
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { Connection, FindOperator, ILike, In, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import * as FormData from 'form-data';
 import * as moment from 'moment';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { PatientService } from 'src/patients/services/patient.service';
+import * as FormData from 'form-data';
+import { HttpService } from '@nestjs/axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Connection, FindOperator, ILike, In, Repository } from 'typeorm';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
 import { CopayService } from './copay.service';
 import { InsuranceService } from './insurance.service';
 import { PolicyHolderService } from './policy-holder.service';
+import { PracticeService } from 'src/practice/practice.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+//inputs
 import { PolicyEligibilityPaginationInput } from '../dto/policy-eligibility-input';
-import { PolicyEligibilitiesPayload, PolicyEligibilityWithPatientPayload } from '../dto/policy-eligibility.dto';
 import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
+//payloads
 import { PoliciesPayload } from '../dto/policy-payload.dto';
-import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
+import { PolicyEligibilitiesPayload, PolicyEligibilityWithPatientPayload } from '../dto/policy-eligibility.dto';
+//entities
+import { Policy } from '../entities/policy.entity';
 import { PolicyCoverage } from '../entities/policy-coverage.entity';
 import { PolicyEligibility } from '../entities/policy-eligibility.entity';
-import { Policy } from '../entities/policy.entity';
+import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
+//helper
 import { getClaimRelation } from 'src/lib/helper';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { PracticeService } from 'src/practice/practice.service';
 
 @Injectable()
 export class PolicyService {
@@ -32,15 +37,15 @@ export class PolicyService {
     @InjectRepository(PolicyCoverage)
     private policyCoverageRepository: Repository<PolicyCoverage>,
     private readonly connection: Connection,
-    private readonly paginationService: PaginationService,
-    private readonly patientService: PatientService,
-    private readonly insuranceService: InsuranceService,
-    private readonly policyHolderService: PolicyHolderService,
+    private readonly httpService: HttpService,
     private readonly copayService: CopayService,
     private readonly doctorService: DoctorService,
+    private readonly patientService: PatientService,
     private readonly facilityService: FacilityService,
     private readonly practiceService: PracticeService,
-    private readonly httpService: HttpService
+    private readonly insuranceService: InsuranceService,
+    private readonly paginationService: PaginationService,
+    private readonly policyHolderService: PolicyHolderService,
   ) { }
 
   /**
@@ -90,20 +95,32 @@ export class PolicyService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { referringProviderId, patientId, primaryCareProviderId, ...policyInfoToCreate } = createPolicyInput
+      const { referringProviderId, patientId, primaryCareProviderId, insuranceId, ...policyInfoToCreate } = createPolicyInput
+      const primaryInsurance = await this.policyRepository.findOne({ where: { patientId, orderOfBenefit: createPolicyInput.orderOfBenefit } })
+      const secondaryInsurance = await this.policyRepository.findOne({ where: { patientId, orderOfBenefit: createPolicyInput.orderOfBenefit } })
+      const tertiaryInsurance = await this.policyRepository.findOne({ where: { patientId, orderOfBenefit: createPolicyInput.orderOfBenefit } })
+      if (primaryInsurance) {
+        return await this.update({ ...createPolicyInput, id: primaryInsurance.id, policyHolderInfo: { ...createPolicyInput.policyHolderInfo, id: primaryInsurance.policyHolderId } })
+      }
+      if (secondaryInsurance) {
+        return await this.update({ ...createPolicyInput, id: secondaryInsurance.id, policyHolderInfo: { ...createPolicyInput.policyHolderInfo, id: secondaryInsurance.policyHolderId } })
+      }
+      if (tertiaryInsurance) {
+        return await this.update({ ...createPolicyInput, id: tertiaryInsurance.id, policyHolderInfo: { ...createPolicyInput.policyHolderInfo, id: tertiaryInsurance.policyHolderId } })
+      }
       //creating policy
       const policyInstance = this.policyRepository.create({ ...policyInfoToCreate })
 
       if (referringProviderId) {
         const referringProviderInstance = await this.doctorService.findOne(referringProviderId)
         policyInstance.referringProvider = referringProviderInstance
-        this.patientService.updatePatientProvider({ patientId, providerId: referringProviderId, relation: DoctorPatientRelationType.REFERRING_PROVIDER })
+        await this.patientService.updatePatientProvider({ patientId, providerId: referringProviderId, relation: DoctorPatientRelationType.REFERRING_PROVIDER })
       }
 
       if (primaryCareProviderId) {
         const primaryCareProviderInstance = await this.doctorService.findOne(primaryCareProviderId)
         policyInstance.primaryCareProvider = primaryCareProviderInstance
-        this.patientService.updatePatientProvider({ patientId, providerId: primaryCareProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
+        await this.patientService.updatePatientProvider({ patientId, providerId: primaryCareProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
       }
 
       const patient = await this.patientService.findOne(patientId)
@@ -117,7 +134,7 @@ export class PolicyService {
       //associate policyHolder
       if (!policyHolderInfo) {
         const createdPolicyHolder = await this.policyHolderService.create(createPolicyInput.policyHolderInfo)
-        this.patientService.updatePatientPolicyHolder({ id: patient.id, policyHolder: createdPolicyHolder })
+        await this.patientService.updatePatientPolicyHolder({ id: patient.id, policyHolder: createdPolicyHolder })
         policyInstance.policyHolder = createdPolicyHolder
       } else {
         this.policyHolderService.update({ ...policyHolderInfo, ...createPolicyInput.policyHolderInfo })
@@ -164,11 +181,13 @@ export class PolicyService {
       if (referringProviderId) {
         const referringProviderInstance = await this.doctorService.findOne(referringProviderId)
         policyInstance.referringProvider = referringProviderInstance
+        this.patientService.updatePatientProvider({ patientId, providerId: referringProviderId, relation: DoctorPatientRelationType.REFERRING_PROVIDER })
       }
 
       if (primaryCareProviderId) {
         const primaryCareProviderInstance = await this.doctorService.findOne(primaryCareProviderId)
         policyInstance.primaryCareProvider = primaryCareProviderInstance
+        this.patientService.updatePatientProvider({ patientId, providerId: primaryCareProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
       }
 
       const patient = await this.patientService.findOne(patientId)

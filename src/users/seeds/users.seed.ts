@@ -1,13 +1,18 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Facility } from "src/facilities/entities/facility.entity";
-import { Connection, getRepository } from "typeorm";
+import { Facility, PracticeType } from "src/facilities/entities/facility.entity";
+import { Connection, getRepository, QueryRunner } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
-import { createPasswordHash } from '../../lib/helper';
+import { createPasswordHash, createToken } from '../../lib/helper';
 import { Permission } from "../entities/permissions.entity";
 import { Role } from '../entities/role.entity';
 import { RolePermission } from "../entities/rolePermissions.entity";
 import { User } from '../entities/user.entity';
+import { Practice } from "src/practice/entities/practice.entity";
+import { Contact } from "src/providers/entities/contact.entity";
+import { Staff } from "src/providers/entities/staff.entity";
+import { Doctor } from "src/providers/entities/doctor.entity";
 import { doctorAssistantPermissionsList, doctorPermissionsList, emergencyAccessPermissionsList, facilityAdminPermissionsList, FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList as officeManagerPermissionsList1, patientPermissionsList, PermissionData, permissionDataNew, practiceAdminPermissionsList, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
+import { PracticeInfo, FacilitiesData, PracticeAdminInfo, PracticeUsersData } from './practiceSeed-data'
 
 @Injectable()
 export class CreateUsers implements Seeder {
@@ -24,7 +29,6 @@ export class CreateUsers implements Seeder {
       }
       //Add Roles
 
-      // if (!roles.length) {
       const createdRoles = await Promise.all(await RolesData.map(async (rolesData) => {
         const getRole = await getRepository(Role).findOne({ role: rolesData.role })
         if (!getRole) {
@@ -52,25 +56,14 @@ export class CreateUsers implements Seeder {
         }
       }))
       let mergedPermissions = [...await getRepository(Permission).find(), ...createdPermissions]
-      let permissions= mergedPermissions.filter((permission, index, arrayPermissions) => index === arrayPermissions.findIndex((t) => (
+      let permissions = mergedPermissions.filter((permission, index, arrayPermissions) => index === arrayPermissions.findIndex((t) => (
         t.id === permission.id
       )))
-      // if (!permissions.length) {
-      //   permissions = getRepository(Permission).create(PermissionData)
-      //   permissions = await queryRunner.manager.save(permissions);
-      // }
-      //---------
-      //Add Permissions
-      // let permissionsNew = getRepository(Permission).create(permissionDataNew)
-      // permissionsNew = await queryRunner.manager.save(permissionsNew);
-      //--------
 
       //Add superAdmin role Permissions
       let superAdminRole = roles.find((item) => item.role === 'super-admin')
-      // if (!superAdminRolePermission.length) {
       let superAdminPermissionList = permissions
       let superAdminRolePermissions = await this.rolePermissionPayload(superAdminPermissionList, superAdminRole)
-      // ("superAdminRolePermissions", superAdminRolePermissions)
       await Promise.all(await superAdminRolePermissions.map(async (rolePermissionsData) => {
         const getRolePermission = await getRepository(RolePermission).findOne({ roleId: rolePermissionsData.roleId, permissionId: rolePermissionsData.permissionId })
         if (!getRolePermission) {
@@ -78,20 +71,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let superAdminRolePermissionsRes = getRepository(RolePermission).create(superAdminRolePermissions)
-      // superAdminRolePermissionsRes = await queryRunner.manager.save(superAdminRolePermissionsRes);
-      // }
-      //-------------
-      // let superAdminPermissionListNew = permissionsNew
-      // let superAdminRolePermissionsNew = await this.rolePermissionPayload(superAdminPermissionListNew, superAdminRole)
-      // let superAdminRolePermissionsResNew = getRepository(RolePermission).create(superAdminRolePermissionsNew)
-      // superAdminRolePermissionsResNew = await queryRunner.manager.save(superAdminRolePermissionsResNew);
-      //----------
-
 
       //Add practice admin role Permissions
       let practiceAdminRole = roles.find((item) => item.role === 'practice-admin')
-      // if (!superAdminRolePermission.length) {
       let adminPermissionList = permissions.filter(x => practiceAdminPermissionsList.find(y => (y === x.name)));
       let adminRolePermissions = await this.rolePermissionPayload(adminPermissionList, practiceAdminRole)
       await Promise.all(await adminRolePermissions.map(async (rolePermissionsData) => {
@@ -101,25 +83,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let practiceAdminRole = roles.find((item) => item.role === 'practice-admin')
-      // let practiceAdminRolePermission = await getRepository(RolePermission).find({ where: { role: practiceAdminRole.id } });
-      // if (!practiceAdminRolePermission.length) {
-      //   let adminPermissionList = permissions.filter(x => practiceAdminPermissionsList.find(y => (y === x.name)));
-      //   let adminRolePermissions = await this.rolePermissionPayload(adminPermissionList, practiceAdminRole)
-      //   let adminRolePermissionsRes = getRepository(RolePermission).create(adminRolePermissions)
-      //   adminRolePermissionsRes = await queryRunner.manager.save(adminRolePermissionsRes);
-      // }
-
-      //-------------
-      // let adminPermissionListNew = permissionsNew
-      // let adminRolePermissionsNew = await this.rolePermissionPayload(adminPermissionListNew, practiceAdminRole)
-      // let adminRolePermissionsResNew = getRepository(RolePermission).create(adminRolePermissionsNew)
-      // adminRolePermissionsResNew = await queryRunner.manager.save(adminRolePermissionsResNew);
-      //-------------
 
       //Add facility admin role Permissions
       let facilityAdminRole = roles.find((item) => item.role === 'facility-admin')
-      // if (!superAdminRolePermission.length) {
       let facilityAdminPermissionList = permissions.filter(x => facilityAdminPermissionsList.find(y => (y === x.name)));
       let facilityAdminRolePermissions = await this.rolePermissionPayload(facilityAdminPermissionList, facilityAdminRole)
       await Promise.all(await facilityAdminRolePermissions.map(async (rolePermissionsData) => {
@@ -129,26 +95,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      //Add facility admin role Permissions 
-      // let facilityAdminRole = roles.find((item) => item.role === 'facility-admin')
-      // let facilityAdminRolePermission = await getRepository(RolePermission).find({ where: { role: facilityAdminRole.id } });
-      // if (!facilityAdminRolePermission.length) {
-      //   let adminPermissionList = permissions.filter(x => facilityAdminPermissionsList.find(y => (y === x.name)));
-      //   let adminRolePermissions = await this.rolePermissionPayload(adminPermissionList, facilityAdminRole)
-      //   let adminRolePermissionsRes = getRepository(RolePermission).create(adminRolePermissions)
-      //   adminRolePermissionsRes = await queryRunner.manager.save(adminRolePermissionsRes);
-      // }
-
-      //----------------------
-      // let facilityAdminPermissionList = permissionsNew
-      // let facilityAdminRolePermissionsNew = await this.rolePermissionPayload(facilityAdminPermissionList, facilityAdminRole)
-      // let facilityAdminRolePermissionsResNew = getRepository(RolePermission).create(facilityAdminRolePermissionsNew)
-      // facilityAdminRolePermissionsResNew = await queryRunner.manager.save(facilityAdminRolePermissionsResNew);
-      //----------------------
 
       //Add emergency access role Permissions
       let emergencyAccessRole = roles.find((item) => item.role === 'emergency-access')
-      // if (!superAdminRolePermission.length) {
       let emergencyAccessPermissionList = permissions.filter(x => emergencyAccessPermissionsList.find(y => (y === x.name)));
       let emergencyAccessRolePermissions = await this.rolePermissionPayload(emergencyAccessPermissionList, emergencyAccessRole)
       await Promise.all(await emergencyAccessRolePermissions.map(async (rolePermissionsData) => {
@@ -158,25 +107,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let emergencyAccessRole = roles.find((item) => item.role === 'emergency-access')
-      // let emergencyAccessRolePermission = await getRepository(RolePermission).find({ where: { role: emergencyAccessRole.id } });
-      // if (!emergencyAccessRolePermission.length) {
-      //   let emergencyAccessPermissionList = permissions.filter(x => emergencyAccessPermissionsList.find(y => (y === x.name)));
-      //   let emergencyAccessRolePermissions = await this.rolePermissionPayload(emergencyAccessPermissionList, emergencyAccessRole)
-      //   let emergencyAccessRolePermissionsRes = getRepository(RolePermission).create(emergencyAccessRolePermissions)
-      //   emergencyAccessRolePermissionsRes = await queryRunner.manager.save(emergencyAccessRolePermissionsRes);
-      // }
-
-      //--------------------
-      // let emergencyAccessPermissionListNew = permissionsNew;
-      // let emergencyAccessRolePermissionsNew = await this.rolePermissionPayload(emergencyAccessPermissionListNew, emergencyAccessRole)
-      // let emergencyAccessRolePermissionsResNew = getRepository(RolePermission).create(emergencyAccessRolePermissionsNew)
-      // emergencyAccessRolePermissionsResNew = await queryRunner.manager.save(emergencyAccessRolePermissionsResNew);
-      //--------------------
 
       //Add doctor role Permissions
       let doctorRole = roles.find((item) => item.role === 'doctor')
-      // if (!superAdminRolePermission.length) {
       let doctorPermissionList = permissions.filter(x => doctorPermissionsList.find(y => (y === x.name)));
       let doctorRolePermissions = await this.rolePermissionPayload(doctorPermissionList, doctorRole)
       await Promise.all(await doctorRolePermissions.map(async (rolePermissionsData) => {
@@ -186,26 +119,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let doctorRole = roles.find((item) => item.role === 'doctor')
-      // let doctorRolePermission = await getRepository(RolePermission).find({ where: { role: doctorRole.id } })
-      // if (!doctorRolePermission.length) {
-      //   let doctorPermissionList = permissions.filter(x => doctorPermissionsList.find(y => (y === x.name)));
-      //   let doctorRolePermissions = await this.rolePermissionPayload(doctorPermissionList, doctorRole)
-      //   let doctorRolePermissionsRes = getRepository(RolePermission).create(doctorRolePermissions)
-      //   doctorRolePermissionsRes = await queryRunner.manager.save(doctorRolePermissionsRes);
-      // }
-
-      //----------------------
-      // let doctorPermissionListNew = permissionsNew
-      // let doctorRolePermissionsNew = await this.rolePermissionPayload(doctorPermissionListNew, doctorRole)
-      // let doctorRolePermissionsResNew = getRepository(RolePermission).create(doctorRolePermissionsNew)
-      // doctorRolePermissionsResNew = await queryRunner.manager.save(doctorRolePermissionsResNew);
-      //----------------------
-
 
       //Add nurse role Permissions
       let nurseRole = roles.find((item) => item.role === 'nurse')
-      // if (!superAdminRolePermission.length) {
       let nursePermissionList = permissions.filter(x => nursePermissionsList.find(y => (y === x.name)));
       let nurseRolePermissions = await this.rolePermissionPayload(nursePermissionList, nurseRole)
       await Promise.all(await nurseRolePermissions.map(async (rolePermissionsData) => {
@@ -215,18 +131,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let nurseRole = roles.find((item) => item.role === 'nurse')
-      // let nurseRolePermission = await getRepository(RolePermission).find({ where: { role: nurseRole.id } })
-      // if (!nurseRolePermission.length) {
-      //   let nursePermissionList = permissions.filter(x => nursePermissionsList.find(y => (y === x.name)));
-      //   let nurseRolePermissions = await this.rolePermissionPayload(nursePermissionList, nurseRole)
-      //   let nurseRolePermissionsRes = getRepository(RolePermission).create(nurseRolePermissions)
-      //   nurseRolePermissionsRes = await queryRunner.manager.save(nurseRolePermissionsRes);
-      // }
 
       //Add patient role Permissions
       let patientRole = roles.find((item) => item.role === 'patient')
-      // if (!superAdminRolePermission.length) {
       let patientPermissionList = permissions.filter(x => patientPermissionsList.find(y => (y === x.name)));
       let patientRolePermissions = await this.rolePermissionPayload(patientPermissionList, patientRole)
       await Promise.all(await patientRolePermissions.map(async (rolePermissionsData) => {
@@ -236,18 +143,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let patientRole = roles.find((item) => item.role === 'patient')
-      // let patientRolePermission = await getRepository(RolePermission).find({ where: { role: patientRole.id } })
-      // if (!patientRolePermission.length) {
-      //   let patientRolePermissionList = permissions.filter(x => patientPermissionsList.find(y => (y === x.name)));
-      //   let patientRolePermissions = await this.rolePermissionPayload(patientRolePermissionList, patientRole)
-      //   let patientRolePermissionsRes = getRepository(RolePermission).create(patientRolePermissions)
-      //   patientRolePermissionsRes = await queryRunner.manager.save(patientRolePermissionsRes);
-      // }
 
       //Add staff role Permissions
       let staffRole = roles.find((item) => item.role === 'staff')
-      // if (!superAdminRolePermission.length) {
       let staffPermissionList = permissions.filter(x => staffPermissionsList.find(y => (y === x.name)));
       let staffRolePermissions = await this.rolePermissionPayload(staffPermissionList, staffRole)
       await Promise.all(await staffRolePermissions.map(async (rolePermissionsData) => {
@@ -257,25 +155,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let staffRole = roles.find((item) => item.role === 'staff')
-      // let staffRolePermission = await getRepository(RolePermission).find({ where: { role: staffRole.id } })
-      // if (!staffRolePermission.length) {
-      //   let staffRolePermissionList = permissions.filter(x => staffPermissionsList.find(y => (y === x.name)));
-      //   let staffRolePermissions = await this.rolePermissionPayload(staffRolePermissionList, staffRole)
-      //   let staffRolePermissionsRes = getRepository(RolePermission).create(staffRolePermissions)
-      //   staffRolePermissionsRes = await queryRunner.manager.save(staffRolePermissionsRes);
-      // }
-
-      //--------------------
-      // let staffRolePermissionListNew = permissionsNew 
-      // let staffRolePermissionsNew = await this.rolePermissionPayload(staffRolePermissionListNew, staffRole)
-      // let staffRolePermissionsResNew = getRepository(RolePermission).create(staffRolePermissionsNew)
-      // staffRolePermissionsResNew = await queryRunner.manager.save(staffRolePermissionsResNew);
-      //----------------------
 
       //Add nursePractitioner role Permissions
       let nursePractitionerRole = roles.find((item) => item.role === 'nurse-practitioner')
-      // if (!superAdminRolePermission.length) {
       let nursePractitionerPermissionList = permissions.filter(x => practitionerNursePermissionsList.find(y => (y === x.name)));
       let nursePractitionerRolePermissions = await this.rolePermissionPayload(nursePractitionerPermissionList, nursePractitionerRole)
       await Promise.all(await nursePractitionerRolePermissions.map(async (rolePermissionsData) => {
@@ -285,25 +167,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let nursePractitionerRole = roles.find((item) => item.role === 'nurse-practitioner')
-      // let nursePractitionerRolePermission = await getRepository(RolePermission).find({ where: { role: nursePractitionerRole.id } })
-      // if (!nursePractitionerRolePermission.length) {
-      //   let nursePractitionerRolePermissionList = permissions.filter(x => practitionerNursePermissionsList.find(y => (y === x.name)));
-      //   let nursePractitionerRolePermissions = await this.rolePermissionPayload(nursePractitionerRolePermissionList, nursePractitionerRole)
-      //   let nursePractitionerRolePermissionsRes = getRepository(RolePermission).create(nursePractitionerRolePermissions)
-      //   nursePractitionerRolePermissionsRes = await queryRunner.manager.save(nursePractitionerRolePermissionsRes);
-      // }
-
-      //------------------------
-      // let nursePractitionerRolePermissionListNew = permissionsNew  
-      // let nursePractitionerRolePermissionsNew = await this.rolePermissionPayload(nursePractitionerRolePermissionListNew, nursePractitionerRole)
-      // let nursePractitionerRolePermissionsResNew = getRepository(RolePermission).create(nursePractitionerRolePermissionsNew)
-      // nursePractitionerRolePermissionsResNew = await queryRunner.manager.save(nursePractitionerRolePermissionsResNew);
-      //------------------------
 
       //Add office manager role Permissions
       let officeManagerRole = roles.find((item) => item.role === 'office-manager')
-      // if (!superAdminRolePermission.length) {
       let officeManagerPermissionList = permissions.filter(x => officeManagerPermissionsList1.find(y => (y === x.name)));
       let officeManagerRolePermissions = await this.rolePermissionPayload(officeManagerPermissionList, officeManagerRole)
       await Promise.all(await officeManagerRolePermissions.map(async (rolePermissionsData) => {
@@ -313,26 +179,9 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let officeManagerRole = roles.find((item) => item.role === 'office-manager')
-      // let officeManagerRolePermission = await getRepository(RolePermission).find({ where: { role: officeManagerRole.id } })
-      // if (!officeManagerRolePermission.length) {
-      //   let officeManagerRolePermissionList = permissions.filter(x => officeManagerPermissionsList.find(y => (y === x.name)));
-      //   let officeManagerRolePermissions = await this.rolePermissionPayload(officeManagerRolePermissionList, officeManagerRole)
-      //   let officeManagerRolePermissionsRes = getRepository(RolePermission).create(officeManagerRolePermissions)
-      //   officeManagerRolePermissionsRes = await queryRunner.manager.save(officeManagerRolePermissionsRes);
-      // }
-
-      //----------------------
-      // let officeManagerRolePermissionListNew = permissionsNew   
-      // let officeManagerRolePermissionsNew = await this.rolePermissionPayload(officeManagerRolePermissionListNew, officeManagerRole)
-      // let officeManagerRolePermissionsResNew = getRepository(RolePermission).create(officeManagerRolePermissionsNew)
-      // officeManagerRolePermissionsResNew = await queryRunner.manager.save(officeManagerRolePermissionsResNew);
-      //----------------------
-
 
       //Add office doctor assistant Permissions
       let doctorAssistantRole = roles.find((item) => item.role === 'doctor-assistant')
-      // if (!superAdminRolePermission.length) {
       let doctorAssistantPermissionList = permissions.filter(x => doctorAssistantPermissionsList.find(y => (y === x.name)));
       let doctorAssistantRolePermissions = await this.rolePermissionPayload(doctorAssistantPermissionList, doctorAssistantRole)
       await Promise.all(await doctorAssistantRolePermissions.map(async (rolePermissionsData) => {
@@ -342,25 +191,8 @@ export class CreateUsers implements Seeder {
           return await queryRunner.manager.save(createdRolePermissions);
         }
       }))
-      // let doctorAssistantRole = roles.find((item) => item.role === 'doctor-assistant')
-      // let doctorAssistantRolePermission = await getRepository(RolePermission).find({ where: { role: doctorAssistantRole.id } })
-      // if (!doctorAssistantRolePermission.length) {
-      //   let doctorAssistantRolePermissionList = permissions.filter(x => doctorAssistantPermissionsList.find(y => (y === x.name)));
-      //   let doctorAssistantRolePermissions = await this.rolePermissionPayload(doctorAssistantRolePermissionList, doctorAssistantRole)
-      //   let doctorAssistantRolePermissionsRes = getRepository(RolePermission).create(doctorAssistantRolePermissions)
-      //   doctorAssistantRolePermissionsRes = await queryRunner.manager.save(doctorAssistantRolePermissionsRes);
-      // }
 
-      //--------------------
-      // let doctorAssistantRolePermissionListNew = permissionsNew  
-      // let doctorAssistantRolePermissionsNew = await this.rolePermissionPayload(doctorAssistantRolePermissionListNew, doctorAssistantRole)
-      // let doctorAssistantRolePermissionsResNew = getRepository(RolePermission).create(doctorAssistantRolePermissionsNew)
-      // doctorAssistantRolePermissionsResNew = await queryRunner.manager.save(doctorAssistantRolePermissionsResNew);
-      //--------------------
-
-      //Add front-desk assistant Permissions 
       let frontDeskRole = roles.find((item) => item.role === 'front-desk')
-      // if (!superAdminRolePermission.length) {
       let frontDeskPermissionList = permissions.filter(x => frontDeskPermissionsList.find(y => (y === x.name)));
       let frontDeskRolePermissions = await this.rolePermissionPayload(frontDeskPermissionList, frontDeskRole)
       await Promise.all(await frontDeskRolePermissions.map(async (rolePermissionsData) => {
@@ -371,25 +203,7 @@ export class CreateUsers implements Seeder {
         }
       }))
 
-      // let frontDeskRole = roles.find((item) => item.role === 'front-desk')
-      // let frontDeskRolePermission = await getRepository(RolePermission).find({ where: { role: frontDeskRole.id } })
-      // if (!frontDeskRolePermission.length) {
-      //   let frontDeskRolePermissionList = permissions.filter(x => frontDeskPermissionsList.find(y => (y === x.name)));
-      //   let frontDeskRolePermissions = await this.rolePermissionPayload(frontDeskRolePermissionList, frontDeskRole)
-      //   let frontDeskRolePermissionsPermissionsRes = getRepository(RolePermission).create(frontDeskRolePermissions)
-      //   frontDeskRolePermissionsPermissionsRes = await queryRunner.manager.save(frontDeskRolePermissionsPermissionsRes);
-      // }
-
-      //--------------------
-      // let frontDeskRolePermissionListNew = permissionsNew
-      // let frontDeskRolePermissionsNew = await this.rolePermissionPayload(frontDeskRolePermissionListNew, frontDeskRole)
-      // let frontDeskRolePermissionsPermissionsResNew = getRepository(RolePermission).create(frontDeskRolePermissionsNew)
-      // frontDeskRolePermissionsPermissionsResNew = await queryRunner.manager.save(frontDeskRolePermissionsPermissionsResNew);
-      //--------------------
-
       //Add Users
-      const users = await getRepository(User).find();
-      // if (!users.length) {
       for (let index = 0; index < UsersData.length; index++) {
         const user = UsersData[index];
         const ifUserExist = await getRepository(User).findOne({ email: user.email })
@@ -405,8 +219,105 @@ export class CreateUsers implements Seeder {
           await queryRunner.manager.save(UserObj);
         }
       }
-      // }
+
+      const practiceAdminRole1 = roles.find((role) => role.role === 'practice-admin')
+      let savedPractice: Practice
+      savedPractice = await getRepository(Practice).findOne({ name: PracticeInfo.name })
+      
+      if (!savedPractice) {
+        const practiceInstance = await getRepository(Practice).create(PracticeInfo)
+        savedPractice = await queryRunner.manager.save(practiceInstance);
+      }
+
+      const savedFacilities = await Promise.all(FacilitiesData.map(async (facilityData) => {
+        const { name, practiceType, address1, ...facilityContactInfo } = facilityData
+        const facilityExist = await getRepository(Facility).findOne({ name })
+        if (facilityExist) {
+          return facilityExist
+        }
+        const facilityInstance = getRepository(Facility).create({ name })
+        facilityInstance.practice = savedPractice
+        facilityInstance.practiceId = savedPractice.id
+
+        const facilityContact = await getRepository(Contact).create({ ...facilityContactInfo, address: address1, primaryContact: true })
+        const contact = await queryRunner.manager.save(facilityContact);
+        facilityInstance.contacts = [contact]
+
+        return await queryRunner.manager.save(facilityInstance);
+      }))
+
+      let savedAdminUser: User
+      savedAdminUser = await getRepository(User).findOne({ email: PracticeAdminInfo.email })
+      if (!savedAdminUser) {
+        const adminUserInstance = await getRepository(User).create({ email: PracticeAdminInfo.email, facility: savedFacilities[0] })
+        adminUserInstance.password = await createPasswordHash('admin123');
+        adminUserInstance.userType = 'practice-admin'
+        savedAdminUser = await queryRunner.manager.save(adminUserInstance)
+        const practiceAdminInstance = await getRepository(Staff).create({ ...PracticeAdminInfo })
+        practiceAdminInstance.user = savedAdminUser
+        practiceAdminInstance.facility = savedFacilities[0]
+        practiceAdminInstance.practice = savedPractice
+        const savedPracticeAdmin = await queryRunner.manager.save(practiceAdminInstance)
+        savedAdminUser.userId = savedPracticeAdmin.id
+        savedAdminUser.roles = [practiceAdminRole1]
+        await queryRunner.manager.save(savedAdminUser)
+      }
+
+      const createdUsers = await Promise.all(await PracticeUsersData.map(async (userData) => {
+        const { email, facility, name, phone, role: userRole, suffix } = userData
+        const [firstName, lastName] = name.split(' ')
+        const existingUser = await getRepository(User).findOne({ email: email })
+        if (existingUser) {
+          return existingUser
+        }
+
+        const userInstance = await getRepository(User).create({ email, phone })
+        const roleInfo = roles.find((role) => role.role === userRole)
+        userInstance.roles = [roleInfo]
+        const token = createToken()
+        userInstance.token = token
+        const facilityInfo = savedFacilities.find((savedFacility) => savedFacility.name === facility)
+        userInstance.facility = facilityInfo
+        userInstance.userType = userRole
+        userInstance.password = await createPasswordHash('admin123');
+        const savedUser = await queryRunner.manager.save(userInstance)
+
+        return queryRunner.manager.save(savedUser)
+      }))
+
       await queryRunner.commitTransaction();
+
+      await Promise.all(await createdUsers.map(async (createdUser) => {
+        const { email, facility, name, phone, role: userRole, suffix } = PracticeUsersData.find((userData) => userData.email === createdUser.email)
+        const [firstName, lastName] = name.split(' ')
+
+        const facilityInfo = savedFacilities.find((savedFacility) => savedFacility.name === facility)
+
+        if (userRole === 'doctor') {
+          const doctorExist = await getRepository(Doctor).findOne({ email })
+          if (!doctorExist) {
+            const doctorInstance = await getRepository(Doctor).create({ email, firstName, lastName, suffix })
+            const doctorContact = await getRepository(Contact).create({ email, phone, primaryContact: true })
+            const contact = await queryRunner.manager.save(doctorContact);
+            doctorInstance.contacts = [contact]
+            doctorInstance.facility = facilityInfo
+            doctorInstance.practiceId = savedPractice.id
+            const savedDoctor = await getRepository(Doctor).save(doctorInstance)
+            createdUser.userId = savedDoctor.id
+          }
+        } else {
+          const staffExist = await getRepository(Staff).findOne({ email })
+          if (!staffExist) {
+            const staffInstance = await getRepository(Staff).create({ firstName, lastName, email, phone })
+            staffInstance.user = createdUser
+            staffInstance.facility = facilityInfo
+            const savedStaff = await getRepository(Staff).save(staffInstance)
+            createdUser.userId = savedStaff.id
+          }
+        }
+      }))
+
+      // await queryRunner.commitTransaction();
     }
     catch (error) {
       await queryRunner.rollbackTransaction();
@@ -415,6 +326,8 @@ export class CreateUsers implements Seeder {
       await queryRunner.release();
     }
   }
+
+
   async rolePermissionPayload(permissions: Permission[], role: Role) {
     return permissions.map((item) => {
       return {
@@ -426,4 +339,5 @@ export class CreateUsers implements Seeder {
       }
     })
   }
+  
 }

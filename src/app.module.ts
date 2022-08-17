@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 //modules
 import { AwsModule } from './aws/aws.module';
+import { SmsModule } from './sms/sms.module';
 import { LabModule } from './labs/labs.module';
 import { UtilsModule } from './util/utils.module';
 import { UsersModule } from './users/users.module';
@@ -12,10 +13,11 @@ import { PaymentModule } from './payment/payment.module';
 import { BillingModule } from './billings/billing.module';
 import { UserLogsModule } from './userLogs/userLogs.module'
 import { PracticeModule } from './practice/practice.module';
+import { ShortUrlModule } from './shortUrl/shortUrl.module';
 import { ProviderModule } from './providers/provider.module';
-import { DashboardModule } from './dashboard/dashboard.module'
 import { FacilityModule } from './facilities/facility.module';
 import { InsuranceModule } from './insurance/insurance.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { AgreementModule } from './agreements/agreement.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { FormBuilderModule } from './formbuilder/formbuilder.module'
@@ -27,8 +29,9 @@ import { ProblemChartingModule } from './patientCharting/patientCharting.module'
 import { DatabaseConfig } from './database.config';
 import configuration from './config/configuration';
 import { LogDatabaseConfig } from './logDatabase.config';
-//services, controller
+//services
 import { AppService } from './app.service';
+//controller
 import { AppController } from './app.controller';
 
 @Module({
@@ -54,6 +57,7 @@ import { AppController } from './app.controller';
     }),
     LabModule,
     AwsModule,
+    SmsModule,
     UsersModule,
     UtilsModule,
     MailerModule,
@@ -72,6 +76,7 @@ import { AppController } from './app.controller';
     AppointmentModule,
     FormBuilderModule,
     ProblemChartingModule,
+    ShortUrlModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,7 +7,7 @@ import { FormTemplates } from '../seeds/seed-data'
 //class
 @Injectable()
 export class CreateFormTemplate implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<void> {
+  public async run(_: Factory, connection: Connection): Promise<void> {
     const queryRunner = connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

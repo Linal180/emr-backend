@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:14
 
 # ADD package.json /app/
 
@@ -38,7 +38,7 @@ RUN npm ci --only=production
 COPY . .
 
 RUN npm run build
-RUN npm run
+# RUN npm run seed:run
 
 ENV PORT 3000
 EXPOSE 3000

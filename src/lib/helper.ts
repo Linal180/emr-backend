@@ -1,3 +1,4 @@
+import * as Joi from 'joi';
 import * as  moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcryptjs from 'bcryptjs';
@@ -7,6 +8,7 @@ import { ContactType } from "src/providers/entities/contact.entity";
 import { FormElement } from 'src/formbuilder/entities/form-elements.entity';
 import { UsersFormsElements } from 'src/formbuilder/entities/userFormElements.entity';
 import { UserFormElementInputs } from 'src/formbuilder/dto/userFormElements.input';
+import { FormBuilderPaymentTypes } from 'src/formbuilder/seeds/seed-data';
 
 
 export function createToken(): string {
@@ -204,5 +206,28 @@ export const generateString = (numberOfRounds = 2) => {
 }
 
 export const generateUniqueNumber = () => {
-  return String(Math.floor(1000000000 + Math.random() * 9000000000)*(new Date().getMilliseconds())).slice(0, 10)
+  return String(Math.floor(1000000000 + Math.random() * 9000000000) * (new Date().getMilliseconds())).slice(0, 10)
+}
+
+export const getInsuranceStatus = (value: string) => {
+  const key = value as unknown as FormBuilderPaymentTypes;
+  switch (key) {
+    case FormBuilderPaymentTypes.INSURANCE:
+      return 'insurance'
+    default:
+      return 'noInsurance'
+  }
+}
+
+export const stringCustomErrorMessage = (errors: Joi.ErrorReport[], name: string) => {
+  errors.forEach(err => {
+    switch (err.code) {
+      case "any.empty":
+        err.message = `${name} is required.`;
+        break;
+      default:
+        break;
+    }
+  });
+  return errors;
 }

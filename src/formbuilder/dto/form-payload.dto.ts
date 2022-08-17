@@ -78,6 +78,12 @@ export class FieldsTypes {
 
     @Field({ nullable: true })
     regex?: string;
+
+    @Field(() => Boolean, { nullable: true })
+    futureEnable?: boolean;
+
+    @Field(() => Boolean, { nullable: true })
+    pastEnable?: boolean;
 }
 @ObjectType()
 export class SectionsTypes {
@@ -90,6 +96,9 @@ export class SectionsTypes {
     @Field({ nullable: false })
     name: string;
 
+    @Field({ nullable: true })
+    sectionId?: string;
+
     @Field(() => [FieldsTypes])
     fields: FieldsTypes[]
 }
@@ -100,6 +109,9 @@ export class FormTabs {
 
     @Field({ nullable: true })
     name: string
+
+    @Field({ nullable: true })
+    tabId?: string
 
     @Field(() => [SectionsTypes])
     sections: SectionsTypes[]

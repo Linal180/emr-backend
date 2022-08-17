@@ -19,6 +19,6 @@ export class CopayInput {
 
 @InputType()
 export class UpdateCopayInput extends CopayInput {
-  @Field()
-  id: string
+  @Field({ nullable: true })
+  id?: string
 }

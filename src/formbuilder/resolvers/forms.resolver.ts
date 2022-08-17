@@ -1,20 +1,24 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-//entities guards, inputs, services, dtos
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+// guards
 import RoleGuard from 'src/users/auth/role.guard';
-import { CreateFormInput } from '../dto/create-form.input';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//inputs
 import FormInput from '../dto/form-input.dto';
+import { UserFormInput } from '../dto/userForms.input';
+import { CreateFormInput } from '../dto/create-form.input';
+import { GetForm, RemoveForm, UpdateFormInput } from '../dto/update-form.input';
+// payloads
 import { FormPayload } from '../dto/form-payload.dto';
 import { FormsPayload } from '../dto/forms-payload.dto';
-import { GetForm, RemoveForm, UpdateFormInput } from '../dto/update-form.input';
 import { UserFormsPayload } from '../dto/userForms.dto';
-import { UserFormInput } from '../dto/userForms.input';
-import { FormElement } from '../entities/form-elements.entity';
+//entities
 import { Form } from '../entities/form.entity';
-import { FormElementsService } from '../services/form-elements.service';
+import { FormElement } from '../entities/form-elements.entity';
+//services
 import { FormsService } from '../services/forms.service';
 import { UserFormsService } from '../services/userForms.service';
+import { FormElementsService } from '../services/form-elements.service';
 
 @Resolver(() => Form)
 export class FormResolver {

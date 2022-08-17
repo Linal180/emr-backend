@@ -1,12 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Appointment } from "src/appointments/entities/appointment.entity";
-import { PolicyHolder } from "src/insurance/entities/policy-holder.entity";
-import { Policy } from "src/insurance/entities/policy.entity";
-import { Patient } from "src/patients/entities/patient.entity";
-import { Doctor } from "src/providers/entities/doctor.entity";
-import { ResponsePayload } from "src/users/dto/response-payload.dto";
+//entities
 import { Billing } from "../entities/billing.entity";
-
+import { Policy } from "src/insurance/entities/policy.entity";
+import { Doctor } from "src/providers/entities/doctor.entity";
+import { Patient } from "src/patients/entities/patient.entity";
+import { PolicyHolder } from "src/insurance/entities/policy-holder.entity";
+import { Appointment } from "src/appointments/entities/appointment.entity";
+//payloads
+import { ResponsePayload } from "src/users/dto/response-payload.dto";
 @ObjectType()
 export class SuperBillPayload {
   @Field(() => Appointment, { nullable: true })
@@ -17,7 +18,7 @@ export class SuperBillPayload {
 
   @Field(() => Policy, { nullable: true })
   insuranceDetail: Policy
-  
+
   @Field(() => PolicyHolder, { nullable: true })
   policyHolderInfo: PolicyHolder
 
