@@ -4,7 +4,6 @@ export class changeClaimColumnsTypes1660805446362 implements MigrationInterface 
     name = 'changeClaimColumnsTypes1660805446362'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "Patients" ALTER COLUMN "sexAtBirth" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "claim" DROP COLUMN "claimMdId"`);
         await queryRunner.query(`ALTER TABLE "claim" ADD "claimMdId" character varying`);
         await queryRunner.query(`ALTER TABLE "claim" DROP COLUMN "batchId"`);
@@ -40,7 +39,6 @@ export class changeClaimColumnsTypes1660805446362 implements MigrationInterface 
         await queryRunner.query(`ALTER TABLE "claim" ADD "batchId" double precision`);
         await queryRunner.query(`ALTER TABLE "claim" DROP COLUMN "claimMdId"`);
         await queryRunner.query(`ALTER TABLE "claim" ADD "claimMdId" double precision`);
-        await queryRunner.query(`ALTER TABLE "Patients" ALTER COLUMN "sexAtBirth" DROP NOT NULL`);
     }
 
 }
