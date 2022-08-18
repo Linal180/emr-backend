@@ -1,22 +1,26 @@
 import { SetMetadata, UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation, Parent, ResolveField } from '@nestjs/graphql';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { PatientService } from 'src/patients/services/patient.service';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//guards
 import PermissionGuard from 'src/users/auth/role.guard';
-import { PolicyEligibilitiesPayload, PolicyEligibilityPayload } from '../dto/policy-eligibility.dto';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//inputs
 import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../dto/policy-input.dto';
+//payloads
 import { PoliciesPayload, PolicyPayload } from '../dto/policy-payload.dto';
+//entities
 import { Copay } from '../entities/copay.entity';
-import { Insurance } from '../entities/insurance.entity';
-import { PolicyHolder } from '../entities/policy-holder.entity';
 import { Policy } from '../entities/policy.entity';
+import { Insurance } from '../entities/insurance.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { PolicyHolder } from '../entities/policy-holder.entity';
+//services
 import { CopayService } from '../services/copay.service';
-import { InsuranceService } from '../services/insurance.service';
-import { PolicyHolderService } from '../services/policy-holder.service';
 import { PolicyService } from '../services/policy.service';
+import { InsuranceService } from '../services/insurance.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { PolicyHolderService } from '../services/policy-holder.service';
 
 @Resolver(() => Policy)
 export class PolicyResolver {
@@ -28,6 +32,8 @@ export class PolicyResolver {
     private readonly copayService: CopayService,
     private readonly doctorService: DoctorService,
   ) { }
+
+  //queries
 
   @Query(() => PoliciesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -60,6 +66,8 @@ export class PolicyResolver {
     };
   }
 
+  //mutations
+
   @Mutation(() => PolicyPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'createPolicy')
@@ -80,39 +88,41 @@ export class PolicyResolver {
     };
   }
 
+  //resolve fields
+
   @ResolveField(() => [PolicyHolder])
   async policyHolder(@Parent() policy: Policy): Promise<PolicyHolder> {
-    return this.policyHolderService.findOne(policy.policyHolderId)
+    return await this.policyHolderService.findOne(policy.policyHolderId)
   }
 
   @ResolveField(() => [Patient])
-  patient(@Parent() policy: Policy): Promise<Patient> {
-    return this.patientService.findOne(policy.patientId)
+  async patient(@Parent() policy: Policy): Promise<Patient> {
+    return await this.patientService.findOne(policy.patientId)
   }
 
   @ResolveField(() => [Insurance])
-  insurance(@Parent() policy: Policy): Promise<Insurance> {
-    return this.insuranceService.findOne(policy.insuranceId)
+  async insurance(@Parent() policy: Policy): Promise<Insurance> {
+    return await this.insuranceService.findOne(policy.insuranceId)
   }
 
   @ResolveField(() => [Copay])
-  copays(@Parent() policy: Policy): Promise<Copay[]> {
-    if (policy) {
-      return this.copayService.findByPolicyId(policy.id)
+  async copays(@Parent() policy: Policy): Promise<Copay[]> {
+    if (policy?.id) {
+      return await this.copayService.findByPolicyId(policy.id)
     }
   }
 
   @ResolveField(() => [Doctor])
-  primaryCareProvider(@Parent() policy: Policy): Promise<Doctor> {
-    if (policy) {
-      return this.doctorService.findOne(policy.primaryCareProviderId)
+  async primaryCareProvider(@Parent() policy: Policy): Promise<Doctor> {
+    if (policy?.primaryCareProviderId) {
+      return await this.doctorService.findOne(policy.primaryCareProviderId)
     }
   }
 
   @ResolveField(() => [Doctor])
-  referringProvider(@Parent() policy: Policy): Promise<Doctor> {
-    if (policy) {
-      return this.doctorService.findOne(policy.referringProviderId)
+  async referringProvider(@Parent() policy: Policy): Promise<Doctor> {
+    if (policy?.referringProviderId) {
+      return await this.doctorService.findOne(policy.referringProviderId)
     }
   }
 }

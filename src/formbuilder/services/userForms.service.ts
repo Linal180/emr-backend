@@ -132,10 +132,12 @@ export class UserFormsService {
 
     const { name: employerName, phone: employerPhone, usualOccupation, industry } = employer as CreateEmployerInput
     //get custom element value
-    const medication = getCustomElementValue(userFormElementInputs, 'medicationHistoryConsent')
     const phoneEmailPermission = getCustomElementValue(userFormElementInputs, 'phoneEmailPermission')
-    const billingInfo = getCustomElementValue(userFormElementInputs, 'releaseOfInfoBill')
-    const privacy = getCustomElementValue(userFormElementInputs, 'privacyNotice')
+    const cellPhonePermission = getCustomElementValue(userFormElementInputs, 'cellPhonePermission')
+    const medicalPermission = getCustomElementValue(userFormElementInputs, 'medicalPermission')
+    const resultConsent = getCustomElementValue(userFormElementInputs, 'resultConsent')
+    const immunizationConsent = getCustomElementValue(userFormElementInputs, 'immunizationConsent')
+    const medication = getCustomElementValue(userFormElementInputs, 'medicationHistoryConsent')
 
     const patientInputs = {
       createPatientItemInput: {
@@ -150,9 +152,6 @@ export class UserFormsService {
         firstNameUsed: firstNameUsed || null,
         prefferedName: prefferedName || null,
         previousFirstName: previousFirstName || null,
-        callToConsent: false,
-        privacyNotice: privacy === 'true' ? true : false,
-        releaseOfInfoBill: billingInfo === 'true' ? true : false,
         medicationHistoryConsent: medication === 'true' ? true : false,
         ethnicity: ethnicity || ETHNICITY.NONE,
         homeBound: homeBound || HOMEBOUND.NO,
@@ -172,7 +171,11 @@ export class UserFormsService {
         sexualOrientation: SEXUALORIENTATION.NONE,
         dob: dob || null,
         phoneEmailPermission: phoneEmailPermission === 'true' ? true : false,
-        preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE
+        cellPhonePermission: cellPhonePermission === 'true' ? true : false,
+        medicalPermission: medicalPermission === 'true' ? true : false,
+        resultConsent: resultConsent === 'true' ? true : false,
+        immunizationConsent: immunizationConsent === 'true' ? true : false,
+        preferredCommunicationMethod: COMMUNICATIONTYPE.PHONE,
       },
       createContactInput: {
         email: email || "",
@@ -253,18 +256,18 @@ export class UserFormsService {
     try {
 
       const { type, id, facilityId, practiceId } = form;
-      const { userFormElements: userFormElementInputs } = inputs
-      const formElements = await this.formService.getFormElements(id)
-      //get patient inputs
-      const patientInputs = await this.getInputValues(formElements, userForm, inputs)
-      const { createPatientItemInput } = patientInputs
-      const { email } = createPatientItemInput
-
-      const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
-      const insuranceStatusElement = formElements?.find(({ columnName }) => columnName === 'insuranceStatus')
       if (type === FormType.APPOINTMENT) {
-        const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
+        const { userFormElements: userFormElementInputs } = inputs
+        const formElements = await this.formService.getFormElements(id)
+        //get patient inputs
+        const patientInputs = await this.getInputValues(formElements, userForm, inputs)
+        const { createPatientItemInput } = patientInputs
+        const { email } = createPatientItemInput
+
+        const facilityElement = formElements?.find(({ columnName }) => columnName === 'facilityId')
         const providerElement = formElements?.find(({ columnName }) => columnName === 'usualProviderId')
+        const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
+        const insuranceStatusElement = formElements?.find(({ columnName }) => columnName === 'insuranceStatus')
 
         if (appointmentElement) {
           const { fieldId } = appointmentElement

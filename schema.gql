@@ -2428,6 +2428,11 @@ type DocumentTypePayload {
   pagination: PaginationPayload
 }
 
+type SmsPayload {
+  sms: String
+  response: ResponsePayloadResponse
+}
+
 type AllergiesPayload {
   response: ResponsePayload
   allergies: [Allergies]
@@ -2689,6 +2694,20 @@ type UserLogsPayload {
   response: ResponsePayloadResponse!
 }
 
+type ShortUrl {
+  id: String!
+  shortLink: String
+  longLink: String
+  urlCode: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type ShortUrlResponse {
+  shortUrl: ShortUrl
+  response: ResponsePayloadResponse
+}
+
 type FacilitiesUser {
   id: String
   name: String
@@ -2920,6 +2939,7 @@ type Query {
   getForm(getForm: GetForm!): FormPayload!
   getPublicForm(getForm: GetForm!): FormPayload!
   findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
+  getShortUrl(getShortUrlInput: GetShortUrlInput!): ShortUrlResponse!
 }
 
 input SearchLoincCodesInput {
@@ -3447,6 +3467,10 @@ input UserFormInput {
   paginationOptions: PaginationInput!
 }
 
+input GetShortUrlInput {
+  urlCode: String
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -3557,6 +3581,7 @@ type Mutation {
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
   createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
@@ -3575,6 +3600,7 @@ type Mutation {
   createElement(inputs: ElementInputs!): Element!
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
+  createShortUrl(createShortUrlInput: CreateShortUrlInput!): ShortUrlResponse!
 }
 
 input LoincCodeInput {
@@ -4932,6 +4958,11 @@ input RemoveVital {
   id: String!
 }
 
+input SendSmsInput {
+  message: String
+  to: String
+}
+
 input CreateClaimInput {
   patientId: String
   appointmentId: String
@@ -5186,4 +5217,8 @@ input ArrayOfStringsTypeInput {
 input GetPublicMediaInput {
   url: String!
   formId: String!
+}
+
+input CreateShortUrlInput {
+  longLink: String
 }
