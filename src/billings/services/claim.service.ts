@@ -142,22 +142,23 @@ export class ClaimService {
               //not found error in claim ; get claim status
               if (noError) {
                 claimStatus = await this.claimStatusService.findByStatusId(SystemBillingStatuses.ACKNOWLEDGED);
+                const {claimmd_id, batchid, bill_npi,bill_taxid, claimid, fdos, filename, fileid, ins_number, payerid, pcn, sender_icn, sender_name, senderid,total_charge} = claim[0] || {}
                 response = {
-                  claimMdId: "number",
-                  batchId: "number",
-                  billNpi: "number",
-                  billTaxId: "number",
-                  claimId: "string",
-                  facilityDateOfService: "string",
-                  fileName: 'string',
-                  fileId: "number",
-                  insuranceNumber: "number",
-                  receivePayerId: "number",
-                  pcn: "string",
-                  sendIcn: "string",
-                  senderName: "string",
-                  senderId: "string",
-                  totalCharge: 'number'
+                  claimMdId: claimmd_id,
+                  batchId: batchid,
+                  billNpi: bill_npi,
+                  billTaxId:bill_taxid,
+                  claimId: claimid,
+                  facilityDateOfService: fdos,
+                  fileName: filename,
+                  fileId: fileid,
+                  insuranceNumber: ins_number,
+                  receivePayerId: payerid,
+                  pcn: pcn,
+                  sendIcn: sender_icn,
+                  senderName: sender_name,
+                  senderId: senderid,
+                  totalCharge: total_charge
                 }
               }
             }
@@ -184,7 +185,7 @@ export class ClaimService {
           claim = await this.create({
             ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
             payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
-            onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages
+            onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages, ...response
           })
           //get claim status
           if (!claimStatus) {

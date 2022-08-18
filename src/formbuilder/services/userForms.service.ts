@@ -333,7 +333,8 @@ export class UserFormsService {
             if (email) {
               const oldPatient = await this.patientService.GetPatientByEmail(email)
               if (oldPatient) {
-                patientInstance = oldPatient
+                const { patient } = oldPatient || {}
+                patientInstance = patient
               }
               else {
                 patientInstance = await this.patientService.createPatient(patientInput)
