@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import * as moment from 'moment';
+import * as pdf from 'html-pdf'
 import { InjectRepository } from '@nestjs/typeorm';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
@@ -14,6 +15,8 @@ import { LabTests, LabTestStatus } from '../entities/labTests.entity';
 import { Observations, AbnormalFlag } from '../entities/observations.entity';
 import { LabTestsService } from './labTests.service';
 import { LoincCodesService } from './loincCodes.service';
+import { UpdateObservationInput } from '../dto/update-observationItem-input.dto';
+import template from "../../lib/templates"
 
 @Injectable()
 export class LabTestsObservationsService {
@@ -95,46 +98,58 @@ export class LabTestsObservationsService {
     }
   }
 
-  async syncLabResults(): Promise<Observations[]> {
+  async syncLabResults(updateObservationInput: UpdateObservationInput): Promise<Observations[]> {
+    const { UpdateObservationItemInput } = updateObservationInput
+    // pdf.create(template({ name:'abbas', price1: 'abbas', price2:'abbas', receiptId: 'abbas' }), {}).toFile('rezultati.pdf', (err) => {
+    //   if (err) {
+    //     return console.log('error');
+    //   }
+      
+    // });
+
+    // return await this.ObservationsRepository.find()
     try {
       //updating multiple records of lab test observations
-      const labTests = await this.labTestsService.find()
-      labTests.forEach(async (labTest) => {
-        const testObservations = await this.GetLabTestObservations(labTest.id)
-        const { id } = testObservations?.[0] || {}
+      UpdateObservationItemInput.forEach(async (observationValues) => {
+        const { orderNumber, result, testName } = observationValues
+        const labTest = await this.labTestsService.findLabTestByTestAndOrderNo(orderNumber, testName)
+        if (labTest?.id) {
+          const { testObservations } = labTest
+          const { id } = testObservations?.[0] || {}
 
-        if (id) {
-          await this.utilsService.updateEntityManager(Observations, id, testObservations?.[0], this.ObservationsRepository)
-        } else {
-          const element = {
-            resultValue: 'Detected',
-            resultUnit: '',
-            normalRange: '',
-            normalRangeUnit: '',
-            abnormalFlag: AbnormalFlag.NONE,
-            description: '',
-          }
-          const createItemInput = [element].map((createItem) => {
-            return {
-              resultValue: createItem.resultValue,
-              resultUnit: createItem.resultUnit,
-              normalRange: createItem.normalRange,
-              normalRangeUnit: createItem.normalRangeUnit,
-              abnormalFlag: createItem.abnormalFlag,
-              description: createItem.description,
+          if (id) {
+            await this.utilsService.updateEntityManager(Observations, id, { ...testObservations?.[0], resultValue: result }, this.ObservationsRepository)
+          } else {
+            const element = {
+              resultValue: result,
+              resultUnit: '',
+              normalRange: '',
+              normalRangeUnit: '',
+              abnormalFlag: AbnormalFlag.NONE,
+              description: '',
             }
-          })
+            const createItemInput = [element].map((createItem) => {
+              return {
+                resultValue: createItem.resultValue,
+                resultUnit: createItem.resultUnit,
+                normalRange: createItem.normalRange,
+                normalRangeUnit: createItem.normalRangeUnit,
+                abnormalFlag: createItem.abnormalFlag,
+                description: createItem.description,
+              }
+            })
 
-          await this.createLabTestObservation({
-            createLabTestObservationItemInput: createItemInput,
-            labTestId: labTest.id
+            await this.createLabTestObservation({
+              createLabTestObservationItemInput: createItemInput,
+              labTestId: labTest?.id
+            })
+          }
+
+          await this.labTestsService.updateLabTest({
+            updateLabTestItemInput:
+              { id: labTest?.id, collectedDate: moment().format('MM-DD-YYYY'), receivedDate: moment().format('MM-DD-YYYY'), status: LabTestStatus.RESULT_RECEIVED }
           })
         }
-
-        await this.labTestsService.updateLabTest({
-          updateLabTestItemInput:
-            { id: labTest.id, collectedDate: moment().format('MM-DD-YYYY'), receivedDate: moment().format('MM-DD-YYYY'), status: LabTestStatus.RESULT_RECEIVED }
-        })
       })
       return
     }

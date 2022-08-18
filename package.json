@@ -57,6 +57,7 @@
     "fs": "0.0.1-security",
     "graphql": "^15.8.0",
     "graphql-type-json": "^0.3.2",
+    "html-pdf": "^3.0.1",
     "increase-memory-limit": "^1.0.7",
     "joi": "^17.6.0",
     "moment": "^2.29.1",

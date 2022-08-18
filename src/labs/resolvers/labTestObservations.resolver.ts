@@ -5,6 +5,7 @@ import PermissionGuard from 'src/users/auth/role.guard';
 import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
 import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
 import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
+import { UpdateObservationInput } from '../dto/update-observationItem-input.dto';
 import { Observations } from '../entities/observations.entity';
 import { LabTestsObservationsService } from '../services/labTestObservation.service';
 
@@ -20,7 +21,7 @@ export class LabTestObservationResolver {
       labTestObservation: await this.labTestsObservationsService.createLabTestObservation(createLabTestObservationInput),
       response: { status: 200, message: 'Lab test observations created successfully' }
     };
-  }   
+  }
 
   @Mutation(() => LabTestObservationPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -35,9 +36,9 @@ export class LabTestObservationResolver {
   @Mutation(() => LabTestObservationPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'updateLabTestObservation')
-  async syncLabResults() {
+  async syncLabResults(@Args('updateObservationInput') updateObservationInput: UpdateObservationInput) {
     return {
-      labTestObservation: await this.labTestsObservationsService.syncLabResults(),
+      labTestObservation: await this.labTestsObservationsService.syncLabResults(updateObservationInput),
       response: { status: 200, message: 'Lab test observations synced successfully' }
     };
   }

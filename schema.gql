@@ -3456,7 +3456,7 @@ type Mutation {
   removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
   createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
-  syncLabResults: LabTestObservationPayload!
+  syncLabResults(updateObservationInput: UpdateObservationInput!): LabTestObservationPayload!
   removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -3689,6 +3689,16 @@ input UpdateLabTestObservationItemInput {
   abnormalFlag: AbnormalFlag
   description: String
   id: String!
+}
+
+input UpdateObservationInput {
+  UpdateObservationItemInput: [UpdateObservationItemInput!]
+}
+
+input UpdateObservationItemInput {
+  orderNumber: String
+  testName: String
+  result: String
 }
 
 input RemoveLabTestObservation {

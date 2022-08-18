@@ -197,6 +197,21 @@ export class LabTestsService {
     }
   }
 
+  async findLabTestByTestAndOrderNo(orderNum: string, testName: string): Promise<LabTests> {
+    const labTest = await this.labTestsRepository.findOne({
+      relations: ['test', 'testObservations'],
+      where: {
+        orderNumber: orderNum,
+        test: {
+          component: testName
+        }
+      }
+    });
+    if (labTest) {
+      return labTest
+    }
+  }
+
   async removeLabTest({ id }: RemoveLabTest) {
     try {
       const labTest = await this.findOne(id)
