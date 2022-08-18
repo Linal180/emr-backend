@@ -160,17 +160,17 @@ export class ClaimInput {
 
   //response columns
 
-  @Field(() => Float, { nullable: true })
-  claimMdId?: number
+  @Field( { nullable: true })
+  claimMdId?: string
 
-  @Field(() => Float, { nullable: true })
-  batchId?: number
+  @Field({ nullable: true })
+  batchId?: string
 
-  @Field(() => Float, { nullable: true })
-  billNpi?: number
+  @Field( { nullable: true })
+  billNpi?: string
 
-  @Field(() => Float, { nullable: true })
-  billTaxId?: number
+  @Field( { nullable: true })
+  billTaxId?: string
 
   @Field({ nullable: true })
   claimId?: string
@@ -181,14 +181,14 @@ export class ClaimInput {
   @Field({ nullable: true })
   fileName?: string
 
-  @Field(() => Float, { nullable: true })
-  fileId?: number
+  @Field( { nullable: true })
+  fileId?: string
 
-  @Field(() => Float, { nullable: true })
-  insuranceNumber?: number
+  @Field({ nullable: true })
+  insuranceNumber?: string
 
-  @Field(() => Float, { nullable: true })
-  receivePayerId?: number
+  @Field({ nullable: true })
+  receivePayerId?: string
 
   @Field({ nullable: true })
   pcn?: string
@@ -202,8 +202,8 @@ export class ClaimInput {
   @Field({ nullable: true })
   senderId?: string
 
-  @Field(() => Float, { nullable: true })
-  totalCharge?: number;
+  @Field({ nullable: true })
+  totalCharge?: string;
 
   @Field(() => [String], { nullable: true })
   errorMessages: string[]
