@@ -1,7 +1,7 @@
 import { Field, InputType, PartialType, PickType, Float } from '@nestjs/graphql';
 //entities
 import { OnsetDate, OrderOfBenefit, OtherDate } from '../entities/claim.entity';
-import { Billing, OnsetDateType, OtherDateType } from '../entities/billing.entity';
+import { Billing, OnsetDateType, OtherDateType, PatientPaymentType } from '../entities/billing.entity';
 //inputs
 import CodesInput from './codes-input.dto';
 
@@ -78,6 +78,9 @@ export class CreateClaimInput {
 
   @Field({ nullable: true })
   amount?: string;
+
+  @Field(() => PatientPaymentType, { nullable: true })
+  patientPaymentType?: PatientPaymentType
 
 }
 
