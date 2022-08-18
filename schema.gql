@@ -4968,6 +4968,7 @@ input CreateClaimInput {
   labOrderNumber: String
   claimNo: String
   amount: String
+  patientPaymentType: PatientPaymentType
 }
 
 input BillingInput {
