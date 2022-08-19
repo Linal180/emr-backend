@@ -34,7 +34,7 @@ export class CptFeeScheduleService {
       const { paginationOptions, searchString, feeScheduleId } = params
       const paginationResponse = await this.paginationService.willPaginate<CptFeeSchedule>(this.cptFeeScheduleRepository, {
         paginationOptions, feeScheduleId, associatedTo: 'CptFeeSchedule', associatedToField: {
-          columnValue: searchString, columnName: 'code', filterType: 'stringFilter'
+          columnValue: searchString, columnName: 'code', columnName2: 'revenueCode', filterType: 'stringFilter'
         }
       })
       return {

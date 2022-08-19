@@ -29,6 +29,7 @@ import {
   CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
 } from '../dto/update-appointment.input';
+import { ContactService } from 'src/providers/services/contact.service';
 
 @Injectable()
 export class AppointmentService {
@@ -44,6 +45,7 @@ export class AppointmentService {
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService,
     private readonly contractService: ContractService,
+    private readonly contactService: ContactService,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService
   ) { }
@@ -233,6 +235,39 @@ export class AppointmentService {
         to: [currentContact[0].phone],
         body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink} at ${facility.name} facility`
       });
+    }
+  }
+
+  async sendAppointmentReminder(appointmentId: string) {
+    try {
+      const appointmentInfo = await this.appointmentRepository.findOne({
+        relations: ['patient', 'facility', 'provider'],
+        where: { id: appointmentId }
+      })
+      const { patient, facility, provider } = appointmentInfo || {}
+      const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
+      const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
+      const slotStartTime= moment(appointmentInfo.scheduleStartDateTime).format('MM-DD-YYYY HH:mm:ss a')
+
+      let messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} at ${facility.name} facility`
+
+      if (provider) {
+        messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} at ${facility.name} facility`
+      }
+
+      if (phone) {
+        const transformedPhone = `+1${phone}`
+        await this.utilsService.smsNotification({
+          to: [transformedPhone],
+          body: messageBody
+        });
+      }
+
+      if (email) {
+        await this.mailerService.sendAppointmentReminderEmail(patient.email, patient.firstName + ' ' + patient.lastName, slotStartTime, facility.name, false)
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
