@@ -639,21 +639,21 @@ type ClaimChargeType {
 
 type Claim {
   id: String!
-  claimMdId: Float
-  batchId: Float
-  billNpi: Float
-  billTaxId: Float
+  claimMdId: String
+  batchId: String
+  billNpi: String
+  billTaxId: String
   claimId: String
   facilityDateOfService: String
   fileName: String
-  fileId: Float
-  insuranceNumber: Float
-  receivePayerId: Float
+  fileId: String
+  insuranceNumber: String
+  receivePayerId: String
   pcn: String
   sendIcn: String
   senderName: String
   senderId: String
-  totalCharge: Float
+  totalCharge: String
   errorMessages: [String!]
   cond_date: String
   onset_date: String
@@ -4968,6 +4968,7 @@ input CreateClaimInput {
   labOrderNumber: String
   claimNo: String
   amount: String
+  patientPaymentType: PatientPaymentType
 }
 
 input BillingInput {

@@ -322,7 +322,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.NONE
+    default: GENDERIDENTITY.NONE,
+    nullable: true,
   })
   @Field(type => GENDERIDENTITY, { nullable: true })
   sexAtBirth: GENDERIDENTITY
