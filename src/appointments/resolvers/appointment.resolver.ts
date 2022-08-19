@@ -99,6 +99,16 @@ export class AppointmentResolver {
     };
   }
 
+  @Mutation(() => AppointmentPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateAppointmentStatus')
+  async sendAppointmentReminder(@Args('appointmentId') appointmentId: string) {
+    return {
+      appointment: await this.appointmentService.sendAppointmentReminder(appointmentId),
+      response: { status: 200, message: 'Appointment reminder sent successfully' }
+    };
+  }
+
   //queries
 
   @Query(() => AppointmentsPayload)
