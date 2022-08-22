@@ -90,8 +90,10 @@ type Attachment {
   key: String
   attachmentName: String
   url: String
+  parentAttachmentId: String
   attachmentMetadata: AttachmentMetadata
   attachmentMetadataId: String
+  childAttachment: Attachment
   createdAt: String!
   updatedAt: String!
 }
@@ -2397,8 +2399,10 @@ type AttachmentWithPreSignedUrl {
   key: String
   attachmentName: String
   url: String
+  parentAttachmentId: String
   attachmentMetadata: AttachmentMetadata
   attachmentMetadataId: String
+  childAttachment: Attachment
   createdAt: String!
   updatedAt: String!
   preSignedUrl: String
@@ -4513,6 +4517,7 @@ input CreateAttachmentInput {
   practiceId: String
   documentDate: String
   agreementId: String
+  parentAttachmentId: String
 }
 
 input RemoveAttachment {
@@ -4539,6 +4544,7 @@ input UpdateAttachmentInput {
   practiceId: String
   documentDate: String
   agreementId: String
+  parentAttachmentId: String
   id: String
 }
 
