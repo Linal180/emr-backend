@@ -50,21 +50,21 @@ export class Claim {
 
   //response columns
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  claimMdId: number
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  claimMdId: string
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  batchId: number
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  batchId: string
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  billNpi: number
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  billNpi: string
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  billTaxId: number
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  billTaxId: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -78,17 +78,17 @@ export class Claim {
   @Field({ nullable: true })
   fileName: string
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  fileId: number
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  fileId: string
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  insuranceNumber: number
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  insuranceNumber: string
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  receivePayerId: number
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  receivePayerId: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -106,9 +106,9 @@ export class Claim {
   @Field({ nullable: true })
   senderId: string
 
-  @Column({ nullable: true, type: "float" })
-  @Field(() => Float, { nullable: true })
-  totalCharge: number;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  totalCharge: string;
 
   @Column({ nullable: true, type: 'jsonb', array: false })
   @Field(() => [String], { nullable: true })

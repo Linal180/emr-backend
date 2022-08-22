@@ -98,10 +98,10 @@ export class BillingService {
       let billingInstance: Billing
       if (billingInfo) {
         //updating billing
-        billingInstance = await this.utilsService.updateEntityManager(Billing, billingInfo.id, billingInfoToCreate, this.billingRepository)
+        billingInstance = await this.utilsService.updateEntityManager(Billing, billingInfo.id, { ...billingInfoToCreate, patientPaymentType }, this.billingRepository)
       } else {
         //creating billing
-        billingInstance = await this.billingRepository.create({ ...billingInfoToCreate })
+        billingInstance = await this.billingRepository.create({ ...billingInfoToCreate, patientPaymentType })
       }
 
       if (patientId) {
