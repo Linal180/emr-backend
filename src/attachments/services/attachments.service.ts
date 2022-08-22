@@ -214,6 +214,7 @@ export class AttachmentsService {
         .skip((page - 1) * limit)
         .take(limit)
         .where('attachment.typeId = :typeId', { typeId: typeId })
+        .andWhere('attachment.parentAttachmentId is null')
         .andWhere(attachmentName ? 'attachment.attachmentName ILIKE :attachmentName' : '1=1', { attachmentName: `%${attachmentName}%` })
 
       if (signedBy) {
