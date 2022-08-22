@@ -1,13 +1,17 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Attachment } from 'src/attachments/entities/attachment.entity';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
-import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
-import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
-import { Practice } from 'src/practice/entities/practice.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+//entities
 import { Doctor } from './doctor.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Practice } from 'src/practice/entities/practice.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
+import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 
 export enum Gender {
   MALE = "male",
@@ -68,35 +72,35 @@ export class Staff {
     enum: Gender,
     default: Gender.MALE
   })
-  @Field(type => Gender)
+  @Field(() => Gender)
   gender: Gender
 
   @OneToOne(() => User, { eager: true })
   @JoinColumn()
-  @Field(type => User, { nullable: true })
+  @Field(() => User, { nullable: true })
   user: User;
 
   @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
-  @Field(type => Facility, { nullable: true })
+  @Field(() => Facility, { nullable: true })
   facility: Facility;
 
   @ManyToOne(() => Practice, practice => practice.staff, { eager: true, onDelete: 'CASCADE' })
-  @Field(type => Practice, { nullable: true })
+  @Field(() => Practice, { nullable: true })
   practice: Practice;
 
-  @ManyToMany(type => Doctor, doctor => doctor.staff)
+  @ManyToMany(() => Doctor, doctor => doctor.staff)
   providers: Doctor[];
 
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.staff, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [PatientProblems], { nullable: true })
+  @Field(() => [PatientProblems], { nullable: true })
   patientProblem: PatientProblems[];
 
-  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.staff, { onUpdate: 'CASCADE', onDelete: "CASCADE"})
-  @Field(type => [PatientAllergies], { nullable: true })
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.staff, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PatientAllergies], { nullable: true })
   patientAllergies: PatientAllergies[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.addedBy)
-  @Field(type => PatientVitals, { nullable: true })
+  @Field(() => PatientVitals, { nullable: true })
   patientVitals: PatientVitals;
 
   @CreateDateColumn({ type: 'timestamptz' })
