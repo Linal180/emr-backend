@@ -98,10 +98,10 @@ export class BillingService {
       let billingInstance: Billing
       if (billingInfo) {
         //updating billing
-        billingInstance = await this.utilsService.updateEntityManager(Billing, billingInfo.id, billingInfoToCreate, this.billingRepository)
+        billingInstance = await this.utilsService.updateEntityManager(Billing, billingInfo.id, { ...billingInfoToCreate, patientPaymentType }, this.billingRepository)
       } else {
         //creating billing
-        billingInstance = await this.billingRepository.create({ ...billingInfoToCreate })
+        billingInstance = await this.billingRepository.create({ ...billingInfoToCreate, patientPaymentType })
       }
 
       if (patientId) {
@@ -677,7 +677,7 @@ export class BillingService {
 
     })
 
-    const procedures = procedureCodes?.map((procedureCode) => {
+    const procedures = procedureCodes?.map((procedureCode, i) => {
       const { code, price, diagPointer, m1, m2, m3, m4, unit } = procedureCode
       return {
         proc_code: code,
@@ -687,6 +687,16 @@ export class BillingService {
         diagPointer, m1, m2, m3, m4, unit,
       }
     })
+
+    const fromDateValues = procedureCodes?.reduce((acc, procedureCode, i) => {
+      acc[`from_date_${i + 1}`] = moment(scheduleStartDateTime).format('MM-DD-YYYY')
+      return acc
+    }, {})
+
+    const posValues = procedureCodes?.reduce((acc, procedureCode, i) => {
+      acc[`place_of_service_${i + 1}`] = pos?.trim()
+      return acc
+    }, {})
 
     const claimInfo = {
       claim_form: '1500',
@@ -748,9 +758,9 @@ export class BillingService {
       cond: onsetDateType,
       onset: otherDateType,
       cond_date: onsetDate ? moment(onsetDate).format('MM-DD-YYYY') : '',
-      onset_date: otherDate ? moment(otherDate).format('MM-DD-YYYY') : '',
-      hosp_from_date: from,
-      hosp_thru_date: to,
+      onset_date: onsetDate ? moment(onsetDate).format('MM-DD-YYYY') : '',
+      hosp_from_date: from ? moment(from).format('MM-DD-YYYY') : '',
+      hosp_thru_date: to ? moment(to).format('MM-DD-YYYY') : '',
       clia_number: cliaIdNumber,
       facility_name: facilityInfo?.name,
       facility_addr_1: facilityPrimaryContact?.address,
@@ -781,6 +791,8 @@ export class BillingService {
       ord_prov_name_f: orderingProviderInfo?.firstName,
       ord_prov_name_m: orderingProviderInfo?.middleName,
       ord_prov_npi: orderingProviderInfo?.npi,
+      ...fromDateValues,
+      ...posValues
     }
 
     return claimInfo
