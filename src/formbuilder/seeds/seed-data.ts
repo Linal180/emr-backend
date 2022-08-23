@@ -150,15 +150,17 @@ const MAPPED_PRONOUNS = [
 const MAPPED_STATES = states?.map(({ name, abbreviation }) => ({ value: name, name: `${name} - ${abbreviation}` }))
 
 export enum FormBuilderApiSelector {
-  SERVICE_SELECT = 'serviceSelect',
   SERVICE_SLOT = 'serviceSlot',
-  FACILITY_PROVIDERS = 'facilityProviders',
   PAYMENT_TYPE = 'paymentType',
-  PRACTICE_FACILITIES = 'practiceFacilities',
+  SERVICE_SELECT = 'serviceSelect',
   PATIENT_CONSENT = 'patientConsent',
   TERMS_CONDITIONS = 'termsConditions',
-  DRIVING_LICENSE = 'drivingLicense',
-  INSURANCE_CARD = 'insuranceCard'
+  FACILITY_PROVIDERS = 'facilityProviders',
+  INSURANCE_CARD_BACK = 'insuranceCardBack',
+  PRACTICE_FACILITIES = 'practiceFacilities',
+  DRIVING_LICENSE_BACK = 'drivingLicenseBack',
+  INSURANCE_CARD_FRONT = 'insuranceCardFront',
+  DRIVING_LICENSE_FRONT = 'drivingLicenseFront',
 }
 
 const guarantorFields = [
@@ -258,6 +260,85 @@ const guarantorFields = [
     defaultValue: "",
     isMultiSelect: false,
     apiCall: ''
+  }
+]
+
+const documentFields = [
+  {
+    css: "",
+    name: "drivingLicenseFront",
+    columnName: "",
+    tableName: "",
+    type: ElementType.CUSTOM,
+    label: "Identification Card Front (ID/ Passport/ Driver License)",
+    column: 6,
+    fieldId: uuid(),
+    options: [],
+    errorMsg: "",
+    required: true,
+    textArea: false,
+    placeholder: "Drop your image here, or browse",
+    defaultValue: "",
+    isMultiSelect: false,
+    apiCall: FormBuilderApiSelector.DRIVING_LICENSE_FRONT,
+    tableContactType: null
+  },
+  {
+    css: "",
+    name: "drivingLicenseBack",
+    columnName: "",
+    tableName: "",
+    type: ElementType.CUSTOM,
+    label: "Identification Card Back (ID/ Passport/ Driver License)",
+    column: 6,
+    fieldId: uuid(),
+    options: [],
+    errorMsg: "",
+    required: false,
+    textArea: false,
+    placeholder: "Drop your image here, or browse",
+    defaultValue: "",
+    isMultiSelect: false,
+    apiCall: FormBuilderApiSelector.DRIVING_LICENSE_BACK,
+    tableContactType: null
+  },
+  {
+    css: "",
+    name: "insuranceCardFront",
+    columnName: "insuranceCard",
+    tableName: "",
+    type: ElementType.CUSTOM,
+    label: "Insurance Card Front",
+    column: 6,
+    fieldId: uuid(),
+    options: [],
+    errorMsg: "",
+    required: false,
+    textArea: false,
+    placeholder: "Drop your image here, or browse",
+    defaultValue: "",
+    isMultiSelect: false,
+    apiCall: FormBuilderApiSelector.INSURANCE_CARD_FRONT,
+    tableContactType: null
+  },
+  {
+    css: "",
+    name: "insuranceCardBack",
+    columnName: "insuranceCard",
+    tableName: "",
+    type: ElementType.CUSTOM,
+    label: "Insurance Card Back",
+    column: 6,
+    fieldId: uuid(),
+    options: [],
+    errorMsg: "",
+    required: false,
+    textArea: false,
+    placeholder: "Drop your image here, or browse",
+    defaultValue: "",
+    isMultiSelect: false,
+    apiCall: FormBuilderApiSelector.INSURANCE_CARD_BACK,
+    tableContactType: null
   }
 ]
 
@@ -1177,46 +1258,7 @@ const facilityAppointment: FormTabs[] = [
       id: uuid(),
       col: 12,
       name: "Document Verification",
-      fields: [
-        {
-          css: "",
-          name: "drivingLicense",
-          columnName: "",
-          tableName: "",
-          type: ElementType.CUSTOM,
-          label: "Identification Card (ID/ Passport/ Driver License)",
-          column: 12,
-          fieldId: uuid(),
-          options: [],
-          errorMsg: "",
-          required: false,
-          textArea: false,
-          placeholder: "Drop your image here, or browse",
-          defaultValue: "",
-          isMultiSelect: false,
-          apiCall: FormBuilderApiSelector.DRIVING_LICENSE,
-          tableContactType: null
-        },
-        {
-          css: "",
-          name: "insuranceCard",
-          columnName: "insuranceCard",
-          tableName: "",
-          type: ElementType.CUSTOM,
-          label: "Insurance Card",
-          column: 12,
-          fieldId: uuid(),
-          options: [],
-          errorMsg: "",
-          required: false,
-          textArea: false,
-          placeholder: "Drop your image here, or browse",
-          defaultValue: "",
-          isMultiSelect: false,
-          apiCall: FormBuilderApiSelector.INSURANCE_CARD,
-          tableContactType: null
-        }
-      ]
+      fields: documentFields
     }]
   },
   {
@@ -3488,44 +3530,7 @@ export const FormTemplates = [
           id: uuid(),
           col: 12,
           name: "Document Verification",
-          fields: [
-            {
-              css: "",
-              name: "drivingLicense",
-              columnName: "",
-              tableName: "",
-              type: ElementType.CUSTOM,
-              label: "Identification Card (ID/ Passport/ Driver License)",
-              column: 12,
-              fieldId: uuid(),
-              options: [],
-              errorMsg: "",
-              required: false,
-              textArea: false,
-              placeholder: "Drop your image here, or browse",
-              defaultValue: "",
-              isMultiSelect: false,
-              apiCall: FormBuilderApiSelector.DRIVING_LICENSE
-            },
-            {
-              css: "",
-              name: "insuranceCard",
-              columnName: "insuranceCard",
-              tableName: "",
-              type: ElementType.CUSTOM,
-              label: "Insurance Card",
-              column: 12,
-              fieldId: uuid(),
-              options: [],
-              errorMsg: "",
-              required: false,
-              textArea: false,
-              placeholder: "Drop your image here, or browse",
-              defaultValue: "",
-              isMultiSelect: false,
-              apiCall: FormBuilderApiSelector.INSURANCE_CARD
-            }
-          ]
+          fields: documentFields
         }]
       }]
     }
