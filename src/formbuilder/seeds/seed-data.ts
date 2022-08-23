@@ -23,9 +23,6 @@ export const ElementTypeData = [
   { type: ElementType.CUSTOM },
 ];
 
-
-
-
 export enum FormBuilderPaymentTypes {
   INSURANCE = 'insurance',
   NO_INSURANCE = 'no_insurance',
@@ -81,6 +78,12 @@ const MAPPED_RELATIONSHIP_TYPE = [
   { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPFATHER_INSURANCE, },
   { value: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE, name: RelationshipType.STEPSON_STEPDAUGHTER_STEPMOTHER_INSURANCE, },
 ];
+
+const MAPPED_GUARANTOR_RELATIONSHIP_TYPE = [
+  { value: RelationshipType.MOTHER, name: RelationshipType.MOTHER },
+  { value: RelationshipType.FATHER, name: RelationshipType.FATHER },
+  { value: RelationshipType.OTHER, name: RelationshipType.OTHER },
+]
 
 const MAPPED_RACE = [
   { value: RACE.OTHER, name: RACE.OTHER },
@@ -167,32 +170,13 @@ const guarantorFields = [
     tableContactType: ContactType.GUARANDOR,
     type: ElementType.SELECT,
     label: "Patient’s Relationship with guarantor",
-    column: 12,
+    column: 4,
     fieldId: uuid(),
-    options: MAPPED_RELATIONSHIP_TYPE,
+    options: MAPPED_GUARANTOR_RELATIONSHIP_TYPE,
     errorMsg: "",
     required: true,
     textArea: false,
     placeholder: "Patient’s Relationship with guarantor",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: ''
-  },
-  {
-    css: "",
-    name: "suffix",
-    columnName: "suffix",
-    tableName: "Contacts",
-    type: ElementType.TEXT,
-    tableContactType: ContactType.GUARANDOR,
-    label: "Suffix",
-    column: 6,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: false,
-    textArea: false,
-    placeholder: "Please enter Suffix",
     defaultValue: "",
     isMultiSelect: false,
     apiCall: ''
@@ -205,7 +189,7 @@ const guarantorFields = [
     type: ElementType.TEXT,
     tableContactType: ContactType.GUARANDOR,
     label: "First Name",
-    column: 6,
+    column: 4,
     fieldId: uuid(),
     options: [],
     errorMsg: "",
@@ -219,33 +203,13 @@ const guarantorFields = [
   },
   {
     css: "",
-    name: "middleName",
-    columnName: "middleName",
-    tableName: "Contacts",
-    tableContactType: ContactType.GUARANDOR,
-    type: ElementType.TEXT,
-    label: "Middle Name",
-    column: 6,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: false,
-    textArea: false,
-    placeholder: "Please enter middle name",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: '',
-    regex: '/^[A-Za-z\\s]+$/'
-  },
-  {
-    css: "",
     name: "lastName",
     columnName: "lastName",
     tableName: "Contacts",
     type: ElementType.TEXT,
     tableContactType: ContactType.GUARANDOR,
     label: "Last Name",
-    column: 6,
+    column: 4,
     fieldId: uuid(),
     options: [],
     errorMsg: "",
@@ -259,172 +223,13 @@ const guarantorFields = [
   },
   {
     css: "",
-    name: "employerName",
-    columnName: "employerName",
-    tableName: "Contacts",
-    type: ElementType.TEXT,
-    tableContactType: ContactType.GUARANDOR,
-    label: "Employer",
-    column: 12,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: true,
-    textArea: false,
-    placeholder: "Please enter Employer",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: ''
-  },
-  {
-    css: "",
-    name: "zipCode",
-    columnName: "zipCode",
-    tableName: "Contacts",
-    type: ElementType.TEXT,
-    tableContactType: ContactType.GUARANDOR,
-    label: "Zip Code",
-    column: 12,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: true,
-    textArea: false,
-    placeholder: "Please enter zip code",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: '',
-    regex: '/^\\d*[1-9\\d,-]+$/'
-  },
-  {
-    css: "",
-    name: "address1",
-    columnName: "address",
-    tableName: "Contacts",
-    type: ElementType.TEXT,
-    tableContactType: ContactType.GUARANDOR,
-    label: "Address",
-    column: 12,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: true,
-    textArea: false,
-    placeholder: "Please enter your address",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: ''
-  },
-  {
-    css: "",
-    name: "address-2",
-    columnName: "address2",
-    tableName: "Contacts",
-    type: ElementType.TEXT,
-    tableContactType: ContactType.GUARANDOR,
-    label: "Address 2",
-    column: 12,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: false,
-    textArea: false,
-    placeholder: "Please enter your address 2",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: ''
-  },
-  {
-    css: "",
-    name: "city",
-    columnName: "city",
-    tableName: "Contacts",
-    type: ElementType.TEXT,
-    tableContactType: ContactType.GUARANDOR,
-    label: "City",
-    column: 4,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: true,
-    textArea: false,
-    placeholder: "Please enter your city",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: ''
-  },
-  {
-    css: "",
-    name: "state",
-    columnName: "state",
-    tableName: "Contacts",
-    type: ElementType.DROPDOWN,
-    tableContactType: ContactType.GUARANDOR,
-    label: "State",
-    column: 4,
-    fieldId: uuid(),
-    options: MAPPED_STATES,
-    errorMsg: "",
-    required: true,
-    textArea: false,
-    placeholder: "Please select your state",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: ''
-  },
-  {
-    css: "",
-    name: "country",
-    columnName: "country",
-    tableName: "Contacts",
-    type: ElementType.SELECT,
-    tableContactType: ContactType.GUARANDOR,
-    label: "Country",
-    column: 4,
-    fieldId: uuid(),
-    options: [
-      {
-        name: "United States",
-        value: "United States",
-      },
-    ],
-    errorMsg: "",
-    required: true,
-    textArea: false,
-    placeholder: "Please Select a country",
-    defaultValue: "",
-    isMultiSelect: false,
-    apiCall: ''
-  },
-  {
-    css: "",
-    name: "ssn",
-    columnName: "ssn",
-    tableName: "Contacts",
-    type: ElementType.TEXT,
-    label: "SSN",
-    column: 6,
-    fieldId: uuid(),
-    options: [],
-    errorMsg: "",
-    required: true,
-    textArea: false,
-    placeholder: "Please enter your SSN. e.g; (000-00-0000)",
-    defaultValue: "000-00-0000",
-    isMultiSelect: false,
-    apiCall: '',
-    regex: '/^\\d{3}-\\d{2}-\\d{4}$/',
-    tableContactType: ContactType.GUARANDOR,
-  },
-  {
-    css: "",
     name: "phone",
     columnName: "phone",
     tableName: "Contacts",
     type: ElementType.TEL,
     tableContactType: ContactType.GUARANDOR,
     label: "Home Phone",
-    column: 6,
+    column: 4,
     fieldId: uuid(),
     options: [],
     errorMsg: "",
@@ -437,23 +242,23 @@ const guarantorFields = [
   },
   {
     css: "",
-    name: "email",
-    columnName: "email",
+    name: "address1",
+    columnName: "address",
     tableName: "Contacts",
-    type: ElementType.EMAIL,
+    type: ElementType.TEXT,
     tableContactType: ContactType.GUARANDOR,
-    label: "Email",
-    column: 12,
+    label: "Address",
+    column: 8,
     fieldId: uuid(),
     options: [],
     errorMsg: "",
     required: true,
     textArea: false,
-    placeholder: "Please enter your email address",
+    placeholder: "Please enter your address",
     defaultValue: "",
     isMultiSelect: false,
     apiCall: ''
-  },
+  }
 ]
 
 const facilityServicesFields = [
@@ -761,25 +566,25 @@ const facilityAppointment: FormTabs[] = [
             isMultiSelect: false,
             tableContactType: null,
           },
-          {
-            css: "",
-            name: "sexualOrientation",
-            type: ElementType.SELECT,
-            label: "Sexual Orientation",
-            column: 6,
-            apiCall: "",
-            fieldId: uuid(),
-            options: MAPPED_SEXUAL_ORIENTATION,
-            errorMsg: "",
-            required: false,
-            textArea: false,
-            tableName: "Patients",
-            columnName: "sexualOrientation",
-            placeholder: "Please enter Sexual Orientation",
-            defaultValue: "",
-            isMultiSelect: false,
-            tableContactType: null,
-          },
+          // {
+          //   css: "",
+          //   name: "sexualOrientation",
+          //   type: ElementType.SELECT,
+          //   label: "Sexual Orientation",
+          //   column: 6,
+          //   apiCall: "",
+          //   fieldId: uuid(),
+          //   options: MAPPED_SEXUAL_ORIENTATION,
+          //   errorMsg: "",
+          //   required: false,
+          //   textArea: false,
+          //   tableName: "Patients",
+          //   columnName: "sexualOrientation",
+          //   placeholder: "Please enter Sexual Orientation",
+          //   defaultValue: "",
+          //   isMultiSelect: false,
+          //   tableContactType: null,
+          // },
           // {
           //   css: "",
           //   name: "genderIdentity",
@@ -799,25 +604,25 @@ const facilityAppointment: FormTabs[] = [
           //   isMultiSelect: false,
           //   tableContactType: null,
           // },
-          {
-            css: "",
-            name: "sexAtBirth",
-            type: ElementType.SELECT,
-            label: "Sex At Birth",
-            column: 6,
-            apiCall: "",
-            fieldId: uuid(),
-            options: MAPPED_GENDER_IDENTITY,
-            errorMsg: "",
-            required: false,
-            textArea: false,
-            tableName: "Patients",
-            columnName: "sexAtBirth",
-            placeholder: "Please select your Sex At Birth",
-            defaultValue: "",
-            isMultiSelect: false,
-            tableContactType: null,
-          },
+          // {
+          //   css: "",
+          //   name: "sexAtBirth",
+          //   type: ElementType.SELECT,
+          //   label: "Sex At Birth",
+          //   column: 6,
+          //   apiCall: "",
+          //   fieldId: uuid(),
+          //   options: MAPPED_GENDER_IDENTITY,
+          //   errorMsg: "",
+          //   required: false,
+          //   textArea: false,
+          //   tableName: "Patients",
+          //   columnName: "sexAtBirth",
+          //   placeholder: "Please select your Sex At Birth",
+          //   defaultValue: "",
+          //   isMultiSelect: false,
+          //   tableContactType: null,
+          // },
           // {
           //   css: "",
           //   name: "pronouns",
@@ -896,7 +701,7 @@ const facilityAppointment: FormTabs[] = [
           defaultValue: "",
           isMultiSelect: false,
           tableContactType: "Self",
-          regex: '/^\\d*[1-9\\d,-]+$/'
+          regex: '/^[0-9]{5}(?:-[0-9]{4})?$/'
         },
         {
           css: "",
@@ -2942,7 +2747,7 @@ export const FormTemplates = [
                 defaultValue: "",
                 isMultiSelect: false,
                 apiCall: '',
-                regex: '/^\\d*[1-9\\d,-]+$/'
+                regex: '/^[0-9]{5}(?:-[0-9]{4})?$/'
               },
               {
                 css: "",
@@ -3733,11 +3538,13 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Available Slots",
+        tabId: formTemplateTabIds.AVAILABLE_SLOTS,
         sections: [
           {
             id: uuid(),
             col: 4,
             name: "Available Slots",
+            sectionId: formTemplateTabIds.AVAILABLE_SLOTS,
             fields: [
               {
                 css: "",
@@ -3866,13 +3673,13 @@ export const FormTemplates = [
       tabs: [{
         id: uuid(),
         name: "Guardian",
-        tabId: formTemplateTabIds.GUARANTOR_CONTACT,
+        tabId: formTemplateTabIds.GUARDIAN_CONTACT,
         sections: [
           {
             id: uuid(),
             col: 12,
             name: "Guardian",
-            sectionId: formTemplateTabIds.GUARANTOR_CONTACT,
+            sectionId: formTemplateTabIds.GUARDIAN_CONTACT,
             fields: [
               {
                 css: "",
@@ -4079,7 +3886,50 @@ export const FormTemplates = [
       }]
     },
   },
+  {
+    name: "Public Facility Appointment",
+    isSystemForm: true,
+    type: FormType.TEMPLATE,
+    layout: {
+      tabs: facilityAppointment
+    }
+  },
+  {
+    name: "Public Practice Appointment Form",
+    isSystemForm: true,
+    type: FormType.TEMPLATE,
+    layout: {
+      tabs: practiceAppointment
+    }
+  }
   // {
+  //   name: "Facility Appointment Single Form",
+  //   isSystemForm: true,
+  //   type: FormType.TEMPLATE,
+  //   layout: {
+  //     tabs: [{
+  //       id: uuid(),
+  //       name: "Tab",
+  //       sections: oneStepFacilityForm
+  //     }]
+  //   }
+  // },
+  // {
+  //   name: "Practice Appointment Single Form",
+  //   isSystemForm: true,
+  //   type: FormType.TEMPLATE,
+  //   layout: {
+  //     tabs: [{
+  //       id: uuid(),
+  //       name: "Tab",
+  //       sections: oneStepPracticeForm
+  //     }]
+  //   }
+  // },
+]
+
+
+// {
   //   name: "Provider Dates",
   //   isSystemForm: true,
   //   type: FormType.PRE_DEFINED,
@@ -4195,44 +4045,3 @@ export const FormTemplates = [
   //     }]
   //   },
   // },
-  {
-    name: "Public Facility Appointment",
-    isSystemForm: true,
-    type: FormType.TEMPLATE,
-    layout: {
-      tabs: facilityAppointment
-    }
-  },
-  // {
-  //   name: "Facility Appointment Single Form",
-  //   isSystemForm: true,
-  //   type: FormType.TEMPLATE,
-  //   layout: {
-  //     tabs: [{
-  //       id: uuid(),
-  //       name: "Tab",
-  //       sections: oneStepFacilityForm
-  //     }]
-  //   }
-  // },
-  // {
-  //   name: "Practice Appointment Single Form",
-  //   isSystemForm: true,
-  //   type: FormType.TEMPLATE,
-  //   layout: {
-  //     tabs: [{
-  //       id: uuid(),
-  //       name: "Tab",
-  //       sections: oneStepPracticeForm
-  //     }]
-  //   }
-  // },
-  {
-    name: "Public Practice Appointment Form",
-    isSystemForm: true,
-    type: FormType.TEMPLATE,
-    layout: {
-      tabs: practiceAppointment
-    }
-  }
-]
