@@ -34,6 +34,6 @@ import { AttachmentMetaDataService } from './services/attachmentMetaData.service
     DocumentTypesResolver,
     AttachmentMetaDataService
   ],
-  exports: [AttachmentsService],
+  exports: [AttachmentsService, DocumentTypesService],
 })
 export class AttachmentsModule { }
