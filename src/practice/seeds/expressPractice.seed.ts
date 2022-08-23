@@ -8,12 +8,14 @@ import { Practice } from "../entities/practice.entity";
 import { Staff } from "src/providers/entities/staff.entity";
 import { Doctor } from "src/providers/entities/doctor.entity";
 import { Contact } from "src/providers/entities/contact.entity";
+import { Service } from "src/facilities/entities/services.entity";
+import { Schedule } from "src/providers/entities/schedule.entity";
 import { Facility } from "src/facilities/entities/facility.entity";
 //helpers & constants
 import { seedPractice } from "src/lib/constants";
 import { createPasswordHash, createToken } from "src/lib/helper";
 // seeder data
-import { FacilitiesData, PracticeAdminInfo, PracticeInfo, PracticeUsersData } from "./practiceSeed-data";
+import { FacilitiesData, FacilitiesServices, PracticeAdminInfo, PracticeInfo, PracticeUsersData, FacilitiesSchedules } from "./practiceSeed-data";
 
 
 @Injectable()
@@ -30,8 +32,10 @@ export class CreateExpressPractice implements Seeder {
       const staffRepo = getRepository(Staff);
       const doctorRepo = getRepository(Doctor);
       const contactRepo = getRepository(Contact);
+      const serviceRepo = getRepository(Service);
       const practiceRepo = getRepository(Practice);
       const facilityRepo = getRepository(Facility);
+      const scheduleRepo = getRepository(Schedule);
 
       //variables
       let savedPractice: null | Practice = null;
@@ -47,8 +51,7 @@ export class CreateExpressPractice implements Seeder {
 
       //find roles & role's permissions
       const roles = await rolesRepo.find()
-      const practiceAdminRole = roles.find((role) => role.role === 'practice-admin');
-
+      const practiceAdminRole = roles?.find((role) => role.role === 'practice-admin');
       //create Facilities of express health care
       savedFacilities = await Promise.all(FacilitiesData.map(async (facilityData) => {
         const { name, practiceType, address1, ...facilityContactInfo } = facilityData;
@@ -75,6 +78,36 @@ export class CreateExpressPractice implements Seeder {
 
         //save facility
         return await facilityRepo.save(facilityInstance);
+      }))
+
+      //create facilities services
+      await Promise.all(savedFacilities?.map(async (facility) => {
+        const { id } = facility || {};
+        await Promise.all(FacilitiesServices?.map(async (service) => {
+          const { name, duration } = service
+          const serviceIns = await serviceRepo.findOne({ name, facilityId: id });
+          if (!!serviceIns) {
+            return serviceIns
+          }
+          const serviceInstance = serviceRepo?.create({ color: 'black', name, duration, facilityId: id, price: '0', isActive: true })
+          serviceInstance.facility = facility;
+          return await serviceRepo.save(serviceInstance);
+        }))
+      }))
+
+      //create facilities schedules
+      await Promise.all(savedFacilities?.map(async (facility) => {
+        const { id } = facility;
+        await Promise.all(FacilitiesSchedules?.map(async (schedule) => {
+          const { day, endAt, startAt } = schedule
+          const scheduleIns = await scheduleRepo.findOne({ facilityId: id, day, startAt });
+          if (!!scheduleIns) {
+            return
+          }
+          const scheduleInstance = scheduleRepo?.create({ day, endAt, facilityId: id, startAt })
+          scheduleInstance.facility = facility;
+          return await scheduleRepo.save(scheduleInstance);
+        }))
       }))
 
       //create  express practice's users
@@ -161,11 +194,12 @@ export class CreateExpressPractice implements Seeder {
 
       //create practice admin
       if (!practiceAdmin) {
+        console.log('roles', roles)
         //create user
         const adminUserInstance = userRepo.create({ email: PracticeAdminInfo.email, facility: savedFacilities[0] })
         adminUserInstance.password = await createPasswordHash('admin123');
         adminUserInstance.userType = 'practice-admin'
-        practiceAdmin.roles = [practiceAdminRole]
+        adminUserInstance.roles = [practiceAdminRole]
         practiceAdmin = await userRepo.save(adminUserInstance)
 
         //create staff 

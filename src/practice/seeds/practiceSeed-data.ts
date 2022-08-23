@@ -1,5 +1,5 @@
 import { PracticeType } from "src/facilities/entities/facility.entity"
-import { seedPractice } from "src/lib/constants"
+import { DAYS, seedPractice } from "src/lib/constants"
 
 export const PracticeInfo = { name: 'Express Healthcare', npi: '1598994733', taxId: '010788495', active: true, practiceId: seedPractice.EXPRESS_HEALTH_CARE }
 export const PracticeAdminInfo = { email: 'anegeda+ehc@alxtel.com', firstName: 'Alaa', lastName: 'Negeda' }
@@ -269,3 +269,82 @@ export const PracticeUsersData = [
   },
 ]
 
+
+export const FacilitiesServices = [
+  {
+    name: "COVID Testing - Asymptomatic",
+    duration: "30"
+  },
+  {
+    name: "COVID Testing - Symptomatic",
+    duration: "30"
+  },
+  {
+    name: "Follow-Up Visit",
+    duration: "30"
+  },
+  {
+    name: "Motor Vehicle Accident",
+    duration: "30"
+  },
+  {
+    name: "New Patient ( Non-COVID )",
+    duration: "30"
+  },
+  {
+    name: "Sick Visit",
+    duration: "30"
+  },
+  {
+    name: "Traveler ( Non - COVID )",
+    duration: "30"
+  },
+  {
+    name: "Worker's Compensation",
+    duration: "30"
+  },
+  {
+    name: "Other",
+    duration: "30"
+
+  }
+]
+
+
+export const FacilitiesSchedules = [
+  {
+    day: DAYS.Monday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Tuesday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Wednesday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Thursday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Friday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Saturday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Sunday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  }
+]
