@@ -62,7 +62,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Query(returns => AttachmentWithPreSignedUrlPayload)
+  @Query(() => AttachmentWithPreSignedUrlPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'getAttachmentsByAgreementId')
   async getAttachmentsByAgreementId(@Args('getAttachmentsByAgreementId') getAttachmentsByAgreementId: GetAttachmentsByAgreementId): Promise<AttachmentWithPreSignedUrlPayload> {
@@ -73,7 +73,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Mutation(returns => AttachmentPayload)
+  @Mutation(() => AttachmentPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'createAttachmentData')
   async createAttachmentData(@Args('createAttachmentInput') createAttachmentInput: CreateAttachmentInput) {
@@ -84,7 +84,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Mutation(returns => AttachmentPayload)
+  @Mutation(() => AttachmentPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'removeAttachmentData')
   async removeAttachmentData(@Args('removeAttachment') removeAttachment: RemoveAttachment) {
@@ -94,7 +94,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Mutation(returns => AttachmentPayload)
+  @Mutation(() => AttachmentPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'removeAttachmentMedia')
   async removeAttachmentMedia(@Args('id') id: string) {
@@ -104,7 +104,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Mutation(returns => AttachmentPayload)
+  @Mutation(() => AttachmentPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'updateAttachmentData')
   async updateAttachmentData(@Args('updateAttachmentInput') updateAttachmentInput: UpdateAttachmentInput) {
@@ -115,7 +115,7 @@ export class AttachmentsResolver {
     };
   }
 
-  @Query(returns => AttachmentMediaPayload)
+  @Query(() => AttachmentMediaPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getAttachment')
   async getAttachment(@Args('getMedia') getMedia: GetMedia) {
@@ -126,10 +126,17 @@ export class AttachmentsResolver {
     };
   }
 
-  @ResolveField((returns) => AttachmentMetadata)
+  @ResolveField(() => AttachmentMetadata)
   async attachmentMetadata(@Parent() attachment: Attachment): Promise<AttachmentMetadata> {
     if (attachment.attachmentMetadata) {
-      return this.attachmentMetadataRepository.findOne(attachment.attachmentMetadata)
+      return await this.attachmentMetadataRepository.findOne(attachment.attachmentMetadata)
+    }
+  }
+
+  @ResolveField(() => Attachment)
+  async childAttachment(@Parent() attachment: Attachment): Promise<Attachment> {
+    if (attachment.parentAttachmentId) {
+      return await this.attachmentsService.getAttachment(attachment.parentAttachmentId)
     }
   }
 }

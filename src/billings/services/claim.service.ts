@@ -13,7 +13,7 @@ import { ClaimStatusService } from "./claimStatus.service";
 import { claimMedValidation } from 'src/lib/validations';
 import { SystemBillingStatuses } from "src/lib/constants";
 //payload
-import { ClaimPayload } from "../dto/claim-payload";
+import { ClaimMdPayload, ClaimPayload } from "../dto/claim-payload";
 @Injectable()
 export class ClaimService {
   constructor(
@@ -83,6 +83,25 @@ export class ClaimService {
         }
         return acc
       }, {})
+
+      const transformedClaimMd = Object.keys(claimMd).reduce((acc, key) => {
+        if (key.includes('from_date') || key.includes('place_of_service')) {
+          if (key === 'from_date_1') {
+            acc[key] = claimMd[key]
+            return acc
+          }
+
+          if (key === 'place_of_service_1') {
+            acc[key] = claimMd[key]
+            return acc
+          }
+
+          return acc
+        }
+
+        acc[key] = claimMd[key]
+        return acc
+      }, {}) as ClaimMdPayload
       //validating keys
       const result = claimMedValidation.validate(transformedClaimInfo)
       if (result.error) {
@@ -108,7 +127,7 @@ export class ClaimService {
           if (!!claimStatus?.statusId) {
             //delete some properties 
             //get error from claim md 
-            const claimMdFormInput = JSON.parse(JSON.stringify(claimInfo)) as Claim
+            const claimMdFormInput = JSON.parse(JSON.stringify({...claimInfo, ...claimMd})) as Claim
             delete claimMdFormInput.id;
             delete claimMdFormInput.billingId;
             delete claimMdFormInput.createdAt;
@@ -164,12 +183,13 @@ export class ClaimService {
             }
 
           }
+
           //update billing
           await this.billingService.create({ ...params, claimStatusId: claimStatus?.id });
-          
+
           //update claim
           claim = await this.update({
-            id: claimInfo?.id, ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
+            id: claimInfo?.id, ...transformedClaimMd, billingId: billingInfo?.id, billing: billingInfo,
             payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
             onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages
           })
@@ -183,7 +203,7 @@ export class ClaimService {
         //create claim
         else {
           claim = await this.create({
-            ...claimMd, billingId: billingInfo?.id, billing: billingInfo,
+            ...transformedClaimMd, billingId: billingInfo?.id, billing: billingInfo,
             payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
             onset: onset as unknown as OtherDate, errorMessages: claimMdErrMessages, ...response
           })
@@ -201,7 +221,7 @@ export class ClaimService {
         const claimStatus = await this.claimStatusService.findByStatusId('ready_to_claim');
         const billing = await this.billingService.create({ ...params, claimStatusId: claimStatus.id });
         const claim = await this.create({
-          ...claimMd, billingId: billing?.id, billing,
+          ...transformedClaimMd, billingId: billing?.id, billing,
           payer_order: payer_order as unknown as OrderOfBenefit, cond: cond as unknown as OnsetDate,
           onset: onset as unknown as OtherDate, errorMessages: null
         })

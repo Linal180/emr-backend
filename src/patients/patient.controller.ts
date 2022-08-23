@@ -1,11 +1,15 @@
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiExcludeEndpoint } from '@nestjs/swagger';
-import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
-import { File } from '../aws/dto/file-input.dto';
-import { mediaFilesFilter, mediaFilesInter } from '../lib/helper';
-import { PatientPayload } from './dto/patient-payload.dto';
+//services
 import { PatientService } from './services/patient.service';
+//inputs
+import { File } from '../aws/dto/file-input.dto';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+//helper
+import { mediaFilesFilter, mediaFilesInter } from '../lib/helper';
+//payloads
+import { PatientPayload } from './dto/patient-payload.dto';
 
 @Controller('patients')
 export class PatientController {
