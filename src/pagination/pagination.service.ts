@@ -7,6 +7,7 @@ import {
 import { Speciality } from "src/providers/entities/doctor.entity";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
+import { LabTestStatus } from "src/labs/entities/labTests.entity";
 
 interface whereConditionInput {
   status?: string | number
@@ -344,6 +345,9 @@ export class PaginationService {
         }),
         ...(formType && {
           type: formType
+        }),
+        ...(labTestStatus && {
+          labTestStatus: Raw(alias => `${alias} != '${labTestStatus}'`),
         }),
         ...(documentPracticeId && {
           practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${documentPracticeId}'`),

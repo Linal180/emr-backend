@@ -2,12 +2,12 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 //entities
 import { Staff } from 'src/providers/entities/staff.entity';
+import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Agreement } from 'src/agreements/entities/agreement.entity';
 import { Attachment } from 'src/attachments/entities/attachment.entity';
 import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
 import { DocumentType } from 'src/attachments/entities/documentType.entity';
-import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
 
 @Entity({ name: 'Practice' })
 @ObjectType()
