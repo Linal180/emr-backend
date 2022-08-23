@@ -113,7 +113,8 @@ export const formTemplateTabIds = {
   DOCUMENT_VERIFICATION: "document_verification",
   DEMOGRAPHICS: "demographics",
   PATIENT_INFO: "patient_info",
-  TERMS_CONDITIONS: "terms_conditions"
+  TERMS_CONDITIONS: "terms_conditions",
+  AVAILABLE_SLOTS: 'available_slots'
 }
 
 export enum DAYS {
