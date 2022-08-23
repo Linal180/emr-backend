@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //services
@@ -56,6 +56,11 @@ export class CptFeeScheduleService {
   async create(params: CreateCptFeeScheduleInput): Promise<CptFeeSchedule> {
     try {
       const { feeScheduleId, cptCodesId } = params || {}
+      const cptCode = await this.cptFeeScheduleRepository.findOne({ where: { feeScheduleId, cptCodesId } })
+
+      if (cptCode) {
+        throw new Error('CPT Fee Schedule already exist')
+      }
       const cptFeeSchedule = this.cptFeeScheduleRepository.create(params);
       //associate to fee schedule
       if (feeScheduleId) {
@@ -90,9 +95,15 @@ export class CptFeeScheduleService {
    */
   async updateCptFeeSchedule(params: UpdateCptFeeScheduleInput): Promise<CptFeeSchedule> {
     try {
-      const { cptCodesId, feeScheduleId } = params || {}
+      const { cptCodesId, feeScheduleId, id } = params || {}
+      const cptCode = await this.cptFeeScheduleRepository.find({ where: { feeScheduleId, cptCodesId, id: Not(id) } })
+
+      if (cptCode.length) {
+        throw new Error('CPT Fee Schedule already exist')
+      }
       const cptFeeSchedule = await this.utilsService.updateEntityManager(CptFeeSchedule, params.id, params, this.cptFeeScheduleRepository)
       //associate to fee schedule
+
       if (feeScheduleId) {
         const feeSchedule = await this.feeScheduleService.findOne({ id: feeScheduleId })
         cptFeeSchedule.feeSchedule = feeSchedule
