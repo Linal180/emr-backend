@@ -108,7 +108,35 @@ export class MailerService {
       }
     };
     try {
-      await this.sgMail.send(msg);
+      await this.sgMail.send({ ...msg });
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
+  async sendLabResultsEmail(email: string, fullName: string, attachment) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('PATIENT_LAB_RESULTS_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+      },
+      attachments: [
+        {
+          content: attachment,
+          filename: "attachment.pdf",
+          type: "application/pdf",
+          disposition: "attachment"
+        }
+      ]
+    };
+    try {
+      await this.sgMail.send({ ...msg });
     } catch (error) {
       console.error(error);
       if (error.response) {

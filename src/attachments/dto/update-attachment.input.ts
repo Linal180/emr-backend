@@ -14,6 +14,15 @@ export class UpdateAttachmentInput extends PartialType(CreateAttachmentInput) {
 export class UpdateAttachmentMediaInput extends PickType(CreateAttachmentInput, ['type', 'typeId'] as const) {
   @Field({ nullable: true })
   id?: string;
+
+  @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
+  attachmentName?: string;
+
+  @Field({ nullable: true })
+  documentTypeId?: string;
 }
 
 @InputType()

@@ -231,3 +231,22 @@ export const stringCustomErrorMessage = (errors: Joi.ErrorReport[], name: string
   });
   return errors;
 }
+
+export const getFormatDateString = (date?: string, format = "YYYY-MM-DD") => {
+  if (!date) return '';
+  return moment(date).format(format).toString()
+};
+
+export const formatPhone = (phone: string | undefined | null): string =>
+  !!phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : '';
+
+export const formatAddress = (address: string | undefined | null, city: string | undefined | null, state: string | undefined | null, zipCode: string | undefined | null) => {
+  const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
+  return selfAddress.trim() ? selfAddress : ''
+}
+
+export const blobToFile = (theBlob: Blob, fileName: string): File => {
+  const lastModified = new Date().getTime()
+  const file =  new File([theBlob], `${fileName}.pdf`, { lastModified, type: 'application/pdf' });
+  return file
+}

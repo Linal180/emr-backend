@@ -17,6 +17,9 @@ import { LabTestsService } from './labTests.service';
 import { LoincCodesService } from './loincCodes.service';
 import { UpdateObservationInput } from '../dto/update-observationItem-input.dto';
 import template from "../../lib/templates"
+import { MailerService } from 'src/mailer/mailer.service';
+import { DocumentTypesService } from 'src/attachments/services/documentType.service';
+import { blobToFile } from 'src/lib/helper';
 
 @Injectable()
 export class LabTestsObservationsService {
@@ -26,7 +29,9 @@ export class LabTestsObservationsService {
     private readonly labTestsService: LabTestsService,
     private readonly utilsService: UtilsService,
     private readonly attachmentsService: AttachmentsService,
+    private readonly documentTypeService: DocumentTypesService,
     private readonly loincCodesService: LoincCodesService,
+    private readonly mailerService: MailerService
   ) { }
 
   /**
@@ -98,19 +103,22 @@ export class LabTestsObservationsService {
     }
   }
 
+  getBuffer(pdfInstance: any) {
+    return new Promise((resolve, reject) => {
+      pdfInstance.toBuffer((err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    })
+  }
+
   async syncLabResults(updateObservationInput: UpdateObservationInput): Promise<Observations[]> {
     const { UpdateObservationItemInput } = updateObservationInput
-    // pdf.create(template({ name:'abbas', price1: 'abbas', price2:'abbas', receiptId: 'abbas' }), {}).toFile('rezultati.pdf', (err) => {
-    //   if (err) {
-    //     return console.log('error');
-    //   }
-      
-    // });
-
-    // return await this.ObservationsRepository.find()
     try {
+      const documentType = await this.documentTypeService.fetchDocumentTypeByName('Lab')
+
       //updating multiple records of lab test observations
-      UpdateObservationItemInput.forEach(async (observationValues) => {
+      await Promise.all(UpdateObservationItemInput.map(async (observationValues) => {
         const { orderNumber, result, testName } = observationValues
         const labTest = await this.labTestsService.findLabTestByTestAndOrderNo(orderNumber, testName)
         if (labTest?.id) {
@@ -139,17 +147,52 @@ export class LabTestsObservationsService {
               }
             })
 
-            await this.createLabTestObservation({
+             await this.createLabTestObservation({
               createLabTestObservationItemInput: createItemInput,
               labTestId: labTest?.id
             })
           }
 
-          await this.labTestsService.updateLabTest({
+          return await this.labTestsService.updateLabTest({
             updateLabTestItemInput:
               { id: labTest?.id, collectedDate: moment().format('MM-DD-YYYY'), receivedDate: moment().format('MM-DD-YYYY'), status: LabTestStatus.RESULT_RECEIVED }
           })
         }
+      }))
+
+      const orderNumbers = [...new Set(UpdateObservationItemInput.map((value) => value.orderNumber))]
+      orderNumbers.map(async (orderNumber) => {
+        const labResultPayload = await this.labTestsService.findLabResultInfo(orderNumber)
+        const labTests = await Promise.all(labResultPayload.labTests.map(async (labTest) => {
+          const testObservations = await this.GetLabTestObservations(labTest.id)
+          return {
+            ...labTest,
+            testObservations
+          }
+        }))
+        const { patientInfo } = labResultPayload
+        const { email, firstName, lastName, id: patientId } = patientInfo
+
+        const pdfInstance = await pdf.create(await template({ ...labResultPayload, labTests }), {})
+        const buffer = await this.getBuffer(pdfInstance)
+        if (email) {
+          await this.mailerService.sendLabResultsEmail(email, `${firstName} ${lastName}`, (buffer as Buffer).toString('base64'))
+        }
+
+        await this.attachmentsService.uploadAttachment({
+          buffer: buffer as Buffer,
+          fieldname: 'Lab Result',
+          encoding: '',
+          mimetype: 'application/pdf',
+          originalname: 'Lab Result',
+          size: (buffer as Buffer).length
+        }, {
+          type: AttachmentType.PATIENT,
+          typeId: patientId,
+          attachmentName: `Lab Result_${orderNumber}`,
+          title: 'Lab Order',
+          documentTypeId: documentType.documentType.id
+        })
       })
       return
     }
