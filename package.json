@@ -20,8 +20,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-    "seed:run": "node ./node_modules/typeorm-seeding/dist/cli.js seed",
-    "seed:specific": "node ./node_modules/typeorm-seeding/dist/cli.js seed -s"
+    "seed:specific": "node ./node_modules/typeorm-seeding/dist/cli.js seed -s",
+    "seed:run": "npm run seed:specific CreateUsers && npm run seed:specific CreateExpressPractice && npm run seed:specific CreateElements && npm run seed:specific CreateFormTemplate && npm run seed:specific CreateCPTCodes && npm run seed:specific CreateICDCodes && npm run seed:specific CreateModifiers && npm run seed:specific CreateTaxonomies && npm run seed:specific CreateFeeSchedule && npm run seed:specific CreateInsurances && npm run seed:specific CreateSystemClaimStatus && npm run seed:specific CreateDocumentTypes && npm run seed:specific CreateAllergiesReactions"
   },
   "engines": {
     "node": "^14.19.0",
@@ -47,6 +47,7 @@
     "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
     "braintree": "^3.11.0",
+    "bwip-js": "^3.1.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.2",
     "concat-stream": "^2.0.0",
@@ -57,6 +58,7 @@
     "fs": "0.0.1-security",
     "graphql": "^15.8.0",
     "graphql-type-json": "^0.3.2",
+    "html-pdf": "^3.0.1",
     "increase-memory-limit": "^1.0.7",
     "joi": "^17.6.0",
     "moment": "^2.29.1",
@@ -92,6 +94,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/braintree": "^3.3.1",
+    "@types/bwip-js": "^3.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.11.21",

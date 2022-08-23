@@ -93,6 +93,30 @@ export class MailerService {
     }
   }
 
+  async sendAppointmentReminderEmail(email: string, fullName: string, slotStartTime: string, facilityName: string, patientPortal: boolean) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const emrAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
+    const portalAppBaseUrl = patientPortal ? patientAppBaseUrl : emrAppBaseUrl
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('APPOINTMENT_REMINDER_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+        scheduleStartDateTime: slotStartTime,
+        facilityName
+      }
+    };
+    try {
+      await this.sgMail.send(msg);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
   async sendAppointmentTelehealthEmail(email: string, fullName: string, appointmentTime: string, providerName: string, id: string) {
     const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
     const teleHealthURL = `${patientAppBaseUrl}/telehealth/${id}`
@@ -108,7 +132,35 @@ export class MailerService {
       }
     };
     try {
-      await this.sgMail.send(msg);
+      await this.sgMail.send({ ...msg });
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
+  async sendLabResultsEmail(email: string, fullName: string, attachment) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('PATIENT_LAB_RESULTS_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+      },
+      attachments: [
+        {
+          content: attachment,
+          filename: "attachment.pdf",
+          type: "application/pdf",
+          disposition: "attachment"
+        }
+      ]
+    };
+    try {
+      await this.sgMail.send({ ...msg });
     } catch (error) {
       console.error(error);
       if (error.response) {

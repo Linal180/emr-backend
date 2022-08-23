@@ -1,19 +1,22 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Agreement } from 'src/agreements/entities/agreement.entity';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { Billing } from 'src/billings/entities/billing.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { Transactions } from 'src/payment/entity/payment.entity';
-import { Practice } from 'src/practice/entities/practice.entity';
-import { BillingAddress } from 'src/providers/entities/billing-address.entity';
-import { Contact } from 'src/providers/entities/contact.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { Schedule } from 'src/providers/entities/schedule.entity';
-import { Staff } from 'src/providers/entities/staff.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn
+} from 'typeorm';
+//entities
 import { Service } from './services.entity';
 import { Taxonomy } from './taxonomy.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Staff } from 'src/providers/entities/staff.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Billing } from 'src/billings/entities/billing.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
+import { Transactions } from 'src/payment/entity/payment.entity';
+import { Practice } from 'src/practice/entities/practice.entity';
+import { Schedule } from 'src/providers/entities/schedule.entity';
+import { Agreement } from 'src/agreements/entities/agreement.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { BillingAddress } from 'src/providers/entities/billing-address.entity';
 
 export enum PracticeType {
   HOSPITAL = "hospital",
@@ -110,7 +113,7 @@ export class Facility {
     enum: PracticeType,
     nullable: true,
   })
-  @Field(type => PracticeType, { nullable: true })
+  @Field(() => PracticeType, { nullable: true })
   practiceType: PracticeType
 
   @Column({ nullable: true })
@@ -189,23 +192,23 @@ export class Facility {
   user: User[];
 
   @OneToMany(() => Contact, contact => contact.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Contact], { nullable: true })
+  @Field(() => [Contact], { nullable: true })
   contacts: Contact[];
 
   @OneToMany(() => Service, service => service.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Service], { nullable: true })
+  @Field(() => [Service], { nullable: true })
   services: Service[];
 
   @ManyToOne(() => Practice, practice => practice.facilities, { onDelete: 'CASCADE' })
-  @Field(type => Practice, { nullable: true })
+  @Field(() => Practice, { nullable: true })
   practice: Practice;
 
   @OneToMany(() => BillingAddress, billingAddress => billingAddress.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [BillingAddress], { nullable: true })
+  @Field(() => [BillingAddress], { nullable: true })
   billingAddress: BillingAddress[];
 
   @OneToMany(() => Schedule, schedule => schedule.doctor, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
-  @Field(type => [Schedule], { nullable: true })
+  @Field(() => [Schedule], { nullable: true })
   schedule: Schedule[];
 
   @OneToMany(() => Billing, billing => billing.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
@@ -220,7 +223,7 @@ export class Facility {
   @Field({ nullable: true })
   updatedAt: string;
 
-  @OneToMany(() => Transactions, transaction => transaction.facility)
+  @OneToMany(() => Transactions, transaction => transaction.facility, { onDelete: "CASCADE" })
   @Field(() => [Transactions], { nullable: true })
   transaction: Transactions[];
 

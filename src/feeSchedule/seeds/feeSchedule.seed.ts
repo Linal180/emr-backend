@@ -6,7 +6,7 @@ import { cptFeeScheduleData, expressFeeSchedule } from "./seed-data";
 import { FeeSchedule } from "../entities/feeSchedule.entity";
 import { Practice } from "src/practice/entities/practice.entity";
 import { seedPractice } from "src/lib/constants";
-import { PracticeInfo } from "src/users/seeds/practiceSeed-data";
+import { PracticeInfo } from "src/practice/seeds/practiceSeed-data";
 import { CptFeeSchedule } from "../entities/cptFeeSchedule.entity";
 
 @Injectable()

@@ -116,3 +116,13 @@ export const formTemplateTabIds = {
   TERMS_CONDITIONS: "terms_conditions",
   AVAILABLE_SLOTS: 'available_slots'
 }
+
+export enum DAYS {
+  Monday = "Monday",
+  Tuesday = "Tuesday",
+  Wednesday = "Wednesday",
+  Thursday = "Thursday",
+  Friday = "Friday",
+  Saturday = "Saturday",
+  Sunday = "Sunday",
+}

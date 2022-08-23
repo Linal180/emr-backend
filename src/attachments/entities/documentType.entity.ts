@@ -1,7 +1,7 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//entities
 import { Practice } from 'src/practice/entities/practice.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Attachment } from './attachment.entity';
 import { AttachmentMetadata } from './attachmentMetadata.entity';
 
 @Entity({ name: 'DocumentType' })
@@ -16,11 +16,11 @@ export class DocumentType {
   type: string;
 
   @OneToMany(() => AttachmentMetadata, attachments => attachments.documentType, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [AttachmentMetadata], { nullable: true })
+  @Field(() => [AttachmentMetadata], { nullable: true })
   attachments: AttachmentMetadata[];
 
   @ManyToOne(() => Practice, practice => practice.documentTypes, { onDelete: 'CASCADE' })
-  @Field(type => Practice, { nullable: true })
+  @Field(() => Practice, { nullable: true })
   practice: Practice;
 
   @Column({ nullable: true })

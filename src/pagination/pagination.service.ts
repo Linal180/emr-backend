@@ -7,6 +7,7 @@ import {
 import { Speciality } from "src/providers/entities/doctor.entity";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
+import { LabTestStatus } from "src/labs/entities/labTests.entity";
 
 interface whereConditionInput {
   status?: string | number
@@ -132,7 +133,7 @@ export class PaginationService {
       };
     } else if (filterType === 'stringFilter') {
       where = {
-        str: `${associatedTo}.${columnName} ILIKE :data${columnName2 ? ` OR ${associatedTo}.${columnName2} ILIKE :data` : ''}${columnName3 ? ` OR ${associatedTo}.${columnName3} ILIKE :data` : ''}`,
+        str: `(${associatedTo}.${columnName} ILIKE :data${columnName2 ? ` OR ${associatedTo}.${columnName2} ILIKE :data` : ''}${columnName3 ? ` OR ${associatedTo}.${columnName3} ILIKE :data` : ''})`,
         obj: { data: `%${columnValue}%` }
       };
     }
@@ -345,6 +346,9 @@ export class PaginationService {
         ...(formType && {
           type: formType
         }),
+        ...(labTestStatus && {
+          labTestStatus: Raw(alias => `${alias} != '${labTestStatus}'`),
+        }),
         ...(documentPracticeId && {
           practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${documentPracticeId}'`),
         }),
@@ -359,7 +363,7 @@ export class PaginationService {
         ...(billingFromDate && billingFromDate != null && { from: billingFromDate }),
         ...(billingToDate && billingToDate != null && { to: billingToDate }),
         ...(code && code != null && { code }),
-        ...(feeScheduleId && feeScheduleId != null && { feeScheduleId }),
+        ...(feeScheduleId && { feeScheduleId }),
         ...(moduleType && moduleType != null && { moduleType }),
         ...(logUserId && logUserId != null && { userId: logUserId }),
         ...(feeScheduleName && feeScheduleName != null && { name: feeScheduleName }),
