@@ -33,23 +33,27 @@ export class CreateFeeSchedule implements Seeder {
 
       if (practice) {
         //fee schedule
-        const oldFeeSchedule = await feeRepo.find({ practiceId: practice?.id })
-        if (!oldFeeSchedule?.length) {
-          const feeSchedules = await Promise.all(expressFeeSchedule?.map(async ({ name }) => {
-            const newFeeSchedule = feeRepo.create({ name })
-            newFeeSchedule.practice = practice
-            newFeeSchedule.practiceId = practice.id
-            //create cpt fee schedule
-            newFeeSchedule.cptFeeSchedule = await Promise.all(cptFeeScheduleData?.map(async (item) => {
-              const cptFeeSchedule = cptFeeRepo.create({ ...item, code: item?.cptCode });
-              return await cptFeeRepo.save(cptFeeSchedule);
-            }))
-            await feeRepo.save(newFeeSchedule)
-            return newFeeSchedule
-          }))
 
-          await queryRunner.manager.save(feeSchedules);
-        }
+        const feeSchedules = await Promise.all(expressFeeSchedule?.map(async ({ name }) => {
+          const oldFeeSchedule = await feeRepo.findOne({ practiceId: practice?.id, name });
+          
+          if (oldFeeSchedule) {
+            return oldFeeSchedule
+          }
+
+          const newFeeSchedule = feeRepo.create({ name })
+          newFeeSchedule.practice = practice
+          newFeeSchedule.practiceId = practice.id
+          //create cpt fee schedule
+          newFeeSchedule.cptFeeSchedule = await Promise.all(cptFeeScheduleData?.map(async (item) => {
+            const cptFeeSchedule = cptFeeRepo.create({ ...item, code: item?.cptCode });
+            return await cptFeeRepo.save(cptFeeSchedule);
+          }))
+          await feeRepo.save(newFeeSchedule)
+          return newFeeSchedule
+        }))
+
+        await queryRunner.manager.save(feeSchedules);
       }
       else {
         throw new Error("Practice not found");
