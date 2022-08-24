@@ -137,7 +137,7 @@ export class PolicyService {
         await this.patientService.updatePatientPolicyHolder({ id: patient.id, policyHolder: createdPolicyHolder })
         policyInstance.policyHolder = createdPolicyHolder
       } else {
-        this.policyHolderService.update({ ...policyHolderInfo, ...createPolicyInput.policyHolderInfo })
+        await this.policyHolderService.update({ ...policyHolderInfo, ...createPolicyInput.policyHolderInfo })
         policyInstance.policyHolder = policyHolderInfo
       }
 
