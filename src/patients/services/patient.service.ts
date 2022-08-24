@@ -19,7 +19,7 @@ import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRela
 //entities
 import { Patient } from '../entities/patient.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { AttachmentType } from 'src/attachments/entities/attachment.entity';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { DoctorPatient, DoctorPatientRelationType } from '../entities/doctorPatient.entity';
 //services
 import { EmployerService } from './employer.service';
@@ -899,6 +899,7 @@ export class PatientService {
       throw new InternalServerErrorException(error);
     }
   }
+
   /**
   * Updates patient media
   * @param file 
@@ -1037,7 +1038,7 @@ export class PatientService {
    * @param id 
    * @returns  
    */
-  async getSignature(id: string) {
+  async getSignature(id: string): Promise<Attachment> {
     try {
       const attachments = await this.attachmentsService.getAttachmentSignature({ typeId: id })
       const signature = attachments.find(({ title }) => title === ATTACHMENT_TITLES.Signature)
