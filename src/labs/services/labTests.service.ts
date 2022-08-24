@@ -16,7 +16,7 @@ import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
 import LabTestInput from '../dto/lab-test.input';
 import { LabResultPayload, LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestsPayload } from '../dto/labTests-payload.dto';
-import { RemoveLabTest, UpdateLabTestInput, UpdateLabTestItemInput } from '../dto/update-lab-test.input';
+import { RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input';
 import { LabTests } from '../entities/labTests.entity';
 import { LoincCodesService } from './loincCodes.service';
 import { TestSpecimenService } from './testSpecimen.service';
@@ -131,7 +131,7 @@ export class LabTestsService {
 
   async findAllLabTest(labTestInput: LabTestInput): Promise<LabTestsPayload> {
     try {
-      const { paginationOptions, orderNumber, patientId, labTestStatus, practiceId, receivedDate } = labTestInput
+      const { paginationOptions, orderNumber, patientId, labTestStatus, practiceId, receivedDate, shouldFetchReceived, shouldFetchPending } = labTestInput
       const { limit, page } = paginationOptions
       const labTestsQuery = getConnection()
         .getRepository(LabTests)
@@ -140,7 +140,9 @@ export class LabTestsService {
         .take(limit)
         .andWhere(patientId ? 'labTests.patientId = :patientId' : '1=1', { patientId: patientId })
         .andWhere(orderNumber ? 'labTests.orderNumber ILIKE :orderNumber' : '1=1', { orderNumber: `%${orderNumber}%` })
-        .andWhere(labTestStatus ? 'labTests.labTestStatus != :labTestStatus' : '1=1', { labTestStatus: labTestStatus })
+        .andWhere(labTestStatus ? 'labTests.labTestStatus = :labTestStatus' : '1=1', { labTestStatus: labTestStatus })
+        .andWhere(shouldFetchReceived ? 'labTests.receivedDate is not null' : '1=1')
+        .andWhere(shouldFetchPending ? 'labTests.receivedDate is null' : '1=1')
         .andWhere(receivedDate ? 'labTests.receivedDate = :receivedDate' : '1=1', { receivedDate: moment(receivedDate).format('MM-DD-YYYY') })
 
       if (practiceId) {

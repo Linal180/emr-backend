@@ -9,49 +9,61 @@ export const FacilitiesData = [
     name: 'College Park',
     practiceType: PracticeType.CLINIC,
     phone: '3013454400',
-    address1: '4701 Melbourne Place',
+    address: '4701 Melbourne Place',
     address2: 'College Park, MD',
-    zipCode: '207402540'
+    zipCode: '20740-2540',
+    city: 'College Park',
+    state: "Maryland"
   },
   {
     name: 'New Carrolton',
     practiceType: PracticeType.CLINIC,
     phone: '3013457800',
-    address1: '8500 Annapolis Rd Suite',
+    address: '8500 Annapolis Rd Suite',
     address2: '200 New Carrolton, MD',
-    zipCode: '20601'
+    zipCode: '20601',
+    city: 'New Carrolton',
+    state: "Maryland"
   },
   {
     name: 'Waldorf, MD',
     practiceType: PracticeType.CLINIC,
     phone: '2408657106',
-    address1: '3050 Crain Hwy',
+    address: '3050 Crain Hwy',
     address2: '#100, Waldorf, MD',
-    zipCode: '207402540'
+    zipCode: '20740-2540',
+    city: 'Waldorf',
+    state: "Maryland"
   },
   {
     name: 'Falls Church',
     practiceType: PracticeType.CLINIC,
     phone: '7034360156',
-    address1: '6305 Castle Place Suite',
+    address: '6305 Castle Place Suite',
     address2: '2D Falls Church, VA',
-    zipCode: '22044'
+    zipCode: '22044',
+    city: 'Falls Church',
+    state: "Virginia"
   },
   {
     name: 'Tysons Corner',
     practiceType: PracticeType.CLINIC,
     phone: ' 7034360203',
-    address1: '1980 Gallows Rd Vienna',
+    address: '1980 Gallows Rd Vienna',
     address2: 'Unit 100, VA',
-    zipCode: '22182'
+    zipCode: '22182',
+    city: 'Tysons Corner',
+    state: "Virginia"
   },
   {
     name: 'Skyline, VA',
     practiceType: PracticeType.CLINIC,
     phone: '7034360204',
-    address1: '5870 Leesburg Pike',
+    address: '5870 Leesburg Pike',
     address2: 'Falls Church, VA',
-    zipCode: '22041'
+    zipCode: '22041',
+    city: 'Skyline',
+    state: "Virginia"
   },
 ]
 

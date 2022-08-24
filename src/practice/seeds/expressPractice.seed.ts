@@ -52,9 +52,10 @@ export class CreateExpressPractice implements Seeder {
       //find roles & role's permissions
       const roles = await rolesRepo.find()
       const practiceAdminRole = roles?.find((role) => role.role === 'practice-admin');
+      
       //create Facilities of express health care
       savedFacilities = await Promise.all(FacilitiesData.map(async (facilityData) => {
-        const { name, practiceType, address1, ...facilityContactInfo } = facilityData;
+        const { name, practiceType, address, ...facilityContactInfo } = facilityData;
 
         //existing facility
         const facilityExist = await facilityRepo.findOne({ name, practiceId: savedPractice?.id })
@@ -70,7 +71,7 @@ export class CreateExpressPractice implements Seeder {
         facilityInstance.practiceId = savedPractice?.id
 
         //create facility's contacts
-        const facilityContact = contactRepo.create({ ...facilityContactInfo, address: address1, primaryContact: true })
+        const facilityContact = contactRepo.create({ ...facilityContactInfo, address, primaryContact: true })
         const contact = await contactRepo.save(facilityContact);
 
         //associate facility's contact

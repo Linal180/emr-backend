@@ -2981,6 +2981,8 @@ input LabTestInput {
   practiceId: String
   receivedDate: String
   orderNumber: String
+  shouldFetchReceived: Boolean = false
+  shouldFetchPending: Boolean = false
   labTestStatus: String
   paginationOptions: PaginationInput!
 }
