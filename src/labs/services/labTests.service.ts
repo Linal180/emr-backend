@@ -1,13 +1,15 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ProblemService } from 'src/patientCharting/services/patientProblems.service';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
 import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
@@ -129,12 +131,38 @@ export class LabTestsService {
 
   async findAllLabTest(labTestInput: LabTestInput): Promise<LabTestsPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<LabTests>(this.labTestsRepository, labTestInput)
+      const { paginationOptions, orderNumber, patientId, labTestStatus, practiceId, receivedDate } = labTestInput
+      const { limit, page } = paginationOptions
+      const labTestsQuery = getConnection()
+        .getRepository(LabTests)
+        .createQueryBuilder('labTests')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .andWhere(patientId ? 'labTests.patientId = :patientId' : '1=1', { patientId: patientId })
+        .andWhere(orderNumber ? 'labTests.orderNumber ILIKE :orderNumber' : '1=1', { orderNumber: `%${orderNumber}%` })
+        .andWhere(labTestStatus ? 'labTests.labTestStatus != :labTestStatus' : '1=1', { labTestStatus: labTestStatus })
+        .andWhere(receivedDate ? 'labTests.receivedDate = :receivedDate' : '1=1', { receivedDate: moment(receivedDate).format('MM-DD-YYYY') })
+
+      if (practiceId) {
+        labTestsQuery.
+          innerJoin(Patient, 'labTestPatient', `labTests.patientId = "labTestPatient"."id"`)
+          .andWhere('labTestPatient.practiceId = :practiceId', { practiceId: practiceId })
+      }
+
+      const [labTests, totalCount] = await labTestsQuery
+        .orderBy('labTests.createdAt', 'DESC')
+        .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
+
       return {
         pagination: {
-          ...paginationResponse
+          totalCount,
+          page,
+          limit,
+          totalPages,
         },
-        labTests: paginationResponse.data,
+        labTests
       }
     } catch (error) {
       throw new InternalServerErrorException(error);
