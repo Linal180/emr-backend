@@ -4,8 +4,9 @@ import { InsuranceService } from '../services/insurance.service';
 //entity
 import { Insurance } from '../entities/insurance.entity';
 //payload
-import { InsurancesPayload } from '../dto/insurances-payload.dto';
-import { InsurancePaginationInput } from '../dto/insurances-input.dto';
+import { InsurancePayload, InsurancesPayload } from '../dto/insurances-payload.dto';
+import { GetInsuranceInput, InsurancePaginationInput } from '../dto/insurances-input.dto';
+import { HttpStatus, NotFoundException } from '@nestjs/common';
 
 @Resolver(() => Insurance)
 export class InsuranceResolver {
@@ -30,6 +31,24 @@ export class InsuranceResolver {
     return {
       insurances: await this.insuranceService.findByPayerNameOrId(searchTerm),
       response: { status: 200, message: "Insurances matching PayerName and PayerId fetched successfully" }
+    };
+  }
+
+  @Query(() => InsurancePayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'fetchInsurance')
+  async getInsurance(@Args('getInsuranceInput') getInsuranceInput: GetInsuranceInput): Promise<InsurancePayload> {
+    const { id } = getInsuranceInput;
+    const insurance = await this.insuranceService.findOne(id)
+    if (!insurance) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Insurance not found',
+      });
+    }
+    return {
+      insurance,
+      response: { status: 200, message: "Insurance is fetch successfully." }
     };
   }
 }

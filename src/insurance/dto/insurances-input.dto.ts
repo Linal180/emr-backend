@@ -20,3 +20,10 @@ export class InsuranceInput {
   @Field({ nullable: true })
   payerId?: string
 }
+
+
+@InputType()
+export class GetInsuranceInput {
+  @Field({ nullable: true })
+  id: string
+}

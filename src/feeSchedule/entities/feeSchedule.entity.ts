@@ -2,8 +2,8 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { CptFeeSchedule } from "./cptFeeSchedule.entity";
-import { Practice } from "src/practice/entities/practice.entity";
 import { Billing } from "src/billings/entities/billing.entity";
+import { Practice } from "src/practice/entities/practice.entity";
 
 @Entity({ name: 'FeeSchedule' })
 @ObjectType()
@@ -42,11 +42,11 @@ export class FeeSchedule {
 
   //relationships
 
-  @ManyToOne(() => Practice, practice => practice.feeSchedules, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Practice, practice => practice.feeSchedules)
   @Field(() => Practice, { nullable: true })
   practice: Practice;
 
-  @OneToMany(() => Billing, billing => billing.feeSchedule, { onDelete: 'CASCADE' })
+  @OneToMany(() => Billing, billing => billing.feeSchedule)
   @Field(() => [Billing], { nullable: true })
   billing: Billing[]
 

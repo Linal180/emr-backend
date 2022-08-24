@@ -1263,7 +1263,7 @@ const facilityAppointment: FormTabs[] = [
   },
   {
     id: uuid(),
-    name: "Privacy & TOS agreement",
+    name: "Consent",
     tabId: formTemplateTabIds.PRIVACY_AGREEMENT,
     sections:
       [{

@@ -248,6 +248,7 @@ type LabTests {
   primaryProviderId: String
   referringProviderId: String
   appointmentId: String
+  testId: String
   patient: Patient
   doctor: Doctor
   primaryProvider: Doctor
@@ -2557,6 +2558,11 @@ type InsurancesPayload {
   response: Response
 }
 
+type InsurancePayload {
+  insurance: Insurance
+  response: Response
+}
+
 type PoliciesPayload {
   policies: [Policy!]!
   pagination: PaginationPayload
@@ -2924,6 +2930,7 @@ type Query {
   findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
+  getInsurance(getInsuranceInput: GetInsuranceInput!): InsurancePayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
   fetchPolicy(id: String!): PolicyPayload!
   fetchPatientInsurances(id: String!): PoliciesPayload!
@@ -2971,6 +2978,8 @@ input LabTestByOrderNumInput {
 
 input LabTestInput {
   patientId: String
+  practiceId: String
+  receivedDate: String
   orderNumber: String
   labTestStatus: String
   paginationOptions: PaginationInput!
@@ -3404,6 +3413,10 @@ input LiveClaimFeedInput {
 input InsurancePaginationInput {
   searchString: String
   paginationOptions: PaginationInput!
+}
+
+input GetInsuranceInput {
+  id: String
 }
 
 input PolicyPaginationInput {
