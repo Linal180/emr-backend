@@ -248,6 +248,7 @@ type LabTests {
   primaryProviderId: String
   referringProviderId: String
   appointmentId: String
+  testId: String
   patient: Patient
   doctor: Doctor
   primaryProvider: Doctor
@@ -2971,6 +2972,8 @@ input LabTestByOrderNumInput {
 
 input LabTestInput {
   patientId: String
+  practiceId: String
+  receivedDate: String
   orderNumber: String
   labTestStatus: String
   paginationOptions: PaginationInput!
