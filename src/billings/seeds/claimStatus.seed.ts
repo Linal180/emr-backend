@@ -16,7 +16,7 @@ export class CreateSystemClaimStatus implements Seeder {
       //Add claim status  
 
       await Promise.all(systemClaimStatus?.map(async (item) => {
-        const claimSt = getRepository(ClaimStatus).findOne({ statusId: item?.statusId });
+        const claimSt = await getRepository(ClaimStatus).findOne({ statusId: item?.statusId });
         if (claimSt) {
           return
         };
