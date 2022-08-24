@@ -165,7 +165,7 @@ export class Billing {
   @Field(() => Facility, { nullable: true })
   facility: Facility;
 
-  @ManyToOne(() => ClaimStatus, claimStatus => claimStatus.billings, { onDelete: 'CASCADE' })
+  @ManyToOne(() => ClaimStatus, claimStatus => claimStatus.billings)
   @Field(() => ClaimStatus, { nullable: true })
   claimStatus: ClaimStatus;
 

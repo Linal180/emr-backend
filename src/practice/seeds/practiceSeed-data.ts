@@ -288,7 +288,7 @@ export const FacilitiesServices = [
     duration: "30"
   },
   {
-    name: "New Patient ( Non-COVID )",
+    name: "New Patient Non-COVID",
     duration: "30"
   },
   {
@@ -296,11 +296,11 @@ export const FacilitiesServices = [
     duration: "30"
   },
   {
-    name: "Traveler ( Non - COVID )",
+    name: "Traveler Non - COVID",
     duration: "30"
   },
   {
-    name: "Worker's Compensation",
+    name: "Worker Compensation",
     duration: "30"
   },
   {

@@ -16,15 +16,19 @@ import { LabResultPayload, LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestsPayload } from '../dto/labTests-payload.dto';
 import { GetLabTest, RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input';
 import { LabTests } from '../entities/labTests.entity';
+import { LoincCodes } from '../entities/loincCodes.entity';
 import { Observations } from '../entities/observations.entity';
 import { TestSpecimens } from '../entities/testSpecimens.entity';
 import { LabTestsObservationsService } from '../services/labTestObservation.service';
 import { LabTestsService } from '../services/labTests.service';
+import { LoincCodesService } from '../services/loincCodes.service';
 import { TestSpecimenService } from '../services/testSpecimen.service';
 
 @Resolver(() => LabTests)
 export class LabTestsResolver {
-  constructor(private readonly labTestsService: LabTestsService,
+  constructor(
+    private readonly labTestsService: LabTestsService,
+    private readonly loincCodesService: LoincCodesService,
     private readonly appointmentService: AppointmentService,
     private readonly testSpecimenService: TestSpecimenService,
     private readonly labTestsObservationsService: LabTestsObservationsService,
@@ -115,6 +119,13 @@ export class LabTestsResolver {
   async testObservations(@Parent() labTests: LabTests): Promise<Observations[]> {
     if (labTests) {
       return await this.labTestsObservationsService.GetLabTestObservations(labTests.id);
+    }
+  }
+
+  @ResolveField(() => LoincCodes)
+  async test(@Parent() labTests: LabTests): Promise<LoincCodes> {
+    if (labTests.testId) {
+      return await this.loincCodesService.findOne(labTests.testId);
     }
   }
 

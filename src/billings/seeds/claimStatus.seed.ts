@@ -14,13 +14,15 @@ export class CreateSystemClaimStatus implements Seeder {
     await queryRunner.startTransaction();
     try {
       //Add claim status  
-      const claimStatuses = await getRepository(ClaimStatus).find();
-      if (!claimStatuses?.length) {
-        await Promise.all(systemClaimStatus?.map(async (item) => {
-          let claimStatus = getRepository(ClaimStatus).create(item)
-          await queryRunner.manager.save(claimStatus);
-        }))
-      }
+
+      await Promise.all(systemClaimStatus?.map(async (item) => {
+        const claimSt = await getRepository(ClaimStatus).findOne({ statusId: item?.statusId });
+        if (claimSt) {
+          return
+        };
+        const claimStatus = getRepository(ClaimStatus).create(item)
+        return await queryRunner.manager.save(claimStatus);
+      }))
       await queryRunner.commitTransaction();
     }
     catch (error) {

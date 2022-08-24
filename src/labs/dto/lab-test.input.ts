@@ -9,6 +9,12 @@
       patientId?: string
 
       @Field({ nullable: true })
+      practiceId?: string
+
+      @Field({ nullable: true })
+      receivedDate?: string
+
+      @Field({ nullable: true })
       orderNumber?: string
 
       @Field({ nullable: true })
