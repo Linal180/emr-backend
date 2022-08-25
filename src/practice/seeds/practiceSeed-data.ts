@@ -26,7 +26,7 @@ export const FacilitiesData = [
     state: "Maryland"
   },
   {
-    name: 'Waldorf, MD',
+    name: 'Waldorf MD',
     practiceType: PracticeType.CLINIC,
     phone: '2408657106',
     address: '3050 Crain Hwy',
@@ -56,7 +56,7 @@ export const FacilitiesData = [
     state: "Virginia"
   },
   {
-    name: 'Skyline, VA',
+    name: 'Skyline VA',
     practiceType: PracticeType.CLINIC,
     phone: '7034360204',
     address: '5870 Leesburg Pike',

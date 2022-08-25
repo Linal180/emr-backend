@@ -277,8 +277,8 @@ export class UserFormsService {
 
           const appointmentTypeId = getCustomElementValue(userFormElementInputs, fieldId)
           const doctorId = getCustomElementValue(userFormElementInputs, providerField)
-          const startTime = getCustomElementValue(userFormElementInputs, 'scheduleEndDateTime')
-          const endTime = getCustomElementValue(userFormElementInputs, 'scheduleStartDateTime')
+          const startTime = getCustomElementValue(userFormElementInputs, 'scheduleStartDateTime')
+          const endTime = getCustomElementValue(userFormElementInputs, 'scheduleEndDateTime')
           const transactionId = getCustomElementValue(userFormElementInputs, 'transactionId')
 
           if (facilityElement) {
@@ -306,6 +306,7 @@ export class UserFormsService {
                 ...patientInputs.createPatientItemInput,
                 facilityId: facilityElementId || facilityId || null,
                 practiceId: practiceId || null,
+                usualProviderId: doctorId || null
               },
               createContactInput: {
                 ...patientInputs.createContactInput,
@@ -465,8 +466,8 @@ export class UserFormsService {
 
           const appointmentTypeId = getCustomElementValue(userFormElementInputs, fieldId)
           const doctorId = getCustomElementValue(userFormElementInputs, providerField)
-          const startTime = getCustomElementValue(userFormElementInputs, 'scheduleEndDateTime')
-          const endTime = getCustomElementValue(userFormElementInputs, 'scheduleStartDateTime')
+          const startTime = getCustomElementValue(userFormElementInputs, 'scheduleStartDateTime')
+          const endTime = getCustomElementValue(userFormElementInputs, 'scheduleEndDateTime')
           const transactionId = getCustomElementValue(userFormElementInputs, 'transactionId')
           const appointmentId = getCustomElementValue(userFormElementInputs, 'appointmentId')
           const memberId = getCustomElementValue(userFormElementInputs, 'memberId')
@@ -494,6 +495,7 @@ export class UserFormsService {
                     ...createPatientItemInput,
                     id: patientId,
                     facilityId: facilityElementId || facilityId || null,
+                    usualProviderId: doctorId || null
                   },
                   updateContactInput: createContactInput,
                   updateGuardianContactInput: createGuardianContactInput,

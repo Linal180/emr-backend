@@ -52,7 +52,7 @@ export class CreateExpressPractice implements Seeder {
       //find roles & role's permissions
       const roles = await rolesRepo.find()
       const practiceAdminRole = roles?.find((role) => role.role === 'practice-admin');
-      
+
       //create Facilities of express health care
       savedFacilities = await Promise.all(FacilitiesData.map(async (facilityData) => {
         const { name, practiceType, address, ...facilityContactInfo } = facilityData;
@@ -143,7 +143,7 @@ export class CreateExpressPractice implements Seeder {
       }))
 
       //create express practice's staff/doctor
-      await Promise.all(createdUsers.map(async (createdUser) => {
+      const users = await Promise.all(createdUsers.map(async (createdUser) => {
         const { email, facility, name, phone, role: userRole, suffix } = PracticeUsersData.find((userData) => userData.email === createdUser.email)
         const [firstName, lastName] = name.split(' ');
 
@@ -175,6 +175,9 @@ export class CreateExpressPractice implements Seeder {
             //associate doctor
             createdUser.userId = savedDoctor.id
           }
+          else {
+            createdUser.userId = doctorExist.id
+          }
         } else {
           const staffExist = await staffRepo.findOne({ email })
           if (!staffExist) {
@@ -186,10 +189,17 @@ export class CreateExpressPractice implements Seeder {
             const savedStaff = await staffRepo.save(staffInstance)
             createdUser.userId = savedStaff.id
           }
+          else {
+            createdUser.userId = staffExist.id
+          }
         }
         return createdUser;
       }))
 
+      //update users
+      if (users?.length) {
+        await userRepo.save(users)
+      }
       //get practice admin
       practiceAdmin = await userRepo.findOne({ email: PracticeAdminInfo.email })
 

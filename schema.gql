@@ -1265,6 +1265,7 @@ type Attachment {
   attachmentMetadata: AttachmentMetadata
   attachmentMetadataId: String
   childAttachment: Attachment
+  preSignedUrl: String
   createdAt: String!
   updatedAt: String!
 }
@@ -2404,9 +2405,9 @@ type AttachmentWithPreSignedUrl {
   attachmentMetadata: AttachmentMetadata
   attachmentMetadataId: String
   childAttachment: Attachment
+  preSignedUrl: String
   createdAt: String!
   updatedAt: String!
-  preSignedUrl: String
 }
 
 type AttachmentsPayload {
