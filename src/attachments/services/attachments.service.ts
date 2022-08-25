@@ -498,6 +498,15 @@ export class AttachmentsService {
   }
 
   /**
+   * Gets pre signed url
+   * @param key 
+   * @returns  
+   */
+  async getPreSignedUrl(key: string) {
+    return await this.awsService.getFile(key);
+  }
+
+  /**
    * Removes media by id
    * @param id 
    * @returns  

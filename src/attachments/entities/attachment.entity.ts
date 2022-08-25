@@ -65,6 +65,9 @@ export class Attachment {
   @Field(() => Attachment, { nullable: true })
   childAttachment: Attachment
 
+  @Field({ nullable: true })
+  preSignedUrl: string
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   createdAt: string;
