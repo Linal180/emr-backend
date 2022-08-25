@@ -133,6 +133,13 @@ export class AttachmentsResolver {
     }
   }
 
+  @ResolveField(() => String)
+  async preSignedUrl(@Parent() attachment: Attachment): Promise<string> {
+    if (attachment?.key) {
+      return await this.attachmentsService.getPreSignedUrl(attachment.key)
+    }
+  }
+
   @ResolveField(() => Attachment)
   async childAttachment(@Parent() attachment: Attachment): Promise<Attachment> {
     if (attachment.parentAttachmentId) {
