@@ -488,7 +488,7 @@ export class AttachmentsService {
    */
   async getMedia(id: string) {
     const attachment = await this.attachmentsRepository.findOne(id);
-    if (attachment) {
+    if (attachment.key) {
       return await this.awsService.getFile(attachment.key);
     }
     throw new NotFoundException({
