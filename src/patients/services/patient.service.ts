@@ -119,7 +119,7 @@ export class PatientService {
         prevPatient = await this.GetPatientByEmail(email);
       }
       if (!prevPatient) {
-        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: new Date(createPatientInput?.createPatientItemInput?.dob)?.toISOString() })
+        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: moment(createPatientInput?.createPatientItemInput?.dob).format('MM-DD-YYYY') })
         patientInstance.patientRecord = await this.utilsService.generateString(8);
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
@@ -214,7 +214,7 @@ export class PatientService {
       } else {
         let user = await this.usersService.findUserByUserId(patientId)
         //save patient basic info
-        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: new Date(dob)?.toISOString() }, this.patientRepository)
+        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: moment(dob).format("MM-DD-YYYY") }, this.patientRepository)
         //get facility 
         const patientInstance = await this.patientRepository.findOne(patientId)
 
@@ -686,7 +686,7 @@ export class PatientService {
       }
 
       const [patients, totalCount] = await baseQuery
-        .where(dob ? 'patient.dob::date = :dob' : '1=1', { dob: moment(new Date(dob)).format("DD/MM/YYYY") })
+        .where(dob ? 'patient.dob = :dob' : '1=1', { dob: moment(new Date(dob)).format("MM-DD-YYYY") })
         .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
         .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
         .andWhere(new Brackets(qb => {
