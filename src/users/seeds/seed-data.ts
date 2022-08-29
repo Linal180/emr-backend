@@ -288,7 +288,7 @@ export const doctorPermissionsList = ['fetchAllUsers', 'fetchUser', 'getUser', '
     'updatePolicy', 'fetchAllPolicyHolders', 'fetchPolicyHolder', 'createPolicyHolder', 'fetchAllInsurances', 'fetchInsurance', 'createCopay', 'findAllTestSpecimenTypes',
     'getSpecimenTypeByName', 'createLoincCode', 'updateLoincCode', 'findAllLoincCodes', 'findLoincCode', 'updateLabTestsByOrderNum', 'findLabTestsByOrderNum', 'fetchICDCodes', 'patientInfo',
     'updatePatient', 'updatePatientNoteInfoInputs', 'updatePatientProviderRelation', 'getPatient', 'getPatientProviders', 'getPatientProvider', 'findAllDoctorPatients',
-    'me', 'fetchEmergencyAccessUsers']
+    'me', 'fetchEmergencyAccessUsers', 'findAllPatientAllergies']
 
 export const nursePermissionsList = ['createAppointment', 'createExternalAppointment', 'updateAppointment', 'updateAppointmentBillingStatus',
     'findAllAppointments', 'getAppointment', 'getAppointments', 'cancelAppointment', 'removeAppointment', 'getPatientAppointment', 'createFacility', 'updateFacility',
