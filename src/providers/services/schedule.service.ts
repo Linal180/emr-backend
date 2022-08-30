@@ -305,7 +305,7 @@ export class ScheduleService {
 
   async getShouldHaveSlots(getSlots: GetSlots): Promise<boolean> {
     let flag = true
-    const dateToCompare = moment(getSlots.currentDate).toISOString()
+    const dateToCompare = moment(getSlots.currentDate).format('YYYY-MM-DD')
     if (getSlots.facilityId) {
       const scheduleRes = await getConnection()
         .getRepository(Schedule)
@@ -313,8 +313,8 @@ export class ScheduleService {
         .where('Schedule.facilityId = :facilityId', { facilityId: getSlots.facilityId })
         .andWhere('Schedule.day = :day', { day: getSlots.day })
         .andWhere(new Brackets(qb => {
-          qb.where('Schedule.recurringEndDate is null').
-            orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
+          qb.where('"Schedule"."recurringEndDate" is null').
+            orWhere('"Schedule"."recurringEndDate"::date >= :search', { search: dateToCompare })
         }))
         .getCount()
       flag = !!scheduleRes
@@ -326,7 +326,7 @@ export class ScheduleService {
         .andWhere('Schedule.day = :day', { day: getSlots.day })
         .andWhere(new Brackets(qb => {
           qb.where('Schedule.recurringEndDate IS NULL').
-            orWhere('Schedule.recurringEndDate >= :search', { search: dateToCompare })
+            orWhere('"Schedule"."recurringEndDate"::date >= :search', { search: dateToCompare })
         }))
         .getCount()
       flag = !!scheduleRes
