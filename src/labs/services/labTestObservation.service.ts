@@ -165,8 +165,10 @@ export class LabTestsObservationsService {
         const labResultPayload = await this.labTestsService.findLabResultInfo(orderNumber)
         const labTests = await Promise.all(labResultPayload.labTests.map(async (labTest) => {
           const testObservations = await this.GetLabTestObservations(labTest.id)
+          const test= await this.loincCodesService.findOne(labTest.testId)
           return {
             ...labTest,
+            test,
             testObservations
           }
         }))
