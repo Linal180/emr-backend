@@ -1,18 +1,19 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { Service } from 'src/facilities/entities/services.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { Invoice } from 'src/payment/entity/invoice.entity'
-import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
-import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
-import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
-import { LabTests } from 'src/labs/entities/labTests.entity';
-import { Billing } from 'src/billings/entities/billing.entity';
+//entities
 import { Contract } from './contract.entity';
+import { Invoice } from 'src/payment/entity/invoice.entity'
+import { LabTests } from 'src/labs/entities/labTests.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Billing } from 'src/billings/entities/billing.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
+import { Service } from 'src/facilities/entities/services.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
 import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
+import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -206,6 +207,10 @@ export class Appointment {
   @Column({ nullable: true })
   @Field({ nullable: true })
   appointmentTypeId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  cardLast4Digits?: string
 
   @Field({ nullable: true })
   invoiceId: string;

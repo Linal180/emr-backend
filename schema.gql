@@ -53,6 +53,13 @@ type Role {
   updatedAt: String
 }
 
+type Contract {
+  id: String!
+  contractNumber: String
+  organizationName: String
+  appointment: Appointment
+}
+
 type PatientVitals {
   id: String!
   unitType: UnitType!
@@ -1304,60 +1311,6 @@ enum DoctorPatientRelationType {
   OTHER_PROVIDER
 }
 
-type Invoice {
-  id: String!
-  invoiceNo: String!
-  facilityId: String
-  paymentTransactionId: String
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String
-  status: STATUS!
-  amount: String!
-  appointmentId: String
-  createdAt: String
-  updatedAt: String
-  transaction: Transactions
-  appointment: Appointment
-}
-
-"""The invoice payment type"""
-enum BILLING_TYPE {
-  SELF_PAY
-  INSURANCE
-}
-
-"""The invoice status"""
-enum STATUS {
-  PAID
-  INSURANCE_CLAIM
-  PENDING
-}
-
-type Transactions {
-  id: String!
-  transactionId: String
-  patientId: String
-  doctorId: String
-  facilityId: String
-  appointmentId: String
-  patient: Patient
-  doctor: Doctor
-  facility: Facility
-  appointment: Appointment
-  createdAt: String
-  updatedAt: String
-  status: TRANSACTIONSTATUS!
-  invoice: [Invoice!]
-}
-
-"""The transaction payment status type assigned"""
-enum TRANSACTIONSTATUS {
-  REFUND
-  DUE
-  PAID
-}
-
 type BillingAddress {
   id: String!
   email: String
@@ -1534,11 +1487,58 @@ enum Speciality {
   Unknown_Physician_Specialty_99
 }
 
-type Contract {
+type Transactions {
   id: String!
-  contractNumber: String
-  organizationName: String
+  transactionId: String
+  patientId: String
+  doctorId: String
+  facilityId: String
+  appointmentId: String
+  patient: Patient
+  doctor: Doctor
+  facility: Facility
   appointment: Appointment
+  createdAt: String
+  updatedAt: String
+  status: TRANSACTIONSTATUS!
+  invoice: [Invoice!]
+}
+
+"""The transaction payment status type assigned"""
+enum TRANSACTIONSTATUS {
+  REFUND
+  DUE
+  PAID
+}
+
+type Invoice {
+  id: String!
+  invoiceNo: String!
+  facilityId: String
+  paymentTransactionId: String
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  appointmentId: String
+  createdAt: String
+  updatedAt: String
+  transaction: Transactions
+  appointment: Appointment
+}
+
+"""The invoice payment type"""
+enum BILLING_TYPE {
+  SELF_PAY
+  INSURANCE
+}
+
+"""The invoice status"""
+enum STATUS {
+  PAID
+  INSURANCE_CLAIM
+  PENDING
 }
 
 type Appointment {
@@ -1573,6 +1573,7 @@ type Appointment {
   facilityId: String
   practiceId: String
   appointmentTypeId: String
+  cardLast4Digits: String
   invoiceId: String
   appointmentType: Service
   facility: Facility
@@ -4669,7 +4670,8 @@ input UpdateAppointmentInput {
 
 input UpdateAppointmentBillingStatusInput {
   id: String!
-  billingStatus: String!
+  billingStatus: BillingStatus!
+  cardLast4Digits: String
 }
 
 input RemoveAppointment {
