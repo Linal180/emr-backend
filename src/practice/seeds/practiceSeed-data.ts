@@ -1,4 +1,5 @@
-import { seedPractice } from "src/lib/constants"
+import { PracticeType } from "src/facilities/entities/facility.entity"
+import { DAYS, seedPractice } from "src/lib/constants"
 
 export const PracticeInfo = { name: 'Express Healthcare', npi: '1598994733', taxId: '010788495', active: true, practiceId: seedPractice.EXPRESS_HEALTH_CARE }
 export const PracticeAdminInfo = { email: 'anegeda+ehc@alxtel.com', firstName: 'Alaa', lastName: 'Negeda' }
@@ -6,51 +7,63 @@ export const PracticeAdminInfo = { email: 'anegeda+ehc@alxtel.com', firstName: '
 export const FacilitiesData = [
   {
     name: 'College Park',
-    practiceType: 'CLINIC',
+    practiceType: PracticeType.CLINIC,
     phone: '3013454400',
-    address1: '4701 Melbourne Place',
+    address: '4701 Melbourne Place',
     address2: 'College Park, MD',
-    zipCode: '207402540'
+    zipCode: '20740-2540',
+    city: 'College Park',
+    state: "Maryland"
   },
   {
     name: 'New Carrolton',
-    practiceType: 'CLINIC',
+    practiceType: PracticeType.CLINIC,
     phone: '3013457800',
-    address1: '8500 Annapolis Rd Suite',
+    address: '8500 Annapolis Rd Suite',
     address2: '200 New Carrolton, MD',
-    zipCode: '20601'
+    zipCode: '20601',
+    city: 'New Carrolton',
+    state: "Maryland"
   },
   {
-    name: 'Waldorf, MD',
-    practiceType: 'CLINIC',
+    name: 'Waldorf MD',
+    practiceType: PracticeType.CLINIC,
     phone: '2408657106',
-    address1: '3050 Crain Hwy',
+    address: '3050 Crain Hwy',
     address2: '#100, Waldorf, MD',
-    zipCode: '207402540'
+    zipCode: '20740-2540',
+    city: 'Waldorf',
+    state: "Maryland"
   },
   {
     name: 'Falls Church',
-    practiceType: 'CLINIC',
+    practiceType: PracticeType.CLINIC,
     phone: '7034360156',
-    address1: '6305 Castle Place Suite',
+    address: '6305 Castle Place Suite',
     address2: '2D Falls Church, VA',
-    zipCode: '22044'
+    zipCode: '22044',
+    city: 'Falls Church',
+    state: "Virginia"
   },
   {
     name: 'Tysons Corner',
-    practiceType: 'CLINIC',
+    practiceType: PracticeType.CLINIC,
     phone: ' 7034360203',
-    address1: '1980 Gallows Rd Vienna',
+    address: '1980 Gallows Rd Vienna',
     address2: 'Unit 100, VA',
-    zipCode: '22182'
+    zipCode: '22182',
+    city: 'Tysons Corner',
+    state: "Virginia"
   },
   {
-    name: 'Skyline, VA',
-    practiceType: 'CLINIC',
+    name: 'Skyline VA',
+    practiceType: PracticeType.CLINIC,
     phone: '7034360204',
-    address1: '5870 Leesburg Pike',
+    address: '5870 Leesburg Pike',
     address2: 'Falls Church, VA',
-    zipCode: '22041'
+    zipCode: '22041',
+    city: 'Skyline',
+    state: "Virginia"
   },
 ]
 
@@ -268,3 +281,82 @@ export const PracticeUsersData = [
   },
 ]
 
+
+export const FacilitiesServices = [
+  {
+    name: "COVID Testing - Asymptomatic",
+    duration: "30"
+  },
+  {
+    name: "COVID Testing - Symptomatic",
+    duration: "30"
+  },
+  {
+    name: "Follow-Up Visit",
+    duration: "30"
+  },
+  {
+    name: "Motor Vehicle Accident",
+    duration: "30"
+  },
+  {
+    name: "New Patient Non-COVID",
+    duration: "30"
+  },
+  {
+    name: "Sick Visit",
+    duration: "30"
+  },
+  {
+    name: "Traveler Non - COVID",
+    duration: "30"
+  },
+  {
+    name: "Worker Compensation",
+    duration: "30"
+  },
+  {
+    name: "Other",
+    duration: "30"
+
+  }
+]
+
+
+export const FacilitiesSchedules = [
+  {
+    day: DAYS.Monday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Tuesday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Wednesday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Thursday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Friday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Saturday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  },
+  {
+    day: DAYS.Sunday,
+    endAt: "2022-08-29T12:00:00+05:00",
+    startAt: "2022-08-29T01:00:00+05:00"
+  }
+]

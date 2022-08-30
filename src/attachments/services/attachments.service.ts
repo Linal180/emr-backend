@@ -24,6 +24,7 @@ import { AttachmentMetaDataService } from './attachmentMetaData.service';
 //helpers
 import { ATTACHMENT_TITLES } from 'src/lib/constants';
 import { DocumentTypesService } from './documentType.service';
+import { CreateAttachmentMetaDataInput } from '../dto/create-attachment-metaData.input';
 
 @Injectable()
 export class AttachmentsService {
@@ -214,6 +215,7 @@ export class AttachmentsService {
         .skip((page - 1) * limit)
         .take(limit)
         .where('attachment.typeId = :typeId', { typeId: typeId })
+        .andWhere('attachment.parentAttachmentId is null')
         .andWhere(attachmentName ? 'attachment.attachmentName ILIKE :attachmentName' : '1=1', { attachmentName: `%${attachmentName}%` })
 
       if (signedBy) {
@@ -493,6 +495,15 @@ export class AttachmentsService {
       status: HttpStatus.NOT_FOUND,
       error: 'Attachment not found',
     });
+  }
+
+  /**
+   * Gets pre signed url
+   * @param key 
+   * @returns  
+   */
+  async getPreSignedUrl(key: string) {
+    return await this.awsService.getFile(key);
   }
 
   /**

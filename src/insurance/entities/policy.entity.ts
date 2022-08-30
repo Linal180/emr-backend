@@ -140,7 +140,7 @@ export class Policy {
   primaryCareProvider?: Doctor
 
   @Column({
-    type: "enum", enum: PricingProductType, default: PricingProductType.AUTOMOBILE_MEDICAL
+    type: "enum", enum: PricingProductType, nullable: true
   })
   @Field(() => PricingProductType, { nullable: true })
   pricingProductType?: PricingProductType

@@ -37,67 +37,71 @@ export class LabTests {
   @Field(type => LabTestStatus)
   labTestStatus: LabTestStatus
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   orderNumber: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   collectedDate: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   receivedDate: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   accessionNumber: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   labName: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   vendorName: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   testDate: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   testTime: string;
 
   @Column("text", { nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   testNotes: string;
 
   @Column("text", { nullable: true })
-  @Field({nullable: true})
+  @Field({ nullable: true })
   providerNotes: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   patientId: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   doctorId: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   primaryProviderId: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   referringProviderId: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   appointmentId: string;
 
-  @ManyToOne(() => Patient, patient => patient.labTests, { onDelete: 'CASCADE' })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  testId: string;
+
+  @ManyToOne(() => Patient, patient => patient.labTests, { onDelete: 'CASCADE', })
   @Field(type => Patient, { nullable: true })
   patient: Patient;
 
@@ -120,9 +124,9 @@ export class LabTests {
   @Field(type => [ICDCodes], { nullable: 'itemsAndList' })
   @ManyToMany(type => ICDCodes, iCDCodes => iCDCodes.labTests, { eager: true })
   @JoinTable({ name: 'LabTestsDiagnoses' })
-  diagnoses: ICDCodes[]; 
+  diagnoses: ICDCodes[];
 
-  @ManyToOne(() => LoincCodes, loincCodes => loincCodes.labTests, { onDelete: 'CASCADE', eager: true  })
+  @ManyToOne(() => LoincCodes, loincCodes => loincCodes.labTests, { onDelete: 'CASCADE', })
   @Field(type => LoincCodes, { nullable: true })
   test: LoincCodes;
 
@@ -133,7 +137,7 @@ export class LabTests {
   @OneToMany(() => Observations, observations => observations.labTest, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [Observations], { nullable: true })
   testObservations: Observations[];
-  
+
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   createdAt: string;

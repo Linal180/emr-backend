@@ -1,22 +1,26 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Facility, PracticeType } from "src/facilities/entities/facility.entity";
-import { Connection, getRepository, QueryRunner } from "typeorm";
+import { Facility } from "src/facilities/entities/facility.entity";
+import { Connection, getRepository } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
-import { createPasswordHash, createToken } from '../../lib/helper';
-import { Permission } from "../entities/permissions.entity";
+//entities
 import { Role } from '../entities/role.entity';
-import { RolePermission } from "../entities/rolePermissions.entity";
 import { User } from '../entities/user.entity';
-import { Practice } from "src/practice/entities/practice.entity";
-import { Contact } from "src/providers/entities/contact.entity";
-import { Staff } from "src/providers/entities/staff.entity";
-import { Doctor } from "src/providers/entities/doctor.entity";
-import { doctorAssistantPermissionsList, doctorPermissionsList, emergencyAccessPermissionsList, facilityAdminPermissionsList, FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList as officeManagerPermissionsList1, patientPermissionsList, PermissionData, permissionDataNew, practiceAdminPermissionsList, practitionerNursePermissionsList, RolesData, staffPermissionsList, UsersData } from './seed-data';
-import { PracticeInfo, FacilitiesData, PracticeAdminInfo, PracticeUsersData } from './practiceSeed-data'
+import { Permission } from "../entities/permissions.entity";
+import { RolePermission } from "../entities/rolePermissions.entity";
+//helper
+import { createPasswordHash } from '../../lib/helper';
+//seed data
+import {
+  doctorAssistantPermissionsList, doctorPermissionsList, emergencyAccessPermissionsList, facilityAdminPermissionsList,
+  FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList as officeManagerPermissionsList1,
+  patientPermissionsList, PermissionData, practiceAdminPermissionsList, practitionerNursePermissionsList,
+  RolesData, staffPermissionsList, UsersData
+} from './seed-data';
+
 
 @Injectable()
 export class CreateUsers implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<void> {
+  public async run(_: Factory, connection: Connection): Promise<void> {
     const queryRunner = connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -220,104 +224,7 @@ export class CreateUsers implements Seeder {
         }
       }
 
-      const practiceAdminRole1 = roles.find((role) => role.role === 'practice-admin')
-      let savedPractice: Practice
-      savedPractice = await getRepository(Practice).findOne({ name: PracticeInfo.name })
-      
-      if (!savedPractice) {
-        const practiceInstance = await getRepository(Practice).create(PracticeInfo)
-        savedPractice = await queryRunner.manager.save(practiceInstance);
-      }
-
-      const savedFacilities = await Promise.all(FacilitiesData.map(async (facilityData) => {
-        const { name, practiceType, address1, ...facilityContactInfo } = facilityData
-        const facilityExist = await getRepository(Facility).findOne({ name })
-        if (facilityExist) {
-          return facilityExist
-        }
-        const facilityInstance = getRepository(Facility).create({ name })
-        facilityInstance.practice = savedPractice
-        facilityInstance.practiceId = savedPractice.id
-
-        const facilityContact = await getRepository(Contact).create({ ...facilityContactInfo, address: address1, primaryContact: true })
-        const contact = await queryRunner.manager.save(facilityContact);
-        facilityInstance.contacts = [contact]
-
-        return await queryRunner.manager.save(facilityInstance);
-      }))
-
-      let savedAdminUser: User
-      savedAdminUser = await getRepository(User).findOne({ email: PracticeAdminInfo.email })
-      if (!savedAdminUser) {
-        const adminUserInstance = await getRepository(User).create({ email: PracticeAdminInfo.email, facility: savedFacilities[0] })
-        adminUserInstance.password = await createPasswordHash('admin123');
-        adminUserInstance.userType = 'practice-admin'
-        savedAdminUser = await queryRunner.manager.save(adminUserInstance)
-        const practiceAdminInstance = await getRepository(Staff).create({ ...PracticeAdminInfo })
-        practiceAdminInstance.user = savedAdminUser
-        practiceAdminInstance.facility = savedFacilities[0]
-        practiceAdminInstance.practice = savedPractice
-        const savedPracticeAdmin = await queryRunner.manager.save(practiceAdminInstance)
-        savedAdminUser.userId = savedPracticeAdmin.id
-        savedAdminUser.roles = [practiceAdminRole1]
-        await queryRunner.manager.save(savedAdminUser)
-      }
-
-      const createdUsers = await Promise.all(await PracticeUsersData.map(async (userData) => {
-        const { email, facility, name, phone, role: userRole, suffix } = userData
-        const [firstName, lastName] = name.split(' ')
-        const existingUser = await getRepository(User).findOne({ email: email })
-        if (existingUser) {
-          return existingUser
-        }
-
-        const userInstance = await getRepository(User).create({ email, phone })
-        const roleInfo = roles.find((role) => role.role === userRole)
-        userInstance.roles = [roleInfo]
-        const token = createToken()
-        userInstance.token = token
-        const facilityInfo = savedFacilities.find((savedFacility) => savedFacility.name === facility)
-        userInstance.facility = facilityInfo
-        userInstance.userType = userRole
-        userInstance.password = await createPasswordHash('admin123');
-        const savedUser = await queryRunner.manager.save(userInstance)
-
-        return queryRunner.manager.save(savedUser)
-      }))
-
       await queryRunner.commitTransaction();
-
-      await Promise.all(await createdUsers.map(async (createdUser) => {
-        const { email, facility, name, phone, role: userRole, suffix } = PracticeUsersData.find((userData) => userData.email === createdUser.email)
-        const [firstName, lastName] = name.split(' ')
-
-        const facilityInfo = savedFacilities.find((savedFacility) => savedFacility.name === facility)
-
-        if (userRole === 'doctor') {
-          const doctorExist = await getRepository(Doctor).findOne({ email })
-          if (!doctorExist) {
-            const doctorInstance = await getRepository(Doctor).create({ email, firstName, lastName, suffix })
-            const doctorContact = await getRepository(Contact).create({ email, phone, primaryContact: true })
-            const contact = await queryRunner.manager.save(doctorContact);
-            doctorInstance.contacts = [contact]
-            doctorInstance.facility = facilityInfo
-            doctorInstance.practiceId = savedPractice.id
-            const savedDoctor = await getRepository(Doctor).save(doctorInstance)
-            createdUser.userId = savedDoctor.id
-          }
-        } else {
-          const staffExist = await getRepository(Staff).findOne({ email })
-          if (!staffExist) {
-            const staffInstance = await getRepository(Staff).create({ firstName, lastName, email, phone })
-            staffInstance.user = createdUser
-            staffInstance.facility = facilityInfo
-            const savedStaff = await getRepository(Staff).save(staffInstance)
-            createdUser.userId = savedStaff.id
-          }
-        }
-      }))
-
-      // await queryRunner.commitTransaction();
     }
     catch (error) {
       await queryRunner.rollbackTransaction();
@@ -339,5 +246,5 @@ export class CreateUsers implements Seeder {
       }
     })
   }
-  
+
 }

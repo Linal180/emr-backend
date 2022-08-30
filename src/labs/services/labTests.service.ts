@@ -1,19 +1,22 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { ProblemService } from 'src/patientCharting/services/patientProblems.service';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
 import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
 import LabTestInput from '../dto/lab-test.input';
-import { LabTestPayload } from '../dto/labTest-payload.dto';
+import { LabResultPayload, LabTestPayload } from '../dto/labTest-payload.dto';
 import { LabTestsPayload } from '../dto/labTests-payload.dto';
-import { RemoveLabTest, UpdateLabTestInput, UpdateLabTestItemInput } from '../dto/update-lab-test.input';
+import { RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input';
 import { LabTests } from '../entities/labTests.entity';
 import { LoincCodesService } from './loincCodes.service';
 import { TestSpecimenService } from './testSpecimen.service';
@@ -29,6 +32,7 @@ export class LabTestsService {
     private readonly loincCodesService: LoincCodesService,
     private readonly patientService: PatientService,
     private readonly doctorService: DoctorService,
+    private readonly facilityService: FacilityService,
     private readonly testSpecimenService: TestSpecimenService,
     private readonly appointmentService: AppointmentService
   ) { }
@@ -127,12 +131,40 @@ export class LabTestsService {
 
   async findAllLabTest(labTestInput: LabTestInput): Promise<LabTestsPayload> {
     try {
-      const paginationResponse = await this.paginationService.willPaginate<LabTests>(this.labTestsRepository, labTestInput)
+      const { paginationOptions, orderNumber, patientId, labTestStatus, practiceId, receivedDate, shouldFetchReceived, shouldFetchPending } = labTestInput
+      const { limit, page } = paginationOptions
+      const labTestsQuery = getConnection()
+        .getRepository(LabTests)
+        .createQueryBuilder('labTests')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .andWhere(patientId ? 'labTests.patientId = :patientId' : '1=1', { patientId: patientId })
+        .andWhere(orderNumber ? 'labTests.orderNumber ILIKE :orderNumber' : '1=1', { orderNumber: `%${orderNumber}%` })
+        .andWhere(labTestStatus ? 'labTests.labTestStatus = :labTestStatus' : '1=1', { labTestStatus: labTestStatus })
+        .andWhere(shouldFetchReceived ? 'labTests.receivedDate is not null' : '1=1')
+        .andWhere(shouldFetchPending ? 'labTests.receivedDate is null' : '1=1')
+        .andWhere(receivedDate ? 'labTests.receivedDate = :receivedDate' : '1=1', { receivedDate: moment(receivedDate).format('MM-DD-YYYY') })
+
+      if (practiceId) {
+        labTestsQuery.
+          innerJoin(Patient, 'labTestPatient', `labTests.patientId = "labTestPatient"."id"`)
+          .andWhere('labTestPatient.practiceId = :practiceId', { practiceId: practiceId })
+      }
+
+      const [labTests, totalCount] = await labTestsQuery
+        .orderBy('labTests.createdAt', 'DESC')
+        .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
+
       return {
         pagination: {
-          ...paginationResponse
+          totalCount,
+          page,
+          limit,
+          totalPages,
         },
-        labTests: paginationResponse.data,
+        labTests
       }
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -195,6 +227,21 @@ export class LabTestsService {
     }
   }
 
+  async findLabTestByTestAndOrderNo(orderNum: string, testName: string): Promise<LabTests> {
+    const labTest = await this.labTestsRepository.findOne({
+      relations: ['test', 'testObservations'],
+      where: {
+        orderNumber: orderNum,
+        test: {
+          component: testName
+        }
+      }
+    });
+    if (labTest) {
+      return labTest
+    }
+  }
+
   async removeLabTest({ id }: RemoveLabTest) {
     try {
       const labTest = await this.findOne(id)
@@ -239,5 +286,24 @@ export class LabTestsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async findLabResultInfo(orderNumber): Promise<LabResultPayload> {
+    const labTests = await this.labTestsRepository.find({ orderNumber })
+    const { patientId, primaryProviderId } = labTests?.[0] || {}
+    const doctor = await this.doctorService.findOne(primaryProviderId)
+    const patientInfo = await this.patientService.findOne(patientId)
+    const facilityInfo = await this.facilityService.findOne(patientInfo.facilityId)
+
+    return {
+      patientInfo,
+      facilityInfo,
+      doctor,
+      labTests
+    }
+  }
+
+  async find() {
+    return this.labTestsRepository.find()
   }
 }

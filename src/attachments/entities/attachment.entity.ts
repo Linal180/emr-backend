@@ -50,13 +50,23 @@ export class Attachment {
   @Field({ nullable: true })
   url: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  parentAttachmentId: string;
+
   @Field(() => AttachmentMetadata, { nullable: true, })
-  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete:'CASCADE', onUpdate:'CASCADE' })
+  @OneToOne(() => AttachmentMetadata, (attachmentMetadata) => attachmentMetadata.attachment, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn()
   attachmentMetadata: AttachmentMetadata;
 
   @Field({ nullable: true })
   attachmentMetadataId: string;
+
+  @Field(() => Attachment, { nullable: true })
+  childAttachment: Attachment
+
+  @Field({ nullable: true })
+  preSignedUrl: string
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

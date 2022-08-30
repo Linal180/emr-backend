@@ -22,3 +22,12 @@ export class InsurancesPayload {
   @Field(() => Response, { nullable: true })
   response?: Response
 }
+
+@ObjectType()
+export class InsurancePayload {
+  @Field(() => Insurance, { nullable: true })
+  insurance: Insurance;
+
+  @Field(() => Response, { nullable: true })
+  response?: Response
+}

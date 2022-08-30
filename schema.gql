@@ -53,58 +53,444 @@ type Role {
   updatedAt: String
 }
 
-type DocumentType {
+type PatientVitals {
   id: String!
-  type: String
-  attachments: [AttachmentMetadata!]
-  practice: Practice
-  practiceId: String
-  createdAt: String!
-  updatedAt: String!
+  unitType: UnitType!
+  weightUnit: WeightType!
+  headCircumference: HeadCircumferenceType!
+  temperatureUnitType: TempUnitType!
+  smokingStatus: SmokingStatus!
+  patientTemperature: String
+  systolicBloodPressure: String
+  diastolicBloodPressure: String
+  respiratoryRate: String
+  oxygenSaturation: String
+  PatientHeight: String
+  PatientWeight: String
+  PatientBMI: String
+  PainRange: String
+  pulseRate: String
+  patientHeadCircumference: String
+  vitalCreationDate: String
+  patientId: String
+  appointmentId: String
+  appointment: Appointment
+  patient: Patient
+  addedBy: Staff
+  createdAt: String
+  updatedAt: String
 }
 
-type AttachmentMetadata {
+"""The patient's vital unit type assigned"""
+enum UnitType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's weight unit type assigned"""
+enum WeightType {
+  POUND
+  KG
+  POUND_OUNCE
+}
+
+"""The patient's head circumference unit type assigned"""
+enum HeadCircumferenceType {
+  INCH
+  CENTIMETER
+}
+
+"""The patient's temperature unit type assigned"""
+enum TempUnitType {
+  DEG_F
+  DEG_C
+}
+
+"""The patient's smoking status type assigned"""
+enum SmokingStatus {
+  NEVER_SMOKED
+  CURRENT_EVERYDAY_SMOKER
+  CURRENT_SOMEDAY_SMOKER
+  FORMER_SMOKER
+  SMOKER_CURRENT_STATUS_UNKNOWN
+  UNKNOWN_IF_EVER_SMOKED
+}
+
+type Observations {
   id: String!
-  documentType: DocumentType
-  documentTypeId: String
-  labOrderNum: String
-  policyId: String
-  agreementId: String
-  assignedTo: String
-  providerName: String
-  signedBy: String
-  signedAt: String
+  doctorsSignOff: Boolean
+  resultValue: String
+  resultUnit: String
+  normalRange: String
+  normalRangeUnit: String
+  abnormalFlag: AbnormalFlag!
+  description: String
+  labTestId: String
+  attachments: [Attachment!]
+  loincCodes: LoincCodes
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+"""The test result's abnormal flag status assigned"""
+enum AbnormalFlag {
+  NONE
+  BELOW_LOW_NORMAL
+  ABOVE_HIGH_NORMAL
+  BELOW_LOWER_PANIC_LIMIT
+  BELOW_UPPER_PANIC_LIMIT
+  BELOW_ABSOLUTE_LOW_OFF_SCALE
+  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
+  NORMAL
+  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
+  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
+  SIGNIFICANT_CHANGE_UP
+  SIGNIFICANT_CHANGE_DOWN
+  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
+  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
+  SUSCEPTIBLE
+  RESISTANT
+  INTERMEDIATE
+  MODERATELY
+  VERY_SUSCEPTIBLE
+}
+
+type LoincCodes {
+  id: String!
+  loincNum: String
+  component: String
+  property: String
+  timeAspect: String
+  system: String
+  scaleTyp: String
+  methodTyp: String
+  class: String
+  versionLastChanged: String
+  chngType: String
+  definitionDescription: String
+  status: String
+  consumerName: String
+  classType: String
+  formula: String
+  exmplAnswers: String
+  surveyQuestTest: String
+  surveyQuestSRC: String
+  unitsRequired: String
+  submittedUnits: String
+  relatedNames2: String
+  shortName: String
+  orderObs: String
+  cdiscCommonTests: String
+  hl7FieldSubFieldId: String
+  externalCopyRightNotice: String
+  exampleUnits: String
+  longCommonName: String
+  unitsAndRange: String
+  exampleUcumUnits: String
+  exampleSiUcumUnits: String
+  statusReason: String
+  statusText: String
+  changeReasonPublic: String
+  commonTestRank: String
+  commonOrderRank: String
+  commonSiTestRank: String
+  hl7AttachmentStructure: String
+  externalCopyRightLink: String
+  panelType: String
+  askAtOrderEntry: String
+  associationObservations: String
+  versionFirstRelease: String
+  validHl7AttachmentRequest: String
+  displayName: String
+  labTests: [LabTests!]
+  observations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+type SpecimenTypes {
+  id: String!
+  name: String
+  testSpecimens: [TestSpecimens!]
+  createdAt: String
+  updatedAt: String
+}
+
+type TestSpecimens {
+  id: String!
+  collectionDate: String
+  collectionTime: String
+  specimenNotes: String
+  labTestId: String
+  specimenTypes: SpecimenTypes
+  specimenTypesId: String
+  labTest: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+type LabTests {
+  id: String!
+  labTestStatus: LabTestStatus!
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  providerNotes: String
+  patientId: String
+  doctorId: String
+  primaryProviderId: String
+  referringProviderId: String
+  appointmentId: String
+  testId: String
+  patient: Patient
+  doctor: Doctor
+  primaryProvider: Doctor
+  referringProvider: Doctor
+  appointment: Appointment
+  diagnoses: [ICDCodes]
+  test: LoincCodes
+  testSpecimens: [TestSpecimens!]
+  testObservations: [Observations!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The lab's test status assigned"""
+enum LabTestStatus {
+  ORDER_ENTERED
+  DISCONTINUED
+  IN_PROGRESS
+  RESULT_RECEIVED
+  RESULT_REVIEWED_WITH_PATIENT
+}
+
+type ICDCodes {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
+}
+
+type SnoMedCodes {
+  id: String!
+  recordId: String
+  effectiveTime: String
+  active: String
+  moduleId: String
+  refsetId: String
+  referencedComponentId: String
+  mapGroup: String
+  mapPriority: String
+  mapRule: String
+  mapAdvice: String
+  mapTarget: String
+  correlationId: String
+  mapCategoryId: String
+  patientProblem: [PatientProblems!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientProblems {
+  id: String!
+  problemType: ProblemType!
+  problemSeverity: ProblemSeverity!
+  problemStartDate: String
+  note: String
+  patientId: String
+  ICDCode: ICDCodes
+  patient: Patient
+  doctor: Doctor
+  staff: Staff
+  appointment: Appointment
+  snowMedCode: SnoMedCodes
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's problem type assigned"""
+enum ProblemType {
+  ACTIVE
+  HISTORIC
+}
+
+"""The patient's problem severity type assigned"""
+enum ProblemSeverity {
+  CHRONIC
+  ACUTE
+}
+
+type Allergies {
+  id: String!
+  name: String
+  allergyType: AllergyType!
+  drugAllergyTypes: String
+  patientAllergies: [PatientAllergies!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The patient's allergy type assigned"""
+enum AllergyType {
+  DRUG
+  FOOD
+  ENVIRONMENT
+}
+
+type Reactions {
+  id: String!
+  name: String!
+  patientAllergies: PatientAllergies
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientAllergies {
+  id: String!
+  allergySeverity: AllergySeverity!
+  allergyOnset: AllergyOnset!
+  allergyStartDate: String
   comments: String
-  documentDate: String
-  attachment: Attachment
-  attachmentId: String
-  createdAt: String!
-  updatedAt: String!
+  isActive: Boolean
+  staffId: String
+  patientId: String
+  appointmentId: String
+  doctorId: String
+  allergy: Allergies
+  patient: Patient
+  doctor: Doctor
+  staff: Staff
+  appointment: Appointment
+  reactions: [Reactions]
+  createdAt: String
+  updatedAt: String
 }
 
-type Attachment {
+"""The patient's allergy severity type assigned"""
+enum AllergySeverity {
+  MILD
+  ACUTE
+  MODERATE
+  VERY_MILD
+}
+
+"""The patient's allergy onset type assigned"""
+enum AllergyOnset {
+  CHILDHOOD
+  ADULTHOOD
+  UNKNOWN
+}
+
+type Staff {
   id: String!
-  type: AttachmentType!
-  typeId: String!
-  title: String
-  key: String
-  attachmentName: String
-  url: String
-  attachmentMetadata: AttachmentMetadata
-  attachmentMetadataId: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  username: String
+  dob: String
+  phone: String
+  facilityId: String
+  mobile: String
+  practiceId: String
+  gender: Gender!
+  user: User
+  facility: Facility
+  practice: Practice
+  patientProblem: [PatientProblems!]
+  patientAllergies: [PatientAllergies!]
+  patientVitals: PatientVitals
   createdAt: String!
   updatedAt: String!
+  attachments: [Attachment!]
 }
 
-"""The type is assigned"""
-enum AttachmentType {
-  PATIENT
-  DOCTOR
-  lab
-  FORM_BUILDER
-  SUPER_ADMIN
-  STAFF
-  PRACTICE
+"""The user gender assigned"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type Taxonomy {
+  id: String!
+  code: String!
+  classification: String!
+  specialization: String
+  definition: String!
+  notes: String
+  displayName: String
+  section: String
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientConsent {
+  id: String!
+  body: String
+  attachmentId: String
+  appointmentId: String
+  patientId: String
+  createdAt: String!
+  updatedAt: String!
+  patient: Patient
+  appointment: Appointment
+  agreements: [Agreement!]
+  signature: Attachment
+}
+
+type Agreement {
+  id: String!
+  title: String
+  body: String
+  signatureRequired: Boolean
+  viewAgreementBeforeAgreeing: Boolean
+  patientConsentId: String
+  practiceId: String
+  facilityId: String
+  createdAt: String
+  updatedAt: String
+  patientConsent: PatientConsent
+  facility: Facility
+  practice: Practice
+}
+
+type CPTCodes {
+  id: String!
+  code: String
+  category: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  cptFeeSchedule: [CptFeeSchedule!]
+  createdAt: String
+  updatedAt: String
+}
+
+type CptFeeSchedule {
+  id: String!
+  modifier: String
+  code: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  feeScheduleId: String
+  cptCodesId: String
+  createdAt: String
+  updatedAt: String
+  feeSchedule: FeeSchedule
+  cptCodes: CPTCodes
 }
 
 type Modifier {
@@ -153,49 +539,6 @@ type ClaimStatus {
   billings: [Billing!]
   createdAt: String
   updatedAt: String
-}
-
-type CPTCodes {
-  id: String!
-  code: String
-  category: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  cptFeeSchedule: [CptFeeSchedule!]
-  createdAt: String
-  updatedAt: String
-}
-
-type CptFeeSchedule {
-  id: String!
-  modifier: String
-  code: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  serviceFee: String
-  revenueCode: String
-  feeScheduleId: String
-  cptCodesId: String
-  createdAt: String
-  updatedAt: String
-  feeSchedule: FeeSchedule
-  cptCodes: CPTCodes
-}
-
-type FeeSchedule {
-  id: String!
-  name: String
-  effectiveDate: String
-  expiryDate: String
-  practiceId: String
-  createdAt: String
-  updatedAt: String
-  practice: Practice
-  billing: [Billing!]
-  cptFeeSchedule: [CptFeeSchedule!]
-  cptFeeScheduleCount: Float
 }
 
 type Copay {
@@ -841,230 +1184,101 @@ enum OtherDateType {
   LAST_RELATED_VISIT
 }
 
-type Taxonomy {
-  id: String!
-  code: String!
-  classification: String!
-  specialization: String
-  definition: String!
-  notes: String
-  displayName: String
-  section: String
-  createdAt: String
-  updatedAt: String
-}
-
-type SnoMedCodes {
-  id: String!
-  recordId: String
-  effectiveTime: String
-  active: String
-  moduleId: String
-  refsetId: String
-  referencedComponentId: String
-  mapGroup: String
-  mapPriority: String
-  mapRule: String
-  mapAdvice: String
-  mapTarget: String
-  correlationId: String
-  mapCategoryId: String
-  patientProblem: [PatientProblems!]
-  createdAt: String
-  updatedAt: String
-}
-
-type PatientProblems {
-  id: String!
-  problemType: ProblemType!
-  problemSeverity: ProblemSeverity!
-  problemStartDate: String
-  note: String
-  patientId: String
-  ICDCode: ICDCodes
-  patient: Patient
-  doctor: Doctor
-  staff: Staff
-  appointment: Appointment
-  snowMedCode: SnoMedCodes
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient's problem type assigned"""
-enum ProblemType {
-  ACTIVE
-  HISTORIC
-}
-
-"""The patient's problem severity type assigned"""
-enum ProblemSeverity {
-  CHRONIC
-  ACUTE
-}
-
-type ICDCodes {
-  id: String!
-  code: String!
-  description: String
-  version: String
-  labTests: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-type Observations {
-  id: String!
-  doctorsSignOff: Boolean
-  resultValue: String
-  resultUnit: String
-  normalRange: String
-  normalRangeUnit: String
-  abnormalFlag: AbnormalFlag!
-  description: String
-  labTestId: String
-  attachments: [Attachment!]
-  loincCodes: LoincCodes
-  labTest: LabTests
-  createdAt: String
-  updatedAt: String
-}
-
-"""The test result's abnormal flag status assigned"""
-enum AbnormalFlag {
-  NONE
-  BELOW_LOW_NORMAL
-  ABOVE_HIGH_NORMAL
-  BELOW_LOWER_PANIC_LIMIT
-  BELOW_UPPER_PANIC_LIMIT
-  BELOW_ABSOLUTE_LOW_OFF_SCALE
-  ABOVE_ABSOLUTE_HIGH_OFF_SCALE
-  NORMAL
-  ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS
-  VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC
-  SIGNIFICANT_CHANGE_UP
-  SIGNIFICANT_CHANGE_DOWN
-  BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT
-  WORST_USE_WHEN_DIRECTION_NOT_RELEVANT
-  SUSCEPTIBLE
-  RESISTANT
-  INTERMEDIATE
-  MODERATELY
-  VERY_SUSCEPTIBLE
-}
-
-type LoincCodes {
-  id: String!
-  loincNum: String
-  component: String
-  property: String
-  timeAspect: String
-  system: String
-  scaleTyp: String
-  methodTyp: String
-  class: String
-  versionLastChanged: String
-  chngType: String
-  definitionDescription: String
-  status: String
-  consumerName: String
-  classType: String
-  formula: String
-  exmplAnswers: String
-  surveyQuestTest: String
-  surveyQuestSRC: String
-  unitsRequired: String
-  submittedUnits: String
-  relatedNames2: String
-  shortName: String
-  orderObs: String
-  cdiscCommonTests: String
-  hl7FieldSubFieldId: String
-  externalCopyRightNotice: String
-  exampleUnits: String
-  longCommonName: String
-  unitsAndRange: String
-  exampleUcumUnits: String
-  exampleSiUcumUnits: String
-  statusReason: String
-  statusText: String
-  changeReasonPublic: String
-  commonTestRank: String
-  commonOrderRank: String
-  commonSiTestRank: String
-  hl7AttachmentStructure: String
-  externalCopyRightLink: String
-  panelType: String
-  askAtOrderEntry: String
-  associationObservations: String
-  versionFirstRelease: String
-  validHl7AttachmentRequest: String
-  displayName: String
-  labTests: [LabTests!]
-  observations: [Observations!]
-  createdAt: String
-  updatedAt: String
-}
-
-type SpecimenTypes {
+type FeeSchedule {
   id: String!
   name: String
-  testSpecimens: [TestSpecimens!]
+  effectiveDate: String
+  expiryDate: String
+  practiceId: String
   createdAt: String
   updatedAt: String
+  practice: Practice
+  billing: [Billing!]
+  cptFeeSchedule: [CptFeeSchedule!]
+  cptFeeScheduleCount: Float
 }
 
-type TestSpecimens {
+type Practice {
   id: String!
-  collectionDate: String
-  collectionTime: String
-  specimenNotes: String
-  labTestId: String
-  specimenTypes: SpecimenTypes
-  specimenTypesId: String
-  labTest: LabTests
+  name: String!
+  phone: String
+  fax: String
+  taxId: String
+  npi: String
+  practiceId: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  taxonomyCodeId: String
+  taxonomyCode: Taxonomy
+  active: Boolean
+  facilities: [Facility!]
+  agreements: [Agreement!]
+  documentTypes: [DocumentType!]
+  staff: [Staff!]
+  feeSchedules: [FeeSchedule!]
+  attachments: [Attachment!]
   createdAt: String
   updatedAt: String
 }
 
-type LabTests {
+type DocumentType {
   id: String!
-  labTestStatus: LabTestStatus!
-  orderNumber: String
-  collectedDate: String
-  receivedDate: String
-  accessionNumber: String
-  labName: String
-  vendorName: String
-  testDate: String
-  testTime: String
-  testNotes: String
-  providerNotes: String
-  patientId: String
-  doctorId: String
-  primaryProviderId: String
-  referringProviderId: String
-  appointmentId: String
-  patient: Patient
-  doctor: Doctor
-  primaryProvider: Doctor
-  referringProvider: Doctor
-  appointment: Appointment
-  diagnoses: [ICDCodes]
-  test: LoincCodes
-  testSpecimens: [TestSpecimens!]
-  testObservations: [Observations!]
-  createdAt: String
-  updatedAt: String
+  type: String
+  attachments: [AttachmentMetadata!]
+  practice: Practice
+  practiceId: String
+  createdAt: String!
+  updatedAt: String!
 }
 
-"""The lab's test status assigned"""
-enum LabTestStatus {
-  ORDER_ENTERED
-  DISCONTINUED
-  IN_PROGRESS
-  RESULT_RECEIVED
-  RESULT_REVIEWED_WITH_PATIENT
+type AttachmentMetadata {
+  id: String!
+  documentType: DocumentType
+  documentTypeId: String
+  labOrderNum: String
+  policyId: String
+  agreementId: String
+  assignedTo: String
+  providerName: String
+  signedBy: String
+  signedAt: String
+  comments: String
+  documentDate: String
+  attachment: Attachment
+  attachmentId: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Attachment {
+  id: String!
+  type: AttachmentType!
+  typeId: String!
+  title: String
+  key: String
+  attachmentName: String
+  url: String
+  parentAttachmentId: String
+  attachmentMetadata: AttachmentMetadata
+  attachmentMetadataId: String
+  childAttachment: Attachment
+  preSignedUrl: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""The type is assigned"""
+enum AttachmentType {
+  PATIENT
+  DOCTOR
+  lab
+  FORM_BUILDER
+  SUPER_ADMIN
+  STAFF
+  PRACTICE
 }
 
 type DoctorPatient {
@@ -1166,6 +1380,35 @@ type BillingAddress {
   createdAt: String!
   updatedAt: String!
 }
+
+type ScheduleServices {
+  id: String!
+  serviceId: String
+  scheduleId: String
+  service: Service
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Schedule {
+  id: String!
+  startAt: String!
+  endAt: String!
+  day: String
+  recurringEndDate: DateTime
+  doctorId: String
+  facilityId: String
+  doctor: Doctor
+  facility: Facility
+  scheduleServices: [ScheduleServices!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Doctor {
   id: String!
@@ -1291,138 +1534,11 @@ enum Speciality {
   Unknown_Physician_Specialty_99
 }
 
-type Schedule {
-  id: String!
-  startAt: String!
-  endAt: String!
-  day: String
-  recurringEndDate: DateTime
-  doctorId: String
-  facilityId: String
-  doctor: Doctor
-  facility: Facility
-  scheduleServices: [ScheduleServices!]
-  createdAt: String!
-  updatedAt: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type ScheduleServices {
-  id: String!
-  serviceId: String
-  scheduleId: String
-  service: Service
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Service {
-  id: String!
-  name: String!
-  serviceType: ServiceType!
-  duration: String!
-  color: String
-  price: String!
-  isActive: Boolean
-  facilityId: String
-  facility: Facility
-  scheduleServices: [ScheduleServices!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The service type assigned type"""
-enum ServiceType {
-  INTERNAL
-  EXTERNAL
-}
-
-type PatientVitals {
-  id: String!
-  unitType: UnitType!
-  weightUnit: WeightType!
-  headCircumference: HeadCircumferenceType!
-  temperatureUnitType: TempUnitType!
-  smokingStatus: SmokingStatus!
-  patientTemperature: String
-  systolicBloodPressure: String
-  diastolicBloodPressure: String
-  respiratoryRate: String
-  oxygenSaturation: String
-  PatientHeight: String
-  PatientWeight: String
-  PatientBMI: String
-  PainRange: String
-  pulseRate: String
-  patientHeadCircumference: String
-  vitalCreationDate: String
-  patientId: String
-  appointmentId: String
-  appointment: Appointment
-  patient: Patient
-  addedBy: Staff
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient's vital unit type assigned"""
-enum UnitType {
-  INCH
-  CENTIMETER
-}
-
-"""The patient's weight unit type assigned"""
-enum WeightType {
-  POUND
-  KG
-  POUND_OUNCE
-}
-
-"""The patient's head circumference unit type assigned"""
-enum HeadCircumferenceType {
-  INCH
-  CENTIMETER
-}
-
-"""The patient's temperature unit type assigned"""
-enum TempUnitType {
-  DEG_F
-  DEG_C
-}
-
-"""The patient's smoking status type assigned"""
-enum SmokingStatus {
-  NEVER_SMOKED
-  CURRENT_EVERYDAY_SMOKER
-  CURRENT_SOMEDAY_SMOKER
-  FORMER_SMOKER
-  SMOKER_CURRENT_STATUS_UNKNOWN
-  UNKNOWN_IF_EVER_SMOKED
-}
-
 type Contract {
   id: String!
   contractNumber: String
   organizationName: String
   appointment: Appointment
-}
-
-type PatientConsent {
-  id: String!
-  body: String
-  attachmentId: String
-  appointmentId: String
-  patientId: String
-  createdAt: String!
-  updatedAt: String!
-  patient: Patient
-  appointment: Appointment
-  agreements: [Agreement!]
-  signature: Attachment
 }
 
 type Appointment {
@@ -1508,137 +1624,25 @@ enum AppointmentCreateType {
   TELEHEALTH
 }
 
-type Allergies {
-  id: String!
-  name: String
-  allergyType: AllergyType!
-  drugAllergyTypes: String
-  patientAllergies: [PatientAllergies!]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient's allergy type assigned"""
-enum AllergyType {
-  DRUG
-  FOOD
-  ENVIRONMENT
-}
-
-type Reactions {
+type Service {
   id: String!
   name: String!
-  patientAllergies: PatientAllergies
-  createdAt: String
-  updatedAt: String
-}
-
-type PatientAllergies {
-  id: String!
-  allergySeverity: AllergySeverity!
-  allergyOnset: AllergyOnset!
-  allergyStartDate: String
-  comments: String
+  serviceType: ServiceType!
+  duration: String!
+  color: String
+  price: String!
   isActive: Boolean
-  staffId: String
-  patientId: String
-  appointmentId: String
-  doctorId: String
-  allergy: Allergies
-  patient: Patient
-  doctor: Doctor
-  staff: Staff
-  appointment: Appointment
-  reactions: [Reactions]
-  createdAt: String
-  updatedAt: String
-}
-
-"""The patient's allergy severity type assigned"""
-enum AllergySeverity {
-  MILD
-  ACUTE
-  MODERATE
-  VERY_MILD
-}
-
-"""The patient's allergy onset type assigned"""
-enum AllergyOnset {
-  CHILDHOOD
-  ADULTHOOD
-  UNKNOWN
-}
-
-type Staff {
-  id: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-  username: String
-  dob: String
-  phone: String
   facilityId: String
-  mobile: String
-  practiceId: String
-  gender: Gender!
-  user: User
   facility: Facility
-  practice: Practice
-  patientProblem: [PatientProblems!]
-  patientAllergies: [PatientAllergies!]
-  patientVitals: PatientVitals
-  createdAt: String!
-  updatedAt: String!
-  attachments: [Attachment!]
-}
-
-"""The user gender assigned"""
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-}
-
-type Practice {
-  id: String!
-  name: String!
-  phone: String
-  fax: String
-  taxId: String
-  npi: String
-  practiceId: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  taxonomyCodeId: String
-  taxonomyCode: Taxonomy
-  active: Boolean
-  facilities: [Facility!]
-  agreements: [Agreement!]
-  documentTypes: [DocumentType!]
-  staff: [Staff!]
-  feeSchedules: [FeeSchedule!]
-  attachments: [Attachment!]
+  scheduleServices: [ScheduleServices!]
   createdAt: String
   updatedAt: String
 }
 
-type Agreement {
-  id: String!
-  title: String
-  body: String
-  signatureRequired: Boolean
-  viewAgreementBeforeAgreeing: Boolean
-  patientConsentId: String
-  practiceId: String
-  facilityId: String
-  createdAt: String
-  updatedAt: String
-  patientConsent: PatientConsent
-  facility: Facility
-  practice: Practice
+"""The service type assigned type"""
+enum ServiceType {
+  INTERNAL
+  EXTERNAL
 }
 
 type Facility {
@@ -2397,11 +2401,13 @@ type AttachmentWithPreSignedUrl {
   key: String
   attachmentName: String
   url: String
+  parentAttachmentId: String
   attachmentMetadata: AttachmentMetadata
   attachmentMetadataId: String
+  childAttachment: Attachment
+  preSignedUrl: String
   createdAt: String!
   updatedAt: String!
-  preSignedUrl: String
 }
 
 type AttachmentsPayload {
@@ -2511,6 +2517,14 @@ type LabTestPayload {
   labTest: LabTests
 }
 
+type LabResultPayload {
+  response: ResponsePayload
+  patientInfo: Patient
+  facilityInfo: Facility
+  doctor: Doctor
+  labTests: [LabTests!]
+}
+
 type LabTestsPayload {
   response: ResponsePayload
   labTests: [LabTests]
@@ -2542,6 +2556,11 @@ type Response {
 type InsurancesPayload {
   insurances: [Insurance!]!
   pagination: PaginationPayload
+  response: Response
+}
+
+type InsurancePayload {
+  insurance: Insurance
   response: Response
 }
 
@@ -2818,6 +2837,7 @@ type Query {
   getLabTest(getLabTest: GetLabTest!): LabTestPayload!
   findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput!): LabTestsPayload!
   findAllLabTest(labTestInput: LabTestInput!): LabTestsPayload!
+  findLabResultInfo(orderNumber: String!): LabResultPayload!
   findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
   getSpecimenTypeByName(name: String!): SpecimenTypes!
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
@@ -2911,6 +2931,7 @@ type Query {
   findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
+  getInsurance(getInsuranceInput: GetInsuranceInput!): InsurancePayload!
   fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
   fetchPolicy(id: String!): PolicyPayload!
   fetchPatientInsurances(id: String!): PoliciesPayload!
@@ -2958,7 +2979,11 @@ input LabTestByOrderNumInput {
 
 input LabTestInput {
   patientId: String
+  practiceId: String
+  receivedDate: String
   orderNumber: String
+  shouldFetchReceived: Boolean = false
+  shouldFetchPending: Boolean = false
   labTestStatus: String
   paginationOptions: PaginationInput!
 }
@@ -3393,6 +3418,10 @@ input InsurancePaginationInput {
   paginationOptions: PaginationInput!
 }
 
+input GetInsuranceInput {
+  id: String
+}
+
 input PolicyPaginationInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -3471,6 +3500,7 @@ type Mutation {
   removeLabTest(removeLabTest: RemoveLabTest!): LabTestPayload!
   createLabTestObservation(createLabTestObservationInput: CreateLabTestObservationInput!): LabTestObservationPayload!
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
+  syncLabResults(updateObservationInput: UpdateObservationInput!): LabTestObservationPayload!
   removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
@@ -3706,6 +3736,16 @@ input UpdateLabTestObservationItemInput {
   abnormalFlag: AbnormalFlag
   description: String
   id: String!
+}
+
+input UpdateObservationInput {
+  UpdateObservationItemInput: [UpdateObservationItemInput!]
+}
+
+input UpdateObservationItemInput {
+  orderNumber: String
+  testName: String
+  result: String
 }
 
 input RemoveLabTestObservation {
@@ -4513,6 +4553,7 @@ input CreateAttachmentInput {
   practiceId: String
   documentDate: String
   agreementId: String
+  parentAttachmentId: String
 }
 
 input RemoveAttachment {
@@ -4539,6 +4580,7 @@ input UpdateAttachmentInput {
   practiceId: String
   documentDate: String
   agreementId: String
+  parentAttachmentId: String
   id: String
 }
 

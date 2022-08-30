@@ -62,8 +62,13 @@ export class AppointmentService {
     await queryRunner.startTransaction();
     try {
       //fetch already exiting appointment
-      const appointmentNumber = await this.utilsService.generateString(8)
-      const appointmentObj = await this.findAppointment(createAppointmentInput.providerId, createAppointmentInput.patientId)
+      const appointmentNumber = await this.utilsService.generateString(8);
+      let appointmentObj: Appointment | null = null;
+      
+      if (createAppointmentInput?.providerId && createAppointmentInput.patientId) {
+        appointmentObj = await this.findAppointment(createAppointmentInput.providerId, createAppointmentInput.patientId)
+      }
+
       if (!appointmentObj) {
         //creating appointment
         const token = createToken();
@@ -247,7 +252,7 @@ export class AppointmentService {
       const { patient, facility, provider } = appointmentInfo || {}
       const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
       const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
-      const slotStartTime= moment(appointmentInfo.scheduleStartDateTime).format('MM-DD-YYYY HH:mm:ss a')
+      const slotStartTime = moment(appointmentInfo.scheduleStartDateTime).format('MM-DD-YYYY hh:mm:ss A')
 
       let messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} at ${facility.name} facility`
 
@@ -466,7 +471,7 @@ export class AppointmentService {
    * @param patientId 
    * @returns  
    */
-  async findAppointment(providerId: string, patientId: string) {
+  async findAppointment(providerId: string, patientId: string): Promise<Appointment> {
     return await this.appointmentRepository.findOne({
       where: [
         { patientId: patientId, providerId: providerId, status: AppointmentStatus.SCHEDULED }
