@@ -9,7 +9,7 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
-import { getConnection, Repository } from 'typeorm';
+import { FindOptionsUtils, getConnection, Repository } from 'typeorm';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
 import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
@@ -133,9 +133,11 @@ export class LabTestsService {
     try {
       const { paginationOptions, orderNumber, patientId, labTestStatus, practiceId, receivedDate, shouldFetchReceived, shouldFetchPending } = labTestInput
       const { limit, page } = paginationOptions
+
       const labTestsQuery = getConnection()
         .getRepository(LabTests)
         .createQueryBuilder('labTests')
+        .leftJoinAndSelect('labTests.diagnoses', 'diagnoses')
         .skip((page - 1) * limit)
         .take(limit)
         .andWhere(patientId ? 'labTests.patientId = :patientId' : '1=1', { patientId: patientId })
