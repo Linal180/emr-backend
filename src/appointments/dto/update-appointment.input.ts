@@ -43,8 +43,12 @@ export class UpdateAppointmentBillingStatusInput {
   @Field()
   id: string;
 
-  @Field({ nullable: false })
+  @Field(() => BillingStatus, { nullable: false })
   billingStatus: BillingStatus
+
+
+  @Field({ nullable: true })
+  cardLast4Digits?: string
 }
 
 
