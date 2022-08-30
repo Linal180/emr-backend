@@ -252,7 +252,8 @@ export class AppointmentService {
       const { patient, facility, provider } = appointmentInfo || {}
       const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
       const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
-      const slotStartTime = moment(appointmentInfo.scheduleStartDateTime).format('MM-DD-YYYY hh:mm:ss A')
+      const utcDate = moment.utc(appointmentInfo.scheduleStartDateTime).toDate();
+      const slotStartTime = moment(utcDate).format('MM-DD-YYYY hh:mm:ss A')
 
       let messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} at ${facility.name} facility`
 
