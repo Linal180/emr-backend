@@ -2,9 +2,10 @@ import { PracticeType, ServiceCode } from '../../facilities/entities/facility.en
 import { UserStatus } from '../entities/user.entity';
 
 export const FacilityData = [
-    { name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232", 
-    cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332",
-    tamxonomyCode: "2322332", serviceCode: ServiceCode.Emergency_Room_Hospital_23 
+    {
+        name: "Private Facility", practiceType: PracticeType.HOSPITAL, code: "+02923", mammographyCertificationNumber: "232232",
+        cliaIdNumber: "023292", federalTaxId: "232232322", isPrivate: true, revenueCode: "323343433", npi: "232332",
+        tamxonomyCode: "2322332", serviceCode: ServiceCode.Emergency_Room_Hospital_23
     }
 ];
 
@@ -218,7 +219,7 @@ export const practiceAdminPermissionsList = ['fetchAllUsers', 'fetchUser', 'getU
     'updatePractice', 'getPractice', 'createDoctor', 'updateDoctor', 'findAllDoctor', 'getDoctor', 'removeDoctor', 'disableDoctor', 'createStaff', 'updateStaff',
     'findAllStaff', 'getStaff', 'removeStaff', 'disableStaff', 'createSchedule', 'updateSchedule', 'findAllSchedules', 'getFacilitySchedule', 'getDoctorSchedule', 'getSchedule', 'getSlots', 'removeSchedule',
     'removePatientProblem', 'getPatientProblem', 'searchSnoMedCodeByIcdCodes', 'searchIcdCodes', 'findAllPatientProblem', 'updatePatientProblem', 'addPatientProblem', 'createPermission', 'assignPermissionToRole',
-    'updatePermission', 'findAllPermissions', 'GetPermission', 'removePermission', 'addPatientVital', 'updatePatientVital', 'findAllPatientVitals', 'getPatientVital', 'removePatientVital'
+    'updatePermission', 'findAllPermissions', 'GetPermission', 'removePermission', 'addPatientVital', 'updatePatientVital', 'findAllReactions', 'findAllPatientVitals', 'getPatientVital', 'removePatientVital'
     , 'addPatientAllergy', 'updatePatientAllergy', 'findAllPatientAllergies', 'findAllAllergies', 'getPatientAllergy', 'removePatientAllergy'
     , 'createLabTestObservation', 'updateLabTestObservation', 'removeLabTestObservation', 'createLabTest', 'updateLabTest', 'getLabTest', 'findAllLabTest', 'removeLabTest',
     , 'createAgreement', 'updateAgreement', 'removeAgreement', 'fetchAgreement', 'fetchAllAgreements', 'findAllUpcomingAppointments',
@@ -240,7 +241,7 @@ export const facilityAdminPermissionsList = ['fetchAllUsers', 'fetchUser', 'getU
     'updatePractice', 'getPractice', 'createDoctor', 'updateDoctor', 'findAllDoctor', 'getDoctor', 'removeDoctor', 'disableDoctor', 'createStaff', 'updateStaff',
     'findAllStaff', 'getStaff', 'removeStaff', 'disableStaff', 'createSchedule', 'updateSchedule', 'findAllSchedules', 'getFacilitySchedule', 'getDoctorSchedule', 'getSchedule', 'getSlots', 'removeSchedule',
     'removePatientProblem', 'getPatientProblem', 'searchSnoMedCodeByIcdCodes', 'searchIcdCodes', 'findAllPatientProblem', 'updatePatientProblem', 'addPatientProblem', 'createPermission', 'assignPermissionToRole',
-    'updatePermission', 'findAllPermissions', 'GetPermission', 'removePermission', 'addPatientVital', 'updatePatientVital', 'findAllPatientVitals', 'getPatientVital', 'removePatientVital',
+    'updatePermission', 'findAllPermissions', 'GetPermission', 'removePermission', 'addPatientVital', 'updatePatientVital', 'findAllReactions','findAllPatientVitals', 'getPatientVital', 'removePatientVital',
     'addPatientAllergy', 'updatePatientAllergy', 'findAllPatientAllergies', 'findAllAllergies', 'getPatientAllergy', 'removePatientAllergy', 'createLabTestObservation', 'updateLabTestObservation', 'removeLabTestObservation', 'createLabTest', 'updateLabTest', 'getLabTest', 'findAllLabTest', 'removeLabTest',
     'createAgreement', 'updateAgreement', 'removeAgreement', 'fetchAgreement', 'fetchAllAgreements', 'findAllUpcomingAppointments',
     'getAppointment', 'getAppointments', 'getPatientPastUpcomingAppointment', 'getAttachments', 'getAttachmentsByLabOrder', 'getAttachmentsByPolicyId', 'getAttachmentsByAgreementId',
@@ -261,7 +262,7 @@ export const emergencyAccessPermissionsList = ['fetchAllUsers', 'fetchUser', 'ge
     'updatePractice', 'getPractice', 'createDoctor', 'updateDoctor', 'findAllDoctor', 'getDoctor', 'removeDoctor', 'disableDoctor', 'createStaff', 'updateStaff',
     'findAllStaff', 'getStaff', 'removeStaff', 'disableStaff', 'createSchedule', 'updateSchedule', 'findAllSchedules', 'getFacilitySchedule', 'getDoctorSchedule', 'getSchedule', 'getSlots', 'removeSchedule',
     'removePatientProblem', 'getPatientProblem', 'searchSnoMedCodeByIcdCodes', 'searchIcdCodes', 'findAllPatientProblem', 'updatePatientProblem', 'addPatientProblem', 'createPermission', 'assignPermissionToRole',
-    'updatePermission', 'findAllPermissions', 'GetPermission', 'removePermission', 'addPatientVital', 'updatePatientVital', 'findAllPatientVitals', 'getPatientVital', 'removePatientVital',
+    'updatePermission', 'findAllPermissions', 'GetPermission', 'removePermission', 'addPatientVital', 'updatePatientVital', 'findAllReactions', 'findAllPatientVitals', 'getPatientVital', 'removePatientVital',
     'addPatientAllergy', 'updatePatientAllergy', 'findAllPatientAllergies', 'getPatientAllergy', 'removePatientAllergy', 'createLabTestObservation', 'updateLabTestObservation', 'removeLabTestObservation', 'createLabTest', 'updateLabTest', 'getLabTest', 'findAllLabTest', 'removeLabTest',
     'createAgreement', 'updateAgreement', 'removeAgreement', 'fetchAgreement', 'fetchAllAgreements', 'findAllUpcomingAppointments',
     'getAppointment', 'getAppointments', 'getPatientPastUpcomingAppointment', 'getAttachments', 'getAttachmentsByLabOrder', 'getAttachmentsByPolicyId', 'getAttachmentsByAgreementId',
