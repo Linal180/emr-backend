@@ -1,6 +1,7 @@
 //packages block
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 import { Brackets, Connection, getConnection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 //entities, services, inputs types, enums
@@ -30,6 +31,7 @@ import {
   UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
 } from '../dto/update-appointment.input';
 import { ContactService } from 'src/providers/services/contact.service';
+import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
 
 @Injectable()
 export class AppointmentService {
@@ -243,7 +245,8 @@ export class AppointmentService {
     }
   }
 
-  async sendAppointmentReminder(appointmentId: string) {
+  async sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput) {
+    const { appointmentId, timeZone  }= appointmentReminderInput
     try {
       const appointmentInfo = await this.appointmentRepository.findOne({
         relations: ['patient', 'facility', 'provider'],
@@ -252,8 +255,7 @@ export class AppointmentService {
       const { patient, facility, provider } = appointmentInfo || {}
       const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
       const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
-      const utcDate = moment.utc(appointmentInfo.scheduleStartDateTime).toDate();
-      const slotStartTime = moment(utcDate).format('MM-DD-YYYY hh:mm:ss A')
+      const slotStartTime =  momentTimezone(appointmentInfo.scheduleStartDateTime).tz(timeZone).format('MM-DD-YYYY hh:mm:ss A')
 
       let messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} at ${facility.name} facility`
 

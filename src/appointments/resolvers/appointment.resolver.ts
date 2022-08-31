@@ -24,6 +24,7 @@ import {
   CancelAppointment, GetAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentInput, UpdateAppointmentStatusInput, UpdateAppointmentBillingStatusInput
 } from '../dto/update-appointment.input';
+import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
@@ -102,9 +103,9 @@ export class AppointmentResolver {
   @Mutation(() => AppointmentPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'updateAppointmentStatus')
-  async sendAppointmentReminder(@Args('appointmentId') appointmentId: string) {
+  async sendAppointmentReminder(@Args('appointmentReminderInput') appointmentReminderInput: AppointmentReminderInput) {
     return {
-      appointment: await this.appointmentService.sendAppointmentReminder(appointmentId),
+      appointment: await this.appointmentService.sendAppointmentReminder(appointmentReminderInput),
       response: { status: 200, message: 'Appointment reminder sent successfully' }
     };
   }
