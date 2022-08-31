@@ -3571,7 +3571,7 @@ type Mutation {
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
-  sendAppointmentReminder(appointmentId: String!): AppointmentPayload!
+  sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput!): AppointmentPayload!
   createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
   removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
   updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
@@ -4686,6 +4686,11 @@ input CancelAppointment {
 input UpdateAppointmentStatusInput {
   id: String!
   status: AppointmentStatus!
+}
+
+input AppointmentReminderInput {
+  appointmentId: String
+  timeZone: String
 }
 
 input CreateFeeScheduleInput {
