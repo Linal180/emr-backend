@@ -22,6 +22,7 @@ export const RolesData = [
     { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
     { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" },
     { role: 'front-desk', customRole: false, description: "front desk assistant has partial permissions of admin" },
+    { role: 'biller', customRole: false, description: "biller has permissions of appointment and billing" },
 ];
 
 export const UsersData = [
@@ -391,4 +392,19 @@ export const frontDeskPermissionsList = ['fetchAllUsers', 'fetchUser', 'getUser'
     'updatePolicy', 'fetchAllPolicyHolders', 'fetchPolicyHolder', 'createPolicyHolder', 'fetchAllInsurances', 'fetchInsurance', 'createCopay', 'findAllTestSpecimenTypes',
     'getSpecimenTypeByName', 'createLoincCode', 'updateLoincCode', 'findAllLoincCodes', 'findLoincCode', 'updateLabTestsByOrderNum', 'findLabTestsByOrderNum', 'fetchICDCodes', 'patientInfo',
     'updatePatient', 'updatePatientNoteInfoInputs', 'updatePatientProviderRelation', 'getPatient', 'getPatientProviders', 'getPatientProvider', 'findAllDoctorPatients',
+    'me']
+
+    export const billerPermissionsList = ['fetchAllUsers', 'fetchUser', 'getUser', 'searchUser', 'forgotPassword', 'deactivateUser', 'updateUser', 'createRole',
+    'updateRole', 'getAllRoles', 'getRole', 'createAppointment', 'createExternalAppointment', 'updateAppointment', 'updateAppointmentBillingStatus',
+    'findAllAppointments', 'getAppointment', 'getAppointments', 'cancelAppointment', 'removeAppointment', 'getPatientAppointment',
+    'findAllFacility', 'getFacility', 'createService', 'updateService', 'findAllServices', 'getService', 'createPatient',
+    'updatePatient', 'patientInfo', 'updatePatientProfile', 'findAllPatient', 'getPatient', 'findPatientAttachments', 'fetchAllPatients', 'findAllDoctor', 'getDoctor', 'createStaff', 'updateStaff',
+    'findAllStaff', 'getStaff', 'createSchedule', 'updateSchedule', 'findAllSchedules', 'getSchedule', 'getFacilitySchedule', 'getDoctorSchedule', 'getSlots', 'removeSchedule',
+    'searchSnoMedCodeByIcdCodes', 'searchIcdCodes', 'findAllUpcomingAppointments', 'getPatientPastUpcomingAppointment', 'getAttachments', 'getAttachmentsByLabOrder', 'getAttachmentsByPolicyId', 'getAttachmentsByAgreementId',
+    'createAttachmentData', 'removeAttachmentData', 'removeAttachmentMedia', 'updateAttachmentData', 'getAttachment', 'fetchDocumentTypes', 'fetchDocumentType',
+    'fetchDocumentTypeByName', 'createBilling', 'fetchBillingDetailsByAppointmentId', 'findAllForms', 'getForm', 'findAllUsersForms',
+    'createForm', 'updateForm', 'removeForm', 'createFormTemplate', 'saveUserFormValues', 'fetchAllPolicies', 'fetchPolicy', 'fetchPatientInsurances', 'createPolicy',
+    'updatePolicy', 'fetchAllPolicyHolders', 'fetchPolicyHolder', 'createPolicyHolder', 'fetchAllInsurances', 'fetchInsurance', 'createCopay', 'findAllTestSpecimenTypes',
+    'getSpecimenTypeByName', 'createLoincCode', 'updateLoincCode', 'findAllLoincCodes', 'findLoincCode', 'findLabTestsByOrderNum', 'fetchICDCodes', 'patientInfo',
+    'updatePatientProviderRelation', 'getPatient', 'getPatientProviders', 'getPatientProvider', 'findAllDoctorPatients',
     'me']
