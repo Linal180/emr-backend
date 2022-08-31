@@ -11,6 +11,7 @@ import { RolePermission } from "../entities/rolePermissions.entity";
 import { createPasswordHash } from '../../lib/helper';
 //seed data
 import {
+  billerPermissionsList,
   doctorAssistantPermissionsList, doctorPermissionsList, emergencyAccessPermissionsList, facilityAdminPermissionsList,
   FacilityData, frontDeskPermissionsList, nursePermissionsList, officeManagerPermissionsList as officeManagerPermissionsList1,
   patientPermissionsList, PermissionData, practiceAdminPermissionsList, practitionerNursePermissionsList,
@@ -200,6 +201,17 @@ export class CreateUsers implements Seeder {
       let frontDeskPermissionList = permissions.filter(x => frontDeskPermissionsList.find(y => (y === x.name)));
       let frontDeskRolePermissions = await this.rolePermissionPayload(frontDeskPermissionList, frontDeskRole)
       await Promise.all(await frontDeskRolePermissions.map(async (rolePermissionsData) => {
+        const getRolePermission = await getRepository(RolePermission).findOne({ roleId: rolePermissionsData.roleId, permissionId: rolePermissionsData.permissionId })
+        if (!getRolePermission) {
+          const createdRolePermissions = await getRepository(RolePermission).create(rolePermissionsData)
+          return await queryRunner.manager.save(createdRolePermissions);
+        }
+      }))
+
+      let billerRole = roles.find((item) => item.role === 'biller')
+      let billerPermissionList = permissions.filter(x => billerPermissionsList.find(y => (y === x.name)));
+      let billerRolePermissions = await this.rolePermissionPayload(billerPermissionList, billerRole)
+      await Promise.all(await billerRolePermissions.map(async (rolePermissionsData) => {
         const getRolePermission = await getRepository(RolePermission).findOne({ roleId: rolePermissionsData.roleId, permissionId: rolePermissionsData.permissionId })
         if (!getRolePermission) {
           const createdRolePermissions = await getRepository(RolePermission).create(rolePermissionsData)

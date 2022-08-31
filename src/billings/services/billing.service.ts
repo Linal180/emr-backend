@@ -191,9 +191,10 @@ export class BillingService {
       otherDate, otherDateType, from, to } = claimInput
     const diagnosesCodes = codes?.filter(code => code.codeType === CodeType.ICD_10_CODE)
     const procedureCodes = codes?.filter(code => code.codeType === CodeType.CPT_CODE)
-    const totalCharges = codes.reduce((acc, code) => {
+    const totalCharges = procedureCodes.reduce((acc, code) => {
       return acc += Number(code.price || 0)
     }, 0)
+    console.log("totalCharges", totalCharges, procedureCodes)
     const insuranceDetails = await this.policyService.fetchPatientInsurances(patientId)
     const appointmentInfo = await this.appointmentService.findOne(appointmentId)
     const patient = await this.patientService.findOne(patientId)
@@ -599,7 +600,7 @@ export class BillingService {
       otherDate, otherDateType, from, to } = claimInput
     const diagnosesCodes = codes?.filter(code => code.codeType === CodeType.ICD_10_CODE)
     const procedureCodes = codes?.filter(code => code.codeType === CodeType.CPT_CODE)
-    const totalCharges = codes.reduce((acc, code) => {
+    const totalCharges = procedureCodes.reduce((acc, code) => {
       return acc += Number(code.price || 0)
     }, 0)
     const insuranceDetails = await this.policyService.fetchPatientInsurances(patientId)

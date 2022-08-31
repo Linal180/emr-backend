@@ -22,6 +22,7 @@ export const RolesData = [
     { role: 'office-manager', customRole: false, description: "office manager has administrative permissions" },
     { role: 'doctor-assistant', customRole: false, description: "doctor assistant has partial permissions of doctor" },
     { role: 'front-desk', customRole: false, description: "front desk assistant has partial permissions of admin" },
+    { role: 'biller', customRole: false, description: "biller has permissions of appointment and billing" },
 ];
 
 export const UsersData = [
@@ -73,8 +74,7 @@ export const PermissionData = [
     { name: 'findAllServices', moduleType: 'Services' },
     { name: 'getService', moduleType: 'Services' },
     { name: 'removeService', moduleType: 'Services' },
-    { name: 'createPatient', moduleType: 'Patient' },
-    { name: 'updatePatient', moduleType: 'Patient' },
+    { name: 'createPatient', moduleType: 'Patient' },   
     { name: 'patientInfo', moduleType: 'Patient' },
     { name: 'updatePatientProfile', moduleType: 'Patient' },
     { name: 'sendInviteToPatient', moduleType: 'Patient' },
@@ -88,7 +88,6 @@ export const PermissionData = [
     { name: 'updatePatient', moduleType: 'Patient' },
     { name: 'updatePatientNoteInfoInputs', moduleType: 'Patient' },
     { name: 'updatePatientProviderRelation', moduleType: 'Patient' },
-    { name: 'getPatient', moduleType: 'Patient' },
     { name: 'getPatientProviders', moduleType: 'Patient' },
     { name: 'getPatientProvider', moduleType: 'Patient' },
     { name: 'findAllDoctorPatients', moduleType: 'Patient' },
@@ -393,4 +392,19 @@ export const frontDeskPermissionsList = ['fetchAllUsers', 'fetchUser', 'getUser'
     'updatePolicy', 'fetchAllPolicyHolders', 'fetchPolicyHolder', 'createPolicyHolder', 'fetchAllInsurances', 'fetchInsurance', 'createCopay', 'findAllTestSpecimenTypes',
     'getSpecimenTypeByName', 'createLoincCode', 'updateLoincCode', 'findAllLoincCodes', 'findLoincCode', 'updateLabTestsByOrderNum', 'findLabTestsByOrderNum', 'fetchICDCodes', 'patientInfo',
     'updatePatient', 'updatePatientNoteInfoInputs', 'updatePatientProviderRelation', 'getPatient', 'getPatientProviders', 'getPatientProvider', 'findAllDoctorPatients',
+    'me']
+
+    export const billerPermissionsList = ['fetchAllUsers', 'fetchUser', 'getUser', 'searchUser', 'forgotPassword', 'deactivateUser', 'updateUser', 'createRole',
+    'updateRole', 'getAllRoles', 'getRole', 'createAppointment', 'createExternalAppointment', 'updateAppointment', 'updateAppointmentBillingStatus',
+    'findAllAppointments', 'getAppointment', 'getAppointments', 'cancelAppointment', 'removeAppointment', 'getPatientAppointment',
+    'findAllFacility', 'getFacility', 'createService', 'updateService', 'findAllServices', 'getService', 'createPatient',
+    'updatePatient', 'patientInfo', 'updatePatientProfile', 'findAllPatient', 'getPatient', 'findPatientAttachments', 'fetchAllPatients', 'findAllDoctor', 'getDoctor', 'createStaff', 'updateStaff',
+    'findAllStaff', 'getStaff', 'createSchedule', 'updateSchedule', 'findAllSchedules', 'getSchedule', 'getFacilitySchedule', 'getDoctorSchedule', 'getSlots', 'removeSchedule',
+    'searchSnoMedCodeByIcdCodes', 'searchIcdCodes', 'findAllUpcomingAppointments', 'getPatientPastUpcomingAppointment', 'getAttachments', 'getAttachmentsByLabOrder', 'getAttachmentsByPolicyId', 'getAttachmentsByAgreementId',
+    'createAttachmentData', 'removeAttachmentData', 'removeAttachmentMedia', 'updateAttachmentData', 'getAttachment', 'fetchDocumentTypes', 'fetchDocumentType',
+    'fetchDocumentTypeByName', 'createBilling', 'fetchBillingDetailsByAppointmentId', 'findAllForms', 'getForm', 'findAllUsersForms',
+    'createForm', 'updateForm', 'removeForm', 'createFormTemplate', 'saveUserFormValues', 'fetchAllPolicies', 'fetchPolicy', 'fetchPatientInsurances', 'createPolicy',
+    'updatePolicy', 'fetchAllPolicyHolders', 'fetchPolicyHolder', 'createPolicyHolder', 'fetchAllInsurances', 'fetchInsurance', 'createCopay', 'findAllTestSpecimenTypes',
+    'getSpecimenTypeByName', 'createLoincCode', 'updateLoincCode', 'findAllLoincCodes', 'findLoincCode', 'findLabTestsByOrderNum', 'fetchICDCodes', 'patientInfo',
+    'updatePatientProviderRelation', 'getPatient', 'getPatientProviders', 'getPatientProvider', 'findAllDoctorPatients',
     'me']

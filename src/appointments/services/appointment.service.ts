@@ -229,16 +229,16 @@ export class AppointmentService {
    */
   async triggerSmsNotification(appointment: Appointment, provider: Doctor, patient: Patient, facility: Facility, IsBooked: boolean) {
     const currentContact = patient.contacts?.filter(function (item) { return item.primaryContact })
-    const facilityLocationLink = facility.contacts.filter(function (item) { return item.primaryContact })
+    const facilityLocationLink = facility.contacts?.filter(function (item) { return item.primaryContact })
     if (IsBooked) {
       return await this.utilsService.smsNotification({
         to: [currentContact?.[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink} at ${facility.name} facility`
+        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} on location ${facilityLocationLink?.[0]?.locationLink} at ${facility.name} facility`
       });
     } else {
       return await this.utilsService.smsNotification({
         to: [currentContact?.[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink[0].locationLink} at ${facility.name} facility`
+        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink?.[0]?.locationLink} at ${facility.name} facility`
       });
     }
   }
@@ -252,7 +252,8 @@ export class AppointmentService {
       const { patient, facility, provider } = appointmentInfo || {}
       const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
       const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
-      const slotStartTime = moment(appointmentInfo.scheduleStartDateTime).format('MM-DD-YYYY hh:mm:ss A')
+      const utcDate = moment.utc(appointmentInfo.scheduleStartDateTime).toDate();
+      const slotStartTime = moment(utcDate).format('MM-DD-YYYY hh:mm:ss A')
 
       let messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} at ${facility.name} facility`
 
