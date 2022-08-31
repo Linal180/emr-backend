@@ -123,8 +123,8 @@ export const claimValidation = Joi.object({
 
 export const claimMedValidation = Joi.object({
   bill_npi: Joi.string().max(10).required().label('Billing NPI'),
-  payerid: Joi.string().required().label('Insurance'),
-  payer_name: Joi.string().required().label('Insurance'),
+  payerid: Joi.string().required().label('Insurance Company'),
+  payer_name: Joi.string().required().label('Insurance Name'),
   pat_name_l: Joi.string().required().label('Patient Last Name'),
   pat_name_f: Joi.string().required().label('Patient First Name'),
   pat_dob: Joi.string().required().label('Patient Date of birth'),
