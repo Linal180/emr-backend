@@ -61,9 +61,10 @@ export class UtilsService {
    * @param twilioInput 
    */
   async smsNotification(twilioInput: TwilioInput) {
+    console.log({twilioInput});
     const response = await client.messages.create({
       body: twilioInput.body,
-      from: process.env.TWILIO_PHONE_NUMBER,
+      from: '+19382015325',//process.env.TWILIO_PHONE_NUMBER,
       to: twilioInput.to
     });
     return response
