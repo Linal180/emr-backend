@@ -25,6 +25,8 @@ import {
   UpdateAppointmentInput, UpdateAppointmentStatusInput, UpdateAppointmentBillingStatusInput
 } from '../dto/update-appointment.input';
 import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
+import { PolicyService } from 'src/insurance/services/policy.service';
+import { Policy } from 'src/insurance/entities/policy.entity';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
@@ -33,6 +35,7 @@ export class AppointmentResolver {
     private readonly doctorService: DoctorService,
     private readonly invoiceService: InvoiceService,
     private readonly facilityService: FacilityService,
+    private readonly policyService: PolicyService,
     private readonly servicesService: ServicesService) { }
 
   //mutations
@@ -228,6 +231,14 @@ export class AppointmentResolver {
   async patient(@Parent() appointment: Appointment): Promise<Patient> {
     if (appointment && appointment.patientId) {
       return await this.patientService.findOne(appointment.patientId);
+    }
+  }
+
+  @ResolveField(() => [String])
+  async primaryInsurance(@Parent() appointment: Appointment): Promise<string> {
+    if (appointment && appointment.patientId) {
+      const primaryInsurance = await this.policyService.getPrimaryInsurance(appointment.patientId);
+      return primaryInsurance?.insurance?.payerName
     }
   }
 

@@ -20,7 +20,7 @@ import { CreatePolicyInput, PolicyPaginationInput, UpdatePolicyInput } from '../
 import { PoliciesPayload } from '../dto/policy-payload.dto';
 import { PolicyEligibilitiesPayload, PolicyEligibilityWithPatientPayload } from '../dto/policy-eligibility.dto';
 //entities
-import { Policy } from '../entities/policy.entity';
+import { OrderOfBenefitType, Policy } from '../entities/policy.entity';
 import { PolicyCoverage } from '../entities/policy-coverage.entity';
 import { PolicyEligibility } from '../entities/policy-eligibility.entity';
 import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
@@ -407,5 +407,21 @@ export class PolicyService {
       policyHolder,
       primaryProvider
     }
+  }
+
+  /**
+   * Params policy service
+   * @param patientId 
+   * @returns primary insurance 
+   */
+  async getPrimaryInsurance(patientId: string): Promise<Policy> {
+    const patientInsurance = await this.policyRepository.findOne({ where: { patientId, orderOfBenefit: OrderOfBenefitType.PRIMARY } })
+    if (patientInsurance) {
+      const insurance = await this.insuranceService.findOne(patientInsurance.insuranceId)
+      const primaryInsurance = { ...patientInsurance, insurance }
+
+      return primaryInsurance
+    }
+
   }
 }
