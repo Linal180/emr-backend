@@ -64,7 +64,7 @@ export class UtilsService {
     console.log({twilioInput});
     const response = await client.messages.create({
       body: twilioInput.body,
-      from: process.env.TWILIO_PHONE_NUMBER,
+      from: '+17034407731',//process.env.TWILIO_PHONE_NUMBER,
       to: twilioInput.to
     });
     return response
