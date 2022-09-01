@@ -26,8 +26,8 @@ import { PracticeModule } from 'src/practice/practice.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Insurance, Policy, PolicyHolder, Copay, PolicyEligibility, PolicyCoverage]),
-    UsersModule,
-    PatientModule,
+    forwardRef(() => UsersModule),
+    forwardRef(() => PatientModule),
     PaginationModule,
     forwardRef(() => ProviderModule),
     FacilityModule,
