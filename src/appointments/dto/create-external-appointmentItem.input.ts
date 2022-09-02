@@ -42,5 +42,11 @@ export class CreateExternalAppointmentItemInput {
 
     @Field({ nullable: true })
     paymentStatus: string;
+
+    @Field({ nullable: true })
+    appointmentDate: string;
+  
+    @Field({ nullable: true })
+    timeZone: string;
     
 }

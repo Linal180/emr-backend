@@ -1568,6 +1568,8 @@ type Appointment {
   secondaryInsurance: String
   scheduleStartDateTime: String
   scheduleEndDateTime: String
+  appointmentDate: String
+  timeZone: String
   providerId: String
   patientId: String
   facilityId: String
@@ -4610,6 +4612,8 @@ input CreateAppointmentInput {
   practiceId: String
   appointmentCreateType: AppointmentCreateType
   insuranceStatus: String
+  appointmentDate: String
+  timeZone: String
 }
 
 input CreateExternalAppointmentInput {
@@ -4632,6 +4636,8 @@ input CreateExternalAppointmentItemInput {
   patientId: String
   practiceId: String
   paymentStatus: String
+  appointmentDate: String
+  timeZone: String
 }
 
 input UpdateAppointmentInput {
@@ -4659,6 +4665,8 @@ input UpdateAppointmentInput {
   practiceId: String
   appointmentCreateType: AppointmentCreateType
   insuranceStatus: String
+  appointmentDate: String
+  timeZone: String
   id: String!
   paymentStatus: String
   selfCheckIn: Boolean
