@@ -1,11 +1,38 @@
+//packages blocks
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { BillingAddress } from 'src/providers/entities/billing-address.entity';
-import { Contact } from 'src/providers/entities/contact.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+//entities
 import { Employer } from './employer.entity';
+import { User } from 'src/users/entities/user.entity';
+import { DoctorPatient } from './doctorPatient.entity';
+import { PatientConsent } from './patientConsent.entity';
+import { LabTests } from 'src/labs/entities/labTests.entity';
+import { Policy } from 'src/insurance/entities/policy.entity';
+import { Billing } from 'src/billings/entities/billing.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
+import { Transactions } from 'src/payment/entity/payment.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment } from '../../attachments/entities/attachment.entity';
+import { PolicyHolder } from 'src/insurance/entities/policy-holder.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
+import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
+
+export enum COMMUNICATIONTYPE {
+  PHONE = "phone",
+  VOICE_MESSAGE = "Voice message",
+  MESSAGE = "Message",
+  EMAIL = "email"
+}
+
+registerEnumType(COMMUNICATIONTYPE, {
+  name: "COMMUNICATIONTYPE",
+  description: "The patient's communication method assigned",
+});
 
 export enum RACE {
   WHITE = "White",
@@ -21,32 +48,11 @@ registerEnumType(RACE, {
   description: "The user race assigned",
 });
 
-export enum REGDepartment {
-  HOSPITAL = "hospital",
-  LAB = "lab",
-  CLINIC = "clinic",
-}
-
-registerEnumType(REGDepartment, {
-  name: "REGDepartment",
-  description: "The facility Registration Department type assigned type",
-});
-
-export enum PrimaryDepartment {
-  HOSPITAL = "hospital",
-  LAB = "lab",
-  CLINIC = "clinic",
-}
-
-registerEnumType(PrimaryDepartment, {
-  name: "PrimaryDepartment",
-  description: "The facility Primary Department type assigned type",
-});
-
 export enum ETHNICITY {
   NONE = "none",
-  CENTERAL_AMERICAN = "centeral American",
-  CENTERAL_AMERICAN_INDIAN = "centeral American Indian",
+  HISPANIC_OR_LATINO = "Hispanic or Latino",
+  NOT_HISPANIC_OR_LATINO = "Not Hispanic or Latino",
+  DECLINE_TO_SPECIFY = "Declined to specify"
 }
 
 registerEnumType(ETHNICITY, {
@@ -56,7 +62,7 @@ registerEnumType(ETHNICITY, {
 
 export enum MARITIALSTATUS {
   SINGLE = "single",
-  MARIED = "maried",
+  MARRIED = "married",
   WIDOWED = "Widowed",
   SEPARATED = "Separated",
   DIVORCED = "Divorced"
@@ -85,8 +91,8 @@ export enum GENDERIDENTITY {
   FEMALE = "Identifies as Female",
   TRANSGENDER_MALE = "Transgender Male/Female-to-Male (FTM)",
   TRANSGENDER_FEMALE = "Transgender Female/Male-to-Female (MTF)",
-  NOT_EXCLUSIVE = "Gender non-conforming (neither exclusively male nor female)",
-  NONE = "Choose not to disclose"
+  DECLINE_TO_SPECIFY = "Decline to specify",
+  NONE = "Other"
 }
 
 registerEnumType(GENDERIDENTITY, {
@@ -146,6 +152,14 @@ export class Patient {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientRecord: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   firstName: string;
 
   @Column({ nullable: true })
@@ -183,7 +197,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.MALE
+    default: GENDERIDENTITY.MALE,
+    nullable: true,
   })
   @Field(type => GENDERIDENTITY)
   gender: GENDERIDENTITY
@@ -194,27 +209,19 @@ export class Patient {
 
   @Column({
     type: "enum",
-    enum: REGDepartment,
-    default: REGDepartment.HOSPITAL
+    enum: COMMUNICATIONTYPE,
+    default: COMMUNICATIONTYPE.PHONE
   })
-  @Field(type => REGDepartment)
-  registrationDepartment: REGDepartment
+  @Field(type => COMMUNICATIONTYPE)
+  preferredCommunicationMethod: COMMUNICATIONTYPE
 
-  @Column({
-    type: "enum",
-    enum: PrimaryDepartment,
-    default: PrimaryDepartment.HOSPITAL
-  })
-  @Field(type => PrimaryDepartment)
-  primaryDepartment: PrimaryDepartment
-
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   registrationDate: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
-  deseasedDate: string;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  deceasedDate: string;
 
   @Column({ nullable: true, default: false })
   @Field()
@@ -222,23 +229,51 @@ export class Patient {
 
   @Column({ nullable: true, default: false })
   @Field()
-  relaseOfInfoBill: boolean;
+  releaseOfInfoBill: boolean;
 
   @Column({ nullable: true, default: false })
   @Field()
   callToConsent: boolean;
 
   @Column({ nullable: true, default: false })
-  @Field()
-  medicationHistoryAuthority: boolean;
+  @Field({ nullable: true })
+  phoneEmailPermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  cellPhonePermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  medicalPermission: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  resultConsent: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  immunizationConsent: boolean;
+
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  medicationHistoryConsent: boolean;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientNote: string;
 
+  @Column({ nullable: true, default: false })
+  @Field(() => Boolean, { nullable: true })
+  patientNoteOpen: boolean;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   language: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  pharmacy: string;
 
   @Column({
     type: "enum",
@@ -259,7 +294,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: MARITIALSTATUS,
-    default: MARITIALSTATUS.SINGLE
+    default: MARITIALSTATUS.SINGLE,
+    nullable: true
   })
   @Field(type => MARITIALSTATUS, { nullable: true })
   maritialStatus: MARITIALSTATUS
@@ -268,7 +304,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: SEXUALORIENTATION,
-    default: SEXUALORIENTATION.NONE
+    default: SEXUALORIENTATION.NONE,
+    nullable: true,
   })
   @Field(type => SEXUALORIENTATION, { nullable: true })
   sexualOrientation: SEXUALORIENTATION
@@ -276,7 +313,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.NONE
+    default: GENDERIDENTITY.NONE,
+    nullable: true,
   })
   @Field(type => GENDERIDENTITY, { nullable: true })
   genderIdentity: GENDERIDENTITY
@@ -284,7 +322,8 @@ export class Patient {
   @Column({
     type: "enum",
     enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.NONE
+    default: GENDERIDENTITY.NONE,
+    nullable: true,
   })
   @Field(type => GENDERIDENTITY, { nullable: true })
   sexAtBirth: GENDERIDENTITY
@@ -314,45 +353,46 @@ export class Patient {
   holdStatement: HOLDSTATEMENT
 
   @Column({ nullable: true, default: false })
-  @Field()
+  @Field({ nullable: true })
   statementDelivereOnline: boolean;
 
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  inviteAccepted: boolean;
+
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   statementNote: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   statementNoteDateFrom: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   statementNoteDateTo: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   facilityId: string;
 
-  @ManyToMany(type => Doctor, doctor => doctor.patients, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
-  @Field(type => [Doctor], { nullable: true })
-  usualProvider: Doctor[];
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
 
-  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
-  @Field(type => [Contact], { nullable: true })
-  contacts: Contact[];
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  policyHolderId: string;
 
-  @OneToMany(() => Employer, employer => employer.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE", eager: true })
-  @Field(type => [Employer], { nullable: true })
-  employer: Employer[];
+  //only fields
 
-  @ManyToOne(() => Facility, facility => facility.patients, { eager: true, onDelete: 'CASCADE' })
-  @Field(type => Facility, { nullable: true })
-  facility: Facility;
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 
-  @OneToOne(() => User, { eager: true })
-  @JoinColumn()
-  @Field(type => User, { nullable: true })
-  user: User;
+  @Field({ nullable: true })
+  profileAttachment: string;
+
+  //dates
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
@@ -361,5 +401,68 @@ export class Patient {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
+
+  //relationships 
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  @Field(() => User, { nullable: true })
+  user: User;
+
+  @OneToOne(() => PatientConsent, consent => consent.patient)
+  @Field(() => PatientConsent, { nullable: true })
+  consent: PatientConsent;
+
+  @OneToMany(() => Contact, contact => contact.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Contact], { nullable: true })
+  contacts: Contact[];
+
+  @ManyToOne(() => Facility, facility => facility.patients, { onDelete: 'CASCADE' })
+  @Field(() => Facility, { nullable: true })
+  facility: Facility;
+
+  @OneToMany(() => DoctorPatient, doctorPatient => doctorPatient.doctor, { onDelete: "CASCADE" })
+  @Field(() => [DoctorPatient], { nullable: true })
+  doctorPatients: DoctorPatient[];
+
+  @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.patient, { onDelete: "CASCADE" })
+  @Field(() => [PatientAllergies], { nullable: true })
+  patientAllergies: PatientAllergies[];
+
+  @OneToMany(() => PatientProblems, patientProblems => patientProblems.patient, { onDelete: "CASCADE" })
+  @Field(() => [PatientProblems], { nullable: true })
+  patientProblems: PatientProblems[];
+
+  @OneToMany(() => Appointment, appointment => appointment.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Appointment], { nullable: true })
+  appointments: Appointment[];
+
+  @OneToMany(() => LabTests, labTests => labTests.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [LabTests], { nullable: true })
+  labTests: LabTests[];
+
+  @OneToMany(() => Billing, billing => billing.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [Billing], { nullable: true })
+  billings: Billing[];
+
+  @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE" })
+  @Field(() => Employer, { nullable: true })
+  employer: Employer[];
+
+  @OneToMany(() => PatientVitals, patientVitals => patientVitals.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PatientVitals], { nullable: true })
+  patientVitals: PatientVitals[];
+
+  @OneToMany(() => Transactions, transaction => transaction.patient)
+  @Field(() => [Transactions], { nullable: true })
+  transaction: Transactions[];
+
+  @OneToMany(() => Policy, policy => policy.patient, { onDelete: "CASCADE" })
+  @Field(() => [Policy], { nullable: true })
+  policies: Policy[];
+
+  @ManyToOne(() => PolicyHolder, policyHolder => policyHolder.patients)
+  @Field(() => PolicyHolder, { nullable: true })
+  policyHolder: PolicyHolder;
 
 }

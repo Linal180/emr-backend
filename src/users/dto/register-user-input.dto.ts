@@ -1,5 +1,4 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { UserRole } from '../entities/role.entity';
 
 @InputType()
 export class RegisterUserInput {
@@ -11,8 +10,8 @@ export class RegisterUserInput {
   password: string;
   @Field()
   email: string;
-  @Field(type => UserRole, { description: 'Send Investor Type from the ENUM - Sign-up', nullable: true })
-  roleType?: UserRole;
+  @Field( { description: 'string type role - Sign-up', nullable: true })
+  roleType?: string;
   @Field({ nullable: true })
   adminId?: string;
   @Field({ nullable: true })
@@ -21,4 +20,6 @@ export class RegisterUserInput {
   phone?: string;
   @Field({ nullable: true })
   zipCode?: string;
+  @Field({ nullable: true })
+  isAdmin?: boolean;
 }

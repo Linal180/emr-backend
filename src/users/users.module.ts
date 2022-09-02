@@ -1,25 +1,37 @@
-import { forwardRef, Module } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
+import { ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { FacilityModule } from "src/facilities/facility.module";
+import { PassportModule } from "@nestjs/passport";
+import { forwardRef, Module } from "@nestjs/common";
+//modules
 import { MailerModule } from "src/mailer/mailer.module";
-import { PaginationModule } from "src/pagination/pagination.module";
 import { PatientModule } from "src/patients/patient.module";
 import { ProviderModule } from "src/providers/provider.module";
-import { JwtStrategy } from "./auth/jwt.strategy";
+import { FacilityModule } from "src/facilities/facility.module";
+import { PaginationModule } from "src/pagination/pagination.module";
+import { AttachmentsModule } from "src/attachments/attachments.module";
+//entities
 import { Role } from "./entities/role.entity";
-import { UserLog } from "./entities/user-logs.entity";
 import { User } from "./entities/user.entity";
-import { UserSubscriber } from "./subscribers/user.subscriber";
+import { Permission } from "./entities/permissions.entity";
+import { RolePermission } from "./entities/rolePermissions.entity";
+//resolvers
+import { RoleResolver } from "./resolvers/roles.resolver";
+import { UsersResolver } from "./resolvers/users.resolver";
+import { PermissionResolver } from "./resolvers/permissions.resolver";
+import { RolePermissionResolver } from "./resolvers/rolePermissions.resolver";
+//services
+import { RolesService } from "./services/roles.service";
+import { UsersService } from "./services/users.service";
+import { PermissionsService } from "./services/permissions.service";
+//controllers, subscriber, strategy
+import { JwtStrategy } from "./auth/jwt.strategy";
 import { UsersController } from "./users.controller";
-import { UsersResolver } from "./users.resolver";
-import { UsersService } from "./users.service";
+import { UserSubscriber } from "./subscribers/user.subscriber";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role, UserLog]),
+    TypeOrmModule.forFeature([User, Role, Permission, RolePermission]),
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
@@ -32,10 +44,12 @@ import { UsersService } from "./users.service";
     PaginationModule,
     forwardRef(() => FacilityModule),
     forwardRef(() => ProviderModule),
-    forwardRef(() => PatientModule)
+    forwardRef(() => PatientModule),
+    forwardRef(() => AttachmentsModule),
   ],
-  providers: [UsersService, UsersResolver, JwtStrategy, UserSubscriber],
+  providers: [UsersService, UsersResolver, PermissionResolver, RoleResolver, PermissionsService,
+    RolePermissionResolver, RolesService, JwtStrategy, UserSubscriber],
   controllers: [UsersController],
-  exports: [UsersService, TypeOrmModule],
+  exports: [UsersService, TypeOrmModule, RolesService],
 })
 export class UsersModule { }

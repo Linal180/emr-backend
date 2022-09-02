@@ -3,8 +3,8 @@ import { CreateBillingAddressInput } from 'src/providers/dto/create-billing-addr
 
 @InputType()
 export class UpdateBillingAddressInput extends PartialType(CreateBillingAddressInput) {
-  @Field()
-  id: string;
+  @Field({nullable: true})
+  id?: string;
 }
 
 @InputType()

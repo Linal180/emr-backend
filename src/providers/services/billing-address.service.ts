@@ -1,7 +1,8 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RemoveBillingAddress, UpdateBillingAddressInput } from 'src/facilities/dto/update-billing-address.input';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import { CreateBillingAddressInput } from '../dto/create-billing-address.input';
 import { BillingAddress } from '../entities/billing-address.entity';
@@ -12,7 +13,8 @@ export class BillingAddressService {
     @InjectRepository(BillingAddress)
     private billingAddressRepository: Repository<BillingAddress>,
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly utilsService: UtilsService
   ) { }
 
   /**
@@ -42,7 +44,11 @@ export class BillingAddressService {
    */
   async updateBillingAddress(updateBillingAddressInput: UpdateBillingAddressInput): Promise<BillingAddress> {
     try {
-      return await this.billingAddressRepository.save(updateBillingAddressInput)
+      if(updateBillingAddressInput.id){
+        return await this.billingAddressRepository.save({...updateBillingAddressInput})
+      }
+      const billingAddressInstance = this.billingAddressRepository.create(updateBillingAddressInput)
+      return await this.billingAddressRepository.save(billingAddressInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -54,6 +60,19 @@ export class BillingAddressService {
    */
   async findOne(id: string): Promise<BillingAddress> {
     return await this.billingAddressRepository.findOne(id);
+  }
+
+  /**
+   * Finds billing address by facility id
+   * @param id 
+   * @returns billing address by facility id 
+   */
+  async findBillingAddressByFacilityId(id: string): Promise<BillingAddress[]> {
+    return await this.billingAddressRepository.find({
+      where: {
+        facilityId: id  
+      }
+    });
   }
 
   /**

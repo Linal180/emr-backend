@@ -1,8 +1,11 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Facility } from 'src/facilities/entities/facility.entity';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn
+} from 'typeorm';
+//entities
 import { Role } from './role.entity';
-import { UserLog } from './user-logs.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment } from 'src/attachments/entities/attachment.entity';
 
 
 export enum UserStatus {
@@ -32,12 +35,20 @@ export class User {
   @Field()
   emailVerified: boolean;
 
+  @Column({ nullable: true, default: false })
+  @Field()
+  isTwoFactorEnabled: boolean;
+
   @Column()
   password: string;
 
   @Column()
   @Field()
   email: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  phone: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
@@ -55,21 +66,26 @@ export class User {
   @Field({ nullable: true })
   token: string;
 
+  @Column({ nullable: true, default: '2' })
+  @Field({ nullable: true })
+  autoLogoutTime: string;
+
   @Column({ nullable: true })
   @Field()
   userType: string;
 
-  @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
-  @Field(type => [Facility], { nullable: true })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
+
+  @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
+  @Field(type => Facility, { nullable: true })
   facility: Facility;
 
   @Field(type => [Role], { nullable: 'itemsAndList' })
   @ManyToMany(type => Role, role => role.users, { eager: true })
   @JoinTable({ name: 'UserRoles' })
   roles: Role[];
-
-  @OneToMany(() => UserLog, Userlog => Userlog.userId)
-  UserLogs: UserLog[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
@@ -79,4 +95,6 @@ export class User {
   @Field()
   updatedAt: string;
 
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 }

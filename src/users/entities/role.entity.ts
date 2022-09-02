@@ -1,21 +1,7 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { RolePermission } from './rolePermissions.entity';
 import { User } from './user.entity';
-
-export enum UserRole {
-  SUPER_ADMIN = "super-admin",
-  ADMIN = "admin",
-  DOCTOR = "doctor",
-  PATIENT = "patient",
-  NURSE = "nurse",
-  BILLING = "billing",
-  STAFF = "staff"
-}
-
-registerEnumType(UserRole, {
-  name: "UserRole",
-  description: "The user role assigned",
-});
 
 @Entity({ name: 'Roles' })
 @ObjectType()
@@ -24,23 +10,32 @@ export class Role {
   @Field()
   id: string;
 
-  @Column({
-    type: "enum",
-    enum: UserRole,
-    default: UserRole.ADMIN
-  })
-  @Field(type => UserRole)
-  role: UserRole
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  role: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  description: string
+
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
+  customRole: boolean
 
   @ManyToMany(type => User, user => user.roles)
+  @Field((type) => User, { nullable: true })
   users: User[];
 
+  @OneToMany(() => RolePermission, rolePermission => rolePermission.role)
+  @Field((type) => [RolePermission], { nullable: true })
+  rolePermissions: RolePermission[];
+
   @CreateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Field({ nullable: true })
   createdAt: string;
 
   @UpdateDateColumn({ type: 'timestamptz' })
-  @Field()
+  @Field({ nullable: true })
   updatedAt: string;
 
 }

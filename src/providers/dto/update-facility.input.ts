@@ -1,17 +1,26 @@
-import { CreateStaffInput } from './create-staff.input';
-import { InputType, Field, PartialType, PickType } from '@nestjs/graphql';
+import { Field, InputType, PartialType, PickType } from '@nestjs/graphql';
+import { CreateStaffItemInput } from './create-staff.inputItem';
 
 @InputType()
-export class UpdateStaffInput extends PartialType(CreateStaffInput) {
+export class UpdateStaffItemInput extends PartialType(CreateStaffItemInput) {
   @Field()
   id: string;
 }
 
 @InputType()
-export class GetStaff extends PickType(UpdateStaffInput, ['id'] as const) { }
+export class UpdateStaffInput {
+  @Field()
+  updateStaffItemInput: UpdateStaffItemInput
+
+  @Field(type => [String], {nullable: true})
+  providers?: string[]
+}
 
 @InputType()
-export class RemoveStaff extends PickType(UpdateStaffInput, ['id'] as const) { }
+export class GetStaff extends PickType(UpdateStaffItemInput, ['id'] as const) { }
 
 @InputType()
-export class DisableStaff extends PickType(UpdateStaffInput, ['id'] as const) { }
+export class RemoveStaff extends PickType(UpdateStaffItemInput, ['id'] as const) { }
+
+@InputType()
+export class DisableStaff extends PickType(UpdateStaffItemInput, ['id'] as const) { }

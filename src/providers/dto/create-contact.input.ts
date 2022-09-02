@@ -1,9 +1,8 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { ContactType, RelationshipType } from '../entities/contact.entity';
+import { ContactType, RelationshipType, ServiceCodes } from '../entities/contact.entity';
 
 @InputType()
 export class CreateContactInput {
-
 
   @Field({ nullable: true })
   name?: string;
@@ -20,11 +19,14 @@ export class CreateContactInput {
   @Field({ nullable: true })
   email?: string;
 
-  @Field(type => ContactType, { nullable: true })
+  @Field(() => ContactType, { nullable: true })
   contactType?: ContactType
 
-  @Field(type => RelationshipType, { nullable: true })
+  @Field(() => RelationshipType, { nullable: true })
   relationship?: RelationshipType
+
+  @Field(() => ServiceCodes, { nullable: true })
+  serviceCode?: ServiceCodes
 
   @Field({ nullable: true })
   pager?: string;
@@ -42,13 +44,22 @@ export class CreateContactInput {
   fax?: string;
 
   @Field({ nullable: true })
+  color?: string;
+
+  @Field({ nullable: true })
   ssn?: string;
+
+  @Field({ nullable: true, defaultValue: true })
+  primaryContact: boolean;
 
   @Field({ nullable: true })
   address?: string;
 
   @Field({ nullable: true })
   address2?: string;
+
+  @Field({ nullable: true })
+  locationLink?: string
 
   @Field({ nullable: true })
   zipCode?: string;
@@ -69,12 +80,14 @@ export class CreateContactInput {
   doctorId?: string;
 
   @Field({ nullable: true })
-  facilityId: string;
+  facilityId?: string;
 
   @Field({ nullable: true })
-  patientId: string;
-
+  patientId?: string;
 
   @Field({ nullable: true })
   employerName?: string;
+
+  @Field({nullable:true})
+  insuranceId?: string
 }

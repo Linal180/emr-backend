@@ -4,8 +4,8 @@ import { CreateContactInput } from './create-contact.input';
 
 @InputType()
 export class UpdateContactInput extends PartialType(CreateContactInput) {
-  @Field()
-  id: string;
+  @Field({nullable: true})
+  id?: string;
 }
 
 @InputType()

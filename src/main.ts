@@ -1,20 +1,28 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+//user imports
 import { AppModule } from './app.module';
+import { PatientModule } from './patients/patient.module';
+import { LoggingInterceptor } from './logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
   //swagger config
   const config = new DocumentBuilder()
     .setTitle('emr-pro')
-    .setDescription('The boca-plus API for media endpoints')
+    .setDescription('EMR API Endpoints')
     .setVersion('1.0')
-    .addTag('boca')
+    .addTag('EMR')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config, {
+    include: [PatientModule],
+  });
+  SwaggerModule.setup('api', app, document,);
 
   await app.listen(process.env.PORT);
 }

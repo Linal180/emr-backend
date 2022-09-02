@@ -2,8 +2,10 @@ import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@n
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { RemoveContact, UpdateContactInput } from 'src/providers/dto/update-contact.input';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/services/users.service';
+import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
+import { FacilityService } from '../../facilities/services/facility.service';
 import ContactInput from '../dto/contact-input.dto';
 import { ContactsPayload } from '../dto/contacts-payload.dto';
 import { CreateContactInput } from '../dto/create-contact.input';
@@ -16,7 +18,10 @@ export class ContactService {
     private contactRepository: Repository<Contact>,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => FacilityService))
+    private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
+    private readonly utilsService: UtilsService,
   ) { }
 
   /**
@@ -33,6 +38,11 @@ export class ContactService {
         const user = await this.usersService.findUserById(createContactInput.userId)
         contactInstance.userId = user.id
       }
+      //fetch user
+      if (createContactInput.facilityId) {
+        const facility = await this.facilityService.findOne(createContactInput.facilityId)
+        contactInstance.facility = facility
+      }
       return await this.contactRepository.save(contactInstance);
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -46,7 +56,11 @@ export class ContactService {
    */
   async updateContact(updateContactInput: UpdateContactInput): Promise<Contact> {
     try {
-      return await this.contactRepository.save(updateContactInput)
+      if (updateContactInput.id) {
+        return await this.utilsService.updateEntityManager(Contact, updateContactInput.id, updateContactInput, this.contactRepository)
+      }
+      const contactInstance = this.contactRepository.create(updateContactInput)
+      return await this.contactRepository.save(contactInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -81,12 +95,52 @@ export class ContactService {
   }
 
   /**
+   * Finds contacts by patient id
+   * @param id 
+   * @returns contacts by patient id 
+   */
+  async findContactsByPatientId(id: string): Promise<Contact[]> {
+    return await this.contactRepository.find({
+      where: {
+        patientId: id
+      }
+    });
+  }
+
+  /**
+   * Finds contacts by facility id
+   * @param id 
+   * @returns contacts by facility id 
+   */
+  async findContactsByFacilityId(id: string): Promise<Contact[]> {
+    return await this.contactRepository.find({
+      where: {
+        facilityId: id
+      }
+    });
+  }
+
+  /**
    * Removes contact
    * @param { id } 
    */
   async removeContact({ id }: RemoveContact) {
     try {
       await this.contactRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Removes patient contacts
+   * @param { id } 
+   */
+  async removePatientContacts({ id }: RemoveContact) {
+    try {
+      const entities = await this.contactRepository.find({ patientId: id })
+      await this.contactRepository.remove(entities)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

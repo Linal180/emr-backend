@@ -1,7 +1,13 @@
+import * as moment from "moment";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Between, Equal, FindConditions, FindManyOptions, FindOperator, JoinOptions, Not, ObjectLiteral, Repository, WhereExpressionBuilder } from "typeorm";
+import {
+  Between, Equal, FindConditions, FindManyOptions, FindOperator, In, JoinOptions, Not, ObjectLiteral,
+  Raw, Repository, WhereExpressionBuilder, MoreThanOrEqual, LessThanOrEqual
+} from "typeorm";
+import { Speciality } from "src/providers/entities/doctor.entity";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
+import { LabTestStatus } from "src/labs/entities/labTests.entity";
 
 interface whereConditionInput {
   status?: string | number
@@ -31,6 +37,11 @@ interface FilterOptionsResponse {
   join?: JoinOptions
 }
 
+interface OrderByColumn {
+  columnName: string
+  order: 'ASC' | 'DESC'
+}
+
 @Injectable()
 export class PaginationService {
 
@@ -41,16 +52,19 @@ export class PaginationService {
    * @param paginationInput 
    * @returns paginated response PaginationPayloadInterface<T>
    */
-  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput): Promise<PaginationPayloadInterface<T>> {
+  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[], orderByColumn?: OrderByColumn): Promise<PaginationPayloadInterface<T>> {
     try {
-      const { associatedTo, relationField, associatedToField } = paginationInput;
+      const { associatedTo, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
       let filterOption: FilterOptionsResponse = null;
-      if (associatedTo && relationField && associatedToField.columnValue) {
+
+      if (associatedTo && associatedToField.columnValue) {
         filterOption = this.getFilterOptions(paginationInput);
       }
+
       const { paginationOptions: { page, limit } } = paginationInput || {};
       let query: FindManyOptions = null;
+
       if (filterOption) {
         query = {
           where: (qb: WhereExpressionBuilder) => {
@@ -61,7 +75,10 @@ export class PaginationService {
           },
           skip,
           take,
-          order,
+          order: orderByColumn ? {
+            [orderByColumn.columnName]: orderByColumn.order
+          } : order,
+          select
         };
         query.join = filterOption.join;
       } else {
@@ -71,9 +88,13 @@ export class PaginationService {
           },
           skip,
           take,
-          order,
+          order: orderByColumn ? {
+            [orderByColumn.columnName]: orderByColumn.order
+          } : order,
+          select
         }
       }
+
       const [paginatedData, totalCount] = await repository.findAndCount(query);
       const totalPages = Math.ceil(totalCount / limit)
 
@@ -90,9 +111,7 @@ export class PaginationService {
         totalPages,
         data: paginatedData,
       }
-
     } catch (error) {
-      console.log("error", error)
       throw new InternalServerErrorException(error);
     }
   }
@@ -104,7 +123,6 @@ export class PaginationService {
    */
   private getFilterOptions(paginationInput: PaginatedEntityInput): FilterOptionsResponse {
     const { associatedToField: { columnValue, columnName, columnName2, columnName3, filterType }, associatedTo, relationField } = paginationInput;
-    console.log("associatedToField", columnValue, columnName, columnName2);
 
     const join: JoinOptions = { alias: 'thisTable', innerJoinAndSelect: { [associatedTo]: `thisTable.${relationField}` } };
     let where = { str: {}, obj: {} }
@@ -115,12 +133,15 @@ export class PaginationService {
       };
     } else if (filterType === 'stringFilter') {
       where = {
-        str: `${associatedTo}.${columnName} ILIKE :data OR ${associatedTo}.${columnName2} ILIKE :data OR ${associatedTo}.${columnName3} ILIKE :data`,
+        str: `(${associatedTo}.${columnName} ILIKE :data${columnName2 ? ` OR ${associatedTo}.${columnName2} ILIKE :data` : ''}${columnName3 ? ` OR ${associatedTo}.${columnName3} ILIKE :data` : ''})`,
         obj: { data: `%${columnValue}%` }
       };
-      console.log("where", where);
     }
-    return { join, where };
+    if (relationField) {
+      return { join, where };
+    } else {
+      return { where };
+    }
   }
 
 
@@ -129,32 +150,87 @@ export class PaginationService {
    * @param paginationInput 
    * @returns options 
    */
-  private orchestrateOptions<Entity = any>(paginationInput: PaginatedEntityInput): FindManyOptions {
+  private orchestrateOptions(paginationInput: PaginatedEntityInput): FindManyOptions {
     const {
       status,
+      primaryContact,
       userId,
       to,
-      requestType,
       MembershipPlan,
       isPrivate,
+      isActive,
       currentPhaseId,
       from,
+      appointmentId,
+      patientId,
+      appointmentNumber,
       dueToday,
       facilityId,
-      phychType,
-
-      ageGroupId,
+      singleFacilityId,
+      FormId,
+      facilityName,
+      allergyName,
+      allergyType,
+      reactionName,
+      practiceName,
+      serviceName,
+      searchString,
+      role,
+      patientRecord,
+      doctorId,
+      practiceId,
+      appointmentStatus,
       categoryId,
+      labTestStatus,
       category,
+      isSystemForm,
+      doctorFirstName,
+      roleName,
+      customRole,
+      typeId,
+      AttachmentModuleType,
+      formType,
+      loincNum,
+      component,
+      specimenTypeName,
+      orderNumber,
+      documentPracticeId,
+      agreementFacilityId,
+      agreementPracticeId,
+      documentTypeName,
+      providerId,
+      speciality,
+      moduleType,
+      logUserId,
+      logStartDate,
+      logEndDate,
+      code,
+      feeScheduleName,
+      effectiveDate,
+      expiryDate,
+      feeScheduleId,
+      claimFeedFacilityName,
+      claimFeedPatientName,
+      claimFeedPayerId,
+      claimFeedFromDate,
+      claimFeedToDate,
+      claimStatusId,
+      claimNo,
+      billingFromDate,
+      billingToDate,
+      selfId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
+
+    const today = new Date()
+
     const whereOptions: WhereOptions = {
       where: {
-        ...(phychType && {
-          phychType
+        ...(patientId && patientId != null && {
+          patientId
         }),
-        ...(ageGroupId && {
-          ageGroupId
+        ...(appointmentId && {
+          appointmentId
         }),
         ...(categoryId && {
           categoryId
@@ -165,8 +241,89 @@ export class PaginationService {
         ...(facilityId && {
           facilityId
         }),
+        ...(allergyName && {
+          name: Raw(alias => `${alias} ILIKE '%${allergyName}%'`),
+        }),
+        ...(allergyType && {
+          allergyType: In([allergyType]),
+        }),
+        ...(singleFacilityId && {
+          id: singleFacilityId
+        }),
+        ...(typeId && {
+          typeId
+        }),
+        ...(AttachmentModuleType && {
+          type: AttachmentModuleType
+        }),
+        ...(doctorId && {
+          doctorId
+        }),
+        ...(providerId && {
+          providerId
+        }),
+        ...(FormId && {
+          FormId
+        }),
+        ...(patientRecord && {
+          patientRecord: Raw(alias => `${alias} ILIKE '%${patientRecord}%'`),
+        }),
+        ...(orderNumber && {
+          orderNumber: Raw(alias => `${alias} ILIKE '%${orderNumber}%'`),
+        }),
+        ...(reactionName && {
+          name: Raw(alias => `${alias} ILIKE '%${reactionName}%'`),
+        }),
+        ...(loincNum && {
+          loincNum: Raw(alias => `${alias} ILIKE '%${loincNum}%'`),
+        }),
+        ...(component && {
+          component: Raw(alias => `${alias} ILIKE '%${component}%'`),
+        }),
+        ...(role && {
+          role: Not(role)
+        }),
+        ...(roleName && {
+          role: Raw(alias => `${alias} ILIKE '%${roleName}%'`),
+        }),
+        ...(specimenTypeName && {
+          name: Raw(alias => `${alias} ILIKE '%${specimenTypeName}%'`),
+        }),
+        ...(facilityName && {
+          name: Raw(alias => `${alias} ILIKE '%${facilityName}%'`),
+        }),
+        ...(practiceName && {
+          name: Raw(alias => `${alias} ILIKE '%${practiceName}%'`),
+        }),
+        ...(serviceName && {
+          name: Raw(alias => `${alias} ILIKE '%${serviceName}%'`),
+        }),
+        ...(doctorFirstName && {
+          firstName: Raw(alias => `${alias} ILIKE '%${doctorFirstName}%'`),
+        }),
+        ...(documentTypeName && {
+          type: Raw(alias => `${alias} ILIKE '%${documentTypeName}%'`),
+        }),
+        ...(speciality && {
+          speciality: speciality as Speciality,
+        }),
+        ...(practiceId && practiceId !== null && {
+          practiceId: practiceId
+        }),
+        ...(appointmentStatus && {
+          status: appointmentStatus
+        }),
         ...(status != null && {
           status
+        }),
+        ...(primaryContact != null && {
+          primaryContact
+        }),
+        ...(isActive != null && {
+          isActive
+        }),
+        ...(customRole != null && {
+          customRole
         }),
         ...(isPrivate && {
           isPrivate: Not(isPrivate)
@@ -177,15 +334,60 @@ export class PaginationService {
         ...(currentPhaseId && {
           phaseId: currentPhaseId
         }),
+        ...(appointmentNumber && {
+          appointmentNumber: appointmentNumber
+        }),
         ...(dueToday && {
           dueDate: Equal(new Date().toISOString().split('T')[0])
         }),
+        ...(isSystemForm != null && {
+          isSystemForm
+        }),
+        ...(formType && {
+          type: formType
+        }),
+        ...(labTestStatus && {
+          labTestStatus: Raw(alias => `${alias} != '${labTestStatus}'`),
+        }),
+        ...(documentPracticeId && {
+          practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${documentPracticeId}'`),
+        }),
+        ...(agreementPracticeId && {
+          practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementPracticeId}'`),
+        }),
+        ...(agreementFacilityId && {
+          facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
+        }),
+        ...(claimNo && claimNo != null && { claimNo }),
+        ...(claimStatusId && claimStatusId != null && { claimStatusId }),
+        ...(billingFromDate && billingFromDate != null && { from: billingFromDate }),
+        ...(billingToDate && billingToDate != null && { to: billingToDate }),
+        ...(code && code != null && { code }),
+        ...(feeScheduleId && { feeScheduleId }),
+        ...(moduleType && moduleType != null && { moduleType }),
+        ...(logUserId && logUserId != null && { userId: logUserId }),
+        ...(feeScheduleName && feeScheduleName != null && { name: feeScheduleName }),
+        ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) }),
+        ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
+        ...(expiryDate && expiryDate != null && { expiryDate: Raw(alias => `${alias} Is null OR ${alias} <= '${today}'`) }),
+        ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }),
+        ...(claimFeedFacilityName && { provName: Raw(alias => `${alias} ILIKE '%${claimFeedFacilityName}%'`) }),
+        ...(claimFeedPatientName && { patientFullName: Raw(alias => `${alias} ILIKE '%${claimFeedPatientName}%'`) }),
+        ...(claimFeedPayerId && { payerId: Raw(alias => `${alias} ILIKE '%${claimFeedPayerId}%'`) }),
+        ...(claimFeedFromDate && { fromDos: Raw(alias => `${alias} = '${moment(claimFeedFromDate).format("YYYYMMDD")}'`) }),
+        ...(claimFeedToDate && { thruDos: Raw(alias => `${alias} = '${moment(claimFeedToDate).format("YYYYMMDD")}'`) }),
       }
     };
+
     // Assigned to User
     if (userId) {
       !Number.isInteger(status) && !status && delete whereOptions.where.status
       whereOptions.where.user = { id: userId }
+    }
+
+    if (selfId) {
+      !Number.isInteger(status) && !status && delete whereOptions.where.status
+      whereOptions.where.user = { id: selfId }
     }
 
     // FROM - TO Filter

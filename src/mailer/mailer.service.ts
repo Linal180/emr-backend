@@ -24,7 +24,9 @@ export class MailerService {
     "updateDone": this.configService.get('REQUEST_INITIATED'),
     "requestApproved": this.configService.get('REQUEST_APPROVED'),
     "updateNeeded": this.configService.get('REQUEST_UPDATE_NEEDED'),
-    "updateDeclined": this.configService.get('REQUEST_UPDATE_DECLINED')
+    "updateDeclined": this.configService.get('REQUEST_UPDATE_DECLINED'),
+    "appointmentConfirmation": this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID'),
+    "patientPortalInvitation": this.configService.get("PATIENT_PORTAL_INVITATION_TEMPLATE_ID")
   })[templateName]
 
   /**
@@ -33,20 +35,132 @@ export class MailerService {
    * @param userId 
    * @param fullName 
    */
-  async sendEmailForgotPassword(email: string, userId: string, fullName: string, isAdmin: boolean, token: string, isInvite: boolean) {
-    const portalAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
-    const url = `${portalAppBaseUrl}/reset-password?token=${token}`
+  async sendEmailForgotPassword(email: string, userId: string, fullName: string, providerName: string, isAdmin: boolean, token: string, isInvite: string) {
+    const portalAppBaseUrl = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') : this.configService.get('ADMIN_APP_BASE_URL')
+    let templateId = ''
+    if (isInvite === 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID') {
+      templateId = this.configService.get('PATIENT_PORTAL_INVITATION_TEMPLATE_ID')
+    } else if (isInvite === 'INVITATION_TEMPLATE_ID') {
+      templateId = this.configService.get('INVITATION_TEMPLATE_ID')
+    } else if (isInvite === 'FORGOT_PASSWORD_TEMPLATE_ID') {
+      templateId = this.configService.get('FORGOT_PASSWORD_TEMPLATE_ID')
+    }
+    const url = isInvite ? `${portalAppBaseUrl}/set-password?token=${token}` : `${portalAppBaseUrl}/reset-password?token=${token}`
     const msg = {
       to: email,
       from: this.configService.get('FROM_EMAIL'),
-      templateId: isInvite ? this.configService.get('INVITATION_TEMPLATE_ID') : this.configService.get('FORGOT_PASSWORD_TEMPLATE_ID'),
+      templateId: templateId,
       dynamicTemplateData: {
         fullName,
+        providerName,
         resetPasswordURL: url
       }
     };
     try {
       await this.sgMail.send(msg);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
+  async sendAppointmentConfirmationsEmail(email: string, fullName: string, slotStartTime: string, token: string, id: string, patientPortal: boolean) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const emrAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
+    const portalAppBaseUrl = patientPortal ? patientAppBaseUrl : emrAppBaseUrl
+    const url = `${portalAppBaseUrl}/cancel-appointment/${token}`
+    const moreInfo = `${portalAppBaseUrl}/patient-information/${id}`
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+        slotStartTime,
+        cancelAppointment: url,
+        moreInfo: moreInfo
+      }
+    };
+    try {
+      await this.sgMail.send(msg);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
+  async sendAppointmentReminderEmail(email: string, fullName: string, slotStartTime: string, facilityName: string, patientPortal: boolean) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const emrAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
+    const portalAppBaseUrl = patientPortal ? patientAppBaseUrl : emrAppBaseUrl
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('APPOINTMENT_REMINDER_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+        scheduleStartDateTime: slotStartTime,
+        facilityName
+      }
+    };
+    try {
+      await this.sgMail.send(msg);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
+  async sendAppointmentTelehealthEmail(email: string, fullName: string, appointmentTime: string, providerName: string, id: string) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const teleHealthURL = `${patientAppBaseUrl}/telehealth/${id}`
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('APPOINTMENT_TELEHEALTH_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+        appointmentTime,
+        teleHealthURL: teleHealthURL,
+        providerName
+      }
+    };
+    try {
+      await this.sgMail.send({ ...msg });
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    }
+  }
+
+  async sendLabResultsEmail(email: string, fullName: string, attachment) {
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const msg = {
+      to: email,
+      from: this.configService.get('FROM_EMAIL'),
+      templateId: this.configService.get('PATIENT_LAB_RESULTS_TEMPLATE_ID'),
+      dynamicTemplateData: {
+        fullName,
+      },
+      attachments: [
+        {
+          content: attachment,
+          filename: "attachment.pdf",
+          type: "application/pdf",
+          disposition: "attachment"
+        }
+      ]
+    };
+    try {
+      await this.sgMail.send({ ...msg });
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -62,7 +176,7 @@ export class MailerService {
    * @param userId 
    */
   async sendVerificationEmail(email: string, fullName: string, userId: string, isAdmin: boolean, token: string) {
-    const portalAppBaseUrl = isAdmin ? this.configService.get('PORTAL_APP_BASE_URL') : this.configService.get('ADMIN_APP_BASE_URL');
+    const portalAppBaseUrl = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') : this.configService.get('ADMIN_APP_BASE_URL');
     const verifyEmailURL = `${portalAppBaseUrl}/verify-email?token=${token}&email=${email}`
     const msg = {
       to: email,
@@ -92,7 +206,7 @@ export class MailerService {
   async sendEmailNotification(email: string[], templateName: TemplateSwitch, dynamicTemplateData: DynamicTemplateData) {
     const templateId = this.templateSwitch(templateName);
     dynamicTemplateData.adminPortalURL = dynamicTemplateData.requestType ? this.configService.get('ADMIN_APP_BASE_URL') + dynamicTemplateData.requestType : this.configService.get('ADMIN_APP_BASE_URL')
-    dynamicTemplateData.userPortalURL = dynamicTemplateData.requestType ? this.configService.get('PORTAL_APP_BASE_URL') + dynamicTemplateData.requestType : this.configService.get('PORTAL_APP_BASE_URL');
+    dynamicTemplateData.userPortalURL = dynamicTemplateData.requestType ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') + dynamicTemplateData.requestType : this.configService.get('PORTAL_APP_BASE_URL');
     const msg = {
       to: email,
       from: this.configService.get('FROM_EMAIL'),

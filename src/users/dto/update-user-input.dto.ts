@@ -13,6 +13,9 @@ export class UpdateUserInput extends PartialType(
 
   @Field({ nullable: true })
   emailVerified?: boolean;
+
+  @Field({ nullable: true })
+  token?: string;
 }
 @InputType()
 export class GetUser extends PickType(UpdateUserInput, ['id'] as const) { }

@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Patient } from './patient.entity';
 
 @Entity({ name: 'Employers' })
@@ -33,8 +33,32 @@ export class Employer {
   @Field({ nullable: true })
   usualOccupation: string;
 
-  @ManyToOne(() => Patient, patient => patient.contacts, { onDelete: 'CASCADE' })
-  @Field(type => Patient, { nullable: true })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  city: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  state: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  address: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  zipCode: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  country: string
+
+  @ManyToOne(() => Patient, patient => patient.contacts, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => Patient, { nullable: true })
   patient: Patient;
 
   @CreateDateColumn({ type: 'timestamptz' })

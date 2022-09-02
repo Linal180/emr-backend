@@ -1,122 +1,150 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { UserRole } from 'src/users/entities/role.entity';
-import { ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, PrimaryDepartment, PRONOUNS, RACE, REGDepartment, SEXUALORIENTATION } from '../entities/patient.entity';
+import { COMMUNICATIONTYPE, ETHNICITY, GENDERIDENTITY, HOLDSTATEMENT, HOMEBOUND, MARITIALSTATUS, PRONOUNS, RACE, SEXUALORIENTATION } from '../entities/patient.entity';
 
 @InputType()
 export class CreatePatientItemInput {
 
   @Field({ nullable: true })
-  suffix: string;
+  suffix?: string;
 
   @Field({ nullable: true })
-  firstName: string;
+  email?: string;
 
   @Field({ nullable: true })
-  middleName: string;
+  firstName?: string;
 
   @Field({ nullable: true })
-  lastName: string;
+  patientRecord?: string;
 
   @Field({ nullable: true })
-  firstNameUsed: string;
+  middleName?: string;
 
   @Field({ nullable: true })
-  prefferedName: string;
+  lastName?: string;
 
   @Field({ nullable: true })
-  previousFirstName: string;
+  firstNameUsed?: string;
 
   @Field({ nullable: true })
-  usualProviderId: string;
+  prefferedName?: string;
 
   @Field({ nullable: true })
-  previouslastName: string;
+  previousFirstName?: string;
 
   @Field({ nullable: true })
-  motherMaidenName: string;
+  pharmacy?: string;
 
   @Field({ nullable: true })
-  ssn: string;
+  usualProviderId?: string;
 
   @Field({ nullable: true })
-  dob: string;
-
-  @Field(type => GENDERIDENTITY, { nullable: true })
-  gender: GENDERIDENTITY
-
-  @Field(type => REGDepartment, { nullable: true })
-  registrationDepartment: REGDepartment
-
-  @Field(type => PrimaryDepartment, { nullable: true })
-  primaryDepartment: PrimaryDepartment
+  previouslastName?: string;
 
   @Field({ nullable: true })
-  registrationDate: string;
+  motherMaidenName?: string;
 
   @Field({ nullable: true })
-  deseasedDate: string;
+  ssn?: string;
 
   @Field({ nullable: true })
-  privacyNotice: boolean;
+  dob?: string;
+
+  @Field(() => GENDERIDENTITY, { nullable: true })
+  gender?: GENDERIDENTITY
 
   @Field({ nullable: true })
-  relaseOfInfoBill: boolean;
+  registrationDepartment?: string
 
   @Field({ nullable: true })
-  callToConsent: boolean;
+  primaryDepartment?: string
+
+  @Field({ nullable: true, })
+  registrationDate?: string;
 
   @Field({ nullable: true })
-  medicationHistoryAuthority: boolean;
+  deceasedDate?: string;
 
   @Field({ nullable: true })
-  patientNote: string;
+  privacyNotice?: boolean; 
 
   @Field({ nullable: true })
-  language: string;
-
-  @Field(type => RACE, { nullable: true })
-  race: RACE
-
-  @Field(type => ETHNICITY, { nullable: true })
-  ethnicity: ETHNICITY
-
-  @Field(type => MARITIALSTATUS, { nullable: true })
-  maritialStatus: MARITIALSTATUS
-
-  @Field(type => SEXUALORIENTATION, { nullable: true })
-  sexualOrientation: SEXUALORIENTATION
+  releaseOfInfoBill?: boolean;
 
   @Field({ nullable: true })
-  genderIdentity: GENDERIDENTITY
+  callToConsent?: boolean;
 
   @Field({ nullable: true })
-  sexAtBirth: GENDERIDENTITY
-
-  @Field(type => PRONOUNS, { nullable: true })
-  pronouns: PRONOUNS
-
-  @Field(type => HOMEBOUND, { nullable: true })
-  homeBound: HOMEBOUND
-
-  @Field(type => HOLDSTATEMENT, { nullable: true })
-  holdStatement: HOLDSTATEMENT
+  inviteAccepted?: boolean;
 
   @Field({ nullable: true })
-  statementDelivereOnline: boolean;
+  patientNote?: string;
 
   @Field({ nullable: true })
-  statementNote: string;
+  language?: string;
+  
+  @Field(() => COMMUNICATIONTYPE, { nullable: true })
+  preferredCommunicationMethod?: COMMUNICATIONTYPE
+
+  @Field(() => RACE, { nullable: true })
+  race?: RACE
+
+  @Field(() => ETHNICITY, { nullable: true })
+  ethnicity?: ETHNICITY
+
+  @Field(() => MARITIALSTATUS, { nullable: true })
+  maritialStatus?: MARITIALSTATUS
+
+  @Field(() => SEXUALORIENTATION, { nullable: true })
+  sexualOrientation?: SEXUALORIENTATION
+
+  @Field(() => GENDERIDENTITY, { nullable: true })
+  genderIdentity?: GENDERIDENTITY
+
+  @Field(() => GENDERIDENTITY, { nullable: true })
+  sexAtBirth?: GENDERIDENTITY
+
+  @Field(() => PRONOUNS, { nullable: true })
+  pronouns?: PRONOUNS
+
+  @Field(() => HOMEBOUND, { nullable: true })
+  homeBound?: HOMEBOUND
+
+  @Field(() => HOLDSTATEMENT, { nullable: true })
+  holdStatement?: HOLDSTATEMENT
 
   @Field({ nullable: true })
-  statementNoteDateFrom: string;
+  statementDelivereOnline?: boolean;
 
   @Field({ nullable: true })
-  statementNoteDateTo: string;
+  statementNote?: string;
 
   @Field({ nullable: true })
-  adminId: string;
+  statementNoteDateFrom?: string;
 
-  @Field({ nullable: false })
-  facilityId: string;
+  @Field({ nullable: true })
+  statementNoteDateTo?: string;
 
+  @Field({ nullable: true })
+  adminId?: string;
+
+  @Field({ nullable: true })
+  facilityId?: string;
+
+  @Field({ nullable: true })
+  phoneEmailPermission?: boolean;
+
+  @Field({ nullable: true })
+  cellPhonePermission?: boolean;
+
+  @Field({ nullable: true })
+  medicalPermission?: boolean;
+
+  @Field({ nullable: true })
+  resultConsent?: boolean;
+
+  @Field({ nullable: true })
+  immunizationConsent?: boolean;
+
+  @Field({ nullable: true })
+  medicationHistoryConsent?: boolean;
 }

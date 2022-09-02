@@ -1,11 +1,16 @@
+require('dotenv').config();
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { getConnection, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { DynamicClassEntity } from './dto/dynamic-entity';
+import { DynamicClassEntity, TwilioInput } from './dto/dynamic-entity';
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 @Injectable()
 export class UtilsService {
-  constructor() { }
+  constructor(
+    private configService: ConfigService
+  ) { }
   /**
     * Updates entity manager
     * @template T 
@@ -35,4 +40,95 @@ export class UtilsService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  /**
+   * Generates string
+   * @param length 
+   * @returns  
+   */
+  async generateString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    const charactersLength = characters.length - 2;
+    for (let i = 0; i < 2; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result + Math.floor(100000 + Math.random() * 9000);
+  }
+
+  /**
+   * Sms notification
+   * @param twilioInput 
+   */
+  async smsNotification(twilioInput: TwilioInput) {
+    const response = await client.messages.create({
+      body: twilioInput.body,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: twilioInput.to
+    });
+    return response
+  }
+
+  /**
+   * Sends verification code
+   * @param phone 
+   */
+  async sendVerificationCode(phone: string) {
+    try {
+      client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID')).verifications.create({ to: '+1' + phone, channel: "sms" })
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Verifys otpcode
+   * @param phone 
+   * @param otpCode 
+   * @returns  
+   */
+  async verifyOTPCode(phone: string, otpCode: string) {
+    try {
+      const verification = await client.verify.services(this.configService.get('TWILIO_OTP_SERVICE_SID'))
+        .verificationChecks
+        .create({ to: '+1' + phone, code: otpCode })
+      if (verification && verification.status === 'approved') {
+        return true
+      } else {
+        return false
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+  /**
+   * Converts tz
+   * @param date 
+   * @param tzString 
+   * @returns  
+   */
+  async convertTZ(date, tzString) {
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: tzString }));
+  }
+
+  //generate invoice #
+  async generateInvoiceNo() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    const charactersLength = characters.length - 2;
+    for (let i = 0; i < 3; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return `${result}-${Math.floor(100000000 + Math.random() * 9000)}`;
+  }
+
+  mergeArrayAndRemoveDuplicates = (original, newdata, selector = 'key') => {
+    newdata.forEach(dat => {
+      const foundIndex = original.findIndex(ori => ori[selector] == dat[selector]);
+      if (foundIndex >= 0) original.splice(foundIndex, 1, dat);
+      else original.push(dat);
+    });
+
+    return original;
+  };
 }

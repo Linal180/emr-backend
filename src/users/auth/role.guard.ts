@@ -1,26 +1,39 @@
 import {
-  Injectable,
   CanActivate,
-  ExecutionContext,
+  ExecutionContext, Injectable
 } from '@nestjs/common';
-import { GqlExecutionContext } from '@nestjs/graphql';
 import { Reflector } from '@nestjs/core';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { getRepository } from 'typeorm';
+import { Role } from '../entities/role.entity';
+import { RolePermission } from '../entities/rolePermissions.entity';
 
 @Injectable()
-export default class RoleGuard implements CanActivate {
+export default class PermissionGuard implements CanActivate {
   constructor(private reflector: Reflector) { }
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context).getContext();
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    if (!roles) {
+    const apiName = this.reflector.get<string>('name', context.getHandler());
+    if (!apiName) {
       return true;
     }
     const user = ctx.user;
-    return this.matchRoles(roles, user.roles);
+    const { roles } = user || {}
+    const transformedRoles = await Promise.all(roles.map(async (role) => {
+      const rolePermissions = await getRepository(RolePermission).find({ where: { roleId: role?.id } });
+      return {
+        ...role,
+        rolePermissions
+      }
+    }))
+    return this.matchRoles(apiName, transformedRoles);
   }
 
-  matchRoles(roles: string[], userRoles: string[]): boolean {
-    return roles.some(r => userRoles.indexOf(r) >= 0);
+  matchRoles(apiName: string, userRoles: Role[]): boolean {
+    const permissions = userRoles.map((role) => role?.rolePermissions.map((item) => item?.permission))
+    const permissionsFlat = permissions.flat()
+    const flag = permissionsFlat.find((item) => item.name === apiName)
+    return flag ? true : false
   }
 }

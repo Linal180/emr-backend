@@ -1,6 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { UserRole } from 'src/users/entities/role.entity';
-import { Speciality, SsnType } from '../entities/doctor.entity';
+import { Speciality } from '../entities/doctor.entity';
 
 @InputType()
 export class CreateDoctorItemInput {
@@ -20,20 +19,20 @@ export class CreateDoctorItemInput {
   @Field({ nullable: true })
   suffix: string;
 
-  @Field({ nullable: false })
-  email: string;
-
   @Field({ nullable: true })
   password: string;
-
-  @Field(type => UserRole, { description: 'Send doctor Type from the ENUM - Sign-up', nullable: true })
-  roleType?: UserRole;
 
   @Field({ nullable: true })
   adminId?: string;
 
   @Field({ nullable: true })
+  timeZone?: string;
+
+  @Field({ nullable: false })
   facilityId?: string;
+
+  @Field({ nullable: true })
+  practiceId?: string;
 
   @Field({ nullable: true })
   providerIntials: string;
@@ -49,9 +48,6 @@ export class CreateDoctorItemInput {
 
   @Field({ nullable: true })
   ssn: string;
-
-  @Field(type => SsnType, { description: 'Doctor ssn type', nullable: true })
-  ssnType: SsnType;
 
   @Field({ nullable: true })
   taxonomyCode: string;
