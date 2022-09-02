@@ -2,7 +2,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
 import * as momentTimezone from 'moment-timezone';
-import { Brackets, Connection, getConnection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, Connection, getConnection, In, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 //entities, services, inputs types, enums
 import { createToken } from 'src/lib/helper';
@@ -66,7 +66,7 @@ export class AppointmentService {
       //fetch already exiting appointment
       const appointmentNumber = await this.utilsService.generateString(8);
       let appointmentObj: Appointment | null = null;
-      
+
       if (createAppointmentInput?.providerId && createAppointmentInput.patientId) {
         appointmentObj = await this.findAppointment(createAppointmentInput.providerId, createAppointmentInput.patientId)
       }
@@ -116,9 +116,11 @@ export class AppointmentService {
         //save appointment & commit transaction
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         await queryRunner.commitTransaction();
+
         if (patient.phoneEmailPermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
+
         if (patient?.email) {
           if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.APPOINTMENT) {
             this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointmentInstance.scheduleStartDateTime, token, patient.id, false)
@@ -245,17 +247,23 @@ export class AppointmentService {
     }
   }
 
+
+  /**
+   * Sends appointment reminder
+   * @param appointmentReminderInput 
+   */
   async sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput) {
-    const { appointmentId, timeZone  }= appointmentReminderInput
+    const { appointmentId } = appointmentReminderInput
     try {
       const appointmentInfo = await this.appointmentRepository.findOne({
         relations: ['patient', 'facility', 'provider'],
         where: { id: appointmentId }
       })
-      const { patient, facility, provider } = appointmentInfo || {}
+      const { patient, facility, provider, timeZone } = appointmentInfo || {}
       const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
       const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
-      const slotStartTime =  momentTimezone(appointmentInfo.scheduleStartDateTime).tz(timeZone).format('MM-DD-YYYY hh:mm:ss A')
+      const slotStart = momentTimezone(appointmentInfo.scheduleStartDateTime).tz(timeZone).format('MM-DD-YYYY hh:mm A')
+      const slotStartTime = `${slotStart} ( ${timeZone} Time Zone )`
 
       let messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} at ${facility.name} facility`
 
@@ -279,6 +287,12 @@ export class AppointmentService {
     }
   }
 
+
+  /**
+   * Finds appointment query
+   * @param appointmentInput 
+   * @returns appointment query 
+   */
   async findAppointmentQuery(appointmentInput: AppointmentInput): Promise<SelectQueryBuilder<Appointment>> {
     const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, ...whereObj } = appointmentInput
     const whereStr = Object.keys(whereObj).reduce((acc, key) => {
@@ -290,6 +304,7 @@ export class AppointmentService {
       return acc
     }, {})
 
+
     const { limit, page } = appointmentInput.paginationOptions
     const [first] = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
     let baseQuery = getConnection()
@@ -298,7 +313,7 @@ export class AppointmentService {
       .skip((page - 1) * limit)
       .take(limit)
       .where(whereStr as ObjectLiteral)
-      .andWhere(appointmentDate ? '"appointment"."scheduleStartDateTime"::date = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
+      .andWhere(appointmentDate ? '"appointment"."appointmentDate" = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
 
     if (first) {
       baseQuery
@@ -498,6 +513,12 @@ export class AppointmentService {
     });
   }
 
+
+  /**
+   * Gets appointments
+   * @param getAppointments 
+   * @returns appointments 
+   */
   async getAppointments(getAppointments: GetAppointments): Promise<Appointment[]> {
     if (getAppointments.doctorId) {
       const appointment = await this.appointmentRepository.find({

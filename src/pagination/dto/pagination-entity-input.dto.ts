@@ -89,4 +89,5 @@ export class PaginatedEntityInput {
   billingToDate?: string;
   billingFromDate?: string;
   selfId?: string;
+  isClaimStatus?: boolean
 }

@@ -342,6 +342,28 @@ const documentFields = [
   }
 ]
 
+const slotsFields = [
+  {
+    css: "",
+    name: "slot",
+    type: ElementType.CUSTOM,
+    label: "Available Slots",
+    column: 12,
+    apiCall: FormBuilderApiSelector.SERVICE_SLOT,
+    fieldId: uuid(),
+    options: [],
+    errorMsg: "",
+    required: false,
+    textArea: false,
+    tableName: "Appointments",
+    columnName: "appointmentDate",
+    placeholder: "Please select a Slot",
+    defaultValue: "",
+    isMultiSelect: false,
+    tableContactType: null,
+  },
+]
+
 const facilityServicesFields = [
   {
     css: "",
@@ -418,27 +440,7 @@ const facilityAppointment: FormTabs[] = [
         id: uuid(),
         col: 6,
         name: "Available Slots",
-        fields: [
-          {
-            css: "",
-            name: "slot",
-            type: ElementType.CUSTOM,
-            label: "Available Slots",
-            column: 12,
-            apiCall: FormBuilderApiSelector.SERVICE_SLOT,
-            fieldId: uuid(),
-            options: [],
-            errorMsg: "",
-            required: false,
-            textArea: false,
-            tableName: "Appointments",
-            columnName: "",
-            placeholder: "Please select a Slot",
-            defaultValue: "",
-            isMultiSelect: false,
-            tableContactType: null,
-          },
-        ],
+        fields: slotsFields ,
       },
       {
         id: uuid(),
@@ -3552,26 +3554,7 @@ export const FormTemplates = [
             col: 4,
             name: "Available Slots",
             sectionId: formTemplateTabIds.AVAILABLE_SLOTS,
-            fields: [
-              {
-                css: "",
-                name: "slot",
-                columnName: "",
-                tableName: "Appointments",
-                type: ElementType.CUSTOM,
-                label: "Available Slots",
-                column: 12,
-                fieldId: uuid(),
-                options: [],
-                errorMsg: "",
-                required: false,
-                textArea: false,
-                placeholder: "Please select a Slot",
-                defaultValue: "",
-                isMultiSelect: false,
-                apiCall: FormBuilderApiSelector.SERVICE_SLOT
-              },
-            ]
+            fields: slotsFields,
           }]
       }]
     }

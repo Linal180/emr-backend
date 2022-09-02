@@ -7,7 +7,6 @@ import {
 import { Speciality } from "src/providers/entities/doctor.entity";
 import { PaginatedEntityInput } from "./dto/pagination-entity-input.dto";
 import PaginationPayloadInterface from "./dto/pagination-payload-interface.dto";
-import { LabTestStatus } from "src/labs/entities/labTests.entity";
 
 interface whereConditionInput {
   status?: string | number
@@ -219,6 +218,7 @@ export class PaginationService {
       billingFromDate,
       billingToDate,
       selfId,
+      isClaimStatus,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -359,7 +359,7 @@ export class PaginationService {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
         ...(claimNo && claimNo != null && { claimNo }),
-        ...(claimStatusId && claimStatusId != null && { claimStatusId }),
+        ...(isClaimStatus && { claimStatusId: claimStatusId ? claimStatusId : Raw(alias => `${alias} is not null`) }),
         ...(billingFromDate && billingFromDate != null && { from: billingFromDate }),
         ...(billingToDate && billingToDate != null && { to: billingToDate }),
         ...(code && code != null && { code }),
