@@ -15,18 +15,18 @@ export class CreateAllergiesReactions implements Seeder {
       //Check reactions  
       let reactions = await getRepository(Reactions).find();
       if (!reactions.length) {
-        ReactionsData.map( async (item)=> { 
+       await Promise.all(ReactionsData.map( async (item)=> { 
           let reaction = getRepository(Reactions).create(item)
           reaction = await queryRunner.manager.save(reaction);
-        })
+        }))
       }
        //Check allergies  
        let allergies = await getRepository(Allergies).find();
        if (!allergies.length) {
-        AllergiesData.map( async (item)=> { 
+       await Promise.all( AllergiesData.map( async (item)=> { 
            let allergy = getRepository(Allergies).create(item)
            allergy = await queryRunner.manager.save(allergy);
-         })
+         }))
        }
       await queryRunner.commitTransaction();
     }
