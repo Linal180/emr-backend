@@ -41,6 +41,7 @@ import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
+import { Contact } from 'src/providers/entities/contact.entity';
 
 
 @Injectable()
@@ -686,17 +687,19 @@ export class PatientService {
       }
 
       const [patients, totalCount] = await baseQuery
+        .innerJoin(Contact, 'patientContact', `patientContact.patient = patient.id AND patientContact.primaryContact is true`)
         .where(dob ? 'patient.dob = :dob' : '1=1', { dob: moment(new Date(dob)).format("MM-DD-YYYY") })
         .andWhere(practiceId ? 'patient.practiceId = :practiceId' : '1 = 1', { practiceId: practiceId })
         .andWhere(facilityId ? 'patient.facilityId = :facilityId' : '1 = 1', { facilityId: facilityId })
-        .andWhere(new Brackets(qb => {
+        .andWhere(searchString ? new Brackets(qb => {
           qb.where('patient.firstName ILIKE :search', { search: `%${searchString}%` }).
             orWhere('patient.lastName ILIKE :search', { search: `%${searchString}%` }).
             orWhere('patient.email ILIKE :search', { search: `%${searchString}%` }).
             orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
-            orWhere('patient.patientRecord ILIKE :search', { search: `%${searchString}%` }).
             orWhere('patient.ssn ILIKE :search', { search: `%${searchString}%` })
-        }))
+            .orWhere('patient.dob ILIKE :searchDob', { searchDob: moment(searchString).format("MM-DD-YYYY") })
+            .orWhere('patientContact.phone ILIKE :patientPhone', { patientPhone: `%${searchString}%` })
+        }) : '1=1')
         .orderBy('patient.createdAt', 'DESC')
         .getManyAndCount()
 

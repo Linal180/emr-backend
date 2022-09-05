@@ -9,7 +9,7 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
-import { FindOptionsUtils, getConnection, Repository } from 'typeorm';
+import { FindOptionsUtils, getConnection, ILike, Repository } from 'typeorm';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
 import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
 import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
@@ -235,7 +235,7 @@ export class LabTestsService {
       where: {
         orderNumber: orderNum,
         test: {
-          component: testName
+          component: ILike(testName)
         }
       }
     });

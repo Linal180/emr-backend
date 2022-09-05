@@ -190,6 +190,14 @@ export class Appointment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  appointmentDate: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  timeZone: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   providerId: string;
 
   @Column({ nullable: true })
