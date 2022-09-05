@@ -32,6 +32,7 @@ import {
 } from '../dto/update-appointment.input';
 import { ContactService } from 'src/providers/services/contact.service';
 import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
+import { Contact } from 'src/providers/entities/contact.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -319,11 +320,15 @@ export class AppointmentService {
       baseQuery
         .innerJoin(Patient, 'appointmentWithSpecificPatient', `appointment.patientId = "appointmentWithSpecificPatient"."id"`)
         .innerJoin(Service, 'appointmentWithSpecificService', `appointment.appointmentTypeId = "appointmentWithSpecificService"."id"`)
+        .innerJoin(Contact, 'patientContact', `patientContact.patientId = "appointment"."patientId" AND patientContact.primaryContact is true`)
         .andWhere(new Brackets(qb => {
           qb.where('appointmentWithSpecificPatient.firstName ILIKE :search', { search: `%${first}%` })
             .orWhere('appointmentWithSpecificPatient.lastName ILIKE :search', { search: `%${first}%` })
             .orWhere('appointmentWithSpecificPatient.email ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.patientRecord ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.dob ILIKE :patientDob', { patientDob: moment(new Date(first)).format("MM-DD-YYYY") })
             .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
+            .orWhere('patientContact.phone ILIKE :patientPhone', { patientPhone: `%${first}%` })
         }))
     }
 
