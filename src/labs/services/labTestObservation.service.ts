@@ -19,7 +19,8 @@ import { UpdateObservationInput } from '../dto/update-observationItem-input.dto'
 import template from "../../lib/templates"
 import { MailerService } from 'src/mailer/mailer.service';
 import { DocumentTypesService } from 'src/attachments/services/documentType.service';
-import { blobToFile } from 'src/lib/helper';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { PracticeService } from 'src/practice/practice.service';
 
 @Injectable()
 export class LabTestsObservationsService {
@@ -31,6 +32,8 @@ export class LabTestsObservationsService {
     private readonly attachmentsService: AttachmentsService,
     private readonly documentTypeService: DocumentTypesService,
     private readonly loincCodesService: LoincCodesService,
+    private readonly facilityService: FacilityService,
+    private readonly practiceService: PracticeService,
     private readonly mailerService: MailerService
   ) { }
 
@@ -147,7 +150,7 @@ export class LabTestsObservationsService {
               }
             })
 
-             await this.createLabTestObservation({
+            await this.createLabTestObservation({
               createLabTestObservationItemInput: createItemInput,
               labTestId: labTest?.id
             })
@@ -165,7 +168,7 @@ export class LabTestsObservationsService {
         const labResultPayload = await this.labTestsService.findLabResultInfo(orderNumber)
         const labTests = await Promise.all(labResultPayload.labTests.map(async (labTest) => {
           const testObservations = await this.GetLabTestObservations(labTest.id)
-          const test= await this.loincCodesService.findOne(labTest.testId)
+          const test = await this.loincCodesService.findOne(labTest.testId)
           return {
             ...labTest,
             test,
@@ -173,9 +176,17 @@ export class LabTestsObservationsService {
           }
         }))
         const { patientInfo } = labResultPayload
-        const { email, firstName, lastName, id: patientId } = patientInfo
+        const { email, firstName, lastName, id: patientId, facilityId } = patientInfo
+        const facilityInfo = await this.facilityService.findOne(facilityId)
+        const practiceInfo = await this.practiceService.findOne(facilityInfo.practiceId)
+        const attachments = await this.attachmentsService.findAttachments(practiceInfo.id, AttachmentType.PRACTICE)
+        const attachment = attachments?.[0]
+        let attachmentUrl
+        if (attachment) {
+          attachmentUrl = await this.attachmentsService.getMedia(attachment?.id)
+        }
 
-        const pdfInstance = await pdf.create(await template({ ...labResultPayload, labTests }), {})
+        const pdfInstance = await pdf.create(await template({ ...labResultPayload, labTests }, attachmentUrl), {})
         const buffer = await this.getBuffer(pdfInstance)
         if (email) {
           await this.mailerService.sendLabResultsEmail(email, `${firstName} ${lastName}`, (buffer as Buffer).toString('base64'))
