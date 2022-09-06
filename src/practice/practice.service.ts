@@ -218,7 +218,7 @@ export class PracticeService {
   async updatePracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
     try {
       updateAttachmentMediaInput.type = AttachmentType.PRACTICE
-      const attachment = await this.attachmentsService.updateAttachment(file, updateAttachmentMediaInput)
+      const attachment = await this.attachmentsService.updatePublicAttachment(file, updateAttachmentMediaInput)
       const practice = await this.practiceRepository.findOne(updateAttachmentMediaInput.typeId)
       if (attachment) {
         return { practice }
@@ -242,7 +242,7 @@ export class PracticeService {
   async uploadPracticeMedia(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput): Promise<PracticePayload> {
     try {
       updateAttachmentMediaInput.type = AttachmentType.PRACTICE;
-      const attachment = await this.attachmentsService.uploadAttachment(file, updateAttachmentMediaInput)
+      const attachment = await this.attachmentsService.uploadPublicAttachment(file, updateAttachmentMediaInput)
       const practice = await this.findOne(updateAttachmentMediaInput.typeId)
       if (attachment) {
         return { practice };
@@ -264,7 +264,7 @@ export class PracticeService {
    */
   async getPracticeMedia(id: string) {
     try {
-      return await this.attachmentsService.getMedia(id)
+      return await this.attachmentsService.getPublicMedia(id)
     }
     catch (error) {
       throw new InternalServerErrorException(error);
@@ -278,7 +278,7 @@ export class PracticeService {
    */
   async removePracticeMedia(id: string) {
     try {
-      return await this.attachmentsService.removeMedia(id)
+      return await this.attachmentsService.removePublicMedia(id)
     }
     catch (error) {
       throw new InternalServerErrorException(error);
