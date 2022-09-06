@@ -67,7 +67,7 @@ export default async function template(labResultPayload: LabResultPayload, attac
 
                               <tr>
                                 <td align="center">
-                                  <img style="display:block; line-height:0px; font-size:0px; border:0px;width: 110px;" src=${attachmentUrl? attachmentUrl : "http://cdn.mcauto-images-production.sendgrid.net/22b202cae41dc874/55e5ba70-143f-49c3-9850-34089f655fd5/338x444.png"} alt="img" width="160" height="auto">
+                                  <img style="display:block; line-height:0px; font-size:0px; border:0px;width: 110px;" src=${attachmentUrl ? attachmentUrl : "http://cdn.mcauto-images-production.sendgrid.net/22b202cae41dc874/55e5ba70-143f-49c3-9850-34089f655fd5/338x444.png"} alt="img" width="160" height="auto">
                                 </td>
                               </tr>
                             </tbody>
@@ -120,7 +120,7 @@ export default async function template(labResultPayload: LabResultPayload, attac
                                         </td>
 
                                         <td style="background-color: #eeeeee;color: #000;padding:10px;width: 160px;max-width: 150px;overflow: hidden;text-overflow: ellipsis;font-size:8px;font-family:Arial,sans-serif;">
-                                          &nbsp;
+                                          N/A
                                         </td>
                                       </tr>
                                     </tbody>
@@ -249,7 +249,7 @@ export default async function template(labResultPayload: LabResultPayload, attac
                                         </td>
 
                                         <td style="background-color: #eeeeee;color: #000;padding:10px;width: 180px;max-width: 170px;overflow: hidden;text-overflow: ellipsis;font-size:8px;font-family:Arial,sans-serif;">
-                                          ${getFormatDateString(dob, 'MM-DD-YYYY')}
+                                          ${dob}
                                         </td>
                                       </tr>
                                     </tbody>
