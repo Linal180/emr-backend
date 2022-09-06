@@ -11,6 +11,7 @@ import { RemovePatient } from '../dto/update-patientItem.input';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
+import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
@@ -18,6 +19,7 @@ import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-exte
 import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 //entities
 import { Patient } from '../entities/patient.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { DoctorPatient, DoctorPatientRelationType } from '../entities/doctorPatient.entity';
@@ -32,7 +34,7 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
 //constants or enums
-import { ATTACHMENT_TITLES } from '../../lib/constants'
+import { ATTACHMENT_TITLES, USER_TYPES } from '../../lib/constants'
 import { createToken, paginateResponse } from 'src/lib/helper';
 //dto's
 import { File } from '../../aws/dto/file-input.dto';
@@ -40,8 +42,6 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
-import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
-import { Contact } from 'src/providers/entities/contact.entity';
 
 
 @Injectable()
@@ -851,6 +851,10 @@ export class PatientService {
       const patient = await this.findOne(id)
       if (patient) {
         await this.patientRepository.delete(patient.id)
+        const user = await this.usersService.findUserByUserId(id, USER_TYPES.PATIENT);
+        if (user) {
+          await this.usersService.remove(user?.id)
+        }
         return
       }
       throw new NotFoundException({

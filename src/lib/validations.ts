@@ -145,7 +145,7 @@ export const claimMedValidation = Joi.object({
   facility_name: Joi.string().required().label('Facility name'),
   facility_addr_1: Joi.string().required().label('Facility Address'),
   facility_city: Joi.string().required().label('Facility City'),
-  facility_state: Joi.string().required().label('IFacility State'),
+  facility_state: Joi.string().required().label('Facility State'),
   facility_zip: Joi.string().required().label('Facility Zip Code'),
   facility_npi: Joi.string().required().label('Facility NPI'),
   bill_taxid: Joi.string().required().label('Facility taxId'),
