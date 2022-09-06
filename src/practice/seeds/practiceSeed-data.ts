@@ -48,7 +48,7 @@ export const FacilitiesData = [
   {
     name: 'Tysons Corner',
     practiceType: PracticeType.CLINIC,
-    phone: ' 7034360203',
+    phone: '7034360203',
     address: '1980 Gallows Rd Vienna',
     address2: 'Unit 100, VA',
     zipCode: '22182',
