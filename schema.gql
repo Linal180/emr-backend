@@ -2084,6 +2084,47 @@ type PaginationPayload {
   totalPages: Int
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
+type TransactionsPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transaction: Transactions!
+}
+
+type AppointmentPayload {
+  response: ResponsePayload
+  appointment: Appointment
+}
+
+type PatientPastUpcomingAppointment {
+  pastAppointment: Appointment
+  upcomingAppointment: Appointment
+}
+
+type PatientPastUpcomingAppointmentPayload {
+  response: ResponsePayload
+  appointments: PatientPastUpcomingAppointment
+}
+
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
+}
+
 type ResponsePayloadResponse {
   status: Float
   error: String
@@ -2228,47 +2269,6 @@ type PolicyEligibilityWithPatientPayload {
   primaryProvider: Doctor!
   pagination: PaginationPayload
   response: Response
-}
-
-type BraintreePayload {
-  clientToken: String!
-}
-
-type TransactionsPayload {
-  response: ResponsePayload
-  transactions: [Transactions]
-  pagination: PaginationPayload
-}
-
-type TransactionPayload {
-  response: ResponsePayload
-  transaction: Transactions!
-}
-
-type AppointmentPayload {
-  response: ResponsePayload
-  appointment: Appointment
-}
-
-type PatientPastUpcomingAppointment {
-  pastAppointment: Appointment
-  upcomingAppointment: Appointment
-}
-
-type PatientPastUpcomingAppointmentPayload {
-  response: ResponsePayload
-  appointments: PatientPastUpcomingAppointment
-}
-
-type InvoicePayload {
-  response: ResponsePayload
-  invoice: Invoice
-}
-
-type InvoicesPayload {
-  response: ResponsePayload
-  invoices: [Invoice]
-  pagination: PaginationPayload
 }
 
 type AppointmentsPayload {
