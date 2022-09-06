@@ -120,7 +120,13 @@ export default () => {
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || "",
     AWS_S3_REGION: process.env.AWS_S3_REGION || "us-east-1",
-    AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || "boca-plus-private",
+    AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || "",
+
+    PUBLIC_AWS_ACCESS_KEY_ID: process.env.PUBLIC_AWS_ACCESS_KEY_ID || "",
+    PUBLIC_AWS_SECRET_ACCESS_KEY: process.env.PUBLIC_AWS_SECRET_ACCESS_KEY || "",
+    PUBLIC_AWS_S3_REGION: process.env.PUBLIC_AWS_S3_REGION || "us-east-1",
+    PUBLIC_AWS_BUCKET_NAME: process.env.PUBLIC_AWS_BUCKET_NAME || "",
+    
     DOCUSIGN_INTEGERATION_Key:
       process.env.DOCUSIGN_INTEGERATION_Key ||
       "6627cd91-560c-494f-b274-415af0568361",

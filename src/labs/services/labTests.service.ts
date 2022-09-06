@@ -7,6 +7,7 @@ import { PaginationService } from 'src/pagination/pagination.service';
 import { ProblemService } from 'src/patientCharting/services/patientProblems.service';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientService } from 'src/patients/services/patient.service';
+import { ContactService } from 'src/providers/services/contact.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { UtilsService } from 'src/util/utils.service';
 import { FindOptionsUtils, getConnection, ILike, Repository } from 'typeorm';
@@ -27,14 +28,14 @@ export class LabTestsService {
     @InjectRepository(LabTests)
     private labTestsRepository: Repository<LabTests>,
     private readonly paginationService: PaginationService,
-    private readonly utilsService: UtilsService,
     private readonly problemService: ProblemService,
     private readonly loincCodesService: LoincCodesService,
     private readonly patientService: PatientService,
     private readonly doctorService: DoctorService,
     private readonly facilityService: FacilityService,
     private readonly testSpecimenService: TestSpecimenService,
-    private readonly appointmentService: AppointmentService
+    private readonly appointmentService: AppointmentService,
+    private readonly contactService: ContactService
   ) { }
 
   async createLabTest(createLabTestInput: CreateLabTestInput): Promise<LabTests> {
@@ -295,11 +296,13 @@ export class LabTestsService {
     const { patientId, primaryProviderId } = labTests?.[0] || {}
     const doctor = await this.doctorService.findOne(primaryProviderId)
     const patientInfo = await this.patientService.findOne(patientId)
+    const patientContacts = await this.contactService.findContactsByPatientId(patientId)
     const facilityInfo = await this.facilityService.findOne(patientInfo.facilityId)
+    const facilityContacts = await this.contactService.findContactsByFacilityId(patientInfo.facilityId)
 
     return {
-      patientInfo,
-      facilityInfo,
+      patientInfo: { ...patientInfo, contacts: patientContacts },
+      facilityInfo: { ...facilityInfo, contacts: facilityContacts },
       doctor,
       labTests
     }

@@ -181,10 +181,7 @@ export class LabTestsObservationsService {
         const practiceInfo = await this.practiceService.findOne(facilityInfo.practiceId)
         const attachments = await this.attachmentsService.findAttachments(practiceInfo.id, AttachmentType.PRACTICE)
         const attachment = attachments?.[0]
-        let attachmentUrl
-        if (attachment) {
-          attachmentUrl = await this.attachmentsService.getMedia(attachment?.id)
-        }
+        const { url: attachmentUrl } = attachment || {}
 
         const pdfInstance = await pdf.create(await template({ ...labResultPayload, labTests }, attachmentUrl), {})
         const buffer = await this.getBuffer(pdfInstance)
