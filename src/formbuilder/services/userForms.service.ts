@@ -1,6 +1,7 @@
+import * as moment from 'moment'
 import { validate as isUuid } from 'uuid';
 import { Connection, Repository } from "typeorm";
-import moment, * as momentTimezone from 'moment-timezone';
+import * as momentTimezone from 'moment-timezone';
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   BadRequestException, HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException
