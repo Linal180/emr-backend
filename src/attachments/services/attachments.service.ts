@@ -25,6 +25,7 @@ import { AttachmentMetaDataService } from './attachmentMetaData.service';
 import { ATTACHMENT_TITLES } from 'src/lib/constants';
 import { DocumentTypesService } from './documentType.service';
 import { CreateAttachmentMetaDataInput } from '../dto/create-attachment-metaData.input';
+import { PublicAwsService } from 'src/aws/publicAws.service';
 
 @Injectable()
 export class AttachmentsService {
@@ -32,6 +33,7 @@ export class AttachmentsService {
     @InjectRepository(Attachment)
     private attachmentsRepository: Repository<Attachment>,
     private readonly awsService: AwsService,
+    private readonly publicAwsService: PublicAwsService,
     private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
     private readonly documentTypeService: DocumentTypesService,
@@ -112,6 +114,27 @@ export class AttachmentsService {
   }
 
   /**
+   * Uploads public attachment
+   * @param file 
+   * @param updateAttachmentMediaInput 
+   * @returns  
+   */
+  async uploadPublicAttachment(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput) {
+    const attachment = await this.createAttachment(updateAttachmentMediaInput)
+    updateAttachmentMediaInput.id = attachment.id
+    const attachments = await this.uploadPublicMedia(file, updateAttachmentMediaInput)
+    const attachmentInfo = await this.attachmentsRepository.findOne({ id: attachment.id })
+    const attachmentData = await this.updateAttachmentMedia({ ...attachmentInfo, ...attachments })
+    if (attachments.url) {
+      return attachmentData
+    }
+    throw new PreconditionFailedException({
+      status: HttpStatus.PRECONDITION_FAILED,
+      error: 'Could not upload media',
+    });
+  }
+
+  /**
    * Updates attachment
    * @param file 
    * @param updateAttachmentMediaInput 
@@ -123,6 +146,31 @@ export class AttachmentsService {
       const deletedRemoteFile = await this.awsService.removeFile(existingAttachment.key);
       if (deletedRemoteFile) {
         const attachments = await this.uploadMedia(file, updateAttachmentMediaInput);
+        if (attachments.url) {
+          return await this.updateAttachmentMedia(attachments)
+        }
+        throw new PreconditionFailedException({
+          status: HttpStatus.PRECONDITION_FAILED,
+          error: 'Could not upload media',
+        });
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not delete media file',
+      });
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Attachment not found',
+    });
+  }
+
+  async updatePublicAttachment(file: File, updateAttachmentMediaInput: UpdateAttachmentMediaInput) {
+    const existingAttachment = await this.attachmentsRepository.findOne(updateAttachmentMediaInput.id)
+    if (existingAttachment) {
+      const deletedRemoteFile = await this.publicAwsService.removeFile(existingAttachment.key);
+      if (deletedRemoteFile) {
+        const attachments = await this.uploadPublicMedia(file, updateAttachmentMediaInput);
         if (attachments.url) {
           return await this.updateAttachmentMedia(attachments)
         }
@@ -482,6 +530,30 @@ export class AttachmentsService {
   }
 
   /**
+   * Removes public media
+   * @param id 
+   * @returns  
+   */
+  async removePublicMedia(id: string) {
+    const attachment = await this.attachmentsRepository.findOne({ id });
+    if (attachment) {
+      const deletedAttachment = await this.attachmentsRepository.delete({ id })
+      const deletedAttachmentMetadata = await this.attachmentMetaDataService.remove(attachment.attachmentMetadata?.id)
+      if (deletedAttachment.affected) {
+        return attachment.key ? await this.publicAwsService.removeFile(attachment.key) : '';
+      }
+      throw new PreconditionFailedException({
+        status: HttpStatus.PRECONDITION_FAILED,
+        error: 'Could not delete media from remote storage',
+      });
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Attachment not found',
+    });
+  }
+
+  /**
    * Gets media
    * @param id 
    * @returns  
@@ -490,6 +562,22 @@ export class AttachmentsService {
     const attachment = await this.attachmentsRepository.findOne(id);
     if (attachment.key) {
       return await this.awsService.getFile(attachment.key);
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Attachment not found',
+    });
+  }
+
+  /**
+   * Gets public media
+   * @param id 
+   * @returns  
+   */
+  async getPublicMedia(id: string) {
+    const attachment = await this.attachmentsRepository.findOne(id);
+    if (attachment.key) {
+      return await this.publicAwsService.getFile(attachment.key);
     }
     throw new NotFoundException({
       status: HttpStatus.NOT_FOUND,
@@ -564,6 +652,18 @@ export class AttachmentsService {
    */
   async uploadMedia(attachments: File, { id, type, typeId, attachmentName }: UpdateAttachmentInput) {
     const { Key, Location } = await this.awsService.uploadFile(attachments, type, typeId);
+    return {
+      id,
+      type,
+      typeId,
+      key: Key,
+      url: Location,
+      attachmentName: attachmentName ? attachmentName : Key.split("/").pop().split('.').slice(0, -1).join(''),
+    }
+  }
+
+  async uploadPublicMedia(attachments: File, { id, type, typeId, attachmentName }: UpdateAttachmentInput) {
+    const { Key, Location } = await this.publicAwsService.uploadFile(attachments, type, typeId);
     return {
       id,
       type,
