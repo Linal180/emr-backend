@@ -3,38 +3,38 @@ import { LabResultPayload } from "src/labs/dto/labTest-payload.dto";
 import { formatAddress, formatPhone, getFormatDateString } from "./helper";
 
 const getBuffer = async (url) => {
-   return await toBuffer({
-      bcid: 'code128',       // Barcode type
-      text: url,    // Text to encode
-      scale: 3,               // 3x scaling factor
-      height: 10,              // Bar height, in millimeters
-      includetext: true,            // Show human-readable text
-      textxalign: 'center',
-   })
+  return await toBuffer({
+    bcid: 'code128',       // Barcode type
+    text: url,    // Text to encode
+    scale: 3,               // 3x scaling factor
+    height: 10,              // Bar height, in millimeters
+    includetext: true,            // Show human-readable text
+    textxalign: 'center',
+  })
 }
 
 
-export default async function template(labResultPayload: LabResultPayload) {
-   const { doctor, facilityInfo, labTests, patientInfo } = labResultPayload
-   const url = `${process.env.PORTAL_APP_BASE_URL}/lab-results-info/${labTests?.[0]?.orderNumber}`
-   const urlBarCode = await getBuffer(url)
-   const buffer = urlBarCode.toString('base64') // e.g., <Buffer 89 50 4e ... >
+export default async function template(labResultPayload: LabResultPayload, attachmentUrl: string) {
+  const { doctor, facilityInfo, labTests, patientInfo } = labResultPayload
+  const url = `${process.env.PORTAL_APP_BASE_URL}/lab-results-info/${labTests?.[0]?.orderNumber}`
+  const urlBarCode = await getBuffer(url)
+  const buffer = urlBarCode.toString('base64') // e.g., <Buffer 89 50 4e ... >
 
-   const mimeType = 'image/png' // e.g., image/png
+  const mimeType = 'image/png' // e.g., image/png
 
-   const { collectedDate, receivedDate } = labTests?.[0] || {}
-   const { firstName, lastName, dob, gender, patientRecord, contacts } = patientInfo || {}
-   const primaryContact = contacts?.find((contact) => contact?.primaryContact)
-   const { phone } = primaryContact || {}
-   const { contacts: facilityContacts, name: facilityName, cliaIdNumber } = facilityInfo || {}
-   const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact?.primaryContact)
-   const { phone: facilityPhone, address, city, state, zipCode } = facilityPrimaryContact || {}
-   const { firstName: dFirstName, lastName: dLastName } = doctor || {}
-   const doctorFullName = `${dFirstName} ${dLastName}`
-   const patientFullName = `${firstName} ${lastName}`
-   const diagnoses = labTests?.find((test) => test?.diagnoses?.[0]?.code)?.diagnoses
+  const { collectedDate, receivedDate } = labTests?.[0] || {}
+  const { firstName, lastName, dob, gender, patientRecord, contacts } = patientInfo || {}
+  const primaryContact = contacts?.find((contact) => contact?.primaryContact)
+  const { phone } = primaryContact || {}
+  const { contacts: facilityContacts, name: facilityName, cliaIdNumber } = facilityInfo || {}
+  const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact?.primaryContact)
+  const { phone: facilityPhone, address, city, state, zipCode } = facilityPrimaryContact || {}
+  const { firstName: dFirstName, lastName: dLastName } = doctor || {}
+  const doctorFullName = `${dFirstName} ${dLastName}`
+  const patientFullName = `${firstName} ${lastName}`
+  const diagnoses = labTests?.find((test) => test?.diagnoses?.[0]?.code)?.diagnoses
 
-   return `
+  return `
    <!DOCTYPE html>
 <html lang="en">
 
@@ -67,7 +67,7 @@ export default async function template(labResultPayload: LabResultPayload) {
 
                               <tr>
                                 <td align="center">
-                                  <img style="display:block; line-height:0px; font-size:0px; border:0px;width: 110px;" src="http://cdn.mcauto-images-production.sendgrid.net/22b202cae41dc874/55e5ba70-143f-49c3-9850-34089f655fd5/338x444.png" alt="img" width="160" height="auto">
+                                  <img style="display:block; line-height:0px; font-size:0px; border:0px;width: 110px;" src=${attachmentUrl ? attachmentUrl : "http://cdn.mcauto-images-production.sendgrid.net/22b202cae41dc874/55e5ba70-143f-49c3-9850-34089f655fd5/338x444.png"} alt="img" width="160" height="auto">
                                 </td>
                               </tr>
                             </tbody>
@@ -120,7 +120,7 @@ export default async function template(labResultPayload: LabResultPayload) {
                                         </td>
 
                                         <td style="background-color: #eeeeee;color: #000;padding:10px;width: 160px;max-width: 150px;overflow: hidden;text-overflow: ellipsis;font-size:8px;font-family:Arial,sans-serif;">
-                                          &nbsp;
+                                          N/A
                                         </td>
                                       </tr>
                                     </tbody>
@@ -249,7 +249,7 @@ export default async function template(labResultPayload: LabResultPayload) {
                                         </td>
 
                                         <td style="background-color: #eeeeee;color: #000;padding:10px;width: 180px;max-width: 170px;overflow: hidden;text-overflow: ellipsis;font-size:8px;font-family:Arial,sans-serif;">
-                                          ${getFormatDateString(dob, 'MM-DD-YYYY')}
+                                          ${dob}
                                         </td>
                                       </tr>
                                     </tbody>
@@ -572,7 +572,7 @@ export default async function template(labResultPayload: LabResultPayload) {
                               <tr align="left" valign="top">
                                 <td style="padding-left: 5px">
                                 ${labTests?.map((test) => (
-                                  `<table width="96%" style="padding-right: 5px" border="0" align="left" cellpadding="0" cellspacing="0">
+    `<table width="96%" style="padding-right: 5px" border="0" align="left" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
                                       <td style="font-size:8px; color:#000; line-height:24px; font-weight: 500;min-width: 100px;">
@@ -581,7 +581,7 @@ export default async function template(labResultPayload: LabResultPayload) {
                                     </tr>
                                   </tbody>
                                 </table>`
-                               ))}
+  ))}
                                 </td>
                               </tr>
 
@@ -608,7 +608,7 @@ export default async function template(labResultPayload: LabResultPayload) {
                                 <tr align="left" valign="top">
                                   <td style="padding-left: 5px">
                                   ${labTests?.map((test) => (
-                                    `<table " width="96%" style="padding-right: 5px" border="0" align="left" cellpadding="0" cellspacing="0">
+    `<table " width="96%" style="padding-right: 5px" border="0" align="left" cellpadding="0" cellspacing="0">
                                     <tbody>
                                       <tr>
                                         <td style="font-size:8px; color:#000; line-height:24px; font-weight: 500;min-width: 100px;">
@@ -617,7 +617,7 @@ export default async function template(labResultPayload: LabResultPayload) {
                                       </tr>
                                     </tbody>
                                   </table>`
-                                ))}
+  ))}
                                   </td>
                               </tr>
                               <tr>

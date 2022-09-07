@@ -127,7 +127,7 @@ export class CreateExpressPractice implements Seeder {
         const facilityInfo = await savedFacilities.find((savedFacility) => savedFacility.name === facility)
 
         //create user 
-        const userInstance = userRepo.create({ email, phone })
+        const userInstance = userRepo.create({ email, phone, emailVerified: true })
         userInstance.roles = [roleInfo]
 
         const token = createToken()
@@ -207,7 +207,7 @@ export class CreateExpressPractice implements Seeder {
       if (!practiceAdmin) {
         console.log('roles', roles)
         //create user
-        const adminUserInstance = userRepo.create({ email: PracticeAdminInfo.email, facility: savedFacilities[0] })
+        const adminUserInstance = userRepo.create({ email: PracticeAdminInfo.email, facility: savedFacilities[0], emailVerified: true })
         adminUserInstance.password = await createPasswordHash('admin123');
         adminUserInstance.userType = 'practice-admin'
         adminUserInstance.roles = [practiceAdminRole]

@@ -104,8 +104,14 @@ export class ClaimService {
       }, {}) as ClaimMdPayload
       //validating keys
       const result = claimMedValidation.validate(transformedClaimInfo)
+      let transformedErrors
       if (result.error) {
-        const errorMessages = [...result.error.details.map((d) => d.message), !claimMd.charge.length ? 'Procedure code is missing' : ''].join('.\n');
+        transformedErrors = [...result.error.details.map((d) => d.message), !claimMd.charge.length ? 'Procedure code is missing' : ''];
+      } else {
+        transformedErrors = !claimMd.charge.length ? [ 'Procedure code is missing'] : null
+      }
+      if (transformedErrors?.length) {
+        const errorMessages = transformedErrors.join('.\n')
         throw new BadRequestException(errorMessages);
       }
 
@@ -127,7 +133,7 @@ export class ClaimService {
           if (!!claimStatus?.statusId) {
             //delete some properties 
             //get error from claim md 
-            const claimMdFormInput = JSON.parse(JSON.stringify({...claimInfo, ...claimMd})) as Claim
+            const claimMdFormInput = JSON.parse(JSON.stringify({ ...claimInfo, ...claimMd })) as Claim
             delete claimMdFormInput.id;
             delete claimMdFormInput.billingId;
             delete claimMdFormInput.createdAt;
@@ -161,12 +167,12 @@ export class ClaimService {
               //not found error in claim ; get claim status
               if (noError) {
                 claimStatus = await this.claimStatusService.findByStatusId(SystemBillingStatuses.ACKNOWLEDGED);
-                const {claimmd_id, batchid, bill_npi,bill_taxid, claimid, fdos, filename, fileid, ins_number, payerid, pcn, sender_icn, sender_name, senderid,total_charge} = claim[0] || {}
+                const { claimmd_id, batchid, bill_npi, bill_taxid, claimid, fdos, filename, fileid, ins_number, payerid, pcn, sender_icn, sender_name, senderid, total_charge } = claim[0] || {}
                 response = {
                   claimMdId: claimmd_id,
                   batchId: batchid,
                   billNpi: bill_npi,
-                  billTaxId:bill_taxid,
+                  billTaxId: bill_taxid,
                   claimId: claimid,
                   facilityDateOfService: fdos,
                   fileName: filename,

@@ -123,8 +123,8 @@ export const claimValidation = Joi.object({
 
 export const claimMedValidation = Joi.object({
   bill_npi: Joi.string().max(10).required().label('Billing NPI'),
-  payerid: Joi.string().required().label('Insurance'),
-  payer_name: Joi.string().required().label('Insurance'),
+  payerid: Joi.string().required().label('Insurance Company'),
+  payer_name: Joi.string().required().label('Insurance Name'),
   pat_name_l: Joi.string().required().label('Patient Last Name'),
   pat_name_f: Joi.string().required().label('Patient First Name'),
   pat_dob: Joi.string().required().label('Patient Date of birth'),
@@ -145,7 +145,7 @@ export const claimMedValidation = Joi.object({
   facility_name: Joi.string().required().label('Facility name'),
   facility_addr_1: Joi.string().required().label('Facility Address'),
   facility_city: Joi.string().required().label('Facility City'),
-  facility_state: Joi.string().required().label('IFacility State'),
+  facility_state: Joi.string().required().label('Facility State'),
   facility_zip: Joi.string().required().label('Facility Zip Code'),
   facility_npi: Joi.string().required().label('Facility NPI'),
   bill_taxid: Joi.string().required().label('Facility taxId'),

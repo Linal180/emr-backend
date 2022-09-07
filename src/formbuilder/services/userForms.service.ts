@@ -1,11 +1,12 @@
+import * as moment from 'moment'
+import { validate as isUuid } from 'uuid';
 import { Connection, Repository } from "typeorm";
+import * as momentTimezone from 'moment-timezone';
 import { InjectRepository } from "@nestjs/typeorm";
-import { validate as isUuid } from 'uuid'
 import {
   BadRequestException, HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException
 } from "@nestjs/common";
 //entities
-
 import { UserForms } from '../entities/userforms.entity';
 import { Form, FormType } from "../entities/form.entity";
 import { FormElement } from "../entities/form-elements.entity";
@@ -169,7 +170,7 @@ export class UserFormsService {
         genderIdentity: genderIdentity || GENDERIDENTITY.NONE,
         maritialStatus: maritialStatus || MARITIALSTATUS.SINGLE,
         sexualOrientation: SEXUALORIENTATION.NONE,
-        dob: dob || null,
+        dob: dob ? moment(dob).format('MM-DD-YYYY') : null,
         phoneEmailPermission: phoneEmailPermission === 'true' ? true : false,
         cellPhonePermission: cellPhonePermission === 'true' ? true : false,
         medicalPermission: medicalPermission === 'true' ? true : false,
@@ -272,14 +273,16 @@ export class UserFormsService {
         if (appointmentElement) {
           const { fieldId } = appointmentElement
           const { fieldId: providerField } = providerElement || {}
-          let facilityElementId = ''
-          let insuranceStatus = ''
+          let facilityElementId = '';
+          let insuranceStatus = '';
 
           const appointmentTypeId = getCustomElementValue(userFormElementInputs, fieldId)
           const doctorId = getCustomElementValue(userFormElementInputs, providerField)
           const startTime = getCustomElementValue(userFormElementInputs, 'scheduleStartDateTime')
           const endTime = getCustomElementValue(userFormElementInputs, 'scheduleEndDateTime')
           const transactionId = getCustomElementValue(userFormElementInputs, 'transactionId')
+          const timeZone = getCustomElementValue(userFormElementInputs, 'timeZone')
+          const appointmentDate = getCustomElementValue(userFormElementInputs, 'appointmentDate')
 
           if (facilityElement) {
             const { fieldId: facilityFieldId } = facilityElement;
@@ -379,7 +382,9 @@ export class UserFormsService {
                 practiceId: practiceId || null,
                 contractNumber: contractNo || null,
                 organizationName: organizationName || null,
-                insuranceStatus
+                insuranceStatus,
+                appointmentDate: appointmentDate ? momentTimezone(appointmentDate).tz(timeZone).format('YYYY-MM-DD') : momentTimezone(startTime).tz(timeZone).format('YYYY-MM-DD'),
+                timeZone
               }
 
               const appointmentInstance = await this.appointmentService.createAppointment(appointmentInputs);
@@ -439,6 +444,8 @@ export class UserFormsService {
       if (type === FormType.APPOINTMENT) {
         const appointmentElement = formElements?.find(({ columnName }) => columnName === 'appointmentTypeId')
         const providerElement = formElements?.find(({ columnName }) => columnName === 'usualProviderId')
+        const timeZone = getCustomElementValue(userFormElementInputs, 'timeZone')
+        const appointmentDate = getCustomElementValue(userFormElementInputs, 'appointmentDate')
 
         if (appointmentElement) {
           const { fieldId } = appointmentElement
@@ -454,6 +461,7 @@ export class UserFormsService {
               facilityElementId = value
             }
           }
+
 
           if (insuranceStatusElement) {
             const { fieldId: insuranceStatusFieldId } = insuranceStatusElement;
@@ -546,7 +554,9 @@ export class UserFormsService {
                   providerId: doctorId || null,
                   patientId: patientId,
                   practiceId: practiceId || null,
-                  insuranceStatus
+                  insuranceStatus,
+                  appointmentDate: appointmentDate ? momentTimezone(appointmentDate).tz(timeZone).format('YYYY-MM-DD') : momentTimezone(startTime).tz(timeZone).format('YYYY-MM-DD'),
+                  timeZone
                 }
                 let appointmentContract = null
                 if (organizationName && contractNo) {

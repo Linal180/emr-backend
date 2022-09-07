@@ -16,12 +16,12 @@ export class PatientConsentService {
   constructor(
     @InjectRepository(PatientConsent)
     private patientConsentRepository: Repository<PatientConsent>,
-    private patientService: PatientService,
     @Inject(forwardRef(() => AgreementService))
     private agreementService: AgreementService,
+    private patientService: PatientService,
+    @Inject(forwardRef(() => AppointmentService))
     private appointmentService: AppointmentService,
   ) { }
-
 
   /**
    * Finds one
@@ -32,12 +32,12 @@ export class PatientConsentService {
     return await this.patientConsentRepository.findOne(id)
   }
 
-
   /**
    * Creates patient consent service
    * @param createPatientConsentInputs 
+   * @returns create 
    */
-  async create(createPatientConsentInputs: CreatePatientConsentInputs) {
+  async create(createPatientConsentInputs: CreatePatientConsentInputs): Promise<PatientConsent> {
     try {
       const { agreementIds, appointmentId, body, patientId } = createPatientConsentInputs
       const attachment = await this.patientService.getSignature(patientId)
@@ -73,5 +73,19 @@ export class PatientConsentService {
     }
   }
 
+  /**
+   * Finds by appointment id
+   * @param appointmentId 
+   * @returns by appointment id 
+   */
+  async findByAppointmentId(appointmentId: string): Promise<PatientConsent> {
+    return await this.patientConsentRepository.findOne({ appointmentId })
+  }
+
+
+  async remove(id: string) {
+    await this.patientConsentRepository.delete(id);
+    return
+  }
 
 }

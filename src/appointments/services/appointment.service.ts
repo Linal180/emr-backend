@@ -1,51 +1,66 @@
 //packages block
-import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
-import { Brackets, Connection, getConnection, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-//entities, services, inputs types, enums
-import { createToken } from 'src/lib/helper';
-import { ContractService } from './contract.service';
-import { UtilsService } from 'src/util/utils.service';
-import { MailerService } from 'src/mailer/mailer.service';
-import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
+import * as momentTimezone from 'moment-timezone';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException
+} from '@nestjs/common';
+import {
+  Brackets, Connection, getConnection, In, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, ObjectLiteral,
+  Repository, SelectQueryBuilder
+} from 'typeorm';
+//entities
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
 import { GetSlots } from 'src/providers/dto/update-schedule.input';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Service } from '../../facilities/entities/services.entity';
-import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
+import {
+  Appointment, AppointmentCreateType, AppointmentStatus, BillingStatus, PaymentType
+} from '../entities/appointment.entity';
+// services
+import { ContractService } from './contract.service';
+import { UtilsService } from 'src/util/utils.service';
+import { MailerService } from 'src/mailer/mailer.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaymentService } from 'src/payment/services/payment.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
-import { CreateAppointmentInput } from '../dto/create-appointment.input';
+import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { ServicesService } from 'src/facilities/services/services.service';
+import { PatientConsentService } from 'src/patients/services/patientConsent.service';
+//  inputs
+import { CreateAppointmentInput } from '../dto/create-appointment.input';
+import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appointment-payload.dto';
-import { Appointment, AppointmentCreateType, AppointmentStatus, BillingStatus, PaymentType } from '../entities/appointment.entity';
+import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
   CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
 } from '../dto/update-appointment.input';
-import { ContactService } from 'src/providers/services/contact.service';
-
+//payloads
+import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
+import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appointment-payload.dto';
+// helpers
+import { createToken } from 'src/lib/helper';
 @Injectable()
 export class AppointmentService {
   constructor(
     @InjectRepository(Appointment)
     private appointmentRepository: Repository<Appointment>,
-    private readonly paginationService: PaginationService,
-    private readonly doctorService: DoctorService,
     private readonly connection: Connection,
-    private readonly patientService: PatientService,
-    private readonly mailerService: MailerService,
     private readonly utilsService: UtilsService,
+    private readonly mailerService: MailerService,
+    private readonly doctorService: DoctorService,
+    private readonly patientService: PatientService,
+    private readonly contactService: ContactService,
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService,
     private readonly contractService: ContractService,
-    private readonly contactService: ContactService,
+    private readonly paginationService: PaginationService,
+    private readonly patientConsentService: PatientConsentService,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService
   ) { }
@@ -64,7 +79,7 @@ export class AppointmentService {
       //fetch already exiting appointment
       const appointmentNumber = await this.utilsService.generateString(8);
       let appointmentObj: Appointment | null = null;
-      
+
       if (createAppointmentInput?.providerId && createAppointmentInput.patientId) {
         appointmentObj = await this.findAppointment(createAppointmentInput.providerId, createAppointmentInput.patientId)
       }
@@ -114,9 +129,11 @@ export class AppointmentService {
         //save appointment & commit transaction
         const appointment = await this.appointmentRepository.save(appointmentInstance);
         await queryRunner.commitTransaction();
+
         if (patient.phoneEmailPermission) {
           this.triggerSmsNotification(appointment, provider, patient, facility, true)
         }
+
         if (patient?.email) {
           if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.APPOINTMENT) {
             this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointmentInstance.scheduleStartDateTime, token, patient.id, false)
@@ -243,17 +260,23 @@ export class AppointmentService {
     }
   }
 
-  async sendAppointmentReminder(appointmentId: string) {
+
+  /**
+   * Sends appointment reminder
+   * @param appointmentReminderInput 
+   */
+  async sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput) {
+    const { appointmentId } = appointmentReminderInput
     try {
       const appointmentInfo = await this.appointmentRepository.findOne({
         relations: ['patient', 'facility', 'provider'],
         where: { id: appointmentId }
       })
-      const { patient, facility, provider } = appointmentInfo || {}
+      const { patient, facility, provider, timeZone } = appointmentInfo || {}
       const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
       const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
-      const utcDate = moment.utc(appointmentInfo.scheduleStartDateTime).toDate();
-      const slotStartTime = moment(utcDate).format('MM-DD-YYYY hh:mm:ss A')
+      const slotStart = momentTimezone(appointmentInfo.scheduleStartDateTime).tz(timeZone).format('MM-DD-YYYY hh:mm A')
+      const slotStartTime = `${slotStart} ( ${timeZone} Time Zone )`
 
       let messageBody = `Your appointment # ${appointmentInfo.appointmentNumber} is scheduled at ${slotStartTime} at ${facility.name} facility`
 
@@ -277,6 +300,12 @@ export class AppointmentService {
     }
   }
 
+
+  /**
+   * Finds appointment query
+   * @param appointmentInput 
+   * @returns appointment query 
+   */
   async findAppointmentQuery(appointmentInput: AppointmentInput): Promise<SelectQueryBuilder<Appointment>> {
     const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, ...whereObj } = appointmentInput
     const whereStr = Object.keys(whereObj).reduce((acc, key) => {
@@ -288,6 +317,7 @@ export class AppointmentService {
       return acc
     }, {})
 
+
     const { limit, page } = appointmentInput.paginationOptions
     const [first] = appointmentInput.searchString ? appointmentInput.searchString.split(' ') : ''
     let baseQuery = getConnection()
@@ -296,17 +326,21 @@ export class AppointmentService {
       .skip((page - 1) * limit)
       .take(limit)
       .where(whereStr as ObjectLiteral)
-      .andWhere(appointmentDate ? '"appointment"."scheduleStartDateTime"::date = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
+      .andWhere(appointmentDate ? '"appointment"."appointmentDate" = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
 
     if (first) {
       baseQuery
         .innerJoin(Patient, 'appointmentWithSpecificPatient', `appointment.patientId = "appointmentWithSpecificPatient"."id"`)
         .innerJoin(Service, 'appointmentWithSpecificService', `appointment.appointmentTypeId = "appointmentWithSpecificService"."id"`)
+        .innerJoin(Contact, 'patientContact', `patientContact.patientId = "appointment"."patientId" AND patientContact.primaryContact is true`)
         .andWhere(new Brackets(qb => {
           qb.where('appointmentWithSpecificPatient.firstName ILIKE :search', { search: `%${first}%` })
             .orWhere('appointmentWithSpecificPatient.lastName ILIKE :search', { search: `%${first}%` })
             .orWhere('appointmentWithSpecificPatient.email ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.patientRecord ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.dob ILIKE :patientDob', { patientDob: moment(new Date(first)).format("MM-DD-YYYY") })
             .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
+            .orWhere('patientContact.phone ILIKE :patientPhone', { patientPhone: `%${first}%` })
         }))
     }
 
@@ -496,6 +530,12 @@ export class AppointmentService {
     });
   }
 
+
+  /**
+   * Gets appointments
+   * @param getAppointments 
+   * @returns appointments 
+   */
   async getAppointments(getAppointments: GetAppointments): Promise<Appointment[]> {
     if (getAppointments.doctorId) {
       const appointment = await this.appointmentRepository.find({
@@ -567,6 +607,11 @@ export class AppointmentService {
    */
   async removeAppointment({ id }: RemoveAppointment) {
     try {
+      //check patient consent
+      const patientConsent = await this.patientConsentService.findByAppointmentId(id);
+      if (patientConsent) {
+        await this.patientConsentService.remove(patientConsent?.id)
+      }
       await this.appointmentRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);

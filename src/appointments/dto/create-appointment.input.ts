@@ -70,4 +70,10 @@ export class CreateAppointmentInput extends PartialType(CreateContractInput) {
 
     @Field(() => String, { nullable: true })
     insuranceStatus?: string
+
+    @Field({ nullable: true })
+    appointmentDate: string;
+
+    @Field({ nullable: true })
+    timeZone: string;
 }

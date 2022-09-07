@@ -1568,6 +1568,8 @@ type Appointment {
   secondaryInsurance: String
   scheduleStartDateTime: String
   scheduleEndDateTime: String
+  appointmentDate: String
+  timeZone: String
   providerId: String
   patientId: String
   facilityId: String
@@ -2082,6 +2084,47 @@ type PaginationPayload {
   totalPages: Int
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
+type TransactionsPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transaction: Transactions!
+}
+
+type AppointmentPayload {
+  response: ResponsePayload
+  appointment: Appointment
+}
+
+type PatientPastUpcomingAppointment {
+  pastAppointment: Appointment
+  upcomingAppointment: Appointment
+}
+
+type PatientPastUpcomingAppointmentPayload {
+  response: ResponsePayload
+  appointments: PatientPastUpcomingAppointment
+}
+
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
+}
+
 type ResponsePayloadResponse {
   status: Float
   error: String
@@ -2173,45 +2216,59 @@ type TaxonomyPayload {
   pagination: PaginationPayload
 }
 
-type BraintreePayload {
-  clientToken: String!
+type Response {
+  status: Int
+  message: String
 }
 
-type TransactionsPayload {
-  response: ResponsePayload
-  transactions: [Transactions]
+type InsurancesPayload {
+  insurances: [Insurance!]!
   pagination: PaginationPayload
+  response: Response
 }
 
-type TransactionPayload {
-  response: ResponsePayload
-  transaction: Transactions!
+type InsurancePayload {
+  insurance: Insurance
+  response: Response
 }
 
-type AppointmentPayload {
-  response: ResponsePayload
-  appointment: Appointment
-}
-
-type PatientPastUpcomingAppointment {
-  pastAppointment: Appointment
-  upcomingAppointment: Appointment
-}
-
-type PatientPastUpcomingAppointmentPayload {
-  response: ResponsePayload
-  appointments: PatientPastUpcomingAppointment
-}
-
-type InvoicePayload {
-  response: ResponsePayload
-  invoice: Invoice
-}
-
-type InvoicesPayload {
-  response: ResponsePayload
-  invoices: [Invoice]
+type PoliciesPayload {
+  policies: [Policy!]!
   pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyPayload {
+  policy: Policy!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyHoldersPayload {
+  policyHolders: [PolicyHolder!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyEligibilitiesPayload {
+  policyEligibilities: [PolicyEligibility!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyEligibilityPayload {
+  policyEligibility: PolicyEligibility!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type PolicyEligibilityWithPatientPayload {
+  policyEligibility: PolicyEligibility!
+  policyHolder: PolicyHolder!
+  patient: Patient!
+  primaryProvider: Doctor!
+  pagination: PaginationPayload
+  response: Response
 }
 
 type AppointmentsPayload {
@@ -2549,61 +2606,6 @@ type TestSpecimenTypesPayload {
   pagination: PaginationPayload
 }
 
-type Response {
-  status: Int
-  message: String
-}
-
-type InsurancesPayload {
-  insurances: [Insurance!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type InsurancePayload {
-  insurance: Insurance
-  response: Response
-}
-
-type PoliciesPayload {
-  policies: [Policy!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyPayload {
-  policy: Policy!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyHoldersPayload {
-  policyHolders: [PolicyHolder!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyEligibilitiesPayload {
-  policyEligibilities: [PolicyEligibility!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyEligibilityPayload {
-  policyEligibility: PolicyEligibility!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type PolicyEligibilityWithPatientPayload {
-  policyEligibility: PolicyEligibility!
-  policyHolder: PolicyHolder!
-  patient: Patient!
-  primaryProvider: Doctor!
-  pagination: PaginationPayload
-  response: Response
-}
-
 type LiveClaimFeed {
   id: String!
   paidDate: String
@@ -2907,6 +2909,16 @@ type Query {
   getToken: BraintreePayload!
   getTransaction(id: String!): TransactionPayload!
   getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
+  fetchInsurance(searchTerm: String!): InsurancesPayload!
+  getInsurance(getInsuranceInput: GetInsuranceInput!): InsurancePayload!
+  fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
+  fetchPolicy(id: String!): PolicyPayload!
+  fetchPatientInsurances(id: String!): PoliciesPayload!
+  fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
+  fetchPolicyHolder(id: String!): PolicyHolder!
+  getPoliciesEligibilities(policyEligibilityInput: PolicyEligibilityPaginationInput!): PolicyEligibilitiesPayload!
+  getPoliciesEligibility(id: String!): PolicyEligibilityWithPatientPayload!
   fetchAgreement(agreementId: String!): AgreementPayload!
   fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
@@ -2930,16 +2942,6 @@ type Query {
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
   findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
-  fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
-  fetchInsurance(searchTerm: String!): InsurancesPayload!
-  getInsurance(getInsuranceInput: GetInsuranceInput!): InsurancePayload!
-  fetchAllPolicies(policyInput: PolicyPaginationInput!): PoliciesPayload!
-  fetchPolicy(id: String!): PolicyPayload!
-  fetchPatientInsurances(id: String!): PoliciesPayload!
-  fetchAllPolicyHolders(policyHolderPaginationInput: PolicyHolderPaginationInput!): PolicyHoldersPayload!
-  fetchPolicyHolder(id: String!): PolicyHolder!
-  getPoliciesEligibilities(policyEligibilityInput: PolicyEligibilityPaginationInput!): PolicyEligibilitiesPayload!
-  getPoliciesEligibility(id: String!): PolicyEligibilityWithPatientPayload!
   findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
@@ -3296,6 +3298,30 @@ input InvoiceInputs {
   paginationOptions: PaginationInput!
 }
 
+input InsurancePaginationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetInsuranceInput {
+  id: String
+}
+
+input PolicyPaginationInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input PolicyHolderPaginationInput {
+  paginationOptions: PaginationInput!
+}
+
+input PolicyEligibilityPaginationInput {
+  patientId: String
+  searchTerm: String
+  paginationOptions: PaginationInput!
+}
+
 input AgreementPaginationInput {
   agreementFacilityId: String
   agreementPracticeId: String
@@ -3411,30 +3437,6 @@ input LiveClaimFeedInput {
   claimFeedPayerId: String
   claimFeedFromDate: String
   claimFeedToDate: String
-  paginationOptions: PaginationInput!
-}
-
-input InsurancePaginationInput {
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input GetInsuranceInput {
-  id: String
-}
-
-input PolicyPaginationInput {
-  patientId: String
-  paginationOptions: PaginationInput!
-}
-
-input PolicyHolderPaginationInput {
-  paginationOptions: PaginationInput!
-}
-
-input PolicyEligibilityPaginationInput {
-  patientId: String
-  searchTerm: String
   paginationOptions: PaginationInput!
 }
 
@@ -3571,7 +3573,7 @@ type Mutation {
   removeAppointment(removeAppointment: RemoveAppointment!): AppointmentPayload!
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
-  sendAppointmentReminder(appointmentId: String!): AppointmentPayload!
+  sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput!): AppointmentPayload!
   createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
   removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
   updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
@@ -3591,6 +3593,11 @@ type Mutation {
   createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
   createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
   updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
+  updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
+  createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
+  createCopay(createCopayInput: CopayInput!): Copay!
+  getEligibilityAndCoverage(policyId: String!): PolicyEligibilityPayload!
   createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
   updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
   removeAgreement(agreementId: String!): AgreementPayload!
@@ -3610,11 +3617,6 @@ type Mutation {
   updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
   removeClaimStatus(id: String!): ClaimStatusPayload!
   createLiveClaimFeed: [LiveClaimFeed!]!
-  createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
-  updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
-  createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
-  createCopay(createCopayInput: CopayInput!): Copay!
-  getEligibilityAndCoverage(policyId: String!): PolicyEligibilityPayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
@@ -4610,6 +4612,8 @@ input CreateAppointmentInput {
   practiceId: String
   appointmentCreateType: AppointmentCreateType
   insuranceStatus: String
+  appointmentDate: String
+  timeZone: String
 }
 
 input CreateExternalAppointmentInput {
@@ -4632,6 +4636,8 @@ input CreateExternalAppointmentItemInput {
   patientId: String
   practiceId: String
   paymentStatus: String
+  appointmentDate: String
+  timeZone: String
 }
 
 input UpdateAppointmentInput {
@@ -4659,6 +4665,8 @@ input UpdateAppointmentInput {
   practiceId: String
   appointmentCreateType: AppointmentCreateType
   insuranceStatus: String
+  appointmentDate: String
+  timeZone: String
   id: String!
   paymentStatus: String
   selfCheckIn: Boolean
@@ -4686,6 +4694,11 @@ input CancelAppointment {
 input UpdateAppointmentStatusInput {
   id: String!
   status: AppointmentStatus!
+}
+
+input AppointmentReminderInput {
+  appointmentId: String
+  timeZone: String
 }
 
 input CreateFeeScheduleInput {
@@ -4848,6 +4861,93 @@ input CreateExternalInvoiceInputs {
 
 input InvoiceStatusInputs {
   status: STATUS!
+  id: String!
+}
+
+input CreatePolicyInput {
+  orderOfBenefit: OrderOfBenefitType
+  policyHolderRelationship: PolicyHolderRelationshipType
+  memberId: String
+  groupNumber: String
+  issueDate: String
+  expirationDate: String
+  coinsurancePercentage: String
+  referringProviderId: String
+  primaryCareProviderId: String
+  pricingProductType: PricingProductType
+  notes: String
+  insuranceId: String
+  patientId: String
+  copays: [CopayInput!]
+  policyHolderInfo: PolicyHolderInput
+}
+
+input CopayInput {
+  type: CopayType
+  amount: String
+  policy: CreatePolicyInput
+  policyId: String
+}
+
+input PolicyHolderInput {
+  certificationNumber: String
+  employer: String
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  zipCode: String
+  address: String
+  addressCTD: String
+  city: String
+  state: String
+  ssn: String
+  sex: POLICY_HOLDER_GENDER_IDENTITY
+  dob: String
+}
+
+input UpdatePolicyInput {
+  orderOfBenefit: OrderOfBenefitType
+  policyHolderRelationship: PolicyHolderRelationshipType
+  memberId: String
+  groupNumber: String
+  issueDate: String
+  expirationDate: String
+  coinsurancePercentage: String
+  referringProviderId: String
+  primaryCareProviderId: String
+  pricingProductType: PricingProductType
+  notes: String
+  insuranceId: String
+  patientId: String
+  copays: [UpdateCopayInput!]
+  policyHolderInfo: UpdatePolicyHolderInput
+  id: String!
+}
+
+input UpdateCopayInput {
+  type: CopayType
+  amount: String
+  policy: CreatePolicyInput
+  policyId: String
+  id: String
+}
+
+input UpdatePolicyHolderInput {
+  certificationNumber: String
+  employer: String
+  suffix: String
+  firstName: String
+  middleName: String
+  lastName: String
+  zipCode: String
+  address: String
+  addressCTD: String
+  city: String
+  state: String
+  ssn: String
+  sex: POLICY_HOLDER_GENDER_IDENTITY
+  dob: String
   id: String!
 }
 
@@ -5054,93 +5154,6 @@ input UpdateClaimStatusInput {
   statusName: String
   statusId: String
   id: String
-}
-
-input CreatePolicyInput {
-  orderOfBenefit: OrderOfBenefitType
-  policyHolderRelationship: PolicyHolderRelationshipType
-  memberId: String
-  groupNumber: String
-  issueDate: String
-  expirationDate: String
-  coinsurancePercentage: String
-  referringProviderId: String
-  primaryCareProviderId: String
-  pricingProductType: PricingProductType
-  notes: String
-  insuranceId: String
-  patientId: String
-  copays: [CopayInput!]
-  policyHolderInfo: PolicyHolderInput
-}
-
-input CopayInput {
-  type: CopayType
-  amount: String
-  policy: CreatePolicyInput
-  policyId: String
-}
-
-input PolicyHolderInput {
-  certificationNumber: String
-  employer: String
-  suffix: String
-  firstName: String
-  middleName: String
-  lastName: String
-  zipCode: String
-  address: String
-  addressCTD: String
-  city: String
-  state: String
-  ssn: String
-  sex: POLICY_HOLDER_GENDER_IDENTITY
-  dob: String
-}
-
-input UpdatePolicyInput {
-  orderOfBenefit: OrderOfBenefitType
-  policyHolderRelationship: PolicyHolderRelationshipType
-  memberId: String
-  groupNumber: String
-  issueDate: String
-  expirationDate: String
-  coinsurancePercentage: String
-  referringProviderId: String
-  primaryCareProviderId: String
-  pricingProductType: PricingProductType
-  notes: String
-  insuranceId: String
-  patientId: String
-  copays: [UpdateCopayInput!]
-  policyHolderInfo: UpdatePolicyHolderInput
-  id: String!
-}
-
-input UpdateCopayInput {
-  type: CopayType
-  amount: String
-  policy: CreatePolicyInput
-  policyId: String
-  id: String
-}
-
-input UpdatePolicyHolderInput {
-  certificationNumber: String
-  employer: String
-  suffix: String
-  firstName: String
-  middleName: String
-  lastName: String
-  zipCode: String
-  address: String
-  addressCTD: String
-  city: String
-  state: String
-  ssn: String
-  sex: POLICY_HOLDER_GENDER_IDENTITY
-  dob: String
-  id: String!
 }
 
 input CreateFormInput {

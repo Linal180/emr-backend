@@ -7,6 +7,7 @@ import { PaginationModule } from "src/pagination/pagination.module";
 import { UsersModule } from "src/users/users.module";
 import { AwsProvider } from "../aws/aws-provider";
 import { AwsService } from "./aws.service";
+import { PublicAwsService } from "./publicAws.service";
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AwsService } from "./aws.service";
     forwardRef(() => UsersModule),
     forwardRef(() => AttachmentsModule)
   ],
-  providers: [AwsProvider, AwsService],
-  exports: [AwsService]
+  providers: [AwsProvider, AwsService, PublicAwsService],
+  exports: [AwsService, PublicAwsService]
 })
 export class AwsModule { }
