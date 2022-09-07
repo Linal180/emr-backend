@@ -1,5 +1,5 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Connection, getConnection, Repository } from 'typeorm';
 import {
   forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, ConflictException,
@@ -11,6 +11,7 @@ import { RemovePatient } from '../dto/update-patientItem.input';
 import { PatientInviteInput } from '../dto/patient-invite.input';
 import { CreatePatientInput } from '../dto/create-patient.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
+import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { UpdatePatientPolicyHolderInput } from '../dto/update-patient-policyHolder.input';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
@@ -18,6 +19,7 @@ import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-exte
 import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 //entities
 import { Patient } from '../entities/patient.entity';
+import { Contact } from 'src/providers/entities/contact.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 import { DoctorPatient, DoctorPatientRelationType } from '../entities/doctorPatient.entity';
@@ -32,7 +34,7 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
 //constants or enums
-import { ATTACHMENT_TITLES } from '../../lib/constants'
+import { ATTACHMENT_TITLES, USER_TYPES } from '../../lib/constants'
 import { createToken, paginateResponse } from 'src/lib/helper';
 //dto's
 import { File } from '../../aws/dto/file-input.dto';
@@ -40,8 +42,6 @@ import PatientInput from '../dto/patient-input.dto';
 import { PatientPayload } from '../dto/patient-payload.dto';
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
-import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
-import { Contact } from 'src/providers/entities/contact.entity';
 
 
 @Injectable()
@@ -120,7 +120,9 @@ export class PatientService {
         prevPatient = await this.GetPatientByEmail(email);
       }
       if (!prevPatient) {
-        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: moment(createPatientInput?.createPatientItemInput?.dob).format('MM-DD-YYYY') })
+        const { dob } = createPatientInput?.createPatientItemInput || {}
+        const transformedDob = dob ? moment(dob).format('MM-DD-YYYY') : ''
+        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: transformedDob })
         patientInstance.patientRecord = await this.utilsService.generateString(8);
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
@@ -215,7 +217,8 @@ export class PatientService {
       } else {
         let user = await this.usersService.findUserByUserId(patientId)
         //save patient basic info
-        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: moment(dob).format("MM-DD-YYYY") }, this.patientRepository)
+        const transformedDob = dob ? moment(dob).format("MM-DD-YYYY") : ''
+        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: transformedDob }, this.patientRepository)
         //get facility 
         const patientInstance = await this.patientRepository.findOne(patientId)
 
@@ -324,7 +327,8 @@ export class PatientService {
       const { id: patientId, usualProviderId, facilityId, dob, ...patientInfoToUpdate } = updatePatientItemInput
 
       //save patient basic info
-      await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, dob: new Date(dob)?.toISOString() }, this.patientRepository)
+      const transformedDob = dob ? moment(dob).format('MM-DD-YYYY') : ''
+      await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, dob: transformedDob }, this.patientRepository)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(patientId)
 
@@ -787,7 +791,9 @@ export class PatientService {
    * @returns patient k
    */
   async addPatient(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Patient> {
-    const patientInstance = this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
+    const { dob } = createExternalAppointmentInput.createPatientItemInput
+    const transformedDob = dob ? moment(dob).format("MM-DD-YYYY") : ''
+    const patientInstance = this.patientRepository.create({ ...createExternalAppointmentInput.createPatientItemInput, dob: transformedDob })
     patientInstance.patientRecord = await this.utilsService.generateString(10);
     let doctorPatientInstance
     if (createExternalAppointmentInput.createPatientItemInput.usualProviderId) {
@@ -851,6 +857,10 @@ export class PatientService {
       const patient = await this.findOne(id)
       if (patient) {
         await this.patientRepository.delete(patient.id)
+        const user = await this.usersService.findUserByUserId(id, USER_TYPES.PATIENT);
+        if (user) {
+          await this.usersService.remove(user?.id)
+        }
         return
       }
       throw new NotFoundException({

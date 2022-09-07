@@ -126,3 +126,14 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+
+export const USER_TYPES = {
+  PATIENT: 'patient',
+  SUPER_ADMIN: 'super-admin',
+  DOCTOR: 'doctor',
+  STAFF: 'staff',
+  FRONT_DESK: '',
+  OFFICE_MANAGER:'office-manager',
+  FACILITY_ADMIN: "facility-admin",
+  PRACTICE_ADMIN: 'practice-admin'
+}
