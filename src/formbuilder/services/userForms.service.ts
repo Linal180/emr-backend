@@ -1,6 +1,7 @@
+import * as moment from 'moment'
 import { validate as isUuid } from 'uuid';
 import { Connection, Repository } from "typeorm";
-import moment, * as momentTimezone from 'moment-timezone';
+import * as momentTimezone from 'moment-timezone';
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   BadRequestException, HttpStatus, Injectable, InternalServerErrorException, PreconditionFailedException
@@ -169,7 +170,7 @@ export class UserFormsService {
         genderIdentity: genderIdentity || GENDERIDENTITY.NONE,
         maritialStatus: maritialStatus || MARITIALSTATUS.SINGLE,
         sexualOrientation: SEXUALORIENTATION.NONE,
-        dob: dob || null,
+        dob: dob ? moment(dob).format('MM-DD-YYYY') : null,
         phoneEmailPermission: phoneEmailPermission === 'true' ? true : false,
         cellPhonePermission: cellPhonePermission === 'true' ? true : false,
         medicalPermission: medicalPermission === 'true' ? true : false,
@@ -381,8 +382,8 @@ export class UserFormsService {
                 practiceId: practiceId || null,
                 contractNumber: contractNo || null,
                 organizationName: organizationName || null,
-                insuranceStatus, 
-                appointmentDate:  appointmentDate  ? momentTimezone(appointmentDate).tz(timeZone).format('YYYY-MM-DD') :  momentTimezone(startTime).tz(timeZone).format('YYYY-MM-DD'),
+                insuranceStatus,
+                appointmentDate: appointmentDate ? momentTimezone(appointmentDate).tz(timeZone).format('YYYY-MM-DD') : momentTimezone(startTime).tz(timeZone).format('YYYY-MM-DD'),
                 timeZone
               }
 
@@ -554,7 +555,7 @@ export class UserFormsService {
                   patientId: patientId,
                   practiceId: practiceId || null,
                   insuranceStatus,
-                  appointmentDate:  appointmentDate  ? momentTimezone(appointmentDate).tz(timeZone).format('YYYY-MM-DD') :  momentTimezone(startTime).tz(timeZone).format('YYYY-MM-DD'),
+                  appointmentDate: appointmentDate ? momentTimezone(appointmentDate).tz(timeZone).format('YYYY-MM-DD') : momentTimezone(startTime).tz(timeZone).format('YYYY-MM-DD'),
                   timeZone
                 }
                 let appointmentContract = null

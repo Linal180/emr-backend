@@ -1,5 +1,5 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Connection, getConnection, Repository } from 'typeorm';
 import {
   forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, ConflictException,
@@ -120,7 +120,9 @@ export class PatientService {
         prevPatient = await this.GetPatientByEmail(email);
       }
       if (!prevPatient) {
-        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: moment(createPatientInput?.createPatientItemInput?.dob).format('MM-DD-YYYY') })
+        const { dob } = createPatientInput?.createPatientItemInput || {}
+        const transformedDob = dob ? moment(dob).format('MM-DD-YYYY') : ''
+        const patientInstance = await this.patientRepository.create({ ...createPatientInput.createPatientItemInput, email, dob: transformedDob })
         patientInstance.patientRecord = await this.utilsService.generateString(8);
         //get facility 
         if (createPatientInput?.createPatientItemInput?.facilityId) {
@@ -215,7 +217,8 @@ export class PatientService {
       } else {
         let user = await this.usersService.findUserByUserId(patientId)
         //save patient basic info
-        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: moment(dob).format("MM-DD-YYYY") }, this.patientRepository)
+        const transformedDob = dob ? moment(dob).format("MM-DD-YYYY") : ''
+        await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, email, dob: transformedDob }, this.patientRepository)
         //get facility 
         const patientInstance = await this.patientRepository.findOne(patientId)
 
@@ -324,7 +327,8 @@ export class PatientService {
       const { id: patientId, usualProviderId, facilityId, dob, ...patientInfoToUpdate } = updatePatientItemInput
 
       //save patient basic info
-      await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, dob: new Date(dob)?.toISOString() }, this.patientRepository)
+      const transformedDob = dob ? moment(dob).format('MM-DD-YYYY') : ''
+      await this.utilsService.updateEntityManager(Patient, patientId, { ...patientInfoToUpdate, dob: transformedDob }, this.patientRepository)
       //fetch patient
       const patientInstance = await this.patientRepository.findOne(patientId)
 
@@ -787,7 +791,9 @@ export class PatientService {
    * @returns patient k
    */
   async addPatient(createExternalAppointmentInput: CreateExternalAppointmentInput): Promise<Patient> {
-    const patientInstance = this.patientRepository.create(createExternalAppointmentInput.createPatientItemInput)
+    const { dob } = createExternalAppointmentInput.createPatientItemInput
+    const transformedDob = dob ? moment(dob).format("MM-DD-YYYY") : ''
+    const patientInstance = this.patientRepository.create({ ...createExternalAppointmentInput.createPatientItemInput, dob: transformedDob })
     patientInstance.patientRecord = await this.utilsService.generateString(10);
     let doctorPatientInstance
     if (createExternalAppointmentInput.createPatientItemInput.usualProviderId) {

@@ -43,7 +43,7 @@ import { PatientController } from './patient.controller';
   providers: [PatientResolver, PatientService, EmployerService, PatientSubscriber, DoctorPatientService,
     DoctorPatientResolver, PatientConsentService, PatientConsentResolver],
   controllers: [PatientController],
-  exports: [PatientService, TypeOrmModule, EmployerService],
+  exports: [PatientService, TypeOrmModule, EmployerService, PatientConsentService],
 })
 export class PatientModule { }
 
