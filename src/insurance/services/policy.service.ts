@@ -274,7 +274,7 @@ export class PolicyService {
       const policyInfo = await this.policyRepository.findOne({ id: policyId })
       const { policyHolderRelationship, patientId, insuranceId, policyHolderId } = policyInfo || {}
       const { payerId, payerName } = await this.insuranceService.findOne(insuranceId) || {}
-      const { firstName, lastName } = await this.policyHolderService.findOne(policyHolderId) || {}
+      const { firstName, lastName, dob, certificationNumber } = await this.policyHolderService.findOne(policyHolderId) || {}
       const patRelationshipCode = getClaimRelation(policyHolderRelationship)
       const patientInfo = await this.patientService.findOne(patientId)
       const facility = await this.facilityService.findOne(patientInfo.facilityId)
@@ -283,13 +283,18 @@ export class PolicyService {
         throw new Error("Please provide a valid group NPI");
       }
 
+      const serviceDate = moment().format('YYYY-MM-DD')
+      const dateOfBirth = moment(dob).format('YYYY-MM-DD')
+
       const formData = new FormData()
       formData.append('AccountKey', process.env.CLAIM_MD_ID)
       formData.append('ins_name_l', lastName)
       formData.append('ins_name_f', firstName)
       formData.append('payerid', payerId)
       formData.append('pat_rel', patRelationshipCode)
-      formData.append('fdos', moment().format('YYYY-MM-DD'))
+      formData.append('fdos', serviceDate)
+      formData.append('ins_dob', dateOfBirth)
+      formData.append('ins_number', certificationNumber)
       formData.append('prov_npi', npi)
 
       const response = await this.httpService.post('https://www.claim.md/services/eligxml/', formData, {
@@ -298,11 +303,15 @@ export class PolicyService {
         }
       }).toPromise();
       const { data } = response || {}
-      if (data.error) {
+      if (data?.error) {
         const { error_mesg } = data.error || {}
         throw new Error(error_mesg);
       }
       const { elig } = data || {}
+      if (elig?.error) {
+        const errors = elig?.error?.map(({ error_mesg }) => error_mesg).join('-__+');
+        throw new Error(errors);
+      }
       const { elig_result_date, elig_result_time, eligid, group_number, ins_addr_1, ins_city, ins_dob, ins_name_f, ins_name_l,
         ins_number, ins_sex, ins_state, ins_zip, plan_begin_date, plan_number, benefit } = elig || {}
 
