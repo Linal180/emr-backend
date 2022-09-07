@@ -194,7 +194,7 @@ export class BillingService {
     const totalCharges = procedureCodes.reduce((acc, code) => {
       return acc += Number(code.price || 0)
     }, 0)
-    console.log("totalCharges", totalCharges, procedureCodes)
+    
     const insuranceDetails = await this.policyService.fetchPatientInsurances(patientId)
     const appointmentInfo = await this.appointmentService.findOne(appointmentId)
     const patient = await this.patientService.findOne(patientId)

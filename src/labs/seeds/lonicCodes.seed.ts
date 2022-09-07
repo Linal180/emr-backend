@@ -25,8 +25,6 @@ export class CreateLoincCodesData implements Seeder {
 
         const file = response1.data;
 
-        console.log("\n file", file[1000], i+1)
-
         await Promise.all(file.map(async (item) => {
           const getLoincCode = await getRepository(LoincCodes).findOne({ loincNum: item.loincNum })
           if (!getLoincCode) {

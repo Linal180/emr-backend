@@ -205,7 +205,6 @@ export class CreateExpressPractice implements Seeder {
 
       //create practice admin
       if (!practiceAdmin) {
-        console.log('roles', roles)
         //create user
         const adminUserInstance = userRepo.create({ email: PracticeAdminInfo.email, facility: savedFacilities[0], emailVerified: true })
         adminUserInstance.password = await createPasswordHash('admin123');
