@@ -42,6 +42,9 @@ export class GetSlots  {
 
   @Field()
   currentDate: string
+
+  @Field({ nullable: true })
+  appointmentId?: string
  }
 
  @InputType()
