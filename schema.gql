@@ -3123,6 +3123,7 @@ input GetSlots {
   offset: Float!
   serviceId: String!
   currentDate: String!
+  appointmentId: String
 }
 
 input PatientInput {
