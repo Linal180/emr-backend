@@ -342,10 +342,15 @@ export class ScheduleService {
    */
   async getSlots(getSlots: GetSlots): Promise<Slots[]> {
     try {
+      const { appointmentId } = getSlots
       const uTcStartDateOffset = moment(new Date(getSlots.currentDate)).startOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
       const uTcEndDateOffset = moment(new Date(getSlots.currentDate)).endOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
       //fetch doctor's booked appointment 
       const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots, uTcStartDateOffset, uTcEndDateOffset)
+      let filteredAppointments= appointment
+      if (appointmentId) {
+        filteredAppointments = appointment.filter((appointmentInfo) => appointmentInfo.id !== appointmentId)
+      }
       const schedules = await this.getTodaySchedule(getSlots)
       const shouldHaveSlots = await this.getShouldHaveSlots(getSlots)
       if (!shouldHaveSlots) {
@@ -355,7 +360,7 @@ export class ScheduleService {
       const services = await this.servicesService.findOne(getSlots?.serviceId)
       const duration = parseInt(services?.duration)
       //get doctor's remaining time 
-      const slots = await this.RemainingAvailability(newSchedule, appointment, duration)
+      const slots = await this.RemainingAvailability(newSchedule, filteredAppointments, duration)
       const deduplicateSlots = slots?.filter((value, index, self) =>
         index === slots?.findIndex((t) => {
           return (
@@ -403,7 +408,7 @@ export class ScheduleService {
    * @returns  
    */
   async isInBreak(slotTime, appointment) {
-    return appointment.some(appointmentItem => {
+    return appointment?.some(appointmentItem => {
       const flag = slotTime.unix() >= moment(appointmentItem.scheduleStartDateTime).unix() && slotTime.unix() < moment(appointmentItem.scheduleEndDateTime).unix();
       return flag
     });
