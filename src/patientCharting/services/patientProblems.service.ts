@@ -189,6 +189,8 @@ export class ProblemService {
     const snoMedCodes = await getConnection()
       .getRepository(SnoMedCodes)
       .createQueryBuilder("SnoMedCode")
+      .skip((page - 1) * limit)
+      .take(limit)
       .distinctOn(['SnoMedCode.referencedComponentId'])
       .where('SnoMedCode.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` }).getMany()
 
