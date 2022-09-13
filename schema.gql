@@ -5116,10 +5116,21 @@ input RemoveVital {
 
 input CreateFamilyHistoryInput {
   name: String
+  patientId: String
+  familyHistoryRelatives: [CreateFamilyHistoryRelativeInput!]
+}
+
+input CreateFamilyHistoryRelativeInput {
+  relativeName: String
+  onsetAge: String
+  died: String
+  notes: String
 }
 
 input UpdateFamilyHistoryInput {
   name: String
+  patientId: String
+  familyHistoryRelatives: [CreateFamilyHistoryRelativeInput!]
   id: String
 }
 

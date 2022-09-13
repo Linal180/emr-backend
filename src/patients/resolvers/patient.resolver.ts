@@ -7,6 +7,7 @@ import { Contact } from 'src/providers/entities/contact.entity';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 //services
 import { PatientService } from '../services/patient.service';
@@ -15,6 +16,7 @@ import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { FamilyHistoryService } from 'src/patientCharting/services/familyHistory.service';
 //guards
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
@@ -26,13 +28,13 @@ import { PatientInviteInput } from '../dto/patient-invite.input';
 import PatientAttachmentsInput from '../dto/patient-attachments-input.dto';
 import { GetPatient, RemovePatient } from '../dto/update-patientItem.input';
 import { UpdatePatientProfileInput } from '../dto/update-patient-profile.input';
+import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
 import { UpdatePatientInput, UpdatePatientNoteInfoInputs } from '../dto/update-patient.input';
 import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 //payloads
 import { PatientsPayload } from '../dto/patients-payload.dto';
 import { PatientAttachmentsPayload } from '../dto/patients-attachments-payload.dto';
 import { PatientDoctorPayload, PatientPayload, PatientProviderPayload } from '../dto/patient-payload.dto';
-import { GetFacilityPatientsInput } from 'src/facilities/dto/facility-input.dto';
 
 @Resolver(() => Patient)
 export class PatientResolver {
@@ -43,6 +45,7 @@ export class PatientResolver {
     private readonly employerService: EmployerService,
     private readonly attachmentsService: AttachmentsService,
     private readonly appointmentService: AppointmentService,
+    private readonly familyHistoryService: FamilyHistoryService,
   ) { }
 
   //mutations
@@ -245,14 +248,14 @@ export class PatientResolver {
 
   @ResolveField(() => [Appointment])
   async appointments(@Parent() patient: Patient): Promise<Appointment[]> {
-    if (patient) {
+    if (patient?.id) {
       return await this.appointmentService.getPatientAppointment({ patientId: patient.id });
     }
   }
 
   @ResolveField(() => [DoctorPatient])
   async doctorPatients(@Parent() patient: Patient): Promise<DoctorPatient[]> {
-    if (patient && patient.id) {
+    if (patient?.id) {
       const provider = await this.patientService.usualProvider(patient.id);
       return provider;
     }
@@ -260,36 +263,43 @@ export class PatientResolver {
 
   @ResolveField(() => Facility)
   async facility(@Parent() patient: Patient): Promise<Facility> {
-    if (patient && patient.facilityId) {
+    if (patient && patient?.facilityId) {
       return await this.facilityService.findOne(patient.facilityId);
     }
   }
 
   @ResolveField(() => Employer)
   async employer(@Parent() patient: Patient): Promise<Employer> {
-    if (patient) {
+    if (patient?.id) {
       return await this.employerService.getEmployerByPatientId(patient.id);
     }
   }
 
   @ResolveField(() => [Attachment])
   async attachments(@Parent() patient: Patient): Promise<Attachment[]> {
-    if (patient) {
+    if (patient?.id) {
       return await this.attachmentsService.findAttachments(patient.id, AttachmentType.PATIENT);
     }
   }
 
   @ResolveField(() => String)
   async profileAttachment(@Parent() patient: Patient): Promise<string> {
-    if (patient) {
+    if (patient?.id) {
       return await this.attachmentsService.findProfileAttachment(patient.id, AttachmentType.PATIENT);
     }
   }
 
   @ResolveField(() => [Contact])
   async contacts(@Parent() patient: Patient): Promise<Contact[]> {
-    if (patient) {
+    if (patient?.id) {
       return await this.contactService.findContactsByPatientId(patient.id);
+    }
+  }
+
+  @ResolveField(() => [FamilyHistory])
+  async familyHistory(@Parent() patient: Patient): Promise<FamilyHistory[]> {
+    if (patient?.id) {
+      return await this.familyHistoryService.findByPatientId(patient.id);
     }
   }
 }

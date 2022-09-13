@@ -4,16 +4,16 @@ import { Field, InputType, PartialType } from "@nestjs/graphql";
 @InputType()
 export class CreateFamilyHistoryRelativeInput {
   @Field({ nullable: true })
-  relativeName: string
+  relativeName?: string
 
   @Field({ nullable: true })
-  onsetAge: string
+  onsetAge?: string
 
   @Field({ nullable: true })
-  died: string
+  died?: string
 
   @Field({ nullable: true })
-  notes: string
+  notes?: string
 }
 
 

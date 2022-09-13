@@ -5,13 +5,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { FamilyHistoryRelative } from "../entities/familyHistoryRelative.entity";
 //inputs
 import { CreateFamilyHistoryRelativeInput, UpdateFamilyHistoryRelativeInput } from "../dto/family-history-relative.input";
-
+//Services
+import { UtilsService } from "src/util/utils.service";
 
 @Injectable()
 export class FamilyHistoryRelativeService {
 	constructor(
 		@InjectRepository(FamilyHistoryRelative)
-		private FamilyHistoryRelativeRepo: Repository<FamilyHistoryRelative>,
+		private familyHistoryRelativeRepo: Repository<FamilyHistoryRelative>,
+		private readonly utilsService: UtilsService
 	) { }
 
 	/**
@@ -20,8 +22,8 @@ export class FamilyHistoryRelativeService {
 	 * @returns create 
 	 */
 	async create(params: CreateFamilyHistoryRelativeInput): Promise<FamilyHistoryRelative> {
-		const familyHistoryRelativeInstance = this.FamilyHistoryRelativeRepo.create(params);
-		const familyHistoryRelative = await this.FamilyHistoryRelativeRepo.save(familyHistoryRelativeInstance)
+		const familyHistoryRelativeInstance = this.familyHistoryRelativeRepo.create(params);
+		const familyHistoryRelative = await this.familyHistoryRelativeRepo.save(familyHistoryRelativeInstance)
 		return familyHistoryRelative
 	}
 
@@ -31,8 +33,27 @@ export class FamilyHistoryRelativeService {
 	 * @returns update 
 	 */
 	async update(params: UpdateFamilyHistoryRelativeInput): Promise<FamilyHistoryRelative> {
-		const familyHistory = await this.FamilyHistoryRelativeRepo.save(params)
-		return familyHistory
+		const { id } = params || {}
+		const familyHistoryRelative = await this.utilsService.updateEntityManager(FamilyHistoryRelative, id, params, this.familyHistoryRelativeRepo)
+		return familyHistoryRelative
 	}
 
+	/**
+	 * Finds one
+	 * @param id 
+	 * @returns one 
+	 */
+	async findOne(id: string): Promise<FamilyHistoryRelative> {
+		return await this.familyHistoryRelativeRepo.findOne(id)
+	}
+
+
+	/**
+	 * Finds by family id
+	 * @param familyHistoryId 
+	 * @returns by family id 
+	 */
+	async findByFamilyId(familyHistoryId: string): Promise<FamilyHistoryRelative[]> {
+		return await this.familyHistoryRelativeRepo.find({ familyHistoryId })
+	}
 }
