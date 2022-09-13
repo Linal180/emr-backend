@@ -12,24 +12,28 @@ import { PatientProblems } from './entities/patientProblems.entity';
 import { PatientVitals } from './entities/patientVitals.entity';
 import { Reactions } from './entities/reactions.entity';
 import { SnoMedCodes } from './entities/snowmedCodes.entity';
+import { TriageNotes } from './entities/triageNotes.entity';
 import { PatientAllergiesResolver } from './resolvers/patientAllergies.resolver';
 import { ProblemResolver } from './resolvers/patientProblems.resolver';
 import { VitalsResolver } from './resolvers/patientVitals.resolver';
+import { TriageNotesResolver } from './resolvers/triageNotes.resolver';
 import { PatientAllergiesService } from './services/patientAllergies.service';
 import { ProblemService } from './services/patientProblems.service';
 import { VitalsService } from './services/patientVitals.service';
 import { ReactionsService } from './services/reactions.service';
+import { TriageNotesService } from './services/triageNotes.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ICDCodes, PatientProblems,PatientAllergies, SnoMedCodes, PatientVitals, Allergies, Reactions]),
+    TypeOrmModule.forFeature([ICDCodes, PatientProblems, PatientAllergies, SnoMedCodes, PatientVitals, Allergies, Reactions, TriageNotes]),
     forwardRef(() => UsersModule),
     PaginationModule,
     ProviderModule,
     AppointmentModule,
     PatientModule,
   ],
-  providers: [PatientAllergiesService,ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver, VitalsService, PatientAllergiesService, ReactionsService],
+  providers: [PatientAllergiesService, ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver,
+    VitalsService, PatientAllergiesService, ReactionsService, TriageNotesResolver, TriageNotesService],
   exports: [ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule],
 })
 export class ProblemChartingModule { }

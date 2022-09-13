@@ -14,6 +14,7 @@ import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
+import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -250,6 +251,10 @@ export class Appointment {
   @Field(() => Contract, { nullable: true })
   @OneToOne(() => Contract, (contract) => contract.appointment, { eager: true })
   contract: Contract;
+
+  @Field(() => TriageNotes, { nullable: true })
+  @OneToOne(() => TriageNotes, (triageNote) => triageNote.appointment, { eager: true })
+  triageNote: TriageNotes;
 
   @Field(() => Billing, { nullable: true })
   @OneToOne(() => Billing, (billing) => billing.appointment)
