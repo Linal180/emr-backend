@@ -1,5 +1,9 @@
 import { HttpStatus, NotFoundException } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { PatientService } from 'src/patients/services/patient.service';
 import { CreateTriageNoteInput } from '../dto/create-triageNote.input';
 import { TriageNotePayload, TriageNotesPayload } from '../dto/triageNote-payload.dto';
 import PatientTriageNoteInput from '../dto/triageNotes-input.dto';
@@ -9,7 +13,11 @@ import { TriageNotesService } from '../services/triageNotes.service';
 
 @Resolver(() => TriageNotes)
 export class TriageNotesResolver {
-  constructor(private readonly triageNotesService: TriageNotesService) { }
+  constructor(
+    private readonly triageNotesService: TriageNotesService,
+    private readonly appointmentService: AppointmentService,
+    private readonly patientService: PatientService,
+    ) { }
 
   @Mutation(() => TriageNotePayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -57,7 +65,7 @@ export class TriageNotesResolver {
     const triageNotes = await this.triageNotesService.GetTriageNotes(getPatientTriageNote.id)
     return {
       triageNotes,
-      response: { status: 200, message: 'Patient vital fetched successfully' }
+      response: { status: 200, message: 'Patient Triage Notes fetched successfully' }
     };
   }
 
@@ -66,6 +74,20 @@ export class TriageNotesResolver {
   // @SetMetadata('name', 'removePatientTriageNote')
   async removePatientTriageNote(@Args('removeTriageNote') removeTriageNote: RemoveTriageNote) {
     await this.triageNotesService.removeTriageNotes(removeTriageNote);
-    return { response: { status: 200, message: 'Patient vital Deleted' } };
+    return { response: { status: 200, message: 'Patient Triage Notes Deleted' } };
+  }
+
+  @ResolveField(() => Appointment)
+  async appointment(@Parent() triageNotes: TriageNotes): Promise<Appointment> {
+    if (triageNotes && triageNotes.appointmentId) {
+      return await this.appointmentService.findOne(triageNotes.appointmentId);
+    }
+  }
+
+  @ResolveField(() => Patient)
+  async patient(@Parent() triageNotes: TriageNotes): Promise<Patient> {
+    if (triageNotes && triageNotes.patientId) {
+      return await this.patientService.findOne(triageNotes.patientId);
+    }
   }
 }

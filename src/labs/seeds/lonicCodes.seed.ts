@@ -17,7 +17,7 @@ export class CreateLoincCodesData implements Seeder {
     try {
       for (let i = 0; i < 10; i++) {
         var s3 = new S3({ apiVersion: '2006-03-01' });
-        var params = { Bucket: 'emrstag', Key: `lab/LoincJSON${i + 1}.json` };
+        var params = { Bucket: 'INSERT_BUCKET_NAME_FROM_ENV', Key: `lab/LoincJSON${i + 1}.json` };
         const response = await s3.getSignedUrl("getObject", params)
         const response1 = await axios.get(response, {
           responseType: 'blob'

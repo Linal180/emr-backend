@@ -253,7 +253,7 @@ export class Appointment {
   contract: Contract;
 
   @Field(() => TriageNotes, { nullable: true })
-  @OneToOne(() => TriageNotes, (triageNote) => triageNote.appointment, { eager: true })
+  @OneToOne(() => TriageNotes, (triageNote) => triageNote.appointment)
   triageNote: TriageNotes;
 
   @Field(() => Billing, { nullable: true })
