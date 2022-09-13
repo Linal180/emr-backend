@@ -203,6 +203,12 @@ export const PermissionData = [
     { name: 'updateLabTestsByOrderNum', moduleType: 'Lab Test' },
     { name: 'findLabTestsByOrderNum', moduleType: 'Lab Test' },
     { name: 'fetchICDCodes', moduleType: 'Lab Test' },
+
+    // Family history
+
+    { name: 'createFamilyHistory', moduleType: 'Patient Charting' },
+    { name: 'updateFamilyHistory', moduleType: 'Patient Charting' },
+
 ];
 
 export const permissionDataNew = [

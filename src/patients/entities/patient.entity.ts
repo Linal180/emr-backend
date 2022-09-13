@@ -21,6 +21,7 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
+import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -403,6 +404,10 @@ export class Patient {
   updatedAt: string;
 
   //relationships 
+
+  @OneToMany(() => FamilyHistory, familyHistory => familyHistory.patient, { onDelete: "CASCADE" })
+  @Field(() => [FamilyHistory], { nullable: true })
+  familyHistory: FamilyHistory[];
 
   @OneToOne(() => User)
   @JoinColumn()

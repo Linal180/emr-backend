@@ -1772,6 +1772,28 @@ enum UserStatus {
   ACTIVE
 }
 
+type FamilyHistoryRelative {
+  id: String!
+  relativeName: String
+  onsetAge: String
+  died: String
+  notes: String
+  familyHistory: FamilyHistory
+  familyHistoryId: String
+  createdAt: String
+  updatedAt: String
+}
+
+type FamilyHistory {
+  id: String!
+  name: String
+  familyHistoryRelatives: [FamilyHistoryRelative!]
+  patient: Patient
+  patientId: String
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -1825,6 +1847,7 @@ type Patient {
   profileAttachment: String
   createdAt: String!
   updatedAt: String!
+  familyHistory: [FamilyHistory!]
   user: User
   consent: PatientConsent
   contacts: [Contact!]
@@ -2497,26 +2520,14 @@ type SmsPayload {
   response: ResponsePayloadResponse
 }
 
-type AllergiesPayload {
+type PatientVitalPayload {
   response: ResponsePayload
-  allergies: [Allergies]
-  pagination: PaginationPayload
+  patientVital: PatientVitals
 }
 
-type PatientAllergiesPayload {
+type PatientVitalsPayload {
   response: ResponsePayload
-  patientAllergies: [PatientAllergies]
-  pagination: PaginationPayload
-}
-
-type PatientAllergyPayload {
-  response: ResponsePayload
-  patientAllergy: PatientAllergies
-}
-
-type ReactionsPayload {
-  response: ResponsePayload
-  reactions: [Reactions]
+  patientVitals: [PatientVitals]
   pagination: PaginationPayload
 }
 
@@ -2554,14 +2565,31 @@ type snoMedCodesPayload {
   pagination: PaginationPayload
 }
 
-type PatientVitalPayload {
-  response: ResponsePayload
-  patientVital: PatientVitals
+type FamilyHistoryPayload {
+  familyHistory: FamilyHistory
+  response: ResponsePayloadResponse
 }
 
-type PatientVitalsPayload {
+type AllergiesPayload {
   response: ResponsePayload
-  patientVitals: [PatientVitals]
+  allergies: [Allergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergiesPayload {
+  response: ResponsePayload
+  patientAllergies: [PatientAllergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
+}
+
+type ReactionsPayload {
+  response: ResponsePayload
+  reactions: [Reactions]
   pagination: PaginationPayload
 }
 
@@ -3611,6 +3639,8 @@ type Mutation {
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
+  updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5082,6 +5112,15 @@ input UpdateVitalInput {
 
 input RemoveVital {
   id: String!
+}
+
+input CreateFamilyHistoryInput {
+  name: String
+}
+
+input UpdateFamilyHistoryInput {
+  name: String
+  id: String
 }
 
 input SendSmsInput {
