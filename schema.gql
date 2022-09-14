@@ -1541,6 +1541,17 @@ enum STATUS {
   PENDING
 }
 
+type TriageNotes {
+  id: String!
+  notes: String
+  patientId: String
+  appointmentId: String
+  patient: Patient
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1584,6 +1595,7 @@ type Appointment {
   labTests: [LabTests!]
   invoice: Invoice
   contract: Contract
+  triageNote: TriageNotes
   billing: Billing
   transaction: Transactions
   patientProblem: [PatientProblems!]
@@ -1851,6 +1863,7 @@ type Patient {
   user: User
   consent: PatientConsent
   contacts: [Contact!]
+  triageNotes: [TriageNotes!]
   facility: Facility
   doctorPatients: [DoctorPatient!]
   patientAllergies: [PatientAllergies!]
@@ -2417,6 +2430,17 @@ type snoMedCodesPayload {
   pagination: PaginationPayload
 }
 
+type TriageNotePayload {
+  response: ResponsePayload
+  triageNotes: TriageNotes
+}
+
+type TriageNotesPayload {
+  response: ResponsePayload
+  triageNotes: [TriageNotes!]
+  pagination: PaginationPayload
+}
+
 type FamilyHistoryPayload {
   familyHistory: FamilyHistory
   response: ResponsePayloadResponse
@@ -2967,6 +2991,8 @@ type Query {
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   getPatientLatestVital(patientId: String!): PatientVitalPayload!
+  findAllPatientTriageNotes(patientTriageNoteInput: PatientTriageNoteInput!): TriageNotesPayload!
+  getTriageNotes(getPatientTriageNote: GetPatientTriageNote!): TriageNotePayload!
   findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
@@ -3415,6 +3441,16 @@ input GetPatientVital {
   id: String!
 }
 
+input PatientTriageNoteInput {
+  patientId: String
+  appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientTriageNote {
+  id: String!
+}
+
 input FindAllFamilyHistoryInput {
   paginationOptions: PaginationInput!
 }
@@ -3650,6 +3686,9 @@ type Mutation {
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  addPatientTriageNote(createTriageNoteInput: CreateTriageNoteInput!): TriageNotePayload!
+  updatePatientTriageNote(updateTriageNoteInput: UpdateTriageNoteInput!): TriageNotePayload!
+  removePatientTriageNote(removeTriageNote: RemoveTriageNote!): TriageNotePayload!
   createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
   updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
@@ -5122,6 +5161,23 @@ input UpdateVitalInput {
 }
 
 input RemoveVital {
+  id: String!
+}
+
+input CreateTriageNoteInput {
+  notes: String
+  patientId: String
+  appointmentId: String
+}
+
+input UpdateTriageNoteInput {
+  notes: String
+  patientId: String
+  appointmentId: String
+  id: String!
+}
+
+input RemoveTriageNote {
   id: String!
 }
 
