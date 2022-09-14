@@ -7,17 +7,21 @@ import { ProviderModule } from 'src/providers/provider.module';
 import { UsersModule } from 'src/users/users.module';
 import { Allergies } from './entities/allergies.entity';
 import { ICDCodes } from './entities/icdcodes.entity';
+import { Medications } from './entities/medications.entity';
 import { PatientAllergies } from './entities/patientAllergies.entity';
+import { PatientMedication } from './entities/patientMedication.entity';
 import { PatientProblems } from './entities/patientProblems.entity';
 import { PatientVitals } from './entities/patientVitals.entity';
 import { Reactions } from './entities/reactions.entity';
 import { SnoMedCodes } from './entities/snowmedCodes.entity';
 import { TriageNotes } from './entities/triageNotes.entity';
 import { PatientAllergiesResolver } from './resolvers/patientAllergies.resolver';
+import { PatientMedicationsResolver } from './resolvers/patientMedication.resolver';
 import { ProblemResolver } from './resolvers/patientProblems.resolver';
 import { VitalsResolver } from './resolvers/patientVitals.resolver';
 import { TriageNotesResolver } from './resolvers/triageNotes.resolver';
 import { PatientAllergiesService } from './services/patientAllergies.service';
+import { PatientMedicationService } from './services/patientMedication.service';
 import { ProblemService } from './services/patientProblems.service';
 import { VitalsService } from './services/patientVitals.service';
 import { ReactionsService } from './services/reactions.service';
@@ -25,7 +29,7 @@ import { TriageNotesService } from './services/triageNotes.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ICDCodes, PatientProblems, PatientAllergies, SnoMedCodes, PatientVitals, Allergies, Reactions, TriageNotes]),
+    TypeOrmModule.forFeature([ICDCodes, PatientProblems, PatientAllergies, SnoMedCodes, PatientVitals, Allergies, Reactions, TriageNotes, Medications, PatientMedication]),
     forwardRef(() => UsersModule),
     PaginationModule,
     ProviderModule,
@@ -33,7 +37,7 @@ import { TriageNotesService } from './services/triageNotes.service';
     PatientModule,
   ],
   providers: [PatientAllergiesService, ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver,
-    VitalsService, PatientAllergiesService, ReactionsService, TriageNotesResolver, TriageNotesService],
+    VitalsService, PatientAllergiesService, ReactionsService, TriageNotesResolver, TriageNotesService, PatientMedicationService, PatientMedicationsResolver],
   exports: [ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule],
 })
 export class ProblemChartingModule { }

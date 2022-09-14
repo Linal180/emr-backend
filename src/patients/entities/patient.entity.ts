@@ -22,6 +22,7 @@ import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
+import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -421,6 +422,10 @@ export class Patient {
   @OneToMany(() => TriageNotes, triageNote => triageNote.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [TriageNotes], { nullable: true })
   triageNotes: TriageNotes[];
+
+  @OneToMany(() => PatientMedication, patientMedication => patientMedication.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PatientMedication], { nullable: true })
+  patientMedications: PatientMedication[];
 
   @ManyToOne(() => Facility, facility => facility.patients, { onDelete: 'CASCADE' })
   @Field(() => Facility, { nullable: true })

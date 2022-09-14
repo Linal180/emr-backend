@@ -1784,6 +1784,37 @@ enum UserStatus {
   ACTIVE
 }
 
+type Medications {
+  id: String!
+  fullName: String
+  termType: String
+  rxNumber: String
+  patientMedications: [PatientMedication!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientMedication {
+  id: String!
+  sig: String
+  takeAmount: String
+  tabletUnit: String
+  timeDuration: String
+  noOfDays: String
+  oralRoute: String
+  startDate: String
+  status: String
+  stopDate: String
+  stopReason: String
+  note: String
+  medicationId: String
+  patientId: String
+  medication: Medications
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -1841,6 +1872,7 @@ type Patient {
   consent: PatientConsent
   contacts: [Contact!]
   triageNotes: [TriageNotes!]
+  patientMedications: [PatientMedication!]
   facility: Facility
   doctorPatients: [DoctorPatient!]
   patientAllergies: [PatientAllergies!]
@@ -2533,6 +2565,23 @@ type ReactionsPayload {
   pagination: PaginationPayload
 }
 
+type PatientMedicationPayload {
+  response: ResponsePayload
+  patientMedication: PatientMedication
+}
+
+type PatientMedicationsPayload {
+  response: ResponsePayload
+  patientMedications: [PatientMedication!]
+  pagination: PaginationPayload
+}
+
+type MedicationsPayload {
+  response: ResponsePayload
+  medications: [Medications!]
+  pagination: PaginationPayload
+}
+
 type IcdCodesPayload {
   response: ResponsePayload
   icdCodes: [ICDCodesWithSnowMedCode]
@@ -2959,6 +3008,9 @@ type Query {
   getPatientLatestVital(patientId: String!): PatientVitalPayload!
   findAllPatientTriageNotes(patientTriageNoteInput: PatientTriageNoteInput!): TriageNotesPayload!
   getTriageNotes(getPatientTriageNote: GetPatientTriageNote!): TriageNotePayload!
+  findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
+  findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
+  getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3416,6 +3468,20 @@ input GetPatientTriageNote {
   id: String!
 }
 
+input PatientMedicationInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input MedicationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientMedication {
+  id: String!
+}
+
 input GetClaimInput {
   id: String!
 }
@@ -3650,6 +3716,9 @@ type Mutation {
   addPatientTriageNote(createTriageNoteInput: CreateTriageNoteInput!): TriageNotePayload!
   updatePatientTriageNote(updateTriageNoteInput: UpdateTriageNoteInput!): TriageNotePayload!
   removePatientTriageNote(removeTriageNote: RemoveTriageNote!): TriageNotePayload!
+  addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
+  updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
+  removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5137,6 +5206,43 @@ input UpdateTriageNoteInput {
 }
 
 input RemoveTriageNote {
+  id: String!
+}
+
+input CreatePatientMedicationInput {
+  oralRoute: String
+  sig: String
+  takeAmount: String
+  tabletUnit: String
+  timeDuration: String
+  noOfDays: String
+  startDate: String
+  status: String
+  stopDate: String
+  stopReason: String
+  note: String
+  patientId: String
+  medicationId: String
+}
+
+input UpdatePatientMedicationInput {
+  oralRoute: String
+  sig: String
+  takeAmount: String
+  tabletUnit: String
+  timeDuration: String
+  noOfDays: String
+  startDate: String
+  status: String
+  stopDate: String
+  stopReason: String
+  note: String
+  patientId: String
+  medicationId: String
+  id: String!
+}
+
+input RemovePatientMedication {
   id: String!
 }
 
