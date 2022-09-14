@@ -1815,6 +1815,19 @@ type PatientMedication {
   updatedAt: String
 }
 
+type SurgicalHistory {
+  id: String!
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  notes: String
+  patientId: String
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -1872,6 +1885,7 @@ type Patient {
   consent: PatientConsent
   contacts: [Contact!]
   triageNotes: [TriageNotes!]
+  surgicalHistories: [SurgicalHistory!]
   patientMedications: [PatientMedication!]
   facility: Facility
   doctorPatients: [DoctorPatient!]
@@ -2627,6 +2641,17 @@ type PatientVitalsPayload {
   pagination: PaginationPayload
 }
 
+type SurgicalHistoryPayload {
+  response: ResponsePayload
+  surgicalHistory: SurgicalHistory
+}
+
+type SurgicalHistoriesPayload {
+  response: ResponsePayload
+  surgicalHistories: [SurgicalHistory!]
+  pagination: PaginationPayload
+}
+
 type TriageNotePayload {
   response: ResponsePayload
   triageNotes: TriageNotes
@@ -3011,6 +3036,8 @@ type Query {
   findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
   findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
   getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
+  findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
+  getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3482,6 +3509,15 @@ input GetPatientMedication {
   id: String!
 }
 
+input SurgicalHistoryInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetSurgicalHistory {
+  id: String!
+}
+
 input GetClaimInput {
   id: String!
 }
@@ -3719,6 +3755,9 @@ type Mutation {
   addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
   updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
   removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
+  addSurgicalHistory(createSurgicalHistoryInput: CreateSurgicalHistoryInput!): SurgicalHistoryPayload!
+  updateSurgicalHistory(updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!): SurgicalHistoryPayload!
+  removeSurgicalHistory(removeSurgicalHistory: RemoveSurgicalHistory!): SurgicalHistoryPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5243,6 +5282,29 @@ input UpdatePatientMedicationInput {
 }
 
 input RemovePatientMedication {
+  id: String!
+}
+
+input CreateSurgicalHistoryInput {
+  notes: String
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  patientId: String
+}
+
+input UpdateSurgicalHistoryInput {
+  notes: String
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  patientId: String
+  id: String!
+}
+
+input RemoveSurgicalHistory {
   id: String!
 }
 

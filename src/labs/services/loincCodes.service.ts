@@ -38,30 +38,20 @@ export class LoincCodesService {
    * @param searchLoincCodesInput 
    * @returns loinc code 
    */
- async findAllLoincCode(searchLoincCodesInput: SearchLoincCodesInput): Promise<LoincCodesPayload> {
-  const [first] = searchLoincCodesInput.searchTerm ? searchLoincCodesInput.searchTerm.split(' ') : '' 
-  try {
-    let loincCodes
-    if(first){
-      loincCodes =[]
-    }else{
-      loincCodes= await this.loincCodesRepository.find({
-        where: {
-          component : Like("%corona%")
-        }
-      })
+  async findAllLoincCode(searchLoincCodesInput: SearchLoincCodesInput): Promise<LoincCodesPayload> {
+    const [first] = searchLoincCodesInput.searchTerm ? searchLoincCodesInput.searchTerm.split(' ') : ''
+    try {
+      const paginationResponse = await this.paginationService.willPaginate<LoincCodes>(this.loincCodesRepository, { ...searchLoincCodesInput, associatedTo: "LoincCodes", associatedToField: { columnValue: first, columnName: 'loincNum', columnName2: 'component', columnName3: 'property', filterType: 'stringFilter' } })
+      return {
+        pagination: {
+          ...paginationResponse
+        },
+        loincCodes: paginationResponse.data,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
-    const paginationResponse = await this.paginationService.willPaginate<LoincCodes>(this.loincCodesRepository, { ...searchLoincCodesInput, associatedTo: "LoincCodes", associatedToField: { columnValue: first, columnName: 'loincNum', columnName2: 'component', columnName3: 'property', filterType: 'stringFilter' } })
-    return {
-      pagination: {
-        ...paginationResponse
-      },
-      loincCodes: this.utilsService.mergeArrayAndRemoveDuplicates(loincCodes,paginationResponse.data, 'loincNum'),
-    } 
-  } catch (error) {
-    throw new InternalServerErrorException(error);
   }
- }
 
   /**
    * Updates loinc code
@@ -69,12 +59,12 @@ export class LoincCodesService {
    * @returns loinc code 
    */
   async updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput): Promise<LoincCodes> {
-      try {
-         return await this.utilsService.updateEntityManager(LoincCodes, updateLoincCodeInput.id, updateLoincCodeInput, this.loincCodesRepository)
-      } catch (error) {
-        throw new InternalServerErrorException(error);
-      }
+    try {
+      return await this.utilsService.updateEntityManager(LoincCodes, updateLoincCodeInput.id, updateLoincCodeInput, this.loincCodesRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
+  }
 
   /**
    * Finds one
@@ -83,7 +73,7 @@ export class LoincCodesService {
    */
   async findOne(id: string): Promise<LoincCodes> {
     const loincCode = await this.loincCodesRepository.findOne(id);
-    if(loincCode){
+    if (loincCode) {
       return loincCode
     }
     throw new NotFoundException({
