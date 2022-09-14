@@ -2372,6 +2372,85 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
+type PatientVitalPayload {
+  response: ResponsePayload
+  patientVital: PatientVitals
+}
+
+type PatientVitalsPayload {
+  response: ResponsePayload
+  patientVitals: [PatientVitals]
+  pagination: PaginationPayload
+}
+
+type IcdCodesPayload {
+  response: ResponsePayload
+  icdCodes: [ICDCodesWithSnowMedCode]
+  pagination: PaginationPayload
+}
+
+type ICDCodesWithSnowMedCode {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
+  snoMedCode: SnoMedCodes
+}
+
+type PatientProblemPayload {
+  response: ResponsePayload
+  patientProblem: PatientProblems
+}
+
+type PatientProblemsPayload {
+  response: ResponsePayload
+  patientProblems: [PatientProblems]
+  pagination: PaginationPayload
+}
+
+type snoMedCodesPayload {
+  response: ResponsePayload
+  snoMedCodes: [SnoMedCodes]
+  pagination: PaginationPayload
+}
+
+type FamilyHistoryPayload {
+  familyHistory: FamilyHistory
+  response: ResponsePayloadResponse
+}
+
+type FamilyHistoriesPayload {
+  familyHistories: [FamilyHistory!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type AllergiesPayload {
+  response: ResponsePayload
+  allergies: [Allergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergiesPayload {
+  response: ResponsePayload
+  patientAllergies: [PatientAllergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
+}
+
+type ReactionsPayload {
+  response: ResponsePayload
+  reactions: [Reactions]
+  pagination: PaginationPayload
+}
+
 type PatientsPayload {
   response: ResponsePayload
   patients: [Patient]
@@ -2518,79 +2597,6 @@ type DocumentTypePayload {
 type SmsPayload {
   sms: String
   response: ResponsePayloadResponse
-}
-
-type PatientVitalPayload {
-  response: ResponsePayload
-  patientVital: PatientVitals
-}
-
-type PatientVitalsPayload {
-  response: ResponsePayload
-  patientVitals: [PatientVitals]
-  pagination: PaginationPayload
-}
-
-type IcdCodesPayload {
-  response: ResponsePayload
-  icdCodes: [ICDCodesWithSnowMedCode]
-  pagination: PaginationPayload
-}
-
-type ICDCodesWithSnowMedCode {
-  id: String!
-  code: String!
-  description: String
-  version: String
-  labTests: LabTests
-  createdAt: String
-  updatedAt: String
-  snoMedCode: SnoMedCodes
-}
-
-type PatientProblemPayload {
-  response: ResponsePayload
-  patientProblem: PatientProblems
-}
-
-type PatientProblemsPayload {
-  response: ResponsePayload
-  patientProblems: [PatientProblems]
-  pagination: PaginationPayload
-}
-
-type snoMedCodesPayload {
-  response: ResponsePayload
-  snoMedCodes: [SnoMedCodes]
-  pagination: PaginationPayload
-}
-
-type FamilyHistoryPayload {
-  familyHistory: FamilyHistory
-  response: ResponsePayloadResponse
-}
-
-type AllergiesPayload {
-  response: ResponsePayload
-  allergies: [Allergies]
-  pagination: PaginationPayload
-}
-
-type PatientAllergiesPayload {
-  response: ResponsePayload
-  patientAllergies: [PatientAllergies]
-  pagination: PaginationPayload
-}
-
-type PatientAllergyPayload {
-  response: ResponsePayload
-  patientAllergy: PatientAllergies
-}
-
-type ReactionsPayload {
-  response: ResponsePayload
-  reactions: [Reactions]
-  pagination: PaginationPayload
 }
 
 type LabTestObservationPayload {
@@ -2961,6 +2967,7 @@ type Query {
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   getPatientLatestVital(patientId: String!): PatientVitalPayload!
+  findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3406,6 +3413,10 @@ input PatientVitalInput {
 
 input GetPatientVital {
   id: String!
+}
+
+input FindAllFamilyHistoryInput {
+  paginationOptions: PaginationInput!
 }
 
 input GetClaimInput {
@@ -5130,7 +5141,15 @@ input CreateFamilyHistoryRelativeInput {
 input UpdateFamilyHistoryInput {
   name: String
   patientId: String
-  familyHistoryRelatives: [CreateFamilyHistoryRelativeInput!]
+  id: String
+  familyHistoryRelatives: [UpdateFamilyHistoryRelativeInput!]
+}
+
+input UpdateFamilyHistoryRelativeInput {
+  relativeName: String
+  onsetAge: String
+  died: String
+  notes: String
   id: String
 }
 

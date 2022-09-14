@@ -27,6 +27,7 @@ import { VitalsService } from './services/patientVitals.service';
 import { ProblemService } from './services/patientProblems.service';
 import { FamilyHistoryService } from './services/familyHistory.service';
 import { PatientAllergiesService } from './services/patientAllergies.service';
+import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
 
 @Module({
   imports: [
@@ -35,16 +36,16 @@ import { PatientAllergiesService } from './services/patientAllergies.service';
       FamilyHistoryRelative
     ]),
     forwardRef(() => UsersModule),
-    PatientModule,
+    forwardRef(() => PatientModule),
     ProviderModule,
     PaginationModule,
     AppointmentModule,
   ],
   providers: [
     PatientAllergiesService, ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver, VitalsService,
-    PatientAllergiesService, ReactionsService, FamilyHistoryService, FamilyHistoryResolver
+    PatientAllergiesService, ReactionsService, FamilyHistoryService, FamilyHistoryResolver, FamilyHistoryRelativeService
   ],
-  exports: [ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule],
+  exports: [ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule, FamilyHistoryService],
 })
 export class ProblemChartingModule { }
 
