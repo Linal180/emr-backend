@@ -78,6 +78,14 @@ export class TriageNotesService {
       throw new InternalServerErrorException(error);
     }
   }
+  
+  async getPatientTriageNotes(patientId: string) {
+    return this.triageNotesRepository.find({
+      where: {
+        patientId
+      }
+    })
+  }
 
   /**
    * Finds one
