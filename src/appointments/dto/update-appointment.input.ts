@@ -65,6 +65,12 @@ export class GetAppointments {
 }
 
 @InputType()
+export class GetAppointmentWithToken {
+  @Field()
+  token: string
+}
+
+@InputType()
 export class GetPatientAppointmentInput {
   @Field()
   patientId: string

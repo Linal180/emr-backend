@@ -37,7 +37,7 @@ import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto'
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
-  CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
+  CancelAppointment, GetAppointments, GetAppointmentWithToken, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
 } from '../dto/update-appointment.input';
 //payloads
@@ -514,6 +514,8 @@ export class AppointmentService {
     });
   }
 
+
+
   /**
    * Gets appointment
    * @param id 
@@ -613,6 +615,26 @@ export class AppointmentService {
         await this.patientConsentService.remove(patientConsent?.id)
       }
       await this.appointmentRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+    * Cancels appointment
+    * @param token 
+    */
+  async getAppointmentWithToken(getAppointmentWithToken: GetAppointmentWithToken) {
+    try {
+      const appointment = await this.findByToken(getAppointmentWithToken.token)
+      if (appointment) {
+        return { appointment }
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Appointment not found',
+      });
+
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

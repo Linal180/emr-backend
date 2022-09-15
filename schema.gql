@@ -3028,6 +3028,7 @@ type Query {
   findAllUpcomingAppointments(upComingAppointmentsInput: UpComingAppointmentsInput!): AppointmentsPayload!
   findPatientLastAppointment(lastVisitedAppointmentInput: LastVisitedAppointmentInput!): AppointmentPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
+  getAppointmentWithToken(getAppointmentWithToken: GetAppointmentWithToken!): AppointmentPayload!
   getAppointments(getAppointments: GetAppointments!): AppointmentsPayload!
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
@@ -3388,6 +3389,10 @@ input LastVisitedAppointmentInput {
 
 input GetAppointment {
   id: String!
+}
+
+input GetAppointmentWithToken {
+  token: String!
 }
 
 input GetAppointments {

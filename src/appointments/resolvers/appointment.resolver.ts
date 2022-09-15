@@ -22,7 +22,7 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import {
   CancelAppointment, GetAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment,
-  UpdateAppointmentInput, UpdateAppointmentStatusInput, UpdateAppointmentBillingStatusInput
+  UpdateAppointmentInput, UpdateAppointmentStatusInput, UpdateAppointmentBillingStatusInput, GetAppointmentWithToken
 } from '../dto/update-appointment.input';
 import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
 import { PolicyService } from 'src/insurance/services/policy.service';
@@ -177,6 +177,16 @@ export class AppointmentResolver {
   // @SetMetadata('name', 'getAppointment')
   async getAppointment(@Args('getAppointment') getAppointment: GetAppointment): Promise<AppointmentPayload> {
     const appointment = await this.appointmentService.getAppointment(getAppointment.id)
+    return {
+      ...appointment,
+      response: { status: 200, message: 'Appointment fetched successfully' }
+    };
+  }
+
+
+  @Query(() => AppointmentPayload)
+  async getAppointmentWithToken(@Args('getAppointmentWithToken') getAppointmentWithToken: GetAppointmentWithToken): Promise<AppointmentPayload> {
+    const appointment = await this.appointmentService.getAppointmentWithToken(getAppointmentWithToken)
     return {
       ...appointment,
       response: { status: 200, message: 'Appointment fetched successfully' }
