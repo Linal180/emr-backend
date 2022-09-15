@@ -12,13 +12,16 @@ export class CreateFamilyHistoryInput {
   @Field({ nullable: true })
   patientId: string;
 
+  @Field({ nullable: true })
+  icdCodeId: string;
+
   @Field(() => [CreateFamilyHistoryRelativeInput], { nullable: true })
   familyHistoryRelatives: CreateFamilyHistoryRelativeInput[];
 }
 
 
 @InputType()
-export class UpdateFamilyHistoryInput extends PickType(CreateFamilyHistoryInput, ['name', 'patientId']) {
+export class UpdateFamilyHistoryInput extends PickType(CreateFamilyHistoryInput, ['name', 'patientId', 'icdCodeId']) {
   @Field({ nullable: true })
   id: string;
 
@@ -28,7 +31,15 @@ export class UpdateFamilyHistoryInput extends PickType(CreateFamilyHistoryInput,
 }
 
 @InputType()
+export class GetFamilyHistoryInput extends PickType(UpdateFamilyHistoryInput, ['id'] as const) { }
+
+@InputType()
+export class RemoveFamilyHistoryInput extends PickType(UpdateFamilyHistoryInput, ['id'] as const) { }
+
+@InputType()
 export class FindAllFamilyHistoryInput {
+  @Field({ nullable: true })
+  patientId: string;
 
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput

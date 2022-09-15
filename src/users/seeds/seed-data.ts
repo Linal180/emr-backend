@@ -209,6 +209,7 @@ export const PermissionData = [
     { name: 'createFamilyHistory', moduleType: 'Patient Charting' },
     { name: 'updateFamilyHistory', moduleType: 'Patient Charting' },
     { name: 'findAllFamilyHistory', moduleType: 'Patient Charting' },
+    { name: 'removeFamilyHistory', moduleType: 'Patient Charting' },
 
 ];
 

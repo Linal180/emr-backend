@@ -278,6 +278,30 @@ enum LabTestStatus {
   RESULT_REVIEWED_WITH_PATIENT
 }
 
+type FamilyHistoryRelative {
+  id: String!
+  relativeName: String
+  onsetAge: String
+  died: String
+  notes: String
+  familyHistory: FamilyHistory
+  familyHistoryId: String
+  createdAt: String
+  updatedAt: String
+}
+
+type FamilyHistory {
+  id: String!
+  name: String
+  familyHistoryRelatives: [FamilyHistoryRelative!]
+  patient: Patient
+  icdCode: ICDCodes
+  icdCodeId: String
+  patientId: String
+  createdAt: String
+  updatedAt: String
+}
+
 type ICDCodes {
   id: String!
   code: String!
@@ -1784,28 +1808,6 @@ enum UserStatus {
   ACTIVE
 }
 
-type FamilyHistoryRelative {
-  id: String!
-  relativeName: String
-  onsetAge: String
-  died: String
-  notes: String
-  familyHistory: FamilyHistory
-  familyHistoryId: String
-  createdAt: String
-  updatedAt: String
-}
-
-type FamilyHistory {
-  id: String!
-  name: String
-  familyHistoryRelatives: [FamilyHistoryRelative!]
-  patient: Patient
-  patientId: String
-  createdAt: String
-  updatedAt: String
-}
-
 type Patient {
   id: String!
   suffix: String
@@ -2994,6 +2996,7 @@ type Query {
   findAllPatientTriageNotes(patientTriageNoteInput: PatientTriageNoteInput!): TriageNotesPayload!
   getTriageNotes(getPatientTriageNote: GetPatientTriageNote!): TriageNotePayload!
   findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
+  getFamilyHistory(getFamilyHistoryInput: GetFamilyHistoryInput!): FamilyHistoryPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3452,7 +3455,12 @@ input GetPatientTriageNote {
 }
 
 input FindAllFamilyHistoryInput {
+  patientId: String
   paginationOptions: PaginationInput!
+}
+
+input GetFamilyHistoryInput {
+  id: String
 }
 
 input GetClaimInput {
@@ -3691,6 +3699,7 @@ type Mutation {
   removePatientTriageNote(removeTriageNote: RemoveTriageNote!): TriageNotePayload!
   createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
   updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
+  removeFamilyHistory(removeFamilyHistoryInput: RemoveFamilyHistoryInput!): FamilyHistoryPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5184,6 +5193,7 @@ input RemoveTriageNote {
 input CreateFamilyHistoryInput {
   name: String
   patientId: String
+  icdCodeId: String
   familyHistoryRelatives: [CreateFamilyHistoryRelativeInput!]
 }
 
@@ -5197,6 +5207,7 @@ input CreateFamilyHistoryRelativeInput {
 input UpdateFamilyHistoryInput {
   name: String
   patientId: String
+  icdCodeId: String
   id: String
   familyHistoryRelatives: [UpdateFamilyHistoryRelativeInput!]
 }
@@ -5206,6 +5217,10 @@ input UpdateFamilyHistoryRelativeInput {
   onsetAge: String
   died: String
   notes: String
+  id: String
+}
+
+input RemoveFamilyHistoryInput {
   id: String
 }
 

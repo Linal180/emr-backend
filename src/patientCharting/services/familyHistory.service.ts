@@ -1,11 +1,12 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Connection, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //entities
 import { FamilyHistory } from "../entities/familyHistory.entity";
 //inputs
 import { CreateFamilyHistoryInput, FindAllFamilyHistoryInput, UpdateFamilyHistoryInput } from "../dto/family-history.input";
 //services
+import { ICDCodeService } from "./icdCode.service";
 import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
 import { PatientService } from "src/patients/services/patient.service";
@@ -19,10 +20,11 @@ export class FamilyHistoryService {
 		@InjectRepository(FamilyHistory)
 		private familyHistoryRepo: Repository<FamilyHistory>,
 		private readonly connection: Connection,
-		private readonly familyHistoryRelativeService: FamilyHistoryRelativeService,
-		private readonly patientService: PatientService,
 		private readonly utilsService: UtilsService,
+		private readonly patientService: PatientService,
 		private readonly paginationService: PaginationService,
+		private readonly icdCodeService: ICDCodeService,
+		private readonly familyHistoryRelativeService: FamilyHistoryRelativeService,
 	) { }
 
 
@@ -36,11 +38,15 @@ export class FamilyHistoryService {
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
 		try {
-			const { familyHistoryRelatives, patientId, name } = params || {}
+			const { familyHistoryRelatives, patientId, name, icdCodeId } = params || {}
 
 			//get patient
 			const patientResponse = await this.patientService.GetPatient(patientId);
 			const { patient } = patientResponse || {}
+
+			//get icd code
+
+			const icdCode = await this.icdCodeService.findOne(icdCodeId);
 
 			//create family history relatives
 			const familyHistoryRelativesInstance = await Promise.all(familyHistoryRelatives?.map(async (instance) => {
@@ -49,13 +55,16 @@ export class FamilyHistoryService {
 			}));
 
 			//create family history
-			const familyHistoryInstance = this.familyHistoryRepo.create({ name, patientId });
+			const familyHistoryInstance = this.familyHistoryRepo.create({ name, patientId, icdCodeId });
 
 			//associate family history relative
 			familyHistoryInstance.familyHistoryRelatives = familyHistoryRelativesInstance;
 
 			//associate patient 
 			familyHistoryInstance.patient = patient
+
+			//associate icd code 
+			familyHistoryInstance.icdCode = icdCode
 
 			//save family history
 			const familyHistory = await this.familyHistoryRepo.save(familyHistoryInstance)
@@ -126,19 +135,41 @@ export class FamilyHistoryService {
 	}
 
 
+	/**
+	 * Finds all
+	 * @param params 
+	 * @returns all 
+	 */
 	async findAll(params: FindAllFamilyHistoryInput): Promise<FamilyHistoriesPayload> {
 		try {
-			const {paginationOptions} = params
-		  const paginationResponse = await this.paginationService.willPaginate<FamilyHistory>(this.familyHistoryRepo, { paginationOptions })
-		  return {
-			pagination: {
-			  ...paginationResponse
-			},
-			familyHistories: paginationResponse.data,
-		  }
+			const { paginationOptions, patientId } = params
+			const paginationResponse = await this.paginationService.willPaginate<FamilyHistory>(this.familyHistoryRepo, {
+				paginationOptions, patientId
+			})
+
+
+			return {
+				pagination: {
+					...paginationResponse
+				},
+				familyHistories: paginationResponse.data,
+			}
 		} catch (error) {
-		  throw new InternalServerErrorException(error);
+			throw new InternalServerErrorException(error);
 		}
-	  }
+	}
+
+
+	/**
+	 * Removes family history service
+	 * @param id 
+	 * @returns remove 
+	 */
+	async remove(id: string): Promise<FamilyHistory> {
+		const familyHistory = await this.findOne(id);
+		await this.familyHistoryRelativeService.removeByFamilyHistoryId(id)
+		await this.familyHistoryRepo.delete(id);
+		return familyHistory
+	}
 
 }

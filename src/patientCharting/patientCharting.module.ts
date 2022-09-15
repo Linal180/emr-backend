@@ -24,6 +24,7 @@ import { TriageNotesResolver } from './resolvers/triageNotes.resolver';
 import { FamilyHistoryResolver } from './resolvers/familyHistory.resolver';
 import { PatientAllergiesResolver } from './resolvers/patientAllergies.resolver';
 //services
+import { ICDCodeService } from './services/icdCode.service';
 import { ReactionsService } from './services/reactions.service';
 import { VitalsService } from './services/patientVitals.service';
 import { ProblemService } from './services/patientProblems.service';
@@ -47,7 +48,7 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
   providers: [
     PatientAllergiesService, ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver,
     VitalsService, PatientAllergiesService, ReactionsService, TriageNotesResolver, TriageNotesService, 
-    FamilyHistoryService, FamilyHistoryResolver, FamilyHistoryRelativeService
+    FamilyHistoryService, FamilyHistoryResolver, FamilyHistoryRelativeService, ICDCodeService
   ],
   exports: [ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule, FamilyHistoryService],
 })

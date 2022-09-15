@@ -56,4 +56,9 @@ export class FamilyHistoryRelativeService {
 	async findByFamilyId(familyHistoryId: string): Promise<FamilyHistoryRelative[]> {
 		return await this.familyHistoryRelativeRepo.find({ familyHistoryId })
 	}
+
+	async removeByFamilyHistoryId(id: string) {
+		const familyRelatives = await this.findByFamilyId(id);
+		await this.familyHistoryRelativeRepo.remove(familyRelatives)
+	}
 }
