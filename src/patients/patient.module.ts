@@ -11,10 +11,11 @@ import { UsersModule } from 'src/users/users.module';
 import { MailerModule } from 'src/mailer/mailer.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { FacilityModule } from 'src/facilities/facility.module';
+import { AgreementModule } from 'src/agreements/agreement.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { AppointmentModule } from 'src/appointments/appointment.module';
-import { AgreementModule } from 'src/agreements/agreement.module';
+import { ProblemChartingModule } from 'src/patientCharting/patientCharting.module';
 //resolvers
 import { PatientResolver } from './resolvers/patient.resolver';
 import { DoctorPatientResolver } from './resolvers/doctorPatient.resolver';
@@ -37,6 +38,7 @@ import { PatientController } from './patient.controller';
     forwardRef(() => AgreementModule),
     forwardRef(() => AttachmentsModule),
     forwardRef(() => AppointmentModule),
+    forwardRef(() => ProblemChartingModule),
     MailerModule,
     PaginationModule,
   ],

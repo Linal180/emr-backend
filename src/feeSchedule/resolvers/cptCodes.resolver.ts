@@ -25,7 +25,7 @@ export class CptCodeResolver {
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'findAllCptCodes')
   async findAllCptCodes(@Args('findAllCptCodesInput') findAllCptCodesInput: FindAllCPTCodesInput): Promise<AllCPTCodePayload> {
-    const CptCodes = await this.cptCodeService.findAllFeeSchedule(findAllCptCodesInput);
+    const CptCodes = await this.cptCodeService.findAllCPTCodes(findAllCptCodesInput);
     if (CptCodes) {
       return {
         ...CptCodes,

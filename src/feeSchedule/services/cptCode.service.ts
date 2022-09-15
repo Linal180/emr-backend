@@ -51,7 +51,7 @@ export class CptCodeService {
    * @param params 
    * @returns  
    */
-  async findAllFeeSchedule(params: FindAllCPTCodesInput) {
+  async findAllCPTCodes(params: FindAllCPTCodesInput) {
     try {
       const { paginationOptions, code: searchString } = params
       const paginationResponse = await this.paginationService.willPaginate<CPTCodes>(this.cptCodeRepository, {

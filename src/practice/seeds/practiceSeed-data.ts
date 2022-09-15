@@ -318,8 +318,111 @@ export const FacilitiesServices = [
   {
     name: "Other",
     duration: "30"
-
-  }
+  },
+  {
+    name: "Allergy Test",
+    duration: "30"
+  },
+  {
+    name: "B12",
+    duration: "30"
+  },
+  {
+    name: "Balance Payment",
+    duration: "30"
+  },
+  {
+    name: "Consultation",
+    duration: "30"
+  },
+  {
+    name: "Cosmetology",
+    duration: "30"
+  },
+  {
+    name: "DOT PE",
+    duration: "30"
+  },
+  {
+    name: "Flu Shot",
+    duration: "30"
+  },
+  {
+    name: "Follow up",
+    duration: "30"
+  },
+  {
+    name: "Holter Monitor",
+    duration: "30"
+  },
+  {
+    name: "Lab Billing",
+    duration: "30"
+  },
+  {
+    name: "MVA followup",
+    duration: "30"
+  },
+  {
+    name: "MVA New",
+    duration: "30"
+  },
+  {
+    name: "Nerve Conduction",
+    duration: "30"
+  },
+  {
+    name: "New Patient",
+    duration: "30"
+  },
+  {
+    name: "Papsmear",
+    duration: "30"
+  },
+  {
+    name: "Physical",
+    duration: "30"
+  },
+  {
+    name: "Physical Therapy",
+    duration: "30"
+  },
+  {
+    name: "PPD Reading",
+    duration: "30"
+  },
+  {
+    name: "Sick",
+    duration: "30"
+  },
+  {
+    name: "Sono",
+    duration: "30"
+  },
+  {
+    name: "Sports PE",
+    duration: "30"
+  },
+  {
+    name: "Travel vaccine",
+    duration: "30"
+  },
+  {
+    name: "Ultrasound",
+    duration: "30"
+  },
+  {
+    name: "WC followup",
+    duration: "30"
+  },
+  {
+    name: "WC New",
+    duration: "30"
+  },
+  {
+    name: "X-ray",
+    duration: "30"
+  },
 ]
 
 
