@@ -68,7 +68,7 @@ export class ProblemResolver {
     }
   }
 
-  @Query(returns => IcdCodesPayload)
+  @Query(() => IcdCodesPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'fetchICDCodes')
   async fetchICDCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {

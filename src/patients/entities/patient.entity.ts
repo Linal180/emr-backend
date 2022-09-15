@@ -24,6 +24,7 @@ import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.
 import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 import { SurgicalHistory } from 'src/patientCharting/entities/surgicalHistory.entity';
+import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -406,6 +407,10 @@ export class Patient {
   updatedAt: string;
 
   //relationships 
+
+  @OneToMany(() => FamilyHistory, familyHistory => familyHistory.patient, { onDelete: "CASCADE" })
+  @Field(() => [FamilyHistory], { nullable: true })
+  familyHistory: FamilyHistory[];
 
   @OneToOne(() => User)
   @JoinColumn()

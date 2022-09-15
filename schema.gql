@@ -278,6 +278,30 @@ enum LabTestStatus {
   RESULT_REVIEWED_WITH_PATIENT
 }
 
+type FamilyHistoryRelative {
+  id: String!
+  relativeName: String
+  onsetAge: String
+  died: String
+  notes: String
+  familyHistory: FamilyHistory
+  familyHistoryId: String
+  createdAt: String
+  updatedAt: String
+}
+
+type FamilyHistory {
+  id: String!
+  name: String
+  familyHistoryRelatives: [FamilyHistoryRelative!]
+  patient: Patient
+  icdCode: ICDCodes
+  icdCodeId: String
+  patientId: String
+  createdAt: String
+  updatedAt: String
+}
+
 type ICDCodes {
   id: String!
   code: String!
@@ -1881,6 +1905,7 @@ type Patient {
   profileAttachment: String
   createdAt: String!
   updatedAt: String!
+  familyHistory: [FamilyHistory!]
   user: User
   consent: PatientConsent
   contacts: [Contact!]
@@ -2408,6 +2433,124 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
+type PatientVitalPayload {
+  response: ResponsePayload
+  patientVital: PatientVitals
+}
+
+type PatientVitalsPayload {
+  response: ResponsePayload
+  patientVitals: [PatientVitals]
+  pagination: PaginationPayload
+}
+
+type IcdCodesPayload {
+  response: ResponsePayload
+  icdCodes: [ICDCodesWithSnowMedCode]
+  pagination: PaginationPayload
+}
+
+type ICDCodesWithSnowMedCode {
+  id: String!
+  code: String!
+  description: String
+  version: String
+  labTests: LabTests
+  createdAt: String
+  updatedAt: String
+  snoMedCode: SnoMedCodes
+}
+
+type PatientProblemPayload {
+  response: ResponsePayload
+  patientProblem: PatientProblems
+}
+
+type PatientProblemsPayload {
+  response: ResponsePayload
+  patientProblems: [PatientProblems]
+  pagination: PaginationPayload
+}
+
+type snoMedCodesPayload {
+  response: ResponsePayload
+  snoMedCodes: [SnoMedCodes]
+  pagination: PaginationPayload
+}
+
+type TriageNotePayload {
+  response: ResponsePayload
+  triageNotes: TriageNotes
+}
+
+type TriageNotesPayload {
+  response: ResponsePayload
+  triageNotes: [TriageNotes!]
+  pagination: PaginationPayload
+}
+
+type FamilyHistoryPayload {
+  familyHistory: FamilyHistory
+  response: ResponsePayloadResponse
+}
+
+type FamilyHistoriesPayload {
+  familyHistories: [FamilyHistory!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type SurgicalHistoryPayload {
+  response: ResponsePayload
+  surgicalHistory: SurgicalHistory
+}
+
+type SurgicalHistoriesPayload {
+  response: ResponsePayload
+  surgicalHistories: [SurgicalHistory!]
+  pagination: PaginationPayload
+}
+
+type AllergiesPayload {
+  response: ResponsePayload
+  allergies: [Allergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergiesPayload {
+  response: ResponsePayload
+  patientAllergies: [PatientAllergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
+}
+
+type ReactionsPayload {
+  response: ResponsePayload
+  reactions: [Reactions]
+  pagination: PaginationPayload
+}
+
+type PatientMedicationPayload {
+  response: ResponsePayload
+  patientMedication: PatientMedication
+}
+
+type PatientMedicationsPayload {
+  response: ResponsePayload
+  patientMedications: [PatientMedication!]
+  pagination: PaginationPayload
+}
+
+type MedicationsPayload {
+  response: ResponsePayload
+  medications: [Medications!]
+  pagination: PaginationPayload
+}
+
 type PatientsPayload {
   response: ResponsePayload
   patients: [Patient]
@@ -2554,113 +2697,6 @@ type DocumentTypePayload {
 type SmsPayload {
   sms: String
   response: ResponsePayloadResponse
-}
-
-type AllergiesPayload {
-  response: ResponsePayload
-  allergies: [Allergies]
-  pagination: PaginationPayload
-}
-
-type PatientAllergiesPayload {
-  response: ResponsePayload
-  patientAllergies: [PatientAllergies]
-  pagination: PaginationPayload
-}
-
-type PatientAllergyPayload {
-  response: ResponsePayload
-  patientAllergy: PatientAllergies
-}
-
-type ReactionsPayload {
-  response: ResponsePayload
-  reactions: [Reactions]
-  pagination: PaginationPayload
-}
-
-type PatientMedicationPayload {
-  response: ResponsePayload
-  patientMedication: PatientMedication
-}
-
-type PatientMedicationsPayload {
-  response: ResponsePayload
-  patientMedications: [PatientMedication!]
-  pagination: PaginationPayload
-}
-
-type MedicationsPayload {
-  response: ResponsePayload
-  medications: [Medications!]
-  pagination: PaginationPayload
-}
-
-type IcdCodesPayload {
-  response: ResponsePayload
-  icdCodes: [ICDCodesWithSnowMedCode]
-  pagination: PaginationPayload
-}
-
-type ICDCodesWithSnowMedCode {
-  id: String!
-  code: String!
-  description: String
-  version: String
-  labTests: LabTests
-  createdAt: String
-  updatedAt: String
-  snoMedCode: SnoMedCodes
-}
-
-type PatientProblemPayload {
-  response: ResponsePayload
-  patientProblem: PatientProblems
-}
-
-type PatientProblemsPayload {
-  response: ResponsePayload
-  patientProblems: [PatientProblems]
-  pagination: PaginationPayload
-}
-
-type snoMedCodesPayload {
-  response: ResponsePayload
-  snoMedCodes: [SnoMedCodes]
-  pagination: PaginationPayload
-}
-
-type PatientVitalPayload {
-  response: ResponsePayload
-  patientVital: PatientVitals
-}
-
-type PatientVitalsPayload {
-  response: ResponsePayload
-  patientVitals: [PatientVitals]
-  pagination: PaginationPayload
-}
-
-type SurgicalHistoryPayload {
-  response: ResponsePayload
-  surgicalHistory: SurgicalHistory
-}
-
-type SurgicalHistoriesPayload {
-  response: ResponsePayload
-  surgicalHistories: [SurgicalHistory!]
-  pagination: PaginationPayload
-}
-
-type TriageNotePayload {
-  response: ResponsePayload
-  triageNotes: TriageNotes
-}
-
-type TriageNotesPayload {
-  response: ResponsePayload
-  triageNotes: [TriageNotes!]
-  pagination: PaginationPayload
 }
 
 type LabTestObservationPayload {
@@ -3033,6 +3069,8 @@ type Query {
   getPatientLatestVital(patientId: String!): PatientVitalPayload!
   findAllPatientTriageNotes(patientTriageNoteInput: PatientTriageNoteInput!): TriageNotesPayload!
   getTriageNotes(getPatientTriageNote: GetPatientTriageNote!): TriageNotePayload!
+  findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
+  getFamilyHistory(getFamilyHistoryInput: GetFamilyHistoryInput!): FamilyHistoryPayload!
   findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
   findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
   getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
@@ -3495,6 +3533,15 @@ input GetPatientTriageNote {
   id: String!
 }
 
+input FindAllFamilyHistoryInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetFamilyHistoryInput {
+  id: String
+}
+
 input PatientMedicationInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -3752,6 +3799,9 @@ type Mutation {
   addPatientTriageNote(createTriageNoteInput: CreateTriageNoteInput!): TriageNotePayload!
   updatePatientTriageNote(updateTriageNoteInput: UpdateTriageNoteInput!): TriageNotePayload!
   removePatientTriageNote(removeTriageNote: RemoveTriageNote!): TriageNotePayload!
+  createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
+  updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
+  removeFamilyHistory(removeFamilyHistoryInput: RemoveFamilyHistoryInput!): FamilyHistoryPayload!
   addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
   updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
   removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
@@ -5246,6 +5296,40 @@ input UpdateTriageNoteInput {
 
 input RemoveTriageNote {
   id: String!
+}
+
+input CreateFamilyHistoryInput {
+  name: String
+  patientId: String
+  icdCodeId: String
+  familyHistoryRelatives: [CreateFamilyHistoryRelativeInput!]
+}
+
+input CreateFamilyHistoryRelativeInput {
+  relativeName: String
+  onsetAge: String
+  died: String
+  notes: String
+}
+
+input UpdateFamilyHistoryInput {
+  name: String
+  patientId: String
+  icdCodeId: String
+  id: String
+  familyHistoryRelatives: [UpdateFamilyHistoryRelativeInput!]
+}
+
+input UpdateFamilyHistoryRelativeInput {
+  relativeName: String
+  onsetAge: String
+  died: String
+  notes: String
+  id: String
+}
+
+input RemoveFamilyHistoryInput {
+  id: String
 }
 
 input CreatePatientMedicationInput {
