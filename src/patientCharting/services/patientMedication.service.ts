@@ -80,6 +80,14 @@ export class PatientMedicationService {
     }
   }
 
+  async getPatientMedications(patientId: string) {
+    return this.patientMedicationsRepository.find({
+      where: {
+        patientId
+      }
+    })
+  }
+
   async findAllMedications(medicationInput: MedicationInput): Promise<MedicationsPayload> {
     const [first] = medicationInput.searchString ? medicationInput.searchString.split(' ') : ''
     try {

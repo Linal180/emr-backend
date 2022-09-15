@@ -84,6 +84,14 @@ export class VitalsService {
     }
   }
 
+  async getPatientVitals(patientId: string) {
+    return this.patientVitalsRepository.find({
+      where: {
+        patientId
+      }
+    })
+  }
+
   /**
    * Finds one
    * @param id 
