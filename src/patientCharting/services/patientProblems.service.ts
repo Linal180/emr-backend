@@ -107,6 +107,14 @@ export class ProblemService {
     }
   }
 
+  async getPatientProblems(patientId: string) {
+    return this.patientProblemsRepository.find({
+      where: {
+        patientId
+      }
+    })
+  }
+
   /**
    * Finds one
    * @param id 
