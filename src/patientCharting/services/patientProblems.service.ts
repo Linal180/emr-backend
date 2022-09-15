@@ -236,7 +236,7 @@ export class ProblemService {
     try {
       const { paginationOptions } = searchIcdCodesInput
       const { limit } = paginationOptions
-      const [first] = searchIcdCodesInput.searchTerm.split(' ');
+      const first = searchIcdCodesInput?.searchTerm;
       let icdCodes
       if (first) {
         icdCodes = []

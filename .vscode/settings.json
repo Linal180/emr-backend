@@ -11,6 +11,7 @@
         "formbuilder",
         "GENDERIDENTITY",
         "HOLDSTATEMENT",
+        "icdcodes",
         "Loinc",
         "maritial",
         "MARITIALSTATUS",
