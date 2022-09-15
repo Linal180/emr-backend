@@ -1808,6 +1808,50 @@ enum UserStatus {
   ACTIVE
 }
 
+type Medications {
+  id: String!
+  fullName: String
+  termType: String
+  rxNumber: String
+  patientMedications: [PatientMedication!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientMedication {
+  id: String!
+  sig: String
+  takeAmount: String
+  tabletUnit: String
+  timeDuration: String
+  noOfDays: String
+  oralRoute: String
+  startDate: String
+  status: String
+  stopDate: String
+  stopReason: String
+  note: String
+  medicationId: String
+  patientId: String
+  medication: Medications
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
+type SurgicalHistory {
+  id: String!
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  notes: String
+  patientId: String
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -1866,6 +1910,8 @@ type Patient {
   consent: PatientConsent
   contacts: [Contact!]
   triageNotes: [TriageNotes!]
+  surgicalHistories: [SurgicalHistory!]
+  patientMedications: [PatientMedication!]
   facility: Facility
   doctorPatients: [DoctorPatient!]
   patientAllergies: [PatientAllergies!]
@@ -2454,6 +2500,17 @@ type FamilyHistoriesPayload {
   response: ResponsePayloadResponse
 }
 
+type SurgicalHistoryPayload {
+  response: ResponsePayload
+  surgicalHistory: SurgicalHistory
+}
+
+type SurgicalHistoriesPayload {
+  response: ResponsePayload
+  surgicalHistories: [SurgicalHistory!]
+  pagination: PaginationPayload
+}
+
 type AllergiesPayload {
   response: ResponsePayload
   allergies: [Allergies]
@@ -2474,6 +2531,23 @@ type PatientAllergyPayload {
 type ReactionsPayload {
   response: ResponsePayload
   reactions: [Reactions]
+  pagination: PaginationPayload
+}
+
+type PatientMedicationPayload {
+  response: ResponsePayload
+  patientMedication: PatientMedication
+}
+
+type PatientMedicationsPayload {
+  response: ResponsePayload
+  patientMedications: [PatientMedication!]
+  pagination: PaginationPayload
+}
+
+type MedicationsPayload {
+  response: ResponsePayload
+  medications: [Medications!]
   pagination: PaginationPayload
 }
 
@@ -2997,6 +3071,11 @@ type Query {
   getTriageNotes(getPatientTriageNote: GetPatientTriageNote!): TriageNotePayload!
   findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
   getFamilyHistory(getFamilyHistoryInput: GetFamilyHistoryInput!): FamilyHistoryPayload!
+  findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
+  findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
+  getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
+  findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
+  getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3463,6 +3542,29 @@ input GetFamilyHistoryInput {
   id: String
 }
 
+input PatientMedicationInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input MedicationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientMedication {
+  id: String!
+}
+
+input SurgicalHistoryInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetSurgicalHistory {
+  id: String!
+}
+
 input GetClaimInput {
   id: String!
 }
@@ -3700,6 +3802,12 @@ type Mutation {
   createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
   updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
   removeFamilyHistory(removeFamilyHistoryInput: RemoveFamilyHistoryInput!): FamilyHistoryPayload!
+  addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
+  updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
+  removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
+  addSurgicalHistory(createSurgicalHistoryInput: CreateSurgicalHistoryInput!): SurgicalHistoryPayload!
+  updateSurgicalHistory(updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!): SurgicalHistoryPayload!
+  removeSurgicalHistory(removeSurgicalHistory: RemoveSurgicalHistory!): SurgicalHistoryPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5222,6 +5330,66 @@ input UpdateFamilyHistoryRelativeInput {
 
 input RemoveFamilyHistoryInput {
   id: String
+}
+
+input CreatePatientMedicationInput {
+  oralRoute: String
+  sig: String
+  takeAmount: String
+  tabletUnit: String
+  timeDuration: String
+  noOfDays: String
+  startDate: String
+  status: String
+  stopDate: String
+  stopReason: String
+  note: String
+  patientId: String
+  medicationId: String
+}
+
+input UpdatePatientMedicationInput {
+  oralRoute: String
+  sig: String
+  takeAmount: String
+  tabletUnit: String
+  timeDuration: String
+  noOfDays: String
+  startDate: String
+  status: String
+  stopDate: String
+  stopReason: String
+  note: String
+  patientId: String
+  medicationId: String
+  id: String!
+}
+
+input RemovePatientMedication {
+  id: String!
+}
+
+input CreateSurgicalHistoryInput {
+  notes: String
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  patientId: String
+}
+
+input UpdateSurgicalHistoryInput {
+  notes: String
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  patientId: String
+  id: String!
+}
+
+input RemoveSurgicalHistory {
+  id: String!
 }
 
 input SendSmsInput {
