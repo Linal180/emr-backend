@@ -41,41 +41,41 @@ export class PatientAllergiesService {
   async addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput): Promise<PatientAllergies> {
     try {
       //get patient 
-      const patient  = await this.patientService.findOne(createPatientAllergyInput.patientId)
-      if(!patient){
-          throw new NotFoundException({
+      const patient = await this.patientService.findOne(createPatientAllergyInput.patientId)
+      if (!patient) {
+        throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Patient not found',
-       });
+        });
       }
       //get patient
       let allergy
-      if(createPatientAllergyInput.allergyId){
-       allergy = await this.allergiesRepository.findOne(createPatientAllergyInput.allergyId)
-      if(!allergy){
-        throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'Allergy not found',
-       });
-      }
-     }else if(createPatientAllergyInput.allergyName){
-     let allergyInstance = this.allergiesRepository.create({name: createPatientAllergyInput.allergyName, allergyType: createPatientAllergyInput.allergyType})
-      allergy =  await this.allergiesRepository.save(allergyInstance)
+      if (createPatientAllergyInput.allergyId) {
+        allergy = await this.allergiesRepository.findOne(createPatientAllergyInput.allergyId)
+        if (!allergy) {
+          throw new NotFoundException({
+            status: HttpStatus.NOT_FOUND,
+            error: 'Allergy not found',
+          });
+        }
+      } else if (createPatientAllergyInput.allergyName) {
+        let allergyInstance = this.allergiesRepository.create({ name: createPatientAllergyInput.allergyName, allergyType: createPatientAllergyInput.allergyType })
+        allergy = await this.allergiesRepository.save(allergyInstance)
       }
       //adding patient problem
-      const patientAllergyInstance = this.patientAllergiesRepository.create({...createPatientAllergyInput, allergy: allergy, patient: patient})
+      const patientAllergyInstance = this.patientAllergiesRepository.create({ ...createPatientAllergyInput, allergy: allergy, patient: patient })
       //get appointments
-      if(createPatientAllergyInput.appointmentId){
+      if (createPatientAllergyInput.appointmentId) {
         const appointment = await this.appointmentService.findOne(createPatientAllergyInput.appointmentId)
         patientAllergyInstance.appointment = appointment
       }
       //get provider
-      if(createPatientAllergyInput.providerId){
+      if (createPatientAllergyInput.providerId) {
         const provider = await this.doctorService.findOne(createPatientAllergyInput.providerId)
         patientAllergyInstance.doctor = provider
-      } 
+      }
       //get staff
-       if(createPatientAllergyInput.staffId){
+      if (createPatientAllergyInput.staffId) {
         const staff = await this.staffService.findOne(createPatientAllergyInput.staffId)
         patientAllergyInstance.staff = staff
       }
@@ -97,39 +97,39 @@ export class PatientAllergiesService {
    */
   async updatePatientAllergy(updateAllergyInput: UpdateAllergyInput): Promise<PatientAllergies> {
     try {
-       await this.utilsService.updateEntityManager(PatientAllergies, updateAllergyInput.updatePatientAllergyInput.id, updateAllergyInput.updatePatientAllergyInput, this.patientAllergiesRepository)
-       //get allergy 
-       const allergy  = await this.allergiesRepository.findOne(updateAllergyInput.allergyId)
-       //adding patient allergy
-       const patientAllergyInstance  = await this.patientAllergiesRepository.findOne(updateAllergyInput.updatePatientAllergyInput.id)
-       if(!patientAllergyInstance){
+      await this.utilsService.updateEntityManager(PatientAllergies, updateAllergyInput.updatePatientAllergyInput.id, updateAllergyInput.updatePatientAllergyInput, this.patientAllergiesRepository)
+      //get allergy 
+      const allergy = await this.allergiesRepository.findOne(updateAllergyInput.allergyId)
+      //adding patient allergy
+      const patientAllergyInstance = await this.patientAllergiesRepository.findOne(updateAllergyInput.updatePatientAllergyInput.id)
+      if (!patientAllergyInstance) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Patient allergy not found',
-         });
-       }
-       patientAllergyInstance.allergy = allergy
-       //get appointments
-       if(updateAllergyInput.appointmentId){
-         const appointment = await this.appointmentService.findOne(updateAllergyInput.appointmentId)
-         patientAllergyInstance.appointment = appointment
-       }
-       //get provider
-       if(updateAllergyInput.providerId){
-         const provider = await this.doctorService.findOne(updateAllergyInput.providerId)
-         patientAllergyInstance.doctor = provider
-       } 
-       //get staff
-        if(updateAllergyInput.staffId){
-         const staff = await this.staffService.findOne(updateAllergyInput.staffId)
-         patientAllergyInstance.staff = staff
-       }
-       const patientAllergyRes = await this.patientAllergiesRepository.save(patientAllergyInstance)
-       //create reactions 
-       const reactions = await this.reactionsService.getReactions(updateAllergyInput.reactionsIds)
-       patientAllergyRes.reactions = reactions
-       const patientAllergy = await this.patientAllergiesRepository.save(patientAllergyRes)
-       return patientAllergy
+        });
+      }
+      patientAllergyInstance.allergy = allergy
+      //get appointments
+      if (updateAllergyInput.appointmentId) {
+        const appointment = await this.appointmentService.findOne(updateAllergyInput.appointmentId)
+        patientAllergyInstance.appointment = appointment
+      }
+      //get provider
+      if (updateAllergyInput.providerId) {
+        const provider = await this.doctorService.findOne(updateAllergyInput.providerId)
+        patientAllergyInstance.doctor = provider
+      }
+      //get staff
+      if (updateAllergyInput.staffId) {
+        const staff = await this.staffService.findOne(updateAllergyInput.staffId)
+        patientAllergyInstance.staff = staff
+      }
+      const patientAllergyRes = await this.patientAllergiesRepository.save(patientAllergyInstance)
+      //create reactions 
+      const reactions = await this.reactionsService.getReactions(updateAllergyInput.reactionsIds)
+      patientAllergyRes.reactions = reactions
+      const patientAllergy = await this.patientAllergiesRepository.save(patientAllergyRes)
+      return patientAllergy
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -152,6 +152,14 @@ export class PatientAllergiesService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async getPatientAllergies(patientId: string) {
+    return this.patientAllergiesRepository.find({
+      where: {
+        patientId
+      }
+    })
   }
 
   /**
@@ -180,7 +188,7 @@ export class PatientAllergiesService {
    */
   async findOne(id: string): Promise<PatientAllergies> {
     const patientAllergy = await this.patientAllergiesRepository.findOne(id);
-    if(patientAllergy){
+    if (patientAllergy) {
       return patientAllergy
     }
     throw new NotFoundException({
