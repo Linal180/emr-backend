@@ -201,7 +201,7 @@ export class PolicyService {
       //associate policyHolder
       if (!policyHolderInfo) {
         const createdPolicyHolder = await this.policyHolderService.create(updatePolicyInput.policyHolderInfo)
-        this.patientService.updatePatientPolicyHolder({ id: patient.id, policyHolder: createdPolicyHolder })
+        await this.patientService.updatePatientPolicyHolder({ id: patient.id, policyHolder: createdPolicyHolder })
         policyInstance.policyHolder = createdPolicyHolder
       } else {
         const updatedPolicyHolderInfo = await this.policyHolderService.update({ ...policyHolderInfo, ...updatePolicyInput.policyHolderInfo })
@@ -210,7 +210,7 @@ export class PolicyService {
 
       //associate insurance 
       if (updatePolicyInput.insuranceId) {
-        const insurance = await this.insuranceService.findOne(updatePolicyInput.insuranceId)
+        const insurance = await this.insuranceService.findOne(updatePolicyInput.insuranceId);
         policyInstance.insurance = insurance
       }
       const policy = await this.policyRepository.save({ ...policyInstance, ...policyInfoToCreate });

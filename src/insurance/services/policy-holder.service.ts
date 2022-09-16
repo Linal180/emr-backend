@@ -54,7 +54,7 @@ export class PolicyHolderService {
    */
   async create(createPolicyHolderInput: PolicyHolderInput): Promise<PolicyHolder> {
     const policyHolderInstance = this.policyHolderRepository.create(createPolicyHolderInput)
-    return this.policyHolderRepository.save(policyHolderInstance)
+    return await this.policyHolderRepository.save(policyHolderInstance)
   }
 
   /**
