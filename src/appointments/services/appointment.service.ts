@@ -624,11 +624,11 @@ export class AppointmentService {
     * Cancels appointment
     * @param token 
     */
-  async getAppointmentWithToken(getAppointmentWithToken: GetAppointmentWithToken) {
+  async getAppointmentWithToken(getAppointmentWithToken: GetAppointmentWithToken): Promise<Appointment> {
     try {
       const appointment = await this.findByToken(getAppointmentWithToken.token)
       if (appointment) {
-        return { appointment }
+        return appointment
       }
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,

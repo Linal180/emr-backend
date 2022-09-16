@@ -188,7 +188,7 @@ export class AppointmentResolver {
   async getAppointmentWithToken(@Args('getAppointmentWithToken') getAppointmentWithToken: GetAppointmentWithToken): Promise<AppointmentPayload> {
     const appointment = await this.appointmentService.getAppointmentWithToken(getAppointmentWithToken)
     return {
-      ...appointment,
+      appointment,
       response: { status: 200, message: 'Appointment fetched successfully' }
     };
   }
