@@ -154,7 +154,7 @@ export class BillingService {
         if (createdBilling.id) {
           this.appointmentService.updateAppointment({
             id: appointmentId,
-            status: AppointmentStatus.DISCHARGED,
+            status: AppointmentStatus.CHECKOUT,
             checkedOutAt: moment().toISOString()
           })
         }
