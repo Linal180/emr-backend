@@ -63,7 +63,8 @@ export class InsuranceService {
    * @param id 
    * @returns one 
    */
-  findOne(id: string): Promise<Insurance> {
-    return this.insuranceRepository.findOne({ id })
+  async findOne(id: string): Promise<Insurance> {
+    return await this.insuranceRepository.findOne({ id })
   }
+  
 }
