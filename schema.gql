@@ -1648,6 +1648,7 @@ enum AppointmentStatus {
   NO_SHOW
   DISCHARGED
   CANCELLED
+  CHECKOUT
 }
 
 """The patient billing status assigned"""
@@ -2433,15 +2434,67 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
-type PatientVitalPayload {
+type AllergiesPayload {
   response: ResponsePayload
-  patientVital: PatientVitals
+  allergies: [Allergies]
+  pagination: PaginationPayload
 }
 
-type PatientVitalsPayload {
+type PatientAllergiesPayload {
   response: ResponsePayload
-  patientVitals: [PatientVitals]
+  patientAllergies: [PatientAllergies]
   pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
+}
+
+type ReactionsPayload {
+  response: ResponsePayload
+  reactions: [Reactions]
+  pagination: PaginationPayload
+}
+
+type PatientChartingInfoPayload {
+  response: ResponsePayload
+  patientInfo: Patient
+  patientVitals: [PatientVitals]
+  patientAllergies: [PatientAllergies]
+  patientProblems: [PatientProblems]
+  triageNotes: [TriageNotes]
+  patientMedications: [PatientMedication]
+  surgicalHistories: [SurgicalHistory]
+  familyHistories: [FamilyHistory]
+}
+
+type PatientMedicationPayload {
+  response: ResponsePayload
+  patientMedication: PatientMedication
+}
+
+type PatientMedicationsPayload {
+  response: ResponsePayload
+  patientMedications: [PatientMedication!]
+  pagination: PaginationPayload
+}
+
+type MedicationsPayload {
+  response: ResponsePayload
+  medications: [Medications!]
+  pagination: PaginationPayload
+}
+
+type FamilyHistoryPayload {
+  familyHistory: FamilyHistory
+  response: ResponsePayloadResponse
+}
+
+type FamilyHistoriesPayload {
+  familyHistories: [FamilyHistory!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
 type IcdCodesPayload {
@@ -2478,26 +2531,15 @@ type snoMedCodesPayload {
   pagination: PaginationPayload
 }
 
-type TriageNotePayload {
+type PatientVitalPayload {
   response: ResponsePayload
-  triageNotes: TriageNotes
+  patientVital: PatientVitals
 }
 
-type TriageNotesPayload {
+type PatientVitalsPayload {
   response: ResponsePayload
-  triageNotes: [TriageNotes!]
+  patientVitals: [PatientVitals]
   pagination: PaginationPayload
-}
-
-type FamilyHistoryPayload {
-  familyHistory: FamilyHistory
-  response: ResponsePayloadResponse
-}
-
-type FamilyHistoriesPayload {
-  familyHistories: [FamilyHistory!]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
 }
 
 type SurgicalHistoryPayload {
@@ -2511,43 +2553,14 @@ type SurgicalHistoriesPayload {
   pagination: PaginationPayload
 }
 
-type AllergiesPayload {
+type TriageNotePayload {
   response: ResponsePayload
-  allergies: [Allergies]
-  pagination: PaginationPayload
+  triageNotes: TriageNotes
 }
 
-type PatientAllergiesPayload {
+type TriageNotesPayload {
   response: ResponsePayload
-  patientAllergies: [PatientAllergies]
-  pagination: PaginationPayload
-}
-
-type PatientAllergyPayload {
-  response: ResponsePayload
-  patientAllergy: PatientAllergies
-}
-
-type ReactionsPayload {
-  response: ResponsePayload
-  reactions: [Reactions]
-  pagination: PaginationPayload
-}
-
-type PatientMedicationPayload {
-  response: ResponsePayload
-  patientMedication: PatientMedication
-}
-
-type PatientMedicationsPayload {
-  response: ResponsePayload
-  patientMedications: [PatientMedication!]
-  pagination: PaginationPayload
-}
-
-type MedicationsPayload {
-  response: ResponsePayload
-  medications: [Medications!]
+  triageNotes: [TriageNotes!]
   pagination: PaginationPayload
 }
 
@@ -3077,6 +3090,7 @@ type Query {
   getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
   findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
   getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
+  getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput!): PatientChartingInfoPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3568,6 +3582,10 @@ input SurgicalHistoryInput {
 
 input GetSurgicalHistory {
   id: String!
+}
+
+input PatientChartingInfoInput {
+  patientId: String
 }
 
 input GetClaimInput {

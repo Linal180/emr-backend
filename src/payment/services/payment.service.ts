@@ -158,7 +158,7 @@ export class PaymentService {
         if (brainTrans?.success) {
           if (appointmentId) {
             await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
-            await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: AppointmentStatus.DISCHARGED });
+            await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: AppointmentStatus.CHECKOUT });
             const data = { transactionId: brainTrans?.transaction?.id, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
             return await this.create(data);
           } else {
@@ -177,7 +177,7 @@ export class PaymentService {
       }
       else {
         await this.appointmentService.updateAppointmentBillingStatus({ id: appointmentId, billingStatus: BillingStatus.PAID });
-        await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: AppointmentStatus.DISCHARGED });
+        await this.appointmentService.updateAppointmentStatus({ id: appointmentId, status: AppointmentStatus.CHECKOUT });
         const data = { transactionId: null, doctorId: providerId, facilityId, patientId, appointmentId, status: TRANSACTIONSTATUS.PAID };
         return await this.create(data);
       }

@@ -72,6 +72,14 @@ export class SurgicalHistoryService {
     }
   }
 
+  async getPatientSurgicalHistory(patientId: string) {
+    return this.SurgicalHistoryRepository.find({
+      where: {
+        patientId
+      }
+    })
+  }
+
   /**
    * Finds one
    * @param id 
