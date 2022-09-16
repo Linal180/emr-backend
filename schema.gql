@@ -1648,6 +1648,7 @@ enum AppointmentStatus {
   NO_SHOW
   DISCHARGED
   CANCELLED
+  CHECKOUT
 }
 
 """The patient billing status assigned"""
