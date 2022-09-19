@@ -57,7 +57,8 @@ export enum AppointmentStatus {
   RESCHEDULED = 'rescheduled',
   NO_SHOW = 'no_show',
   DISCHARGED = "discharged",
-  CANCELLED = "cancelled"
+  CANCELLED = "cancelled",
+  CHECKOUT = "checkout"
 }
 
 registerEnumType(AppointmentStatus, {
