@@ -1853,6 +1853,57 @@ type SurgicalHistory {
   updatedAt: String
 }
 
+type SelectorType {
+  id: String
+  name: String
+}
+
+type DependentQuestions {
+  id: String!
+  title: String
+  note: String
+  answer: String
+  questionType: String
+  options: [SelectorType!]
+  parentId: String
+  questionsId: String
+  questions: Questions
+  createdAt: String
+  updatedAt: String
+}
+
+type Questions {
+  id: String!
+  title: String
+  note: String
+  answer: String
+  questionType: String
+  options: [SelectorType!]
+  sectionsId: String
+  dependentQuestions: DependentQuestions
+  sections: [Sections!]
+  createdAt: String
+  updatedAt: String
+}
+
+type Sections {
+  id: String!
+  name: String
+  socialHistoryId: String
+  socialHistory: [SocialHistory!]
+  questions: Questions
+  createdAt: String
+  updatedAt: String
+}
+
+type SocialHistory {
+  id: String!
+  patient: Patient
+  sections: Sections
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -1908,6 +1959,7 @@ type Patient {
   updatedAt: String!
   familyHistory: [FamilyHistory!]
   user: User
+  socialHistory: SocialHistory
   consent: PatientConsent
   contacts: [Contact!]
   triageNotes: [TriageNotes!]

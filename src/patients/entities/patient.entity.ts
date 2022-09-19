@@ -25,6 +25,7 @@ import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 import { SurgicalHistory } from 'src/patientCharting/entities/surgicalHistory.entity';
 import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
+import { SocialHistory } from 'src/socialHistory/entities/socialHistory.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -416,6 +417,10 @@ export class Patient {
   @JoinColumn()
   @Field(() => User, { nullable: true })
   user: User;
+
+  @OneToOne(() => SocialHistory, socialHistory => socialHistory.patient, { onDelete: 'CASCADE' })
+  @Field(() => SocialHistory, { nullable: true })
+  socialHistory: SocialHistory;
 
   @OneToOne(() => PatientConsent, consent => consent.patient)
   @Field(() => PatientConsent, { nullable: true })
