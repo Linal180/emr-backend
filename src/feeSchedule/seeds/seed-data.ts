@@ -1921,7 +1921,9 @@ const covidCPTCodes = [{
 
 const feeCPTCodes = cptFeeScheduleData?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription }));
 
-export const cptCodeData = [...feeCPTCodes, ...covidCPTCodes]
+const covid19 = covidCPTCodes?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription }))
+
+export const cptCodeData = [...feeCPTCodes, ...covid19]
 
 export const modifiersData = [
   {
