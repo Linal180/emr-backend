@@ -126,9 +126,17 @@ export class VitalsService {
     const patientLatestVital = await this.patientVitalsRepository.find({
       where: { patientId },
       order: { vitalCreationDate: -1 },
+    });
+
+    if (patientLatestVital?.length) {
+      return patientLatestVital[0]
+    }
+    
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Patient Vital not found',
     })
 
-    return patientLatestVital[0]
   }
 
   /**

@@ -37,7 +37,7 @@ import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto'
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
-  CancelAppointment, GetAppointments, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
+  CancelAppointment, GetAppointments, GetAppointmentWithToken, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
 } from '../dto/update-appointment.input';
 //payloads
@@ -245,18 +245,22 @@ export class AppointmentService {
    * @returns  
    */
   async triggerSmsNotification(appointment: Appointment, provider: Doctor, patient: Patient, facility: Facility, IsBooked: boolean) {
-    const currentContact = patient.contacts?.filter(function (item) { return item.primaryContact })
-    const facilityLocationLink = facility.contacts?.filter(function (item) { return item.primaryContact })
-    if (IsBooked) {
-      return await this.utilsService.smsNotification({
-        to: [currentContact?.[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been booked at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.firstName + " " + provider.lastName} on location ${facilityLocationLink?.[0]?.locationLink} at ${facility.name} facility`
-      });
-    } else {
-      return await this.utilsService.smsNotification({
-        to: [currentContact?.[0].phone],
-        body: `Your appointment # ${appointment.appointmentNumber} has been cancelled at ${appointment.scheduleStartDateTime} with ${provider.suffix ? provider.suffix : "Dr." + " " + provider.lastName} on location ${facilityLocationLink?.[0]?.locationLink} at ${facility.name} facility`
-      });
+
+    const currentContact = patient?.contacts?.find(({ primaryContact }) => primaryContact)
+    const facilityLocationLink = facility?.contacts?.find(({ primaryContact }) => primaryContact)
+
+    const { name } = facility || {}
+    const { phone } = currentContact || {}
+    const { locationLink } = facilityLocationLink || {}
+    const { suffix, firstName, lastName } = provider || {}
+    const { appointmentNumber, scheduleStartDateTime } = appointment || {}
+
+    const body = `Your appointment # ${appointmentNumber} has been ${IsBooked ? 'booked' : 'cancelled'} at ${scheduleStartDateTime} with ${suffix || `Dr. ${firstName} ${lastName}`} on location ${locationLink} at ${name} facility`;
+    if(phone){
+      return await this.utilsService.smsNotification({ to: [phone], body });
+    }
+    else {
+      throw new Error("Phone # Not Found");
     }
   }
 
@@ -514,6 +518,8 @@ export class AppointmentService {
     });
   }
 
+
+
   /**
    * Gets appointment
    * @param id 
@@ -613,6 +619,26 @@ export class AppointmentService {
         await this.patientConsentService.remove(patientConsent?.id)
       }
       await this.appointmentRepository.delete(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+    * Cancels appointment
+    * @param token 
+    */
+  async getAppointmentWithToken(getAppointmentWithToken: GetAppointmentWithToken): Promise<Appointment> {
+    try {
+      const appointment = await this.findByToken(getAppointmentWithToken.token)
+      if (appointment) {
+        return appointment
+      }
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Appointment not found',
+      });
+
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
