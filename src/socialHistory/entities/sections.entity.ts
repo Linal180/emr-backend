@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Questions } from "./questions.entity";
 //entities
+import { Questions } from "./questions.entity";
 import { SocialHistory } from "./socialHistory.entity";
 
 @Entity({ name: 'Sections' })

@@ -1,10 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import {
-  Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn
-} from "typeorm";
+import { CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
-import { Patient } from "src/patients/entities/patient.entity";
 import { Sections } from "./sections.entity";
+import { Patient } from "src/patients/entities/patient.entity";
 
 @Entity({ name: 'SocialHistory' })
 @ObjectType()
