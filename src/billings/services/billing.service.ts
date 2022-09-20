@@ -194,7 +194,7 @@ export class BillingService {
     const totalCharges = procedureCodes.reduce((acc, code) => {
       return acc += Number(code.price || 0)
     }, 0)
-    
+
     const insuranceDetails = await this.policyService.fetchPatientInsurances(patientId)
     const appointmentInfo = await this.appointmentService.findOne(appointmentId)
     const patient = await this.patientService.findOne(patientId)
@@ -1030,7 +1030,10 @@ export class BillingService {
     const insuranceDetail = !!primaryInsurance ? primaryInsurance :
       !!secondaryInsurance ? secondaryInsurance :
         tertiaryInsurance
-    const policyHolderInfo = await this.policyHolderService.findOne(insuranceDetail.policyHolderId)
+    let policyHolderInfo
+    if (insuranceDetail?.policyHolderId) {
+      policyHolderInfo = await this.policyHolderService.findOne(insuranceDetail?.policyHolderId)
+    }
 
     const primaryProvider = providersInfo.find((providerInfo) => providerInfo.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
 
