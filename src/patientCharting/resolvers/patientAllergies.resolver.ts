@@ -1,25 +1,30 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
-import { Doctor } from 'src/providers/entities/doctor.entity';
+//entities
 import { Staff } from 'src/providers/entities/staff.entity';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { StaffService } from 'src/providers/services/staff.service';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
-import { AllergiesPayload } from '../dto/allergiess-payload.dto';
-import AllergyInput from '../dto/allergy-input.dto';
-import { CreatePatientAllergyInput } from '../dto/create-patient-allergy.input';
-import { PatientAllergiesPayload } from '../dto/patient-allergiess-payload.dto';
-import PatientAllergyInput from '../dto/patient-allergy-input.dto';
-import { PatientAllergyPayload } from '../dto/patient-allergy-payload.dto';
-import ReactionInput from '../dto/reaction-input.dto';
-import { ReactionsPayload } from '../dto/reactions-payload.dto';
-import { GetPatientAllergy, RemovePatientAllergy, UpdateAllergyInput } from '../dto/update-allergy.input';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { PatientAllergies } from '../entities/patientAllergies.entity';
-import { PatientAllergiesService } from '../services/patientAllergies.service';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+//services
 import { ReactionsService } from '../services/reactions.service';
+import { StaffService } from 'src/providers/services/staff.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PatientAllergiesService } from '../services/patientAllergies.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+//inputs
+import AllergyInput from '../dto/allergy-input.dto';
+import ReactionInput from '../dto/reaction-input.dto';
+import PatientAllergyInput from '../dto/patient-allergy-input.dto';
+import { CreatePatientAllergyInput } from '../dto/create-patient-allergy.input';
+import { GetPatientAllergy, RemovePatientAllergy, UpdateAllergyInput } from '../dto/update-allergy.input';
+//guards
+import PermissionGuard from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//payloads
+import { ReactionsPayload } from '../dto/reactions-payload.dto';
+import { AllergiesPayload } from '../dto/allergiess-payload.dto';
+import { PatientAllergyPayload } from '../dto/patient-allergy-payload.dto';
+import { PatientAllergiesPayload } from '../dto/patient-allergiess-payload.dto';
 
 @Resolver(() => PatientAllergies)
 export class PatientAllergiesResolver {

@@ -7,7 +7,6 @@ import { FamilyHistory } from "../entities/familyHistory.entity";
 import { CreateFamilyHistoryInput, FindAllFamilyHistoryInput, UpdateFamilyHistoryInput } from "../dto/family-history.input";
 //services
 import { ICDCodeService } from "./icdCode.service";
-import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
 import { PatientService } from "src/patients/services/patient.service";
 import { FamilyHistoryRelativeService } from "./familyHistoryRelative.service";
@@ -20,10 +19,9 @@ export class FamilyHistoryService {
 		@InjectRepository(FamilyHistory)
 		private familyHistoryRepo: Repository<FamilyHistory>,
 		private readonly connection: Connection,
-		private readonly utilsService: UtilsService,
 		private readonly patientService: PatientService,
-		private readonly paginationService: PaginationService,
 		private readonly icdCodeService: ICDCodeService,
+		private readonly paginationService: PaginationService,
 		private readonly familyHistoryRelativeService: FamilyHistoryRelativeService,
 	) { }
 

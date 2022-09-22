@@ -1,15 +1,18 @@
 import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
+//entities
+import { Medications } from '../entities/medications.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
+import { PatientMedication } from '../entities/patientMedication.entity';
+//services
 import { PatientService } from 'src/patients/services/patient.service';
+import { PatientMedicationService } from '../services/patientMedication.service';
+//inputs
 import { CreatePatientMedicationInput } from '../dto/create-patientMedications.input';
 import { PatientMedicationInput, MedicationInput } from '../dto/patientMedication-input.dto';
-import { MedicationsPayload, PatientMedicationPayload, PatientMedicationsPayload } from '../dto/patientMedication-payload.dto';
 import { GetPatientMedication, RemovePatientMedication, UpdatePatientMedicationInput } from '../dto/update-patientMedication.input';
-import { Medications } from '../entities/medications.entity';
-import { PatientMedication } from '../entities/patientMedication.entity';
-import { PatientMedicationService } from '../services/patientMedication.service';
+//payloads
+import { MedicationsPayload, PatientMedicationPayload, PatientMedicationsPayload } from '../dto/patientMedication-payload.dto';
 
 @Resolver(() => PatientMedication)
 export class PatientMedicationsResolver {

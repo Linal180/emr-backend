@@ -1,4 +1,6 @@
-const vaccines = [
+import { NdcType } from "src/lib/constants";
+
+const data = [
   {
     name: "ACAM2000",
     shortDescription: "vaccinia (smallpox)",
@@ -173,7 +175,7 @@ const vaccines = [
   {
     name: "ATTENUVAX",
     shortDescription: "measles",
-    cvxCode: "05",
+    cvxCode: 5,
     manufacturerName: "Merck and Co., Inc.",
     mvxCode: "MSD",
     mvxStatus: "Active",
@@ -366,7 +368,7 @@ const vaccines = [
   {
     name: "ENGERIX B-PEDS",
     shortDescription: "Hep B, adolescent or pediatric",
-    cvxCode: "08",
+    cvxCode: 8,
     manufacturerName: "GlaxoSmithKline",
     mvxCode: "SKB",
     mvxStatus: "Active",
@@ -1005,7 +1007,7 @@ const vaccines = [
   {
     name: "MERUVAX II",
     shortDescription: "rubella",
-    cvxCode: "06",
+    cvxCode: 6,
     manufacturerName: "Merck and Co., Inc.",
     mvxCode: "MSD",
     mvxStatus: "Active",
@@ -1015,7 +1017,7 @@ const vaccines = [
   {
     name: "M-M-R II",
     shortDescription: "MMR",
-    cvxCode: "03",
+    cvxCode: 3,
     manufacturerName: "Merck and Co., Inc.",
     mvxCode: "MSD",
     mvxStatus: "Active",
@@ -1078,7 +1080,7 @@ const vaccines = [
   {
     name: "MUMPSVAX",
     shortDescription: "mumps",
-    cvxCode: "07",
+    cvxCode: 7,
     manufacturerName: "",
     mvxCode: "",
     mvxStatus: "Inactive",
@@ -1189,7 +1191,7 @@ const vaccines = [
   {
     name: "ORIMUNE",
     shortDescription: "OPV",
-    cvxCode: "02",
+    cvxCode: 2,
     manufacturerName: "",
     mvxCode: "",
     mvxStatus: "Inactive",
@@ -1365,7 +1367,7 @@ const vaccines = [
   {
     name: "Priorix",
     shortDescription: "MMR",
-    cvxCode: "03",
+    cvxCode: 3,
     manufacturerName: "GlaxoSmithKline",
     mvxCode: "SKB",
     mvxStatus: "Active",
@@ -1455,7 +1457,7 @@ const vaccines = [
   {
     name: "RECOMBIVAX-PEDS",
     shortDescription: "Hep B, adolescent or pediatric",
-    cvxCode: "08",
+    cvxCode: 8,
     manufacturerName: "Merck and Co., Inc.",
     mvxCode: "MSD",
     mvxStatus: "Active",
@@ -1549,7 +1551,7 @@ const vaccines = [
     name: "Td, adsorbed",
     shortDescription:
       "Td (adult), 2 Lf tetanus toxoid, preservative free, adsorbed",
-    cvxCode: "09",
+    cvxCode: 9,
     manufacturerName: "Massachusetts Biologic Laboratories",
     mvxCode: "MBL",
     mvxStatus: "Active",
@@ -1560,7 +1562,7 @@ const vaccines = [
     name: "Td, adsorbed",
     shortDescription:
       "Td (adult), 2 Lf tetanus toxoid, preservative free, adsorbed",
-    cvxCode: "09",
+    cvxCode: 9,
     manufacturerName: "Grifols",
     mvxCode: "GRF",
     mvxStatus: "Active",
@@ -1571,7 +1573,7 @@ const vaccines = [
     name: "TDVAX",
     shortDescription:
       "Td (adult), 2 Lf tetanus toxoid, preservative free, adsorbed",
-    cvxCode: "09",
+    cvxCode: 9,
     manufacturerName: "Massachusetts Biologic Laboratories",
     mvxCode: "MBL",
     mvxStatus: "Active",
@@ -2524,7 +2526,7 @@ const ndc = [
     noUseNDC: 0,
     useGTIN: "",
     useLastUpdate: "8/16/2021",
-    cvxCode: "",
+    cvxCode: 210,
     cvxDescription: "",
     mvxCode: "ASZ",
   },
@@ -6344,7 +6346,7 @@ const ndc = [
     saleLastUpdate: "7/6/2018",
     useNDC11: "58160-0816-01",
     noUseNDC: 0,
-    useGTIN: 10358160816014,
+    useGTIN: "10358160816014",
     useLastUpdate: "11/8/2021",
     cvxCode: 48,
     cvxDescription: "Hib (PRP-T)",
@@ -6360,7 +6362,7 @@ const ndc = [
     saleLastUpdate: "7/6/2018",
     useNDC11: "58160-0816-05",
     noUseNDC: 0,
-    useGTIN: 10358160816052,
+    useGTIN: "10358160816052",
     useLastUpdate: "5/6/2019",
     cvxCode: 48,
     cvxDescription: "Hib (PRP-T)",
@@ -6424,7 +6426,7 @@ const ndc = [
     saleLastUpdate: "1/31/2022",
     useNDC11: "58160-0810-01",
     noUseNDC: 0,
-    useGTIN: 10358160810012,
+    useGTIN: "10358160810012",
     useLastUpdate: "1/31/2022",
     cvxCode: 20,
     cvxDescription: "DTaP",
@@ -6440,7 +6442,7 @@ const ndc = [
     saleLastUpdate: "1/31/2022",
     useNDC11: "58160-0810-43",
     noUseNDC: 0,
-    useGTIN: 10358160810432,
+    useGTIN: "10358160810432",
     useLastUpdate: "1/31/2022",
     cvxCode: 20,
     cvxDescription: "DTaP",
@@ -6889,7 +6891,7 @@ const ndc = [
     saleLastUpdate: "6/15/2022",
     useNDC11: "58160-0812-01",
     noUseNDC: 0,
-    useGTIN: 10358160812016,
+    useGTIN: "10358160812016",
     useLastUpdate: "6/14/2022",
     cvxCode: 130,
     cvxDescription: "DTaP-IPV",
@@ -6905,7 +6907,7 @@ const ndc = [
     saleLastUpdate: "1/31/2022",
     useNDC11: "58160-0812-43",
     noUseNDC: 0,
-    useGTIN: 10358160812436,
+    useGTIN: "10358160812436",
     useLastUpdate: "1/31/2022",
     cvxCode: 130,
     cvxDescription: "DTaP-IPV",
@@ -7082,7 +7084,7 @@ const ndc = [
     saleLastUpdate: "7/13/2018",
     useNDC11: "58160-0958-01",
     noUseNDC: 0,
-    useGTIN: 10358160958011,
+    useGTIN: "10358160958011",
     useLastUpdate: "5/6/2019",
     cvxCode: 136,
     cvxDescription: "Meningococcal MCV4O",
@@ -7098,7 +7100,7 @@ const ndc = [
     saleLastUpdate: "7/13/2018",
     useNDC11: "58160-0959-01",
     noUseNDC: 0,
-    useGTIN: 10358160959018,
+    useGTIN: "10358160959018",
     useLastUpdate: "5/6/2019",
     cvxCode: 136,
     cvxDescription: "Meningococcal MCV4O",
@@ -7278,7 +7280,7 @@ const ndc = [
     saleLastUpdate: "1/31/2022",
     useNDC11: "58160-0811-43",
     noUseNDC: 0,
-    useGTIN: 10358160811439,
+    useGTIN: "10358160811439",
     useLastUpdate: "1/31/2022",
     cvxCode: 110,
     cvxDescription: "DTaP-Hep B-IPV",
@@ -7753,7 +7755,7 @@ const ndc = [
     saleLastUpdate: "1/31/2022",
     useNDC11: "00005-2000-01",
     noUseNDC: 0,
-    useGTIN: 10300052000018,
+    useGTIN: "10300052000018",
     useLastUpdate: "1/31/2022",
     cvxCode: 216,
     cvxDescription:
@@ -8139,7 +8141,7 @@ const ndc = [
     saleLastUpdate: "7/12/2018",
     useNDC11: "58160-0851-01",
     noUseNDC: 0,
-    useGTIN: 10358160851015,
+    useGTIN: "10358160851015",
     useLastUpdate: "5/6/2019",
     cvxCode: 119,
     cvxDescription: "rotavirus, monovalent",
@@ -8251,7 +8253,7 @@ const ndc = [
     saleLastUpdate: "10/8/2019",
     useNDC11: "58160-0828-03",
     noUseNDC: 0,
-    useGTIN: 10358160828031,
+    useGTIN: "10358160828031",
     useLastUpdate: "3/17/2021",
     cvxCode: 187,
     cvxDescription: "zoster recombinant",
@@ -8296,7 +8298,7 @@ const ndc = [
     saleLabeler: "GRIFOLS USA, LLC",
     startDate: "7/1/2015",
     endDate: "",
-    saleGTIN: 20313533131016,
+    saleGTIN: "20313533131016",
     saleLastUpdate: "5/16/2022",
     useNDC11: "13533-0131-00",
     noUseNDC: 0,
@@ -8313,7 +8315,7 @@ const ndc = [
     saleLabeler: "MassBiologics",
     startDate: "7/27/1970",
     endDate: "",
-    saleGTIN: 20314362011142,
+    saleGTIN: "20314362011142",
     saleLastUpdate: "5/16/2022",
     useNDC11: "14362-0111-03",
     noUseNDC: 0,
@@ -8627,7 +8629,7 @@ const ndc = [
     saleLastUpdate: "6/8/2018",
     useNDC11: "58160-0815-43",
     noUseNDC: 0,
-    useGTIN: 10358160815437,
+    useGTIN: "10358160815437",
     useLastUpdate: "5/6/2019",
     cvxCode: 104,
     cvxDescription: "Hep A-Hep B",
@@ -9020,3 +9022,58 @@ const ndc = [
     mvxCode: "MSD",
   },
 ];
+
+
+const saleNdcData = ndc?.map((ndc) => {
+  const {
+    cvxCode, saleGTIN: gtin, cvxDescription, endDate, startDate, saleLastUpdate: lastUpdate, saleNDC11: ndcCode,
+    mvxCode, saleProprietaryName: cvxName, saleLabeler: mvxName, noUseNDC
+  } = ndc
+  return {
+    gtin,
+    cvxCode: `${cvxCode}`,
+    endDate,
+    ndcCode,
+    mvxCode,
+    mvxName,
+    cvxName,
+    startDate,
+    lastUpdate,
+    cvxDescription,
+    ndcType: NdcType.SALE,
+    noUseNDC: `${noUseNDC}`
+  }
+})
+
+const useNdcData = ndc?.map((ndc) => {
+  const {
+    cvxCode, useGTIN: gtin, cvxDescription, endDate, startDate, useLastUpdate: lastUpdate, useNDC11: ndcCode,
+    mvxCode, saleProprietaryName: cvxName, saleLabeler: mvxName, noUseNDC
+  } = ndc
+  return {
+    gtin: `${gtin}`,
+    cvxCode: `${cvxCode}`,
+    endDate,
+    ndcCode,
+    mvxCode,
+    mvxName,
+    cvxName,
+    startDate,
+    lastUpdate,
+    cvxDescription,
+    ndcType: NdcType.USE,
+    noUseNDC: `${noUseNDC}`
+  }
+})
+
+
+export const ndcData = [...useNdcData, ...saleNdcData]
+const filteredCvxData = data?.map(({ cvxCode, shortDescription, productStatus, name }) => ({ cvxCode: `${cvxCode}`, shortDescription, productStatus, name }))
+export const mvxData = data?.map(({ mvxCode, mvxStatus, manufacturerName, cvxCode }) => ({ mvxCode, mvxStatus, manufacturerName, cvxCode: `${cvxCode}`, }))
+
+
+console.log('cvx data => ', filteredCvxData?.length)
+
+export const cvxData = filteredCvxData.filter((v, i, a) => a?.findIndex(v2 => (v2?.cvxCode === v?.cvxCode && v2?.name === v?.name)) === i)
+
+console.log('filtered cvx data => ', cvxData?.length)

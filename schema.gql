@@ -1809,6 +1809,86 @@ enum UserStatus {
   ACTIVE
 }
 
+type NDC {
+  id: String!
+  ndcCode: String
+  mvxName: String
+  mvxCode: String
+  startDate: String
+  endDate: String
+  gtin: String
+  lastUpdate: String
+  cvxCode: String
+  cvxDescription: String
+  ndcType: String
+  noUseNDC: String
+  mvxId: String
+  mvx: MVX
+  createdAt: String
+  updatedAt: String
+}
+
+type MVX {
+  id: String!
+  manufacturerName: String
+  mvxCode: String
+  mvxStatus: String
+  cvxCode: String
+  cvxId: String
+  ndc: [NDC!]
+  cvx: CVX
+  createdAt: String
+  updatedAt: String
+}
+
+type CVX {
+  id: String!
+  name: String
+  shortDescription: String
+  cvxCode: String
+  productStatus: String
+  mvx: [MVX!]
+  createdAt: String
+  updatedAt: String
+}
+
+type Vaccine {
+  id: String!
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  cvxId: String
+  mvxId: String
+  ndcId: String
+  cvx: CVX
+  mvx: MVX
+  mdc: NDC
+  patientId: String
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
+type SurgicalHistory {
+  id: String!
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  notes: String
+  patientId: String
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Medications {
   id: String!
   fullName: String
@@ -1835,19 +1915,6 @@ type PatientMedication {
   medicationId: String
   patientId: String
   medication: Medications
-  patient: Patient
-  createdAt: String
-  updatedAt: String
-}
-
-type SurgicalHistory {
-  id: String!
-  code: String
-  codeType: String
-  description: String
-  surgeryDate: String
-  notes: String
-  patientId: String
   patient: Patient
   createdAt: String
   updatedAt: String
@@ -1906,6 +1973,7 @@ type Patient {
   profileAttachment: String
   createdAt: String!
   updatedAt: String!
+  vaccines: [Vaccine!]
   familyHistory: [FamilyHistory!]
   user: User
   consent: PatientConsent
@@ -2434,67 +2502,44 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
-type AllergiesPayload {
-  response: ResponsePayload
-  allergies: [Allergies]
+type FindAllNdcPayload {
+  ndcs: [NDC!]
   pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
-type PatientAllergiesPayload {
-  response: ResponsePayload
-  patientAllergies: [PatientAllergies]
+type FindAllCvxPayload {
+  cvxs: [CVX!]
   pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
-type PatientAllergyPayload {
-  response: ResponsePayload
-  patientAllergy: PatientAllergies
-}
-
-type ReactionsPayload {
-  response: ResponsePayload
-  reactions: [Reactions]
+type FindAllMvxPayload {
+  mvxs: [MVX!]
   pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
-type PatientChartingInfoPayload {
+type PatientVitalPayload {
   response: ResponsePayload
-  patientInfo: Patient
+  patientVital: PatientVitals
+}
+
+type PatientVitalsPayload {
+  response: ResponsePayload
   patientVitals: [PatientVitals]
-  patientAllergies: [PatientAllergies]
-  patientProblems: [PatientProblems]
-  triageNotes: [TriageNotes]
-  patientMedications: [PatientMedication]
-  surgicalHistories: [SurgicalHistory]
-  familyHistories: [FamilyHistory]
-}
-
-type PatientMedicationPayload {
-  response: ResponsePayload
-  patientMedication: PatientMedication
-}
-
-type PatientMedicationsPayload {
-  response: ResponsePayload
-  patientMedications: [PatientMedication!]
   pagination: PaginationPayload
 }
 
-type MedicationsPayload {
+type TriageNotePayload {
   response: ResponsePayload
-  medications: [Medications!]
-  pagination: PaginationPayload
+  triageNotes: TriageNotes
 }
 
-type FamilyHistoryPayload {
-  familyHistory: FamilyHistory
-  response: ResponsePayloadResponse
-}
-
-type FamilyHistoriesPayload {
-  familyHistories: [FamilyHistory!]
+type TriageNotesPayload {
+  response: ResponsePayload
+  triageNotes: [TriageNotes!]
   pagination: PaginationPayload
-  response: ResponsePayloadResponse
 }
 
 type IcdCodesPayload {
@@ -2519,27 +2564,27 @@ type PatientProblemPayload {
   patientProblem: PatientProblems
 }
 
-type PatientProblemsPayload {
-  response: ResponsePayload
-  patientProblems: [PatientProblems]
-  pagination: PaginationPayload
-}
-
 type snoMedCodesPayload {
   response: ResponsePayload
   snoMedCodes: [SnoMedCodes]
   pagination: PaginationPayload
 }
 
-type PatientVitalPayload {
+type PatientProblemsPayload {
   response: ResponsePayload
-  patientVital: PatientVitals
+  patientProblems: [PatientProblems]
+  pagination: PaginationPayload
 }
 
-type PatientVitalsPayload {
-  response: ResponsePayload
-  patientVitals: [PatientVitals]
+type FamilyHistoryPayload {
+  familyHistory: FamilyHistory
+  response: ResponsePayloadResponse
+}
+
+type FamilyHistoriesPayload {
+  familyHistories: [FamilyHistory!]
   pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
 type SurgicalHistoryPayload {
@@ -2553,14 +2598,55 @@ type SurgicalHistoriesPayload {
   pagination: PaginationPayload
 }
 
-type TriageNotePayload {
+type PatientChartingInfoPayload {
   response: ResponsePayload
-  triageNotes: TriageNotes
+  patientInfo: Patient
+  patientVitals: [PatientVitals]
+  patientAllergies: [PatientAllergies]
+  patientProblems: [PatientProblems]
+  triageNotes: [TriageNotes]
+  patientMedications: [PatientMedication]
+  surgicalHistories: [SurgicalHistory]
+  familyHistories: [FamilyHistory]
 }
 
-type TriageNotesPayload {
+type ReactionsPayload {
   response: ResponsePayload
-  triageNotes: [TriageNotes!]
+  reactions: [Reactions]
+  pagination: PaginationPayload
+}
+
+type AllergiesPayload {
+  response: ResponsePayload
+  allergies: [Allergies]
+  pagination: PaginationPayload
+}
+
+type PatientAllergyPayload {
+  response: ResponsePayload
+  patientAllergy: PatientAllergies
+}
+
+type PatientAllergiesPayload {
+  response: ResponsePayload
+  patientAllergies: [PatientAllergies]
+  pagination: PaginationPayload
+}
+
+type PatientMedicationPayload {
+  response: ResponsePayload
+  patientMedication: PatientMedication
+}
+
+type PatientMedicationsPayload {
+  response: ResponsePayload
+  patientMedications: [PatientMedication!]
+  pagination: PaginationPayload
+}
+
+type MedicationsPayload {
+  response: ResponsePayload
+  medications: [Medications!]
   pagination: PaginationPayload
 }
 
@@ -3091,6 +3177,9 @@ type Query {
   findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
   getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
   getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput!): PatientChartingInfoPayload!
+  findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
+  findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
+  findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3586,6 +3675,23 @@ input GetSurgicalHistory {
 
 input PatientChartingInfoInput {
   patientId: String
+}
+
+input FindAllNdcInput {
+  searchQuery: String
+  mvxId: String
+  paginationOptions: PaginationInput!
+}
+
+input FindAllCvxInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input FindAllMvxInput {
+  searchQuery: String
+  cvxId: String
+  paginationOptions: PaginationInput!
 }
 
 input GetClaimInput {

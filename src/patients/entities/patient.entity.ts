@@ -15,16 +15,17 @@ import { Billing } from 'src/billings/entities/billing.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { Vaccine } from 'src/patientCharting/entities/vaccines.entity';
 import { Attachment } from '../../attachments/entities/attachment.entity';
 import { PolicyHolder } from 'src/insurance/entities/policy-holder.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
+import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { SurgicalHistory } from 'src/patientCharting/entities/surgicalHistory.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
-import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
-import { SurgicalHistory } from 'src/patientCharting/entities/surgicalHistory.entity';
-import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -406,7 +407,11 @@ export class Patient {
   @Field()
   updatedAt: string;
 
-  //relationships 
+  //relationships
+
+  @OneToMany(() => Vaccine, familyHistory => familyHistory.patient, { onDelete: "CASCADE" })
+  @Field(() => [Vaccine], { nullable: true })
+  vaccines: Vaccine[];
 
   @OneToMany(() => FamilyHistory, familyHistory => familyHistory.patient, { onDelete: "CASCADE" })
   @Field(() => [FamilyHistory], { nullable: true })
