@@ -2650,6 +2650,17 @@ type MedicationsPayload {
   pagination: PaginationPayload
 }
 
+type VaccinePayload {
+  vaccine: Vaccine
+  response: ResponsePayloadResponse
+}
+
+type FindAllVaccinesPayload {
+  vaccines: [Vaccine!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
 type PatientsPayload {
   response: ResponsePayload
   patients: [Patient]
@@ -3180,6 +3191,8 @@ type Query {
   findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
   findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
   findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
+  findAllVaccines(findAllVaccinesInput: FindAllVaccineInput!): FindAllVaccinesPayload!
+  getVaccine(getVaccineInput: GetVaccineInput!): VaccinePayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3694,6 +3707,15 @@ input FindAllMvxInput {
   paginationOptions: PaginationInput!
 }
 
+input FindAllVaccineInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetVaccineInput {
+  id: String!
+}
+
 input GetClaimInput {
   id: String!
 }
@@ -3937,6 +3959,9 @@ type Mutation {
   addSurgicalHistory(createSurgicalHistoryInput: CreateSurgicalHistoryInput!): SurgicalHistoryPayload!
   updateSurgicalHistory(updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!): SurgicalHistoryPayload!
   removeSurgicalHistory(removeSurgicalHistory: RemoveSurgicalHistory!): SurgicalHistoryPayload!
+  addVaccine(addVaccineInput: AddVaccineInput!): VaccinePayload!
+  updateVaccine(updateVaccineInput: UpdateVaccineInput!): VaccinePayload!
+  removeVaccine(removeVaccineInput: RemoveVaccineInput!): VaccinePayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5518,6 +5543,45 @@ input UpdateSurgicalHistoryInput {
 }
 
 input RemoveSurgicalHistory {
+  id: String!
+}
+
+input AddVaccineInput {
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  cvxId: String
+  mvxId: String
+  ndcId: String
+  patientId: String
+}
+
+input UpdateVaccineInput {
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  cvxId: String
+  mvxId: String
+  ndcId: String
+  patientId: String
+  id: String!
+}
+
+input RemoveVaccineInput {
   id: String!
 }
 

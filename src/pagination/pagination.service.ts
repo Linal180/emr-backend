@@ -360,7 +360,7 @@ export class PaginationService {
         ...(agreementFacilityId && {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
-        ...(cvxId && { claimNo }),
+        ...(cvxId && { cvxId }),
         ...(mvxId && { mvxId }),
         ...(claimNo && claimNo != null && { claimNo }),
         ...(isClaimStatus && { claimStatusId: claimStatusId ? claimStatusId : Raw(alias => `${alias} is not null`) }),

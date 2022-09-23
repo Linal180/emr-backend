@@ -51,6 +51,8 @@ import { SurgicalHistoryService } from './services/surgicalHistory.service';
 import { PatientAllergiesService } from './services/patientAllergies.service';
 import { PatientMedicationService } from './services/patientMedication.service';
 import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
+import { VaccineService } from './services/vaccine.service';
+import { VaccineResolver } from './resolvers/vaccine.resolver';
 
 
 @Module({
@@ -71,7 +73,7 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
     FamilyHistoryService, FamilyHistoryResolver, FamilyHistoryRelativeService, ICDCodeService,
     PatientMedicationService, PatientMedicationsResolver, SurgicalHistoryResolver, SurgicalHistoryService,
     PatientChartingService, PatientChartingResolver, NDCService, NDCResolver, CVXResolver, CVXService,
-    MVXResolver, MVXService
+    MVXResolver, MVXService, VaccineService, VaccineResolver
   ],
   exports: [
     ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule, FamilyHistoryService
