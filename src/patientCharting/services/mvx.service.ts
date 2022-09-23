@@ -18,6 +18,12 @@ export class MVXService {
     private readonly paginationService: PaginationService
   ) { }
 
+
+  /**
+   * Finds all
+   * @param params 
+   * @returns all 
+   */
   async findAll(params: FindAllMvxInput): Promise<FindAllMvxPayload> {
     try {
 
@@ -37,6 +43,16 @@ export class MVXService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<MVX> {
+    return await this.mvxRepo.findOne(id);
   }
 
 }

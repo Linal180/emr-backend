@@ -78,7 +78,7 @@ export class Vaccine {
   mvx: MVX
 
   @Field(() => NDC, { nullable: true })
-  mdc: NDC
+  ndc: NDC
 
   //relationship columns
 

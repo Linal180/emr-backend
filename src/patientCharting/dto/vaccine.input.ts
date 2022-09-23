@@ -4,7 +4,7 @@ import PaginationInput from "src/pagination/dto/pagination-input.dto"
 
 
 @InputType()
-export class FindAllVaccineInput {
+export class FindAllVaccinesInput {
 
   @Field({ nullable: true })
   patientId: string

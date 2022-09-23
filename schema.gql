@@ -1869,7 +1869,7 @@ type Vaccine {
   ndcId: String
   cvx: CVX
   mvx: MVX
-  mdc: NDC
+  ndc: NDC
   patientId: String
   patient: Patient
   createdAt: String
@@ -3191,7 +3191,7 @@ type Query {
   findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
   findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
   findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
-  findAllVaccines(findAllVaccinesInput: FindAllVaccineInput!): FindAllVaccinesPayload!
+  findAllVaccines(findAllVaccinesInput: FindAllVaccinesInput!): FindAllVaccinesPayload!
   getVaccine(getVaccineInput: GetVaccineInput!): VaccinePayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
@@ -3707,7 +3707,7 @@ input FindAllMvxInput {
   paginationOptions: PaginationInput!
 }
 
-input FindAllVaccineInput {
+input FindAllVaccinesInput {
   patientId: String
   paginationOptions: PaginationInput!
 }

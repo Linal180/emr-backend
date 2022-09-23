@@ -15,12 +15,15 @@ export class NDCService {
     @InjectRepository(NDC)
     private ndcRepo: Repository<NDC>,
     private readonly paginationService: PaginationService
-    ) { }
+  ) { }
 
+  /**
+   * Finds all
+   * @param params 
+   * @returns all 
+   */
   async findAll(params: FindAllNdcInput): Promise<FindAllNdcPayload> {
-
     try {
-
       const { paginationOptions, searchQuery, mvxId } = params || {}
       const response = await this.paginationService.willPaginate<NDC>(this.ndcRepo, {
         paginationOptions, mvxId, associatedToField: {
@@ -37,6 +40,15 @@ export class NDCService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<NDC> {
+    return await this.ndcRepo.findOne(id)
   }
 
 }

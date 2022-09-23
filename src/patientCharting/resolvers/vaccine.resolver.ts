@@ -1,16 +1,25 @@
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //inputs
-import { AddVaccineInput, FindAllVaccineInput, GetVaccineInput, RemoveVaccineInput, UpdateVaccineInput } from "../dto/vaccine.input";
+import { AddVaccineInput, FindAllVaccinesInput, GetVaccineInput, RemoveVaccineInput, UpdateVaccineInput } from "../dto/vaccine.input";
 //payloads
 import { FindAllVaccinesPayload, VaccinePayload } from "../dto/vaccine.payload";
+import { CVX } from "../entities/cvx.entity";
+import { MVX } from "../entities/mvx.entity";
+import { NDC } from "../entities/ndc.entity";
 //entities
 import { Vaccine } from "../entities/vaccines.entity";
 //services
+import { CVXService } from "../services/cvx.service";
+import { MVXService } from "../services/mvx.service";
+import { NDCService } from "../services/ndc.service";
 import { VaccineService } from "../services/vaccine.service";
 
 @Resolver(() => Vaccine)
 export class VaccineResolver {
   constructor(
+    private readonly mvxService: MVXService,
+    private readonly cvxService: CVXService,
+    private readonly ndcService: NDCService,
     private readonly vaccineService: VaccineService,
   ) { }
 
@@ -19,7 +28,7 @@ export class VaccineResolver {
   @Query(() => FindAllVaccinesPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'findAllVaccines')
-  async findAllVaccines(@Args('findAllVaccinesInput') findAllVaccinesInput: FindAllVaccineInput): Promise<FindAllVaccinesPayload> {
+  async findAllVaccines(@Args('findAllVaccinesInput') findAllVaccinesInput: FindAllVaccinesInput): Promise<FindAllVaccinesPayload> {
     const { vaccines, pagination } = await this.vaccineService.findAll(findAllVaccinesInput);
     return {
       vaccines, pagination,
@@ -75,4 +84,28 @@ export class VaccineResolver {
       response: { status: 200, message: 'Patient vaccine removed successfully' }
     };
   }
+
+  // resolve fields
+
+  @ResolveField(() => CVX)
+  async cvx(@Parent() vaccine: Vaccine): Promise<CVX> {
+    if (vaccine?.cvxId) {
+      return await this.cvxService.findOne(vaccine.cvxId);
+    }
+  }
+
+  @ResolveField(() => MVX)
+  async mvx(@Parent() vaccine: Vaccine): Promise<MVX> {
+    if (vaccine?.mvxId) {
+      return await this.mvxService.findOne(vaccine.mvxId);
+    }
+  }
+
+  @ResolveField(() => NDC)
+  async ndc(@Parent() vaccine: Vaccine): Promise<NDC> {
+    if (vaccine?.ndcId) {
+      return await this.ndcService.findOne(vaccine.ndcId);
+    }
+  }
+
 }

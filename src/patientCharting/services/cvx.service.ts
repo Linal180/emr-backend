@@ -46,4 +46,13 @@ export class CVXService {
 
   }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<CVX> {
+    return await this.cvxRepo.findOne(id)
+  }
+
 }

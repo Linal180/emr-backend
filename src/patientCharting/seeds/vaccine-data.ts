@@ -9067,20 +9067,7 @@ const useNdcData = ndc?.map((ndc) => {
 })
 
 
-export const ndcData = [...useNdcData, ...saleNdcData, {
-  gtin: '',
-  cvxCode: 'other',
-  endDate: '',
-  ndcCode: 'other',
-  mvxCode: 'other',
-  mvxName: 'other',
-  cvxName: 'other',
-  startDate: '',
-  lastUpdate: '',
-  cvxDescription: 'not listed',
-  ndcType: NdcType.SALE,
-  noUseNDC: '',
-}]
+export const ndcData = [...useNdcData, ...saleNdcData]
 
 const filteredCvxData = data?.map(({ cvxCode, shortDescription, productStatus, name }) => ({ cvxCode: `${cvxCode}`, shortDescription, productStatus, name }))
 const allMvxData = data?.map(({ mvxCode, mvxStatus, manufacturerName, cvxCode }) => ({ mvxCode, mvxStatus, manufacturerName, cvxCode: `${cvxCode}`, }))
@@ -9088,18 +9075,11 @@ export const mvxData = [...allMvxData, {
   mvxCode: "other",
   mvxStatus: "active",
   manufacturerName: "other",
-  cvxCode: "other",
+  cvxCode: "",
 }]
 
 console.log('cvx data => ', filteredCvxData?.length)
 
-const otherCvxData = [...filteredCvxData, {
-  cvxCode: "other",
-  shortDescription: "not listed",
-  productStatus: "active",
-  name: "other",
-}]
-
-export const cvxData = otherCvxData.filter((v, i, a) => a?.findIndex(v2 => (v2?.cvxCode === v?.cvxCode && v2?.name === v?.name)) === i)
+export const cvxData = filteredCvxData.filter((v, i, a) => a?.findIndex(v2 => (v2?.cvxCode === v?.cvxCode && v2?.name === v?.name)) === i)
 
 console.log('filtered cvx data => ', cvxData?.length)
