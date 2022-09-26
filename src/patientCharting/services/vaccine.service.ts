@@ -11,14 +11,16 @@ import { Vaccine } from "../entities/vaccines.entity";
 import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
 import { PatientService } from "src/patients/services/patient.service";
+import { AppointmentService } from "src/appointments/services/appointment.service";
 
 export class VaccineService {
   constructor(
     @InjectRepository(Vaccine)
     private vaccineRepo: Repository<Vaccine>,
     private readonly utilsService: UtilsService,
-    private readonly paginationService: PaginationService,
     private readonly patientService: PatientService,
+    private readonly appointmentService: AppointmentService,
+    private readonly paginationService: PaginationService,
   ) { }
 
 
@@ -29,8 +31,8 @@ export class VaccineService {
    */
   async findAll(params: FindAllVaccinesInput): Promise<FindAllVaccinesPayload> {
     try {
-      const { paginationOptions, patientId } = params || {}
-      const response = await this.paginationService.willPaginate<Vaccine>(this.vaccineRepo, { paginationOptions, patientId });
+      const { paginationOptions, patientId, appointmentId } = params || {}
+      const response = await this.paginationService.willPaginate<Vaccine>(this.vaccineRepo, { paginationOptions, patientId, appointmentId });
       const { data: vaccines, ...pagination } = response;
       return { vaccines, pagination }
     } catch (error) {
@@ -47,6 +49,16 @@ export class VaccineService {
     return await this.vaccineRepo.findOne(id)
   }
 
+
+  /**
+   * Finds by appointment id
+   * @param appointmentId 
+   * @returns by appointment id 
+   */
+  async findByAppointmentId(appointmentId: string): Promise<Vaccine> {
+    return await this.vaccineRepo.findOne({ appointmentId })
+  }
+
   /**
    * Creates vaccine service
    * @param params 
@@ -54,17 +66,23 @@ export class VaccineService {
    */
   async create(params: AddVaccineInput): Promise<Vaccine> {
     try {
-      const { patientId } = params;
+      const { patientId, appointmentId } = params;
       const patient = await this.patientService.findOne(patientId);
-      if(!patient){
+      if (!patient) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Patient not found',
         })
-        
+
       }
       const vaccineInstance = this.vaccineRepo.create(params);
-      vaccineInstance.patient = patient
+      vaccineInstance.patient = patient;
+
+      //get appointment 
+      if (appointmentId) {
+        const appointment = await this.appointmentService.findOne(appointmentId);
+        vaccineInstance.appointment = appointment;
+      }
       return await this.vaccineRepo.save(vaccineInstance);
     } catch (error) {
       throw new InternalServerErrorException(error)

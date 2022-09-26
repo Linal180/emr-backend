@@ -7,6 +7,9 @@ import PaginationInput from "src/pagination/dto/pagination-input.dto"
 export class FindAllVaccinesInput {
 
   @Field({ nullable: true })
+  appointmentId?: string
+
+  @Field({ nullable: true })
   patientId: string
 
   @Field(() => PaginationInput)
@@ -58,6 +61,9 @@ export class AddVaccineInput {
 
   @Field({ nullable: true })
   patientId: string
+
+  @Field({ nullable: true })
+  appointmentId?: string
 
 }
 

@@ -5,6 +5,7 @@ import { CVX } from "./cvx.entity";
 import { MVX } from "./mvx.entity";
 import { NDC } from "./ndc.entity";
 import { Patient } from "src/patients/entities/patient.entity";
+import { Appointment } from "src/appointments/entities/appointment.entity";
 
 @Entity({ name: 'Vaccine' })
 @ObjectType()
@@ -86,11 +87,19 @@ export class Vaccine {
   @Field({ nullable: true })
   patientId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  appointmentId: string;
+
   //relationship
 
-  @ManyToOne(() => Patient, patient => patient.vaccines, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Patient, patient => patient.vaccines)
   @Field(() => Patient, { nullable: true })
   patient: Patient;
+
+  @ManyToOne(() => Appointment, appointment => appointment.vaccines)
+  @Field(() => Appointment, { nullable: true })
+  appointment: Appointment;
 
   //dates
 

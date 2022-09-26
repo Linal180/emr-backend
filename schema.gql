@@ -1565,6 +1565,75 @@ enum STATUS {
   PENDING
 }
 
+type NDC {
+  id: String!
+  ndcCode: String
+  mvxName: String
+  mvxCode: String
+  startDate: String
+  endDate: String
+  gtin: String
+  lastUpdate: String
+  cvxCode: String
+  cvxDescription: String
+  ndcType: String
+  noUseNDC: String
+  mvxId: String
+  mvx: MVX
+  createdAt: String
+  updatedAt: String
+}
+
+type MVX {
+  id: String!
+  manufacturerName: String
+  mvxCode: String
+  mvxStatus: String
+  cvxCode: String
+  cvxId: String
+  ndc: [NDC!]
+  cvx: CVX
+  createdAt: String
+  updatedAt: String
+}
+
+type CVX {
+  id: String!
+  name: String
+  shortDescription: String
+  cvxCode: String
+  productStatus: String
+  mvx: [MVX!]
+  createdAt: String
+  updatedAt: String
+}
+
+type Vaccine {
+  id: String!
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  cvxId: String
+  mvxId: String
+  ndcId: String
+  cvx: CVX
+  mvx: MVX
+  ndc: NDC
+  patientId: String
+  appointmentId: String
+  patient: Patient
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+}
+
 type TriageNotes {
   id: String!
   notes: String
@@ -1625,6 +1694,7 @@ type Appointment {
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
   patientVitals: [PatientVitals!]
+  vaccines: [Vaccine!]
   patientConsent: PatientConsent
   createdAt: String
   updatedAt: String
@@ -1807,73 +1877,6 @@ type User {
 enum UserStatus {
   DEACTIVATED
   ACTIVE
-}
-
-type NDC {
-  id: String!
-  ndcCode: String
-  mvxName: String
-  mvxCode: String
-  startDate: String
-  endDate: String
-  gtin: String
-  lastUpdate: String
-  cvxCode: String
-  cvxDescription: String
-  ndcType: String
-  noUseNDC: String
-  mvxId: String
-  mvx: MVX
-  createdAt: String
-  updatedAt: String
-}
-
-type MVX {
-  id: String!
-  manufacturerName: String
-  mvxCode: String
-  mvxStatus: String
-  cvxCode: String
-  cvxId: String
-  ndc: [NDC!]
-  cvx: CVX
-  createdAt: String
-  updatedAt: String
-}
-
-type CVX {
-  id: String!
-  name: String
-  shortDescription: String
-  cvxCode: String
-  productStatus: String
-  mvx: [MVX!]
-  createdAt: String
-  updatedAt: String
-}
-
-type Vaccine {
-  id: String!
-  administrationDate: String
-  administerBy: String
-  amount: String
-  units: String
-  route: String
-  site: String
-  lotNo: String
-  expiryDate: String
-  visGiven: String
-  visDate: String
-  cvxId: String
-  mvxId: String
-  ndcId: String
-  cvx: CVX
-  mvx: MVX
-  ndc: NDC
-  patientId: String
-  patient: Patient
-  createdAt: String
-  updatedAt: String
 }
 
 type SurgicalHistory {
@@ -3708,6 +3711,7 @@ input FindAllMvxInput {
 }
 
 input FindAllVaccinesInput {
+  appointmentId: String
   patientId: String
   paginationOptions: PaginationInput!
 }
@@ -5561,6 +5565,7 @@ input AddVaccineInput {
   mvxId: String
   ndcId: String
   patientId: String
+  appointmentId: String
 }
 
 input UpdateVaccineInput {
@@ -5578,6 +5583,7 @@ input UpdateVaccineInput {
   mvxId: String
   ndcId: String
   patientId: String
+  appointmentId: String
   id: String!
 }
 
