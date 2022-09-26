@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Connection, getRepository } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 import { ICDCodes } from "../entities/icdcodes.entity";
-import { SnoMedCodes } from "../entities/snowmedCodes.entity";
+import { SnoMedCodes } from "../entities/snowMedCodes.entity";
 import { iCDCodesData } from './seed-data';
 import { snowMedCodeOne } from './snoMedCodeOne';
 

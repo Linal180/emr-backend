@@ -15,7 +15,7 @@ import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
 import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput } from '../dto/update-problem.input';
 import { ICDCodes } from '../entities/icdcodes.entity';
 import { PatientProblems } from '../entities/patientProblems.entity';
-import { SnoMedCodes } from '../entities/snowmedCodes.entity';
+import { SnoMedCodes } from '../entities/snowMedCodes.entity';
 
 @Injectable()
 export class ProblemService {

@@ -133,7 +133,12 @@ export const USER_TYPES = {
   DOCTOR: 'doctor',
   STAFF: 'staff',
   FRONT_DESK: '',
-  OFFICE_MANAGER:'office-manager',
+  OFFICE_MANAGER: 'office-manager',
   FACILITY_ADMIN: "facility-admin",
   PRACTICE_ADMIN: 'practice-admin'
+}
+
+export enum NdcType {
+  SALE = 'sale',
+  USE = 'use'
 }
