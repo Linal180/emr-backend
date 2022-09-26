@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import PaginationPayload from 'src/pagination/dto/pagination-payload.dto';
 import { ResponsePayloadResponse } from '../../users/dto/response-payload.dto';
 import { ICDCodes } from '../entities/icdcodes.entity';
-import { SnoMedCodes } from '../entities/snowmedCodes.entity';
+import { SnoMedCodes } from '../entities/snowMedCodes.entity';
 
 @ObjectType()
 export class IcdCodesPayload extends ResponsePayloadResponse {

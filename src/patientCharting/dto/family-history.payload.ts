@@ -20,9 +20,8 @@ export class FamilyHistoriesPayload {
 	@Field(() => [FamilyHistory], { nullable: true })
 	familyHistories: FamilyHistory[];
 
-
-    @Field(() => PaginationPayload, { nullable: true })
-    pagination?: PaginationPayload
+	@Field(() => PaginationPayload, { nullable: true })
+	pagination?: PaginationPayload
 
 	@Field(() => ResponsePayloadResponse, { nullable: true })
 	response?: ResponsePayloadResponse

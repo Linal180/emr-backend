@@ -1,15 +1,19 @@
 import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { PatientService } from 'src/patients/services/patient.service';
-import { CreateTriageNoteInput } from '../dto/create-triageNote.input';
-import { TriageNotePayload, TriageNotesPayload } from '../dto/triageNote-payload.dto';
-import PatientTriageNoteInput from '../dto/triageNotes-input.dto';
-import { GetPatientTriageNote, RemoveTriageNote, UpdateTriageNoteInput } from '../dto/update-triageNote.input';
+//entities
 import { TriageNotes } from '../entities/triageNotes.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+//services
 import { TriageNotesService } from '../services/triageNotes.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+//inputs
+import PatientTriageNoteInput from '../dto/triageNotes-input.dto';
+import { CreateTriageNoteInput } from '../dto/create-triageNote.input';
+import { GetPatientTriageNote, RemoveTriageNote, UpdateTriageNoteInput } from '../dto/update-triageNote.input';
+//payloads
+import { TriageNotePayload, TriageNotesPayload } from '../dto/triageNote-payload.dto';
 
 @Resolver(() => TriageNotes)
 export class TriageNotesResolver {
