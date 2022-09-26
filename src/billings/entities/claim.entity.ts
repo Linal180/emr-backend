@@ -1,9 +1,8 @@
 import { Field, ObjectType, registerEnumType, Float } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities enums
-import { ClaimChargeType } from "../dto/claim-payload";
 import { Billing } from "./billing.entity";
-import { ClaimStatus } from "./claim-status.entity";
+import { ClaimChargeType } from "../dto/claim-payload";
 
 
 export enum OrderOfBenefit {

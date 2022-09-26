@@ -1,15 +1,22 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+//guards
 import PermissionGuard from 'src/users/auth/role.guard';
-import { CreateProblemInput } from '../dto/create-problem.input';
-import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//inputs
 import PatientProblemInput from '../dto/problem-input.dto';
+import { CreateProblemInput } from '../dto/create-problem.input';
+import {
+  GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput
+} from '../dto/update-problem.input';
+//payloads
+import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
 import { PatientProblemPayload } from '../dto/problem-payload.dto';
-import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
-import { GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput } from '../dto/update-problem.input';
+import { PatientProblemsPayload } from '../dto/problems-payload.dto';
+//entities
 import { PatientProblems } from '../entities/patientProblems.entity';
+//services
 import { ProblemService } from '../services/patientProblems.service';
 
 @Resolver(() => PatientProblems)

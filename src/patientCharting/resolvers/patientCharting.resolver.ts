@@ -1,8 +1,11 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
+//inputs
 import { PatientChartingInfoInput } from '../dto/patientChartingInfo-input.dto';
+//payloads
 import { PatientChartingInfoPayload } from '../dto/patientChartingInfo-payload.dto';
-import { PatientMedicationPayload } from '../dto/patientMedication-payload.dto';
+//entities
 import { PatientMedication } from '../entities/patientMedication.entity';
+//services
 import { PatientChartingService } from '../services/patientCharting.service';
 
 @Resolver(() => PatientMedication)

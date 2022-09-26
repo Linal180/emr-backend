@@ -1,27 +1,28 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
+import { UtilsService } from 'src/util/utils.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
-import { StaffService } from 'src/providers/services/staff.service';
-import { UtilsService } from 'src/util/utils.service';
-import { Repository } from 'typeorm';
-import { RemoveTriageNote, UpdateTriageNoteInput } from '../dto/update-triageNote.input';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+//inputs
 import PatientTriageNoteInput from '../dto/triageNotes-input.dto';
-import { TriageNotes } from '../entities/triageNotes.entity';
 import { CreateTriageNoteInput } from '../dto/create-triageNote.input';
+import { RemoveTriageNote, UpdateTriageNoteInput } from '../dto/update-triageNote.input';
+//entities
+import { TriageNotes } from '../entities/triageNotes.entity';
+//payloads
 import { TriageNotesPayload } from '../dto/triageNote-payload.dto';
-
 @Injectable()
 export class TriageNotesService {
   constructor(
     @InjectRepository(TriageNotes)
     private triageNotesRepository: Repository<TriageNotes>,
+    private readonly utilsService: UtilsService,
+    private readonly patientService: PatientService,
     private readonly paginationService: PaginationService,
     private readonly appointmentService: AppointmentService,
-    private readonly staffService: StaffService,
-    private readonly patientService: PatientService,
-    private readonly utilsService: UtilsService
   ) { }
 
 
@@ -78,7 +79,7 @@ export class TriageNotesService {
       throw new InternalServerErrorException(error);
     }
   }
-  
+
   async getPatientTriageNotes(patientId: string) {
     return this.triageNotesRepository.find({
       where: {

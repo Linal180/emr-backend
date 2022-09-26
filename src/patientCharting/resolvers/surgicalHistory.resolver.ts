@@ -1,23 +1,24 @@
 import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
+//entities
 import { Patient } from 'src/patients/entities/patient.entity';
-import { PatientService } from 'src/patients/services/patient.service';
-import { CreateSurgicalHistoryInput } from '../dto/create-surgicalHistory.input';
-import { SurgicalHistoryPayload, SurgicalHistoriesPayload } from '../dto/surgicalHistory-payload.dto';
-import SurgicalHistoryInput from '../dto/surgicalHistory-input.dto';
-import { GetSurgicalHistory, RemoveSurgicalHistory, UpdateSurgicalHistoryInput } from '../dto/update-surgicalHistory.input';
 import { SurgicalHistory } from '../entities/surgicalHistory.entity';
+//services
+import { PatientService } from 'src/patients/services/patient.service';
 import { SurgicalHistoryService } from '../services/surgicalHistory.service';
+//inputs
+import SurgicalHistoryInput from '../dto/surgicalHistory-input.dto';
+import { CreateSurgicalHistoryInput } from '../dto/create-surgicalHistory.input';
+import { GetSurgicalHistory, RemoveSurgicalHistory, UpdateSurgicalHistoryInput } from '../dto/update-surgicalHistory.input';
+//payloads
+import { SurgicalHistoryPayload, SurgicalHistoriesPayload } from '../dto/surgicalHistory-payload.dto';
 
 @Resolver(() => SurgicalHistory)
 export class SurgicalHistoryResolver {
   constructor(
-    private readonly surgicalHistoryService: SurgicalHistoryService,
-    private readonly appointmentService: AppointmentService,
     private readonly patientService: PatientService,
-    ) { }
+    private readonly surgicalHistoryService: SurgicalHistoryService,
+  ) { }
 
   @Mutation(() => SurgicalHistoryPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
