@@ -9067,7 +9067,7 @@ const useNdcData = ndc?.map((ndc) => {
 })
 
 
-export const ndcData = [...useNdcData, ...saleNdcData]
+const allNdcData = [...useNdcData, ...saleNdcData]
 
 const filteredCvxData = data?.map(({ cvxCode, shortDescription, productStatus, name }) => ({ cvxCode: `${cvxCode}`, shortDescription, productStatus, name }))
 const allMvxData = data?.map(({ mvxCode, mvxStatus, manufacturerName, cvxCode }) => ({ mvxCode, mvxStatus, manufacturerName, cvxCode: `${cvxCode}`, }))
@@ -9078,8 +9078,14 @@ export const mvxData = [...allMvxData, {
   cvxCode: "",
 }]
 
-console.log('cvx data => ', filteredCvxData?.length)
-
 export const cvxData = filteredCvxData.filter((v, i, a) => a?.findIndex(v2 => (v2?.cvxCode === v?.cvxCode && v2?.name === v?.name)) === i)
+export const ndcData = allNdcData.filter((v, i, a) => a.findIndex(v2 => (v.cvxCode === v2.cvxCode && v.ndcCode === v2.ndcCode)) === i)
 
+
+console.log('cvx data => ', filteredCvxData?.length)
+console.log('---------------------------------------')
+console.log('ndc data => ', allNdcData?.length)
+console.log('---------------------------------------')
 console.log('filtered cvx data => ', cvxData?.length)
+console.log('---------------------------------------')
+console.log('filtered CDCs data => ', ndcData?.length)
