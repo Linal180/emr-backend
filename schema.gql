@@ -1645,6 +1645,34 @@ type TriageNotes {
   updatedAt: String
 }
 
+type UpFrontPaymentType {
+  id: String!
+  paymentType: String
+  amount: String
+  type: String
+  notes: String
+  UpFrontPayment: UpFrontPayment
+  upFrontPaymentId: String
+  createdAt: String
+  updatedAt: String
+}
+
+type UpFrontPayment {
+  id: String!
+  totalCharges: String
+  expected: String
+  balance: String
+  paid: String
+  adjustments: String
+  UpFrontPaymentTypes: [UpFrontPaymentType!]
+  appointmentId: String
+  patientId: String
+  appointment: Appointment
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1690,6 +1718,7 @@ type Appointment {
   contract: Contract
   triageNote: TriageNotes
   billing: Billing
+  upFrontPayment: UpFrontPayment
   transaction: Transactions
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
@@ -1991,6 +2020,7 @@ type Patient {
   appointments: [Appointment!]
   labTests: [LabTests!]
   billings: [Billing!]
+  upFrontPayments: [UpFrontPayment!]
   employer: Employer
   patientVitals: [PatientVitals!]
   transaction: [Transactions!]
@@ -2941,6 +2971,12 @@ type LiveClaimFeedPayload {
   response: ResponsePayload
 }
 
+type UpFrontPaymentPayload {
+  upFrontPayment: UpFrontPayment!
+  pagination: PaginationPayload
+  response: Response
+}
+
 type UserLogs {
   id: String!
   operationName: String
@@ -3218,6 +3254,7 @@ type Query {
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
   findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
+  fetchUpFrontPaymentDetailsByAppointmentId(appointmentId: String!): UpFrontPaymentPayload!
   findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
@@ -3998,6 +4035,7 @@ type Mutation {
   updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
   removeClaimStatus(id: String!): ClaimStatusPayload!
   createLiveClaimFeed: [LiveClaimFeed!]!
+  createUpFrontPayment(createUpFrontPaymentInput: UpFrontPaymentInput!): UpFrontPaymentPayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
@@ -5704,6 +5742,24 @@ input UpdateClaimStatusInput {
   statusName: String
   statusId: String
   id: String
+}
+
+input UpFrontPaymentInput {
+  upFrontPaymentTypes: [UpFrontPaymentInputType!]
+  totalCharges: String
+  expected: String
+  balance: String
+  paid: String
+  adjustments: String
+  patientId: String
+  appointmentId: String
+}
+
+input UpFrontPaymentInputType {
+  amount: String
+  type: String
+  paymentType: String
+  notes: String
 }
 
 input CreateFormInput {

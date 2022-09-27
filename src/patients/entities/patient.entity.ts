@@ -26,6 +26,7 @@ import { SurgicalHistory } from 'src/patientCharting/entities/surgicalHistory.en
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
+import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -469,6 +470,10 @@ export class Patient {
   @OneToMany(() => Billing, billing => billing.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [Billing], { nullable: true })
   billings: Billing[];
+
+  @OneToMany(() => UpFrontPayment, upFrontPayments => upFrontPayments.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [UpFrontPayment], { nullable: true })
+  upFrontPayments: UpFrontPayment[];
 
   @OneToMany(() => Employer, employer => employer.patient, { onDelete: "CASCADE" })
   @Field(() => Employer, { nullable: true })
