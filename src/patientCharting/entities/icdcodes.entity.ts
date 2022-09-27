@@ -31,7 +31,6 @@ export class ICDCodes {
   familyHistory: FamilyHistory[];
 
   @ManyToMany(() => LabTests, labTests => labTests.diagnoses)
-  @Field(() => LabTests, { nullable: true })
   labTests: LabTests[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

@@ -307,7 +307,6 @@ type ICDCodes {
   code: String!
   description: String
   version: String
-  labTests: LabTests
   createdAt: String
   updatedAt: String
 }
@@ -2523,6 +2522,28 @@ type FindAllMvxPayload {
   response: ResponsePayloadResponse
 }
 
+type VaccinePayload {
+  vaccine: Vaccine
+  response: ResponsePayloadResponse
+}
+
+type FindAllVaccinesPayload {
+  vaccines: [Vaccine!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type FindAllIcdCodesPayload {
+  response: ResponsePayloadResponse
+  icdCodes: [ICDCodes]
+  pagination: PaginationPayload
+}
+
+type IcdCodePayload {
+  response: ResponsePayloadResponse
+  icdCode: ICDCodes
+}
+
 type PatientVitalPayload {
   response: ResponsePayload
   patientVital: PatientVitals
@@ -2556,7 +2577,6 @@ type ICDCodesWithSnowMedCode {
   code: String!
   description: String
   version: String
-  labTests: LabTests
   createdAt: String
   updatedAt: String
   snoMedCode: SnoMedCodes
@@ -2651,17 +2671,6 @@ type MedicationsPayload {
   response: ResponsePayload
   medications: [Medications!]
   pagination: PaginationPayload
-}
-
-type VaccinePayload {
-  vaccine: Vaccine
-  response: ResponsePayloadResponse
-}
-
-type FindAllVaccinesPayload {
-  vaccines: [Vaccine!]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
 }
 
 type PatientsPayload {
@@ -3196,6 +3205,8 @@ type Query {
   findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
   findAllVaccines(findAllVaccinesInput: FindAllVaccinesInput!): FindAllVaccinesPayload!
   getVaccine(getVaccineInput: GetVaccineInput!): VaccinePayload!
+  findAllIcdCodes(findAllIcdCodesInput: FindAllIcdCodesInput!): FindAllIcdCodesPayload!
+  getIcdCode(getIcdCodeInput: GetIcdCodeInput!): IcdCodePayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3720,6 +3731,14 @@ input GetVaccineInput {
   id: String!
 }
 
+input FindAllIcdCodesInput {
+  paginationOptions: PaginationInput!
+}
+
+input GetIcdCodeInput {
+  id: String!
+}
+
 input GetClaimInput {
   id: String!
 }
@@ -3966,6 +3985,9 @@ type Mutation {
   addVaccine(addVaccineInput: AddVaccineInput!): VaccinePayload!
   updateVaccine(updateVaccineInput: UpdateVaccineInput!): VaccinePayload!
   removeVaccine(removeVaccineInput: RemoveVaccineInput!): VaccinePayload!
+  createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
+  updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
+  removeIcdCode(removeIcdCodeInput: RemoveIcdCodeInput!): IcdCodePayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5588,6 +5610,23 @@ input UpdateVaccineInput {
 }
 
 input RemoveVaccineInput {
+  id: String!
+}
+
+input CreateIcdCodeInput {
+  code: String!
+  description: String
+  version: String = "ICD10"
+}
+
+input UpdateIcdCodeInput {
+  code: String
+  description: String
+  version: String = "ICD10"
+  id: String!
+}
+
+input RemoveIcdCodeInput {
   id: String!
 }
 
