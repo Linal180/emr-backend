@@ -32,6 +32,9 @@ export class RemoveIcdCodeInput extends PickType(UpdateIcdCodeInput, ['id'] as c
 @InputType()
 export class FindAllIcdCodesInput {
 
+  @Field({ nullable: true })
+  searchQuery: string;
+
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 }

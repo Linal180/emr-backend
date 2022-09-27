@@ -307,6 +307,7 @@ type ICDCodes {
   code: String!
   description: String
   version: String
+  systematic: Boolean
   createdAt: String
   updatedAt: String
 }
@@ -2577,6 +2578,7 @@ type ICDCodesWithSnowMedCode {
   code: String!
   description: String
   version: String
+  systematic: Boolean
   createdAt: String
   updatedAt: String
   snoMedCode: SnoMedCodes
@@ -3732,6 +3734,7 @@ input GetVaccineInput {
 }
 
 input FindAllIcdCodesInput {
+  searchQuery: String
   paginationOptions: PaginationInput!
 }
 

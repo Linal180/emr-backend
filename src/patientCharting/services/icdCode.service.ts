@@ -29,8 +29,12 @@ export class ICDCodeService {
    */
   async findAll(params: FindAllIcdCodesInput): Promise<FindAllIcdCodesPayload> {
     try {
-      const { paginationOptions } = params || {}
-      const response = await this.paginationService.willPaginate<ICDCodes>(this.icdCodeRepo, { paginationOptions });
+      const { paginationOptions, searchQuery } = params || {}
+      const response = await this.paginationService.willPaginate<ICDCodes>(this.icdCodeRepo, {
+        paginationOptions, associatedTo: 'ICDCodes', associatedToField: {
+          columnValue: searchQuery, columnName: 'code', columnName2: 'description', filterType: 'stringFilter'
+        }
+      });
       const { data, ...pagination } = response;
       return {
         icdCodes: data,
@@ -53,13 +57,27 @@ export class ICDCodeService {
 
 
   /**
+   * Finds one by code
+   * @param code 
+   * @returns one by code 
+   */
+  async findOneByCode(code: string): Promise<ICDCodes> {
+    return await this.icdCodeRepo.findOne({ code })
+  }
+
+
+  /**
    * Creates icdcode service
    * @param params 
    * @returns create 
    */
   async create(params: CreateIcdCodeInput): Promise<ICDCodes> {
     try {
-      const icdCode = this.icdCodeRepo.create(params);
+      const oldIcd = await this.findOneByCode(params?.code);
+      if (oldIcd) {
+        throw new Error(`ICD code is already exist with the code: ${params?.code}`);
+      }
+      const icdCode = this.icdCodeRepo.create({ ...params, systematic: false });
       return await this.icdCodeRepo.save(icdCode)
     } catch (error) {
       throw new InternalServerErrorException(error);
