@@ -24,6 +24,10 @@ export class ICDCodes {
   @Field({ nullable: true })
   version: string;
 
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  systematic: boolean;
+
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.ICDCode)
   patientProblems: PatientProblems[];
 
@@ -31,7 +35,6 @@ export class ICDCodes {
   familyHistory: FamilyHistory[];
 
   @ManyToMany(() => LabTests, labTests => labTests.diagnoses)
-  @Field(() => LabTests, { nullable: true })
   labTests: LabTests[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

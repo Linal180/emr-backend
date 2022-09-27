@@ -57,6 +57,11 @@ export class FamilyHistoryRelativeService {
 		return await this.familyHistoryRelativeRepo.find({ familyHistoryId })
 	}
 
+
+	/**
+	 * Removes by family history id
+	 * @param id 
+	 */
 	async removeByFamilyHistoryId(id: string) {
 		const familyRelatives = await this.findByFamilyId(id);
 		await this.familyHistoryRelativeRepo.remove(familyRelatives)

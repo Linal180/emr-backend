@@ -22,6 +22,12 @@ export class PatientChartingService {
     private readonly familyHistoryService: FamilyHistoryService,
   ) { }
 
+
+  /**
+   * Gets patient charting info
+   * @param patientChartingInfoInput 
+   * @returns  
+   */
   async getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput) {
     const { patientId } = patientChartingInfoInput
 
