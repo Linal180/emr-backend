@@ -1,24 +1,19 @@
-import { SetMetadata, UseGuards } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 //entities
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { UpFrontPayment } from '../entities/upFrontPayment.entity';
+import { UpFrontPaymentType } from '../entities/upFrontPaymentType.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
-import { Code } from '../entities/code.entity';
 //services
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { UpFrontPaymentService } from '../services/upFrontPayment.service';
-//guards
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
 //inputs
 import { UpFrontPaymentInput } from '../dto/upFrontPayment-input.dto';
 //payloads
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UpFrontPaymentPayload } from '../dto/upFrontPayment-payload';
-import { UpFrontPayment } from '../entities/upFrontPayment.entity';
-import { UpFrontPaymentType } from '../entities/upFrontPaymentType.entity';
 
 @Resolver(() => UpFrontPayment)
 export class UpFrontPaymentResolver {

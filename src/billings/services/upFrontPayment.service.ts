@@ -67,7 +67,7 @@ export class UpFrontPaymentService {
 
 
   async fetchUpFrontPaymentByAppointmentId(appointmentId: string): Promise<UpFrontPayment> {
-    return this.upFrontPaymentRepo.findOne({
+    return await this.upFrontPaymentRepo.findOne({
       appointmentId
     })
   }
