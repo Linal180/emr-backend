@@ -25,7 +25,12 @@ export class CptCodeService {
    */
   async create(params: CreateCPTCodeInput): Promise<CPTCodes> {
     try {
-      const cptCode = this.cptCodeRepository.create(params);
+      const { code } = params
+      const oldCpt = await this.findByCode(code);
+      if (oldCpt) {
+        throw new Error(`CPT code is already exist with the code: ${code}`);
+      }
+      const cptCode = this.cptCodeRepository.create({ ...params, systematic: false });
       return await this.cptCodeRepository.save(cptCode)
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -39,6 +44,11 @@ export class CptCodeService {
    */
   async update(params: UpdateCPTCodeInput): Promise<CPTCodes> {
     try {
+      const { code } = params
+      const oldCpt = await this.findByCode(code);
+      if (oldCpt) {
+        throw new Error(`CPT code is already exist with the code: ${code}`);
+      }
       const cptCode = await this.utilsService.updateEntityManager(CPTCodes, params.id, params, this.cptCodeRepository);
       return cptCode
     } catch (error) {

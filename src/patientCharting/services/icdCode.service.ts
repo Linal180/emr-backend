@@ -91,9 +91,18 @@ export class ICDCodeService {
    * @returns update 
    */
   async update(params: UpdateIcdCodeInput): Promise<ICDCodes> {
-    const { id } = params || {}
-    const icdCode = await this.utilsService.updateEntityManager(ICDCodes, id, params, this.icdCodeRepo)
-    return icdCode
+    try {
+      const { id } = params || {}
+      const oldIcd = await this.findOneByCode(params?.code);
+      if (oldIcd) {
+        throw new Error(`ICD code is already exist with the code: ${params?.code}`);
+      }
+      const icdCode = await this.utilsService.updateEntityManager(ICDCodes, id, params, this.icdCodeRepo)
+      return icdCode;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+
   }
 
 
