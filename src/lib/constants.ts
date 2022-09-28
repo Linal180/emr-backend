@@ -142,3 +142,11 @@ export enum NdcType {
   SALE = 'sale',
   USE = 'use'
 }
+
+export enum QuestionType {
+  SWITCH = 'switch',
+  SELECT= 'select',
+  INPUT = 'input',
+  DATE = 'date',
+  NUMBER = 'number'
+}

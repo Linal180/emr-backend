@@ -1,6 +1,12 @@
+import { QuestionType } from "src/lib/constants";
+
+//sections name
+const ACTIVITIES_OF_DAILY_LIVING = 'Activities of Daily Living';
+const PUBLIC_HEALTH_TRAVEL = "Public Health and Travel";
+
 // social selectors
 
-export const ABLE_WALK_MAPPED = [
+const ABLE_WALK_MAPPED = [
   { id: "RESTRICTIONS", name: "Yes: walks without restrictions" },
   { id: "ASSISTIVE", name: "Yes: walks with assistive device(s)" },
   { id: "SELF_MOBILITY", name: "Yes: limited self-mobility with assistive device(s); generally relies on wheeled mobility" },
@@ -205,3 +211,98 @@ export const SEX_PROTECTION_MAPPED = [
     name: "No",
   },
 ];
+
+//activities questions 
+
+const ABLE_TO_CARE_YOURSELF = "Are you able to care for yourself?";
+const BLIND_OR_DO_YOU_HAVE_DIFFICULTY_SEEING = "Are you blind or do you have difficulty seeing?";
+const DEAF_OR_DO_YOU_HAVE_DIFFICULTY_SEEING = "Are you deaf or do you have serious difficulty hearing?";
+const DIFFICULTY_CONCENTRATING_MAKING_DECISION = "Do you have difficulty concentrating, remembering or making decisions?";
+const DIFFICULTY_WALKING_CLIMBING = "Do you have difficulty walking or climbing stairs?";
+const DIFFICULTY_DRESSING_BATHING = "Do you have difficulty dressing or bathing?";
+const DIFFICULTY_DOING_ERRANDS_ALONE = "Do you have difficulty doing errands alone?";
+const ARE_YOU_ABLE_TO_WALK = "Are you able to walk?";
+const DO_YOU_HAVE_TRANSPORTATION_DIFFICULTIES = "Do you have transportation difficulties?";
+
+//public health travel 
+
+const HAVE_YOU_BEEN_TO_AN_AREA_KNOWN_HIGH_RISK = "Have you been to an area known to be high risk for COVID-19?";
+const IN_THE_14_DAYS_BEFORE_SYMPTOM_ONSET_CASE_ILL = "In the 14 days before symptom onset, have you had close contact with a laboratory-confirmed COVID-19 while that case was ill?";
+const IN_THE_14_DAYS_BEFORE_SYMPTOM_ONSET_PERSON_ILL = "In the 14 days before symptom onset, have you had close contact with a person who is under investigation for COVID-19 while that person was ill?";
+const RESIDE_IN_OR_HAVE_YOU_TRAVELED = "Do you reside in or have you traveled to an area where Ebola virus transmission is active?";
+const HAVE_YOU_PROCESSED_BLOOD_BODY_FLUIDS = "Have you processed blood or body fluids from an Ebola virus disease patient without appropriate PPE?";
+const HAVE_YOU_RECENTLY_PLANNING_TO_TRAVEL = "Have you recently or are you planning to travel to an area with Zika virus?";
+
+//activities questions
+
+const activitiesQuestions = [
+  {
+    title: ABLE_TO_CARE_YOURSELF,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+  {
+    title: BLIND_OR_DO_YOU_HAVE_DIFFICULTY_SEEING,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+  {
+    title: DEAF_OR_DO_YOU_HAVE_DIFFICULTY_SEEING,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+  {
+    title: DIFFICULTY_CONCENTRATING_MAKING_DECISION,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+  {
+    title: DIFFICULTY_WALKING_CLIMBING,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+  {
+    title: DIFFICULTY_DRESSING_BATHING,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+  {
+    title: DIFFICULTY_DOING_ERRANDS_ALONE,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+  {
+    title: ARE_YOU_ABLE_TO_WALK,
+    note: '',
+    questionType: QuestionType.SELECT,
+    options: ABLE_WALK_MAPPED
+  },
+  {
+    title: DO_YOU_HAVE_TRANSPORTATION_DIFFICULTIES,
+    note: '',
+    questionType: QuestionType.SWITCH,
+  },
+
+]
+
+//public health questions
+
+const publicQuestions = [
+  {
+    title: HAVE_YOU_BEEN_TO_AN_AREA_KNOWN_HIGH_RISK,
+    note: '',
+    questionType: QuestionType.SWITCH,
+    // dependentQuestions: 
+  },
+]
+
+const Sections = [
+  {
+    name: ACTIVITIES_OF_DAILY_LIVING,
+    questions: activitiesQuestions
+  },
+  {
+    name: PUBLIC_HEALTH_TRAVEL,
+    questions: publicQuestions
+  }
+] 
