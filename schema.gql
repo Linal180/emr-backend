@@ -307,7 +307,7 @@ type ICDCodes {
   code: String!
   description: String
   version: String
-  labTests: LabTests
+  systematic: Boolean
   createdAt: String
   updatedAt: String
 }
@@ -339,6 +339,7 @@ type PatientProblems {
   problemStartDate: String
   note: String
   patientId: String
+  appointmentId: String
   ICDCode: ICDCodes
   patient: Patient
   doctor: Doctor
@@ -502,6 +503,7 @@ type CPTCodes {
   description: String
   shortDescription: String
   longDescription: String
+  systematic: Boolean
   cptFeeSchedule: [CptFeeSchedule!]
   createdAt: String
   updatedAt: String
@@ -1645,6 +1647,34 @@ type TriageNotes {
   updatedAt: String
 }
 
+type UpFrontPaymentType {
+  id: String!
+  paymentType: String
+  amount: String
+  type: String
+  notes: String
+  UpFrontPayment: UpFrontPayment
+  upFrontPaymentId: String
+  createdAt: String
+  updatedAt: String
+}
+
+type UpFrontPayment {
+  id: String!
+  totalCharges: String
+  expected: String
+  balance: String
+  paid: String
+  adjustments: String
+  UpFrontPaymentTypes: [UpFrontPaymentType!]
+  appointmentId: String
+  patientId: String
+  appointment: Appointment
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1690,6 +1720,7 @@ type Appointment {
   contract: Contract
   triageNote: TriageNotes
   billing: Billing
+  upFrontPayment: UpFrontPayment
   transaction: Transactions
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
@@ -1991,6 +2022,7 @@ type Patient {
   appointments: [Appointment!]
   labTests: [LabTests!]
   billings: [Billing!]
+  upFrontPayments: [UpFrontPayment!]
   employer: Employer
   patientVitals: [PatientVitals!]
   transaction: [Transactions!]
@@ -2523,6 +2555,28 @@ type FindAllMvxPayload {
   response: ResponsePayloadResponse
 }
 
+type VaccinePayload {
+  vaccine: Vaccine
+  response: ResponsePayloadResponse
+}
+
+type FindAllVaccinesPayload {
+  vaccines: [Vaccine!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type FindAllIcdCodesPayload {
+  response: ResponsePayloadResponse
+  icdCodes: [ICDCodes]
+  pagination: PaginationPayload
+}
+
+type IcdCodePayload {
+  response: ResponsePayloadResponse
+  icdCode: ICDCodes
+}
+
 type PatientVitalPayload {
   response: ResponsePayload
   patientVital: PatientVitals
@@ -2556,7 +2610,7 @@ type ICDCodesWithSnowMedCode {
   code: String!
   description: String
   version: String
-  labTests: LabTests
+  systematic: Boolean
   createdAt: String
   updatedAt: String
   snoMedCode: SnoMedCodes
@@ -2651,17 +2705,6 @@ type MedicationsPayload {
   response: ResponsePayload
   medications: [Medications!]
   pagination: PaginationPayload
-}
-
-type VaccinePayload {
-  vaccine: Vaccine
-  response: ResponsePayloadResponse
-}
-
-type FindAllVaccinesPayload {
-  vaccines: [Vaccine!]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
 }
 
 type PatientsPayload {
@@ -2930,6 +2973,12 @@ type LiveClaimFeedPayload {
   response: ResponsePayload
 }
 
+type UpFrontPaymentPayload {
+  upFrontPayment: UpFrontPayment!
+  pagination: PaginationPayload
+  response: Response
+}
+
 type UserLogs {
   id: String!
   operationName: String
@@ -3196,6 +3245,8 @@ type Query {
   findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
   findAllVaccines(findAllVaccinesInput: FindAllVaccinesInput!): FindAllVaccinesPayload!
   getVaccine(getVaccineInput: GetVaccineInput!): VaccinePayload!
+  findAllIcdCodes(findAllIcdCodesInput: FindAllIcdCodesInput!): FindAllIcdCodesPayload!
+  getIcdCode(getIcdCodeInput: GetIcdCodeInput!): IcdCodePayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3205,6 +3256,7 @@ type Query {
   fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
   findClaimStatus(id: String!): ClaimStatusPayload!
   findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
+  fetchUpFrontPaymentDetailsByAppointmentId(appointmentId: String!): UpFrontPaymentPayload!
   findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
@@ -3599,6 +3651,7 @@ input AgreementPaginationInput {
 
 input PatientProblemInput {
   patientId: String
+  appointmentId: String
   paginationOptions: PaginationInput!
 }
 
@@ -3717,6 +3770,15 @@ input FindAllVaccinesInput {
 }
 
 input GetVaccineInput {
+  id: String!
+}
+
+input FindAllIcdCodesInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetIcdCodeInput {
   id: String!
 }
 
@@ -3966,6 +4028,9 @@ type Mutation {
   addVaccine(addVaccineInput: AddVaccineInput!): VaccinePayload!
   updateVaccine(updateVaccineInput: UpdateVaccineInput!): VaccinePayload!
   removeVaccine(removeVaccineInput: RemoveVaccineInput!): VaccinePayload!
+  createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
+  updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
+  removeIcdCode(removeIcdCodeInput: RemoveIcdCodeInput!): IcdCodePayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -3973,6 +4038,7 @@ type Mutation {
   updateClaimStatus(updateClaimStatusInput: UpdateClaimStatusInput!): ClaimStatusPayload!
   removeClaimStatus(id: String!): ClaimStatusPayload!
   createLiveClaimFeed: [LiveClaimFeed!]!
+  createUpFrontPayment(createUpFrontPaymentInput: UpFrontPaymentInput!): UpFrontPaymentPayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
@@ -5591,6 +5657,23 @@ input RemoveVaccineInput {
   id: String!
 }
 
+input CreateIcdCodeInput {
+  code: String!
+  description: String
+  version: String = "ICD10"
+}
+
+input UpdateIcdCodeInput {
+  code: String
+  description: String
+  version: String = "ICD10"
+  id: String!
+}
+
+input RemoveIcdCodeInput {
+  id: String!
+}
+
 input SendSmsInput {
   message: String
   to: String
@@ -5662,6 +5745,24 @@ input UpdateClaimStatusInput {
   statusName: String
   statusId: String
   id: String
+}
+
+input UpFrontPaymentInput {
+  upFrontPaymentTypes: [UpFrontPaymentInputType!]
+  totalCharges: String
+  expected: String
+  balance: String
+  paid: String
+  adjustments: String
+  patientId: String
+  appointmentId: String
+}
+
+input UpFrontPaymentInputType {
+  amount: String
+  type: String
+  paymentType: String
+  notes: String
 }
 
 input CreateFormInput {

@@ -28,10 +28,14 @@ import { ClaimService } from './services/claim.service';
 import { BillingService } from './services/billing.service';
 import { ClaimStatusService } from './services/claimStatus.service';
 import { LiveClaimFeedService } from './services/liveClaimFeed.service';
+import { UpFrontPayment } from './entities/upFrontPayment.entity';
+import { UpFrontPaymentType } from './entities/upFrontPaymentType.entity';
+import { UpFrontPaymentResolver } from './resolvers/upFrontPayment.resolver';
+import { UpFrontPaymentService } from './services/upFrontPayment.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, LiveClaimFeed,Claim]),
+    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, LiveClaimFeed,Claim, UpFrontPayment, UpFrontPaymentType]),
     HttpModule,
     UsersModule,
     PatientModule,
@@ -53,6 +57,8 @@ import { LiveClaimFeedService } from './services/liveClaimFeed.service';
     ClaimStatusResolver,
     LiveClaimFeedService,
     LiveClaimFeedResolver,
+    UpFrontPaymentResolver,  
+    UpFrontPaymentService
   ],
   exports: [TypeOrmModule],
 })
