@@ -502,6 +502,7 @@ type CPTCodes {
   description: String
   shortDescription: String
   longDescription: String
+  systematic: Boolean
   cptFeeSchedule: [CptFeeSchedule!]
   createdAt: String
   updatedAt: String
