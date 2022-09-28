@@ -64,6 +64,10 @@ export class PatientProblems {
   @Field({nullable: true})
   patientId: string;
 
+  @Column({ nullable: true })
+  @Field({nullable: true})
+  appointmentId: string;
+
   @ManyToOne(() => ICDCodes, iCDCodes => iCDCodes.patientProblems, {eager: true})
   @Field(type => ICDCodes, { nullable: true })
   ICDCode: ICDCodes;

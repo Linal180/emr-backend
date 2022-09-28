@@ -339,6 +339,7 @@ type PatientProblems {
   problemStartDate: String
   note: String
   patientId: String
+  appointmentId: String
   ICDCode: ICDCodes
   patient: Patient
   doctor: Doctor
@@ -3649,6 +3650,7 @@ input AgreementPaginationInput {
 
 input PatientProblemInput {
   patientId: String
+  appointmentId: String
   paginationOptions: PaginationInput!
 }
 
