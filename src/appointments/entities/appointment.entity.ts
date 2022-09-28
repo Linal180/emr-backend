@@ -10,11 +10,13 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { Vaccine } from 'src/patientCharting/entities/vaccines.entity';
 import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
+import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
-import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
+import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -225,6 +227,8 @@ export class Appointment {
   @Field({ nullable: true })
   invoiceId: string;
 
+  //relationships
+
   @ManyToOne(() => Service, facilityService => facilityService.appointments, { onDelete: 'CASCADE' })
   @Field(() => Service, { nullable: true })
   appointmentType: Service;
@@ -261,6 +265,10 @@ export class Appointment {
   @OneToOne(() => Billing, (billing) => billing.appointment)
   billing: Billing;
 
+  @Field(() => UpFrontPayment, { nullable: true })
+  @OneToOne(() => UpFrontPayment, (upFrontPayment) => upFrontPayment.appointment)
+  upFrontPayment: UpFrontPayment;
+
   @Field(() => Transactions, { nullable: true })
   @OneToOne(() => Transactions, (transaction) => transaction.appointment)
   transaction: Transactions;
@@ -277,9 +285,15 @@ export class Appointment {
   @Field(() => [PatientVitals], { nullable: true })
   patientVitals: PatientVitals[];
 
+  @OneToMany(() => Vaccine, vaccine => vaccine.appointment)
+  @Field(() => [Vaccine], { nullable: true })
+  vaccines: Vaccine[];
+
   @Field(() => PatientConsent, { nullable: true })
   @OneToOne(() => PatientConsent, consent => consent.appointment)
   patientConsent: PatientConsent;
+
+  //dates 
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

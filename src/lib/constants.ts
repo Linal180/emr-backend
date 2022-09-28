@@ -137,3 +137,8 @@ export const USER_TYPES = {
   FACILITY_ADMIN: "facility-admin",
   PRACTICE_ADMIN: 'practice-admin'
 }
+
+export enum NdcType {
+  SALE = 'sale',
+  USE = 'use'
+}
