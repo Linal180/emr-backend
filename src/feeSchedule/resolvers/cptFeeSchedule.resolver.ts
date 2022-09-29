@@ -99,6 +99,7 @@ export class CptFeeScheduleResolver {
 
   @ResolveField(() => CPTCodes)
   async cptCodes(@Parent() cptFeeSchedule: CptFeeSchedule): Promise<CPTCodes> {
+    console.log("cptFeeScheduleajbsasakjshak", cptFeeSchedule)
     if (cptFeeSchedule?.cptCodesId) {
       const response = await this.cptCodeService.findOne({ id: cptFeeSchedule?.cptCodesId });
       return response

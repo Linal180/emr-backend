@@ -8,6 +8,7 @@ import { Practice } from "src/practice/entities/practice.entity";
 import { seedPractice } from "src/lib/constants";
 import { PracticeInfo } from "src/practice/seeds/practiceSeed-data";
 import { CptFeeSchedule } from "../entities/cptFeeSchedule.entity";
+import { CPTCodes } from "../entities/cptCode.entity";
 
 @Injectable()
 export class CreateFeeSchedule implements Seeder {
@@ -20,6 +21,7 @@ export class CreateFeeSchedule implements Seeder {
       //repos
       const feeRepo = await getRepository(FeeSchedule);
       const cptFeeRepo = await getRepository(CptFeeSchedule);
+      const cptRepo = await getRepository(CPTCodes);
       const practiceRepo = await getRepository(Practice)
       //Add practice 
       const oldPractice = await practiceRepo.findOne({ practiceId: seedPractice.EXPRESS_HEALTH_CARE });
@@ -36,7 +38,7 @@ export class CreateFeeSchedule implements Seeder {
 
         const feeSchedules = await Promise.all(expressFeeSchedule?.map(async ({ name }) => {
           const oldFeeSchedule = await feeRepo.findOne({ practiceId: practice?.id, name });
-          
+
           if (oldFeeSchedule) {
             return oldFeeSchedule
           }
@@ -46,7 +48,10 @@ export class CreateFeeSchedule implements Seeder {
           newFeeSchedule.practiceId = practice.id
           //create cpt fee schedule
           newFeeSchedule.cptFeeSchedule = await Promise.all(cptFeeScheduleData?.map(async (item) => {
+            const cptCode = await cptRepo.findOne({ where: { code: item?.cptCode } })
             const cptFeeSchedule = cptFeeRepo.create({ ...item, code: item?.cptCode });
+            cptFeeSchedule.cptCodes = cptCode
+            cptFeeSchedule.cptCodesId = cptCode.id
             return await cptFeeRepo.save(cptFeeSchedule);
           }))
           await feeRepo.save(newFeeSchedule)
