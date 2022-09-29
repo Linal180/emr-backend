@@ -20,6 +20,7 @@ import { RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input'
 import { LabTests } from '../entities/labTests.entity';
 import { LoincCodesService } from './loincCodes.service';
 import { TestSpecimenService } from './testSpecimen.service';
+import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
 
 @Injectable()
 export class LabTestsService {
@@ -39,6 +40,8 @@ export class LabTestsService {
 
   async createLabTest(createLabTestInput: CreateLabTestInput): Promise<LabTests> {
     try {
+      const { createLabTestItemInput } = createLabTestInput
+      const { primaryProviderId, patientId } = createLabTestItemInput
       //get test 
       const testName = await this.loincCodesService.findOne(createLabTestInput.test)
       //get patient 
@@ -64,6 +67,10 @@ export class LabTestsService {
         labTestInstance.diagnoses = diagnoses
       }
 
+      if (primaryProviderId) {
+        await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
+      }
+
       labTestInstance.test = testName
       labTestInstance.patient = patient
       return await this.labTestsRepository.save(labTestInstance)
@@ -75,8 +82,8 @@ export class LabTestsService {
 
   async updateLabTest(updateLabTestInput: UpdateLabTestInput): Promise<LabTests> {
     try {
-      //get diagnoses
-
+      const { updateLabTestItemInput } = updateLabTestInput
+      const { primaryProviderId, patientId } = updateLabTestItemInput
 
       //create lab test 
       const labTestInstance = this.labTestsRepository.create({ ...updateLabTestInput.updateLabTestItemInput, labTestStatus: updateLabTestInput.updateLabTestItemInput.status })
@@ -109,6 +116,10 @@ export class LabTestsService {
       if (updateLabTestInput.updateLabTestItemInput.doctorId) {
         const doctor = await this.doctorService.findOne(updateLabTestInput.updateLabTestItemInput.doctorId)
         labTestInstance.doctor = doctor
+      }
+
+      if (primaryProviderId) {
+        await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
       }
 
       if (updateLabTestInput.test) {
