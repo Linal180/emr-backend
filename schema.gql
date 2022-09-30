@@ -332,12 +332,49 @@ type SnoMedCodes {
   updatedAt: String
 }
 
+type Medications {
+  id: String!
+  fullName: String
+  termType: String
+  rxNumber: String
+  patientMedications: [PatientMedication!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientMedication {
+  id: String!
+  sig: String
+  takeAmount: String
+  tabletUnit: String
+  timeDuration: String
+  noOfDays: String
+  oralRoute: String
+  startDate: String
+  status: String
+  stopDate: String
+  stopReason: String
+  note: String
+  medicationId: String
+  patientId: String
+  patientProblemId: String
+  appointmentId: String
+  medication: Medications
+  patient: Patient
+  patientProblem: PatientProblems
+  appointment: Appointment
+  createdAt: String
+  updatedAt: String
+}
+
 type PatientProblems {
   id: String!
   problemType: ProblemType!
   problemSeverity: ProblemSeverity!
   problemStartDate: String
   note: String
+  isSigned: Boolean
+  forOrders: Boolean
   patientId: String
   appointmentId: String
   ICDCode: ICDCodes
@@ -346,6 +383,7 @@ type PatientProblems {
   staff: Staff
   appointment: Appointment
   snowMedCode: SnoMedCodes
+  patientMedications: [PatientMedication!]
   createdAt: String
   updatedAt: String
 }
@@ -1724,6 +1762,7 @@ type Appointment {
   transaction: Transactions
   patientProblem: [PatientProblems!]
   patientAllergies: [PatientAllergies!]
+  patientMedications: [PatientMedication!]
   patientVitals: [PatientVitals!]
   vaccines: [Vaccine!]
   patientConsent: PatientConsent
@@ -1918,37 +1957,6 @@ type SurgicalHistory {
   surgeryDate: String
   notes: String
   patientId: String
-  patient: Patient
-  createdAt: String
-  updatedAt: String
-}
-
-type Medications {
-  id: String!
-  fullName: String
-  termType: String
-  rxNumber: String
-  patientMedications: [PatientMedication!]
-  createdAt: String
-  updatedAt: String
-}
-
-type PatientMedication {
-  id: String!
-  sig: String
-  takeAmount: String
-  tabletUnit: String
-  timeDuration: String
-  noOfDays: String
-  oralRoute: String
-  startDate: String
-  status: String
-  stopDate: String
-  stopReason: String
-  note: String
-  medicationId: String
-  patientId: String
-  medication: Medications
   patient: Patient
   createdAt: String
   updatedAt: String
@@ -2667,6 +2675,14 @@ type PatientChartingInfoPayload {
   familyHistories: [FamilyHistory]
 }
 
+type PatientChartingReviewPayload {
+  response: ResponsePayload
+  patientVitals: [PatientVitals]
+  patientAllergies: [PatientAllergies]
+  patientProblems: [PatientProblems]
+  patientMedications: [PatientMedication]
+}
+
 type ReactionsPayload {
   response: ResponsePayload
   reactions: [Reactions]
@@ -3240,6 +3256,7 @@ type Query {
   findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
   getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
   getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput!): PatientChartingInfoPayload!
+  getPatientChartingReview(patientChartingReviewInput: PatientChartingReviewInput!): PatientChartingReviewPayload!
   findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
   findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
   findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
@@ -3652,6 +3669,7 @@ input AgreementPaginationInput {
 input PatientProblemInput {
   patientId: String
   appointmentId: String
+  forOrders: Boolean
   paginationOptions: PaginationInput!
 }
 
@@ -3721,6 +3739,7 @@ input GetFamilyHistoryInput {
 
 input PatientMedicationInput {
   patientId: String
+  appointmentId: String
   paginationOptions: PaginationInput!
 }
 
@@ -3744,6 +3763,11 @@ input GetSurgicalHistory {
 
 input PatientChartingInfoInput {
   patientId: String
+}
+
+input PatientChartingReviewInput {
+  patientId: String
+  appointmentId: String
 }
 
 input FindAllNdcInput {
@@ -4006,6 +4030,7 @@ type Mutation {
   removeAgreement(agreementId: String!): AgreementPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
+  updatePatientProblemSigned(updateProblemSignedInput: UpdateProblemSignedInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
   addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput!): PatientAllergyPayload!
   updatePatientAllergy(updateAllergyInput: UpdateAllergyInput!): PatientAllergyPayload!
@@ -5399,10 +5424,13 @@ input CreateProblemInput {
   providerId: String
   staffId: String
   appointmentId: String
+  medicationIds: [String!]
   problemType: ProblemType
   problemSeverity: ProblemSeverity
   problemStartDate: String
   note: String
+  isSigned: Boolean = false
+  forOrders: Boolean = false
 }
 
 input UpdateProblemInput {
@@ -5412,6 +5440,11 @@ input UpdateProblemInput {
   problemSeverity: ProblemSeverity
   problemStartDate: String
   note: String
+}
+
+input UpdateProblemSignedInput {
+  id: String
+  isSigned: Boolean
 }
 
 input RemoveProblem {
@@ -5569,7 +5602,9 @@ input CreatePatientMedicationInput {
   stopReason: String
   note: String
   patientId: String
+  appointmentId: String
   medicationId: String
+  patientProblemId: String
 }
 
 input UpdatePatientMedicationInput {
@@ -5585,7 +5620,9 @@ input UpdatePatientMedicationInput {
   stopReason: String
   note: String
   patientId: String
+  appointmentId: String
   medicationId: String
+  patientProblemId: String
   id: String!
 }
 

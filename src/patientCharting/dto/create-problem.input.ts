@@ -6,30 +6,39 @@ export class CreateProblemInput {
   @Field()
   icdCodeId: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   snowMedCodeId?: string
 
   @Field()
   patientId: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   providerId?: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   staffId?: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   appointmentId?: string
 
-  @Field(type => ProblemType, {nullable: true})
+  @Field(() => [String], { nullable: true })
+  medicationIds?: string[]
+
+  @Field(type => ProblemType, { nullable: true })
   problemType?: ProblemType
-    
-  @Field(type => ProblemSeverity, {nullable: true})
+
+  @Field(type => ProblemSeverity, { nullable: true })
   problemSeverity: ProblemSeverity
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   problemStartDate: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   note: string;
+
+  @Field({ nullable: true, defaultValue: false })
+  isSigned: boolean;
+
+  @Field({ nullable: true, defaultValue: false })
+  forOrders: boolean;
 }
