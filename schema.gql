@@ -3184,6 +3184,12 @@ type FormMediaPayload {
   response: ResponsePayloadResponse
 }
 
+type FindAllSectionsPayload {
+  sections: [Sections]
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3324,6 +3330,7 @@ type Query {
   getPublicForm(getForm: GetForm!): FormPayload!
   findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
   getShortUrl(getShortUrlInput: GetShortUrlInput!): ShortUrlResponse!
+  findAllSections(findAllSectionsInput: FindAllSectionsInput!): FindAllSectionsPayload!
 }
 
 input SearchLoincCodesInput {
@@ -3948,6 +3955,10 @@ input UserFormInput {
 
 input GetShortUrlInput {
   urlCode: String
+}
+
+input FindAllSectionsInput {
+  paginationOptions: PaginationInput!
 }
 
 type Mutation {

@@ -221,6 +221,7 @@ export class PaginationService {
       isClaimStatus,
       cvxId,
       mvxId,
+      specialSectionId,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -361,6 +362,7 @@ export class PaginationService {
           facilityId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementFacilityId}'`),
         }),
         ...(cvxId && { cvxId }),
+        ...(specialSectionId && { specialId: specialSectionId }),
         ...(mvxId && { mvxId }),
         ...(claimNo && claimNo != null && { claimNo }),
         ...(isClaimStatus && { claimStatusId: claimStatusId ? claimStatusId : Raw(alias => `${alias} is not null`) }),

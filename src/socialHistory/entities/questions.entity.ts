@@ -41,7 +41,7 @@ export class Questions {
   @Field({ nullable: true })
   sectionsId: string
 
-  @OneToMany(() => DependentQuestions, dependentQuestions => dependentQuestions.questions, { onDelete: 'CASCADE' })
+  @OneToMany(() => DependentQuestions, dependentQuestion => dependentQuestion.questions, { onDelete: 'CASCADE' })
   @Field(() => [DependentQuestions], { nullable: true })
   dependentQuestions: DependentQuestions[];
 
