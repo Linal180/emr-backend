@@ -1,3 +1,5 @@
+import { SelectorType } from "src/socialHistory/payloads/questions.payload"
+
 export enum ATTACHMENT_TITLES {
   ProfilePicture = "Profile Picture",
   DrivingLicense1 = "Driving License 1",
@@ -150,3 +152,26 @@ export enum QuestionType {
   DATE = 'date',
   NUMBER = 'number'
 }
+
+export type SocialDependentQuestions = {
+  title: string
+  note: string;
+  questionType: QuestionType
+  options?: SelectorType[],
+  answer: string[]
+}
+
+export type SocialQuestionsType = {
+  title: string
+  note: string;
+  questionType: QuestionType
+  options?: SelectorType[],
+  dependentQuestions: SocialDependentQuestions[]
+}
+
+export type SocialHistoryQuestionType  = {
+  name: string;
+  questions: SocialQuestionsType[]
+}
+
+export const SECTION_SPECIAL_TYPE = 'seed_section'

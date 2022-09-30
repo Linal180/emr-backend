@@ -27,6 +27,10 @@ export class Questions {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  value: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   questionType: string
 
   @Column({ nullable: true, array: false, type: 'jsonb' })
@@ -38,12 +42,12 @@ export class Questions {
   sectionsId: string
 
   @OneToMany(() => DependentQuestions, dependentQuestions => dependentQuestions.questions, { onDelete: 'CASCADE' })
-  @Field(() => DependentQuestions, { nullable: true })
-  dependentQuestions: DependentQuestions;
+  @Field(() => [DependentQuestions], { nullable: true })
+  dependentQuestions: DependentQuestions[];
 
   @ManyToOne(() => Sections, sections => sections.questions, { onDelete: 'CASCADE' })
-  @Field(() => [Sections], { nullable: true })
-  sections: Sections[];
+  @Field(() => Sections, { nullable: true })
+  sections: Sections;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

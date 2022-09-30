@@ -1962,7 +1962,8 @@ type DependentQuestions {
   id: String!
   title: String
   note: String
-  answer: String
+  value: String
+  answer: [String!]
   questionType: String
   options: [SelectorType!]
   parentId: String
@@ -1977,11 +1978,12 @@ type Questions {
   title: String
   note: String
   answer: String
+  value: String
   questionType: String
   options: [SelectorType!]
   sectionsId: String
-  dependentQuestions: DependentQuestions
-  sections: [Sections!]
+  dependentQuestions: [DependentQuestions!]
+  sections: Sections
   createdAt: String
   updatedAt: String
 }
@@ -1989,9 +1991,10 @@ type Questions {
 type Sections {
   id: String!
   name: String
+  specialId: String
   socialHistoryId: String
-  socialHistory: [SocialHistory!]
-  questions: Questions
+  socialHistory: SocialHistory
+  questions: [Questions!]
   createdAt: String
   updatedAt: String
 }
@@ -1999,7 +2002,7 @@ type Sections {
 type SocialHistory {
   id: String!
   patient: Patient
-  sections: Sections
+  sections: [Sections!]
   createdAt: String
   updatedAt: String
 }

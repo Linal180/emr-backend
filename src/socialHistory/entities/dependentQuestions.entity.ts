@@ -22,7 +22,11 @@ export class DependentQuestions {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  answer: string
+  value: string
+
+  @Column({ nullable: true, array: false, type: 'jsonb' })
+  @Field(() => [String], { nullable: true })
+  answer: string[]
 
   @Column({ nullable: true })
   @Field({ nullable: true })

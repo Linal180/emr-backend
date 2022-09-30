@@ -17,15 +17,19 @@ export class Sections {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  specialId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   socialHistoryId: string
 
   @ManyToOne(() => SocialHistory, socialHistory => socialHistory.sections, { onDelete: 'CASCADE' })
-  @Field(() => [SocialHistory], { nullable: true })
-  socialHistory: SocialHistory[];
+  @Field(() => SocialHistory, { nullable: true })
+  socialHistory: SocialHistory;
 
   @OneToMany(() => Questions, question => question.sections, { onDelete: 'CASCADE' })
-  @Field(() => Questions, { nullable: true })
-  questions: Questions;
+  @Field(() => [Questions], { nullable: true })
+  questions: Questions[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

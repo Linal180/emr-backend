@@ -17,8 +17,8 @@ export class SocialHistory {
   patient: Patient;
 
   @OneToMany(() => Sections, section => section.socialHistory, { onDelete: 'CASCADE' })
-  @Field(() => Sections, { nullable: true })
-  sections: Sections;
+  @Field(() => [Sections], { nullable: true })
+  sections: Sections[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
