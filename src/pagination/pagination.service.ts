@@ -221,6 +221,7 @@ export class PaginationService {
       isClaimStatus,
       cvxId,
       mvxId,
+      forOrders,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -288,6 +289,7 @@ export class PaginationService {
         ...(roleName && {
           role: Raw(alias => `${alias} ILIKE '%${roleName}%'`),
         }),
+        
         ...(specimenTypeName && {
           name: Raw(alias => `${alias} ILIKE '%${specimenTypeName}%'`),
         }),
@@ -344,6 +346,9 @@ export class PaginationService {
         }),
         ...(isSystemForm != null && {
           isSystemForm
+        }),
+        ...(forOrders != null && {
+          forOrders
         }),
         ...(formType && {
           type: formType

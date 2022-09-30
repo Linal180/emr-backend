@@ -4,41 +4,47 @@ import { ProblemSeverity, ProblemType } from '../entities/patientProblems.entity
 @InputType()
 export class CreatePatientMedicationInput {
   @Field({ nullable:true })
-  oralRoute: string
+  oralRoute?: string
 
   @Field({ nullable:true })
-  sig: string
+  sig?: string
 
   @Field({ nullable:true }) 
-  takeAmount: string
+  takeAmount?: string
 
   @Field({ nullable:true })
-  tabletUnit: string
+  tabletUnit?: string
 
   @Field({ nullable:true })
-  timeDuration: string
+  timeDuration?: string
 
   @Field({ nullable:true })
-  noOfDays: string
+  noOfDays?: string
 
   @Field({ nullable:true })
-  startDate: string
+  startDate?: string
 
   @Field({ nullable:true })
-  status: string
+  status?: string
 
   @Field({ nullable:true })
-  stopDate: string
+  stopDate?: string
 
   @Field({ nullable:true })
-  stopReason: string
+  stopReason?: string
 
   @Field({ nullable:true })
-  note: string
+  note?: string
 
   @Field({ nullable:true })
-  patientId: string
+  patientId?: string
 
   @Field({ nullable:true })
-  medicationId: string
+  appointmentId?: string
+
+  @Field({ nullable:true })
+  medicationId?: string
+
+  @Field({ nullable:true })
+  patientProblemId?: string
 }

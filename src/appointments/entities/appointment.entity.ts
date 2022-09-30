@@ -17,6 +17,7 @@ import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
+import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -280,6 +281,10 @@ export class Appointment {
   @OneToMany(() => PatientAllergies, patientAllergies => patientAllergies.appointment)
   @Field(() => [PatientAllergies], { nullable: true })
   patientAllergies: PatientAllergies[];
+
+  @OneToMany(() => PatientMedication, patientMedications => patientMedications.appointment)
+  @Field(() => [PatientMedication], { nullable: true })
+  patientMedications: PatientMedication[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.appointment)
   @Field(() => [PatientVitals], { nullable: true })

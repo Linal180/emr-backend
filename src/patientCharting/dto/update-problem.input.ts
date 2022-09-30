@@ -46,3 +46,12 @@ export class SearchSnoMedCodesInput {
   @Field(type => PaginationInput)
   paginationOptions: PaginationInput
 }
+
+@InputType()
+export class UpdateProblemSignedInput {
+  @Field({ nullable: true })
+  id: string;
+
+  @Field({ nullable: true })
+  isSigned: boolean;
+}
