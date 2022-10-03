@@ -54,6 +54,7 @@ import { SurgicalHistoryService } from './services/surgicalHistory.service';
 import { PatientAllergiesService } from './services/patientAllergies.service';
 import { PatientMedicationService } from './services/patientMedication.service';
 import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
+import { LabModule } from 'src/labs/labs.module';
 
 
 @Module({
@@ -64,9 +65,10 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
     ]),
     forwardRef(() => UsersModule),
     forwardRef(() => PatientModule),
-    ProviderModule,
-    PaginationModule,
+    forwardRef(()=>ProviderModule),
+    forwardRef(()=>PaginationModule),
     AppointmentModule,
+    forwardRef(() => LabModule),
   ],
   providers: [
     PatientAllergiesService, ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver,

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, ILike, Repository } from 'typeorm';
 import * as moment from 'moment';
@@ -28,6 +28,7 @@ export class LabTestsService {
     @InjectRepository(LabTests)
     private labTestsRepository: Repository<LabTests>,
     private readonly paginationService: PaginationService,
+    @Inject(forwardRef(() => ProblemService))
     private readonly problemService: ProblemService,
     private readonly loincCodesService: LoincCodesService,
     private readonly patientService: PatientService,
@@ -65,6 +66,12 @@ export class LabTestsService {
         //get diagnoses
         const diagnoses = await this.problemService.getDiagnoses(createLabTestInput.diagnoses)
         labTestInstance.diagnoses = diagnoses
+      }
+
+      if (createLabTestInput.createLabTestItemInput.problemId) {
+        //get patientProblem
+        const patientProblem = await this.problemService.findOne(createLabTestInput.createLabTestItemInput.problemId)
+        labTestInstance.patientProblem = patientProblem
       }
 
       if (primaryProviderId) {
@@ -238,6 +245,10 @@ export class LabTestsService {
     if (labTest) {
       return { labTest }
     }
+  }
+
+  async GetLabTestsByProblemId(problemId: string): Promise<LabTests[]> {
+    return await this.labTestsRepository.find({ where: { patientProblemId: problemId } });
   }
 
   async findLabTestByTestAndOrderNo(orderNum: string, testName: string): Promise<LabTests> {

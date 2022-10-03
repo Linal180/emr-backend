@@ -24,6 +24,9 @@ export class CreateProblemInput {
   @Field(() => [String], { nullable: true })
   medicationIds?: string[]
 
+  @Field(() => [String], { nullable: true })
+  testIds?: string[]
+
   @Field(type => ProblemType, { nullable: true })
   problemType?: ProblemType
 
