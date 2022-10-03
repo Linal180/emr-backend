@@ -1,6 +1,9 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { LabTestStatus } from 'src/labs/entities/labTests.entity';
+import { LabTestsService } from 'src/labs/services/labTests.service';
+import { generateString } from 'src/lib/helper';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
@@ -31,6 +34,7 @@ export class ProblemService {
     private readonly patientService: PatientService,
     private readonly appointmentService: AppointmentService,
     private readonly patientMedicationService: PatientMedicationService,
+    private readonly labTestService: LabTestsService,
     private readonly doctorService: DoctorService,
     private readonly staffService: StaffService,
     private readonly utilsService: UtilsService
@@ -43,7 +47,7 @@ export class ProblemService {
    */
   async addPatientProblem(createProblemInput: CreateProblemInput): Promise<PatientProblems> {
     try {
-      const { medicationIds } = createProblemInput || {}
+      const { medicationIds, testIds, patientId, appointmentId } = createProblemInput || {}
 
       //get icdCode
       const icdCode = await this.icdCodeRepository.findOne(createProblemInput.icdCodeId)
@@ -77,11 +81,32 @@ export class ProblemService {
         const patientMedications = await Promise.all(medicationIds.map(async (medicationId) => {
           return await this.patientMedicationService.addPatientMedication({
             medicationId,
+            patientId,
+            appointmentId,
             status: 'ACTIVE'
           })
         }))
 
         patientProblemInstance.patientMedications = patientMedications
+      }
+
+      if (testIds) {
+        const orderNumber = generateString()
+        const accessionNumber = generateString(6)
+        const patientLabTests = await Promise.all(testIds.map(async (testId) => {
+          return await this.labTestService.createLabTest({
+            createLabTestItemInput: {
+              patientId,
+              appointmentId,
+              accessionNumber,
+              orderNumber,
+              status: LabTestStatus.ORDER_ENTERED,
+            },
+            test: testId
+          })
+        }))
+
+        patientProblemInstance.labTests = patientLabTests
       }
       const patientProblem = await this.patientProblemsRepository.save(patientProblemInstance)
       return patientProblem

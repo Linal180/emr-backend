@@ -30,20 +30,19 @@ import { TestSpecimenService } from './services/testSpecimen.service';
   imports: [
     TypeOrmModule.forFeature([LoincCodes, LabTests, SpecimenTypes, TestSpecimens, Observations]),
     forwardRef(() => UsersModule),
-    PaginationModule,
-    UsersModule,
+    forwardRef(() => PaginationModule),
     PracticeModule,
-    ProblemChartingModule,
-    PatientModule,
-    AttachmentsModule,
+    forwardRef(() => ProblemChartingModule),
+    forwardRef(()=>PatientModule),
+    forwardRef(()=>AttachmentsModule),
     AppointmentModule,
     FacilityModule,
     MailerModule,
     forwardRef(() => ProviderModule)
   ],
   controllers: [LabTestsObservationsController],
-  providers: [ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService,TestSpecimenResolver],
-  exports: [LoincCodesService, LabTestsService, TestSpecimenService,LabTestsObservationsService, TypeOrmModule],
+  providers: [ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService, TestSpecimenResolver],
+  exports: [LoincCodesService, LabTestsService, TestSpecimenService, LabTestsObservationsService, TypeOrmModule],
 })
 export class LabModule { }
 

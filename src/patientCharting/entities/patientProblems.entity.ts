@@ -8,6 +8,7 @@ import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { PatientMedication } from './patientMedication.entity';
+import { LabTests } from 'src/labs/entities/labTests.entity';
 
 export enum ProblemType {
   ACTIVE = "active",
@@ -104,6 +105,10 @@ export class PatientProblems {
   @OneToMany(() => PatientMedication, patientMedication => patientMedication.patient)
   @Field(() => [PatientMedication], { nullable: true })
   patientMedications: PatientMedication[];
+
+  @OneToMany(() => LabTests, labTests => labTests.patient)
+  @Field(() => [LabTests], { nullable: true })
+  labTests: LabTests[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

@@ -256,7 +256,9 @@ type LabTests {
   referringProviderId: String
   appointmentId: String
   testId: String
+  patientProblemId: String
   patient: Patient
+  patientProblem: PatientProblems
   doctor: Doctor
   primaryProvider: Doctor
   referringProvider: Doctor
@@ -384,6 +386,7 @@ type PatientProblems {
   appointment: Appointment
   snowMedCode: SnoMedCodes
   patientMedications: [PatientMedication!]
+  labTests: [LabTests!]
   createdAt: String
   updatedAt: String
 }
@@ -2723,6 +2726,47 @@ type MedicationsPayload {
   pagination: PaginationPayload
 }
 
+type LabTestObservationPayload {
+  response: ResponsePayload
+  labTestObservation: Observations
+}
+
+type LabTestPayload {
+  response: ResponsePayload
+  labTest: LabTests
+}
+
+type LabResultPayload {
+  response: ResponsePayload
+  patientInfo: Patient
+  facilityInfo: Facility
+  doctor: Doctor
+  labTests: [LabTests!]
+}
+
+type LabTestsPayload {
+  response: ResponsePayload
+  labTests: [LabTests]
+  pagination: PaginationPayload
+}
+
+type LoincCodePayload {
+  response: ResponsePayload
+  loincCode: LoincCodes
+}
+
+type LoincCodesPayload {
+  response: ResponsePayload
+  loincCodes: [LoincCodes!]
+  pagination: PaginationPayload
+}
+
+type TestSpecimenTypesPayload {
+  response: ResponsePayload
+  specimenTypes: [SpecimenTypes!]
+  pagination: PaginationPayload
+}
+
 type PatientsPayload {
   response: ResponsePayload
   patients: [Patient]
@@ -2869,47 +2913,6 @@ type DocumentTypePayload {
 type SmsPayload {
   sms: String
   response: ResponsePayloadResponse
-}
-
-type LabTestObservationPayload {
-  response: ResponsePayload
-  labTestObservation: Observations
-}
-
-type LabTestPayload {
-  response: ResponsePayload
-  labTest: LabTests
-}
-
-type LabResultPayload {
-  response: ResponsePayload
-  patientInfo: Patient
-  facilityInfo: Facility
-  doctor: Doctor
-  labTests: [LabTests!]
-}
-
-type LabTestsPayload {
-  response: ResponsePayload
-  labTests: [LabTests]
-  pagination: PaginationPayload
-}
-
-type LoincCodePayload {
-  response: ResponsePayload
-  loincCode: LoincCodes
-}
-
-type LoincCodesPayload {
-  response: ResponsePayload
-  loincCodes: [LoincCodes!]
-  pagination: PaginationPayload
-}
-
-type TestSpecimenTypesPayload {
-  response: ResponsePayload
-  specimenTypes: [SpecimenTypes!]
-  pagination: PaginationPayload
 }
 
 type LiveClaimFeed {
@@ -4109,6 +4112,7 @@ input CreateLabTestItemInput {
   primaryProviderId: String
   referringProviderId: String
   providerNotes: String
+  problemId: String
 }
 
 input CreateSpecimenItemInput {
@@ -4142,6 +4146,7 @@ input UpdateLabTestItemInput {
   primaryProviderId: String
   referringProviderId: String
   providerNotes: String
+  problemId: String
   id: String!
 }
 
@@ -5425,6 +5430,7 @@ input CreateProblemInput {
   staffId: String
   appointmentId: String
   medicationIds: [String!]
+  testIds: [String!]
   problemType: ProblemType
   problemSeverity: ProblemSeverity
   problemStartDate: String

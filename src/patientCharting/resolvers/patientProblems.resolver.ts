@@ -20,12 +20,15 @@ import { PatientProblems } from '../entities/patientProblems.entity';
 import { ProblemService } from '../services/patientProblems.service';
 import { PatientMedication } from '../entities/patientMedication.entity';
 import { PatientMedicationService } from '../services/patientMedication.service';
+import { LabTests } from 'src/labs/entities/labTests.entity';
+import { LabTestsService } from 'src/labs/services/labTests.service';
 
 @Resolver(() => PatientProblems)
 export class ProblemResolver {
   constructor(
     private readonly problemService: ProblemService,
     private readonly patientMedicationService: PatientMedicationService,
+    private readonly labTestsService: LabTestsService,
   ) { }
 
   @Mutation(() => PatientProblemPayload)
@@ -139,6 +142,13 @@ export class ProblemResolver {
   async patientMedications(@Parent() patientProblem: PatientProblems): Promise<PatientMedication[]> {
     if (patientProblem && patientProblem.id) {
       return await this.patientMedicationService.GetPatientMedicationsByProblemId(patientProblem.id);
+    }
+  }
+
+  @ResolveField(() => [LabTests])
+  async labTests(@Parent() patientProblem: PatientProblems): Promise<LabTests[]> {
+    if (patientProblem && patientProblem.id) {
+      return await this.labTestsService.GetLabTestsByProblemId(patientProblem.id);
     }
   }
 }
