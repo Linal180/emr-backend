@@ -42,6 +42,10 @@ export class DependentQuestions {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  specialId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   questionsId: string
 
   @ManyToOne(() => Questions, question => question.dependentQuestions, { onDelete: 'CASCADE' })

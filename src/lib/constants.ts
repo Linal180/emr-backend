@@ -159,6 +159,7 @@ export type SocialDependentQuestions = {
   questionType: QuestionType
   options?: SelectorType[],
   answer: string[]
+  specialId: string
 }
 
 export type SocialQuestionsType = {
@@ -167,6 +168,7 @@ export type SocialQuestionsType = {
   questionType: QuestionType
   options?: SelectorType[],
   dependentQuestions: SocialDependentQuestions[]
+  specialId: string
 }
 
 export type SocialHistoryQuestionType  = {

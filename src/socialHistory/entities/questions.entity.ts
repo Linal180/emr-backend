@@ -19,6 +19,10 @@ export class Questions {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  specialId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   note: string
 
   @Column({ nullable: true })

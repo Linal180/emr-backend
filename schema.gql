@@ -1953,56 +1953,35 @@ type PatientMedication {
   updatedAt: String
 }
 
-type SelectorType {
-  id: String
-  name: String
-}
-
-type DependentQuestions {
+type SocialDependentAnswer {
   id: String!
-  title: String
+  name: String
   note: String
-  value: String
-  answer: [String!]
-  questionType: String
-  options: [SelectorType!]
   parentId: String
-  questionsId: String
-  questions: Questions
-  createdAt: String
-  updatedAt: String
-}
-
-type Questions {
-  id: String!
-  title: String
-  note: String
-  answer: String
   value: String
-  questionType: String
-  options: [SelectorType!]
-  sectionsId: String
-  dependentQuestions: [DependentQuestions!]
-  sections: Sections
+  socialAnswerId: String
+  socialAnswer: SocialAnswer
   createdAt: String
   updatedAt: String
 }
 
-type Sections {
+type SocialAnswer {
   id: String!
   name: String
-  specialId: String
+  note: String
+  value: String
   socialHistoryId: String
   socialHistory: SocialHistory
-  questions: [Questions!]
+  socialDependentAnswer: [SocialDependentAnswer!]
   createdAt: String
   updatedAt: String
 }
 
 type SocialHistory {
   id: String!
+  patientId: String
   patient: Patient
-  sections: [Sections!]
+  socialAnswer: [SocialAnswer!]
   createdAt: String
   updatedAt: String
 }
@@ -3184,10 +3163,61 @@ type FormMediaPayload {
   response: ResponsePayloadResponse
 }
 
+type SelectorType {
+  id: String
+  name: String
+}
+
+type DependentQuestions {
+  id: String!
+  title: String
+  note: String
+  value: String
+  answer: [String!]
+  questionType: String
+  options: [SelectorType!]
+  parentId: String
+  specialId: String
+  questionsId: String
+  questions: Questions
+  createdAt: String
+  updatedAt: String
+}
+
+type Questions {
+  id: String!
+  title: String
+  specialId: String
+  note: String
+  answer: String
+  value: String
+  questionType: String
+  options: [SelectorType!]
+  sectionsId: String
+  dependentQuestions: [DependentQuestions!]
+  sections: Sections
+  createdAt: String
+  updatedAt: String
+}
+
+type Sections {
+  id: String!
+  name: String
+  specialId: String
+  questions: [Questions!]
+  createdAt: String
+  updatedAt: String
+}
+
 type FindAllSectionsPayload {
   sections: [Sections]
   pagination: PaginationPayload
   response: ResponsePayload
+}
+
+type PatientSocialHistoryPayload {
+  socialHistory: SocialHistory
+  response: ResponsePayloadResponse
 }
 
 type Query {
@@ -3331,6 +3361,7 @@ type Query {
   findAllUsersForms(userFormInput: UserFormInput!): UserFormsPayload!
   getShortUrl(getShortUrlInput: GetShortUrlInput!): ShortUrlResponse!
   findAllSections(findAllSectionsInput: FindAllSectionsInput!): FindAllSectionsPayload!
+  patientSocialHistory(patientSocialHistoryInput: PatientSocialHistoryInput!): PatientSocialHistoryPayload!
 }
 
 input SearchLoincCodesInput {
@@ -3961,6 +3992,10 @@ input FindAllSectionsInput {
   paginationOptions: PaginationInput!
 }
 
+input PatientSocialHistoryInput {
+  patientId: String
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4111,6 +4146,7 @@ type Mutation {
   saveUserFormValues(createUserFormInput: CreateUserFormInput!): UserFormPayload!
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
   createShortUrl(createShortUrlInput: CreateShortUrlInput!): ShortUrlResponse!
+  createPatientSocialHistory(createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!): PatientSocialHistoryPayload!
 }
 
 input LoincCodeInput {
@@ -5933,4 +5969,24 @@ input GetPublicMediaInput {
 
 input CreateShortUrlInput {
   longLink: String
+}
+
+input CreatePatientSocialHistoryInput {
+  id: String
+  patientId: String
+  socialAnswer: [SocialAnswerInput!]!
+}
+
+input SocialAnswerInput {
+  name: String!
+  note: String!
+  value: String!
+  socialDependentAnswer: [SocialDependentAnswerInput!]!
+}
+
+input SocialDependentAnswerInput {
+  parentId: String!
+  name: String!
+  note: String!
+  value: String!
 }

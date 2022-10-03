@@ -1,4 +1,4 @@
-import { QuestionType } from "src/lib/constants";
+import { QuestionType, SocialDependentQuestions } from "src/lib/constants";
 
 //enums 
 
@@ -484,7 +484,7 @@ const SEXUALLY_ACTIVE_FIELDS_MAPPED = [
 
 //activities questions
 
-const activitiesQuestions= [
+const activitiesQuestions = [
   {
     title: ABLE_TO_CARE_YOURSELF,
     note: '',
@@ -586,7 +586,7 @@ const publicQuestions = [
 
 // Substance Use
 
-const substanceQuestions= [
+const substanceQuestions = [
   {
     title: DO_YOU_HAVE_EVER_SMOKED_TOBACCO,
     note: '',
@@ -630,7 +630,7 @@ const substanceQuestions= [
 
 //advance directives questions
 
-const advanceDirectiveQuestions= [
+const advanceDirectiveQuestions = [
   {
     title: DO_YOU_HAVE_AN_ADVANCED_DIRECTIVE,
     note: '',
@@ -647,7 +647,7 @@ const advanceDirectiveQuestions= [
 
 //home environment questions
 
-const homeEnvironmentQuestions= [
+const homeEnvironmentQuestions = [
   {
     title: HAVE_THERE_BEEN_ANY_CHANGES_TO_YOUR_FAMILY,
     note: '',
@@ -708,7 +708,7 @@ const homeEnvironmentQuestions= [
 
 //life style questions
 
-const lifeStyleQuestions= [
+const lifeStyleQuestions = [
   {
     title: DO_YOU_FEEL_STRESSED,
     note: '',
@@ -750,7 +750,7 @@ const educationQuestions = [
 
 // Marriage and Sexuality questions
 
-const marriageQuestions= [
+const marriageQuestions = [
   {
     title: WHAT_IS_YOUR_RELATIONSHIP_STATUS,
     note: '',
@@ -774,7 +774,7 @@ const marriageQuestions= [
 
 // Diet and Exercise questions
 
-const dietQuestions= [
+const dietQuestions = [
   {
     title: WHAT_TYPE_OF_DIET_FOLLOWING,
     note: '',
@@ -805,7 +805,7 @@ const dietQuestions= [
 
 //sections
 
-export const SectionsData = [
+export const data = [
   {
     name: ACTIVITIES_OF_DAILY_LIVING,
     questions: activitiesQuestions
@@ -842,4 +842,35 @@ export const SectionsData = [
     name: DIET_AND_EXERCISE,
     questions: dietQuestions
   },
-] 
+]
+
+export const SectionsData = data.map((section) => {
+  const { name, questions } = section;
+  const newQuestion = questions?.map((question) => {
+    const { title, dependentQuestions, ...rest } = question;
+    const newTitle = title?.replace(/ /g, '_');
+
+    const newDependentQuestions = dependentQuestions?.map((dependent) => {
+      const { title, ...rest } = dependent as SocialDependentQuestions || {}
+      const newTitle = title?.replace(/ /g, '_');
+
+      return {
+        title,
+        specialId: newTitle,
+        ...rest
+      }
+    })
+
+    return {
+      ...rest,
+      title,
+      specialId: newTitle,
+      dependentQuestions: newDependentQuestions
+    }
+  })
+
+  return {
+    name,
+    questions: newQuestion
+  }
+})
