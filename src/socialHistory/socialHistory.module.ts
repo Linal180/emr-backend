@@ -15,6 +15,7 @@ import { PaginationModule } from "src/pagination/pagination.module";
 //resolvers
 import { SectionsResolver } from "./resolvers/sections.resolver";
 import { QuestionsResolver } from "./resolvers/questions.resolver";
+import { SocialAnswerResolver } from "./resolvers/socialAnswer.resolver";
 import { SocialHistoryResolver } from "./resolvers/socialHistory.resolver";
 import { DependentQuestionsResolver } from "./resolvers/dependentQuestions.resolver";
 //services
@@ -44,6 +45,7 @@ import { SocialDependentAnswerService } from "./services/socialDependentAnswer.s
     //resolvers
     SectionsResolver,
     QuestionsResolver,
+    SocialAnswerResolver,
     SocialHistoryResolver,
     DependentQuestionsResolver,
     //services
@@ -54,7 +56,7 @@ import { SocialDependentAnswerService } from "./services/socialDependentAnswer.s
     DependentQuestionService,
     SocialDependentAnswerService
   ],
-  exports: [SocialAnswerService, SocialHistoryService],
+  exports: [],
 })
 
 export class SocialHistoryModule { }

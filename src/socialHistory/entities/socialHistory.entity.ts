@@ -16,7 +16,6 @@ export class SocialHistory {
   patientId: string
 
   @OneToOne(() => Patient, patient => patient.surgicalHistories, { onDelete: 'CASCADE' })
-  @Field(() => Patient, { nullable: true })
   @JoinColumn()
   patient: Patient;
 

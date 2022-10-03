@@ -1959,8 +1959,6 @@ type SocialDependentAnswer {
   note: String
   parentId: String
   value: String
-  socialAnswerId: String
-  socialAnswer: SocialAnswer
   createdAt: String
   updatedAt: String
 }
@@ -1970,8 +1968,6 @@ type SocialAnswer {
   name: String
   note: String
   value: String
-  socialHistoryId: String
-  socialHistory: SocialHistory
   socialDependentAnswer: [SocialDependentAnswer!]
   createdAt: String
   updatedAt: String
@@ -1980,7 +1976,6 @@ type SocialAnswer {
 type SocialHistory {
   id: String!
   patientId: String
-  patient: Patient
   socialAnswer: [SocialAnswer!]
   createdAt: String
   updatedAt: String

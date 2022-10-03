@@ -58,4 +58,14 @@ export class SocialDependentAnswerService {
       throw new InternalServerErrorException(error);
     }
   }
+
+
+  /**
+   * Finds by social answer id
+   * @param socialAnswerId 
+   * @returns by social answer id 
+   */
+  async findBySocialAnswerId(socialAnswerId: string): Promise<SocialDependentAnswer[]> {
+    return await this.socialDependentAnswerRepo.find({ socialAnswerId })
+  }
 }

@@ -27,11 +27,9 @@ export class SocialDependentAnswer {
   value: string
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
   socialAnswerId: string
 
   @ManyToOne(() => SocialAnswer, socialHistory => socialHistory.socialDependentAnswer, { onDelete: 'CASCADE' })
-  @Field(() => SocialAnswer, { nullable: true })
   socialAnswer: SocialAnswer;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

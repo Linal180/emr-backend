@@ -24,11 +24,9 @@ export class SocialAnswer {
   value: string
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
   socialHistoryId: string
 
   @ManyToOne(() => SocialHistory, socialHistory => socialHistory.socialAnswer, { onDelete: 'CASCADE' })
-  @Field(() => SocialHistory, { nullable: true })
   socialHistory: SocialHistory;
 
   @OneToMany(() => SocialDependentAnswer, socialDependentAnswer => socialDependentAnswer.socialAnswer, { onDelete: 'CASCADE' })

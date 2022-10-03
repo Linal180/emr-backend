@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 //entities
 import { SocialHistory } from "../entities/socialHistory.entity";
@@ -17,7 +17,9 @@ export class SocialHistoryService {
     @InjectRepository(SocialHistory)
     private socialHistoryRepo: Repository<SocialHistory>,
     private readonly patientService: PatientService,
+    @Inject(forwardRef(() => SocialAnswerService))
     private readonly socialAnswerService: SocialAnswerService,
+    @Inject(forwardRef(() => SocialDependentAnswerService))
     private readonly socialDependentAnswerService: SocialDependentAnswerService,
   ) { }
 
