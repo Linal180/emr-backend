@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 //guards
 import PermissionGuard from 'src/users/auth/role.guard';
@@ -7,7 +7,7 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PatientProblemInput from '../dto/problem-input.dto';
 import { CreateProblemInput } from '../dto/create-problem.input';
 import {
-  GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput
+  GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemSignedInput
 } from '../dto/update-problem.input';
 //payloads
 import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
@@ -18,10 +18,18 @@ import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { PatientProblems } from '../entities/patientProblems.entity';
 //services
 import { ProblemService } from '../services/patientProblems.service';
+import { PatientMedication } from '../entities/patientMedication.entity';
+import { PatientMedicationService } from '../services/patientMedication.service';
+import { LabTests } from 'src/labs/entities/labTests.entity';
+import { LabTestsService } from 'src/labs/services/labTests.service';
 
 @Resolver(() => PatientProblems)
 export class ProblemResolver {
-  constructor(private readonly problemService: ProblemService) { }
+  constructor(
+    private readonly problemService: ProblemService,
+    private readonly patientMedicationService: PatientMedicationService,
+    private readonly labTestsService: LabTestsService,
+  ) { }
 
   @Mutation(() => PatientProblemPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -40,6 +48,16 @@ export class ProblemResolver {
     return {
       patientProblem: await this.problemService.updatePatientProblem(updateProblemInput),
       response: { status: 200, message: 'Problem updated successfully' }
+    };
+  }
+
+  @Mutation(() => PatientProblemPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updatePatientProblem')
+  async updatePatientProblemSigned(@Args('updateProblemSignedInput') updateProblemSignedInput: UpdateProblemSignedInput) {
+    return {
+      patientProblem: await this.problemService.updatePatientProblemSigned(updateProblemSignedInput),
+      response: { status: 200, message: 'Diagnose signed successfully' }
     };
   }
 
@@ -118,5 +136,19 @@ export class ProblemResolver {
   async removePatientProblem(@Args('removeProblem') removeProblem: RemoveProblem) {
     await this.problemService.removePatientProblem(removeProblem);
     return { response: { status: 200, message: 'Patient problem Deleted' } };
+  }
+
+  @ResolveField(() => [PatientMedication])
+  async patientMedications(@Parent() patientProblem: PatientProblems): Promise<PatientMedication[]> {
+    if (patientProblem && patientProblem.id) {
+      return await this.patientMedicationService.GetPatientMedicationsByProblemId(patientProblem.id);
+    }
+  }
+
+  @ResolveField(() => [LabTests])
+  async labTests(@Parent() patientProblem: PatientProblems): Promise<LabTests[]> {
+    if (patientProblem && patientProblem.id) {
+      return await this.labTestsService.GetLabTestsByProblemId(patientProblem.id);
+    }
   }
 }

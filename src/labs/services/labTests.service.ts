@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, ILike, Repository } from 'typeorm';
 import * as moment from 'moment';
@@ -20,6 +20,7 @@ import { RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input'
 import { LabTests } from '../entities/labTests.entity';
 import { LoincCodesService } from './loincCodes.service';
 import { TestSpecimenService } from './testSpecimen.service';
+import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
 
 @Injectable()
 export class LabTestsService {
@@ -27,6 +28,7 @@ export class LabTestsService {
     @InjectRepository(LabTests)
     private labTestsRepository: Repository<LabTests>,
     private readonly paginationService: PaginationService,
+    @Inject(forwardRef(() => ProblemService))
     private readonly problemService: ProblemService,
     private readonly loincCodesService: LoincCodesService,
     private readonly patientService: PatientService,
@@ -39,6 +41,8 @@ export class LabTestsService {
 
   async createLabTest(createLabTestInput: CreateLabTestInput): Promise<LabTests> {
     try {
+      const { createLabTestItemInput } = createLabTestInput
+      const { primaryProviderId, patientId } = createLabTestItemInput
       //get test 
       const testName = await this.loincCodesService.findOne(createLabTestInput.test)
       //get patient 
@@ -64,6 +68,16 @@ export class LabTestsService {
         labTestInstance.diagnoses = diagnoses
       }
 
+      if (createLabTestInput.createLabTestItemInput.problemId) {
+        //get patientProblem
+        const patientProblem = await this.problemService.findOne(createLabTestInput.createLabTestItemInput.problemId)
+        labTestInstance.patientProblem = patientProblem
+      }
+
+      if (primaryProviderId) {
+        await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
+      }
+
       labTestInstance.test = testName
       labTestInstance.patient = patient
       return await this.labTestsRepository.save(labTestInstance)
@@ -75,8 +89,8 @@ export class LabTestsService {
 
   async updateLabTest(updateLabTestInput: UpdateLabTestInput): Promise<LabTests> {
     try {
-      //get diagnoses
-
+      const { updateLabTestItemInput } = updateLabTestInput
+      const { primaryProviderId, patientId } = updateLabTestItemInput
 
       //create lab test 
       const labTestInstance = this.labTestsRepository.create({ ...updateLabTestInput.updateLabTestItemInput, labTestStatus: updateLabTestInput.updateLabTestItemInput.status })
@@ -109,6 +123,10 @@ export class LabTestsService {
       if (updateLabTestInput.updateLabTestItemInput.doctorId) {
         const doctor = await this.doctorService.findOne(updateLabTestInput.updateLabTestItemInput.doctorId)
         labTestInstance.doctor = doctor
+      }
+
+      if (primaryProviderId) {
+        await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
       }
 
       if (updateLabTestInput.test) {
@@ -227,6 +245,19 @@ export class LabTestsService {
     if (labTest) {
       return { labTest }
     }
+  }
+
+  async GetLabTestsByProblemId(problemId: string): Promise<LabTests[]> {
+    return await this.labTestsRepository.find({ where: { patientProblemId: problemId } });
+  }
+
+  async updatePatientLabTestSigned(problemId: string) {
+    const labTests = await this.labTestsRepository.find({ where: { patientProblemId: problemId } })
+    labTests.forEach(async (labTest) => {
+      labTest.isSigned = true
+      return await this.labTestsRepository.save(labTest)
+    })
+    return labTests
   }
 
   async findLabTestByTestAndOrderNo(orderNum: string, testName: string): Promise<LabTests> {

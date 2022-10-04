@@ -154,10 +154,11 @@ export class PatientAllergiesService {
     }
   }
 
-  async getPatientAllergies(patientId: string) {
+  async getPatientAllergies(patientId: string, appointmentId?: string) {
     return this.patientAllergiesRepository.find({
       where: {
-        patientId
+        patientId,
+        ...(appointmentId ? { appointmentId } : {})
       }
     })
   }

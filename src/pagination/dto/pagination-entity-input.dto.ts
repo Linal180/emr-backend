@@ -93,4 +93,5 @@ export class PaginatedEntityInput {
   cvxId?: string;
   mvxId?: string;
   specialSectionId?: string;
+  forOrders?: boolean
 }

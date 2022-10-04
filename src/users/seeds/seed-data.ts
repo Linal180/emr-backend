@@ -327,9 +327,23 @@ export const patientPermissionsList = ['createAppointment', 'createExternalAppoi
     'updatePatientNoteInfoInputs', 'updatePatientProviderRelation', 'getPatientProviders', 'getPatientProvider', 'findAllDoctorPatients',
     'me']
 
-export const staffPermissionsList = ['createPatient', 'updatePatient', 'patientInfo', 'updatePatientProfile',
-    'findAllPatient', 'getPatient', 'createSchedule', 'updateSchedule', 'findAllSchedules', 'getSchedule',
-    'getDoctorSlots', 'findAllDoctor', 'getDoctor', 'getStaff', 'updateStaff']
+export const staffPermissionsList = ['fetchAllUsers', 'fetchUser', 'getUser', 'searchUser', 'forgotPassword', 'deactivateUser', 'updateUser', 'updateRole', 'createRole',
+'updateRole', 'getAllRoles', 'getRole', 'createAppointment', 'createExternalAppointment', 'updateAppointment', 'updateAppointmentBillingStatus',
+'findAllAppointments', 'getAppointment', 'getAppointments', 'cancelAppointment', 'removeAppointment', 'getPatientAppointment', 'createFacility', 'updateFacility',
+'updateFacilityTimeZone', 'findAllFacility', 'getFacility', 'createService', 'updateService', 'findAllServices', 'getService', 'createPatient',
+'updatePatient', 'patientInfo', 'updatePatientProfile', 'sendInviteToPatient', 'findAllPatient', 'getPatient', 'findPatientAttachments', 'fetchAllPatients', 'createDoctor', 'updateDoctor', 'findAllDoctor', 'getDoctor', 'removeDoctor', 'disableDoctor', 'createStaff', 'updateStaff',
+'findAllStaff', 'getStaff', 'removeStaff', 'disableStaff', 'createSchedule', 'updateSchedule', 'findAllSchedules', 'getSchedule', 'getFacilitySchedule', 'getDoctorSchedule', 'getSlots', 'removeSchedule',
+'removePatientProblem', 'getPatientProblem', 'searchSnoMedCodeByIcdCodes', 'searchIcdCodes', 'findAllPatientProblem', 'updatePatientProblem', 'addPatientProblem',
+'addPatientVital', 'updatePatientVital', 'findAllPatientVitals', 'getPatientVital', 'removePatientVital', 'addPatientAllergy', 'updatePatientAllergy', 'findAllPatientAllergies', 'findAllAllergies', 'getPatientAllergy', 'removePatientAllergy'
+, 'createLabTestObservation', 'updateLabTestObservation', 'removeLabTestObservation', 'createLabTest', 'updateLabTest', 'getLabTest', 'findAllLabTest', 'removeLabTest',
+'findAllUpcomingAppointments', 'getPatientPastUpcomingAppointment', 'getAttachments', 'getAttachmentsByLabOrder', 'getAttachmentsByPolicyId', 'getAttachmentsByAgreementId',
+'createAttachmentData', 'removeAttachmentData', 'removeAttachmentMedia', 'updateAttachmentData', 'getAttachment', 'fetchDocumentTypes', 'fetchDocumentType',
+'fetchDocumentTypeByName', 'createBilling', 'fetchBillingDetailsByAppointmentId', 'findAllForms', 'getForm', 'findAllUsersForms',
+'createForm', 'updateForm', 'removeForm', 'createFormTemplate', 'saveUserFormValues', 'fetchAllPolicies', 'fetchPolicy', 'fetchPatientInsurances', 'createPolicy',
+'updatePolicy', 'fetchAllPolicyHolders', 'fetchPolicyHolder', 'createPolicyHolder', 'fetchAllInsurances', 'fetchInsurance', 'createCopay', 'findAllTestSpecimenTypes',
+'getSpecimenTypeByName', 'createLoincCode', 'updateLoincCode', 'findAllLoincCodes', 'findLoincCode', 'updateLabTestsByOrderNum', 'findLabTestsByOrderNum', 'fetchICDCodes', 'patientInfo',
+'updatePatient', 'updatePatientNoteInfoInputs', 'updatePatientProviderRelation', 'getPatient', 'getPatientProviders', 'getPatientProvider', 'findAllDoctorPatients',
+'me']
 
 export const practitionerNursePermissionsList = ['fetchAllUsers', 'fetchUser', 'getUser', 'searchUser', 'forgotPassword', 'deactivateUser', 'updateUser', 'updateRole', 'createRole',
     'updateRole', 'getAllRoles', 'getRole', 'createAppointment', 'createExternalAppointment', 'updateAppointment', 'updateAppointmentBillingStatus',
