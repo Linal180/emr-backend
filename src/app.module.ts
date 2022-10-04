@@ -24,6 +24,7 @@ import { FormBuilderModule } from './formbuilder/formbuilder.module'
 import { AttachmentsModule } from './attachments/attachments.module';
 import { FeeScheduleModule } from './feeSchedule/feeSchedule.module';
 import { AppointmentModule } from './appointments/appointment.module';
+import { SocialHistoryModule } from './socialHistory/socialHistory.module';
 import { ProblemChartingModule } from './patientCharting/patientCharting.module';
 //configs, 
 import { DatabaseConfig } from './database.config';
@@ -77,6 +78,7 @@ import { AppController } from './app.controller';
     FormBuilderModule,
     ProblemChartingModule,
     ShortUrlModule,
+    SocialHistoryModule
   ],
   controllers: [AppController],
   providers: [AppService],
