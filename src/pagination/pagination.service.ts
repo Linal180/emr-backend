@@ -221,6 +221,7 @@ export class PaginationService {
       isClaimStatus,
       cvxId,
       mvxId,
+      forOrders,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -288,6 +289,7 @@ export class PaginationService {
         ...(roleName && {
           role: Raw(alias => `${alias} ILIKE '%${roleName}%'`),
         }),
+        
         ...(specimenTypeName && {
           name: Raw(alias => `${alias} ILIKE '%${specimenTypeName}%'`),
         }),
@@ -345,6 +347,9 @@ export class PaginationService {
         ...(isSystemForm != null && {
           isSystemForm
         }),
+        ...(forOrders != null && {
+          forOrders
+        }),
         ...(formType && {
           type: formType
         }),
@@ -371,8 +376,7 @@ export class PaginationService {
         ...(moduleType && moduleType != null && { moduleType }),
         ...(logUserId && logUserId != null && { userId: logUserId }),
         ...(feeScheduleName && feeScheduleName != null && { name: feeScheduleName }),
-        ...(logEndDate && logEndDate != null && { createdAt: LessThanOrEqual(new Date(logEndDate)) }),
-        ...(logStartDate && logStartDate != null && { createdAt: MoreThanOrEqual(new Date(logStartDate)) }),
+        ...(logStartDate && logStartDate != null && { createdAt: Raw(alias => `"UserLogs"."createdAt"::timestamp <= '${moment(logEndDate).format("YYYY-MM-DD HH:mm:ss")}' AND "UserLogs"."createdAt"::timestamp >= '${moment(logStartDate).format("YYYY-MM-DD HH:mm:ss")}'`) }),
         ...(expiryDate && expiryDate != null && { expiryDate: Raw(alias => `${alias} Is null OR ${alias} <= '${today}'`) }),
         ...(effectiveDate && effectiveDate != null && { effectiveDate: Raw(alias => `${alias} Is null OR ${alias} >= '${today}'`) }),
         ...(claimFeedFacilityName && { provName: Raw(alias => `${alias} ILIKE '%${claimFeedFacilityName}%'`) }),

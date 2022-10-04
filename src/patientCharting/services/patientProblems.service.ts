@@ -1,6 +1,9 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { LabTestStatus } from 'src/labs/entities/labTests.entity';
+import { LabTestsService } from 'src/labs/services/labTests.service';
+import { generateString } from 'src/lib/helper';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
@@ -12,10 +15,11 @@ import { IcdCodesPayload, ICDCodesWithSnowMedCode } from '../dto/icdCodes-payloa
 import PatientProblemInput from '../dto/problem-input.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
-import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput } from '../dto/update-problem.input';
+import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemSignedInput } from '../dto/update-problem.input';
 import { ICDCodes } from '../entities/icdcodes.entity';
 import { PatientProblems } from '../entities/patientProblems.entity';
 import { SnoMedCodes } from '../entities/snowMedCodes.entity';
+import { PatientMedicationService } from './patientMedication.service';
 
 @Injectable()
 export class ProblemService {
@@ -29,6 +33,8 @@ export class ProblemService {
     private readonly paginationService: PaginationService,
     private readonly patientService: PatientService,
     private readonly appointmentService: AppointmentService,
+    private readonly patientMedicationService: PatientMedicationService,
+    private readonly labTestService: LabTestsService,
     private readonly doctorService: DoctorService,
     private readonly staffService: StaffService,
     private readonly utilsService: UtilsService
@@ -41,6 +47,8 @@ export class ProblemService {
    */
   async addPatientProblem(createProblemInput: CreateProblemInput): Promise<PatientProblems> {
     try {
+      const { medicationIds, testIds, patientId, appointmentId } = createProblemInput || {}
+
       //get icdCode
       const icdCode = await this.icdCodeRepository.findOne(createProblemInput.icdCodeId)
 
@@ -68,6 +76,38 @@ export class ProblemService {
         const snowMedCode = await this.snowMedCodeRepository.findOne(createProblemInput.snowMedCodeId)
         patientProblemInstance.snowMedCode = snowMedCode
       }
+
+      if (medicationIds) {
+        const patientMedications = await Promise.all(medicationIds.map(async (medicationId) => {
+          return await this.patientMedicationService.addPatientMedication({
+            medicationId,
+            patientId,
+            appointmentId,
+            status: 'ACTIVE'
+          })
+        }))
+
+        patientProblemInstance.patientMedications = patientMedications
+      }
+
+      if (testIds) {
+        const orderNumber = generateString()
+        const accessionNumber = generateString(6)
+        const patientLabTests = await Promise.all(testIds.map(async (testId) => {
+          return await this.labTestService.createLabTest({
+            createLabTestItemInput: {
+              patientId,
+              appointmentId,
+              accessionNumber,
+              orderNumber,
+              status: LabTestStatus.ORDER_ENTERED,
+            },
+            test: testId
+          })
+        }))
+
+        patientProblemInstance.labTests = patientLabTests
+      }
       const patientProblem = await this.patientProblemsRepository.save(patientProblemInstance)
       return patientProblem
     } catch (error) {
@@ -83,6 +123,21 @@ export class ProblemService {
   async updatePatientProblem(updateProblemInput: UpdateProblemInput): Promise<PatientProblems> {
     try {
       return await this.utilsService.updateEntityManager(PatientProblems, updateProblemInput.id, updateProblemInput, this.patientProblemsRepository)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updatePatientProblemSigned(updateProblemSignedInput: UpdateProblemSignedInput): Promise<PatientProblems> {
+    try {
+      const { id, isSigned } = updateProblemSignedInput
+      if (id) {
+        const patientProblem = await this.GetPatientProblem(id)
+        patientProblem.isSigned = isSigned
+        await this.patientMedicationService.updatePatientMedicationsSigned(id)
+        await this.labTestService.updatePatientLabTestSigned(id)
+        return await this.patientProblemsRepository.save(patientProblem)
+      }
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -107,10 +162,11 @@ export class ProblemService {
     }
   }
 
-  async getPatientProblems(patientId: string) {
+  async getPatientProblems(patientId: string, appointmentId?: string) {
     return this.patientProblemsRepository.find({
       where: {
-        patientId
+        patientId,
+        ...(appointmentId ? { appointmentId } : {})
       }
     })
   }
@@ -315,6 +371,7 @@ export class ProblemService {
    */
   async removePatientProblem({ id }: RemoveProblem) {
     try {
+      await this.patientMedicationService.removePatientMedicationByProblem(id)
       await this.patientProblemsRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);

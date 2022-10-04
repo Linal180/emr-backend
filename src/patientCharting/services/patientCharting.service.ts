@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PatientService } from 'src/patients/services/patient.service';
-import { PatientChartingInfoInput } from '../dto/patientChartingInfo-input.dto';
+import { PatientChartingInfoInput, PatientChartingReviewInput } from '../dto/patientChartingInfo-input.dto';
 import { FamilyHistoryService } from './familyHistory.service';
 import { PatientAllergiesService } from './patientAllergies.service';
 import { PatientMedicationService } from './patientMedication.service';
@@ -22,6 +22,12 @@ export class PatientChartingService {
     private readonly familyHistoryService: FamilyHistoryService,
   ) { }
 
+
+  /**
+   * Gets patient charting info
+   * @param patientChartingInfoInput 
+   * @returns  
+   */
   async getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput) {
     const { patientId } = patientChartingInfoInput
 
@@ -37,7 +43,7 @@ export class PatientChartingService {
     const patientMedications = await this.patientMedicationsService.getPatientMedications(patientId)
 
     const surgicalHistories = await this.surgicalHistoryService.getPatientSurgicalHistory(patientId)
-    
+
     const familyHistories = await this.familyHistoryService.findByPatientId(patientId)
 
     return {
@@ -49,6 +55,21 @@ export class PatientChartingService {
       patientMedications,
       surgicalHistories,
       familyHistories
+    }
+  }
+
+  async getPatientChartingReview(patientChartingReviewInput: PatientChartingReviewInput) {
+    const { patientId, appointmentId } = patientChartingReviewInput
+    const patientProblems = await this.patientProblemService.getPatientProblems(patientId, appointmentId)
+    const patientMedications = await this.patientMedicationsService.getPatientMedications(patientId, appointmentId)
+    const patientVitals = await this.patientVitalService.getPatientVitals(patientId, appointmentId)
+    const patientAllergies = await this.patientAllergiesService.getPatientAllergies(patientId, appointmentId)
+
+    return {
+      patientProblems,
+      patientMedications,
+      patientVitals,
+      patientAllergies
     }
   }
 }

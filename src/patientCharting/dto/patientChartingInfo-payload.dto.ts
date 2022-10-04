@@ -35,3 +35,18 @@ export class PatientChartingInfoPayload extends ResponsePayloadResponse {
     @Field(type => [FamilyHistory], { nullable: 'itemsAndList' })
     familyHistories: FamilyHistory[];
 }
+
+@ObjectType()
+export class PatientChartingReviewPayload extends ResponsePayloadResponse {
+    @Field(type => [PatientVitals], { nullable: 'itemsAndList' })
+    patientVitals: PatientVitals[];
+
+    @Field(type => [PatientAllergies], { nullable: 'itemsAndList' })
+    patientAllergies: PatientAllergies[];
+
+    @Field(type => [PatientProblems], { nullable: 'itemsAndList' })
+    patientProblems: PatientProblems[];
+
+    @Field(type => [PatientMedication], { nullable: 'itemsAndList' })
+    patientMedications: PatientMedication[];
+}

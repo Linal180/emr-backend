@@ -30,6 +30,10 @@ export class CPTCodes {
   @Field({ nullable: true })
   longDescription: string;
 
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  systematic: boolean;
+
   //fields
 
   @OneToMany(() => CptFeeSchedule, cptFeeSchedule => cptFeeSchedule.cptCodes, { onDelete: 'CASCADE' })

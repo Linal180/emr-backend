@@ -28,6 +28,8 @@ import { FamilyHistoryRelative } from './entities/familyHistoryRelative.entity';
 import { NDCResolver } from './resolvers/ndc.resolver';
 import { CVXResolver } from './resolvers/cvx.resolver';
 import { MVXResolver } from './resolvers/mvx.resolver';
+import { VaccineResolver } from './resolvers/vaccine.resolver';
+import { IcdCodeResolver } from './resolvers/icdCode.resolver';
 import { VitalsResolver } from './resolvers/patientVitals.resolver';
 import { TriageNotesResolver } from './resolvers/triageNotes.resolver';
 import { ProblemResolver } from './resolvers/patientProblems.resolver';
@@ -41,6 +43,7 @@ import { NDCService } from './services/ndc.service';
 import { CVXService } from './services/cvx.service';
 import { MVXService } from './services/mvx.service';
 import { ICDCodeService } from './services/icdCode.service';
+import { VaccineService } from './services/vaccine.service';
 import { ReactionsService } from './services/reactions.service';
 import { VitalsService } from './services/patientVitals.service';
 import { ProblemService } from './services/patientProblems.service';
@@ -51,8 +54,7 @@ import { SurgicalHistoryService } from './services/surgicalHistory.service';
 import { PatientAllergiesService } from './services/patientAllergies.service';
 import { PatientMedicationService } from './services/patientMedication.service';
 import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
-import { VaccineService } from './services/vaccine.service';
-import { VaccineResolver } from './resolvers/vaccine.resolver';
+import { LabModule } from 'src/labs/labs.module';
 
 
 @Module({
@@ -63,9 +65,10 @@ import { VaccineResolver } from './resolvers/vaccine.resolver';
     ]),
     forwardRef(() => UsersModule),
     forwardRef(() => PatientModule),
-    ProviderModule,
-    PaginationModule,
+    forwardRef(()=>ProviderModule),
+    forwardRef(()=>PaginationModule),
     AppointmentModule,
+    forwardRef(() => LabModule),
   ],
   providers: [
     PatientAllergiesService, ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver,
@@ -73,7 +76,7 @@ import { VaccineResolver } from './resolvers/vaccine.resolver';
     FamilyHistoryService, FamilyHistoryResolver, FamilyHistoryRelativeService, ICDCodeService,
     PatientMedicationService, PatientMedicationsResolver, SurgicalHistoryResolver, SurgicalHistoryService,
     PatientChartingService, PatientChartingResolver, NDCService, NDCResolver, CVXResolver, CVXService,
-    MVXResolver, MVXService, VaccineService, VaccineResolver
+    MVXResolver, MVXService, VaccineService, VaccineResolver, IcdCodeResolver
   ],
   exports: [
     ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule, FamilyHistoryService
