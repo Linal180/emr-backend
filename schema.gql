@@ -255,6 +255,7 @@ type LabTests {
   primaryProviderId: String
   referringProviderId: String
   appointmentId: String
+  isSigned: Boolean
   testId: String
   patientProblemId: String
   patient: Patient
@@ -356,6 +357,7 @@ type PatientMedication {
   status: String
   stopDate: String
   stopReason: String
+  isSigned: Boolean
   note: String
   medicationId: String
   patientId: String
@@ -1692,6 +1694,8 @@ type UpFrontPaymentType {
   id: String!
   paymentType: String
   amount: String
+  dueAmount: String
+  copayType: String
   type: String
   notes: String
   UpFrontPayment: UpFrontPayment
@@ -4113,6 +4117,7 @@ input CreateLabTestItemInput {
   referringProviderId: String
   providerNotes: String
   problemId: String
+  isSigned: Boolean = false
 }
 
 input CreateSpecimenItemInput {
@@ -4147,6 +4152,7 @@ input UpdateLabTestItemInput {
   referringProviderId: String
   providerNotes: String
   problemId: String
+  isSigned: Boolean = false
   id: String!
 }
 
@@ -5611,6 +5617,7 @@ input CreatePatientMedicationInput {
   appointmentId: String
   medicationId: String
   patientProblemId: String
+  isSigned: Boolean = false
 }
 
 input UpdatePatientMedicationInput {
@@ -5629,6 +5636,7 @@ input UpdatePatientMedicationInput {
   appointmentId: String
   medicationId: String
   patientProblemId: String
+  isSigned: Boolean = false
   id: String!
 }
 
@@ -5804,6 +5812,8 @@ input UpFrontPaymentInput {
 input UpFrontPaymentInputType {
   amount: String
   type: String
+  copayType: String
+  dueAmount: String
   paymentType: String
   notes: String
 }

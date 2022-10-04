@@ -134,6 +134,8 @@ export class ProblemService {
       if (id) {
         const patientProblem = await this.GetPatientProblem(id)
         patientProblem.isSigned = isSigned
+        await this.patientMedicationService.updatePatientMedicationsSigned(id)
+        await this.labTestService.updatePatientLabTestSigned(id)
         return await this.patientProblemsRepository.save(patientProblem)
       }
     } catch (error) {

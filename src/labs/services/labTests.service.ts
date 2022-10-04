@@ -251,6 +251,15 @@ export class LabTestsService {
     return await this.labTestsRepository.find({ where: { patientProblemId: problemId } });
   }
 
+  async updatePatientLabTestSigned(problemId: string) {
+    const labTests = await this.labTestsRepository.find({ where: { patientProblemId: problemId } })
+    labTests.forEach(async (labTest) => {
+      labTest.isSigned = true
+      return await this.labTestsRepository.save(labTest)
+    })
+    return labTests
+  }
+
   async findLabTestByTestAndOrderNo(orderNum: string, testName: string): Promise<LabTests> {
     const labTest = await this.labTestsRepository.findOne({
       relations: ['test', 'testObservations'],
