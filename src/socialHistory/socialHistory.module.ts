@@ -18,6 +18,7 @@ import { QuestionsResolver } from "./resolvers/questions.resolver";
 import { SocialAnswerResolver } from "./resolvers/socialAnswer.resolver";
 import { SocialHistoryResolver } from "./resolvers/socialHistory.resolver";
 import { DependentQuestionsResolver } from "./resolvers/dependentQuestions.resolver";
+import { SocialDependentAnswerResolver } from "./resolvers/socialDependentAnswer.resolver";
 //services
 import { SectionService } from "./services/sections.service";
 import { QuestionService } from "./services/questions.service";
@@ -48,6 +49,7 @@ import { SocialDependentAnswerService } from "./services/socialDependentAnswer.s
     SocialAnswerResolver,
     SocialHistoryResolver,
     DependentQuestionsResolver,
+    SocialDependentAnswerResolver,
     //services
     SectionService,
     QuestionService,

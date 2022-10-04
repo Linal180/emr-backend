@@ -6,7 +6,7 @@ import { SocialDependentAnswer } from "../entities/socialDependentAnswer.entity"
 import { DependentQuestionService } from "../services/dependentQuestions.service";
 
 @Resolver(() => SocialDependentAnswer)
-export class SocialAnswerResolver {
+export class SocialDependentAnswerResolver {
   constructor(
     private readonly dependentQuestionService: DependentQuestionService,
   ) { }
