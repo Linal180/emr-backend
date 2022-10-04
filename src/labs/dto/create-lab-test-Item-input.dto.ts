@@ -50,4 +50,10 @@ export default class CreateLabTestItemInput {
 
     @Field({ nullable: true })
     providerNotes? : string
+
+    @Field({ nullable: true })
+    problemId? : string
+
+    @Field({ nullable: true, defaultValue: false })
+    isSigned?: boolean;
 }

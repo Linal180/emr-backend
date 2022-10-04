@@ -22,6 +22,7 @@ export class PatientMedicationService {
     private medicationRepository: Repository<Medications>,
     private readonly paginationService: PaginationService,
     private readonly patientService: PatientService,
+    private readonly appointmentService: AppointmentService,
     private readonly utilsService: UtilsService
   ) { }
 
@@ -34,6 +35,11 @@ export class PatientMedicationService {
       if (createPatientMedicationInput.patientId) {
         const patient = await this.patientService.findOne(createPatientMedicationInput.patientId)
         patientMedicationInstance.patient = patient
+      }
+
+      if (createPatientMedicationInput.appointmentId) {
+        const appointment = await this.appointmentService.findOne(createPatientMedicationInput.appointmentId)
+        patientMedicationInstance.appointment = appointment
       }
 
       if (createPatientMedicationInput.medicationId) {
@@ -80,10 +86,11 @@ export class PatientMedicationService {
     }
   }
 
-  async getPatientMedications(patientId: string) {
+  async getPatientMedications(patientId: string, appointmentId?: string) {
     return this.patientMedicationsRepository.find({
       where: {
-        patientId
+        patientId,
+        ...(appointmentId ? { appointmentId } : {})
       }
     })
   }
@@ -101,6 +108,15 @@ export class PatientMedicationService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async updatePatientMedicationsSigned(problemId: string) {
+    const patientMedications = await this.patientMedicationsRepository.find({ where: { patientProblemId: problemId } })
+    patientMedications.forEach(async (patientMedication) => {
+      patientMedication.isSigned = true
+      return await this.patientMedicationsRepository.save(patientMedication)
+    })
+    return patientMedications
   }
 
   /**
@@ -128,6 +144,10 @@ export class PatientMedicationService {
     return await this.findOne(id);
   }
 
+  async GetPatientMedicationsByProblemId(problemId: string): Promise<PatientMedication[]> {
+    return await this.patientMedicationsRepository.find({ where: { patientProblemId: problemId } });
+  }
+
   /**
    * Removes patient patientMedication
    * @param { id } 
@@ -140,9 +160,25 @@ export class PatientMedicationService {
     }
   }
 
+  async removePatientMedicationByProblem(problemId: string) {
+    try {
+      await this.patientMedicationsRepository.delete({ patientProblemId: problemId })
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   async getMedication(id: string): Promise<Medications> {
     try {
       return await this.medicationRepository.findOne(id)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getMedications(ids: string[]): Promise<Medications[]> {
+    try {
+      return await this.medicationRepository.findByIds(ids)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

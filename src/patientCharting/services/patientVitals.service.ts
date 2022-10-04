@@ -84,10 +84,11 @@ export class VitalsService {
     }
   }
 
-  async getPatientVitals(patientId: string) {
+  async getPatientVitals(patientId: string, appointmentId?: string) {
     return this.patientVitalsRepository.find({
       where: {
-        patientId
+        patientId,
+        ...(appointmentId ? { appointmentId } : {})
       }
     })
   }
