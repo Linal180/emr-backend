@@ -98,6 +98,10 @@ export class LabTests {
   @Field({ nullable: true })
   appointmentId: string;
 
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  isSigned: boolean;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   testId: string;

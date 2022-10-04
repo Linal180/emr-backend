@@ -110,6 +110,15 @@ export class PatientMedicationService {
     }
   }
 
+  async updatePatientMedicationsSigned(problemId: string) {
+    const patientMedications = await this.patientMedicationsRepository.find({ where: { patientProblemId: problemId } })
+    patientMedications.forEach(async (patientMedication) => {
+      patientMedication.isSigned = true
+      return await this.patientMedicationsRepository.save(patientMedication)
+    })
+    return patientMedications
+  }
+
   /**
    * Finds one
    * @param id 

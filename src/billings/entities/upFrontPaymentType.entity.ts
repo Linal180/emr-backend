@@ -25,6 +25,14 @@ export class UpFrontPaymentType {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  dueAmount: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  copayType: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   type: string;
 
   @Column({ nullable: true })
