@@ -1,6 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+//entities
 import { SocialAnswer } from "./socialAnswer.entity";
+import { DependentQuestions } from "./dependentQuestions.entity";
 
 
 @Entity({ name: 'SocialDependentAnswer' })
@@ -29,8 +31,17 @@ export class SocialDependentAnswer {
   @Column({ nullable: true })
   socialAnswerId: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  dependentQuestionId: string
+
   @ManyToOne(() => SocialAnswer, socialHistory => socialHistory.socialDependentAnswer, { onDelete: 'CASCADE' })
   socialAnswer: SocialAnswer;
+
+  @OneToOne(() => DependentQuestions, dependentQuestion => dependentQuestion.socialDependentAnswer, { onDelete: 'CASCADE' })
+  @Field(() => DependentQuestions, { nullable: true })
+  @JoinColumn()
+  dependentQuestion: DependentQuestions;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

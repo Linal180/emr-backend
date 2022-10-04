@@ -7,6 +7,7 @@ import { SocialAnswer } from "../entities/socialAnswer.entity";
 import { CreateSocialAnswerInput } from "../inputs/socialAnswer.inputs";
 //services
 import { UtilsService } from "src/util/utils.service";
+import { QuestionService } from "./questions.service";
 import { SocialHistoryService } from "./socialHistory.service";
 
 @Injectable()
@@ -15,6 +16,7 @@ export class SocialAnswerService {
     @InjectRepository(SocialAnswer)
     private socialAnswerRepo: Repository<SocialAnswer>,
     private readonly utilsService: UtilsService,
+    private readonly questionService: QuestionService,
     @Inject(forwardRef(() => SocialHistoryService))
     private readonly socialHistoryService: SocialHistoryService,
   ) { }
@@ -28,13 +30,14 @@ export class SocialAnswerService {
   async create(params: CreateSocialAnswerInput, socialHistoryId?: string): Promise<SocialAnswer> {
     try {
       const instance = this.socialAnswerRepo.create(params);
-
+      const { name } = params
       if (socialHistoryId) {
         const socialHistory = await this.socialHistoryService.findOne(socialHistoryId)
         instance.socialHistory = socialHistory
         instance.socialHistoryId = socialHistoryId
       }
-
+      const question = await this.questionService.findOne(name)
+      instance.question = question;
       return await this.socialAnswerRepo.save(instance)
     }
     catch (error) {

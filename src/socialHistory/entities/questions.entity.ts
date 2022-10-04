@@ -1,10 +1,11 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { Sections } from "./sections.entity";
 import { DependentQuestions } from "./dependentQuestions.entity";
 //payloads
 import { SelectorType } from "../payloads/questions.payload";
+import { SocialAnswer } from "./socialAnswer.entity";
 
 @Entity({ name: 'Questions' })
 @ObjectType()
@@ -44,6 +45,9 @@ export class Questions {
   @Column({ nullable: true })
   @Field({ nullable: true })
   sectionsId: string
+
+  @OneToOne(() => SocialAnswer, socialAnswer => socialAnswer.question, { onDelete: 'CASCADE' })
+  socialAnswer: SocialAnswer;
 
   @OneToMany(() => DependentQuestions, dependentQuestion => dependentQuestion.questions, { onDelete: 'CASCADE' })
   @Field(() => [DependentQuestions], { nullable: true })

@@ -2,6 +2,7 @@
 import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //entities
 import { Sections } from "../entities/sections.entity";
+import { Questions } from "../entities/questions.entity";
 //inputs
 import { FindAllSectionsInput } from "../inputs/sections.input";
 //payloads
@@ -9,7 +10,6 @@ import { FindAllSectionsPayload } from "../payloads/sections.payload";
 //services
 import { SectionService } from "../services/sections.service";
 import { QuestionService } from "../services/questions.service";
-import { Questions } from "../entities/questions.entity";
 
 
 @Resolver(() => Sections)

@@ -4,13 +4,11 @@ import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import { Questions } from "../entities/questions.entity";
 import { DependentQuestions } from "../entities/dependentQuestions.entity";
 //services
-import { QuestionService } from "../services/questions.service";
 import { DependentQuestionService } from "../services/dependentQuestions.service";
 
 @Resolver(() => Questions)
 export class QuestionsResolver {
   constructor(
-    private readonly questionService: QuestionService,
     private readonly dependentQuestionService: DependentQuestionService,
   ) { }
 

@@ -21,4 +21,13 @@ export class DependentQuestionService {
     return await this.dependentQuestionRepo.find({ questionsId })
   }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<DependentQuestions> {
+    return await this.dependentQuestionRepo.findOne(id)
+  }
+
 }

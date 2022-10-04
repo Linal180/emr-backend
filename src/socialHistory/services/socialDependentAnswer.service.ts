@@ -8,6 +8,7 @@ import { SocialDependentAnswerInput } from "../inputs/socialDependentAnswer.inpu
 //services
 import { UtilsService } from "src/util/utils.service";
 import { SocialAnswerService } from "./socialAnswer.service";
+import { DependentQuestionService } from "./dependentQuestions.service";
 
 @Injectable()
 export class SocialDependentAnswerService {
@@ -16,6 +17,7 @@ export class SocialDependentAnswerService {
     private socialDependentAnswerRepo: Repository<SocialDependentAnswer>,
     private readonly utilsService: UtilsService,
     private readonly socialAnswerService: SocialAnswerService,
+    private readonly dependentQuestionService: DependentQuestionService,
   ) { }
 
 
@@ -27,11 +29,15 @@ export class SocialDependentAnswerService {
   async create(params: SocialDependentAnswerInput, socialAnswerId?: string): Promise<SocialDependentAnswer> {
     try {
       const instance = this.socialDependentAnswerRepo.create({ ...params });
+      const { name } = params;
+
       if (socialAnswerId) {
         const socialAnswer = await this.socialAnswerService.findOne(socialAnswerId);
         instance.socialAnswer = socialAnswer
         instance.socialAnswerId = socialAnswer?.id
       }
+      const dependentQuestion = await this.dependentQuestionService.findOne(name)
+      instance.dependentQuestion = dependentQuestion;
       return await this.socialDependentAnswerRepo.save(instance)
 
     }
@@ -48,11 +54,16 @@ export class SocialDependentAnswerService {
    */
   async update(params: SocialDependentAnswerInput, socialAnswerId: string): Promise<SocialDependentAnswer> {
     try {
-      const socialDependentAnswer = await this.socialDependentAnswerRepo.findOne({ socialAnswerId, name: params?.name });
+      debugger
+      let socialDependentAnswer: undefined | null | SocialDependentAnswer = null
+      socialDependentAnswer = await this.socialDependentAnswerRepo.findOne({ socialAnswerId, name: params?.name });
+      if (!socialDependentAnswer) {
+        socialDependentAnswer = await this.create(params, socialAnswerId)
+      }
       const socialAnswer = await this.socialAnswerService.findOne(socialAnswerId);
       socialDependentAnswer.socialAnswer = socialAnswer
       socialDependentAnswer.socialAnswerId = socialAnswerId;
-      return await this.utilsService.updateEntityManager(SocialDependentAnswer, socialAnswer.id, params, this.socialDependentAnswerRepo)
+      return await this.utilsService.updateEntityManager(SocialDependentAnswer, socialDependentAnswer?.id, params, this.socialDependentAnswerRepo)
 
     } catch (error) {
       throw new InternalServerErrorException(error);

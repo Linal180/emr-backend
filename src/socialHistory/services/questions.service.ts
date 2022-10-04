@@ -13,8 +13,23 @@ export class QuestionService {
   ) { }
 
 
+  /**
+   * Finds by section id
+   * @param sectionsId 
+   * @returns by section id 
+   */
   async findBySectionId(sectionsId: string): Promise<Questions[]> {
     return await this.questionRepo.find({ sectionsId })
+  }
+
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<Questions> {
+    return await this.questionRepo.findOne(id)
   }
 
 }

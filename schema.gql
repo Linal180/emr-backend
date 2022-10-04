@@ -1953,12 +1953,60 @@ type PatientMedication {
   updatedAt: String
 }
 
+type Sections {
+  id: String!
+  name: String
+  specialId: String
+  questions: [Questions!]
+  createdAt: String
+  updatedAt: String
+}
+
 type SocialDependentAnswer {
   id: String!
   name: String
   note: String
   parentId: String
   value: String
+  dependentQuestionId: String
+  dependentQuestion: DependentQuestions
+  createdAt: String
+  updatedAt: String
+}
+
+type SelectorType {
+  id: String
+  name: String
+}
+
+type DependentQuestions {
+  id: String!
+  title: String
+  note: String
+  value: String
+  answer: [String!]
+  questionType: String
+  options: [SelectorType!]
+  parentId: String
+  specialId: String
+  questionsId: String
+  questions: Questions
+  createdAt: String
+  updatedAt: String
+}
+
+type Questions {
+  id: String!
+  title: String
+  specialId: String
+  note: String
+  answer: String
+  value: String
+  questionType: String
+  options: [SelectorType!]
+  sectionsId: String
+  dependentQuestions: [DependentQuestions!]
+  sections: Sections
   createdAt: String
   updatedAt: String
 }
@@ -1968,6 +2016,8 @@ type SocialAnswer {
   name: String
   note: String
   value: String
+  questionId: String
+  question: Questions
   socialDependentAnswer: [SocialDependentAnswer!]
   createdAt: String
   updatedAt: String
@@ -3156,52 +3206,6 @@ type UserFormsPayload {
 type FormMediaPayload {
   publicUrl: String
   response: ResponsePayloadResponse
-}
-
-type SelectorType {
-  id: String
-  name: String
-}
-
-type DependentQuestions {
-  id: String!
-  title: String
-  note: String
-  value: String
-  answer: [String!]
-  questionType: String
-  options: [SelectorType!]
-  parentId: String
-  specialId: String
-  questionsId: String
-  questions: Questions
-  createdAt: String
-  updatedAt: String
-}
-
-type Questions {
-  id: String!
-  title: String
-  specialId: String
-  note: String
-  answer: String
-  value: String
-  questionType: String
-  options: [SelectorType!]
-  sectionsId: String
-  dependentQuestions: [DependentQuestions!]
-  sections: Sections
-  createdAt: String
-  updatedAt: String
-}
-
-type Sections {
-  id: String!
-  name: String
-  specialId: String
-  questions: [Questions!]
-  createdAt: String
-  updatedAt: String
 }
 
 type FindAllSectionsPayload {

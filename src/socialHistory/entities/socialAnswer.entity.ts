@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Questions } from "./questions.entity";
 import { SocialDependentAnswer } from "./socialDependentAnswer.entity";
 import { SocialHistory } from "./socialHistory.entity";
 
@@ -26,8 +27,17 @@ export class SocialAnswer {
   @Column({ nullable: true })
   socialHistoryId: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  questionId: string
+
   @ManyToOne(() => SocialHistory, socialHistory => socialHistory.socialAnswer, { onDelete: 'CASCADE' })
   socialHistory: SocialHistory;
+
+  @OneToOne(() => Questions, question => question.socialAnswer, { onDelete: 'CASCADE' })
+  @Field(() => Questions, { nullable: true })
+  @JoinColumn()
+  question: Questions;
 
   @OneToMany(() => SocialDependentAnswer, socialDependentAnswer => socialDependentAnswer.socialAnswer, { onDelete: 'CASCADE' })
   @Field(() => [SocialDependentAnswer], { nullable: true })
