@@ -88,7 +88,6 @@ export class SocialHistoryService {
         return socialHistory
       } else {
         const socialHistoryInstance = await this.findOne(id);
-debugger
         if (!socialHistoryInstance) {
           throw new Error("Patient Social history Not Found");
         }
@@ -97,7 +96,6 @@ debugger
           const { socialDependentAnswer, ...rest } = answer
           const answerInstance = await this.socialAnswerService.update(rest, id);
           const socialDependentAnswerInstances = await Promise.all(socialDependentAnswer?.map(async (dependentAnswer) => {
-            debugger
             return await this.socialDependentAnswerService.update(dependentAnswer, answerInstance?.id)
           }))
           answerInstance.socialDependentAnswer = socialDependentAnswerInstances

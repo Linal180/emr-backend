@@ -54,7 +54,6 @@ export class SocialDependentAnswerService {
    */
   async update(params: SocialDependentAnswerInput, socialAnswerId: string): Promise<SocialDependentAnswer> {
     try {
-      debugger
       let socialDependentAnswer: undefined | null | SocialDependentAnswer = null
       socialDependentAnswer = await this.socialDependentAnswerRepo.findOne({ socialAnswerId, name: params?.name });
       if (!socialDependentAnswer) {
