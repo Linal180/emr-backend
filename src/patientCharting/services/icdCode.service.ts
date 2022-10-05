@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //entities
@@ -61,8 +61,8 @@ export class ICDCodeService {
    * @param code 
    * @returns one by code 
    */
-  async findOneByCode(code: string): Promise<ICDCodes> {
-    return await this.icdCodeRepo.findOne({ code })
+  async findOneByCode(code: string, id?: string): Promise<ICDCodes> {
+    return await this.icdCodeRepo.findOne({ code, ...(id && { id: Not(id) }) })
   }
 
 
@@ -93,7 +93,7 @@ export class ICDCodeService {
   async update(params: UpdateIcdCodeInput): Promise<ICDCodes> {
     try {
       const { id } = params || {}
-      const oldIcd = await this.findOneByCode(params?.code);
+      const oldIcd = await this.findOneByCode(params?.code, id);
       if (oldIcd) {
         throw new Error(`ICD code is already exist with the code: ${params?.code}`);
       }

@@ -92,5 +92,6 @@ export class PaginatedEntityInput {
   isClaimStatus?: boolean;
   cvxId?: string;
   mvxId?: string;
+  specialSectionId?: string;
   forOrders?: boolean
 }

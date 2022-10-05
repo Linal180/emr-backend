@@ -25,7 +25,7 @@ export class CreateVaccine implements Seeder {
       //create cvx
       const oldCvxs = await cvxRepo.find();
       if (!oldCvxs?.length) {
-        console.log('cvxData =>', cvxData.length)
+      
         await Promise.all(cvxData?.map(async (item) => {
           //create cvx
           const cvxInstance = cvxRepo.create(item);
@@ -37,7 +37,7 @@ export class CreateVaccine implements Seeder {
       //create mvxs
       const oldMvxs = await mvxRepo.find();
       if (!oldMvxs?.length) {
-        console.log('mvxData =>', mvxData.length)
+    
 
         await Promise.all(mvxData?.map(async (item) => {
           const { cvxCode } = item
@@ -56,7 +56,6 @@ export class CreateVaccine implements Seeder {
       //create ndcs
       const oldNdcs = await ndcRepo.find();
       if (!oldNdcs?.length) {
-        console.log('ndcData =>', ndcData.length)
 
         await Promise.all(ndcData?.map(async (item) => {
           const { cvxCode, mvxCode } = item

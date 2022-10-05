@@ -69,7 +69,7 @@ export class CptCodeResolver {
   async updateCPTCode(@Args('updateCPTCodeInput') updateCPTCodeInput: UpdateCPTCodeInput): Promise<CPTCodePayload> {
     return {
       cptCode: await this.cptCodeService.update(updateCPTCodeInput),
-      response: { status: 200, message: 'CPT Code fetched successfully' }
+      response: { status: 200, message: 'CPT Code updated successfully' }
     };
   }
 
