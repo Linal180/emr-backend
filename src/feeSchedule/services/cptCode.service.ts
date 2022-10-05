@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //entities
@@ -44,8 +44,8 @@ export class CptCodeService {
    */
   async update(params: UpdateCPTCodeInput): Promise<CPTCodes> {
     try {
-      const { code } = params
-      const oldCpt = await this.findByCode(code);
+      const { code, id } = params
+      const oldCpt = await this.findByCode(code, id);
       if (oldCpt) {
         throw new Error(`CPT code is already exist with the code: ${code}`);
       }
@@ -118,9 +118,9 @@ export class CptCodeService {
    * @param code 
    * @returns by code 
    */
-  async findByCode(code: string): Promise<CPTCodes> {
+  async findByCode(code: string, id?: string): Promise<CPTCodes> {
     try {
-      const cptCode = await this.cptCodeRepository.findOne({ code });
+      const cptCode = await this.cptCodeRepository.findOne({ code, ...(id && { id: Not(id) }) });
       return cptCode
     } catch (error) {
       throw new InternalServerErrorException(error);
