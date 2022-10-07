@@ -147,10 +147,21 @@ export enum NdcType {
 
 export enum QuestionType {
   SWITCH = 'switch',
-  SELECT= 'select',
+  SELECT = 'select',
   INPUT = 'input',
   DATE = 'date',
   NUMBER = 'number'
+}
+
+export enum TemplateType {
+  HPI = 'hpi',
+  REVIEW_OF_SYSTEM = 'reviewOfSystem'
+}
+
+export enum ANSWER_TYPE {
+  NORMAL = "normal",
+  NEUTRAL = "Neutral",
+  ABNORMAL = "Abnormal"
 }
 
 export type SocialDependentQuestions = {
@@ -162,6 +173,13 @@ export type SocialDependentQuestions = {
   specialId: string
 }
 
+export type QuestionAnswersType = {
+  title: string;
+  answerType: ANSWER_TYPE;
+  questionType?: QuestionType;
+  options: SelectorType[]
+}
+
 export type SocialQuestionsType = {
   title: string
   note: string;
@@ -171,7 +189,7 @@ export type SocialQuestionsType = {
   specialId: string
 }
 
-export type SocialHistoryQuestionType  = {
+export type SocialHistoryQuestionType = {
   name: string;
   questions: SocialQuestionsType[]
 }
