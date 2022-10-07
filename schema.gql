@@ -1720,6 +1720,80 @@ type UpFrontPayment {
   updatedAt: String
 }
 
+type SelectorType {
+  id: String
+  name: String
+}
+
+type QuestionTemplate {
+  id: String!
+  name: String
+  specialId: String
+  templateType: String
+  sections: [TemplateSections!]
+  createdAt: String
+  updatedAt: String
+}
+
+type TemplateSections {
+  id: String!
+  name: String
+  specialId: String
+  templateId: String
+  questions: [SectionQuestions!]
+  template: QuestionTemplate
+  createdAt: String
+  updatedAt: String
+}
+
+type SectionQuestions {
+  id: String!
+  title: String
+  specialId: String
+  note: String
+  sectionId: String
+  section: TemplateSections
+  answers: [QuestionAnswers!]
+  createdAt: String
+  updatedAt: String
+}
+
+type QuestionAnswers {
+  id: String!
+  name: String
+  answerType: String
+  questionType: String
+  options: [SelectorType!]
+  note: String
+  questionsId: String
+  questions: SectionQuestions
+  answers: [AnswerResponses!]
+  createdAt: String
+  updatedAt: String
+}
+
+type AnswerResponses {
+  id: String!
+  answerId: String
+  value: String
+  patientIllnessHistoryId: String
+  answer: QuestionAnswers
+  patientIllnessHistory: PatientIllnessHistory
+  createdAt: String
+  updatedAt: String
+}
+
+type PatientIllnessHistory {
+  id: String!
+  patientId: String
+  patient: Patient
+  appointmentId: String
+  appointment: Appointment
+  answers: [AnswerResponses!]
+  createdAt: String
+  updatedAt: String
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1764,6 +1838,7 @@ type Appointment {
   invoice: Invoice
   contract: Contract
   triageNote: TriageNotes
+  patientIllnessHistory: PatientIllnessHistory
   billing: Billing
   upFrontPayment: UpFrontPayment
   transaction: Transactions
@@ -1990,11 +2065,6 @@ type SocialDependentAnswer {
   updatedAt: String
 }
 
-type SelectorType {
-  id: String
-  name: String
-}
-
 type DependentQuestions {
   id: String!
   title: String
@@ -2108,6 +2178,7 @@ type Patient {
   contacts: [Contact!]
   triageNotes: [TriageNotes!]
   surgicalHistories: [SurgicalHistory!]
+  patientIllnessHistories: [PatientIllnessHistory!]
   patientMedications: [PatientMedication!]
   facility: Facility
   doctorPatients: [DoctorPatient!]
@@ -3243,6 +3314,17 @@ type PatientSocialHistoryPayload {
   response: ResponsePayloadResponse
 }
 
+type FindAllQuestionTemplatesPayload {
+  templates: [QuestionTemplate!]!
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
+type QuestionTemplatePayload {
+  template: QuestionTemplate!
+  response: ResponsePayload
+}
+
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3386,6 +3468,8 @@ type Query {
   getShortUrl(getShortUrlInput: GetShortUrlInput!): ShortUrlResponse!
   findAllSections(findAllSectionsInput: FindAllSectionsInput!): FindAllSectionsPayload!
   patientSocialHistory(patientSocialHistoryInput: PatientSocialHistoryInput!): PatientSocialHistoryPayload!
+  patientChartingTemplates(findAllTemplatesInput: FindAllTemplatesInput!): FindAllQuestionTemplatesPayload!
+  getPatientChartingTemplate(templateId: String!): QuestionTemplatePayload!
 }
 
 input SearchLoincCodesInput {
@@ -4026,6 +4110,12 @@ input FindAllSectionsInput {
 
 input PatientSocialHistoryInput {
   patientId: String
+}
+
+input FindAllTemplatesInput {
+  templateType: String
+  searchString: String
+  paginationOptions: PaginationInput!
 }
 
 type Mutation {
