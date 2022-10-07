@@ -31,4 +31,8 @@ export class SectionQuestionsService {
     }
   }
 
+  async findOne(id: string): Promise<SectionQuestions> {
+    return await this.sectionQuestionsRepository.findOne({ where: { id } })
+  }
+
 }

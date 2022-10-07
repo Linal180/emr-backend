@@ -1772,13 +1772,26 @@ type QuestionAnswers {
   updatedAt: String
 }
 
+type ReviewOfSystem {
+  id: String!
+  patientId: String
+  patient: Patient
+  appointmentId: String
+  appointment: Appointment
+  answers: [AnswerResponses!]
+  createdAt: String
+  updatedAt: String
+}
+
 type AnswerResponses {
   id: String!
   answerId: String
   value: String
   patientIllnessHistoryId: String
+  reviewOfSystemId: String
   answer: QuestionAnswers
   patientIllnessHistory: PatientIllnessHistory
+  reviewOfSystem: ReviewOfSystem
   createdAt: String
   updatedAt: String
 }
@@ -1839,6 +1852,7 @@ type Appointment {
   contract: Contract
   triageNote: TriageNotes
   patientIllnessHistory: PatientIllnessHistory
+  reviewOfSystem: ReviewOfSystem
   billing: Billing
   upFrontPayment: UpFrontPayment
   transaction: Transactions
@@ -2179,6 +2193,7 @@ type Patient {
   triageNotes: [TriageNotes!]
   surgicalHistories: [SurgicalHistory!]
   patientIllnessHistories: [PatientIllnessHistory!]
+  reviewOfSystems: [ReviewOfSystem!]
   patientMedications: [PatientMedication!]
   facility: Facility
   doctorPatients: [DoctorPatient!]
@@ -3325,6 +3340,16 @@ type QuestionTemplatePayload {
   response: ResponsePayload
 }
 
+type PatientIllnessHistoryPayload {
+  patientIllnessHistory: PatientIllnessHistory
+  response: ResponsePayloadResponse
+}
+
+type ReviewOfSystemPayload {
+  reviewOfSystem: ReviewOfSystem
+  response: ResponsePayloadResponse
+}
+
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3470,6 +3495,8 @@ type Query {
   patientSocialHistory(patientSocialHistoryInput: PatientSocialHistoryInput!): PatientSocialHistoryPayload!
   patientChartingTemplates(findAllTemplatesInput: FindAllTemplatesInput!): FindAllQuestionTemplatesPayload!
   getPatientChartingTemplate(templateId: String!): QuestionTemplatePayload!
+  patientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  reviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
 }
 
 input SearchLoincCodesInput {
@@ -4118,6 +4145,16 @@ input FindAllTemplatesInput {
   paginationOptions: PaginationInput!
 }
 
+input PatientIllnessHistoryInput {
+  patientId: String
+  appointmentId: String
+}
+
+input ReviewOfSystemInput {
+  patientId: String
+  appointmentId: String
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4270,6 +4307,8 @@ type Mutation {
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
   createShortUrl(createShortUrlInput: CreateShortUrlInput!): ShortUrlResponse!
   createPatientSocialHistory(createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!): PatientSocialHistoryPayload!
+  createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
 }
 
 input LoincCodeInput {
@@ -6133,4 +6172,24 @@ input SocialDependentAnswerInput {
   name: String!
   note: String!
   value: String!
+}
+
+input CreatePatientIllnessHistoryInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  answerResponses: [AnswerResponsesInput!]!
+}
+
+input AnswerResponsesInput {
+  answerId: String!
+  note: String
+  value: String
+}
+
+input CreateReviewOfSystemInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  answerResponses: [AnswerResponsesInput!]!
 }

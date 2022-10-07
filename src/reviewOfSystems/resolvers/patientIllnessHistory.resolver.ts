@@ -4,32 +4,31 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/g
 import { QuestionTemplate } from "../entities/questionTemplate.entity";
 import { TemplateSections } from "../entities/templateSections.entity";
 // services
-import { ChartingTemplateService } from "../services/chartingTemplate.service";
 import { TemplateSectionsService } from "../services/templateSections.service";
-//payloads
-import { FindAllQuestionTemplatesPayload, QuestionTemplatePayload } from "../dto/questionTemplate-payload.dto";
-//inputs
-import { FindAllTemplatesInput } from "../dto/questionTemplate-input.dto";
-import { PatientIllnessHistoryPayload } from "../dto/patientIllnessHistory-payload";
-import { PatientIllnessHistory } from "../entities/patientIllnessHistory.entity";
-import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput } from "../dto/patientIllnessHistory-input.dto";
 import { PatientIllnessHistoryService } from "../services/patientIllnessHistory.service";
+//payloads
+import { PatientIllnessHistoryPayload } from "../dto/patientIllnessHistory-payload";
+//inputs
+import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput } from "../dto/patientIllnessHistory-input.dto";
+import { PatientIllnessHistory } from "../entities/patientIllnessHistory.entity";
+import { AnswerResponses } from "../entities/answerResponses.entity";
+import { AnswerResponsesService } from "../services/answerResponses.service";
 
 @Resolver(() => PatientIllnessHistory)
 export class PatientIllnessHistoryResolver {
   constructor(
     private readonly patientIllnessHistoryService: PatientIllnessHistoryService,
-    private readonly templateSectionsService: TemplateSectionsService,
+    private readonly answerResponsesService: AnswerResponsesService,
   ) { }
 
   @Query(() => PatientIllnessHistoryPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'patientSocialHistory')
-  async patientSocialHistory(@Args('patientIllnessHistoryInput') patientIllnessHistoryInput: PatientIllnessHistoryInput): Promise<PatientIllnessHistoryPayload> {
+  async patientIllnessHistory(@Args('patientIllnessHistoryInput') patientIllnessHistoryInput: PatientIllnessHistoryInput): Promise<PatientIllnessHistoryPayload> {
     const { appointmentId } = patientIllnessHistoryInput;
     return {
       patientIllnessHistory: await this.patientIllnessHistoryService.findOneByAppointmentId(appointmentId),
-      response: { status: 200, message: 'Social history fetched successfully' }
+      response: { status: 200, message: 'Illness history fetched successfully' }
     };
   }
 
@@ -47,11 +46,11 @@ export class PatientIllnessHistoryResolver {
 
   //resolve fields
 
-  @ResolveField(() => [TemplateSections])
-  async sections(@Parent() questionTemplate: QuestionTemplate): Promise<TemplateSections[]> {
-    if (questionTemplate?.id) {
-      const templateSectionsPayload = this.templateSectionsService.findSectionsByTemplateId(questionTemplate?.id);
-      return (await templateSectionsPayload).sections
+  @ResolveField(() => [AnswerResponses])
+  async answers(@Parent() patientIllnessHistory: PatientIllnessHistory): Promise<AnswerResponses[]> {
+    if (patientIllnessHistory?.id) {
+      const answers = this.answerResponsesService.findByPatientIllnessHistoryId(patientIllnessHistory?.id);
+      return answers
     }
   }
 }

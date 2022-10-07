@@ -5,11 +5,16 @@ export const TEMPLATE_NAMES = [
   {
     title: "COVID-19 Symptoms May 2020",
     templateType: TemplateType.HPI
+  },
+  {
+    title: "Geriatric Annual Well Visit",
+    templateType: TemplateType.REVIEW_OF_SYSTEM
   }
 ]
 
 //section Names
 const UPPER_RESPIRATORY_SYSTEMS = 'Upper Respiratory Systems'
+const GERIATRIC_INDEPENDENCE = "Geriatric independence"
 
 //questions
 const COVID_19_SYMPTOMS_SIGNS = 'COVID-19 Signs and Symptoms'
@@ -22,6 +27,12 @@ const CONTEXT = "Context"
 const ASSOCIATED_SYMPTOMS = "Associated Symptoms"
 const PRIOR_LABS_IMAGING = "Prior Labs and Imaging"
 const SUITABILITY_OF_RESIDENTIAL_SETTING = "Suitability of residential setting"
+const FALLING = "Falling"
+const USE_OF_ASSISTIVE_DEVICES = "Use of assistive devices"
+const ACTIVITIES_OF_DAILY_LIVING = "Activities of Daily Living"
+const INSTRUMENTAL_ACTIVITIES_OF_DAILY_LIVING = "Instrumental activities of daily living"
+const FUNCTIONAL_CAPACITY = "Functional capacity"
+const SENSORY = "Sensory"
 
 //answers
 const COUGH_RESOLVED = "cough resolved"
@@ -131,12 +142,48 @@ const HOUSEHOLD_COMPLICATIONS = "patient fill have members of the household at i
 const ACCESS_FOOD = "patient fill have resources to access food and other necessities"
 const BEDROOM_AND_BATHROOM = "patient fill have separate bedroom and bathroom for patient"
 const ETIQUETTE_PRACTICES = "patient fill able to adhere to hand hygiene and cough etiquette practices"
+const NO_FALL = "no fall in the past year"
+const NO_FALL_SINCE_LAST_VISIT = "no fall since last visit"
+const FALLS_IN_THE_PAST_YEAR = "fall(s) in the past year"
+const FALLS_IN_THE_LAST_VISIT = "fall(s) since last visit"
+const INJURY_WITH_FALL = "injury with fall"
+const FEAR_OF_FALLING = "fear of falling"
+const NONE = "none"
+const CANE = "cane"
+const CRUTCHES = "crutches"
+const WALKER = "walker"
+const WHEELCHAIR = "wheelchair"
+const BATH_INDEPENDENTLY = "fill to bathe independently"
+const DRESS_INDEPENDENTLY = "fill to dress independently"
+const CHAIR_INDEPENDENTLY = "fill to get out of chair independently"
+const GROOM_INDEPENDENTLY = "fill to groom independently"
+const TOILET_INDEPENDENTLY = "fill to toilet independently"
+const PREP_MEAL_INDEPENDENTLY = "fill to meal prep independently"
+const GROCERY_INDEPENDENTLY = "fill to grocery shop independently"
+const MONEY_INDEPENDENTLY = "fill to manage money independently"
+const MEDICATION_INDEPENDENTLY = "fill to manage medications independently"
+const PHONE_INDEPENDENTLY = "fill to use the phone independently"
+const HOUSE_WORK_INDEPENDENTLY = "fill to do house work independently"
+const ABLE_TO_WALK = "able to walk 1/4 mile"
+const ABLE_TO_CLIMB = "able to climb a flight of stairs"
+const UNABLE_TO_WALK = "unable to walk 1/4 mile"
+const UNABLE_TO_CLIMB = "unable to climb a flight of stairs"
+const NORMAL_HEARING = "normal hearing"
+const NORMAL_VISION = "normal vision"
+const LOSS_OF_HEARING = "loss of hearing"
+const LOSS_OF_VISION = "loss of vision"
+
+
 
 
 export const TEMPLATE_SECTIONS = [
   {
     templateName: TEMPLATE_NAMES[0].title,
     sections: [UPPER_RESPIRATORY_SYSTEMS]
+  },
+  {
+    templateName: TEMPLATE_NAMES[1].title,
+    sections: [GERIATRIC_INDEPENDENCE]
   }
 ]
 
@@ -155,12 +202,28 @@ export const SECTIONS_QUESTIONS = [
       PRIOR_LABS_IMAGING,
       SUITABILITY_OF_RESIDENTIAL_SETTING
     ]
+  },
+  {
+    sectionName: GERIATRIC_INDEPENDENCE,
+    questions: [
+      FALLING,
+      USE_OF_ASSISTIVE_DEVICES,
+      ACTIVITIES_OF_DAILY_LIVING,
+      INSTRUMENTAL_ACTIVITIES_OF_DAILY_LIVING,
+      FUNCTIONAL_CAPACITY,
+      SENSORY,
+    ]
   }
 ]
 
 const DOES_OPTIONS_MAPPED = [
   { id: "DOES", name: "does" },
   { id: "DOES_NOT", name: "does not" },
+]
+
+const ABLE_OPTIONS_MAPPED = [
+  { id: "able", name: "able" },
+  { id: "unable", name: "unable" },
 ]
 
 export const QUESTION_ANSWERS = [
@@ -657,6 +720,178 @@ export const QUESTION_ANSWERS = [
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.SELECT,
         options: DOES_OPTIONS_MAPPED
+      },
+    ]
+  },
+  {
+    questionTitle: FALLING,
+    answers: [
+      {
+        title: NO_FALL,
+        answerType: ANSWER_TYPE.NORMAL,
+      },
+      {
+        title: NO_FALL_SINCE_LAST_VISIT,
+        answerType: ANSWER_TYPE.NORMAL,
+      },
+      {
+        title: FALLS_IN_THE_PAST_YEAR,
+        answerType: ANSWER_TYPE.ABNORMAL,
+      },
+      {
+        title: FALLS_IN_THE_LAST_VISIT,
+        answerType: ANSWER_TYPE.ABNORMAL,
+      },
+      {
+        title: INJURY_WITH_FALL,
+        answerType: ANSWER_TYPE.ABNORMAL,
+      },
+      {
+        title: FEAR_OF_FALLING,
+        answerType: ANSWER_TYPE.ABNORMAL,
+      },
+    ]
+  },
+  {
+    questionTitle: USE_OF_ASSISTIVE_DEVICES,
+    answers: [
+      {
+        title: NONE,
+        answerType: ANSWER_TYPE.NEUTRAL,
+      },
+      {
+        title: CANE,
+        answerType: ANSWER_TYPE.NEUTRAL,
+      },
+      {
+        title: CRUTCHES,
+        answerType: ANSWER_TYPE.NEUTRAL,
+      },
+      {
+        title: WALKER,
+        answerType: ANSWER_TYPE.NEUTRAL,
+      },
+      {
+        title: WHEELCHAIR,
+        answerType: ANSWER_TYPE.NEUTRAL,
+      },
+    ]
+  },
+  {
+    questionTitle: ACTIVITIES_OF_DAILY_LIVING,
+    answers: [
+      {
+        title: BATH_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: DRESS_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: CHAIR_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: GROOM_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: TOILET_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+    ]
+  },
+  {
+    questionTitle: INSTRUMENTAL_ACTIVITIES_OF_DAILY_LIVING,
+    answers: [
+      {
+        title: PREP_MEAL_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: GROCERY_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: MONEY_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: MEDICATION_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: PHONE_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+      {
+        title: HOUSE_WORK_INDEPENDENTLY,
+        answerType: ANSWER_TYPE.NEUTRAL,
+        questionType: QuestionType.SELECT,
+        options: ABLE_OPTIONS_MAPPED
+      },
+    ]
+  },
+  {
+    questionTitle: FUNCTIONAL_CAPACITY,
+    answers: [
+      {
+        title: ABLE_TO_WALK,
+        answerType: ANSWER_TYPE.NORMAL,
+      },
+      {
+        title: ABLE_TO_CLIMB,
+        answerType: ANSWER_TYPE.NORMAL,
+      },
+      {
+        title: UNABLE_TO_WALK,
+        answerType: ANSWER_TYPE.ABNORMAL,
+      },
+      {
+        title: UNABLE_TO_CLIMB,
+        answerType: ANSWER_TYPE.ABNORMAL,
+      },
+    ]
+  },
+  {
+    questionTitle: SENSORY,
+    answers: [
+      {
+        title: NORMAL_HEARING,
+        answerType: ANSWER_TYPE.NORMAL,
+      },
+      {
+        title: NORMAL_VISION,
+        answerType: ANSWER_TYPE.NORMAL,
+      },
+      {
+        title: LOSS_OF_HEARING,
+        answerType: ANSWER_TYPE.ABNORMAL,
+      },
+      {
+        title: LOSS_OF_VISION,
+        answerType: ANSWER_TYPE.ABNORMAL,
       },
     ]
   },

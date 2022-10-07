@@ -9,6 +9,7 @@ import { CreateAnswerResponsesInput } from "../dto/answerResponses-input.dto";
 import { UtilsService } from "src/util/utils.service";
 import { PatientIllnessHistoryService } from "./patientIllnessHistory.service";
 import { QuestionAnswersService } from "./questionAnswers.service";
+import { ReviewOfSystemService } from "./reviewOfSystem.service";
 
 @Injectable()
 export class AnswerResponsesService {
@@ -18,6 +19,8 @@ export class AnswerResponsesService {
     private readonly utilsService: UtilsService,
     @Inject(forwardRef(() => PatientIllnessHistoryService))
     private readonly patientIllnessHistoryService: PatientIllnessHistoryService,
+    @Inject(forwardRef(() => ReviewOfSystemService))
+    private readonly reviewOfSystemService: ReviewOfSystemService,
     @Inject(forwardRef(() => QuestionAnswersService))
     private readonly questionAnswersService: QuestionAnswersService,
   ) { }
@@ -28,7 +31,7 @@ export class AnswerResponsesService {
    * @param params 
    * @returns create 
    */
-  async create(params: CreateAnswerResponsesInput, patientIllnessHistoryId?: string): Promise<AnswerResponses> {
+  async create(params: CreateAnswerResponsesInput, patientIllnessHistoryId?: string, reviewOfSystemId?: string): Promise<AnswerResponses> {
     try {
       const instance = this.answerResponsesRepo.create(params);
       const { answerId, note, value } = params
@@ -36,6 +39,12 @@ export class AnswerResponsesService {
         const patientIllnessHistory = await this.patientIllnessHistoryService.findOne(patientIllnessHistoryId)
         instance.patientIllnessHistory = patientIllnessHistory
         instance.patientIllnessHistoryId = patientIllnessHistoryId
+      }
+
+      if (reviewOfSystemId) {
+        const reviewOfSystem = await this.reviewOfSystemService.findOne(reviewOfSystemId)
+        instance.reviewOfSystem = reviewOfSystem
+        instance.reviewOfSystemId = reviewOfSystemId
       }
 
       if (answerId) {
@@ -65,8 +74,17 @@ export class AnswerResponsesService {
    * @param patientIllnessHistoryId 
    * @returns by social id 
    */
-  async findBySocialId(patientIllnessHistoryId: string): Promise<AnswerResponses[]> {
+  async findByPatientIllnessHistoryId(patientIllnessHistoryId: string): Promise<AnswerResponses[]> {
     return await this.answerResponsesRepo.find({ patientIllnessHistoryId })
+  }
+
+  /**
+   * Finds by social id
+   * @param reviewOfSystemId 
+   * @returns by social id 
+   */
+  async findByReviewOfSystemId(reviewOfSystemId: string): Promise<AnswerResponses[]> {
+    return await this.answerResponsesRepo.find({ reviewOfSystemId })
   }
 
   /**
@@ -75,13 +93,30 @@ export class AnswerResponsesService {
    * @param patientIllnessHistoryId 
    * @returns update 
    */
-  async update(params: CreateAnswerResponsesInput, patientIllnessHistoryId: string): Promise<AnswerResponses> {
+  async update(params: CreateAnswerResponsesInput, patientIllnessHistoryId: string, reviewOfSystemId?: string): Promise<AnswerResponses> {
     try {
       const { answerId } = params
-      const answerResponses = await this.answerResponsesRepo.findOne({ patientIllnessHistoryId, answerId });
-      const patientIllnessHistory = await this.patientIllnessHistoryService.findOne(patientIllnessHistoryId)
-      answerResponses.patientIllnessHistory = patientIllnessHistory
-      answerResponses.patientIllnessHistoryId = patientIllnessHistoryId
+      let answerResponses
+      if (patientIllnessHistoryId) {
+        answerResponses = await this.answerResponsesRepo.findOne({ patientIllnessHistoryId, answerId });
+      } else {
+        answerResponses = await this.answerResponsesRepo.findOne({ reviewOfSystemId, answerId });
+      }
+
+      if (!answerResponses) {
+        return await this.create(params, patientIllnessHistoryId, reviewOfSystemId)
+      }
+      if (patientIllnessHistoryId) {
+        const patientIllnessHistory = await this.patientIllnessHistoryService.findOne(patientIllnessHistoryId)
+        answerResponses.patientIllnessHistory = patientIllnessHistory
+        answerResponses.patientIllnessHistoryId = patientIllnessHistoryId
+      }
+
+      if (reviewOfSystemId) {
+        const reviewOfSystem = await this.reviewOfSystemService.findOne(reviewOfSystemId)
+        answerResponses.reviewOfSystem = reviewOfSystem
+        answerResponses.reviewOfSystemId = reviewOfSystemId
+      }
       return await this.utilsService.updateEntityManager(AnswerResponses, answerResponses.id, params, this.answerResponsesRepo)
     } catch (error) {
       throw new InternalServerErrorException(error);

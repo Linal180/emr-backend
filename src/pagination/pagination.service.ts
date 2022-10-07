@@ -223,6 +223,7 @@ export class PaginationService {
       mvxId,
       specialSectionId,
       forOrders,
+      templateType,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -268,6 +269,9 @@ export class PaginationService {
         }),
         ...(FormId && {
           FormId
+        }),
+        ...(templateType && {
+          templateType
         }),
         ...(patientRecord && {
           patientRecord: Raw(alias => `${alias} ILIKE '%${patientRecord}%'`),
