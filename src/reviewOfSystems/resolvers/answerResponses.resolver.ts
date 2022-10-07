@@ -20,7 +20,7 @@ export class AnswerResponsesResolver {
   @ResolveField(() => QuestionAnswers)
   async answer(@Parent() answerResponses: AnswerResponses): Promise<QuestionAnswers> {
     if (answerResponses?.answerId) {
-      const answers = this.questionAnswersService.findOne(answerResponses?.id);
+      const answers = this.questionAnswersService.findOne(answerResponses?.answerId);
       return answers
     }
   }
