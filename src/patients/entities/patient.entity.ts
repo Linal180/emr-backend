@@ -28,6 +28,8 @@ import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 import { SocialHistory } from 'src/socialHistory/entities/socialHistory.entity';
 import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
+import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
+import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -443,6 +445,14 @@ export class Patient {
   @OneToMany(() => SurgicalHistory, surgicalHistory => surgicalHistory.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [SurgicalHistory], { nullable: true })
   surgicalHistories: SurgicalHistory[];
+
+  @OneToMany(() => PatientIllnessHistory, surgicalHistory => surgicalHistory.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PatientIllnessHistory], { nullable: true })
+  patientIllnessHistories: PatientIllnessHistory[];
+
+  @OneToMany(() => ReviewOfSystem, reviewOfSystems => reviewOfSystems.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [ReviewOfSystem], { nullable: true })
+  reviewOfSystems: ReviewOfSystem[];
 
   @OneToMany(() => PatientMedication, patientMedication => patientMedication.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [PatientMedication], { nullable: true })

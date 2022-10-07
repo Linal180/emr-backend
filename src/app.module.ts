@@ -34,6 +34,7 @@ import { LogDatabaseConfig } from './logDatabase.config';
 import { AppService } from './app.service';
 //controller
 import { AppController } from './app.controller';
+import { ReviewOfSystemModule } from './reviewOfSystems/reviewOfSystems.module';
 
 @Module({
   imports: [
@@ -78,7 +79,8 @@ import { AppController } from './app.controller';
     FormBuilderModule,
     ProblemChartingModule,
     ShortUrlModule,
-    SocialHistoryModule
+    SocialHistoryModule,
+    ReviewOfSystemModule
   ],
   controllers: [AppController],
   providers: [AppService],
