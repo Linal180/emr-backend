@@ -42,13 +42,16 @@ export class LabTestsService {
   async createLabTest(createLabTestInput: CreateLabTestInput): Promise<LabTests> {
     try {
       const { createLabTestItemInput } = createLabTestInput
-      const { primaryProviderId, patientId } = createLabTestItemInput
+      const { primaryProviderId, patientId, collectedDate } = createLabTestItemInput
       //get test 
       const testName = await this.loincCodesService.findOne(createLabTestInput.test)
       //get patient 
       const patient = await this.patientService.findOne(createLabTestInput.createLabTestItemInput.patientId)
       //create lab test 
-      const labTestInstance = this.labTestsRepository.create({ ...createLabTestInput.createLabTestItemInput, labTestStatus: createLabTestInput.createLabTestItemInput.status })
+      const labTestInstance = this.labTestsRepository.create({
+        ...createLabTestItemInput,
+        labTestStatus: createLabTestInput.createLabTestItemInput.status, collectedDate: collectedDate ? collectedDate : moment().format("MM-DD-YYYY")
+      })
       //get appointment 
       if (createLabTestInput.createLabTestItemInput.appointmentId) {
         const appointment = await this.appointmentService.findOne(createLabTestInput.createLabTestItemInput.appointmentId)
@@ -90,10 +93,13 @@ export class LabTestsService {
   async updateLabTest(updateLabTestInput: UpdateLabTestInput): Promise<LabTests> {
     try {
       const { updateLabTestItemInput } = updateLabTestInput
-      const { primaryProviderId, patientId } = updateLabTestItemInput
+      const { primaryProviderId, patientId, collectedDate } = updateLabTestItemInput
 
       //create lab test 
-      const labTestInstance = this.labTestsRepository.create({ ...updateLabTestInput.updateLabTestItemInput, labTestStatus: updateLabTestInput.updateLabTestItemInput.status })
+      const labTestInstance = this.labTestsRepository.create({
+        ...updateLabTestItemInput,
+        labTestStatus: updateLabTestInput.updateLabTestItemInput.status, collectedDate: collectedDate ? collectedDate : moment().format("MM-DD-YYYY")
+      })
 
       //get appointment 
       if (updateLabTestInput.updateLabTestItemInput.appointmentId) {
@@ -300,7 +306,7 @@ export class LabTestsService {
           error: 'Lab test not found',
         });
       }
-      const { primaryProviderId, referringProviderId, ...labTestInfo } = updateLabTestItemInput
+      const { primaryProviderId, referringProviderId, status: labTestStatus, ...labTestInfo } = updateLabTestItemInput
       const updatedLabTests = await Promise.all(await labTests.map(async (labTest) => {
         if (primaryProviderId) {
           const primaryProvider = await this.doctorService.findOne(primaryProviderId)
@@ -312,7 +318,7 @@ export class LabTestsService {
           labTest.referringProvider = referringProvider
         }
 
-        return this.labTestsRepository.save({ ...labTest, ...labTestInfo })
+        return await this.labTestsRepository.save({ ...labTest, ...labTestInfo, labTestStatus: labTestStatus ? labTestStatus : labTest.labTestStatus })
       }))
 
       return updatedLabTests
