@@ -311,6 +311,7 @@ type ICDCodes {
   description: String
   version: String
   systematic: Boolean
+  priority: Int
   createdAt: String
   updatedAt: String
 }
@@ -547,6 +548,7 @@ type CPTCodes {
   shortDescription: String
   longDescription: String
   systematic: Boolean
+  priority: Int
   cptFeeSchedule: [CptFeeSchedule!]
   createdAt: String
   updatedAt: String
@@ -2791,6 +2793,7 @@ type ICDCodesWithSnowMedCode {
   description: String
   version: String
   systematic: Boolean
+  priority: Int
   createdAt: String
   updatedAt: String
   snoMedCode: SnoMedCodes
@@ -5430,6 +5433,7 @@ input CreateCPTCodeInput {
   description: String
   shortDescription: String
   longDescription: String
+  priority: Int
 }
 
 input UpdateCPTCodeInput {
@@ -5438,6 +5442,7 @@ input UpdateCPTCodeInput {
   description: String
   shortDescription: String
   longDescription: String
+  priority: Int
   id: String!
 }
 
@@ -5941,12 +5946,14 @@ input RemoveVaccineInput {
 input CreateIcdCodeInput {
   code: String!
   description: String
+  priority: Int
   version: String = "ICD10"
 }
 
 input UpdateIcdCodeInput {
   code: String
   description: String
+  priority: Int
   version: String = "ICD10"
   id: String!
 }

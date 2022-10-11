@@ -1,4 +1,4 @@
-import { Field, InputType, PartialType, PickType } from "@nestjs/graphql";
+import { Field, InputType, PartialType, PickType,Int } from "@nestjs/graphql";
 import PaginationInput from "src/pagination/dto/pagination-input.dto";
 
 @InputType()
@@ -9,6 +9,9 @@ export class CreateIcdCodeInput {
 
   @Field({ nullable: true })
   description: string;
+
+  @Field(()=>Int,{ nullable: true })
+  priority: number;
 
   @Field({ nullable: true, defaultValue: 'ICD10' })
   version: string;
