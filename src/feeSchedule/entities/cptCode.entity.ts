@@ -34,7 +34,7 @@ export class CPTCodes {
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   systematic: boolean;
 
-  @Column({ nullable: true, default: 0, type: 'bigint' })
+  @Column({ nullable: true, default: 1, type: 'bigint' })
   @Field(() => Int, { nullable: true })
   priority: number;
 

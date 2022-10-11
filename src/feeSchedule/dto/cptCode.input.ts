@@ -1,4 +1,4 @@
-import { Field, InputType, PartialType, PickType } from "@nestjs/graphql";
+import { Field, InputType, Int, PartialType, PickType } from "@nestjs/graphql";
 //inputs
 import PaginationInput from "src/pagination/dto/pagination-input.dto"
 
@@ -14,7 +14,7 @@ export class FindAllCPTCodesInput {
 }
 
 @InputType()
-export class CreateCPTCodeInput { 
+export class CreateCPTCodeInput {
   @Field({ nullable: true })
   code: string;
 
@@ -29,6 +29,9 @@ export class CreateCPTCodeInput {
 
   @Field({ nullable: true })
   longDescription: string;
+
+  @Field(() => Int, { nullable: true })
+  priority: number;
 }
 
 @InputType()

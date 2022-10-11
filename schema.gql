@@ -5431,6 +5431,7 @@ input CreateCPTCodeInput {
   description: String
   shortDescription: String
   longDescription: String
+  priority: Int
 }
 
 input UpdateCPTCodeInput {
@@ -5439,6 +5440,7 @@ input UpdateCPTCodeInput {
   description: String
   shortDescription: String
   longDescription: String
+  priority: Int
   id: String!
 }
 
