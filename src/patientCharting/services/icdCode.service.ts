@@ -34,7 +34,7 @@ export class ICDCodeService {
         paginationOptions, associatedTo: 'ICDCodes', associatedToField: {
           columnValue: searchQuery, columnName: 'code', columnName2: 'description', filterType: 'stringFilter'
         }
-      });
+      },  undefined, { columnName: "priority", order: "DESC" });
       const { data, ...pagination } = response;
       return {
         icdCodes: data,
