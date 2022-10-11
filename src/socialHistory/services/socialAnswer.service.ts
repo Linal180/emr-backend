@@ -85,7 +85,7 @@ export class SocialAnswerService {
         socialAnswer.socialHistory = socialHistory
         socialAnswer.socialHistoryId = socialHistory?.id
       }
-      return await this.utilsService.updateEntityManager(SocialAnswer, socialAnswer.id, { ...socialAnswer }, this.socialAnswerRepo)
+      return await this.utilsService.updateEntityManager(SocialAnswer, socialAnswer.id, { ...params }, this.socialAnswerRepo)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
