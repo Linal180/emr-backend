@@ -547,6 +547,7 @@ type CPTCodes {
   shortDescription: String
   longDescription: String
   systematic: Boolean
+  priority: Int
   cptFeeSchedule: [CptFeeSchedule!]
   createdAt: String
   updatedAt: String
