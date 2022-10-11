@@ -38,9 +38,7 @@ export class SocialDependentAnswer {
   @ManyToOne(() => SocialAnswer, socialHistory => socialHistory.socialDependentAnswer, { onDelete: 'CASCADE' })
   socialAnswer: SocialAnswer;
 
-  @OneToOne(() => DependentQuestions, dependentQuestion => dependentQuestion.socialDependentAnswer, { onDelete: 'CASCADE' })
   @Field(() => DependentQuestions, { nullable: true })
-  @JoinColumn()
   dependentQuestion: DependentQuestions;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

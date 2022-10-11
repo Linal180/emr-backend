@@ -53,9 +53,6 @@ export class DependentQuestions {
   @Field(() => Questions, { nullable: true })
   questions: Questions;
 
-  @OneToOne(() => SocialDependentAnswer, socialDependentAnswer => socialDependentAnswer.dependentQuestion, { onDelete: 'CASCADE' })
-  socialDependentAnswer: SocialDependentAnswer;
-
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
   createdAt: string;

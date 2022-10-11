@@ -30,6 +30,7 @@ export class SocialAnswerService {
   async create(params: CreateSocialAnswerInput, socialHistoryId?: string): Promise<SocialAnswer> {
     try {
       const instance = this.socialAnswerRepo.create(params);
+      
       const { name } = params
       if (socialHistoryId) {
         const socialHistory = await this.socialHistoryService.findOne(socialHistoryId)
@@ -37,8 +38,9 @@ export class SocialAnswerService {
         instance.socialHistoryId = socialHistoryId
       }
       const question = await this.questionService.findOne(name)
-      instance.question = question;
-      return await this.socialAnswerRepo.save(instance)
+      instance.questionId = question?.id;
+      const socialAnswer = await this.socialAnswerRepo.save(instance)
+      return socialAnswer
     }
     catch (error) {
       throw new InternalServerErrorException(error);
@@ -73,11 +75,17 @@ export class SocialAnswerService {
    */
   async update(params: CreateSocialAnswerInput, socialHistoryId: string): Promise<SocialAnswer> {
     try {
-      const socialAnswer = await this.socialAnswerRepo.findOne({ socialHistoryId, name: params?.name });
-      const socialHistory = await this.socialHistoryService.findOne(socialHistoryId)
-      socialAnswer.socialHistory = socialHistory
-      socialAnswer.socialHistoryId = socialHistoryId
-      return await this.utilsService.updateEntityManager(SocialAnswer, socialAnswer.id, params, this.socialAnswerRepo)
+      
+      let socialAnswer = await this.socialAnswerRepo.findOne({ socialHistoryId, name: params?.name });
+      if (!socialAnswer) {
+        socialAnswer = await this.create(params, socialHistoryId);
+      }
+      const socialHistory = await this.socialHistoryService.findOne(socialHistoryId);
+      if (socialHistory) {
+        socialAnswer.socialHistory = socialHistory
+        socialAnswer.socialHistoryId = socialHistory?.id
+      }
+      return await this.utilsService.updateEntityManager(SocialAnswer, socialAnswer.id, { ...socialAnswer }, this.socialAnswerRepo)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

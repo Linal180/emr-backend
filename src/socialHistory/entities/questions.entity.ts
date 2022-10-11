@@ -46,9 +46,6 @@ export class Questions {
   @Field({ nullable: true })
   sectionsId: string
 
-  @OneToOne(() => SocialAnswer, socialAnswer => socialAnswer.question, { onDelete: 'CASCADE' })
-  socialAnswer: SocialAnswer;
-
   @OneToMany(() => DependentQuestions, dependentQuestion => dependentQuestion.questions, { onDelete: 'CASCADE' })
   @Field(() => [DependentQuestions], { nullable: true })
   dependentQuestions: DependentQuestions[];
