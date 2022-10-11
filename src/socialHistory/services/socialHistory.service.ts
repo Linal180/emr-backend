@@ -54,8 +54,8 @@ export class SocialHistoryService {
    */
   async createOrUpdate(params: CreatePatientSocialHistoryInput): Promise<SocialHistory> {
     try {
+      
       const { id, patientId, socialAnswer } = params;
-
       //fetch patient
       const PatientPayload = await this.patientService.GetPatient(patientId);
       const { patient } = PatientPayload;
@@ -72,18 +72,22 @@ export class SocialHistoryService {
         //save patient social history
         const socialHistory = await this.socialHistoryRepo.save(socialHistoryInstance);
 
-
-        await Promise.all(socialAnswer?.map(async (answer) => {
-          const { socialDependentAnswer, ...rest } = answer;
-
-          //create social history answer 
-          const socialAnswerInstance = await this.socialAnswerService.create(rest, socialHistory?.id)
-
-          await Promise.all(socialDependentAnswer?.map(async (dependentAnswer) => {
+        if (socialAnswer) {
+          for (let index = 0; index < socialAnswer.length; index++) {
+            const element = socialAnswer[index];
+            const { socialDependentAnswer, ...rest } = element;
+            //create social history answer 
+            const socialAnswerInstance = await this.socialAnswerService.create(rest, socialHistory?.id);
+            
             //create social history dependent answer 
-            return await this.socialDependentAnswerService.create(dependentAnswer, socialAnswerInstance?.id)
-          }))
-        }))
+            if (socialDependentAnswer) {
+              await Promise.all(socialDependentAnswer?.map(async (dependentAnswer) => {
+                
+                return await this.socialDependentAnswerService.create(dependentAnswer, socialAnswerInstance?.id)
+              }))
+            }
+          }
+        }
 
         return socialHistory
       } else {
@@ -92,17 +96,35 @@ export class SocialHistoryService {
           throw new Error("Patient Social history Not Found");
         }
 
-        const socialAnswerInstances = await Promise.all(socialAnswer?.map(async (answer) => {
-          const { socialDependentAnswer, ...rest } = answer
-          const answerInstance = await this.socialAnswerService.update(rest, id);
-          const socialDependentAnswerInstances = await Promise.all(socialDependentAnswer?.map(async (dependentAnswer) => {
-            return await this.socialDependentAnswerService.update(dependentAnswer, answerInstance?.id)
-          }))
-          answerInstance.socialDependentAnswer = socialDependentAnswerInstances
-          return answerInstance
-        }))
+        if (socialAnswer) {
+          for (let index = 0; index < socialAnswer.length; index++) {
+            const { socialDependentAnswer, ...rest } = socialAnswer[index];
+            const answerInstance = await this.socialAnswerService.update(rest, id);
 
-        socialHistoryInstance.socialAnswer = socialAnswerInstances
+            if (socialDependentAnswer?.length) {
+              await Promise.all(socialDependentAnswer?.map(async (dependentAnswer) => {
+                return await this.socialDependentAnswerService.update(dependentAnswer, answerInstance?.id)
+              }))
+            }
+          }
+        }
+
+        // await Promise.all(socialAnswer?.map(async (answer) => {
+        //   const { socialDependentAnswer, ...rest } = answer
+        //   const answerInstance = await this.socialAnswerService.update(rest, id);
+        //   if (socialDependentAnswer?.length) {
+        //     await Promise.all(socialDependentAnswer?.map(async (dependentAnswer) => {
+        //       return await this.socialDependentAnswerService.update(dependentAnswer, answerInstance?.id)
+        //     }))
+        //   }
+
+        //   return answerInstance
+        // }))
+
+        const socialAnswerInstances = await this.socialAnswerService.findBySocialId(id);
+        if (socialAnswerInstances) {
+          socialHistoryInstance.socialAnswer = socialAnswerInstances
+        }
         socialHistoryInstance.patient = patient
         socialHistoryInstance.patientId = patient?.id
 

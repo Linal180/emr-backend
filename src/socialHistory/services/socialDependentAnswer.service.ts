@@ -37,7 +37,7 @@ export class SocialDependentAnswerService {
         instance.socialAnswerId = socialAnswer?.id
       }
       const dependentQuestion = await this.dependentQuestionService.findOne(name)
-      instance.dependentQuestion = dependentQuestion;
+      instance.dependentQuestionId = dependentQuestion?.id;
       return await this.socialDependentAnswerRepo.save(instance)
 
     }
