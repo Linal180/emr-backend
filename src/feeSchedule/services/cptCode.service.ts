@@ -69,7 +69,7 @@ export class CptCodeService {
           columnValue: searchString, columnName: 'code', columnName2: "description",
           columnName3: 'shortDescription', filterType: 'stringFilter'
         }
-      })
+      }, undefined, { columnName: "priority", order: "DESC" })
       return {
         pagination: {
           ...paginationResponse

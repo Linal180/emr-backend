@@ -457,8 +457,7 @@ export class AttachmentsService {
     try {
       const { comments, labOrderNum, signedAt, signedBy, documentTypeId, documentTypeName, policyId, practiceId, documentDate, agreementId, ...attachmentInputToUpdate } = updateAttachmentInput
       let attachmentMetadataInput: AttachmentInput = {}
-      if (comments)
-        attachmentMetadataInput.comments = comments;
+      attachmentMetadataInput.comments = comments;
       if (labOrderNum)
         attachmentMetadataInput.labOrderNum = labOrderNum;
       if (signedAt)

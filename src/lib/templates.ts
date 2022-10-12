@@ -1,4 +1,5 @@
 import { toBuffer } from "bwip-js"
+import * as QRCode from 'qrcode'
 import { LabResultPayload } from "src/labs/dto/labTest-payload.dto";
 import { formatAddress, formatPhone, getFormatDateString } from "./helper";
 
@@ -17,8 +18,8 @@ const getBuffer = async (url) => {
 export default async function template(labResultPayload: LabResultPayload, attachmentUrl: string) {
   const { doctor, facilityInfo, labTests, patientInfo } = labResultPayload
   const url = `${process.env.PORTAL_APP_BASE_URL}/lab-results-info/${labTests?.[0]?.orderNumber}`
-  const urlBarCode = await getBuffer(url)
-  const buffer = urlBarCode.toString('base64') // e.g., <Buffer 89 50 4e ... >
+  const urlQRCode = await  QRCode.toDataURL(url)
+  // const buffer = urlBarCode.toString('base64') // e.g., <Buffer 89 50 4e ... >
 
   const mimeType = 'image/png' // e.g., image/png
 
@@ -714,7 +715,7 @@ export default async function template(labResultPayload: LabResultPayload, attac
 
                     <tr>
                       <td align="center" style="padding: 0 10px;">
-                      <Image src="data:${mimeType};base64,${buffer}" style="max-width:100%"/>
+                      <Image src="${urlQRCode}" style="max-width:100%"/>
                       </td>
                     </tr>
                   </tbody>

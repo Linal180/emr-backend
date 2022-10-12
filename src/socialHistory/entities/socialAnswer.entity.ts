@@ -34,9 +34,7 @@ export class SocialAnswer {
   @ManyToOne(() => SocialHistory, socialHistory => socialHistory.socialAnswer, { onDelete: 'CASCADE' })
   socialHistory: SocialHistory;
 
-  @OneToOne(() => Questions, question => question.socialAnswer, { onDelete: 'CASCADE' })
   @Field(() => Questions, { nullable: true })
-  @JoinColumn()
   question: Questions;
 
   @OneToMany(() => SocialDependentAnswer, socialDependentAnswer => socialDependentAnswer.socialAnswer, { onDelete: 'CASCADE' })
