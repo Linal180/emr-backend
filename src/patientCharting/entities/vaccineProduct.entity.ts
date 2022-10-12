@@ -22,6 +22,14 @@ export class VaccineProduct {
   @Field({ nullable: true })
   status: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  cvxCode: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  mvxCode: string
+
   //relationship columns
 
   @Column({ nullable: true })
@@ -32,10 +40,6 @@ export class VaccineProduct {
   @Field({ nullable: true })
   mvxId: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  cptCodeId: string;
-
   //relationships
 
   @ManyToOne(() => CVX, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
@@ -45,10 +49,6 @@ export class VaccineProduct {
   @ManyToOne(() => MVX, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
   @Field(() => MVX, { nullable: true })
   mvx: MVX
-
-  @ManyToOne(() => CPTCodes, cvx => cvx.vaccineProduct)
-  @Field(() => CPTCodes, { nullable: true })
-  cptCode: CPTCodes
 
   @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
   @Field(() => [NdcVaccineProduct], { nullable: true })

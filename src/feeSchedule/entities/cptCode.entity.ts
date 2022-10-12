@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { CVX } from "src/patientCharting/entities/cvx.entity";
 import { VaccineProduct } from "src/patientCharting/entities/vaccineProduct.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
@@ -45,9 +46,9 @@ export class CPTCodes {
   @Field(() => [CptFeeSchedule], { nullable: true })
   cptFeeSchedule: CptFeeSchedule[]
 
-  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cptCode)
-  @Field(() => [VaccineProduct], { nullable: true })
-  vaccineProduct: VaccineProduct[]
+  @OneToMany(() => CVX, vaccineProduct => vaccineProduct.cptCode)
+  @Field(() => [CVX], { nullable: true })
+  cvxCodes: CVX[]
 
   //dates
 
