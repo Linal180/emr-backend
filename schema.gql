@@ -1648,10 +1648,20 @@ type CVX {
   updatedAt: String
 }
 
+type NdcVaccineProduct {
+  id: String!
+  vaccineProductId: String
+  ndcCodeId: String
+  ndcCode: NDC
+  createdAt: String
+  updatedAt: String
+}
+
 type NDC {
   id: String!
   code: String
   description: String
+  ndcVaccine: [NdcVaccineProduct!]
   createdAt: String
   updatedAt: String
 }

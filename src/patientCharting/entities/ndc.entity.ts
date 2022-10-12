@@ -18,11 +18,11 @@ export class NDC {
   @Field({ nullable: true })
   description: string
 
-  //relationships
+  // relationships
 
-  // @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, {onDelete: "CASCADE"})
-  // @Field(() => [NdcVaccineProduct], { nullable: true })
-  // ndcVaccine: NdcVaccineProduct[]
+  @OneToMany(() => NdcVaccineProduct, cvx => cvx.ndcCode, {onDelete: "CASCADE"})
+  @Field(() => [NdcVaccineProduct], { nullable: true })
+  ndcVaccine: NdcVaccineProduct[]
 
   //dates
 
