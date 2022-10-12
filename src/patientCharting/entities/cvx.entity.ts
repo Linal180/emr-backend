@@ -1,12 +1,11 @@
-import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { MVX } from "./mvx.entity";
-import { Vaccine } from "./vaccines.entity";
+import { VaccineProduct } from "./vaccineProduct.entity";
 
 @Entity({ name: 'CVX' })
 @ObjectType()
 export class CVX {
-  
+
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string
@@ -20,19 +19,24 @@ export class CVX {
   shortDescription: string
 
   @Column({ nullable: true })
-  @Field( { nullable: true })
+  @Field({ nullable: true })
   cvxCode: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  productStatus: string
+  status: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  notes: string
 
   //relationships
 
-  @OneToMany(() => MVX, mvx => mvx.cvx, { onDelete: 'CASCADE' })
-  @Field(() => [MVX], { nullable: true })
-  mvx: MVX[];
-  
+  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cvx, { onDelete: "CASCADE" })
+  @Field(() => [VaccineProduct], { nullable: true })
+  vaccineProduct: VaccineProduct[]
+
+
   //dates
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

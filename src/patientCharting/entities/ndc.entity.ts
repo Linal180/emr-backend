@@ -1,7 +1,6 @@
-import { Field, Float, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-//entities
-import { MVX } from "./mvx.entity";
+import { Field, ObjectType } from "@nestjs/graphql";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { NdcVaccineProduct } from "./ndcVaccineProduct.entity";
 
 @Entity({ name: 'NDC' })
 @ObjectType()
@@ -13,59 +12,17 @@ export class NDC {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  ndcCode: string;
+  code: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  mvxName: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  mvxCode: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  startDate: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  endDate: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  gtin: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  lastUpdate: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  cvxCode: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  cvxDescription: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  ndcType: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  noUseNDC: string
-
-  //relationship Fields
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  mvxId: string;
+  description: string
 
   //relationships
 
-  @ManyToOne(() => MVX, mvx => mvx.ndc, { onDelete: 'CASCADE' })
-  @Field(() => MVX, { nullable: true })
-  mvx: MVX
+  // @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, {onDelete: "CASCADE"})
+  // @Field(() => [NdcVaccineProduct], { nullable: true })
+  // ndcVaccine: NdcVaccineProduct[]
 
   //dates
 

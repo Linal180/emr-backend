@@ -46,8 +46,8 @@ export class CreateVaccine implements Seeder {
           //find cvx 
           const cvxInstance = await cvxRepo.findOne({ cvxCode })
           //associate cvx
-          mvxInstance.cvx = cvxInstance;
-          mvxInstance.cvxId = cvxInstance?.id
+          // mvxInstance.cvx = cvxInstance;
+          // mvxInstance.cvxId = cvxInstance?.id
           //save cvx
           return await mvxRepo.save(mvxInstance)
         }))
@@ -60,14 +60,14 @@ export class CreateVaccine implements Seeder {
         await Promise.all(ndcData?.map(async (item) => {
           const { cvxCode, mvxCode } = item
           //create ndc
-          const ndcInstance = ndcRepo.create(item);
+          // const ndcInstance = ndcRepo.create(item);
           //find mvx 
-          const mvxInstance = await mvxRepo.findOne({ mvxCode, cvxCode })
-          //associate mvx
-          ndcInstance.mvx = mvxInstance;
-          ndcInstance.mvxId = mvxInstance?.id
+          // const mvxInstance = await mvxRepo.findOne({ mvxCode, cvxCode })
+          // //associate mvx
+          // ndcInstance.mvx = mvxInstance;
+          // ndcInstance.mvxId = mvxInstance?.id
           //save ndc
-          return await ndcRepo.save(ndcInstance)
+          // return await ndcRepo.save(ndcInstance)
         }))
       }
 

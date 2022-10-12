@@ -1612,33 +1612,13 @@ enum STATUS {
   PENDING
 }
 
-type NDC {
+type VaccineProduct {
   id: String!
-  ndcCode: String
-  mvxName: String
-  mvxCode: String
-  startDate: String
-  endDate: String
-  gtin: String
-  lastUpdate: String
-  cvxCode: String
-  cvxDescription: String
-  ndcType: String
-  noUseNDC: String
-  mvxId: String
-  mvx: MVX
-  createdAt: String
-  updatedAt: String
-}
-
-type MVX {
-  id: String!
-  manufacturerName: String
-  mvxCode: String
-  mvxStatus: String
-  cvxCode: String
+  name: String
+  status: String
   cvxId: String
-  ndc: [NDC!]
+  mvxId: String
+  cptCodeId: String
   cvx: CVX
   createdAt: String
   updatedAt: String
@@ -1649,8 +1629,27 @@ type CVX {
   name: String
   shortDescription: String
   cvxCode: String
-  productStatus: String
-  mvx: [MVX!]
+  status: String
+  notes: String
+  vaccineProduct: [VaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
+type MVX {
+  id: String!
+  manufacturerName: String
+  mvxCode: String
+  notes: String
+  mvxStatus: String
+  createdAt: String
+  updatedAt: String
+}
+
+type NDC {
+  id: String!
+  code: String
+  description: String
   createdAt: String
   updatedAt: String
 }
