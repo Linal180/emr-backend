@@ -45,11 +45,9 @@ export class CPTCodes {
   @Field(() => [CptFeeSchedule], { nullable: true })
   cptFeeSchedule: CptFeeSchedule[]
 
-  // //relationships
-
-  // @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cptCode, { onDelete: "CASCADE" })
-  // @Field(() => [VaccineProduct], { nullable: true })
-  // vaccineProduct: VaccineProduct[]
+  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cptCode)
+  @Field(() => [VaccineProduct], { nullable: true })
+  vaccineProduct: VaccineProduct[]
 
   //dates
 

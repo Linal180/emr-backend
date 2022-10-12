@@ -46,9 +46,9 @@ export class VaccineProduct {
   @Field(() => MVX, { nullable: true })
   mvx: MVX
 
-  // @ManyToOne(() => CPTCodes, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
-  // @Field(() => CPTCodes, { nullable: true })
-  // cptCode: CPTCodes
+  @ManyToOne(() => CPTCodes, cvx => cvx.vaccineProduct)
+  @Field(() => CPTCodes, { nullable: true })
+  cptCode: CPTCodes
 
   @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
   @Field(() => [NdcVaccineProduct], { nullable: true })

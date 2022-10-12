@@ -540,6 +540,63 @@ type Agreement {
   practice: Practice
 }
 
+type CVX {
+  id: String!
+  name: String
+  shortDescription: String
+  cvxCode: String
+  status: String
+  notes: String
+  vaccineProduct: [VaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
+type MVX {
+  id: String!
+  manufacturerName: String
+  mvxCode: String
+  notes: String
+  mvxStatus: String
+  vaccineProduct: [VaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
+type NDC {
+  id: String!
+  code: String
+  description: String
+  ndcVaccine: [NdcVaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
+type NdcVaccineProduct {
+  id: String!
+  vaccineProductId: String
+  ndcCodeId: String
+  vaccineProduct: VaccineProduct
+  ndcCode: NDC
+  createdAt: String
+  updatedAt: String
+}
+
+type VaccineProduct {
+  id: String!
+  name: String
+  status: String
+  cvxId: String
+  mvxId: String
+  cptCodeId: String
+  cvx: CVX
+  mvx: MVX
+  cptCode: CPTCodes
+  ndcVaccine: [NdcVaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
 type CPTCodes {
   id: String!
   code: String
@@ -550,6 +607,7 @@ type CPTCodes {
   systematic: Boolean
   priority: Int
   cptFeeSchedule: [CptFeeSchedule!]
+  vaccineProduct: [VaccineProduct!]
   createdAt: String
   updatedAt: String
 }
@@ -1610,62 +1668,6 @@ enum STATUS {
   PAID
   INSURANCE_CLAIM
   PENDING
-}
-
-type MVX {
-  id: String!
-  manufacturerName: String
-  mvxCode: String
-  notes: String
-  mvxStatus: String
-  vaccineProduct: [VaccineProduct!]
-  createdAt: String
-  updatedAt: String
-}
-
-type NDC {
-  id: String!
-  code: String
-  description: String
-  ndcVaccine: [NdcVaccineProduct!]
-  createdAt: String
-  updatedAt: String
-}
-
-type NdcVaccineProduct {
-  id: String!
-  vaccineProductId: String
-  ndcCodeId: String
-  vaccineProduct: VaccineProduct
-  ndcCode: NDC
-  createdAt: String
-  updatedAt: String
-}
-
-type VaccineProduct {
-  id: String!
-  name: String
-  status: String
-  cvxId: String
-  mvxId: String
-  cptCodeId: String
-  cvx: CVX
-  mvx: MVX
-  ndcVaccine: [NdcVaccineProduct!]
-  createdAt: String
-  updatedAt: String
-}
-
-type CVX {
-  id: String!
-  name: String
-  shortDescription: String
-  cvxCode: String
-  status: String
-  notes: String
-  vaccineProduct: [VaccineProduct!]
-  createdAt: String
-  updatedAt: String
 }
 
 type Vaccine {
