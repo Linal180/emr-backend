@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { CptFeeSchedule } from "./cptFeeSchedule.entity";
@@ -33,6 +33,10 @@ export class CPTCodes {
   @Column({ nullable: true, default: false, type: "boolean" })
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   systematic: boolean;
+
+  @Column({ nullable: true, default: 1, type: 'bigint' })
+  @Field(() => Int, { nullable: true })
+  priority: number;
 
   //fields
 

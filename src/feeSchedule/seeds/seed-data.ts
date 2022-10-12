@@ -1919,9 +1919,9 @@ const covidCPTCodes = [{
   shortDescription: "Immunization administration by intramuscular injection of severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) vaccine, mRNA-LNP, spike protein, preservative free, 30 mcg/0.3 mL dosage, diluent reconstituted; first dose"
 }]
 
-const feeCPTCodes = cptFeeScheduleData?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription }));
+const feeCPTCodes = cptFeeScheduleData?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription, priority: 1, systematic: true }));
 
-const covid19 = covidCPTCodes?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription }))
+const covid19 = covidCPTCodes?.map(({ cptCode, shortDescription }) => ({ code: cptCode, shortDescription, priority: 1, systematic: true }))
 
 export const cptCodeData = [...feeCPTCodes, ...covid19]
 
