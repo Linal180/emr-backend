@@ -1,4 +1,3 @@
-import * as moment from "moment";
 
 const data = [
   {
@@ -1805,4 +1804,4 @@ const data = [
   },
 ];
 
-export const vaccineProductData = data?.map(({ cvxCode, mvxCode, name, status, updateDate }) => ({ cvxCode: cvxCode?.toString(), mvxCode, name, status, updatedAt: moment(updateDate, 'dd-MMM-yy').format() }))
+export const vaccineProductData = data?.map(({ cvxCode, mvxCode, name, status, updateDate }) => ({ cvxCode: cvxCode?.toString(), mvxCode, name, status, updateDate}))

@@ -1,4 +1,4 @@
-import * as moment from "moment";
+
 
 const data = [
   {
@@ -9,7 +9,7 @@ const data = [
     status: "Inactive",
     internalID: 1,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 55,
@@ -19,7 +19,7 @@ const data = [
     status: "Inactive",
     internalID: 2,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 82,
@@ -29,7 +29,7 @@ const data = [
     status: "Inactive",
     internalID: 3,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 24,
@@ -39,7 +39,7 @@ const data = [
     status: "Active",
     internalID: 4,
     nonvaccine: "False",
-    update_date: "11-Jun-19",
+    updatedDate: "11-Jun-19",
   },
   {
     cvxCode: 19,
@@ -49,7 +49,7 @@ const data = [
     status: "Active",
     internalID: 5,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 27,
@@ -59,7 +59,7 @@ const data = [
     status: "Active",
     internalID: 6,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 26,
@@ -69,7 +69,7 @@ const data = [
     status: "Inactive",
     internalID: 7,
     nonvaccine: "False",
-    update_date: "17-Jun-16",
+    updatedDate: "17-Jun-16",
   },
   {
     cvxCode: 29,
@@ -79,7 +79,7 @@ const data = [
     status: "Active",
     internalID: 8,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 56,
@@ -89,7 +89,7 @@ const data = [
     status: "Active",
     internalID: 9,
     nonvaccine: "False",
-    update_date: "19-May-22",
+    updatedDate: "19-May-22",
   },
   {
     cvxCode: 12,
@@ -99,7 +99,7 @@ const data = [
     status: "Active",
     internalID: 10,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 28,
@@ -109,7 +109,7 @@ const data = [
     status: "Active",
     internalID: 11,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 20,
@@ -119,7 +119,7 @@ const data = [
     status: "Active",
     internalID: 12,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 106,
@@ -129,7 +129,7 @@ const data = [
     status: "Active",
     internalID: 13,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 107,
@@ -139,7 +139,7 @@ const data = [
     status: "Inactive",
     internalID: 14,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 110,
@@ -149,7 +149,7 @@ const data = [
     status: "Active",
     internalID: 15,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 50,
@@ -159,7 +159,7 @@ const data = [
     status: "Inactive",
     internalID: 16,
     nonvaccine: "False",
-    update_date: "20-Mar-17",
+    updatedDate: "20-Mar-17",
   },
   {
     cvxCode: 120,
@@ -169,7 +169,7 @@ const data = [
     status: "Active",
     internalID: 17,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 130,
@@ -179,7 +179,7 @@ const data = [
     status: "Active",
     internalID: 19,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: "01",
@@ -189,7 +189,7 @@ const data = [
     status: "Inactive",
     internalID: 21,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 22,
@@ -199,7 +199,7 @@ const data = [
     status: "Inactive",
     internalID: 22,
     nonvaccine: "False",
-    update_date: "23-Mar-17",
+    updatedDate: "23-Mar-17",
   },
   {
     cvxCode: 102,
@@ -209,7 +209,7 @@ const data = [
     status: "Non-US",
     internalID: 23,
     nonvaccine: "False",
-    update_date: "20-May-16",
+    updatedDate: "20-May-16",
   },
   {
     cvxCode: 57,
@@ -219,7 +219,7 @@ const data = [
     status: "Never Active",
     internalID: 24,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 52,
@@ -229,7 +229,7 @@ const data = [
     status: "Active",
     internalID: 25,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 83,
@@ -239,7 +239,7 @@ const data = [
     status: "Active",
     internalID: 26,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 84,
@@ -249,7 +249,7 @@ const data = [
     status: "Inactive",
     internalID: 27,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 31,
@@ -259,7 +259,7 @@ const data = [
     status: "Inactive",
     internalID: 28,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 85,
@@ -269,7 +269,7 @@ const data = [
     status: "Inactive",
     internalID: 29,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 104,
@@ -279,7 +279,7 @@ const data = [
     status: "Active",
     internalID: 30,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 30,
@@ -289,7 +289,7 @@ const data = [
     status: "Active",
     internalID: 31,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: "08",
@@ -299,7 +299,7 @@ const data = [
     status: "Active",
     internalID: 32,
     nonvaccine: "False",
-    update_date: "10-May-18",
+    updatedDate: "10-May-18",
   },
   {
     cvxCode: 42,
@@ -309,7 +309,7 @@ const data = [
     status: "Inactive",
     internalID: 33,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 43,
@@ -319,7 +319,7 @@ const data = [
     status: "Active",
     internalID: 34,
     nonvaccine: "False",
-    update_date: "10-May-18",
+    updatedDate: "10-May-18",
   },
   {
     cvxCode: 44,
@@ -329,7 +329,7 @@ const data = [
     status: "Active",
     internalID: 35,
     nonvaccine: "False",
-    update_date: "8-May-19",
+    updatedDate: "8-May-19",
   },
   {
     cvxCode: 45,
@@ -339,7 +339,7 @@ const data = [
     status: "Inactive",
     internalID: 36,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 58,
@@ -349,7 +349,7 @@ const data = [
     status: "Never Active",
     internalID: 37,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 59,
@@ -359,7 +359,7 @@ const data = [
     status: "Never Active",
     internalID: 38,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 60,
@@ -369,7 +369,7 @@ const data = [
     status: "Never Active",
     internalID: 39,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 46,
@@ -379,7 +379,7 @@ const data = [
     status: "Inactive",
     internalID: 40,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 47,
@@ -389,7 +389,7 @@ const data = [
     status: "Inactive",
     internalID: 41,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 48,
@@ -399,7 +399,7 @@ const data = [
     status: "Active",
     internalID: 42,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 49,
@@ -409,7 +409,7 @@ const data = [
     status: "Active",
     internalID: 43,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 17,
@@ -419,7 +419,7 @@ const data = [
     status: "Inactive",
     internalID: 44,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 51,
@@ -429,7 +429,7 @@ const data = [
     status: "Inactive",
     internalID: 45,
     nonvaccine: "False",
-    update_date: "11-Mar-16",
+    updatedDate: "11-Mar-16",
   },
   {
     cvxCode: 61,
@@ -439,7 +439,7 @@ const data = [
     status: "Never Active",
     internalID: 46,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 118,
@@ -449,7 +449,7 @@ const data = [
     status: "Inactive",
     internalID: 47,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 62,
@@ -459,7 +459,7 @@ const data = [
     status: "Active",
     internalID: 49,
     nonvaccine: "False",
-    update_date: "2-Jun-20",
+    updatedDate: "2-Jun-20",
   },
   {
     cvxCode: 86,
@@ -469,7 +469,7 @@ const data = [
     status: "Active",
     internalID: 51,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 87,
@@ -479,7 +479,7 @@ const data = [
     status: "Active",
     internalID: 52,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 14,
@@ -489,7 +489,7 @@ const data = [
     status: "Inactive",
     internalID: 53,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 111,
@@ -499,7 +499,7 @@ const data = [
     status: "Inactive",
     internalID: 54,
     nonvaccine: "False",
-    update_date: "22-Sep-14",
+    updatedDate: "22-Sep-14",
   },
   {
     cvxCode: 15,
@@ -509,7 +509,7 @@ const data = [
     status: "Inactive",
     internalID: 55,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 16,
@@ -519,7 +519,7 @@ const data = [
     status: "Inactive",
     internalID: 56,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 88,
@@ -529,7 +529,7 @@ const data = [
     status: "Inactive",
     internalID: 57,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 123,
@@ -539,7 +539,7 @@ const data = [
     status: "Inactive",
     internalID: 58,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 10,
@@ -549,7 +549,7 @@ const data = [
     status: "Active",
     internalID: 60,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: "02",
@@ -559,7 +559,7 @@ const data = [
     status: "Inactive",
     internalID: 61,
     nonvaccine: "False",
-    update_date: "10-Feb-17",
+    updatedDate: "10-Feb-17",
   },
   {
     cvxCode: 89,
@@ -569,7 +569,7 @@ const data = [
     status: "Inactive",
     internalID: 62,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 39,
@@ -579,7 +579,7 @@ const data = [
     status: "Inactive",
     internalID: 63,
     nonvaccine: "False",
-    update_date: "24-Sep-15",
+    updatedDate: "24-Sep-15",
   },
   {
     cvxCode: 63,
@@ -589,7 +589,7 @@ const data = [
     status: "Never Active",
     internalID: 64,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 64,
@@ -599,7 +599,7 @@ const data = [
     status: "Never Active",
     internalID: 65,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 65,
@@ -609,7 +609,7 @@ const data = [
     status: "Never Active",
     internalID: 66,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 66,
@@ -619,7 +619,7 @@ const data = [
     status: "Inactive",
     internalID: 67,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: "03",
@@ -629,7 +629,7 @@ const data = [
     status: "Active",
     internalID: 68,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: "04",
@@ -639,7 +639,7 @@ const data = [
     status: "Inactive",
     internalID: 69,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 94,
@@ -649,7 +649,7 @@ const data = [
     status: "Active",
     internalID: 70,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 67,
@@ -659,7 +659,7 @@ const data = [
     status: "Never Active",
     internalID: 71,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: "05",
@@ -669,7 +669,7 @@ const data = [
     status: "Inactive",
     internalID: 72,
     nonvaccine: "False",
-    update_date: "31-Aug-10",
+    updatedDate: "31-Aug-10",
   },
   {
     cvxCode: 68,
@@ -679,7 +679,7 @@ const data = [
     status: "Never Active",
     internalID: 73,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 32,
@@ -689,7 +689,7 @@ const data = [
     status: "Inactive",
     internalID: 74,
     nonvaccine: "False",
-    update_date: "27-Oct-17",
+    updatedDate: "27-Oct-17",
   },
   {
     cvxCode: 103,
@@ -699,7 +699,7 @@ const data = [
     status: "Inactive",
     internalID: 75,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 114,
@@ -709,7 +709,7 @@ const data = [
     status: "Active",
     internalID: 76,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 108,
@@ -719,7 +719,7 @@ const data = [
     status: "Inactive",
     internalID: 77,
     nonvaccine: "False",
-    update_date: "1-Dec-15",
+    updatedDate: "1-Dec-15",
   },
   {
     cvxCode: "07",
@@ -729,7 +729,7 @@ const data = [
     status: "Inactive",
     internalID: 79,
     nonvaccine: "False",
-    update_date: "18-Jun-15",
+    updatedDate: "18-Jun-15",
   },
   {
     cvxCode: 69,
@@ -739,7 +739,7 @@ const data = [
     status: "Inactive",
     internalID: 80,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 11,
@@ -749,7 +749,7 @@ const data = [
     status: "Inactive",
     internalID: 81,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 23,
@@ -759,7 +759,7 @@ const data = [
     status: "Inactive",
     internalID: 82,
     nonvaccine: "False",
-    update_date: "17-May-18",
+    updatedDate: "17-May-18",
   },
   {
     cvxCode: 33,
@@ -769,7 +769,7 @@ const data = [
     status: "Active",
     internalID: 83,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 100,
@@ -779,7 +779,7 @@ const data = [
     status: "Inactive",
     internalID: 84,
     nonvaccine: "False",
-    update_date: "26-Jun-14",
+    updatedDate: "26-Jun-14",
   },
   {
     cvxCode: 109,
@@ -789,7 +789,7 @@ const data = [
     status: "Inactive",
     internalID: 85,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 70,
@@ -799,7 +799,7 @@ const data = [
     status: "Never Active",
     internalID: 86,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 18,
@@ -809,7 +809,7 @@ const data = [
     status: "Inactive",
     internalID: 87,
     nonvaccine: "False",
-    update_date: "18-Oct-16",
+    updatedDate: "18-Oct-16",
   },
   {
     cvxCode: 40,
@@ -819,7 +819,7 @@ const data = [
     status: "Inactive",
     internalID: 88,
     nonvaccine: "False",
-    update_date: "18-Jun-15",
+    updatedDate: "18-Jun-15",
   },
   {
     cvxCode: 90,
@@ -829,7 +829,7 @@ const data = [
     status: "Inactive",
     internalID: 89,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 72,
@@ -839,7 +839,7 @@ const data = [
     status: "Never Active",
     internalID: 90,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 73,
@@ -849,7 +849,7 @@ const data = [
     status: "Never Active",
     internalID: 91,
     nonvaccine: "False",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 34,
@@ -859,7 +859,7 @@ const data = [
     status: "Active",
     internalID: 92,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 119,
@@ -869,7 +869,7 @@ const data = [
     status: "Active",
     internalID: 93,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 122,
@@ -879,7 +879,7 @@ const data = [
     status: "Inactive",
     internalID: 95,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 116,
@@ -889,7 +889,7 @@ const data = [
     status: "Active",
     internalID: 97,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 74,
@@ -899,7 +899,7 @@ const data = [
     status: "Inactive",
     internalID: 99,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 71,
@@ -909,7 +909,7 @@ const data = [
     status: "Active",
     internalID: 101,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 93,
@@ -919,7 +919,7 @@ const data = [
     status: "Active",
     internalID: 102,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: "06",
@@ -929,7 +929,7 @@ const data = [
     status: "Inactive",
     internalID: 103,
     nonvaccine: "False",
-    update_date: "18-Jun-15",
+    updatedDate: "18-Jun-15",
   },
   {
     cvxCode: 38,
@@ -939,7 +939,7 @@ const data = [
     status: "Inactive",
     internalID: 104,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 76,
@@ -949,7 +949,7 @@ const data = [
     status: "Inactive",
     internalID: 105,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 113,
@@ -960,7 +960,7 @@ const data = [
     status: "Active",
     internalID: 106,
     nonvaccine: "False",
-    update_date: "27-Oct-17",
+    updatedDate: "27-Oct-17",
   },
   {
     cvxCode: "09",
@@ -971,7 +971,7 @@ const data = [
     status: "Active",
     internalID: 107,
     nonvaccine: "False",
-    update_date: "27-Oct-17",
+    updatedDate: "27-Oct-17",
   },
   {
     cvxCode: 115,
@@ -981,7 +981,7 @@ const data = [
     status: "Active",
     internalID: 108,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 35,
@@ -991,7 +991,7 @@ const data = [
     status: "Inactive",
     internalID: 110,
     nonvaccine: "False",
-    update_date: "14-Aug-15",
+    updatedDate: "14-Aug-15",
   },
   {
     cvxCode: 112,
@@ -1001,7 +1001,7 @@ const data = [
     status: "Inactive",
     internalID: 111,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 77,
@@ -1011,7 +1011,7 @@ const data = [
     status: "Non-US",
     internalID: 112,
     nonvaccine: "False",
-    update_date: "4-Mar-22",
+    updatedDate: "4-Mar-22",
   },
   {
     cvxCode: 13,
@@ -1021,7 +1021,7 @@ const data = [
     status: "Active",
     internalID: 113,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 95,
@@ -1031,7 +1031,7 @@ const data = [
     status: "Inactive",
     internalID: 114,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 96,
@@ -1041,7 +1041,7 @@ const data = [
     status: "Inactive",
     internalID: 115,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 97,
@@ -1051,7 +1051,7 @@ const data = [
     status: "Inactive",
     internalID: 116,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 98,
@@ -1061,7 +1061,7 @@ const data = [
     status: "Inactive",
     internalID: 117,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 78,
@@ -1071,7 +1071,7 @@ const data = [
     status: "Inactive",
     internalID: 118,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 91,
@@ -1081,7 +1081,7 @@ const data = [
     status: "Inactive",
     internalID: 119,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 25,
@@ -1091,7 +1091,7 @@ const data = [
     status: "Active",
     internalID: 120,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 41,
@@ -1101,7 +1101,7 @@ const data = [
     status: "Inactive",
     internalID: 121,
     nonvaccine: "False",
-    update_date: "13-Aug-15",
+    updatedDate: "13-Aug-15",
   },
   {
     cvxCode: 53,
@@ -1111,7 +1111,7 @@ const data = [
     status: "Inactive",
     internalID: 122,
     nonvaccine: "False",
-    update_date: "18-Jun-15",
+    updatedDate: "18-Jun-15",
   },
   {
     cvxCode: 101,
@@ -1121,7 +1121,7 @@ const data = [
     status: "Active",
     internalID: 123,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 75,
@@ -1131,7 +1131,7 @@ const data = [
     status: "Active",
     internalID: 124,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 105,
@@ -1141,7 +1141,7 @@ const data = [
     status: "Inactive",
     internalID: 125,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 79,
@@ -1151,7 +1151,7 @@ const data = [
     status: "Active",
     internalID: 126,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 21,
@@ -1161,7 +1161,7 @@ const data = [
     status: "Active",
     internalID: 127,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 81,
@@ -1171,7 +1171,7 @@ const data = [
     status: "Inactive",
     internalID: 128,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 80,
@@ -1181,7 +1181,7 @@ const data = [
     status: "Inactive",
     internalID: 129,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 92,
@@ -1191,7 +1191,7 @@ const data = [
     status: "Inactive",
     internalID: 130,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 36,
@@ -1201,7 +1201,7 @@ const data = [
     status: "Active",
     internalID: 131,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 117,
@@ -1211,7 +1211,7 @@ const data = [
     status: "Never Active",
     internalID: 132,
     nonvaccine: "True",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 37,
@@ -1221,7 +1221,7 @@ const data = [
     status: "Active",
     internalID: 134,
     nonvaccine: "False",
-    update_date: "2-Mar-17",
+    updatedDate: "2-Mar-17",
   },
   {
     cvxCode: 121,
@@ -1231,7 +1231,7 @@ const data = [
     status: "Active",
     internalID: 135,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 998,
@@ -1241,7 +1241,7 @@ const data = [
     status: "Inactive",
     internalID: 137,
     nonvaccine: "True",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 999,
@@ -1251,7 +1251,7 @@ const data = [
     status: "Inactive",
     internalID: 138,
     nonvaccine: "True",
-    update_date: "27-Oct-20",
+    updatedDate: "27-Oct-20",
   },
   {
     cvxCode: 99,
@@ -1261,7 +1261,7 @@ const data = [
     status: "Inactive",
     internalID: 139,
     nonvaccine: "True",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 133,
@@ -1271,7 +1271,7 @@ const data = [
     status: "Active",
     internalID: 141,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 134,
@@ -1281,7 +1281,7 @@ const data = [
     status: "Active",
     internalID: 142,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 137,
@@ -1291,7 +1291,7 @@ const data = [
     status: "Inactive",
     internalID: 144,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 136,
@@ -1301,7 +1301,7 @@ const data = [
     status: "Active",
     internalID: 145,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 135,
@@ -1311,7 +1311,7 @@ const data = [
     status: "Active",
     internalID: 146,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 131,
@@ -1321,7 +1321,7 @@ const data = [
     status: "Inactive",
     internalID: 147,
     nonvaccine: "False",
-    update_date: "28-May-10",
+    updatedDate: "28-May-10",
   },
   {
     cvxCode: 132,
@@ -1331,7 +1331,7 @@ const data = [
     status: "Inactive",
     internalID: 148,
     nonvaccine: "False",
-    update_date: "10-May-18",
+    updatedDate: "10-May-18",
   },
   {
     cvxCode: 128,
@@ -1341,7 +1341,7 @@ const data = [
     status: "Inactive",
     internalID: 149,
     nonvaccine: "False",
-    update_date: "28-Aug-10",
+    updatedDate: "28-Aug-10",
   },
   {
     cvxCode: 125,
@@ -1351,7 +1351,7 @@ const data = [
     status: "Inactive",
     internalID: 150,
     nonvaccine: "False",
-    update_date: "28-Aug-10",
+    updatedDate: "28-Aug-10",
   },
   {
     cvxCode: 126,
@@ -1361,7 +1361,7 @@ const data = [
     status: "Inactive",
     internalID: 151,
     nonvaccine: "False",
-    update_date: "28-Aug-10",
+    updatedDate: "28-Aug-10",
   },
   {
     cvxCode: 127,
@@ -1371,7 +1371,7 @@ const data = [
     status: "Inactive",
     internalID: 152,
     nonvaccine: "False",
-    update_date: "28-Aug-10",
+    updatedDate: "28-Aug-10",
   },
   {
     cvxCode: 138,
@@ -1381,7 +1381,7 @@ const data = [
     status: "Inactive",
     internalID: 154,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 139,
@@ -1391,7 +1391,7 @@ const data = [
     status: "Inactive",
     internalID: 155,
     nonvaccine: "False",
-    update_date: "27-Aug-19",
+    updatedDate: "27-Aug-19",
   },
   {
     cvxCode: 140,
@@ -1401,7 +1401,7 @@ const data = [
     status: "Active",
     internalID: 156,
     nonvaccine: "False",
-    update_date: "17-Jul-13",
+    updatedDate: "17-Jul-13",
   },
   {
     cvxCode: 129,
@@ -1411,7 +1411,7 @@ const data = [
     status: "Inactive",
     internalID: 157,
     nonvaccine: "False",
-    update_date: "30-Sep-10",
+    updatedDate: "30-Sep-10",
   },
   {
     cvxCode: 141,
@@ -1421,7 +1421,7 @@ const data = [
     status: "Active",
     internalID: 159,
     nonvaccine: "False",
-    update_date: "17-Jul-13",
+    updatedDate: "17-Jul-13",
   },
   {
     cvxCode: 142,
@@ -1431,7 +1431,7 @@ const data = [
     status: "Inactive",
     internalID: 160,
     nonvaccine: "False",
-    update_date: "14-Aug-15",
+    updatedDate: "14-Aug-15",
   },
   {
     cvxCode: 143,
@@ -1441,7 +1441,7 @@ const data = [
     status: "Active",
     internalID: 161,
     nonvaccine: "False",
-    update_date: "20-Mar-11",
+    updatedDate: "20-Mar-11",
   },
   {
     cvxCode: 144,
@@ -1451,7 +1451,7 @@ const data = [
     status: "Active",
     internalID: 162,
     nonvaccine: "False",
-    update_date: "17-Jul-13",
+    updatedDate: "17-Jul-13",
   },
   {
     cvxCode: 145,
@@ -1461,7 +1461,7 @@ const data = [
     status: "Never Active",
     internalID: 163,
     nonvaccine: "True",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 146,
@@ -1471,7 +1471,7 @@ const data = [
     status: "Active",
     internalID: 164,
     nonvaccine: "False",
-    update_date: "10-Aug-22",
+    updatedDate: "10-Aug-22",
   },
   {
     cvxCode: 147,
@@ -1481,7 +1481,7 @@ const data = [
     status: "Inactive",
     internalID: 165,
     nonvaccine: "False",
-    update_date: "8-Feb-12",
+    updatedDate: "8-Feb-12",
   },
   {
     cvxCode: 148,
@@ -1491,7 +1491,7 @@ const data = [
     status: "Inactive",
     internalID: 166,
     nonvaccine: "False",
-    update_date: "11-May-18",
+    updatedDate: "11-May-18",
   },
   {
     cvxCode: 149,
@@ -1501,7 +1501,7 @@ const data = [
     status: "Active",
     internalID: 167,
     nonvaccine: "False",
-    update_date: "17-Jul-13",
+    updatedDate: "17-Jul-13",
   },
   {
     cvxCode: 150,
@@ -1511,7 +1511,7 @@ const data = [
     status: "Active",
     internalID: 168,
     nonvaccine: "False",
-    update_date: "17-Jul-13",
+    updatedDate: "17-Jul-13",
   },
   {
     cvxCode: 151,
@@ -1521,7 +1521,7 @@ const data = [
     status: "Inactive",
     internalID: 169,
     nonvaccine: "False",
-    update_date: "28-Jan-13",
+    updatedDate: "28-Jan-13",
   },
   {
     cvxCode: 152,
@@ -1531,7 +1531,7 @@ const data = [
     status: "Inactive",
     internalID: 170,
     nonvaccine: "False",
-    update_date: "28-Jan-13",
+    updatedDate: "28-Jan-13",
   },
   {
     cvxCode: 153,
@@ -1541,7 +1541,7 @@ const data = [
     status: "Inactive",
     internalID: 171,
     nonvaccine: "False",
-    update_date: "24-Jun-16",
+    updatedDate: "24-Jun-16",
   },
   {
     cvxCode: 154,
@@ -1551,7 +1551,7 @@ const data = [
     status: "Never Active",
     internalID: 172,
     nonvaccine: "True",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 155,
@@ -1561,7 +1561,7 @@ const data = [
     status: "Active",
     internalID: 173,
     nonvaccine: "False",
-    update_date: "17-Jul-13",
+    updatedDate: "17-Jul-13",
   },
   {
     cvxCode: 156,
@@ -1571,7 +1571,7 @@ const data = [
     status: "Active",
     internalID: 174,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 157,
@@ -1581,7 +1581,7 @@ const data = [
     status: "Active",
     internalID: 175,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 158,
@@ -1591,7 +1591,7 @@ const data = [
     status: "Active",
     internalID: 176,
     nonvaccine: "False",
-    update_date: "20-Aug-13",
+    updatedDate: "20-Aug-13",
   },
   {
     cvxCode: 159,
@@ -1601,7 +1601,7 @@ const data = [
     status: "Inactive",
     internalID: 177,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 160,
@@ -1611,7 +1611,7 @@ const data = [
     status: "Active",
     internalID: 178,
     nonvaccine: "False",
-    update_date: "27-May-14",
+    updatedDate: "27-May-14",
   },
   {
     cvxCode: 801,
@@ -1621,7 +1621,7 @@ const data = [
     status: "Active",
     internalID: 179,
     nonvaccine: "True",
-    update_date: "27-Oct-20",
+    updatedDate: "27-Oct-20",
   },
   {
     cvxCode: 161,
@@ -1632,7 +1632,7 @@ const data = [
     status: "Active",
     internalID: 180,
     nonvaccine: "False",
-    update_date: "23-Jul-14",
+    updatedDate: "23-Jul-14",
   },
   {
     cvxCode: 162,
@@ -1642,7 +1642,7 @@ const data = [
     status: "Active",
     internalID: 181,
     nonvaccine: "False",
-    update_date: "3-Nov-14",
+    updatedDate: "3-Nov-14",
   },
   {
     cvxCode: 163,
@@ -1652,7 +1652,7 @@ const data = [
     status: "Active",
     internalID: 182,
     nonvaccine: "False",
-    update_date: "2-Feb-15",
+    updatedDate: "2-Feb-15",
   },
   {
     cvxCode: 164,
@@ -1662,7 +1662,7 @@ const data = [
     status: "Inactive",
     internalID: 183,
     nonvaccine: "False",
-    update_date: "3-Nov-14",
+    updatedDate: "3-Nov-14",
   },
   {
     cvxCode: 165,
@@ -1672,7 +1672,7 @@ const data = [
     status: "Active",
     internalID: 184,
     nonvaccine: "False",
-    update_date: "11-Dec-14",
+    updatedDate: "11-Dec-14",
   },
   {
     cvxCode: 166,
@@ -1682,7 +1682,7 @@ const data = [
     status: "Active",
     internalID: 185,
     nonvaccine: "False",
-    update_date: "15-Dec-14",
+    updatedDate: "15-Dec-14",
   },
   {
     cvxCode: 167,
@@ -1692,7 +1692,7 @@ const data = [
     status: "Inactive",
     internalID: 188,
     nonvaccine: "False",
-    update_date: "1-Dec-15",
+    updatedDate: "1-Dec-15",
   },
   {
     cvxCode: 168,
@@ -1702,7 +1702,7 @@ const data = [
     status: "Active",
     internalID: 189,
     nonvaccine: "False",
-    update_date: "10-Dec-15",
+    updatedDate: "10-Dec-15",
   },
   {
     cvxCode: 169,
@@ -1712,7 +1712,7 @@ const data = [
     status: "Non-US",
     internalID: 190,
     nonvaccine: "False",
-    update_date: "10-May-16",
+    updatedDate: "10-May-16",
   },
   {
     cvxCode: 170,
@@ -1722,7 +1722,7 @@ const data = [
     status: "Non-US",
     internalID: 191,
     nonvaccine: "False",
-    update_date: "20-May-16",
+    updatedDate: "20-May-16",
   },
   {
     cvxCode: 171,
@@ -1733,7 +1733,7 @@ const data = [
     status: "Active",
     internalID: 192,
     nonvaccine: "False",
-    update_date: "16-Jun-16",
+    updatedDate: "16-Jun-16",
   },
   {
     cvxCode: 172,
@@ -1743,7 +1743,7 @@ const data = [
     status: "Non-US",
     internalID: 193,
     nonvaccine: "False",
-    update_date: "17-Jun-16",
+    updatedDate: "17-Jun-16",
   },
   {
     cvxCode: 173,
@@ -1753,7 +1753,7 @@ const data = [
     status: "Non-US",
     internalID: 194,
     nonvaccine: "False",
-    update_date: "17-Jun-16",
+    updatedDate: "17-Jun-16",
   },
   {
     cvxCode: 174,
@@ -1763,7 +1763,7 @@ const data = [
     status: "Active",
     internalID: 195,
     nonvaccine: "False",
-    update_date: "17-Jun-16",
+    updatedDate: "17-Jun-16",
   },
   {
     cvxCode: 175,
@@ -1773,7 +1773,7 @@ const data = [
     status: "Active",
     internalID: 196,
     nonvaccine: "False",
-    update_date: "18-Oct-16",
+    updatedDate: "18-Oct-16",
   },
   {
     cvxCode: 176,
@@ -1783,7 +1783,7 @@ const data = [
     status: "Active",
     internalID: 197,
     nonvaccine: "False",
-    update_date: "18-Oct-16",
+    updatedDate: "18-Oct-16",
   },
   {
     cvxCode: 177,
@@ -1793,7 +1793,7 @@ const data = [
     status: "Non-US",
     internalID: 201,
     nonvaccine: "False",
-    update_date: "19-Dec-16",
+    updatedDate: "19-Dec-16",
   },
   {
     cvxCode: 178,
@@ -1803,7 +1803,7 @@ const data = [
     status: "Non-US",
     internalID: 202,
     nonvaccine: "False",
-    update_date: "17-Jan-17",
+    updatedDate: "17-Jan-17",
   },
   {
     cvxCode: 179,
@@ -1813,7 +1813,7 @@ const data = [
     status: "Non-US",
     internalID: 203,
     nonvaccine: "False",
-    update_date: "17-Jan-17",
+    updatedDate: "17-Jan-17",
   },
   {
     cvxCode: 180,
@@ -1823,7 +1823,7 @@ const data = [
     status: "Inactive",
     internalID: 204,
     nonvaccine: "True",
-    update_date: "9-Sep-20",
+    updatedDate: "9-Sep-20",
   },
   {
     cvxCode: 181,
@@ -1833,7 +1833,7 @@ const data = [
     status: "Active",
     internalID: 205,
     nonvaccine: "True",
-    update_date: "4-Sep-20",
+    updatedDate: "4-Sep-20",
   },
   {
     cvxCode: 182,
@@ -1843,7 +1843,7 @@ const data = [
     status: "Inactive",
     internalID: 206,
     nonvaccine: "False",
-    update_date: "17-Jan-17",
+    updatedDate: "17-Jan-17",
   },
   {
     cvxCode: 183,
@@ -1853,7 +1853,7 @@ const data = [
     status: "Active",
     internalID: 207,
     nonvaccine: "False",
-    update_date: "2-Mar-17",
+    updatedDate: "2-Mar-17",
   },
   {
     cvxCode: 184,
@@ -1863,7 +1863,7 @@ const data = [
     status: "Inactive",
     internalID: 208,
     nonvaccine: "False",
-    update_date: "2-Mar-17",
+    updatedDate: "2-Mar-17",
   },
   {
     cvxCode: 185,
@@ -1874,7 +1874,7 @@ const data = [
     status: "Active",
     internalID: 209,
     nonvaccine: "False",
-    update_date: "21-Apr-17",
+    updatedDate: "21-Apr-17",
   },
   {
     cvxCode: 186,
@@ -1884,7 +1884,7 @@ const data = [
     status: "Active",
     internalID: 210,
     nonvaccine: "False",
-    update_date: "27-Jun-17",
+    updatedDate: "27-Jun-17",
   },
   {
     cvxCode: 187,
@@ -1894,7 +1894,7 @@ const data = [
     status: "Active",
     internalID: 211,
     nonvaccine: "False",
-    update_date: "27-Oct-17",
+    updatedDate: "27-Oct-17",
   },
   {
     cvxCode: 188,
@@ -1904,7 +1904,7 @@ const data = [
     status: "Inactive",
     internalID: 212,
     nonvaccine: "False",
-    update_date: "27-Oct-17",
+    updatedDate: "27-Oct-17",
   },
   {
     cvxCode: 189,
@@ -1914,7 +1914,7 @@ const data = [
     status: "Active",
     internalID: 213,
     nonvaccine: "False",
-    update_date: "10-May-18",
+    updatedDate: "10-May-18",
   },
   {
     cvxCode: 190,
@@ -1924,7 +1924,7 @@ const data = [
     status: "Non-US",
     internalID: 214,
     nonvaccine: "False",
-    update_date: "23-Jul-21",
+    updatedDate: "23-Jul-21",
   },
   {
     cvxCode: 191,
@@ -1934,7 +1934,7 @@ const data = [
     status: "Non-US",
     internalID: 215,
     nonvaccine: "False",
-    update_date: "10-May-18",
+    updatedDate: "10-May-18",
   },
   {
     cvxCode: 192,
@@ -1944,7 +1944,7 @@ const data = [
     status: "Non-US",
     internalID: 216,
     nonvaccine: "False",
-    update_date: "10-May-18",
+    updatedDate: "10-May-18",
   },
   {
     cvxCode: 193,
@@ -1954,7 +1954,7 @@ const data = [
     status: "Non-US",
     internalID: 217,
     nonvaccine: "False",
-    update_date: "21-Aug-18",
+    updatedDate: "21-Aug-18",
   },
   {
     cvxCode: 194,
@@ -1964,7 +1964,7 @@ const data = [
     status: "Inactive",
     internalID: 218,
     nonvaccine: "False",
-    update_date: "16-Jul-20",
+    updatedDate: "16-Jul-20",
   },
   {
     cvxCode: 195,
@@ -1974,7 +1974,7 @@ const data = [
     status: "Non-US",
     internalID: 219,
     nonvaccine: "False",
-    update_date: "30-Jul-19",
+    updatedDate: "30-Jul-19",
   },
   {
     cvxCode: 196,
@@ -1985,7 +1985,7 @@ const data = [
     status: "Active",
     internalID: 220,
     nonvaccine: "False",
-    update_date: "15-Aug-19",
+    updatedDate: "15-Aug-19",
   },
   {
     cvxCode: 197,
@@ -1995,7 +1995,7 @@ const data = [
     status: "Active",
     internalID: 221,
     nonvaccine: "False",
-    update_date: "22-Jul-20",
+    updatedDate: "22-Jul-20",
   },
   {
     cvxCode: 200,
@@ -2006,7 +2006,7 @@ const data = [
     status: "Active",
     internalID: 222,
     nonvaccine: "False",
-    update_date: "6-May-20",
+    updatedDate: "6-May-20",
   },
   {
     cvxCode: 201,
@@ -2016,7 +2016,7 @@ const data = [
     status: "Active",
     internalID: 223,
     nonvaccine: "False",
-    update_date: "6-May-20",
+    updatedDate: "6-May-20",
   },
   {
     cvxCode: 202,
@@ -2027,7 +2027,7 @@ const data = [
     status: "Active",
     internalID: 224,
     nonvaccine: "False",
-    update_date: "6-May-20",
+    updatedDate: "6-May-20",
   },
   {
     cvxCode: 198,
@@ -2037,7 +2037,7 @@ const data = [
     status: "Non-US",
     internalID: 225,
     nonvaccine: "False",
-    update_date: "22-Apr-20",
+    updatedDate: "22-Apr-20",
   },
   {
     cvxCode: 203,
@@ -2048,7 +2048,7 @@ const data = [
     status: "Active",
     internalID: 226,
     nonvaccine: "False",
-    update_date: "27-May-20",
+    updatedDate: "27-May-20",
   },
   {
     cvxCode: 205,
@@ -2058,7 +2058,7 @@ const data = [
     status: "Active",
     internalID: 228,
     nonvaccine: "False",
-    update_date: "22-Jul-20",
+    updatedDate: "22-Jul-20",
   },
   {
     cvxCode: 206,
@@ -2069,7 +2069,7 @@ const data = [
     status: "Active",
     internalID: 229,
     nonvaccine: "False",
-    update_date: "17-Aug-22",
+    updatedDate: "17-Aug-22",
   },
   {
     cvxCode: 207,
@@ -2080,7 +2080,7 @@ const data = [
     status: "Active",
     internalID: 230,
     nonvaccine: "False",
-    update_date: "7-Sep-22",
+    updatedDate: "7-Sep-22",
   },
   {
     cvxCode: 208,
@@ -2090,7 +2090,7 @@ const data = [
     status: "Active",
     internalID: 231,
     nonvaccine: "False",
-    update_date: "7-Sep-22",
+    updatedDate: "7-Sep-22",
   },
   {
     cvxCode: 213,
@@ -2100,7 +2100,7 @@ const data = [
     status: "Inactive",
     internalID: 232,
     nonvaccine: "False",
-    update_date: "31-Jul-21",
+    updatedDate: "31-Jul-21",
   },
   {
     cvxCode: 210,
@@ -2110,7 +2110,7 @@ const data = [
     status: "Non-US",
     internalID: 233,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
   {
     cvxCode: 212,
@@ -2120,7 +2120,7 @@ const data = [
     status: "Active",
     internalID: 234,
     nonvaccine: "False",
-    update_date: "8-Sep-21",
+    updatedDate: "8-Sep-21",
   },
   {
     cvxCode: 204,
@@ -2130,7 +2130,7 @@ const data = [
     status: "Active",
     internalID: 235,
     nonvaccine: "False",
-    update_date: "6-Apr-21",
+    updatedDate: "6-Apr-21",
   },
   {
     cvxCode: 214,
@@ -2140,7 +2140,7 @@ const data = [
     status: "Inactive",
     internalID: 236,
     nonvaccine: "False",
-    update_date: "6-Apr-21",
+    updatedDate: "6-Apr-21",
   },
   {
     cvxCode: 211,
@@ -2151,7 +2151,7 @@ const data = [
     status: "Active",
     internalID: 237,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
   {
     cvxCode: 500,
@@ -2161,7 +2161,7 @@ const data = [
     status: "Non-US",
     internalID: 238,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 501,
@@ -2171,7 +2171,7 @@ const data = [
     status: "Non-US",
     internalID: 239,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 502,
@@ -2181,7 +2181,7 @@ const data = [
     status: "Non-US",
     internalID: 240,
     nonvaccine: "False",
-    update_date: "19-Nov-21",
+    updatedDate: "19-Nov-21",
   },
   {
     cvxCode: 503,
@@ -2191,7 +2191,7 @@ const data = [
     status: "Non-US",
     internalID: 241,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 504,
@@ -2201,7 +2201,7 @@ const data = [
     status: "Non-US",
     internalID: 242,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 505,
@@ -2211,7 +2211,7 @@ const data = [
     status: "Non-US",
     internalID: 243,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 506,
@@ -2222,7 +2222,7 @@ const data = [
     status: "Non-US",
     internalID: 244,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 507,
@@ -2233,7 +2233,7 @@ const data = [
     status: "Non-US",
     internalID: 245,
     nonvaccine: "False",
-    update_date: "18-Aug-21",
+    updatedDate: "18-Aug-21",
   },
   {
     cvxCode: 508,
@@ -2244,7 +2244,7 @@ const data = [
     status: "Non-US",
     internalID: 246,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 509,
@@ -2254,7 +2254,7 @@ const data = [
     status: "Non-US",
     internalID: 247,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 510,
@@ -2264,7 +2264,7 @@ const data = [
     status: "Non-US",
     internalID: 248,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 511,
@@ -2274,7 +2274,7 @@ const data = [
     status: "Non-US",
     internalID: 249,
     nonvaccine: "False",
-    update_date: "15-Jul-21",
+    updatedDate: "15-Jul-21",
   },
   {
     cvxCode: 215,
@@ -2285,7 +2285,7 @@ const data = [
     status: "Active",
     internalID: 250,
     nonvaccine: "False",
-    update_date: "18-Aug-21",
+    updatedDate: "18-Aug-21",
   },
   {
     cvxCode: 216,
@@ -2296,7 +2296,7 @@ const data = [
     status: "Active",
     internalID: 251,
     nonvaccine: "False",
-    update_date: "18-Aug-21",
+    updatedDate: "18-Aug-21",
   },
   {
     cvxCode: 219,
@@ -2307,7 +2307,7 @@ const data = [
     status: "Active",
     internalID: 252,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
   {
     cvxCode: 217,
@@ -2318,7 +2318,7 @@ const data = [
     status: "Active",
     internalID: 253,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
   {
     cvxCode: 218,
@@ -2329,7 +2329,7 @@ const data = [
     status: "Active",
     internalID: 254,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
   {
     cvxCode: 220,
@@ -2339,7 +2339,7 @@ const data = [
     status: "Active",
     internalID: 255,
     nonvaccine: "False",
-    update_date: "14-Feb-22",
+    updatedDate: "14-Feb-22",
   },
   {
     cvxCode: 221,
@@ -2349,7 +2349,7 @@ const data = [
     status: "Active",
     internalID: 256,
     nonvaccine: "False",
-    update_date: "7-Sep-22",
+    updatedDate: "7-Sep-22",
   },
   {
     cvxCode: 222,
@@ -2359,7 +2359,7 @@ const data = [
     status: "Inactive",
     internalID: 257,
     nonvaccine: "False",
-    update_date: "16-Mar-22",
+    updatedDate: "16-Mar-22",
   },
   {
     cvxCode: 223,
@@ -2369,7 +2369,7 @@ const data = [
     status: "Active",
     internalID: 258,
     nonvaccine: "False",
-    update_date: "3-Mar-22",
+    updatedDate: "3-Mar-22",
   },
   {
     cvxCode: 224,
@@ -2379,7 +2379,7 @@ const data = [
     status: "Active",
     internalID: 259,
     nonvaccine: "False",
-    update_date: "4-Mar-22",
+    updatedDate: "4-Mar-22",
   },
   {
     cvxCode: 225,
@@ -2390,7 +2390,7 @@ const data = [
     status: "Active",
     internalID: 260,
     nonvaccine: "False",
-    update_date: "10-Mar-22",
+    updatedDate: "10-Mar-22",
   },
   {
     cvxCode: 226,
@@ -2401,7 +2401,7 @@ const data = [
     status: "Pending",
     internalID: 261,
     nonvaccine: "False",
-    update_date: "10-Mar-22",
+    updatedDate: "10-Mar-22",
   },
   {
     cvxCode: 512,
@@ -2412,7 +2412,7 @@ const data = [
     status: "Non-US",
     internalID: 262,
     nonvaccine: "False",
-    update_date: "12-Apr-22",
+    updatedDate: "12-Apr-22",
   },
   {
     cvxCode: 513,
@@ -2423,7 +2423,7 @@ const data = [
     status: "Non-US",
     internalID: 263,
     nonvaccine: "False",
-    update_date: "12-Apr-22",
+    updatedDate: "12-Apr-22",
   },
   {
     cvxCode: 514,
@@ -2434,7 +2434,7 @@ const data = [
     status: "Non-US",
     internalID: 264,
     nonvaccine: "False",
-    update_date: "12-Apr-22",
+    updatedDate: "12-Apr-22",
   },
   {
     cvxCode: 515,
@@ -2445,7 +2445,7 @@ const data = [
     status: "Non-US",
     internalID: 265,
     nonvaccine: "False",
-    update_date: "12-Apr-22",
+    updatedDate: "12-Apr-22",
   },
   {
     cvxCode: 516,
@@ -2456,7 +2456,7 @@ const data = [
     status: "Non-US",
     internalID: 266,
     nonvaccine: "False",
-    update_date: "12-Apr-22",
+    updatedDate: "12-Apr-22",
   },
   {
     cvxCode: 517,
@@ -2467,7 +2467,7 @@ const data = [
     status: "Non-US",
     internalID: 267,
     nonvaccine: "False",
-    update_date: "12-Apr-22",
+    updatedDate: "12-Apr-22",
   },
   {
     cvxCode: 227,
@@ -2477,7 +2477,7 @@ const data = [
     status: "Inactive",
     internalID: 268,
     nonvaccine: "False",
-    update_date: "15-Jun-22",
+    updatedDate: "15-Jun-22",
   },
   {
     cvxCode: 228,
@@ -2488,7 +2488,7 @@ const data = [
     status: "Active",
     internalID: 269,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
   {
     cvxCode: 229,
@@ -2499,7 +2499,7 @@ const data = [
     status: "Active",
     internalID: 270,
     nonvaccine: "False",
-    update_date: "7-Sep-22",
+    updatedDate: "7-Sep-22",
   },
   {
     cvxCode: 301,
@@ -2510,7 +2510,7 @@ const data = [
     status: "Active",
     internalID: 271,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
   {
     cvxCode: 300,
@@ -2521,8 +2521,8 @@ const data = [
     status: "Active",
     internalID: 272,
     nonvaccine: "False",
-    update_date: "6-Sep-22",
+    updatedDate: "6-Sep-22",
   },
 ];
 
-export const cvxData = data?.map(({ internalID, nonvaccine, update_date, ...rest }) => ({ ...rest, updatedAt: moment(update_date, 'dd-MMM-YY').format() }))
+export const cvxData = data?.map(({ internalID, nonvaccine, updatedDate, ...rest }) => ({ ...rest, updatedDate}))

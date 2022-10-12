@@ -1,4 +1,4 @@
-import * as moment from "moment";
+
 
 const data = [
   {
@@ -6,7 +6,7 @@ const data = [
     manufacturerName: "Abbott Laboratories",
     notes: "includes Ross Products Division, Solvay",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 1,
   },
   {
@@ -14,7 +14,7 @@ const data = [
     manufacturerName: "Acambis, Inc",
     notes: "acquired by sanofi in sept 2008",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 2,
   },
   {
@@ -22,7 +22,7 @@ const data = [
     manufacturerName: "Adams Laboratories, Inc.",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 3,
   },
   {
@@ -30,7 +30,7 @@ const data = [
     manufacturerName: "Alpha Therapeutic Corporation",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 4,
   },
   {
@@ -38,7 +38,7 @@ const data = [
     manufacturerName: "Armour",
     notes: "part of CSL",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 5,
   },
   {
@@ -46,7 +46,7 @@ const data = [
     manufacturerName: "Aventis Behring L.L.C.",
     notes: "part of CSL",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 6,
   },
   {
@@ -54,7 +54,7 @@ const data = [
     manufacturerName: "Aviron",
     notes: "acquired by Medimmune",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 7,
   },
   {
@@ -62,7 +62,7 @@ const data = [
     manufacturerName: "Baxter Healthcare Corporation-inactive",
     notes: "",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 8,
   },
   {
@@ -71,7 +71,7 @@ const data = [
     notes:
       "includes Hyland Immuno, Immuno International AG,and North American Vaccine, Inc./acquired some assets from alpha therapeutics",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 9,
   },
   {
@@ -79,7 +79,7 @@ const data = [
     manufacturerName: "Bayer Corporation",
     notes: "Bayer Biologicals now owned by Talecris",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 10,
   },
   {
@@ -87,7 +87,7 @@ const data = [
     manufacturerName: "Berna Products",
     notes: "",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 11,
   },
   {
@@ -95,7 +95,7 @@ const data = [
     manufacturerName: "Berna Products Corporation",
     notes: "includes Swiss Serum and Vaccine Institute Berne",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 12,
   },
   {
@@ -104,7 +104,7 @@ const data = [
     notes:
       "New owner of NABI HB as of December 2007, Does NOT replace NABI Biopharmaceuticals in this code list.",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 13,
   },
   {
@@ -113,7 +113,7 @@ const data = [
     notes:
       "Formerly Emergent BioDefense Operations Lansing and Michigan Biologic Products Institute",
     status: "Active",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 14,
   },
   {
@@ -121,7 +121,7 @@ const data = [
     manufacturerName: "bioCSL",
     notes: "bioCSL a part of Seqirus",
     status: "Inactive",
-    last_updated_date: "26-Sep-16",
+    updateDate: "26-Sep-16",
     manufacturer_id: 15,
   },
   {
@@ -129,7 +129,7 @@ const data = [
     manufacturerName: "Cangene Corporation",
     notes: "Purchased by Emergent Biosolutions",
     status: "Inactive",
-    last_updated_date: "29-Apr-14",
+    updateDate: "29-Apr-14",
     manufacturer_id: 16,
   },
   {
@@ -137,7 +137,7 @@ const data = [
     manufacturerName: "Celltech Medeva Pharmaceuticals",
     notes: "Part of Novartis",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 17,
   },
   {
@@ -145,7 +145,7 @@ const data = [
     manufacturerName: "Centeon L.L.C.",
     notes: "",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 18,
   },
   {
@@ -153,7 +153,7 @@ const data = [
     manufacturerName: "Chiron Corporation",
     notes: "Part of Novartis",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 19,
   },
   {
@@ -161,7 +161,7 @@ const data = [
     manufacturerName: "Connaught",
     notes: "acquired by Merieux",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 21,
   },
   {
@@ -169,7 +169,7 @@ const data = [
     manufacturerName: "DynPort Vaccine Company, LLC",
     notes: "",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 22,
   },
   {
@@ -177,7 +177,7 @@ const data = [
     manufacturerName: "Evans Medical Limited",
     notes: "Part of Novartis",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 23,
   },
   {
@@ -185,7 +185,7 @@ const data = [
     manufacturerName: "GeoVax Labs, Inc.",
     notes: "",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 24,
   },
   {
@@ -193,7 +193,7 @@ const data = [
     manufacturerName: "GlaxoSmithKline",
     notes: "includes SmithKline Beecham and Glaxo Wellcome",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 25,
   },
   {
@@ -201,7 +201,7 @@ const data = [
     manufacturerName: "Greer Laboratories, Inc.",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 26,
   },
   {
@@ -209,7 +209,7 @@ const data = [
     manufacturerName: "Immuno International AG",
     notes: "Part of Baxter",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 27,
   },
   {
@@ -217,7 +217,7 @@ const data = [
     manufacturerName: "Immuno-U.S., Inc.",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 28,
   },
   {
@@ -225,7 +225,7 @@ const data = [
     manufacturerName: "Intercell Biomedical",
     notes: "subsidiary of Valneva",
     status: "Inactive",
-    last_updated_date: "19-Jul-16",
+    updateDate: "19-Jul-16",
     manufacturer_id: 29,
   },
   {
@@ -233,7 +233,7 @@ const data = [
     manufacturerName: "Korea Green Cross Corporation",
     notes: "",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 30,
   },
   {
@@ -241,7 +241,7 @@ const data = [
     manufacturerName: "Lederle",
     notes: "became a part of WAL, now owned by Pfizer",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 31,
   },
   {
@@ -249,7 +249,7 @@ const data = [
     manufacturerName: "Massachusetts Biologic Laboratories",
     notes: "formerly Massachusetts Public Health Biologic Laboratories",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 32,
   },
   {
@@ -257,7 +257,7 @@ const data = [
     manufacturerName: "Massachusetts Public Health Biologic Laboratories",
     notes: "",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 33,
   },
   {
@@ -265,7 +265,7 @@ const data = [
     manufacturerName: "MedImmune, Inc. (AstraZeneca)",
     notes: "Subsidiary of AstraZeneca",
     status: "Active",
-    last_updated_date: "15-May-19",
+    updateDate: "15-May-19",
     manufacturer_id: 34,
   },
   {
@@ -273,7 +273,7 @@ const data = [
     manufacturerName: "Merck and Co., Inc.",
     notes: "",
     status: "Active",
-    last_updated_date: "18-Oct-12",
+    updateDate: "18-Oct-12",
     manufacturer_id: 35,
   },
   {
@@ -281,7 +281,7 @@ const data = [
     manufacturerName: "Merieux",
     notes: "Part of sanofi",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 36,
   },
   {
@@ -289,7 +289,7 @@ const data = [
     manufacturerName: "Miles",
     notes: "",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 37,
   },
   {
@@ -297,7 +297,7 @@ const data = [
     manufacturerName: "NABI",
     notes: "formerly North American Biologicals, Inc.",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 38,
   },
   {
@@ -305,7 +305,7 @@ const data = [
     manufacturerName: "New York Blood Center",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 39,
   },
   {
@@ -313,7 +313,7 @@ const data = [
     manufacturerName: "North American Vaccine, Inc.",
     notes: "part of Baxter",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 40,
   },
   {
@@ -322,7 +322,7 @@ const data = [
     notes:
       "Novartis has sold its flu vaccines to Seqirus and other vaccines to GlaxoSmithKline. While Novartis vaccines may still be in circulation, its status is set to not active.",
     status: "Inactive",
-    last_updated_date: "13-Apr-16",
+    updateDate: "13-Apr-16",
     manufacturer_id: 41,
   },
   {
@@ -330,7 +330,7 @@ const data = [
     manufacturerName: "Novavax, Inc.",
     notes: "",
     status: "Active",
-    last_updated_date: "8-Oct-20",
+    updateDate: "8-Oct-20",
     manufacturer_id: 42,
   },
   {
@@ -339,7 +339,7 @@ const data = [
     notes:
       "Subsidiary of Merck. Sold by Merck 6/8/2021. Effective June 2021  Merck is labeler for BCG product.",
     status: "Inactive",
-    last_updated_date: "21-Jul-21",
+    updateDate: "21-Jul-21",
     manufacturer_id: 43,
   },
   {
@@ -347,7 +347,7 @@ const data = [
     manufacturerName: "Ortho-clinical Diagnostics",
     notes: "a J & J company (formerly Ortho Diagnostic Systems, Inc.)",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 44,
   },
   {
@@ -355,7 +355,7 @@ const data = [
     manufacturerName: "Parkedale Pharmaceuticals",
     notes: "no website and no news articles (formerly Parke-Davis)",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 45,
   },
   {
@@ -363,7 +363,7 @@ const data = [
     manufacturerName: "PowderJect Pharmaceuticals",
     notes: "See Novartis",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 46,
   },
   {
@@ -371,7 +371,7 @@ const data = [
     manufacturerName: "Praxis Biologics",
     notes: "became a part of WAL, now owned by Pfizer",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 47,
   },
   {
@@ -380,7 +380,7 @@ const data = [
       "The Research Foundation for Microbial Diseases of Osaka University (BIKEN)",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 48,
   },
   {
@@ -389,7 +389,7 @@ const data = [
     notes:
       "Formerly Aventis Pasteur, Pasteur Merieux Connaught; includes Connaught Laboratories and Pasteur Merieux. Acquired ACAMBIS; Acquired Protein Sciences (8/28/2017)",
     status: "Active",
-    last_updated_date: "2-May-19",
+    updateDate: "2-May-19",
     manufacturer_id: 49,
   },
   {
@@ -397,7 +397,7 @@ const data = [
     manufacturerName: "Sclavo, Inc.",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 50,
   },
   {
@@ -405,7 +405,7 @@ const data = [
     manufacturerName: "Solvay Pharmaceuticals",
     notes: "Part of Abbott",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 51,
   },
   {
@@ -413,7 +413,7 @@ const data = [
     manufacturerName: "Swiss Serum and Vaccine Inst.",
     notes: "Part of Berna",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 52,
   },
   {
@@ -421,7 +421,7 @@ const data = [
     manufacturerName: "Talecris Biotherapeutics",
     notes: "includes Bayer Biologicals",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 53,
   },
   {
@@ -430,7 +430,7 @@ const data = [
       "United States Army Medical Research and Material Command",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 54,
   },
   {
@@ -438,7 +438,7 @@ const data = [
     manufacturerName: "VaxGen",
     notes: "acquired by Emergent Biodefense Operations Lansing, Inc",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 55,
   },
   {
@@ -446,7 +446,7 @@ const data = [
     manufacturerName: "Wyeth-Ayerst",
     notes: "became WAL, now owned by Pfizer",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 56,
   },
   {
@@ -454,7 +454,7 @@ const data = [
     manufacturerName: "Wyeth",
     notes: "acquired by Pfizer 10/15/2009",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 57,
   },
   {
@@ -462,7 +462,7 @@ const data = [
     manufacturerName: "ZLB Behring",
     notes: "acquired by CSL",
     status: "Inactive",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 58,
   },
   {
@@ -470,7 +470,7 @@ const data = [
     manufacturerName: "Other manufacturer",
     notes: "",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 59,
   },
   {
@@ -478,7 +478,7 @@ const data = [
     manufacturerName: "Unknown manufacturer",
     notes: "",
     status: "Active",
-    last_updated_date: "28-May-10",
+    updateDate: "28-May-10",
     manufacturer_id: 60,
   },
   {
@@ -486,7 +486,7 @@ const data = [
     manufacturerName: "Akorn, Inc",
     notes: "Akorn was a labeler and not a manufacturer",
     status: "Inactive",
-    last_updated_date: "19-Apr-17",
+    updateDate: "19-Apr-17",
     manufacturer_id: 61,
   },
   {
@@ -495,7 +495,7 @@ const data = [
     notes:
       "COVID-19 vaccine in co-development with BioNTech.  Pfizer includes Wyeth-Lederle Vaccines and Pediatrics, Wyeth Laboratories, Lederle Laboratories, and Praxis Biologics",
     status: "Active",
-    last_updated_date: "30-Oct-20",
+    updateDate: "30-Oct-20",
     manufacturer_id: 62,
   },
   {
@@ -503,7 +503,7 @@ const data = [
     manufacturerName: "Barr Laboratories",
     notes: "Subsidiary of Teva Pharmaceuticals",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 64,
   },
   {
@@ -511,7 +511,7 @@ const data = [
     manufacturerName: "Johnson and Johnson",
     notes: "acquired CRUCELL which acquired Berna, parent company of Janssen",
     status: "Active",
-    last_updated_date: "8-Oct-20",
+    updateDate: "8-Oct-20",
     manufacturer_id: 65,
   },
   {
@@ -519,7 +519,7 @@ const data = [
     manufacturerName: "Protein Sciences",
     notes: "Acquired by Sanofi Pasteur (08/28/2017)",
     status: "Inactive",
-    last_updated_date: "2-May-19",
+    updateDate: "2-May-19",
     manufacturer_id: 66,
   },
   {
@@ -527,7 +527,7 @@ const data = [
     manufacturerName: "ID Biomedical",
     notes: "Part of GlaxoSmithKline",
     status: "Active",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 67,
   },
   {
@@ -535,7 +535,7 @@ const data = [
     manufacturerName: "Grifols",
     notes: "Grifols is a labeler and not a manufacturer.",
     status: "Active",
-    last_updated_date: "5-Sep-13",
+    updateDate: "5-Sep-13",
     manufacturer_id: 68,
   },
   {
@@ -543,7 +543,7 @@ const data = [
     manufacturerName: "Crucell",
     notes: "acquired Berna,  now a J & J company",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 69,
   },
   {
@@ -551,7 +551,7 @@ const data = [
     manufacturerName: "Kedrion Biopharma",
     notes: "acquired Rho(D) from Ortho",
     status: "Active",
-    last_updated_date: "29-Apr-14",
+    updateDate: "29-Apr-14",
     manufacturer_id: 70,
   },
   {
@@ -560,7 +560,7 @@ const data = [
     notes:
       "Emergent Biosolutions acquired PaxVax 8/2021, US Vaccines starting to label under Emergent Travel Health Inc.",
     status: "Active",
-    last_updated_date: "3-Aug-21",
+    updateDate: "3-Aug-21",
     manufacturer_id: 71,
   },
   {
@@ -568,7 +568,7 @@ const data = [
     manufacturerName: "MCM Vaccine Company",
     notes: "Partnership between Merck and Sanofi Pasteur",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 72,
   },
   {
@@ -577,7 +577,7 @@ const data = [
     notes:
       "Seqirus acquired the flu vaccines from Novartis. It also includes the CSL vaccines.",
     status: "Active",
-    last_updated_date: "13-Apr-16",
+    updateDate: "13-Apr-16",
     manufacturer_id: 73,
   },
   {
@@ -585,7 +585,7 @@ const data = [
     manufacturerName: "Valneva",
     notes: "Distributes through Intercell in the US",
     status: "Active",
-    last_updated_date: "19-Jul-16",
+    updateDate: "19-Jul-16",
     manufacturer_id: 74,
   },
   {
@@ -593,7 +593,7 @@ const data = [
     manufacturerName: "Dynaport",
     notes: "",
     status: "Inactive",
-    last_updated_date: "16-Nov-17",
+    updateDate: "16-Nov-17",
     manufacturer_id: 75,
   },
   {
@@ -601,7 +601,7 @@ const data = [
     manufacturerName: "Dynavax, Inc.",
     notes: "",
     status: "Active",
-    last_updated_date: "27-Oct-17",
+    updateDate: "27-Oct-17",
     manufacturer_id: 76,
   },
   {
@@ -609,7 +609,7 @@ const data = [
     manufacturerName: "Dispensing Solutions",
     notes: "Vaccine Relabeler",
     status: "Inactive",
-    last_updated_date: "10-May-18",
+    updateDate: "10-May-18",
     manufacturer_id: 77,
   },
   {
@@ -617,7 +617,7 @@ const data = [
     manufacturerName: "Rebel Distributors",
     notes: "Vaccine Relabeler",
     status: "Inactive",
-    last_updated_date: "10-May-18",
+    updateDate: "10-May-18",
     manufacturer_id: 78,
   },
   {
@@ -625,7 +625,7 @@ const data = [
     manufacturerName: "Vetter Pharma Fertigung GmbH & Co. KG",
     notes: "",
     status: "Inactive",
-    last_updated_date: "10-May-18",
+    updateDate: "10-May-18",
     manufacturer_id: 79,
   },
   {
@@ -634,7 +634,7 @@ const data = [
     notes:
       "BARR Laboratories merged with TEVA in 2007.  The MVX for Barr was retired in 2011,  TEVA continues to produce the former BARR vaccines",
     status: "Active",
-    last_updated_date: "23-Jul-19",
+    updateDate: "23-Jul-19",
     manufacturer_id: 80,
   },
   {
@@ -642,7 +642,7 @@ const data = [
     manufacturerName: "Bavarian Nordic A/S",
     notes: "manufacturer of national stockpile smallpox vaccine Jynneos",
     status: "Active",
-    last_updated_date: "17-Jul-20",
+    updateDate: "17-Jul-20",
     manufacturer_id: 81,
   },
   {
@@ -650,7 +650,7 @@ const data = [
     manufacturerName: "Moderna US, Inc.",
     notes: "New vaccine manufacturer effective 11/1/2020",
     status: "Active",
-    last_updated_date: "26-Oct-20",
+    updateDate: "26-Oct-20",
     manufacturer_id: 90,
   },
   {
@@ -658,7 +658,7 @@ const data = [
     manufacturerName: "AstraZeneca",
     notes: "Parent Company of MedImmune",
     status: "Active",
-    last_updated_date: "30-Oct-20",
+    updateDate: "30-Oct-20",
     manufacturer_id: 91,
   },
   {
@@ -666,7 +666,7 @@ const data = [
     manufacturerName: "Janssen",
     notes: "Division of Johnson and Johnson, manufacturer of Covid-19 vaccine",
     status: "Active",
-    last_updated_date: "26-Oct-20",
+    updateDate: "26-Oct-20",
     manufacturer_id: 92,
   },
   {
@@ -674,7 +674,7 @@ const data = [
     manufacturerName: "Sinopharm-Biotech",
     notes: "Non-US COVID-19 Vaccine Manufacturer - WHO Authorized",
     status: "Active",
-    last_updated_date: "15-Jul-21",
+    updateDate: "15-Jul-21",
     manufacturer_id: 93,
   },
   {
@@ -683,7 +683,7 @@ const data = [
     notes:
       "Non-US COVID-19 Vaccine Manufacturer - WHO Authorized (Sinovac, CoronaVac)",
     status: "Active",
-    last_updated_date: "12-Jul-21",
+    updateDate: "12-Jul-21",
     manufacturer_id: 94,
   },
   {
@@ -693,7 +693,7 @@ const data = [
     notes:
       "US Based - Joint manufacturing partnership, initial vaccine Vaxelis 10/2020",
     status: "Active",
-    last_updated_date: "27-Jul-21",
+    updateDate: "27-Jul-21",
     manufacturer_id: 95,
   },
   {
@@ -701,7 +701,7 @@ const data = [
     manufacturerName: "Bharat Biotech International Limited",
     notes: "Non-US COVID-19 Vaccine Manufacturer - WHO Authorized (COVAXIN)",
     status: "Active",
-    last_updated_date: "9-Nov-21",
+    updateDate: "9-Nov-21",
     manufacturer_id: 96,
   },
   {
@@ -709,7 +709,7 @@ const data = [
     manufacturerName: "VBI Vaccines, Inc",
     notes: "New Vaccine Manufacturer added 1/2022",
     status: "Active",
-    last_updated_date: "13-Apr-22",
+    updateDate: "13-Apr-22",
     manufacturer_id: 97,
   },
   {
@@ -718,9 +718,9 @@ const data = [
     notes:
       "Non-US COVID-19 vaccine manufacturer Cofivenz vaccine recognized by ACIP",
     status: "Active",
-    last_updated_date: "13-Apr-22",
+    updateDate: "13-Apr-22",
     manufacturer_id: 98,
   },
 ];
 
-export const mvxData = data?.map(({ last_updated_date, manufacturer_id, ...rest }) => ({ ...rest, updatedAt: moment(last_updated_date, 'dd-MMM-YYYY').format() }))
+export const mvxData = data?.map(({ manufacturer_id, ...rest }) => ({ ...rest}))

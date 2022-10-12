@@ -546,6 +546,7 @@ type MVX {
   mvxCode: String
   notes: String
   mvxStatus: String
+  updateDate: String
   vaccineProduct: [VaccineProduct!]
   createdAt: String
   updatedAt: String
@@ -576,6 +577,7 @@ type VaccineProduct {
   status: String
   cvxCode: String
   mvxCode: String
+  updateDate: String
   cvxId: String
   mvxId: String
   cvx: CVX
@@ -592,6 +594,7 @@ type CVX {
   cvxCode: String
   status: String
   notes: String
+  updateDate: String
   cptCodeId: String
   vaccineProduct: [VaccineProduct!]
   cptCode: CPTCodes
@@ -1684,10 +1687,10 @@ type Vaccine {
   expiryDate: String
   visGiven: String
   visDate: String
-  cvxId: String
+  vaccineProductId: String
   mvxId: String
   ndcId: String
-  cvx: CVX
+  vaccineProduct: VaccineProduct
   mvx: MVX
   ndc: NDC
   patientId: String
@@ -5930,7 +5933,7 @@ input AddVaccineInput {
   expiryDate: String
   visGiven: String
   visDate: String
-  cvxId: String
+  vaccineProductId: String
   mvxId: String
   ndcId: String
   patientId: String
@@ -5948,7 +5951,7 @@ input UpdateVaccineInput {
   expiryDate: String
   visGiven: String
   visDate: String
-  cvxId: String
+  vaccineProductId: String
   mvxId: String
   ndcId: String
   patientId: String

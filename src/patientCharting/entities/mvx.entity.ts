@@ -25,6 +25,10 @@ export class MVX {
   @Field({ nullable: true })
   mvxStatus: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  updateDate: string
+
   //relationships
 
   @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.mvx, { onDelete: "CASCADE" })

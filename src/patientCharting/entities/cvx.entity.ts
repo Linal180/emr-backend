@@ -33,6 +33,12 @@ export class CVX {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  updateDate: string
+
+  // relation columns
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   cptCodeId: string
 
   //relationships

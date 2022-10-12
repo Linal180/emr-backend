@@ -71,9 +71,9 @@ export class CreateVaccine implements Seeder {
       const oldVaccineProduct = await vaccineProductRepo.find();
       if (!oldVaccineProduct?.length) {
         await Promise.all(vaccineProductData?.map(async (item) => {
-          const { cvxCode, name, status, updatedAt, mvxCode } = item
+          const { cvxCode, name, status, updateDate, mvxCode } = item
           //create ndc
-          const vaccineProductInstance = vaccineProductRepo.create({ updatedAt, status, name, cvxCode, mvxCode });
+          const vaccineProductInstance = vaccineProductRepo.create({ updateDate, status, name, cvxCode, mvxCode });
           //get mvx 
           const mvxInstance = await mvxRepo.findOne({ mvxCode });
           //associate mvx

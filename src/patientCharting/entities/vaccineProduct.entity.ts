@@ -30,6 +30,10 @@ export class VaccineProduct {
   @Field({ nullable: true })
   mvxCode: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  updateDate: string
+
   //relationship columns
 
   @Column({ nullable: true })
