@@ -25,11 +25,11 @@ export class MVX {
   @Field({ nullable: true })
   mvxStatus: string
 
-  // //relationships
+  //relationships
 
-  // @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.mvx, { onDelete: "CASCADE" })
-  // @Field(() => [VaccineProduct], { nullable: true })
-  // vaccineProduct: VaccineProduct[]
+  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.mvx, { onDelete: "CASCADE" })
+  @Field(() => [VaccineProduct], { nullable: true })
+  vaccineProduct: VaccineProduct[]
 
   //dates
 
