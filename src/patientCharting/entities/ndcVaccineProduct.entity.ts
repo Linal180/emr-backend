@@ -13,6 +13,8 @@ export class NdcVaccineProduct {
   @Field()
   id: string
 
+  //relation's columns
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   vaccineProductId: string;
@@ -21,9 +23,11 @@ export class NdcVaccineProduct {
   @Field({ nullable: true })
   ndcCodeId: string;
 
-  // @ManyToOne(() => VaccineProduct, vaccineProduct => vaccineProduct.ndcVaccine)
-  // @Field(() => VaccineProduct, { nullable: true })
-  // vaccineProduct: VaccineProduct;
+  //relationship 
+
+  @ManyToOne(() => VaccineProduct, vaccineProduct => vaccineProduct.ndcVaccine)
+  @Field(() => VaccineProduct, { nullable: true })
+  vaccineProduct: VaccineProduct;
 
   @ManyToOne(() => NDC, ndcCode => ndcCode.ndcVaccine, { onDelete: "CASCADE" })
   @Field(() => NDC, { nullable: true })

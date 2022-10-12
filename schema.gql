@@ -1623,6 +1623,25 @@ type MVX {
   updatedAt: String
 }
 
+type NDC {
+  id: String!
+  code: String
+  description: String
+  ndcVaccine: [NdcVaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
+type NdcVaccineProduct {
+  id: String!
+  vaccineProductId: String
+  ndcCodeId: String
+  vaccineProduct: VaccineProduct
+  ndcCode: NDC
+  createdAt: String
+  updatedAt: String
+}
+
 type VaccineProduct {
   id: String!
   name: String
@@ -1632,6 +1651,7 @@ type VaccineProduct {
   cptCodeId: String
   cvx: CVX
   mvx: MVX
+  ndcVaccine: [NdcVaccineProduct!]
   createdAt: String
   updatedAt: String
 }
@@ -1644,24 +1664,6 @@ type CVX {
   status: String
   notes: String
   vaccineProduct: [VaccineProduct!]
-  createdAt: String
-  updatedAt: String
-}
-
-type NdcVaccineProduct {
-  id: String!
-  vaccineProductId: String
-  ndcCodeId: String
-  ndcCode: NDC
-  createdAt: String
-  updatedAt: String
-}
-
-type NDC {
-  id: String!
-  code: String
-  description: String
-  ndcVaccine: [NdcVaccineProduct!]
   createdAt: String
   updatedAt: String
 }

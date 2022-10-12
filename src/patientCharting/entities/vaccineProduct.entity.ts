@@ -50,9 +50,9 @@ export class VaccineProduct {
   // @Field(() => CPTCodes, { nullable: true })
   // cptCode: CPTCodes
 
-  // @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
-  // @Field(() => [NdcVaccineProduct], { nullable: true })
-  // ndcVaccine: NdcVaccineProduct[]
+  @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
+  @Field(() => [NdcVaccineProduct], { nullable: true })
+  ndcVaccine: NdcVaccineProduct[]
 
   //dates
 
