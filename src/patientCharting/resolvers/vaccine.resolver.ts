@@ -88,9 +88,9 @@ export class VaccineResolver {
   // resolve fields
 
   @ResolveField(() => CVX)
-  async cvx(@Parent() vaccine: Vaccine): Promise<CVX> {
-    if (vaccine?.cvxId) {
-      return await this.cvxService.findOne(vaccine.cvxId);
+  async vaccineProduct(@Parent() vaccine: Vaccine): Promise<CVX> {
+    if (vaccine?.vaccineProductId) {
+      return await this.cvxService.findOne(vaccine.vaccineProductId);
     }
   }
 

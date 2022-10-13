@@ -4,13 +4,10 @@ import PaginationInput from "src/pagination/dto/pagination-input.dto"
 
 
 @InputType()
-export class FindAllVaccinesInput {
+export class FindAllVaccineProductsInput {
 
   @Field({ nullable: true })
-  appointmentId?: string
-
-  @Field({ nullable: true })
-  patientId: string
+  searchQuery?: string
 
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput;
@@ -18,7 +15,7 @@ export class FindAllVaccinesInput {
 }
 
 @InputType()
-export class AddVaccineInput {
+export class AddVaccineProductInput {
 
   @Field({ nullable: true })
   administrationDate: string;
@@ -68,7 +65,7 @@ export class AddVaccineInput {
 }
 
 @InputType()
-export class UpdateVaccineInput extends AddVaccineInput {
+export class UpdateVaccineProductInput extends AddVaccineProductInput {
 
   @Field()
   id: string
@@ -76,7 +73,7 @@ export class UpdateVaccineInput extends AddVaccineInput {
 }
 
 @InputType()
-export class RemoveVaccineInput extends PickType(UpdateVaccineInput, ['id'] as const) { }
+export class RemoveVaccineProductInput extends PickType(UpdateVaccineProductInput, ['id'] as const) { }
 
 @InputType()
-export class GetVaccineInput extends PickType(UpdateVaccineInput, ['id'] as const) { }
+export class GetVaccineProductInput extends PickType(UpdateVaccineProductInput, ['id'] as const) { }

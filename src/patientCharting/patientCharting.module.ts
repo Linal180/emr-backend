@@ -1,6 +1,7 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { forwardRef, Module } from '@nestjs/common';
 //modules
+import { LabModule } from 'src/labs/labs.module';
 import { UsersModule } from 'src/users/users.module';
 import { PatientModule } from 'src/patients/patient.module';
 import { ProviderModule } from 'src/providers/provider.module';
@@ -19,6 +20,7 @@ import { TriageNotes } from './entities/triageNotes.entity';
 import { SnoMedCodes } from './entities/snowMedCodes.entity';
 import { FamilyHistory } from './entities/familyHistory.entity';
 import { PatientVitals } from './entities/patientVitals.entity';
+import { VaccineProduct } from './entities/vaccineProduct.entity';
 import { SurgicalHistory } from './entities/surgicalHistory.entity';
 import { PatientProblems } from './entities/patientProblems.entity';
 import { PatientAllergies } from './entities/patientAllergies.entity';
@@ -34,6 +36,7 @@ import { VitalsResolver } from './resolvers/patientVitals.resolver';
 import { TriageNotesResolver } from './resolvers/triageNotes.resolver';
 import { ProblemResolver } from './resolvers/patientProblems.resolver';
 import { FamilyHistoryResolver } from './resolvers/familyHistory.resolver';
+import { VaccineProductResolver } from './resolvers/vaccineProduct.resolver';
 import { SurgicalHistoryResolver } from './resolvers/surgicalHistory.resolver';
 import { PatientChartingResolver } from './resolvers/patientCharting.resolver';
 import { PatientAllergiesResolver } from './resolvers/patientAllergies.resolver';
@@ -49,19 +52,20 @@ import { VitalsService } from './services/patientVitals.service';
 import { ProblemService } from './services/patientProblems.service';
 import { TriageNotesService } from './services/triageNotes.service';
 import { FamilyHistoryService } from './services/familyHistory.service';
+import { VaccineProductService } from './services/vaccineProduct.service';
 import { PatientChartingService } from './services/patientCharting.service';
 import { SurgicalHistoryService } from './services/surgicalHistory.service';
 import { PatientAllergiesService } from './services/patientAllergies.service';
 import { PatientMedicationService } from './services/patientMedication.service';
 import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
-import { LabModule } from 'src/labs/labs.module';
 
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       ICDCodes, PatientProblems, PatientAllergies, SnoMedCodes, PatientVitals, Allergies, Reactions, TriageNotes,
-      FamilyHistory, FamilyHistoryRelative, Medications, PatientMedication, SurgicalHistory, Vaccine, MVX, CVX, NDC
+      FamilyHistory, FamilyHistoryRelative, Medications, PatientMedication, SurgicalHistory, Vaccine, MVX, CVX, NDC,
+      VaccineProduct
     ]),
     forwardRef(() => UsersModule),
     forwardRef(() => PatientModule),
@@ -71,12 +75,39 @@ import { LabModule } from 'src/labs/labs.module';
     forwardRef(() => LabModule),
   ],
   providers: [
-    PatientAllergiesService, ProblemResolver, PatientAllergiesResolver, ProblemService, VitalsResolver,
-    VitalsService, PatientAllergiesService, ReactionsService, TriageNotesResolver, TriageNotesService,
-    FamilyHistoryService, FamilyHistoryResolver, FamilyHistoryRelativeService, ICDCodeService,
-    PatientMedicationService, PatientMedicationsResolver, SurgicalHistoryResolver, SurgicalHistoryService,
-    PatientChartingService, PatientChartingResolver, NDCService, NDCResolver, CVXResolver, CVXService,
-    MVXResolver, MVXService, VaccineService, VaccineResolver, IcdCodeResolver
+    //services
+    NDCService,
+    MVXService,
+    CVXService,
+    VitalsService,
+    VaccineService, 
+    ProblemService, 
+    ICDCodeService,
+    ReactionsService,
+    TriageNotesService,
+    FamilyHistoryService,
+    VaccineProductService,
+    PatientChartingService,
+    SurgicalHistoryService,
+    PatientAllergiesService, 
+    PatientAllergiesService,
+    PatientMedicationService, 
+    FamilyHistoryRelativeService, 
+    //resolvers
+    NDCResolver, 
+    CVXResolver, 
+    MVXResolver,
+    VitalsResolver,
+    ProblemResolver, 
+    IcdCodeResolver,
+    VaccineResolver,
+    TriageNotesResolver, 
+    FamilyHistoryResolver, 
+    VaccineProductResolver,
+    SurgicalHistoryResolver, 
+    PatientChartingResolver, 
+    PatientAllergiesResolver,
+    PatientMedicationsResolver,
   ],
   exports: [
     ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule, FamilyHistoryService

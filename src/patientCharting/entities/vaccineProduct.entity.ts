@@ -1,11 +1,14 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { CPTCodes } from "src/feeSchedule/entities/cptCode.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { VaccineProduct } from "./vaccineProduct.entity";
+//entities
+import { CVX } from "./cvx.entity";
+import { MVX } from "./mvx.entity";
+import { NdcVaccineProduct } from "./ndcVaccineProduct.entity";
 
-@Entity({ name: 'CVX' })
+@Entity({ name: 'VaccineProduct' })
 @ObjectType()
-export class CVX {
+export class VaccineProduct {
 
   @PrimaryGeneratedColumn('uuid')
   @Field()
@@ -17,7 +20,7 @@ export class CVX {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  shortDescription: string
+  status: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -25,31 +28,35 @@ export class CVX {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  status: string
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  notes: string
+  mvxCode: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   updateDate: string
 
-  // relation columns
+  //relationship columns
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  cptCodeId: string
+  cvxId: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  mvxId: string;
 
   //relationships
 
-  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cvx, { onDelete: "CASCADE" })
-  @Field(() => [VaccineProduct], { nullable: true })
-  vaccineProduct: VaccineProduct[]
+  @ManyToOne(() => CVX, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
+  @Field(() => CVX, { nullable: true })
+  cvx: CVX
 
-  @ManyToOne(() => CPTCodes, cvx => cvx.cvxCodes)
-  @Field(() => CPTCodes, { nullable: true })
-  cptCode: CPTCodes
+  @ManyToOne(() => MVX, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
+  @Field(() => MVX, { nullable: true })
+  mvx: MVX
+
+  @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
+  @Field(() => [NdcVaccineProduct], { nullable: true })
+  ndcVaccine: NdcVaccineProduct[]
 
   //dates
 
