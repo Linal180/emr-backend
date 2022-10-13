@@ -1,25 +1,30 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
-import { LabTestStatus } from 'src/labs/entities/labTests.entity';
-import { LabTestsService } from 'src/labs/services/labTests.service';
-import { generateString } from 'src/lib/helper';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { PatientService } from 'src/patients/services/patient.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { StaffService } from 'src/providers/services/staff.service';
-import { UtilsService } from 'src/util/utils.service';
 import { getConnection, In, Repository } from 'typeorm';
-import { CreateProblemInput } from '../dto/create-problem.input';
-import { IcdCodesPayload, ICDCodesWithSnowMedCode } from '../dto/icdCodes-payload.dto';
-import PatientProblemInput from '../dto/problem-input.dto';
-import { PatientProblemsPayload } from '../dto/problems-payload.dto';
-import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
-import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemSignedInput } from '../dto/update-problem.input';
-import { ICDCodes } from '../entities/icdcodes.entity';
-import { PatientProblems } from '../entities/patientProblems.entity';
-import { SnoMedCodes } from '../entities/snowMedCodes.entity';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
+import { UtilsService } from 'src/util/utils.service';
+import { StaffService } from 'src/providers/services/staff.service';
+import { LabTestsService } from 'src/labs/services/labTests.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PatientService } from 'src/patients/services/patient.service';
 import { PatientMedicationService } from './patientMedication.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+//entities
+import { ICDCodes } from '../entities/icdcodes.entity';
+import { SnoMedCodes } from '../entities/snowMedCodes.entity';
+import { LabTestStatus } from 'src/labs/entities/labTests.entity';
+import { PatientProblems } from '../entities/patientProblems.entity';
+//helpers
+import { generateString } from 'src/lib/helper';
+//inputs
+import PatientProblemInput from '../dto/problem-input.dto';
+import { CreateProblemInput } from '../dto/create-problem.input';
+import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemSignedInput } from '../dto/update-problem.input';
+//payloads
+import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
+import { PatientProblemsPayload } from '../dto/problems-payload.dto';
+import { IcdCodesPayload, ICDCodesWithSnowMedCode } from '../dto/icdCodes-payload.dto';
 
 @Injectable()
 export class ProblemService {
@@ -30,14 +35,15 @@ export class ProblemService {
     private patientProblemsRepository: Repository<PatientProblems>,
     @InjectRepository(SnoMedCodes)
     private snowMedCodeRepository: Repository<SnoMedCodes>,
-    private readonly paginationService: PaginationService,
+    private readonly staffService: StaffService,
+    private readonly utilsService: UtilsService,
+    private readonly doctorService: DoctorService,
     private readonly patientService: PatientService,
+    @Inject(forwardRef(() => LabTestsService))
+    private readonly labTestService: LabTestsService,
+    private readonly paginationService: PaginationService,
     private readonly appointmentService: AppointmentService,
     private readonly patientMedicationService: PatientMedicationService,
-    private readonly labTestService: LabTestsService,
-    private readonly doctorService: DoctorService,
-    private readonly staffService: StaffService,
-    private readonly utilsService: UtilsService
   ) { }
 
   /**

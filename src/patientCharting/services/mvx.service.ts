@@ -27,9 +27,9 @@ export class MVXService {
   async findAll(params: FindAllMvxInput): Promise<FindAllMvxPayload> {
     try {
 
-      const { paginationOptions, searchQuery, cvxId } = params || {}
+      const { paginationOptions, searchQuery, mvxCode } = params || {}
       const response = await this.paginationService.willPaginate<MVX>(this.mvxRepo, {
-        paginationOptions, cvxId, associatedToField: {
+        paginationOptions, mvxCode, associatedToField: {
           filterType: "stringFilter", columnValue: searchQuery, columnName: 'manufacturerName', columnName2: 'mvxCode',
         }
       })

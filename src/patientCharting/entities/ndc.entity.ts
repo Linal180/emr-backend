@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+//entities
 import { NdcVaccineProduct } from "./ndcVaccineProduct.entity";
 
 @Entity({ name: 'NDC' })
@@ -20,8 +21,7 @@ export class NDC {
 
   // relationships
 
-  @OneToMany(() => NdcVaccineProduct, cvx => cvx.ndcCode, {onDelete: "CASCADE"})
-  @Field(() => [NdcVaccineProduct], { nullable: true })
+  @OneToMany(() => NdcVaccineProduct, cvx => cvx.ndcCode, { onDelete: "CASCADE" })
   ndcVaccine: NdcVaccineProduct[]
 
   //dates
