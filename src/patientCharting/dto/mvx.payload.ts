@@ -16,3 +16,12 @@ export class FindAllMvxPayload {
   @Field(() => ResponsePayloadResponse, { nullable: true })
   response?: ResponsePayloadResponse
 }
+
+@ObjectType()
+export class MvxPayload {
+  @Field(() => MVX, { nullable: true })
+  mvxCode: MVX;
+
+  @Field(() => ResponsePayloadResponse, { nullable: true })
+  response?: ResponsePayloadResponse
+}

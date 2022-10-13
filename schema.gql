@@ -2802,6 +2802,11 @@ type FindAllMvxPayload {
   response: ResponsePayloadResponse
 }
 
+type MvxPayload {
+  mvxCode: MVX
+  response: ResponsePayloadResponse
+}
+
 type VaccinePayload {
   vaccine: Vaccine
   response: ResponsePayloadResponse
@@ -3475,6 +3480,7 @@ type Query {
   getNdcCode(getNdcCodeInput: GetNdcCodeInput!): NdcPayload!
   findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
   findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
+  getMvxCode(getMvxCodeInput: GetMvxCodeInput!): MvxPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
   getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
   getPatientLatestVital(patientId: String!): PatientVitalPayload!
@@ -3932,6 +3938,10 @@ input FindAllMvxInput {
   paginationOptions: PaginationInput!
 }
 
+input GetMvxCodeInput {
+  id: String!
+}
+
 input PatientVitalInput {
   patientId: String
   appointmentId: String
@@ -4309,6 +4319,9 @@ type Mutation {
   createNdcCode(createNdcCodeInput: CreateNdcCodeInput!): NdcPayload!
   updateNdcCode(updateNdcCodeInput: UpdateNdcCodeInput!): NdcPayload!
   removeNdcCode(removeNdcCodeInput: RemoveNdcCodeInput!): NdcPayload!
+  createMvxCode(createMvxCodeInput: CreateMvxCodeInput!): MvxPayload!
+  updateMvxCode(updateMvxCodeInput: UpdateMvxCodeInput!): MvxPayload!
+  removeMvxCode(removeMvxCodeInput: RemoveMvxCodeInput!): MvxPayload!
   addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
   updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
   removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
@@ -5719,6 +5732,27 @@ input UpdateNdcCodeInput {
 }
 
 input RemoveNdcCodeInput {
+  id: String!
+}
+
+input CreateMvxCodeInput {
+  manufacturerName: String!
+  mvxCode: String
+  notes: String
+  mvxStatus: String
+  updateDate: String
+}
+
+input UpdateMvxCodeInput {
+  manufacturerName: String
+  mvxCode: String
+  notes: String
+  mvxStatus: String
+  updateDate: String
+  id: String!
+}
+
+input RemoveMvxCodeInput {
   id: String!
 }
 
