@@ -195,3 +195,9 @@ export type SocialHistoryQuestionType = {
 }
 
 export const SECTION_SPECIAL_TYPE = 'seed_section'
+
+
+export enum STATUS {
+  ACTIVE = "Active",
+  IN_ACTIVE = "Inactive",
+}
