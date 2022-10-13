@@ -39,6 +39,9 @@ export class AppointmentInput {
 
     @Field({ nullable: true })
     appointmentDate?: string
+
+    @Field({ nullable: true, defaultValue: false })
+    isCheckedIn?: boolean
 }
 
 @InputType()
