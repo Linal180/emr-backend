@@ -256,7 +256,7 @@ export class AppointmentService {
     const { appointmentNumber, scheduleStartDateTime } = appointment || {}
 
     const body = `Your appointment # ${appointmentNumber} has been ${IsBooked ? 'booked' : 'cancelled'} at ${scheduleStartDateTime} with ${suffix || `Dr. ${firstName} ${lastName}`} on location ${locationLink} at ${name} facility`;
-    if(phone){
+    if (phone) {
       return await this.utilsService.smsNotification({ to: [phone], body });
     }
     else {
@@ -311,7 +311,7 @@ export class AppointmentService {
    * @returns appointment query 
    */
   async findAppointmentQuery(appointmentInput: AppointmentInput): Promise<SelectQueryBuilder<Appointment>> {
-    const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, ...whereObj } = appointmentInput
+    const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, isCheckedIn, ...whereObj } = appointmentInput
     const whereStr = Object.keys(whereObj).reduce((acc, key) => {
       const transformedKey = key === 'appointmentStatus' ? 'status' : key
       if (whereObj[key]) {
@@ -331,6 +331,7 @@ export class AppointmentService {
       .take(limit)
       .where(whereStr as ObjectLiteral)
       .andWhere(appointmentDate ? '"appointment"."appointmentDate" = :appointmentDate' : '1 = 1', { appointmentDate: appointmentDate })
+      .andWhere(isCheckedIn ? '"appointment"."checkedInAt" is not null' : '1 = 1')
 
     if (first) {
       baseQuery
