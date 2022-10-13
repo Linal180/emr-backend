@@ -3804,6 +3804,7 @@ input AppointmentInput {
   appointmentTypeId: String
   sortBy: String
   appointmentDate: String
+  isCheckedIn: Boolean = false
 }
 
 input UpComingAppointmentsInput {
@@ -3819,6 +3820,7 @@ input UpComingAppointmentsInput {
   appointmentTypeId: String
   sortBy: String
   appointmentDate: String
+  isCheckedIn: Boolean = false
   shouldFetchPast: Boolean = false
 }
 

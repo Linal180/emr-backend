@@ -281,6 +281,7 @@ export class ProblemService {
       .where('ICDCode.code ILIKE :searchTerm', { searchTerm: `%${first}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${last}%` })
       .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${first}%` })
+      .orderBy('ICDCode.priority', 'ASC')
       .getManyAndCount()
 
     const totalPages = Math.ceil(totalCount / limit)
