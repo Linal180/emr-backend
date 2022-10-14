@@ -19,6 +19,12 @@ export class VaccineProductService {
 
   ) { }
 
+
+  /**
+   * Finds all
+   * @param params 
+   * @returns all 
+   */
   async findAll(params: FindAllVaccineProductsInput): Promise<FindAllVaccineProductsPayload> {
     try {
       const { paginationOptions, searchQuery } = params;
@@ -51,6 +57,19 @@ export class VaccineProductService {
       }
 
       return { vaccineProducts, pagination }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
+  async findOne(id: string): Promise<VaccineProduct> {
+    try {
+      return await this.vaccineProductRepo.findOne(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

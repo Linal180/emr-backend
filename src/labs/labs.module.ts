@@ -5,7 +5,7 @@ import { AttachmentsModule } from 'src/attachments/attachments.module';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { MailerModule } from 'src/mailer/mailer.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
-import { ProblemChartingModule } from 'src/patientCharting/patientCharting.module';
+import { PatientChartingModule } from 'src/patientCharting/patientCharting.module';
 import { PatientModule } from 'src/patients/patient.module';
 import { PracticeModule } from 'src/practice/practice.module';
 import { ProviderModule } from 'src/providers/provider.module';
@@ -32,7 +32,7 @@ import { TestSpecimenService } from './services/testSpecimen.service';
     forwardRef(() => UsersModule),
     forwardRef(() => PaginationModule),
     PracticeModule,
-    forwardRef(() => ProblemChartingModule),
+    forwardRef(() => PatientChartingModule),
     forwardRef(()=>PatientModule),
     forwardRef(()=>AttachmentsModule),
     AppointmentModule,

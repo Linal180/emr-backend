@@ -49,7 +49,7 @@ export class CreateVaccine implements Seeder {
       if (!oldMvxs?.length) {
         await Promise.all(mvxData?.map(async (item) => {
           //create mvx
-          const mvxInstance = mvxRepo.create(item);
+          const mvxInstance = mvxRepo.create({ ...item, systematic: true });
           //save cvx
           return await mvxRepo.save(mvxInstance)
         }))
@@ -61,7 +61,7 @@ export class CreateVaccine implements Seeder {
         await Promise.all(ndcData?.map(async (item) => {
           const { ndcCode } = item
           //create ndc
-          const ndcInstance = ndcRepo.create({ code: ndcCode });
+          const ndcInstance = ndcRepo.create({ code: ndcCode, systematic: true });
           //save ndc
           return await ndcRepo.save(ndcInstance)
         }))
@@ -136,7 +136,7 @@ export class CreateVaccine implements Seeder {
         //save ndc vaccine Product
         await ndcVaccineProductRepo.save(ndcVaccineProduct)
       }
-      
+
       await queryRunner.commitTransaction();
 
     } catch (error) {
