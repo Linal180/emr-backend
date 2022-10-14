@@ -547,6 +547,7 @@ type MVX {
   notes: String
   mvxStatus: String
   updateDate: String
+  systematic: Boolean
   vaccineProduct: [VaccineProduct!]
   createdAt: String
   updatedAt: String

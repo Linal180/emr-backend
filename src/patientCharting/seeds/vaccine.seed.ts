@@ -49,7 +49,7 @@ export class CreateVaccine implements Seeder {
       if (!oldMvxs?.length) {
         await Promise.all(mvxData?.map(async (item) => {
           //create mvx
-          const mvxInstance = mvxRepo.create(item);
+          const mvxInstance = mvxRepo.create({ ...item, systematic: true });
           //save cvx
           return await mvxRepo.save(mvxInstance)
         }))
