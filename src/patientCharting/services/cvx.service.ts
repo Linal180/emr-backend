@@ -10,6 +10,7 @@ import { FindAllCvxPayload } from "../dto/cvx.payload";
 //services
 import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
+import { CptCodeService } from "src/feeSchedule/services/cptCode.service";
 
 
 export class CVXService {
@@ -17,6 +18,7 @@ export class CVXService {
     @InjectRepository(CVX)
     private cvxRepo: Repository<CVX>,
     private readonly utilsService: UtilsService,
+    private readonly cptCodeService: CptCodeService,
     private readonly paginationService: PaginationService
   ) { }
 
@@ -76,12 +78,17 @@ export class CVXService {
    */
   async create(params: CreateCvxCodeInput): Promise<CVX> {
     try {
-      const { cvxCode } = params;
+      const { cvxCode, cptCodeId } = params;
       const oldCvxCode = await this.findOneByCode(cvxCode);
       if (oldCvxCode) {
         throw new Error(`CVX Code is already exist with code: ${cvxCode}`);
       }
+
       const cvxInstance = this.cvxRepo.create(params)
+      if (cptCodeId) {
+        const cptCode = await this.cptCodeService.findOne({ id: cptCodeId });
+        cvxInstance.cptCode = cptCode
+      }
       return await this.cvxRepo.save(cvxInstance)
     } catch (error) {
       throw new InternalServerErrorException(error)
@@ -96,13 +103,17 @@ export class CVXService {
    */
   async update(params: UpdateCvxCodeInput): Promise<CVX> {
     try {
-      const { id } = params || {}
+      const { id, cptCodeId } = params || {}
       const oldMvxCode = await this.findOneByCode(params?.cvxCode, id);
       if (oldMvxCode) {
         throw new Error(`CVX code is already exist with the code: ${params?.cvxCode}`);
       }
-      const mvxInstance = await this.utilsService.updateEntityManager(CVX, id, params, this.cvxRepo)
-      return mvxInstance;
+      const cvxInstance = await this.utilsService.updateEntityManager(CVX, id, params, this.cvxRepo)
+      if (cptCodeId) {
+        const cptCode = await this.cptCodeService.findOne({ id: cptCodeId });
+        cvxInstance.cptCode = cptCode
+      }
+      return await this.cvxRepo.save(cvxInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -115,9 +126,9 @@ export class CVXService {
    */
   async remove(id: string): Promise<CVX> {
     try {
-      const mvxInstance = await this.findOne(id);
+      const cvxInstance = await this.findOne(id);
       await this.cvxRepo.delete(id);
-      return mvxInstance;
+      return cvxInstance;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

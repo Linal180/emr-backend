@@ -3466,12 +3466,12 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAppointmentInsuranceStatus(appointmentId: String!): AppointmentInsuranceStatus!
-  findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
-  getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
   getModifier(getModifierInput: GetModifierInput!): ModifierPayload!
+  findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
+  getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptFeeSchedule(findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!): AllCPTFeeSchedulesPayload!
   getCptFeeSchedule(getCptFeeScheduleInput: GetCptFeeScheduleInput!): CPTFeeSchedulePayload!
   getToken: BraintreePayload!
@@ -3860,16 +3860,6 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
-input FindAllFeeScheduleInput {
-  practiceId: String
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input GetFeeScheduleInput {
-  id: String!
-}
-
 input FindAllCPTCodesInput {
   code: String
   paginationOptions: PaginationInput!
@@ -3885,6 +3875,16 @@ input FindAllModifierInput {
 }
 
 input GetModifierInput {
+  id: String!
+}
+
+input FindAllFeeScheduleInput {
+  practiceId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetFeeScheduleInput {
   id: String!
 }
 
@@ -4317,15 +4317,15 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput!): AppointmentPayload!
-  createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
-  removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
-  updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
   createCPTCode(createCPTCodeInput: CreateCPTCodeInput!): CPTCodePayload!
   updateCPTCode(updateCPTCodeInput: UpdateCPTCodeInput!): CPTCodePayload!
   removeCPTCode(removeCPTCodeInput: RemoveCPTCodeInput!): CPTCodePayload!
   createModifier(createModifierInput: CreateModifierInput!): ModifierPayload!
   removeModifier(removeModifierInput: RemoveModifierInput!): ModifierPayload!
   updateModifier(updateModifierInput: UpdateModifierInput!): ModifierPayload!
+  createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
+  removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
+  updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
   createCptFeeSchedule(createCptFeeScheduleInput: CreateCptFeeScheduleInput!): CPTFeeSchedulePayload!
   removeCptFeeSchedule(removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!): CPTFeeSchedulePayload!
   updateCptFeeSchedule(updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!): CPTFeeSchedulePayload!
@@ -5480,41 +5480,6 @@ input AppointmentReminderInput {
   timeZone: String
 }
 
-input CreateFeeScheduleInput {
-  name: String
-  procedureCode: String
-  modifier: String
-  cptCode: String
-  effectiveDate: String
-  expiryDate: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  serviceFee: String
-  revenueCode: String
-  practiceId: String
-}
-
-input RemoveFeeScheduleInput {
-  id: String!
-}
-
-input UpdateFeeScheduleInput {
-  name: String
-  procedureCode: String
-  modifier: String
-  cptCode: String
-  effectiveDate: String
-  expiryDate: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  serviceFee: String
-  revenueCode: String
-  practiceId: String
-  id: String!
-}
-
 input CreateCPTCodeInput {
   code: String
   category: String
@@ -5550,6 +5515,41 @@ input RemoveModifierInput {
 input UpdateModifierInput {
   name: String
   description: String
+  id: String!
+}
+
+input CreateFeeScheduleInput {
+  name: String
+  procedureCode: String
+  modifier: String
+  cptCode: String
+  effectiveDate: String
+  expiryDate: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  practiceId: String
+}
+
+input RemoveFeeScheduleInput {
+  id: String!
+}
+
+input UpdateFeeScheduleInput {
+  name: String
+  procedureCode: String
+  modifier: String
+  cptCode: String
+  effectiveDate: String
+  expiryDate: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  practiceId: String
   id: String!
 }
 
@@ -5767,6 +5767,7 @@ input RemoveNdcCodeInput {
 }
 
 input CreateCvxCodeInput {
+  cptCodeId: String
   name: String
   shortDescription: String
   cvxCode: String
@@ -5776,6 +5777,7 @@ input CreateCvxCodeInput {
 }
 
 input UpdateCvxCodeInput {
+  cptCodeId: String
   name: String
   shortDescription: String
   cvxCode: String

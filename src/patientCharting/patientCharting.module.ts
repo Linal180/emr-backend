@@ -6,6 +6,7 @@ import { UsersModule } from 'src/users/users.module';
 import { PatientModule } from 'src/patients/patient.module';
 import { ProviderModule } from 'src/providers/provider.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
+import { FeeScheduleModule } from 'src/feeSchedule/feeSchedule.module';
 import { AppointmentModule } from 'src/appointments/appointment.module';
 //entities
 import { MVX } from './entities/mvx.entity';
@@ -70,12 +71,13 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
       FamilyHistory, FamilyHistoryRelative, Medications, PatientMedication, SurgicalHistory, Vaccine, MVX, CVX, NDC,
       VaccineProduct, NdcVaccineProduct
     ]),
-    forwardRef(() => UsersModule),
-    forwardRef(() => PatientModule),
-    forwardRef(()=>ProviderModule),
-    forwardRef(()=>PaginationModule),
-    AppointmentModule,
     forwardRef(() => LabModule),
+    forwardRef(() => UsersModule),
+    forwardRef(()=>ProviderModule),
+    forwardRef(() => PatientModule),
+    forwardRef(()=>PaginationModule),
+    FeeScheduleModule,
+    AppointmentModule,
   ],
   providers: [
     //services

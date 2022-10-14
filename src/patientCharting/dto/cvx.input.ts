@@ -16,6 +16,9 @@ export class FindAllCvxInput {
 export class CreateCvxCodeInput {
 
   @Field({ nullable: true })
+  cptCodeId: string
+
+  @Field({ nullable: true })
   name: string
 
   @Field({ nullable: true })
