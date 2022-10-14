@@ -116,7 +116,7 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
     ProblemService, VitalsService, PatientAllergiesService, ReactionsService, TypeOrmModule, FamilyHistoryService
   ],
 })
-export class ProblemChartingModule { }
+export class PatientChartingModule { }
 
 
 
