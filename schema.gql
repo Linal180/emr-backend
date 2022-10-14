@@ -2959,6 +2959,12 @@ type PatientAllergiesPayload {
   pagination: PaginationPayload
 }
 
+type FindAllNdcVaccineProductsPayload {
+  ndcVaccineProducts: [NdcVaccineProduct!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
 type PatientMedicationPayload {
   response: ResponsePayload
   patientMedication: PatientMedication
@@ -3508,6 +3514,7 @@ type Query {
   findAllAllergies(allergyInput: AllergyInput!): AllergiesPayload!
   findAllReactions(reactionInput: ReactionInput!): ReactionsPayload!
   getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
+  findAllNdcVaccineProducts(findAllNdcVaccineProductsInput: FindAllNdcVaccineProductsInput!): FindAllNdcVaccineProductsPayload!
   findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
   findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
   getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
@@ -4057,6 +4064,13 @@ input ReactionInput {
 
 input GetPatientAllergy {
   id: String!
+}
+
+input FindAllNdcVaccineProductsInput {
+  searchQuery: String
+  ndcId: String
+  vaccineProductId: String
+  paginationOptions: PaginationInput!
 }
 
 input PatientMedicationInput {

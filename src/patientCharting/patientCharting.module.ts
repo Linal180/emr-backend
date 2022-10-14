@@ -41,6 +41,7 @@ import { VaccineProductResolver } from './resolvers/vaccineProduct.resolver';
 import { SurgicalHistoryResolver } from './resolvers/surgicalHistory.resolver';
 import { PatientChartingResolver } from './resolvers/patientCharting.resolver';
 import { PatientAllergiesResolver } from './resolvers/patientAllergies.resolver';
+import { NdcVaccineProductResolver } from './resolvers/ndcVaccineProduct.resolver';
 import { PatientMedicationsResolver } from './resolvers/patientMedication.resolver';
 //services
 import { NDCService } from './services/ndc.service';
@@ -110,6 +111,7 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
     SurgicalHistoryResolver, 
     PatientChartingResolver, 
     PatientAllergiesResolver,
+    NdcVaccineProductResolver,
     PatientMedicationsResolver,
   ],
   exports: [
