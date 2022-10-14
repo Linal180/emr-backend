@@ -1,13 +1,14 @@
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { InternalServerErrorException } from "@nestjs/common";
 //entities
 import { CVX } from "../entities/cvx.entity";
 //inputs
-import { FindAllCvxInput } from "../dto/cvx.input";
+import { CreateCvxCodeInput, FindAllCvxInput, UpdateCvxCodeInput } from "../dto/cvx.input";
 //payloads
 import { FindAllCvxPayload } from "../dto/cvx.payload";
 //services
+import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
 
 
@@ -15,6 +16,7 @@ export class CVXService {
   constructor(
     @InjectRepository(CVX)
     private cvxRepo: Repository<CVX>,
+    private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService
   ) { }
 
@@ -28,10 +30,12 @@ export class CVXService {
 
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<CVX>(this.cvxRepo, {
-        paginationOptions, associatedToField: {
-          filterType: "stringFilter", columnValue: searchQuery, columnName: 'name', columnName2: 'shortDescription',
-          columnName3: 'cvxCode',
-        }, associatedTo: "CVX"
+        paginationOptions, ...(searchQuery && {
+          associatedToField: {
+            filterType: "stringFilter", columnValue: searchQuery, columnName: 'name', columnName2: 'shortDescription',
+            columnName3: 'cvxCode',
+          }
+        })
       })
 
       const { data, ...pagination } = response;
@@ -53,6 +57,70 @@ export class CVXService {
    */
   async findOne(id: string): Promise<CVX> {
     return await this.cvxRepo.findOne(id)
+  }
+
+  /**
+   * Finds one by code
+   * @param code 
+   * @param [id] 
+   * @returns one by code 
+   */
+  async findOneByCode(code: string, id?: string): Promise<CVX> {
+    return await this.cvxRepo.findOne({ cvxCode: code, ...(id && { id: Not(id) }) })
+  }
+
+  /**
+   * Creates mvx service
+   * @param params 
+   * @returns create 
+   */
+  async create(params: CreateCvxCodeInput): Promise<CVX> {
+    try {
+      const { cvxCode } = params;
+      const oldCvxCode = await this.findOneByCode(cvxCode);
+      if (oldCvxCode) {
+        throw new Error(`CVX Code is already exist with code: ${cvxCode}`);
+      }
+      const cvxInstance = this.cvxRepo.create(params)
+      return await this.cvxRepo.save(cvxInstance)
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+
+  /**
+   * Updates mvx service
+   * @param params 
+   * @returns update 
+   */
+  async update(params: UpdateCvxCodeInput): Promise<CVX> {
+    try {
+      const { id } = params || {}
+      const oldMvxCode = await this.findOneByCode(params?.cvxCode, id);
+      if (oldMvxCode) {
+        throw new Error(`CVX code is already exist with the code: ${params?.cvxCode}`);
+      }
+      const mvxInstance = await this.utilsService.updateEntityManager(CVX, id, params, this.cvxRepo)
+      return mvxInstance;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Removes mvx service
+   * @param id 
+   * @returns remove 
+   */
+  async remove(id: string): Promise<CVX> {
+    try {
+      const mvxInstance = await this.findOne(id);
+      await this.cvxRepo.delete(id);
+      return mvxInstance;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
 }

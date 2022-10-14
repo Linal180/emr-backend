@@ -2798,6 +2798,11 @@ type FindAllCvxPayload {
   response: ResponsePayloadResponse
 }
 
+type CvxPayload {
+  cvx: CVX
+  response: ResponsePayloadResponse
+}
+
 type FindAllMvxPayload {
   mvxs: [MVX!]
   pagination: PaginationPayload
@@ -3487,6 +3492,7 @@ type Query {
   findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
   getNdcCode(getNdcCodeInput: GetNdcCodeInput!): NdcPayload!
   findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
+  getCvxCode(getCvxCodeInput: GetCvxCodeInput!): CvxPayload!
   findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
   getMvxCode(getMvxCodeInput: GetMvxCodeInput!): MvxPayload!
   findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
@@ -3943,6 +3949,10 @@ input FindAllCvxInput {
   paginationOptions: PaginationInput!
 }
 
+input GetCvxCodeInput {
+  id: String!
+}
+
 input FindAllMvxInput {
   searchQuery: String
   mvxCode: String
@@ -4337,6 +4347,9 @@ type Mutation {
   createNdcCode(createNdcCodeInput: CreateNdcCodeInput!): NdcPayload!
   updateNdcCode(updateNdcCodeInput: UpdateNdcCodeInput!): NdcPayload!
   removeNdcCode(removeNdcCodeInput: RemoveNdcCodeInput!): NdcPayload!
+  createCvxCode(createCvxCodeInput: CreateCvxCodeInput!): CvxPayload!
+  updateCvxCode(updateNdcCodeInput: UpdateCvxCodeInput!): CvxPayload!
+  removeCvxCode(removeCvxCodeInput: RemoveCvxCodeInput!): CvxPayload!
   createMvxCode(createMvxCodeInput: CreateMvxCodeInput!): MvxPayload!
   updateMvxCode(updateMvxCodeInput: UpdateMvxCodeInput!): MvxPayload!
   removeMvxCode(removeMvxCodeInput: RemoveMvxCodeInput!): MvxPayload!
@@ -5750,6 +5763,29 @@ input UpdateNdcCodeInput {
 }
 
 input RemoveNdcCodeInput {
+  id: String!
+}
+
+input CreateCvxCodeInput {
+  name: String
+  shortDescription: String
+  cvxCode: String
+  status: String
+  notes: String
+  updateDate: String
+}
+
+input UpdateCvxCodeInput {
+  name: String
+  shortDescription: String
+  cvxCode: String
+  status: String
+  notes: String
+  updateDate: String
+  id: String!
+}
+
+input RemoveCvxCodeInput {
   id: String!
 }
 
