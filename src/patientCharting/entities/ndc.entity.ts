@@ -19,6 +19,10 @@ export class NDC {
   @Field({ nullable: true })
   description: string
 
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  systematic: boolean;
+
   // relationships
 
   @OneToMany(() => NdcVaccineProduct, cvx => cvx.ndcCode, { onDelete: "CASCADE" })

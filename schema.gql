@@ -556,6 +556,7 @@ type NDC {
   id: String!
   code: String
   description: String
+  systematic: Boolean
   createdAt: String
   updatedAt: String
 }
