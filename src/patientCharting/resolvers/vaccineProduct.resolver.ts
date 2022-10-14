@@ -6,10 +6,12 @@ import { FindAllVaccineProductsPayload } from "../dto/vaccine-product.payload";
 //entities
 import { CVX } from "../entities/cvx.entity";
 import { MVX } from "../entities/mvx.entity";
+import { NdcVaccineProduct } from "../entities/ndcVaccineProduct.entity";
 import { VaccineProduct } from "../entities/vaccineProduct.entity";
 //services
 import { CVXService } from "../services/cvx.service";
 import { MVXService } from "../services/mvx.service";
+import { NdcVaccineProductService } from "../services/ndcVaccineProduct.service";
 import { VaccineProductService } from "../services/vaccineProduct.service";
 
 @Resolver(() => VaccineProduct)
@@ -18,6 +20,7 @@ export class VaccineProductResolver {
     private readonly vaccineProductService: VaccineProductService,
     private readonly cvxService: CVXService,
     private readonly mvxService: MVXService,
+    private readonly ndcVaccineProductService: NdcVaccineProductService,
   ) { }
 
   //queries
@@ -47,6 +50,13 @@ export class VaccineProductResolver {
   async mvx(@Parent() vaccine: VaccineProduct): Promise<MVX> {
     if (vaccine?.mvxId) {
       return await this.mvxService.findOne(vaccine.mvxId);
+    }
+  }
+
+  @ResolveField(() => [NdcVaccineProduct])
+  async ndcVaccine(@Parent() vaccine: VaccineProduct): Promise<NdcVaccineProduct[]> {
+    if (vaccine?.id) {
+      return await this.ndcVaccineProductService.findByVaccineId(vaccine.id);
     }
   }
 

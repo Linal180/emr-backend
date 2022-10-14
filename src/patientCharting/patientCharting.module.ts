@@ -25,6 +25,7 @@ import { SurgicalHistory } from './entities/surgicalHistory.entity';
 import { PatientProblems } from './entities/patientProblems.entity';
 import { PatientAllergies } from './entities/patientAllergies.entity';
 import { PatientMedication } from './entities/patientMedication.entity';
+import { NdcVaccineProduct } from './entities/ndcVaccineProduct.entity';
 import { FamilyHistoryRelative } from './entities/familyHistoryRelative.entity';
 //resolvers
 import { NDCResolver } from './resolvers/ndc.resolver';
@@ -57,6 +58,7 @@ import { PatientChartingService } from './services/patientCharting.service';
 import { SurgicalHistoryService } from './services/surgicalHistory.service';
 import { PatientAllergiesService } from './services/patientAllergies.service';
 import { PatientMedicationService } from './services/patientMedication.service';
+import { NdcVaccineProductService } from './services/ndcVaccineProduct.service';
 import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
 
 
@@ -65,7 +67,7 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
     TypeOrmModule.forFeature([
       ICDCodes, PatientProblems, PatientAllergies, SnoMedCodes, PatientVitals, Allergies, Reactions, TriageNotes,
       FamilyHistory, FamilyHistoryRelative, Medications, PatientMedication, SurgicalHistory, Vaccine, MVX, CVX, NDC,
-      VaccineProduct
+      VaccineProduct, NdcVaccineProduct
     ]),
     forwardRef(() => UsersModule),
     forwardRef(() => PatientModule),
@@ -92,7 +94,8 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
     PatientAllergiesService, 
     PatientAllergiesService,
     PatientMedicationService, 
-    FamilyHistoryRelativeService, 
+    NdcVaccineProductService,
+    FamilyHistoryRelativeService,
     //resolvers
     NDCResolver, 
     CVXResolver, 
