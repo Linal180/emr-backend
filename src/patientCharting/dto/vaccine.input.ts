@@ -51,7 +51,7 @@ export class AddVaccineInput {
   visDate: string;
 
   @Field({ nullable: true })
-  cvxId: string;
+  vaccineProductId: string;
 
   @Field({ nullable: true })
   mvxId: string;

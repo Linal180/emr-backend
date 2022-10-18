@@ -25,7 +25,7 @@ import { AttachmentsModule } from './attachments/attachments.module';
 import { FeeScheduleModule } from './feeSchedule/feeSchedule.module';
 import { AppointmentModule } from './appointments/appointment.module';
 import { SocialHistoryModule } from './socialHistory/socialHistory.module';
-import { ProblemChartingModule } from './patientCharting/patientCharting.module';
+import { PatientChartingModule } from './patientCharting/patientCharting.module';
 //configs, 
 import { DatabaseConfig } from './database.config';
 import configuration from './config/configuration';
@@ -77,7 +77,7 @@ import { ReviewOfSystemModule } from './reviewOfSystems/reviewOfSystems.module';
     AttachmentsModule,
     AppointmentModule,
     FormBuilderModule,
-    ProblemChartingModule,
+    PatientChartingModule,
     ShortUrlModule,
     SocialHistoryModule,
     ReviewOfSystemModule

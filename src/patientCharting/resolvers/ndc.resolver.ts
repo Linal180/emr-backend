@@ -1,8 +1,8 @@
-import { Args, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 //inputs
-import { FindAllNdcInput } from "../dto/ndc.input";
+import { CreateNdcCodeInput, FindAllNdcInput, GetNdcCodeInput, RemoveNdcCodeInput, UpdateNdcCodeInput } from "../dto/ndc.input";
 //payloads
-import { FindAllNdcPayload } from "../dto/ndc.payload";
+import { FindAllNdcPayload, NdcPayload } from "../dto/ndc.payload";
 //entities
 import { NDC } from "../entities/ndc.entity";
 //services
@@ -15,6 +15,8 @@ export class NDCResolver {
   constructor(
     private readonly ndcService: NDCService,
   ) { }
+
+    //queries
 
   @Query(() => FindAllNdcPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -31,4 +33,54 @@ export class NDCResolver {
       }
     }
   }
+
+  @Query(() => NdcPayload)
+	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+	// @SetMetadata('name', 'getNdcCode')
+	async getNdcCode(@Args('getNdcCodeInput') getNdcCodeInput: GetNdcCodeInput): Promise<NdcPayload> {
+		const { id } = getNdcCodeInput
+		const ndcCode = await this.ndcService.findOne(id)
+		if (ndcCode) {
+			return {
+				ndcCode,
+				response: {
+					message: "OK", status: 200,
+				}
+			}
+		}
+	}
+
+  //mutations
+
+  @Mutation(() => NdcPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'createNdcCode')
+  async createNdcCode(@Args('createNdcCodeInput') createNdcCodeInput: CreateNdcCodeInput):  Promise<NdcPayload> {
+    return {
+      ndcCode: await this.ndcService.create(createNdcCodeInput),
+      response: { status: 200, message: 'NDC code created successfully.' }
+    };
+  }
+
+  @Mutation(() => NdcPayload)
+	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+	// @SetMetadata('name', 'updateNdcCode')
+	async updateNdcCode(@Args('updateNdcCodeInput') updateNdcCodeInput: UpdateNdcCodeInput): Promise<NdcPayload> {
+		return {
+			ndcCode: await this.ndcService.update(updateNdcCodeInput),
+			response: { status: 200, message: 'NDC code is updated successfully' }
+		};
+	}
+
+
+	@Mutation(() => NdcPayload)
+	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+	// @SetMetadata('name', 'removeIcdCode')
+	async removeNdcCode(@Args('removeNdcCodeInput') removeNdcCodeInput: RemoveNdcCodeInput): Promise<NdcPayload> {
+		const { id } = removeNdcCodeInput
+		return {
+			ndcCode: await this.ndcService.remove(id),
+			response: { status: 200, message: 'NDC code is removed successfully' }
+		};
+	}
 }

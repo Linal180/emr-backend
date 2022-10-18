@@ -195,3 +195,33 @@ export type SocialHistoryQuestionType = {
 }
 
 export const SECTION_SPECIAL_TYPE = 'seed_section'
+
+
+export enum STATUS {
+  ACTIVE = "Active",
+  IN_ACTIVE = "Inactive",
+}
+
+
+export type TemplateQuestionAnswerType = {
+  title: string;
+  answerType: ANSWER_TYPE
+  questionType?: QuestionType
+  options?: SelectorType[]
+}
+
+export type TemplateQuestionType = {
+  name: string;
+  answers: TemplateQuestionAnswerType[]
+}
+
+export type TemplateSectionType = {
+  name: string;
+  questions: TemplateQuestionType[]
+}
+
+export type TemplatesType = {
+  title: string;
+  templateType: TemplateType;
+  sections: TemplateSectionType[]
+}

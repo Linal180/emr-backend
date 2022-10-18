@@ -540,6 +540,69 @@ type Agreement {
   practice: Practice
 }
 
+type MVX {
+  id: String!
+  manufacturerName: String
+  mvxCode: String
+  notes: String
+  mvxStatus: String
+  updateDate: String
+  systematic: Boolean
+  vaccineProduct: [VaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
+type NDC {
+  id: String!
+  code: String
+  description: String
+  systematic: Boolean
+  createdAt: String
+  updatedAt: String
+}
+
+type NdcVaccineProduct {
+  id: String!
+  vaccineProductId: String
+  ndcCodeId: String
+  vaccineProduct: VaccineProduct
+  ndcCode: NDC
+  createdAt: String
+  updatedAt: String
+}
+
+type VaccineProduct {
+  id: String!
+  name: String
+  status: String
+  cvxCode: String
+  mvxCode: String
+  updateDate: String
+  cvxId: String
+  mvxId: String
+  cvx: CVX
+  mvx: MVX
+  ndcVaccine: [NdcVaccineProduct!]
+  createdAt: String
+  updatedAt: String
+}
+
+type CVX {
+  id: String!
+  name: String
+  shortDescription: String
+  cvxCode: String
+  status: String
+  notes: String
+  updateDate: String
+  cptCodeId: String
+  vaccineProduct: [VaccineProduct!]
+  cptCode: CPTCodes
+  createdAt: String
+  updatedAt: String
+}
+
 type CPTCodes {
   id: String!
   code: String
@@ -550,6 +613,7 @@ type CPTCodes {
   systematic: Boolean
   priority: Int
   cptFeeSchedule: [CptFeeSchedule!]
+  cvxCodes: [CVX!]
   createdAt: String
   updatedAt: String
 }
@@ -1612,49 +1676,6 @@ enum STATUS {
   PENDING
 }
 
-type NDC {
-  id: String!
-  ndcCode: String
-  mvxName: String
-  mvxCode: String
-  startDate: String
-  endDate: String
-  gtin: String
-  lastUpdate: String
-  cvxCode: String
-  cvxDescription: String
-  ndcType: String
-  noUseNDC: String
-  mvxId: String
-  mvx: MVX
-  createdAt: String
-  updatedAt: String
-}
-
-type MVX {
-  id: String!
-  manufacturerName: String
-  mvxCode: String
-  mvxStatus: String
-  cvxCode: String
-  cvxId: String
-  ndc: [NDC!]
-  cvx: CVX
-  createdAt: String
-  updatedAt: String
-}
-
-type CVX {
-  id: String!
-  name: String
-  shortDescription: String
-  cvxCode: String
-  productStatus: String
-  mvx: [MVX!]
-  createdAt: String
-  updatedAt: String
-}
-
 type Vaccine {
   id: String!
   administrationDate: String
@@ -1667,10 +1688,10 @@ type Vaccine {
   expiryDate: String
   visGiven: String
   visDate: String
-  cvxId: String
+  vaccineProductId: String
   mvxId: String
   ndcId: String
-  cvx: CVX
+  vaccineProduct: VaccineProduct
   mvx: MVX
   ndc: NDC
   patientId: String
@@ -1763,6 +1784,7 @@ type SectionQuestions {
 type QuestionAnswers {
   id: String!
   name: String
+  specialId: String
   answerType: String
   questionType: String
   options: [SelectorType!]
@@ -2719,9 +2741,55 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
+type LabTestObservationPayload {
+  response: ResponsePayload
+  labTestObservation: Observations
+}
+
+type LabTestPayload {
+  response: ResponsePayload
+  labTest: LabTests
+}
+
+type LabResultPayload {
+  response: ResponsePayload
+  patientInfo: Patient
+  facilityInfo: Facility
+  doctor: Doctor
+  labTests: [LabTests!]
+}
+
+type LabTestsPayload {
+  response: ResponsePayload
+  labTests: [LabTests]
+  pagination: PaginationPayload
+}
+
+type LoincCodePayload {
+  response: ResponsePayload
+  loincCode: LoincCodes
+}
+
+type LoincCodesPayload {
+  response: ResponsePayload
+  loincCodes: [LoincCodes!]
+  pagination: PaginationPayload
+}
+
+type TestSpecimenTypesPayload {
+  response: ResponsePayload
+  specimenTypes: [SpecimenTypes!]
+  pagination: PaginationPayload
+}
+
 type FindAllNdcPayload {
   ndcs: [NDC!]
   pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type NdcPayload {
+  ndcCode: NDC
   response: ResponsePayloadResponse
 }
 
@@ -2731,9 +2799,19 @@ type FindAllCvxPayload {
   response: ResponsePayloadResponse
 }
 
+type CvxPayload {
+  cvx: CVX
+  response: ResponsePayloadResponse
+}
+
 type FindAllMvxPayload {
   mvxs: [MVX!]
   pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type MvxPayload {
+  mvxCode: MVX
   response: ResponsePayloadResponse
 }
 
@@ -2827,6 +2905,12 @@ type FamilyHistoriesPayload {
   response: ResponsePayloadResponse
 }
 
+type FindAllVaccineProductsPayload {
+  vaccineProducts: [VaccineProduct!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
 type SurgicalHistoryPayload {
   response: ResponsePayload
   surgicalHistory: SurgicalHistory
@@ -2881,6 +2965,12 @@ type PatientAllergiesPayload {
   pagination: PaginationPayload
 }
 
+type FindAllNdcVaccineProductsPayload {
+  ndcVaccineProducts: [NdcVaccineProduct!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
 type PatientMedicationPayload {
   response: ResponsePayload
   patientMedication: PatientMedication
@@ -2895,47 +2985,6 @@ type PatientMedicationsPayload {
 type MedicationsPayload {
   response: ResponsePayload
   medications: [Medications!]
-  pagination: PaginationPayload
-}
-
-type LabTestObservationPayload {
-  response: ResponsePayload
-  labTestObservation: Observations
-}
-
-type LabTestPayload {
-  response: ResponsePayload
-  labTest: LabTests
-}
-
-type LabResultPayload {
-  response: ResponsePayload
-  patientInfo: Patient
-  facilityInfo: Facility
-  doctor: Doctor
-  labTests: [LabTests!]
-}
-
-type LabTestsPayload {
-  response: ResponsePayload
-  labTests: [LabTests]
-  pagination: PaginationPayload
-}
-
-type LoincCodePayload {
-  response: ResponsePayload
-  loincCode: LoincCodes
-}
-
-type LoincCodesPayload {
-  response: ResponsePayload
-  loincCodes: [LoincCodes!]
-  pagination: PaginationPayload
-}
-
-type TestSpecimenTypesPayload {
-  response: ResponsePayload
-  specimenTypes: [SpecimenTypes!]
   pagination: PaginationPayload
 }
 
@@ -3418,12 +3467,12 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAppointmentInsuranceStatus(appointmentId: String!): AppointmentInsuranceStatus!
-  findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
-  getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
   getModifier(getModifierInput: GetModifierInput!): ModifierPayload!
+  findAllFeeSchedules(findAllFeeScheduleInput: FindAllFeeScheduleInput!): AllFeeSchedulesPayload!
+  getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptFeeSchedule(findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!): AllCPTFeeSchedulesPayload!
   getCptFeeSchedule(getCptFeeScheduleInput: GetCptFeeScheduleInput!): CPTFeeSchedulePayload!
   getToken: BraintreePayload!
@@ -3441,36 +3490,41 @@ type Query {
   getPoliciesEligibility(id: String!): PolicyEligibilityWithPatientPayload!
   fetchAgreement(agreementId: String!): AgreementPayload!
   fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
+  findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
+  getNdcCode(getNdcCodeInput: GetNdcCodeInput!): NdcPayload!
+  findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
+  getCvxCode(getCvxCodeInput: GetCvxCodeInput!): CvxPayload!
+  findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
+  getMvxCode(getMvxCodeInput: GetMvxCodeInput!): MvxPayload!
+  findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
+  getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
+  getPatientLatestVital(patientId: String!): PatientVitalPayload!
   findAllPatientProblem(patientProblemInput: PatientProblemInput!): PatientProblemsPayload!
   searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   fetchICDCodes(searchIcdCodesInput: SearchIcdCodesInput!): IcdCodesPayload!
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
-  findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
-  findAllAllergies(allergyInput: AllergyInput!): AllergiesPayload!
-  findAllReactions(reactionInput: ReactionInput!): ReactionsPayload!
-  getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
-  findAllPatientVitals(patientVitalInput: PatientVitalInput!): PatientVitalsPayload!
-  getPatientVital(getPatientVital: GetPatientVital!): PatientVitalPayload!
-  getPatientLatestVital(patientId: String!): PatientVitalPayload!
+  findAllIcdCodes(findAllIcdCodesInput: FindAllIcdCodesInput!): FindAllIcdCodesPayload!
+  getIcdCode(getIcdCodeInput: GetIcdCodeInput!): IcdCodePayload!
+  findAllVaccines(findAllVaccinesInput: FindAllVaccinesInput!): FindAllVaccinesPayload!
+  getVaccine(getVaccineInput: GetVaccineInput!): VaccinePayload!
   findAllPatientTriageNotes(patientTriageNoteInput: PatientTriageNoteInput!): TriageNotesPayload!
   getTriageNotes(getPatientTriageNote: GetPatientTriageNote!): TriageNotePayload!
   findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
   getFamilyHistory(getFamilyHistoryInput: GetFamilyHistoryInput!): FamilyHistoryPayload!
-  findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
-  findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
-  getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
+  findAllVaccineProducts(findAllVaccineProductsInput: FindAllVaccineProductsInput!): FindAllVaccineProductsPayload!
   findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
   getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
   getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput!): PatientChartingInfoPayload!
   getPatientChartingReview(patientChartingReviewInput: PatientChartingReviewInput!): PatientChartingReviewPayload!
-  findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
-  findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
-  findAllMvx(findAllMvxInput: FindAllMvxInput!): FindAllMvxPayload!
-  findAllVaccines(findAllVaccinesInput: FindAllVaccinesInput!): FindAllVaccinesPayload!
-  getVaccine(getVaccineInput: GetVaccineInput!): VaccinePayload!
-  findAllIcdCodes(findAllIcdCodesInput: FindAllIcdCodesInput!): FindAllIcdCodesPayload!
-  getIcdCode(getIcdCodeInput: GetIcdCodeInput!): IcdCodePayload!
+  findAllPatientAllergies(patientAllergyInput: PatientAllergyInput!): PatientAllergiesPayload!
+  findAllAllergies(allergyInput: AllergyInput!): AllergiesPayload!
+  findAllReactions(reactionInput: ReactionInput!): ReactionsPayload!
+  getPatientAllergy(getPatientAllergy: GetPatientAllergy!): PatientAllergyPayload!
+  findAllNdcVaccineProducts(findAllNdcVaccineProductsInput: FindAllNdcVaccineProductsInput!): FindAllNdcVaccineProductsPayload!
+  findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
+  findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
+  getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3807,16 +3861,6 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
-input FindAllFeeScheduleInput {
-  practiceId: String
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input GetFeeScheduleInput {
-  id: String!
-}
-
 input FindAllCPTCodesInput {
   code: String
   paginationOptions: PaginationInput!
@@ -3832,6 +3876,16 @@ input FindAllModifierInput {
 }
 
 input GetModifierInput {
+  id: String!
+}
+
+input FindAllFeeScheduleInput {
+  practiceId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetFeeScheduleInput {
   id: String!
 }
 
@@ -3881,6 +3935,45 @@ input AgreementPaginationInput {
   paginationOptions: PaginationInput!
 }
 
+input FindAllNdcInput {
+  searchQuery: String
+  mvxId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetNdcCodeInput {
+  id: String!
+}
+
+input FindAllCvxInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetCvxCodeInput {
+  id: String!
+}
+
+input FindAllMvxInput {
+  searchQuery: String
+  mvxCode: String
+  paginationOptions: PaginationInput!
+}
+
+input GetMvxCodeInput {
+  id: String!
+}
+
+input PatientVitalInput {
+  patientId: String
+  appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientVital {
+  id: String!
+}
+
 input PatientProblemInput {
   patientId: String
   appointmentId: String
@@ -3900,6 +3993,67 @@ input SearchSnoMedCodesInput {
 
 input GetPatientProblem {
   id: String!
+}
+
+input FindAllIcdCodesInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetIcdCodeInput {
+  id: String!
+}
+
+input FindAllVaccinesInput {
+  appointmentId: String
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetVaccineInput {
+  id: String!
+}
+
+input PatientTriageNoteInput {
+  patientId: String
+  appointmentId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPatientTriageNote {
+  id: String!
+}
+
+input FindAllFamilyHistoryInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetFamilyHistoryInput {
+  id: String
+}
+
+input FindAllVaccineProductsInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input SurgicalHistoryInput {
+  patientId: String
+  paginationOptions: PaginationInput!
+}
+
+input GetSurgicalHistory {
+  id: String!
+}
+
+input PatientChartingInfoInput {
+  patientId: String
+}
+
+input PatientChartingReviewInput {
+  patientId: String
+  appointmentId: String
 }
 
 input PatientAllergyInput {
@@ -3923,33 +4077,11 @@ input GetPatientAllergy {
   id: String!
 }
 
-input PatientVitalInput {
-  patientId: String
-  appointmentId: String
+input FindAllNdcVaccineProductsInput {
+  searchQuery: String
+  ndcId: String
+  vaccineProductId: String
   paginationOptions: PaginationInput!
-}
-
-input GetPatientVital {
-  id: String!
-}
-
-input PatientTriageNoteInput {
-  patientId: String
-  appointmentId: String
-  paginationOptions: PaginationInput!
-}
-
-input GetPatientTriageNote {
-  id: String!
-}
-
-input FindAllFamilyHistoryInput {
-  patientId: String
-  paginationOptions: PaginationInput!
-}
-
-input GetFamilyHistoryInput {
-  id: String
 }
 
 input PatientMedicationInput {
@@ -3964,60 +4096,6 @@ input MedicationInput {
 }
 
 input GetPatientMedication {
-  id: String!
-}
-
-input SurgicalHistoryInput {
-  patientId: String
-  paginationOptions: PaginationInput!
-}
-
-input GetSurgicalHistory {
-  id: String!
-}
-
-input PatientChartingInfoInput {
-  patientId: String
-}
-
-input PatientChartingReviewInput {
-  patientId: String
-  appointmentId: String
-}
-
-input FindAllNdcInput {
-  searchQuery: String
-  mvxId: String
-  paginationOptions: PaginationInput!
-}
-
-input FindAllCvxInput {
-  searchQuery: String
-  paginationOptions: PaginationInput!
-}
-
-input FindAllMvxInput {
-  searchQuery: String
-  cvxId: String
-  paginationOptions: PaginationInput!
-}
-
-input FindAllVaccinesInput {
-  appointmentId: String
-  patientId: String
-  paginationOptions: PaginationInput!
-}
-
-input GetVaccineInput {
-  id: String!
-}
-
-input FindAllIcdCodesInput {
-  searchQuery: String
-  paginationOptions: PaginationInput!
-}
-
-input GetIcdCodeInput {
   id: String!
 }
 
@@ -4240,15 +4318,15 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput!): AppointmentPayload!
-  createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
-  removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
-  updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
   createCPTCode(createCPTCodeInput: CreateCPTCodeInput!): CPTCodePayload!
   updateCPTCode(updateCPTCodeInput: UpdateCPTCodeInput!): CPTCodePayload!
   removeCPTCode(removeCPTCodeInput: RemoveCPTCodeInput!): CPTCodePayload!
   createModifier(createModifierInput: CreateModifierInput!): ModifierPayload!
   removeModifier(removeModifierInput: RemoveModifierInput!): ModifierPayload!
   updateModifier(updateModifierInput: UpdateModifierInput!): ModifierPayload!
+  createFeeSchedule(createFeeScheduleInput: CreateFeeScheduleInput!): FeeSchedulePayload!
+  removeFeeSchedule(removeFeeScheduleInput: RemoveFeeScheduleInput!): FeeSchedulePayload!
+  updateFeeSchedule(updateFeeScheduleInput: UpdateFeeScheduleInput!): FeeSchedulePayload!
   createCptFeeSchedule(createCptFeeScheduleInput: CreateCptFeeScheduleInput!): CPTFeeSchedulePayload!
   removeCptFeeSchedule(removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!): CPTFeeSchedulePayload!
   updateCptFeeSchedule(updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!): CPTFeeSchedulePayload!
@@ -4267,34 +4345,43 @@ type Mutation {
   createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
   updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
   removeAgreement(agreementId: String!): AgreementPayload!
+  createNdcCode(createNdcCodeInput: CreateNdcCodeInput!): NdcPayload!
+  updateNdcCode(updateNdcCodeInput: UpdateNdcCodeInput!): NdcPayload!
+  removeNdcCode(removeNdcCodeInput: RemoveNdcCodeInput!): NdcPayload!
+  createCvxCode(createCvxCodeInput: CreateCvxCodeInput!): CvxPayload!
+  updateCvxCode(updateNdcCodeInput: UpdateCvxCodeInput!): CvxPayload!
+  removeCvxCode(removeCvxCodeInput: RemoveCvxCodeInput!): CvxPayload!
+  createMvxCode(createMvxCodeInput: CreateMvxCodeInput!): MvxPayload!
+  updateMvxCode(updateMvxCodeInput: UpdateMvxCodeInput!): MvxPayload!
+  removeMvxCode(removeMvxCodeInput: RemoveMvxCodeInput!): MvxPayload!
+  addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
+  updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
+  removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   updatePatientProblemSigned(updateProblemSignedInput: UpdateProblemSignedInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
-  addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput!): PatientAllergyPayload!
-  updatePatientAllergy(updateAllergyInput: UpdateAllergyInput!): PatientAllergyPayload!
-  removePatientAllergy(removePatientAllergy: RemovePatientAllergy!): PatientAllergyPayload!
-  addPatientVital(createVitalInput: CreateVitalInput!): PatientVitalPayload!
-  updatePatientVital(updateVitalInput: UpdateVitalInput!): PatientVitalPayload!
-  removePatientVital(removeVital: RemoveVital!): PatientVitalPayload!
+  createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
+  updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
+  removeIcdCode(removeIcdCodeInput: RemoveIcdCodeInput!): IcdCodePayload!
+  addVaccine(addVaccineInput: AddVaccineInput!): VaccinePayload!
+  updateVaccine(updateVaccineInput: UpdateVaccineInput!): VaccinePayload!
+  removeVaccine(removeVaccineInput: RemoveVaccineInput!): VaccinePayload!
   addPatientTriageNote(createTriageNoteInput: CreateTriageNoteInput!): TriageNotePayload!
   updatePatientTriageNote(updateTriageNoteInput: UpdateTriageNoteInput!): TriageNotePayload!
   removePatientTriageNote(removeTriageNote: RemoveTriageNote!): TriageNotePayload!
   createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
   updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
   removeFamilyHistory(removeFamilyHistoryInput: RemoveFamilyHistoryInput!): FamilyHistoryPayload!
-  addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
-  updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
-  removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
   addSurgicalHistory(createSurgicalHistoryInput: CreateSurgicalHistoryInput!): SurgicalHistoryPayload!
   updateSurgicalHistory(updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!): SurgicalHistoryPayload!
   removeSurgicalHistory(removeSurgicalHistory: RemoveSurgicalHistory!): SurgicalHistoryPayload!
-  addVaccine(addVaccineInput: AddVaccineInput!): VaccinePayload!
-  updateVaccine(updateVaccineInput: UpdateVaccineInput!): VaccinePayload!
-  removeVaccine(removeVaccineInput: RemoveVaccineInput!): VaccinePayload!
-  createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
-  updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
-  removeIcdCode(removeIcdCodeInput: RemoveIcdCodeInput!): IcdCodePayload!
+  addPatientAllergy(createPatientAllergyInput: CreatePatientAllergyInput!): PatientAllergyPayload!
+  updatePatientAllergy(updateAllergyInput: UpdateAllergyInput!): PatientAllergyPayload!
+  removePatientAllergy(removePatientAllergy: RemovePatientAllergy!): PatientAllergyPayload!
+  addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
+  updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
+  removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -5394,41 +5481,6 @@ input AppointmentReminderInput {
   timeZone: String
 }
 
-input CreateFeeScheduleInput {
-  name: String
-  procedureCode: String
-  modifier: String
-  cptCode: String
-  effectiveDate: String
-  expiryDate: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  serviceFee: String
-  revenueCode: String
-  practiceId: String
-}
-
-input RemoveFeeScheduleInput {
-  id: String!
-}
-
-input UpdateFeeScheduleInput {
-  name: String
-  procedureCode: String
-  modifier: String
-  cptCode: String
-  effectiveDate: String
-  expiryDate: String
-  description: String
-  shortDescription: String
-  longDescription: String
-  serviceFee: String
-  revenueCode: String
-  practiceId: String
-  id: String!
-}
-
 input CreateCPTCodeInput {
   code: String
   category: String
@@ -5464,6 +5516,41 @@ input RemoveModifierInput {
 input UpdateModifierInput {
   name: String
   description: String
+  id: String!
+}
+
+input CreateFeeScheduleInput {
+  name: String
+  procedureCode: String
+  modifier: String
+  cptCode: String
+  effectiveDate: String
+  expiryDate: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  practiceId: String
+}
+
+input RemoveFeeScheduleInput {
+  id: String!
+}
+
+input UpdateFeeScheduleInput {
+  name: String
+  procedureCode: String
+  modifier: String
+  cptCode: String
+  effectiveDate: String
+  expiryDate: String
+  description: String
+  shortDescription: String
+  longDescription: String
+  serviceFee: String
+  revenueCode: String
+  practiceId: String
   id: String!
 }
 
@@ -5665,77 +5752,64 @@ input UpdateAgreementInput {
   id: String!
 }
 
-input CreateProblemInput {
-  icdCodeId: String!
-  snowMedCodeId: String
-  patientId: String!
-  providerId: String
-  staffId: String
-  appointmentId: String
-  medicationIds: [String!]
-  testIds: [String!]
-  problemType: ProblemType
-  problemSeverity: ProblemSeverity
-  problemStartDate: String
-  note: String
-  isSigned: Boolean = false
-  forOrders: Boolean = false
+input CreateNdcCodeInput {
+  code: String!
+  description: String
 }
 
-input UpdateProblemInput {
-  id: String!
-  appointmentId: String
-  problemType: ProblemType
-  problemSeverity: ProblemSeverity
-  problemStartDate: String
-  note: String
-}
-
-input UpdateProblemSignedInput {
-  id: String
-  isSigned: Boolean
-}
-
-input RemoveProblem {
+input UpdateNdcCodeInput {
+  code: String
+  description: String
   id: String!
 }
 
-input CreatePatientAllergyInput {
-  appointmentId: String
-  patientId: String!
-  staffId: String
-  allergyId: String
-  allergyName: String
-  allergyType: AllergyType
-  providerId: String
-  isActive: Boolean
-  comments: String
-  allergyStartDate: String
-  allergyOnset: AllergyOnset
-  allergySeverity: AllergySeverity
-  reactionsIds: [String!]!
-}
-
-input UpdateAllergyInput {
-  updatePatientAllergyInput: UpdatePatientAllergyInput!
-  reactionsIds: [String!]!
-  appointmentId: String
-  patientId: String
-  staffId: String
-  allergyId: String
-  providerId: String
-}
-
-input UpdatePatientAllergyInput {
+input RemoveNdcCodeInput {
   id: String!
-  isActive: Boolean
-  comments: String
-  allergyStartDate: String
-  allergyOnset: AllergyOnset
-  allergySeverity: AllergySeverity
 }
 
-input RemovePatientAllergy {
+input CreateCvxCodeInput {
+  cptCodeId: String
+  name: String
+  shortDescription: String
+  cvxCode: String
+  status: String
+  notes: String
+  updateDate: String
+}
+
+input UpdateCvxCodeInput {
+  cptCodeId: String
+  name: String
+  shortDescription: String
+  cvxCode: String
+  status: String
+  notes: String
+  updateDate: String
+  id: String!
+}
+
+input RemoveCvxCodeInput {
+  id: String!
+}
+
+input CreateMvxCodeInput {
+  manufacturerName: String!
+  mvxCode: String
+  notes: String
+  mvxStatus: String
+  updateDate: String
+}
+
+input UpdateMvxCodeInput {
+  manufacturerName: String
+  mvxCode: String
+  notes: String
+  mvxStatus: String
+  updateDate: String
+  id: String!
+}
+
+input RemoveMvxCodeInput {
   id: String!
 }
 
@@ -5784,6 +5858,101 @@ input UpdateVitalInput {
 }
 
 input RemoveVital {
+  id: String!
+}
+
+input CreateProblemInput {
+  icdCodeId: String!
+  snowMedCodeId: String
+  patientId: String!
+  providerId: String
+  staffId: String
+  appointmentId: String
+  medicationIds: [String!]
+  testIds: [String!]
+  problemType: ProblemType
+  problemSeverity: ProblemSeverity
+  problemStartDate: String
+  note: String
+  isSigned: Boolean = false
+  forOrders: Boolean = false
+}
+
+input UpdateProblemInput {
+  id: String!
+  appointmentId: String
+  problemType: ProblemType
+  problemSeverity: ProblemSeverity
+  problemStartDate: String
+  note: String
+}
+
+input UpdateProblemSignedInput {
+  id: String
+  isSigned: Boolean
+}
+
+input RemoveProblem {
+  id: String!
+}
+
+input CreateIcdCodeInput {
+  code: String!
+  description: String
+  priority: Int
+  version: String = "ICD10"
+}
+
+input UpdateIcdCodeInput {
+  code: String
+  description: String
+  priority: Int
+  version: String = "ICD10"
+  id: String!
+}
+
+input RemoveIcdCodeInput {
+  id: String!
+}
+
+input AddVaccineInput {
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  vaccineProductId: String
+  mvxId: String
+  ndcId: String
+  patientId: String
+  appointmentId: String
+}
+
+input UpdateVaccineInput {
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  vaccineProductId: String
+  mvxId: String
+  ndcId: String
+  patientId: String
+  appointmentId: String
+  id: String!
+}
+
+input RemoveVaccineInput {
   id: String!
 }
 
@@ -5838,6 +6007,68 @@ input RemoveFamilyHistoryInput {
   id: String
 }
 
+input CreateSurgicalHistoryInput {
+  notes: String
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  patientId: String
+}
+
+input UpdateSurgicalHistoryInput {
+  notes: String
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  patientId: String
+  id: String!
+}
+
+input RemoveSurgicalHistory {
+  id: String!
+}
+
+input CreatePatientAllergyInput {
+  appointmentId: String
+  patientId: String!
+  staffId: String
+  allergyId: String
+  allergyName: String
+  allergyType: AllergyType
+  providerId: String
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+  reactionsIds: [String!]!
+}
+
+input UpdateAllergyInput {
+  updatePatientAllergyInput: UpdatePatientAllergyInput!
+  reactionsIds: [String!]!
+  appointmentId: String
+  patientId: String
+  staffId: String
+  allergyId: String
+  providerId: String
+}
+
+input UpdatePatientAllergyInput {
+  id: String!
+  isActive: Boolean
+  comments: String
+  allergyStartDate: String
+  allergyOnset: AllergyOnset
+  allergySeverity: AllergySeverity
+}
+
+input RemovePatientAllergy {
+  id: String!
+}
+
 input CreatePatientMedicationInput {
   oralRoute: String
   sig: String
@@ -5878,89 +6109,6 @@ input UpdatePatientMedicationInput {
 }
 
 input RemovePatientMedication {
-  id: String!
-}
-
-input CreateSurgicalHistoryInput {
-  notes: String
-  code: String
-  codeType: String
-  description: String
-  surgeryDate: String
-  patientId: String
-}
-
-input UpdateSurgicalHistoryInput {
-  notes: String
-  code: String
-  codeType: String
-  description: String
-  surgeryDate: String
-  patientId: String
-  id: String!
-}
-
-input RemoveSurgicalHistory {
-  id: String!
-}
-
-input AddVaccineInput {
-  administrationDate: String
-  administerBy: String
-  amount: String
-  units: String
-  route: String
-  site: String
-  lotNo: String
-  expiryDate: String
-  visGiven: String
-  visDate: String
-  cvxId: String
-  mvxId: String
-  ndcId: String
-  patientId: String
-  appointmentId: String
-}
-
-input UpdateVaccineInput {
-  administrationDate: String
-  administerBy: String
-  amount: String
-  units: String
-  route: String
-  site: String
-  lotNo: String
-  expiryDate: String
-  visGiven: String
-  visDate: String
-  cvxId: String
-  mvxId: String
-  ndcId: String
-  patientId: String
-  appointmentId: String
-  id: String!
-}
-
-input RemoveVaccineInput {
-  id: String!
-}
-
-input CreateIcdCodeInput {
-  code: String!
-  description: String
-  priority: Int
-  version: String = "ICD10"
-}
-
-input UpdateIcdCodeInput {
-  code: String
-  description: String
-  priority: Int
-  version: String = "ICD10"
-  id: String!
-}
-
-input RemoveIcdCodeInput {
   id: String!
 }
 

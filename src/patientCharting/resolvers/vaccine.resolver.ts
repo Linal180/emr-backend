@@ -3,24 +3,24 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/g
 import { AddVaccineInput, FindAllVaccinesInput, GetVaccineInput, RemoveVaccineInput, UpdateVaccineInput } from "../dto/vaccine.input";
 //payloads
 import { FindAllVaccinesPayload, VaccinePayload } from "../dto/vaccine.payload";
-import { CVX } from "../entities/cvx.entity";
+//entities
 import { MVX } from "../entities/mvx.entity";
 import { NDC } from "../entities/ndc.entity";
-//entities
 import { Vaccine } from "../entities/vaccines.entity";
+import { VaccineProduct } from "../entities/vaccineProduct.entity";
 //services
-import { CVXService } from "../services/cvx.service";
 import { MVXService } from "../services/mvx.service";
 import { NDCService } from "../services/ndc.service";
 import { VaccineService } from "../services/vaccine.service";
+import { VaccineProductService } from "../services/vaccineProduct.service";
 
 @Resolver(() => Vaccine)
 export class VaccineResolver {
   constructor(
     private readonly mvxService: MVXService,
-    private readonly cvxService: CVXService,
     private readonly ndcService: NDCService,
     private readonly vaccineService: VaccineService,
+    private readonly vaccineProductService: VaccineProductService,
   ) { }
 
   //queries
@@ -87,10 +87,10 @@ export class VaccineResolver {
 
   // resolve fields
 
-  @ResolveField(() => CVX)
-  async cvx(@Parent() vaccine: Vaccine): Promise<CVX> {
-    if (vaccine?.cvxId) {
-      return await this.cvxService.findOne(vaccine.cvxId);
+  @ResolveField(() => VaccineProduct)
+  async vaccineProduct(@Parent() vaccine: Vaccine): Promise<VaccineProduct> {
+    if (vaccine?.vaccineProductId) {
+      return await this.vaccineProductService.findOne(vaccine.vaccineProductId);
     }
   }
 

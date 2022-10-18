@@ -16,3 +16,12 @@ export class FindAllNdcPayload {
   @Field(() => ResponsePayloadResponse, { nullable: true })
   response?: ResponsePayloadResponse
 }
+
+@ObjectType()
+export class NdcPayload {
+  @Field(() => NDC, { nullable: true })
+  ndcCode: NDC;
+
+  @Field(() => ResponsePayloadResponse, { nullable: true })
+  response?: ResponsePayloadResponse
+}

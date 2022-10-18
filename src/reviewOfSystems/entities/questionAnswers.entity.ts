@@ -1,8 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { SelectorType } from "src/socialHistory/payloads/questions.payload";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+//entities
 import { AnswerResponses } from "./answerResponses.entity";
-import { PatientIllnessHistory } from "./patientIllnessHistory.entity";
 import { SectionQuestions } from "./sectionQuestions.entity";
 
 
@@ -16,6 +16,10 @@ export class QuestionAnswers {
   @Column({ nullable: true })
   @Field({ nullable: true })
   name: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  specialId: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })

@@ -28,10 +28,18 @@ import { CptFeeScheduleService } from "./services/cptFeeSchedule.service";
     forwardRef(() => PracticeModule)
   ],
   providers: [
-    FeeScheduleResolver, FeeScheduleService, CptCodeResolver, CptCodeService, ModifierService, ModifierResolver,
-    CptFeeScheduleResolver, CptFeeScheduleService,
+    //services
+    CptCodeService,
+    ModifierService,
+    FeeScheduleService,
+    CptFeeScheduleService,
+    // resolvers
+    CptCodeResolver,
+    ModifierResolver,
+    FeeScheduleResolver,
+    CptFeeScheduleResolver,
   ],
-  exports: [FeeScheduleService, TypeOrmModule, ModifierService]
+  exports: [FeeScheduleService, TypeOrmModule, ModifierService, CptCodeService]
 })
 
 

@@ -1,12 +1,12 @@
-import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { MVX } from "./mvx.entity";
-import { Vaccine } from "./vaccines.entity";
+import { Field, ObjectType } from "@nestjs/graphql";
+import { CPTCodes } from "src/feeSchedule/entities/cptCode.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { VaccineProduct } from "./vaccineProduct.entity";
 
 @Entity({ name: 'CVX' })
 @ObjectType()
 export class CVX {
-  
+
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string
@@ -20,19 +20,37 @@ export class CVX {
   shortDescription: string
 
   @Column({ nullable: true })
-  @Field( { nullable: true })
+  @Field({ nullable: true })
   cvxCode: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  productStatus: string
+  status: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  notes: string
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  updateDate: string
+
+  // relation columns
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  cptCodeId: string
 
   //relationships
 
-  @OneToMany(() => MVX, mvx => mvx.cvx, { onDelete: 'CASCADE' })
-  @Field(() => [MVX], { nullable: true })
-  mvx: MVX[];
-  
+  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cvx, { onDelete: "CASCADE" })
+  @Field(() => [VaccineProduct], { nullable: true })
+  vaccineProduct: VaccineProduct[]
+
+  @ManyToOne(() => CPTCodes, cvx => cvx.cvxCodes)
+  @Field(() => CPTCodes, { nullable: true })
+  cptCode: CPTCodes
+
   //dates
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })

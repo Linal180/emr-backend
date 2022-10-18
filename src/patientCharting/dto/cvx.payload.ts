@@ -16,3 +16,12 @@ export class FindAllCvxPayload {
   @Field(() => ResponsePayloadResponse, { nullable: true })
   response?: ResponsePayloadResponse
 }
+
+@ObjectType()
+export class CvxPayload {
+  @Field(() => CVX, { nullable: true })
+  cvx: CVX;
+
+  @Field(() => ResponsePayloadResponse, { nullable: true })
+  response?: ResponsePayloadResponse
+}
