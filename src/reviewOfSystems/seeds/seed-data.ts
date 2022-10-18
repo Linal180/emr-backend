@@ -1,5 +1,3 @@
-import { options } from "joi";
-import { title } from "process";
 import { ANSWER_TYPE, QuestionType, TemplateQuestionType, TemplatesType, TemplateType } from "src/lib/constants";
 import { SelectorType } from "src/socialHistory/payloads/questions.payload";
 
