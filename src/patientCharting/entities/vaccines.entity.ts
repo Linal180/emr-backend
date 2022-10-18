@@ -1,9 +1,9 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
-import { CVX } from "./cvx.entity";
 import { MVX } from "./mvx.entity";
 import { NDC } from "./ndc.entity";
+import { VaccineProduct } from "./vaccineProduct.entity";
 import { Patient } from "src/patients/entities/patient.entity";
 import { Appointment } from "src/appointments/entities/appointment.entity";
 
@@ -59,7 +59,7 @@ export class Vaccine {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  cvxId: string;
+  vaccineProductId: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -72,8 +72,8 @@ export class Vaccine {
 
   //fields
 
-  @Field(() => CVX, { nullable: true })
-  cvx: CVX
+  @Field(() => VaccineProduct, { nullable: true })
+  vaccineProduct: VaccineProduct
 
   @Field(() => MVX, { nullable: true })
   mvx: MVX

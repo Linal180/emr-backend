@@ -1,4 +1,6 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { CVX } from "src/patientCharting/entities/cvx.entity";
+import { VaccineProduct } from "src/patientCharting/entities/vaccineProduct.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { CptFeeSchedule } from "./cptFeeSchedule.entity";
@@ -38,11 +40,15 @@ export class CPTCodes {
   @Field(() => Int, { nullable: true })
   priority: number;
 
-  //fields
+  //relationships
 
   @OneToMany(() => CptFeeSchedule, cptFeeSchedule => cptFeeSchedule.cptCodes, { onDelete: 'CASCADE' })
   @Field(() => [CptFeeSchedule], { nullable: true })
   cptFeeSchedule: CptFeeSchedule[]
+
+  @OneToMany(() => CVX, vaccineProduct => vaccineProduct.cptCode)
+  @Field(() => [CVX], { nullable: true })
+  cvxCodes: CVX[]
 
   //dates
 
