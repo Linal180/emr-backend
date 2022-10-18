@@ -1784,6 +1784,7 @@ type SectionQuestions {
 type QuestionAnswers {
   id: String!
   name: String
+  specialId: String
   answerType: String
   questionType: String
   options: [SelectorType!]
