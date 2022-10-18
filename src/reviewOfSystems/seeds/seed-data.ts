@@ -1,4 +1,5 @@
 import { ANSWER_TYPE, QuestionType, TemplateQuestionType, TemplatesType, TemplateType } from "src/lib/constants";
+import { SelectorType } from "src/socialHistory/payloads/questions.payload";
 
 //template names
 
@@ -194,15 +195,21 @@ const NORMAL_VISION = "normal vision";
 const LOSS_OF_HEARING = "loss of hearing";
 const LOSS_OF_VISION = "loss of vision";
 
-const DOES_OPTIONS_MAPPED = [
+const DOES_OPTIONS_MAPPED: SelectorType[] = [
   { id: "DOES", name: "does" },
   { id: "DOES_NOT", name: "does not" },
 ];
 
-const ABLE_OPTIONS_MAPPED = [
+const ABLE_OPTIONS_MAPPED: SelectorType[] = [
   { id: "able", name: "able" },
   { id: "unable", name: "unable" },
 ];
+
+const CLAUDICATION_MAPPED: SelectorType[] = [
+  { id: "+1", name: "+1" },
+  { id: "+2", name: "+2" },
+  { id: "+3", name: "+3" },
+]
 
 const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
   {
@@ -974,7 +981,37 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: CARDIOVASCULAR_SYMPTOMS,
-            answers: []
+            answers: [
+              { title: "no chest pressure", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no lightheadedness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no dyspnea on exertion", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no leg edema", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no syncope", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no orthopnea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no PND", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no claudication", answerType: ANSWER_TYPE.NORMAL },
+              { title: "chest pressure", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "lightheadedness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "dyspnea on exertion", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "leg edema", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "syncope", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "orthopnea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "palpitations", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "PND", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              {
+                title: "claudication fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: CLAUDICATION_MAPPED,
+              }
+            ]
           },
         ]
       },
@@ -983,7 +1020,18 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: CONSTITUTIONAL,
-            answers: []
+            answers: [
+              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no exercise intolerance", answerType: ANSWER_TYPE.NORMAL },
+              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { title: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { title: "exercise intolerance", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           },
         ]
       },
@@ -992,7 +1040,14 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: EYES,
-            answers: []
+            answers: [
+              { title: "no dry eyes", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no irritation", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no vision change", answerType: ANSWER_TYPE.NORMAL },
+              { title: "dry eyes", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "irritation", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "vision change", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           },
         ]
       },
@@ -1001,15 +1056,41 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: EARS,
-            answers: []
+            answers: [
+              { title: "no difficulty hearing", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no ear pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "difficulty hearing", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "ear pain", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           },
           {
             name: NOSE,
-            answers: []
+            answers: [
+              { title: "no frequent nosebleeds", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nose/sinus problems", answerType: ANSWER_TYPE.NORMAL },
+              { title: "frequent nosebleeds", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nose/sinus problems", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           },
           {
             name: MOUTH_OR_ThROAT,
-            answers: []
+            answers: [
+              { title: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no bleeding gums", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no snoring", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no dry mouth", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no mouth ulcers", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no oral abnormalities", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no teeth problems", answerType: ANSWER_TYPE.NORMAL },
+              { title: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "bleeding gums", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "snoring", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "dry mouth", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "mouth ulcers", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "oral abnormalities", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "teeth problems", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "mouth breathing", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           }
         ]
       },
@@ -1018,7 +1099,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: RESPIRATORY,
-            answers: []
+            answers: [
+              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no sleep apnea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           }
         ]
       },
@@ -1027,7 +1117,18 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: MUSCULAOSKELETAL,
-            answers: []
+            answers: [
+              { title: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no back pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
+              { title: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           }
         ]
       },
@@ -1036,7 +1137,22 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: NEUROLOGIC,
-            answers: []
+            answers: [
+              { title: "no loss of consciousness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no numbness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no seizures", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no headaches", answerType: ANSWER_TYPE.NORMAL },
+              { title: "loss of consciousness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "numbness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "seizures", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "frequent or severe headaches", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "migraines", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "restless legs", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           }
         ]
       },
@@ -1045,7 +1161,17 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: PSYH,
-            answers: []
+            answers: [
+              { title: "no depression", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no sleep disturbances", answerType: ANSWER_TYPE.NORMAL },
+              { title: "feeling safe in relationship", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no alcohol abuse", answerType: ANSWER_TYPE.NORMAL },
+              { title: "depression", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sleep disturbances", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "restless sleep", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "feeling unsafe in relationship", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "alcohol abuse", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
           }
         ]
       },
@@ -1054,7 +1180,13 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [
           {
             name: HEMATOLOGIC_LYMPHATIC,
-            answers: []
+            answers: [
+              { title: "no swollen glands", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no bruising", answerType: ANSWER_TYPE.NORMAL },
+              { title: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL  },
+              { title: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL  },
+              { title: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL  },
+            ]
           }
         ]
       },

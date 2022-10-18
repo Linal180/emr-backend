@@ -12,9 +12,9 @@ import { TemplateSections } from "../entities/templateSections.entity";
 @Injectable()
 export class CreateChartingTemplate implements Seeder {
   public async run(_: Factory, connection: Connection): Promise<void> {
-    // const queryRunner = connection.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
+    const queryRunner = connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
 
       const templateRepo = getRepository(QuestionTemplate)
@@ -54,8 +54,9 @@ export class CreateChartingTemplate implements Seeder {
 
               for (let answerIndex = 0; answerIndex < answers.length; answerIndex++) {
                 const answer = answers[answerIndex];
+                const { title, ...rest } = answer
 
-                const answerIns = answersRepo.create({ ...answer, specialId: `${templateIndex}_${sectionIndex}_${questionIndex}_${answerIndex}` })
+                const answerIns = answersRepo.create({ ...rest, name: title, specialId: `${templateIndex}_${sectionIndex}_${questionIndex}_${answerIndex}` })
                 answerIns.questions = questionInstance
                 answerIns.questionsId = questionInstance?.id
                 await answersRepo.save(answerIns)
@@ -65,12 +66,12 @@ export class CreateChartingTemplate implements Seeder {
         }
       }
 
-      // await queryRunner.commitTransaction();
+      await queryRunner.commitTransaction();
     } catch (error) {
-      // await queryRunner.rollbackTransaction();
+      await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
     } finally {
-      // await queryRunner.release();
+      await queryRunner.release();
     }
   }
 }
