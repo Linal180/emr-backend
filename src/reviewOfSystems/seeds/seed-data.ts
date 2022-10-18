@@ -1183,13 +1183,958 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             answers: [
               { title: "no swollen glands", answerType: ANSWER_TYPE.NORMAL },
               { title: "no bruising", answerType: ANSWER_TYPE.NORMAL },
-              { title: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL  },
-              { title: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL  },
-              { title: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL  },
+              { title: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
       },
     ],
   },
+  {
+    title: "Brief Endocrinology ROS",
+    templateType: TemplateType.REVIEW_OF_SYSTEM,
+    sections: [
+      {
+        name: CONSTITUTIONAL,
+        questions: [{
+          name: CONSTITUTIONAL,
+          answers: [
+            {
+              title: "no constitutional symptoms",
+              answerType: ANSWER_TYPE.NORMAL
+            },
+            {
+              title: "excess weight gain",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "excess weight loss",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "loss of appetite",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "fever",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "fussy",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "diminished activity",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: FATIGUE,
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+          ]
+        }]
+      },
+      {
+        name: EYES,
+        questions: [
+          {
+            name: EYES,
+            answers: [
+              {
+                title: 'no eye symptoms',
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: 'eye pain',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'blurry vision',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'double vision',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'eye redness',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'eye itchiness',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'eye swelling',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'eye discharge',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'protruding eyes',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'dry eyes',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+            ]
+          },
+        ]
+      },
+      {
+        name: ENMT,
+        questions: [{
+          name: ENMT,
+          answers: [
+            {
+              title: "no ENMT symptoms",
+              answerType: ANSWER_TYPE.NORMAL
+            },
+            {
+              title: "ear pain",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "ear discharge",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "hearing loss",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "sinus pressure",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "drooling",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "swelling",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "congestion",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "sore throat",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "hoarseness",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "mouth lesions",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "foul smelling breath",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "sneezing",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "runny nose",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "neck mass",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+          ]
+        }]
+      }, {
+        name: 'Cardiovascular',
+        questions: [
+          {
+            name: 'Cardiovascular',
+            answers: [
+              {
+                title: 'no cardiovascular symptoms',
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: 'chest pain',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'rapid heart rate',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'cyanosis',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'pallor',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+            ]
+          }
+        ]
+      }, {
+        name: RESPIRATORY,
+        questions: [{
+          name: RESPIRATORY,
+          answers: [
+            {
+              title: 'no respiratory symptoms',
+              answerType: ANSWER_TYPE.NORMAL
+            },
+            {
+              title: 'cough',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: 'bark-like cough',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: 'wheezing',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: 'chest tightness',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: 'pain with respiration',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: 'noisy breathing',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: 'rapid respirations',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: 'difficulty breathing',
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+          ]
+        }]
+      }, {
+        name: 'Gastrointestinal',
+        questions: [
+          {
+            name: 'GI',
+            answers: [
+              {
+                title: "no gastrointestinal symptoms",
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: "difficulty swallowing",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "abdominal pain",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "nausea",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "vomiting",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "loose stools",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "diarrhea",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "constipation",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "blood in stools",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "mucus in stool",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "heartburn",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "ulcer(s)",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+
+                title: "pancreatitis",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+            ]
+          }
+        ]
+      }, {
+        name: "Genitourinary",
+        questions: [
+          {
+            name: 'GU General',
+            answers: [
+              {
+                title: "no genitourinary symptoms",
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: "no bedwetting/accidents",
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: "normal menses",
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: "LMP: fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "discharge",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "blood in the urine",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "pain during urination",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "increased frequency of urination",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "voiding urgency",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "vaginal discharge",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "heavy menses",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "irregular menses",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "no menses",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "pelvic pain",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "bedwetting/accidents",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+            ]
+          }
+        ]
+      },
+      {
+        name: "Musculoskeletal",
+        questions: [
+          {
+            name: "Musculoskeletal",
+            answers: [
+              {
+                title: 'no musculoskeletal symptoms',
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: 'soft tissue swelling',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'joint swelling',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'limb swelling',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'limb swelling',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'limited motion',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'previous injuries',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'myalgia',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'arthritis',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'weakness',
+                answerType: ANSWER_TYPE.ABNORMAL
+              }
+            ]
+          }
+        ]
+      }, {
+        name: "Skin",
+        questions: [
+          {
+            name: "Skin",
+            answers: [
+              {
+                title: "no skin symptoms",
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: "pain",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "itchiness",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "dry skin",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "flaking",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "redness",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "rash",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "diaper rash",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "hives",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "skin lesions",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "swelling",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "bruising",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: "insect bites",
+                answerType: ANSWER_TYPE.ABNORMAL
+              }, {
+                title: "acanthosis nigricans",
+                answerType: ANSWER_TYPE.ABNORMAL
+              }, {
+                title: "nail changes",
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+            ]
+          }
+        ]
+      }, {
+        name: "Neurological symptoms",
+        questions: [{
+          name: "Neuro",
+          answers: [
+            {
+              title: "no neurological symptoms",
+              answerType: ANSWER_TYPE.NORMAL
+            },
+            {
+              title: "numbness",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "weakness",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "tingling",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "burning",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "shooting pain",
+              answerType: ANSWER_TYPE.ABNORMAL
+            },
+            {
+              title: "headache",
+              answerType: ANSWER_TYPE.ABNORMAL
+            }, {
+              title: "dizziness",
+              answerType: ANSWER_TYPE.ABNORMAL
+            }, {
+              title: "loss of conciousness",
+              answerType: ANSWER_TYPE.ABNORMAL
+            }, {
+              title: "tremor(s)",
+              answerType: ANSWER_TYPE.ABNORMAL
+            }
+          ]
+        }]
+      }, {
+        name: "Endocrine",
+        questions: [
+          {
+            name: "Endocrine",
+            answers: [
+              {
+                title: 'no endocrine symptoms',
+                answerType: ANSWER_TYPE.NORMAL
+              },
+              {
+                title: 'increased thirst',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+              {
+                title: 'temperature intolerance',
+                answerType: ANSWER_TYPE.ABNORMAL
+              },
+            ]
+          }
+        ]
+      }
+    ]
+  }, {
+    title: 'Brief Geriatric ROS',
+    templateType: TemplateType.REVIEW_OF_SYSTEM,
+    sections: [
+      {
+        name: CONSTITUTIONAL,
+        questions: [
+          {
+            name: CONSTITUTIONAL,
+            answers: [
+              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no excessive sleepiness during the day (daytime somnolence)", answerType: ANSWER_TYPE.NORMAL },
+              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { title: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { title: "excessive sleepiness during the day (daytime somnolence)", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+        ]
+      },
+      {
+        name: EYES,
+        questions: [
+          {
+            name: EYES,
+            answers: [
+              { title: "no dry eyes", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no irritation", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no vision change", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no scotoma", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no diplopia", answerType: ANSWER_TYPE.NORMAL },
+              { title: "dry eyes", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "irritation", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "vision change", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "scotoma", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "diplopia", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+        ]
+      },
+      {
+        name: ENMT,
+        questions: [
+          {
+            name: EARS,
+            answers: [
+              { title: "no ear pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nose/sinus problems", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no loss of hearing", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tinnitus", answerType: ANSWER_TYPE.NORMAL },
+              { title: "ear pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nose/sinus problems", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "loss of hearing", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tinnitus", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: RESPIRATORY,
+        questions: [
+          {
+            name: RESPIRATORY,
+            answers: [
+              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no sputum production", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sputum production", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Cardiovascular',
+        questions: [
+          {
+            name: 'Cardiovascular',
+            answers: [
+              { title: 'no chest pain', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no palpitations', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no edema', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no cyanosis', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no known heart murmur', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no orthopnea', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no paroxysmal nocturnal dyspnea', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no syncope', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no lightheadedness', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'chest pain', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'palpitations', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'edema', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'cyanosis', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'known heart murmur', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'orthopnea', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'paroxysmal nocturnal dyspnea', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'syncope', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'lightheadedness', answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Gastrointestinal',
+        questions: [
+          {
+            name: 'Gastrointestinal',
+            answers: [
+              { title: "no heartburn", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no dysphagia", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nausea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no blood stools", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no rectal bleed", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no recent change in bowel habits", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no constipation", answerType: ANSWER_TYPE.ABNORMAL },
+
+              { title: "heartburn", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "dysphagia", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nausea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "blood stools", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "rectal bleed", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "recent change in bowel habits", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "constipation", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: "Genitourinary",
+        questions: [
+          {
+            name: 'Genitourinary',
+            answers: [
+              { title: "no impotence", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no hematuria", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no abnormal bleeding", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no difficulty urinating", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no increased frequency", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no abnormal urethral discharge", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no feelings of urgency", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no incontinence", answerType: ANSWER_TYPE.NORMAL },
+              { title: "normal lubrication of vaginal mucosa", answerType: ANSWER_TYPE.NORMAL },
+
+
+              { title: "impotence", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "hematuria", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "abnormal bleeding", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "difficulty urinating", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "abnormal urethral discharge", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "increased urinary frequency", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "urinary loss of control", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "incomplete emptying", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "feelings of urgency", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "inadequacy of lubrication of vaginal mucosa", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: MUSCULAOSKELETAL,
+        questions: [
+          {
+            name: MUSCULAOSKELETAL,
+            answers: [
+              { title: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no back pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no stiffness", answerType: ANSWER_TYPE.NORMAL },
+
+              { title: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "stiffness", answerType: ANSWER_TYPE.ABNORMAL },
+
+            ]
+          }
+        ]
+      },
+      {
+        name: NEUROLOGIC,
+        questions: [
+          {
+            name: NEUROLOGIC,
+            answers: [
+              { title: "no headaches", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no loss of consciousness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no numbness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no slurred speech", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no seizures", answerType: ANSWER_TYPE.NORMAL },
+
+              { title: "headaches", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "migraines", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "loss of consciousness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "numbness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "slurred speech", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "seizures", answerType: ANSWER_TYPE.ABNORMAL },
+
+            ]
+          }
+        ]
+      },
+    ]
+  }, {
+    title: "Brief Infusion ROS",
+    templateType: TemplateType.REVIEW_OF_SYSTEM,
+    sections: [
+      {
+        name: "Systemic",
+        questions: [
+          {
+            name: CONSTITUTIONAL,
+            answers: [
+              { title: "no active infection ", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { title: "infection of fill", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.INPUT },
+              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { title: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+            ]
+          },
+        ]
+      },
+      {
+        name: 'Cardiovascular',
+        questions: [
+          {
+            name: 'Cardiovascular',
+            answers: [
+              { title: 'no chest pain', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no shortness of breath when walking', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no shortness of breath when lying down', answerType: ANSWER_TYPE.NORMAL },
+              { title: 'no palpitations', answerType: ANSWER_TYPE.NORMAL },
+
+              { title: 'chest pain', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'shortness of breath when walking', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'shortness of breath when lying down', answerType: ANSWER_TYPE.ABNORMAL },
+              { title: 'palpitations', answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Pulmonary',
+        questions: [
+          {
+            name: RESPIRATORY,
+            answers: [
+              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Skin',
+        questions: [
+          {
+            name: 'Skin',
+            answers: [
+              { title: "no rash", answerType: ANSWER_TYPE.NORMAL },
+              { title: "rash", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: "Neurological",
+        questions: [{
+          name: "Neurological",
+          answers: [
+            { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+            { title: "no headache", answerType: ANSWER_TYPE.NORMAL },
+            { title: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
+            { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+            { title: "headache", answerType: ANSWER_TYPE.ABNORMAL },
+            { title: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
+          ]
+        }]
+      },
+      {
+        name: 'Gastrointestinal',
+        questions: [
+          {
+            name: 'Gastrointestinal',
+            answers: [
+              { title: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { title: "normal appetite", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no blood vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no dysphagia", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no GERD", answerType: ANSWER_TYPE.NORMAL },
+
+              { title: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "change in appetite", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "black or tarry stools", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "frequent diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "blood vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "dysphagia", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "GERD", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: MUSCULAOSKELETAL,
+        questions: [
+          {
+            name: MUSCULAOSKELETAL,
+            answers: [
+              { title: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no back pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
+              { title: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
+
+            ]
+          }
+        ]
+      },
+      {
+        name: "Endocrine",
+        questions: [
+          {
+            name: "Endocrine",
+            answers: [
+              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "increased thirst", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "hair loss", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "increased hair growth", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "cold intolerance", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: "Genitourinary",
+        questions: [
+          {
+            name: 'Genitourinary',
+            answers: [
+              { title: "no incontinence", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no difficulty urinating", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no hematuria", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no increased frequency", answerType: ANSWER_TYPE.NORMAL },
+              { title: "urinary loss of control", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "difficulty urinating", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "increased urinary frequency", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "hematuria", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "incomplete emptying", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+    ]
+  }
 ];
