@@ -7,6 +7,7 @@ import { SelectorType } from "src/socialHistory/payloads/questions.payload";
 const UPPER_RESPIRATORY_SYSTEMS = "Upper Respiratory Systems";
 const UPPER_RESPIRATORY_SYMPTOMS = "Upper Respiratory Symptoms";
 const GERIATRIC_INDEPENDENCE = "Geriatric independence";
+const PRENATAL_NUTRITION_INITIAL_VISIT = "Prenatal Nutrition Initial Visit"
 
 //brief cardiology ROS
 
@@ -42,6 +43,7 @@ const EARS = "Ears"
 const NOSE = "Nose"
 const MOUTH_OR_ThROAT = "Mouth/Throat"
 const PSYH = 'Psyh'
+const APPETITE = "Appetite"
 
 //cardio basic questions
 const CARDIOVASCULAR_SYMPTOMS = "Cardiovascular Symptoms";
@@ -2136,5 +2138,1649 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         ]
       },
     ]
-  }
+  },
+  {
+    title: "Prenatal Nutrition Initial Visit",
+    templateType: TemplateType.HPI,
+    sections: [
+      {
+        name: PRENATAL_NUTRITION_INITIAL_VISIT,
+        questions: [
+          {
+
+            name: APPETITE,
+            answers: [
+              {
+                title: "good",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "fair",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "poor",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          },
+          {
+            name: "Diet",
+            answers: [
+              {
+                title: "breast-feeding",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "eats adequate fruits and vegetables",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "eats all whole grains",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "eats low fat protein sources",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "eats low glycemic choices",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "eats healthy snacks",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "not breast-feeding",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "eats no fruits and vegetables",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "eats all refined grains",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "eats high fat protein sources",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "eats high glycemic choices",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "eats fried carb snacks",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "favorite foods:",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "meals:",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "snacks:",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Fluid Intake",
+            answers: [
+              {
+                title: "drinks calorie free beverages",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "drinks adequet fluids",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "never drinks coffee",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "never drinks alcohol",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "drinks excessive amount of sugary beverages",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "drinks very little fluids",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "fill drinks per week",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.NUMBER,
+              },
+              {
+                title: "drinks coffee",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "drinks fill soda",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'regular', name: 'regular' }, { id: 'diet', name: 'diet' }],
+              },
+            ]
+          },
+          {
+            name: "24 hour diet recall",
+            answers: [
+              {
+                title: "breakfast",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "lunch",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "dinner",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Eating Disorders",
+            answers: [
+              {
+                title: "no eating disorder",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "anorexia",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "bulemia",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "binge eating",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          },
+          {
+            name: "Weight History",
+            answers: [
+              {
+                title: "high weight: fill pounds",
+                answerType: ANSWER_TYPE.NORMAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "low weight: fill pounds",
+                answerType: ANSWER_TYPE.NORMAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "desired/goal weight: fill pounds",
+                answerType: ANSWER_TYPE.NORMAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "past diets",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+            ]
+          },
+          {
+            name: "GI",
+            answers: [
+              {
+                title: "no heartburn",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no bloating",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no constipation",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no diarrhea",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no vomiting",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "heartburn",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "bloating",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "constipation",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "diarrhea",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "vomiting",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "bowel movements: fill per day",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "bowel movements: fill per week",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+            ]
+          },
+          {
+            name: "Social",
+            answers: [
+              {
+                title: "eats breakfast",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "cooks meals",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "food shops",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "likes to cook",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "does not eat breakfast",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "does not cook meals",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "does not food shop",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "does not like to cook",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "level of cooking skill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "other special diets in the house",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "food budget fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "bowel movements: fill per week",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "fill meals per week taken away from home",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              }
+            ]
+          },
+          {
+            name: "Food Allergies or Intolerances",
+            answers: [
+              {
+                title: "no food allergies",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no lactose intolerance",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no aversions/dislikes",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "food allergy to: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "lactose intolerance",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "aversions/dislikes",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          },
+          {
+            name: "Activity",
+            answers: [
+              {
+                title: "exercises fill times per week",
+                answerType: ANSWER_TYPE.NORMAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "sufficient activity",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "does not exercise",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "typical work out lasts fill minutes",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "typical work out consists of",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "active gym membership",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Lifestyle",
+            answers: [
+              {
+                title: "motivated to make changes",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "losing weight",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "making dietary changes",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "does not eat when emotional",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "not very motivated to make changes",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "not losing weight",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "not making dietary changes",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "eats when emotional",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "barriers include",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Supplements",
+            answers: [
+              {
+                title: "currently taking dietary supplement",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "currently taking vitamin supplement",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "High Risk Pregnancy",
+            answers: [
+              {
+                title: "normal pregnancy",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "high-risk pregnancy",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          },
+        ]
+      },
+    ],
+  },
+  {
+    title: "Breast Pain",
+    templateType: TemplateType.HPI,
+    sections: [
+      {
+        name: 'HPI',
+        questions: [
+          {
+
+            name: "Location",
+            answers: [
+              {
+                title: "right",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "left",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "bilateral",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "in the axilla",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "at the nipple",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "upper fill quadrant",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'inner', name: 'inner' }, { id: 'outer', name: 'outer' }]
+              },
+              {
+                title: "lower fill quadrant",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'inner', name: 'inner' }, { id: 'outer', name: 'outer' }]
+              },
+            ]
+          },
+          {
+            name: "Onset/Timing",
+            answers: [
+              {
+                title: "1 day",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "2-7 days",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "1-2 weeks",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "2-4 weeks",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: ">1 month",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "morning",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "noon",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "evening",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "nighttime",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Duration",
+            answers: [
+              {
+                title: "rare",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "constant",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "intermittent",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "fluctuates with menses",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Quality",
+            answers: [
+              {
+                title: "sharp",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "dull",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "throbbing",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "burning",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "aching",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "stabbing",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "tingling",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "generalized",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "localized",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Severity",
+            answers: [
+              {
+                title: "mild",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "moderate",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "severe",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Context",
+            answers: [
+              {
+                title: "premenstrual",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "menstruating",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "premenopausal",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "post menopause",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "change in contraceptives",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "post partum",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "breastfeeding",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "miscarriage",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "abortion",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "breast cysts",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "benign breast tumor",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "fibrocystic breasts",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "sexually active",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "performs breast self examination",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "current estrogen use",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "history of estrogen use",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "history of ovaries removed",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "history of fertility treatments",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "history of fill prior biopsies",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "family history of breast cancer",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "history of fill breast cancer",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'right', name: 'right' }, { id: 'left', name: 'left' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "radiation treatment",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "mastectomy",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "lumpectomy",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Modifying Factors",
+            answers: [
+              {
+                title: "touch",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "exercise",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "pressure",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Associated Symptoms",
+            answers: [
+              {
+                title: "no fever",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no chills",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no skin redness",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no nipple discharge",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no sore nipples",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "breasts not full, sore, unable to express milk",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no breast swelling",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no arm pain",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no arm swelling",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "no chest pain",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "no malaise",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no breast lump",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "fever",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "redness of the skin",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "nipple discharge",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "sore nipples",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "breasts full, sore, unable to express milk",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "breast swelling",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "arm pain",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "arm swelling",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "chest pain",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "malaise",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "breast lump",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          }
+        ]
+      },
+    ],
+  },
+  {
+    title: "Joint & Soft Tissue Pain",
+    templateType: TemplateType.HPI,
+    sections: [
+      {
+        name: 'HPI',
+        questions: [
+          {
+
+            name: "Location",
+            answers: [
+              {
+                title: "right",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "left",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "bilateral",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "anterior",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "posterior",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "medial",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "lateral",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "deep",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "superficial",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "joint pain",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "muscle aches",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "muscle spasms",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "diffuse nonspecific pain, swelling, and stiffness",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Quality",
+            answers: [
+              {
+                title: "aching",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "burning",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "throbbing",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "sharp",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "dull",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "superficial",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "deep",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "trend is resolved",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "trend is not changing",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "trend is not improving",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "trend is not worsening",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          },
+          {
+            name: "Timing",
+            answers: [
+              {
+                title: "occasional",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "frequent",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "constant",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Duration",
+            answers: [
+              {
+                title: "fill days",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "fill weeks",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "fill months",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "fill years",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+            ]
+          },
+          {
+            name: "Severity",
+            answers: [
+              {
+                title: "no pain",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "mild",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "moderate",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "severe",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "variable",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "pain level fill/10",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                title: "worst pain fill/10",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.NUMBER
+              },
+            ]
+          },
+          {
+            name: "Context",
+            answers: [
+              {
+                title: "bending",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "lifting",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "twisting",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "sports injury",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "work injury",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "overuse",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Alleviating Factors",
+            answers: [
+              {
+                title: "nothing helps",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "sitting",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "standing",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "lying down",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "position change",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "heat",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "ice",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "rest",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "elevation",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "exercise",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "stretching",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "limited weight bearing",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "PT/OT",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "chiropractic care",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "OTC medications",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "narcotics",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "NSAIDS",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "cortisone injection",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "vicosupplement injection",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "orthotics",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "previous surgery",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "brace",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "crutches",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "cane",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "wheelchair",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "walker",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Aggravating Factors",
+            answers: [
+              {
+                title: "cannot identify",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "sitting",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "standing",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "lying down",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "walking",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "lifting",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "carrying",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "twisting",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "bending/squatting",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "pushing/pulling",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "throwing",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "ROM",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "weightbearing",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "exercise",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "getting out of bed",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "going from sit to stand",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "upstairs",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "downstairs",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "cold weather",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "damp weather",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          },
+          {
+            name: "Associated Symptoms",
+            answers: [
+              {
+                title: "no weakness",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no numbness",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no tingling",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no swelling",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no redness",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no warmth",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no ecchymosis",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no catching/locking",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no popping/clicking",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no buckling",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no grinding",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no instability",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no radiation down leg",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no fever/chills",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no weight loss",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no change in bowel/bladder habits",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "weakness",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "numbness",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "tingling",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "swelling",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "redness",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "warmth",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "ecchymosis",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "catching/locking",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "popping/clicking",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "buckling",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "grinding",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "instability",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "radiation down leg",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "fever/chills",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "weight loss",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "change in bladder/bowel habits",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          }
+        ]
+      },
+    ],
+  },
+  {
+    title: "Concussion/Head Injury",
+    templateType: TemplateType.HPI,
+    sections: [
+      {
+        name: 'HPI',
+        questions: [
+          {
+
+            name: "Mechanism of Injury",
+            answers: [
+              {
+                title: "fall with head contact with ground",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "fall with head contact with object",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "struck in head by object, type of object: fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.INPUT
+              },
+            ]
+          },
+          {
+            name: "Onset/Timing",
+            answers: [
+              {
+                title: "date fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "game",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "practice",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "other: fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.INPUT
+              },
+            ]
+          },
+          {
+            name: "Context",
+            answers: [
+              {
+                title: "no prior concussions",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no amnesic for events prior to injury",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no amnesic for events after injury",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "fill prior concussion(s)",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "date of occurrence fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "amnesic for events prior to injury",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "amnesic for events after injury lasting fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "unable to go to school",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "other symptoms fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "seen at ER fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "seen at urgent care fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                title: "evaluated by athletic trainer",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "evaluated by team physician",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "no medical attention",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "CT of head",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "plain film x-ray of head",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "plain film x-ray of neck",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+              {
+                title: "no imaging studies performed",
+                answerType: ANSWER_TYPE.NEUTRAL,
+              },
+            ]
+          },
+          {
+            name: "Symptoms",
+            answers: [
+              {
+                title: "no loss of consciousness",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "loss of consciousness",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "headache",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "pressure in head",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "neck pain",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "nausea/vomiting",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "dizziness",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "blurred vision",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "balance problems",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "sensitivity to light",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "sensitivity to noise",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "feeling slowed down",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "feeling like in a fog",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "don't feel right",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "difficulty concentrating",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "difficulty remembering",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "fatigue",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "confusion",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "drowsiness",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "trouble falling asleep",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "more emotional",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "irritability",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "sadness",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "nervous",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "anxiety",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          },
+          {
+            name: "Modifying Factors",
+            answers: [
+              {
+                title: "no increase with physical activity",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "no increase with mental activity",
+                answerType: ANSWER_TYPE.NORMAL,
+              },
+              {
+                title: "increase with physical activity",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+              {
+                title: "increase with mental activity",
+                answerType: ANSWER_TYPE.ABNORMAL,
+              },
+            ]
+          }
+        ]
+      },
+    ],
+  },
 ];
