@@ -1,3 +1,5 @@
+import { options } from "joi";
+import { title } from "process";
 import { ANSWER_TYPE, QuestionType, TemplateQuestionType, TemplatesType, TemplateType } from "src/lib/constants";
 import { SelectorType } from "src/socialHistory/payloads/questions.payload";
 
@@ -42,6 +44,7 @@ const EARS = "Ears"
 const NOSE = "Nose"
 const MOUTH_OR_ThROAT = "Mouth/Throat"
 const PSYH = 'Psyh'
+const MODIFYING_FACTORS = "Modifying Factors"
 
 //cardio basic questions
 const CARDIOVASCULAR_SYMPTOMS = "Cardiovascular Symptoms";
@@ -1192,4 +1195,270 @@ export const TEMPLATE_DATA: TemplatesType[] = [
       },
     ],
   },
+  {
+    title: "Fever",
+    templateType: TemplateType.HPI,
+    sections: [
+      {
+        name: "HPI",
+        questions: [
+          {
+            name: QUALITY,
+            answers: [
+              { title: "cannot identify", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "symptoms worse during the day", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "symptoms worse in the evening", answerType: ANSWER_TYPE.NEUTRAL }
+            ]
+          },
+          {
+            name: SEVERITY,
+            answers: [
+              { title: "highest fever", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "improving", answerType: ANSWER_TYPE.NORMAL },
+              { title: "worsening", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "same", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "pain fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.NUMBER },
+            ]
+          },
+          {
+            name: DURATION,
+            answers: [
+              { title: "constant", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "intermittent", answerType: ANSWER_TYPE.NEUTRAL, },
+              {
+                title: "fever typically lasts fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options:
+                  [
+                    {
+                      id: "less_than_30_minutes", name: "<30 minutes"
+                    },
+                    {
+                      id: "greater_than_30-60_minutes",
+                      name: "<30 minutes"
+                    },
+                    {
+                      id: "greater_than_1_hour",
+                      name: ">1 hour"
+                    },
+                  ]
+              },
+              {
+                title: "symptoms started fill",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.SELECT,
+                options: [
+                  {
+                    id: "days",
+                    name: "days"
+                  },
+                  {
+                    id: "weeks",
+                    name: "weeks"
+                  },
+                  {
+                    id: "months",
+                    name: "months"
+                  },
+                ]
+              },
+            ]
+          },
+          {
+            name: ONSET_TIMING,
+            answers: [
+              { title: "first recorded", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "random onset", answerType: ANSWER_TYPE.NEUTRAL, },
+              { title: "occurs in a pattern", answerType: ANSWER_TYPE.NEUTRAL, },
+              { title: "fill days/week", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT },
+            ]
+          },
+          {
+            name: CONTEXT,
+            answers: [
+              { title: "no recent travel", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tick/insect bites", answerType: ANSWER_TYPE.NORMAL, },
+              { title: "no new medications", answerType: ANSWER_TYPE.NORMAL, },
+              { title: "no animal exposure", answerType: ANSWER_TYPE.NORMAL, },
+              { title: "no recent surgery/procedure", answerType: ANSWER_TYPE.NORMAL, },
+              { title: "no recent dental work", answerType: ANSWER_TYPE.NORMAL, },
+              { title: "no IV drug use", answerType: ANSWER_TYPE.NORMAL, },
+              { title: "no immunocompromise", answerType: ANSWER_TYPE.NORMAL, },
+              { title: "recent travel", answerType: ANSWER_TYPE.ABNORMAL, },
+              { title: "recent tick/insect bites", answerType: ANSWER_TYPE.ABNORMAL, },
+              { title: "new medications", answerType: ANSWER_TYPE.ABNORMAL, },
+              { title: "animal exposure", answerType: ANSWER_TYPE.ABNORMAL, },
+              { title: "recent surgery/procedure", answerType: ANSWER_TYPE.ABNORMAL, },
+              { title: "recent dental work", answerType: ANSWER_TYPE.ABNORMAL, },
+              { title: "IV drug use", answerType: ANSWER_TYPE.ABNORMAL, },
+              { title: "immunocompromise", answerType: ANSWER_TYPE.ABNORMAL, },
+            ]
+          },
+          {
+            name: MODIFYING_FACTORS,
+            answers: [
+              { title: "nothing gives relief", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "nothing makes it worse", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "OTC medication", answerType: ANSWER_TYPE.NEUTRAL },
+
+            ]
+          },
+          {
+            name: ASSOCIATED_SYMPTOMS,
+            answers: [
+              { title: "no rash", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no lethargy", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no headache", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no cold symptoms", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no unintentional weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no lower extremity edema", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no chills", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nasal congestion/discharge", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "rash", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "lethargy", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "headache", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "cold symptoms", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "rapid or irregular heartbeat (palpitations)", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "weight loss (abnormal)", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "lower extremity edema", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "generalized pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "chills", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nasal congestion/discharge", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "flank pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
+
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: "Breast Mass",
+    templateType: TemplateType.HPI,
+    sections: [
+      {
+        name: "HPI",
+        questions: [
+          {
+            name: "Location",
+            answers: [
+              { title: "right", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "left", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "bilateral", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "upper fill quadrant", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "inner", name: "inner" }, { id: "outer", name: "outer" }] },
+              { title: "lower fill quadrant", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "inner", name: "inner" }, { id: "outer", name: "outer" }] },
+              { title: "nipple", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "areola", answerType: ANSWER_TYPE.NEUTRAL }
+            ]
+          },
+          {
+            name: ONSET_TIMING,
+            answers: [
+              { title: "1 day", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "2-7 days", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "1-2 weeks", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "2-4 weeks", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "1-4 months", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: ">4 months", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "morning", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "evening", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "nighttime", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "sudden", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "gradual", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "after starting new medication", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "associated with change in diet", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: QUALITY,
+            answers: [
+              { title: "size fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT, },
+              { title: "unit fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "cm", name: "cm" }, { id: "mm", name: "mm" }] },
+              { title: "asymptomatic", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "painful", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "sharp", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "dull", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "localized", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "radiating", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "soft", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "firm", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "tender", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "fixed", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "mobile", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: SEVERITY,
+            answers: [
+              { title: "mild", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "moderate", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "severe", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: DURATION,
+            answers: [
+              { title: "intermittent", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "constant", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "persistent", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: CONTEXT,
+            answers: [
+              { title: "performs breast self examination", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "fill prior biopsies", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT },
+              { title: "fibrocystic breasts", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "breast cysts", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "benign breast tumor", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "prior fill prior", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "right", name: "right" }, { id: "left", name: "left" }, { id: "bilateral", name: "bilateral" }] },
+              { title: "lumpectomy", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "mastectomy", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "radiation treatment", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "history of estrogen use", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "current estrogen use", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: MODIFYING_FACTORS,
+            answers: [
+              { title: "touch", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "pressure", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: ASSOCIATED_SYMPTOMS,
+            answers: [
+              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no skin redness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nipple discharge", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no breast swelling", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no arm pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no arm swelling", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "redness of the skin", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nipple discharge", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "breast swelling", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "arm pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "arm swelling", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ];
