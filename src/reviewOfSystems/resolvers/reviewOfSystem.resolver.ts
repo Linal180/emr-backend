@@ -10,12 +10,15 @@ import { ReviewOfSystemService } from "../services/reviewOfSystem.service";
 import { ReviewOfSystemPayload } from "../dto/reviewOfSystem-payload";
 //inputs
 import { CreateReviewOfSystemInput, ReviewOfSystemInput } from "../dto/reviewOfSystem-input.dto";
+import { QuestionTemplate } from "../entities/questionTemplate.entity";
+import { ChartingTemplateService } from "../services/chartingTemplate.service";
 
 @Resolver(() => ReviewOfSystem)
 export class ReviewOfSystemResolver {
   constructor(
     private readonly reviewOfSystemService: ReviewOfSystemService,
     private readonly answerResponsesService: AnswerResponsesService,
+    private readonly chartingTemplateService: ChartingTemplateService,
   ) { }
 
   @Query(() => ReviewOfSystemPayload)
@@ -48,6 +51,18 @@ export class ReviewOfSystemResolver {
     if (reviewOfSystem?.id) {
       const answers = this.answerResponsesService.findByReviewOfSystemId(reviewOfSystem?.id);
       return answers
+    }
+  }
+
+  @ResolveField(() => [QuestionTemplate])
+  async templates(@Parent() reviewOfSystem: ReviewOfSystem): Promise<QuestionTemplate[]> {
+    const { templateIds } = reviewOfSystem || {}
+    if (templateIds) {
+      const templates = Promise.all(await templateIds.map(async (templateId) => {
+        const { template } = await this.chartingTemplateService.findOne(templateId);
+        return template
+      }))
+      return templates
     }
   }
 }

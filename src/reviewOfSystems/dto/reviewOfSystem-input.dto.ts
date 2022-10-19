@@ -24,6 +24,9 @@ export class CreateReviewOfSystemInput {
   @Field({ nullable: true })
   appointmentId: string;
 
+  @Field(() => [String], { nullable: true })
+  templateIds: string[];
+
   @Field(() => [AnswerResponsesInput])
   answerResponses: AnswerResponsesInput[]
 

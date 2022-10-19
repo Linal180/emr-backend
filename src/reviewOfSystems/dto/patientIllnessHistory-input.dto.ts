@@ -26,6 +26,9 @@ export class CreatePatientIllnessHistoryInput {
   @Field({ nullable: true })
   appointmentId: string;
 
+  @Field(() => [String], { nullable: true })
+  templateIds: string[];
+
   @Field(() => [AnswerResponsesInput])
   answerResponses: AnswerResponsesInput[]
 
