@@ -32,10 +32,10 @@ export class CreateICDCodes implements Seeder {
       let snowMedCodeLimited = snowMedCodeOne
       if (!snowMedCodeCheck.length) {
         //Add SnowMedCodes  
-        snowMedCodeLimited.map(async (item) => {
+        await Promise.all(snowMedCodeLimited.map(async (item) => {
           let snowMedCodes = getRepository(SnoMedCodes).create(item)
           snowMedCodes = await queryRunner.manager.save(snowMedCodes);
-        })
+        }))
         // snowMedCodeTwo.map( async (item)=> {
         //   let snowMedCodes = getRepository(SnoMedCodes).create(item)
         //   snowMedCodes = await queryRunner.manager.save(snowMedCodes);
