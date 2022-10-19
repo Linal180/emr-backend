@@ -1799,6 +1799,8 @@ type QuestionAnswers {
 type ReviewOfSystem {
   id: String!
   patientId: String
+  templateIds: [String!]
+  templates: [QuestionTemplate!]
   patient: Patient
   appointmentId: String
   appointment: Appointment
@@ -1823,6 +1825,8 @@ type AnswerResponses {
 type PatientIllnessHistory {
   id: String!
   patientId: String
+  templateIds: [String!]
+  templates: [QuestionTemplate!]
   patient: Patient
   appointmentId: String
   appointment: Appointment
@@ -6335,6 +6339,7 @@ input CreatePatientIllnessHistoryInput {
   id: String
   patientId: String
   appointmentId: String
+  templateIds: [String!]
   answerResponses: [AnswerResponsesInput!]!
 }
 
@@ -6348,5 +6353,6 @@ input CreateReviewOfSystemInput {
   id: String
   patientId: String
   appointmentId: String
+  templateIds: [String!]
   answerResponses: [AnswerResponsesInput!]!
 }
