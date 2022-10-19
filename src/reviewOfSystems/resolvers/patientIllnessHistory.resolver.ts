@@ -13,12 +13,14 @@ import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput } from "..
 import { PatientIllnessHistory } from "../entities/patientIllnessHistory.entity";
 import { AnswerResponses } from "../entities/answerResponses.entity";
 import { AnswerResponsesService } from "../services/answerResponses.service";
+import { ChartingTemplateService } from "../services/chartingTemplate.service";
 
 @Resolver(() => PatientIllnessHistory)
 export class PatientIllnessHistoryResolver {
   constructor(
     private readonly patientIllnessHistoryService: PatientIllnessHistoryService,
     private readonly answerResponsesService: AnswerResponsesService,
+    private readonly chartingTemplateService: ChartingTemplateService,
   ) { }
 
   @Query(() => PatientIllnessHistoryPayload)
@@ -51,6 +53,18 @@ export class PatientIllnessHistoryResolver {
     if (patientIllnessHistory?.id) {
       const answers = this.answerResponsesService.findByPatientIllnessHistoryId(patientIllnessHistory?.id);
       return answers
+    }
+  }
+
+  @ResolveField(() => [QuestionTemplate])
+  async templates(@Parent() patientIllnessHistory: PatientIllnessHistory): Promise<QuestionTemplate[]> {
+    const { templateIds } = patientIllnessHistory || {}
+    if (templateIds) {
+      const templates = Promise.all(await templateIds.map(async (templateId) => {
+        const { template } = await this.chartingTemplateService.findOne(templateId);
+        return template
+      }))
+      return templates
     }
   }
 }
