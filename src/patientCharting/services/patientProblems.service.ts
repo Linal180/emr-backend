@@ -254,39 +254,40 @@ export class ProblemService {
   async searchIcdCodes(searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
 
     const { limit, page } = searchIcdCodesInput.paginationOptions
-    const [first, last] = searchIcdCodesInput.searchTerm.split(' ');
+    // const [first, last] = searchIcdCodesInput.searchTerm.split(' ');
+    const { searchTerm } = searchIcdCodesInput
 
-    const snoMedCodes = await getConnection()
-      .getRepository(SnoMedCodes)
-      .createQueryBuilder("SnoMedCode")
-      .distinctOn(['SnoMedCode.referencedComponentId'])
-      .where('SnoMedCode.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${first}%` }).getMany()
+    // const snoMedCodes = await getConnection()
+    //   .getRepository(SnoMedCodes)
+    //   .createQueryBuilder("SnoMedCode")
+    //   .distinctOn(['SnoMedCode.referencedComponentId'])
+    //   .where('SnoMedCode.referencedComponentId ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` }).getMany()
 
-    let IcdCodes = []
-    if (!!snoMedCodes.length) {
-      IcdCodes = await Promise.all(snoMedCodes?.map(async ({ mapTarget }) => {
-        return await this.icdCodeRepository.findOne({
-          where: { code: mapTarget }
-        })
-      }))
-    }
+    // let IcdCodes = []
+    // if (!!snoMedCodes.length) {
+    //   IcdCodes = await Promise.all(snoMedCodes?.map(async ({ mapTarget }) => {
+    //     return await this.icdCodeRepository.findOne({
+    //       where: { code: mapTarget }
+    //     })
+    //   }))
+    // }
 
-    const snoMedIcdCodes = !!IcdCodes.length ? IcdCodes.filter((icdCode) => !!icdCode) : []
+    // const snoMedIcdCodes = !!IcdCodes.length ? IcdCodes.filter((icdCode) => !!icdCode) : []
 
     const [icdCodes, totalCount] = await getConnection()
       .getRepository(ICDCodes)
       .createQueryBuilder("ICDCode")
       .skip((page - 1) * limit)
       .take(limit)
-      .where('ICDCode.code ILIKE :searchTerm', { searchTerm: `%${first}%` })
-      .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${last}%` })
-      .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${first}%` })
+      .where('ICDCode.code ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .orWhere('ICDCode.description ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
       .orderBy('ICDCode.priority', 'ASC')
       .getManyAndCount()
 
     const totalPages = Math.ceil(totalCount / limit)
     return {
-      icdCodes: !!snoMedIcdCodes.length ? await this.getICDCodesWithSnoMedCodes(snoMedIcdCodes) : await this.getICDCodesWithSnoMedCodes(icdCodes),
+      icdCodes: await (await this.getICDCodesWithSnoMedCodes(icdCodes)).filter((v, i, a) => a.findIndex(v2 => (v.code === v2.code && v.snoMedCode === v2.snoMedCode)) === i) ,
       pagination: {
         totalCount,
         page,
