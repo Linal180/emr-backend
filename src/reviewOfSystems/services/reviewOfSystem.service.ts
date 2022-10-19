@@ -53,7 +53,7 @@ export class ReviewOfSystemService {
    */
   async createOrUpdate(params: CreateReviewOfSystemInput): Promise<ReviewOfSystem> {
     try {
-      const { id, patientId, appointmentId, answerResponses } = params;
+      const { id, patientId, appointmentId, answerResponses, templateIds } = params;
 
       //fetch patient
       const PatientPayload = await this.patientService.GetPatient(patientId);
@@ -64,7 +64,7 @@ export class ReviewOfSystemService {
       }
       if (!id) {
         //create social history
-        const reviewOfSystemInstance = this.reviewOfSystemRepo.create({ patientId });
+        const reviewOfSystemInstance = this.reviewOfSystemRepo.create({ patientId, templateIds });
 
         //associate patient
         reviewOfSystemInstance.patient = patient
@@ -105,7 +105,7 @@ export class ReviewOfSystemService {
         reviewOfSystemInstance.appointment = appointment
         reviewOfSystemInstance.appointmentId = appointment.id
 
-        const socialAnswerIns = await this.reviewOfSystemRepo.save(reviewOfSystemInstance)
+        const socialAnswerIns = await this.reviewOfSystemRepo.save({ ...reviewOfSystemInstance, templateIds })
         return socialAnswerIns
       }
     } catch (error) {
