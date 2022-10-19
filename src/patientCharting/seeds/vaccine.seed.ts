@@ -38,7 +38,7 @@ export class CreateVaccine implements Seeder {
 
         await Promise.all(cvxData?.map(async (item) => {
           //create cvx
-          const cvxInstance = cvxRepo.create({ ...item, cvxCode: `${item?.cvxCode}` });
+          const cvxInstance = cvxRepo.create({ ...item, cvxCode: `${item?.cvxCode}`,  systematic: true });
           //save cvx
           return await cvxRepo.save(cvxInstance)
         }))

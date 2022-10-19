@@ -596,6 +596,7 @@ type CVX {
   status: String
   notes: String
   updateDate: String
+  systematic: Boolean
   cptCodeId: String
   vaccineProduct: [VaccineProduct!]
   cptCode: CPTCodes
