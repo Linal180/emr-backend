@@ -5,6 +5,7 @@ import { Patient } from "src/patients/entities/patient.entity";
 import { QuestionAnswers } from "./questionAnswers.entity";
 import { Appointment } from "src/appointments/entities/appointment.entity";
 import { AnswerResponses } from "./answerResponses.entity";
+import { QuestionTemplate } from "./questionTemplate.entity";
 
 @Entity({ name: 'PatientIllnessHistory' })
 @ObjectType()
@@ -16,6 +17,13 @@ export class PatientIllnessHistory {
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientId: string
+
+  @Column({ nullable: true, array: false, type: 'jsonb' })
+  @Field(() => [String], { nullable: true })
+  templateIds: string[]
+
+  @Field(() => [QuestionTemplate], { nullable: true })
+  templates: QuestionTemplate[]
 
   @ManyToOne(() => Patient, patient => patient.patientIllnessHistories, { onDelete: 'CASCADE' })
   @Field(() => Patient, { nullable: true })

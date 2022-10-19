@@ -53,7 +53,7 @@ export class PatientIllnessHistoryService {
    */
   async createOrUpdate(params: CreatePatientIllnessHistoryInput): Promise<PatientIllnessHistory> {
     try {
-      const { id, patientId, appointmentId, answerResponses } = params;
+      const { id, patientId, appointmentId, answerResponses, templateIds } = params;
 
       //fetch patient
       const PatientPayload = await this.patientService.GetPatient(patientId);
@@ -64,7 +64,7 @@ export class PatientIllnessHistoryService {
       }
       if (!id) {
         //create social history
-        const patientIllnessHistoryInstance = this.patientIllnessHistoryRepo.create({ patientId });
+        const patientIllnessHistoryInstance = this.patientIllnessHistoryRepo.create({ patientId, templateIds });
 
         //associate patient
         patientIllnessHistoryInstance.patient = patient
@@ -105,7 +105,7 @@ export class PatientIllnessHistoryService {
         patientIllnessHistoryInstance.appointment = appointment
         patientIllnessHistoryInstance.appointmentId = appointment.id
 
-        const socialAnswerIns = await this.patientIllnessHistoryRepo.save(patientIllnessHistoryInstance)
+        const socialAnswerIns = await this.patientIllnessHistoryRepo.save({ ...patientIllnessHistoryInstance, templateIds })
         return socialAnswerIns
       }
     } catch (error) {
