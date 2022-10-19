@@ -1873,7 +1873,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
               { title: "no blood stools", answerType: ANSWER_TYPE.NORMAL },
               { title: "no rectal bleed", answerType: ANSWER_TYPE.NORMAL },
               { title: "no recent change in bowel habits", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no constipation", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "no constipation", answerType: ANSWER_TYPE.NORMAL },
 
               { title: "heartburn", answerType: ANSWER_TYPE.ABNORMAL },
               { title: "dysphagia", answerType: ANSWER_TYPE.ABNORMAL },
@@ -4044,6 +4044,181 @@ export const TEMPLATE_DATA: TemplatesType[] = [
               { title: "arm pain", answerType: ANSWER_TYPE.ABNORMAL },
               { title: "arm swelling", answerType: ANSWER_TYPE.ABNORMAL },
               { title: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      }
+    ]
+  }, {
+    title: "Brief Pediatric Obesity ROS",
+    templateType: TemplateType.REVIEW_OF_SYSTEM,
+    sections: [
+      {
+        name: 'General',
+        questions: [
+          {
+            name: "General",
+            answers: [
+              { title: "no malaise", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no lethargy", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no anxiety", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no depression", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no hyperactivity", answerType: ANSWER_TYPE.NORMAL },
+              { title: "malaise", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "lethargy", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "anxiety", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "depression", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "hyperactivity", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+        ]
+      }, {
+        name: 'Skin',
+        questions: [
+          {
+            name: 'Skin',
+            answers: [
+              { title: "no pruritus", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no rash", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no sleep apnea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no snoring", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no daytime sleepiness", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nasal congestion", answerType: ANSWER_TYPE.NORMAL },
+
+              { title: "pruritus", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "rash", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "snoring", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "daytime sleepiness", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nasal congestion", answerType: ANSWER_TYPE.ABNORMAL },
+
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Cardiovascular',
+        questions: [
+          {
+            name: 'Cardiopulmonary',
+            answers: [
+              { title: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
+
+              { title: "palpitations", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
+
+            ]
+          }
+        ]
+      },
+      {
+        name: RESPIRATORY,
+        questions: [
+          {
+            name: RESPIRATORY,
+            answers: [
+              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
+              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },{
+        name: 'Gastrointestinal',
+        questions: [
+          {
+            name: 'GI',
+            answers: [
+              { title: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no heartburn", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nausea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no constipation", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no blood stools", answerType: ANSWER_TYPE.NORMAL },
+
+              { title: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "heartburn", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nausea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "constipation", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "blood stools", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: "Genitourinary",
+        questions: [
+          {
+            name: 'GU',
+            answers: [
+              { title: "no polyuria", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no polydipsia", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no nocturnal enuresis", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no oligomenorrhea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no amenorrhea", answerType: ANSWER_TYPE.NORMAL },
+              { title: "polyuria", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "polydipsia", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "nocturnal enuresis", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "oligomenorrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "amenorrhea", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },
+      {
+        name: "Neuromuscular",
+        questions: [{
+          name: "Neuromuscular",
+          answers: [
+            { title: "no headache", answerType: ANSWER_TYPE.NORMAL },
+            { title: "no syncope", answerType: ANSWER_TYPE.NORMAL },
+            { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+            { title: "no hip/knee pain", answerType: ANSWER_TYPE.NORMAL },
+            { title: "no restricted ROM", answerType: ANSWER_TYPE.NORMAL },
+            { title: "headache", answerType: ANSWER_TYPE.ABNORMAL },
+            { title: "fainting (syncope)", answerType: ANSWER_TYPE.ABNORMAL },
+            { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+            { title: "hip/knee pain", answerType: ANSWER_TYPE.ABNORMAL },
+            { title: "restricted ROM", answerType: ANSWER_TYPE.ABNORMAL },
+          ]
+        }]
+      },
+      {
+        name: PSYCHIATRIC,
+        questions: [
+          {
+            name: PSYH,
+            answers: [
+              { title: "no sleep disturbances", answerType: ANSWER_TYPE.NORMAL },
+              { title: "feeling safe in relationship", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no alcohol abuse", answerType: ANSWER_TYPE.NORMAL },
+              { title: "sleep disturbances", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "restless sleep", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "feeling unsafe in relationship", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "alcohol abuse", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          }
+        ]
+      },{
+        name: HEMATOLOGIC_LYMPHATIC,
+        questions: [
+          {
+            name: HEMATOLOGIC_LYMPHATIC,
+            answers: [
+              { title: "no swollen glands", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no bruising", answerType: ANSWER_TYPE.NORMAL },
+              { title: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
