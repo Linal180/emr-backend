@@ -67,7 +67,7 @@ export class CVXResolver {
   @Mutation(() => CvxPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'updateCvxCode')
-  async updateCvxCode(@Args('updateNdcCodeInput') updateCvxCodeInput: UpdateCvxCodeInput): Promise<CvxPayload> {
+  async updateCvxCode(@Args('updateCvxCodeInput') updateCvxCodeInput: UpdateCvxCodeInput): Promise<CvxPayload> {
     return {
       cvx: await this.cvxService.update(updateCvxCodeInput),
       response: { status: 200, message: 'CVX code is updated successfully' }

@@ -4354,7 +4354,7 @@ type Mutation {
   updateNdcCode(updateNdcCodeInput: UpdateNdcCodeInput!): NdcPayload!
   removeNdcCode(removeNdcCodeInput: RemoveNdcCodeInput!): NdcPayload!
   createCvxCode(createCvxCodeInput: CreateCvxCodeInput!): CvxPayload!
-  updateCvxCode(updateNdcCodeInput: UpdateCvxCodeInput!): CvxPayload!
+  updateCvxCode(updateCvxCodeInput: UpdateCvxCodeInput!): CvxPayload!
   removeCvxCode(removeCvxCodeInput: RemoveCvxCodeInput!): CvxPayload!
   createMvxCode(createMvxCodeInput: CreateMvxCodeInput!): MvxPayload!
   updateMvxCode(updateMvxCodeInput: UpdateMvxCodeInput!): MvxPayload!
