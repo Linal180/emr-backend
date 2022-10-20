@@ -1,5 +1,4 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { CPTCodes } from "src/feeSchedule/entities/cptCode.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { CVX } from "./cvx.entity";

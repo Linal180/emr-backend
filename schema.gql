@@ -2910,6 +2910,11 @@ type FamilyHistoriesPayload {
   response: ResponsePayloadResponse
 }
 
+type VaccineProductPayload {
+  vaccineProduct: VaccineProduct
+  response: ResponsePayloadResponse
+}
+
 type FindAllVaccineProductsPayload {
   vaccineProducts: [VaccineProduct!]
   pagination: PaginationPayload
@@ -3518,6 +3523,8 @@ type Query {
   findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
   getFamilyHistory(getFamilyHistoryInput: GetFamilyHistoryInput!): FamilyHistoryPayload!
   findAllVaccineProducts(findAllVaccineProductsInput: FindAllVaccineProductsInput!): FindAllVaccineProductsPayload!
+  fetchAllVaccineProducts(fetchAllVaccineProductsInput: FetchAllVaccineProductsInput!): FindAllVaccineProductsPayload!
+  getVaccineProduct(getVaccineProductInput: GetVaccineProductInput!): VaccineProductPayload!
   findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
   getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
   getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput!): PatientChartingInfoPayload!
@@ -4043,6 +4050,15 @@ input FindAllVaccineProductsInput {
   paginationOptions: PaginationInput!
 }
 
+input FetchAllVaccineProductsInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetVaccineProductInput {
+  id: String!
+}
+
 input SurgicalHistoryInput {
   patientId: String
   paginationOptions: PaginationInput!
@@ -4369,8 +4385,8 @@ type Mutation {
   createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
   updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
   removeIcdCode(removeIcdCodeInput: RemoveIcdCodeInput!): IcdCodePayload!
-  addVaccine(addVaccineInput: AddVaccineInput!): VaccinePayload!
-  updateVaccine(updateVaccineInput: UpdateVaccineInput!): VaccinePayload!
+  addVaccine(addVaccineInputProductInput: AddVaccineProductInput!): VaccineProductPayload!
+  updateVaccine(updateVaccineProductInput: UpdateVaccineProductInput!): VaccineProductPayload!
   removeVaccine(removeVaccineInput: RemoveVaccineInput!): VaccinePayload!
   addPatientTriageNote(createTriageNoteInput: CreateTriageNoteInput!): TriageNotePayload!
   updatePatientTriageNote(updateTriageNoteInput: UpdateTriageNoteInput!): TriageNotePayload!
@@ -4378,6 +4394,7 @@ type Mutation {
   createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
   updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
   removeFamilyHistory(removeFamilyHistoryInput: RemoveFamilyHistoryInput!): FamilyHistoryPayload!
+  removeVaccineProduct(removeVaccineProductInput: RemoveVaccineProductInput!): VaccineProductPayload!
   addSurgicalHistory(createSurgicalHistoryInput: CreateSurgicalHistoryInput!): SurgicalHistoryPayload!
   updateSurgicalHistory(updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!): SurgicalHistoryPayload!
   removeSurgicalHistory(removeSurgicalHistory: RemoveSurgicalHistory!): SurgicalHistoryPayload!
@@ -5920,40 +5937,20 @@ input RemoveIcdCodeInput {
   id: String!
 }
 
-input AddVaccineInput {
-  administrationDate: String
-  administerBy: String
-  amount: String
-  units: String
-  route: String
-  site: String
-  lotNo: String
-  expiryDate: String
-  visGiven: String
-  visDate: String
-  vaccineProductId: String
+input AddVaccineProductInput {
+  name: String
+  status: String
+  cvxId: String
   mvxId: String
-  ndcId: String
-  patientId: String
-  appointmentId: String
+  ndcCodeId: String
 }
 
-input UpdateVaccineInput {
-  administrationDate: String
-  administerBy: String
-  amount: String
-  units: String
-  route: String
-  site: String
-  lotNo: String
-  expiryDate: String
-  visGiven: String
-  visDate: String
-  vaccineProductId: String
+input UpdateVaccineProductInput {
+  name: String
+  status: String
+  cvxId: String
   mvxId: String
-  ndcId: String
-  patientId: String
-  appointmentId: String
+  ndcCodeId: String
   id: String!
 }
 
@@ -6010,6 +6007,10 @@ input UpdateFamilyHistoryRelativeInput {
 
 input RemoveFamilyHistoryInput {
   id: String
+}
+
+input RemoveVaccineProductInput {
+  id: String!
 }
 
 input CreateSurgicalHistoryInput {

@@ -2,23 +2,27 @@ import { getConnection, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { HttpStatus, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //services
+import { CVXService } from "./cvx.service";
+import { MVXService } from "./mvx.service";
 import { PaginationService } from "src/pagination/pagination.service";
+import { NdcVaccineProductService } from "./ndcVaccineProduct.service";
 //inputs
-import { FindAllVaccineProductsInput } from "../dto/vaccine-product.input";
+import { AddVaccineProductInput, FindAllVaccineProductsInput, UpdateVaccineProductInput } from "../dto/vaccine-product.input";
 //payloads
 import { FindAllVaccineProductsPayload } from "../dto/vaccine-product.payload";
 // entities
-import { VaccineProduct } from "../entities/vaccineProduct.entity";
 import { CVX } from "../entities/cvx.entity";
+import { VaccineProduct } from "../entities/vaccineProduct.entity";
 
 export class VaccineProductService {
   constructor(
     @InjectRepository(VaccineProduct)
     private vaccineProductRepo: Repository<VaccineProduct>,
     private readonly paginationService: PaginationService,
-
+    private readonly cvxService: CVXService,
+    private readonly mvxService: MVXService,
+    private readonly ndcVaccineProductService: NdcVaccineProductService,
   ) { }
-
 
   /**
    * Finds all
@@ -63,6 +67,25 @@ export class VaccineProductService {
   }
 
   /**
+   * Fetchs all
+   * @param params 
+   * @returns all 
+   */
+  async fetchAll(params: FindAllVaccineProductsInput): Promise<FindAllVaccineProductsPayload> {
+    try {
+      const { paginationOptions, searchQuery } = params || {}
+      const response = await this.paginationService.willPaginate<VaccineProduct>(this.vaccineProductRepo, {
+        paginationOptions, associatedTo: 'VaccineProduct', associatedToField:
+          { filterType: 'stringFilter', columnValue: searchQuery, columnName: 'name' }
+      });
+      const { data: vaccineProducts, ...pagination } = response;
+      return { vaccineProducts, pagination }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
    * Finds one
    * @param id 
    * @returns one 
@@ -74,4 +97,81 @@ export class VaccineProductService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  /**
+   * Creates vaccine service
+   * @param params 
+   * @returns create 
+   */
+  async create(params: AddVaccineProductInput): Promise<VaccineProduct> {
+    try {
+      const { cvxId, mvxId, ndcCodeId, name, status } = params;
+      const vaccineProductInstance = this.vaccineProductRepo.create({ name, status });
+
+      const cvxCode = await this.cvxService.findOne(cvxId);
+      vaccineProductInstance.cvx = cvxCode
+      vaccineProductInstance.cvxCode = cvxCode?.cvxCode
+      vaccineProductInstance.cvxId = cvxCode?.id
+
+      const mvxCode = await this.mvxService.findOne(mvxId);
+      vaccineProductInstance.mvx = mvxCode
+      vaccineProductInstance.mvxCode = mvxCode?.mvxCode
+      vaccineProductInstance.mvxId = mvxCode?.id;
+
+      const vaccineProduct = await this.vaccineProductRepo.save(vaccineProductInstance);
+
+      await this.ndcVaccineProductService.create({ ndcCodeId, vaccineProductId: vaccineProduct?.id })
+
+      return vaccineProduct
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+  /**
+   * Updates vaccine product service
+   * @param params 
+   * @returns update 
+   */
+  async update(params: UpdateVaccineProductInput): Promise<VaccineProduct> {
+    try {
+      const { id, cvxId, mvxId, name, ndcCodeId, status } = params
+
+      const vaccineProductInstance = await this.findOne(id)
+
+      const cvxCode = await this.cvxService.findOne(cvxId);
+      vaccineProductInstance.cvx = cvxCode
+      vaccineProductInstance.cvxCode = cvxCode?.cvxCode
+      vaccineProductInstance.cvxId = cvxCode?.id
+
+      const mvxCode = await this.mvxService.findOne(mvxId);
+      vaccineProductInstance.mvx = mvxCode
+      vaccineProductInstance.mvxCode = mvxCode?.mvxCode
+      vaccineProductInstance.mvxId = mvxCode?.id;
+
+      const vaccineProduct = await this.vaccineProductRepo.save({ name, status, ...vaccineProductInstance });
+
+      await this.ndcVaccineProductService.create({ ndcCodeId, vaccineProductId: vaccineProduct?.id })
+      return vaccineProduct;
+
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+  /**
+   * Del vaccine product service
+   * @param id 
+   * @returns del 
+   */
+  async del(id: string): Promise<VaccineProduct> {
+    try {
+      const vaccineProduct = await this.findOne(id);
+      await this.vaccineProductRepo.delete(id);
+      return vaccineProduct;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+  
 }
