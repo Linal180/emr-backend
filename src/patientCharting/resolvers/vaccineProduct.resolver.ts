@@ -1,6 +1,9 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //inputs
-import { FetchAllVaccineProductsInput, FindAllVaccineProductsInput, GetVaccineProductInput } from "../dto/vaccine-product.input";
+import {
+  FetchAllVaccineProductsInput, FindAllVaccineProductsInput, GetVaccineProductInput, UpdateVaccineProductInput,
+  AddVaccineProductInput, RemoveVaccineProductInput
+} from "../dto/vaccine-product.input";
 //payloads
 import { FindAllVaccineProductsPayload, VaccineProductPayload } from "../dto/vaccine-product.payload";
 //entities
@@ -13,7 +16,6 @@ import { CVXService } from "../services/cvx.service";
 import { MVXService } from "../services/mvx.service";
 import { VaccineProductService } from "../services/vaccineProduct.service";
 import { NdcVaccineProductService } from "../services/ndcVaccineProduct.service";
-import { AddVaccineProductInput, RemoveVaccineProductInput, UpdateVaccineProductInput } from "../dto/vaccine-product.input";
 
 @Resolver(() => VaccineProduct)
 export class VaccineProductResolver {
