@@ -3949,7 +3949,6 @@ input AgreementPaginationInput {
 
 input FindAllNdcInput {
   searchQuery: String
-  mvxId: String
   paginationOptions: PaginationInput!
 }
 
@@ -4385,8 +4384,8 @@ type Mutation {
   createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
   updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
   removeIcdCode(removeIcdCodeInput: RemoveIcdCodeInput!): IcdCodePayload!
-  addVaccine(addVaccineInputProductInput: AddVaccineProductInput!): VaccineProductPayload!
-  updateVaccine(updateVaccineProductInput: UpdateVaccineProductInput!): VaccineProductPayload!
+  addVaccine(addVaccineInput: AddVaccineInput!): VaccinePayload!
+  updateVaccine(updateVaccineInput: UpdateVaccineInput!): VaccinePayload!
   removeVaccine(removeVaccineInput: RemoveVaccineInput!): VaccinePayload!
   addPatientTriageNote(createTriageNoteInput: CreateTriageNoteInput!): TriageNotePayload!
   updatePatientTriageNote(updateTriageNoteInput: UpdateTriageNoteInput!): TriageNotePayload!
@@ -4394,6 +4393,8 @@ type Mutation {
   createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
   updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
   removeFamilyHistory(removeFamilyHistoryInput: RemoveFamilyHistoryInput!): FamilyHistoryPayload!
+  addVaccineProduct(addVaccineProductInput: AddVaccineProductInput!): VaccineProductPayload!
+  updateVaccineProduct(updateVaccineProductInput: UpdateVaccineProductInput!): VaccineProductPayload!
   removeVaccineProduct(removeVaccineProductInput: RemoveVaccineProductInput!): VaccineProductPayload!
   addSurgicalHistory(createSurgicalHistoryInput: CreateSurgicalHistoryInput!): SurgicalHistoryPayload!
   updateSurgicalHistory(updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!): SurgicalHistoryPayload!
@@ -5937,20 +5938,40 @@ input RemoveIcdCodeInput {
   id: String!
 }
 
-input AddVaccineProductInput {
-  name: String
-  status: String
-  cvxId: String
+input AddVaccineInput {
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  vaccineProductId: String
   mvxId: String
-  ndcCodeId: String
+  ndcId: String
+  patientId: String
+  appointmentId: String
 }
 
-input UpdateVaccineProductInput {
-  name: String
-  status: String
-  cvxId: String
+input UpdateVaccineInput {
+  administrationDate: String
+  administerBy: String
+  amount: String
+  units: String
+  route: String
+  site: String
+  lotNo: String
+  expiryDate: String
+  visGiven: String
+  visDate: String
+  vaccineProductId: String
   mvxId: String
-  ndcCodeId: String
+  ndcId: String
+  patientId: String
+  appointmentId: String
   id: String!
 }
 
@@ -6007,6 +6028,23 @@ input UpdateFamilyHistoryRelativeInput {
 
 input RemoveFamilyHistoryInput {
   id: String
+}
+
+input AddVaccineProductInput {
+  name: String
+  status: String
+  cvxId: String
+  mvxId: String
+  ndcCodeId: String
+}
+
+input UpdateVaccineProductInput {
+  name: String
+  status: String
+  cvxId: String
+  mvxId: String
+  ndcCodeId: String
+  id: String!
 }
 
 input RemoveVaccineProductInput {

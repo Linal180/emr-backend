@@ -67,8 +67,8 @@ export class VaccineProductResolver {
   @Mutation(() => VaccineProductPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'findAllVaccines')
-  async addVaccine(@Args('addVaccineInputProductInput') addVaccineInputProductInput: AddVaccineProductInput): Promise<VaccineProductPayload> {
-    const vaccineProduct = await this.vaccineProductService.create(addVaccineInputProductInput);
+  async addVaccineProduct(@Args('addVaccineProductInput') addVaccineProductInput: AddVaccineProductInput): Promise<VaccineProductPayload> {
+    const vaccineProduct = await this.vaccineProductService.create(addVaccineProductInput);
     return {
       vaccineProduct,
       response: { status: 200, message: 'Vaccine Product created successfully' }
@@ -79,7 +79,7 @@ export class VaccineProductResolver {
   @Mutation(() => VaccineProductPayload)
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'updateVaccine')
-  async updateVaccine(@Args('updateVaccineProductInput') updateVaccineProductInput: UpdateVaccineProductInput): Promise<VaccineProductPayload> {
+  async updateVaccineProduct(@Args('updateVaccineProductInput') updateVaccineProductInput: UpdateVaccineProductInput): Promise<VaccineProductPayload> {
     const vaccineProduct = await this.vaccineProductService.update(updateVaccineProductInput);
     return {
       vaccineProduct,
