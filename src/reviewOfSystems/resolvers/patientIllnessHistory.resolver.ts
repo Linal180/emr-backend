@@ -34,6 +34,16 @@ export class PatientIllnessHistoryResolver {
     };
   }
 
+  @Query(() => PatientIllnessHistoryPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'patientSocialHistory')
+  async latestPatientIllnessHistory(@Args('patientIllnessHistoryInput') patientIllnessHistoryInput: PatientIllnessHistoryInput): Promise<PatientIllnessHistoryPayload> {
+    return {
+      patientIllnessHistory: await this.patientIllnessHistoryService.findPatientLatestIllnessHistory(patientIllnessHistoryInput),
+      response: { status: 200, message: 'Illness history fetched successfully' }
+    };
+  }
+
 
   //mutations
   @Mutation(() => PatientIllnessHistoryPayload)
