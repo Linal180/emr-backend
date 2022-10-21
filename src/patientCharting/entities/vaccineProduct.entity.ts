@@ -1,5 +1,4 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { CPTCodes } from "src/feeSchedule/entities/cptCode.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { CVX } from "./cvx.entity";
@@ -43,18 +42,22 @@ export class VaccineProduct {
   @Column({ nullable: true })
   @Field({ nullable: true })
   mvxId: string;
+  
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  systematic: boolean;
 
   //relationships
 
-  @ManyToOne(() => CVX, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
+  @ManyToOne(() => CVX, cvx => cvx.vaccineProduct)
   @Field(() => CVX, { nullable: true })
   cvx: CVX
 
-  @ManyToOne(() => MVX, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
+  @ManyToOne(() => MVX, cvx => cvx.vaccineProduct)
   @Field(() => MVX, { nullable: true })
   mvx: MVX
 
-  @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct, { onDelete: "CASCADE" })
+  @OneToMany(() => NdcVaccineProduct, cvx => cvx.vaccineProduct)
   @Field(() => [NdcVaccineProduct], { nullable: true })
   ndcVaccine: NdcVaccineProduct[]
 

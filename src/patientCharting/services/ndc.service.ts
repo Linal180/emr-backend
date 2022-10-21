@@ -26,13 +26,12 @@ export class NDCService {
    */
   async findAll(params: FindAllNdcInput): Promise<FindAllNdcPayload> {
     try {
-      const { paginationOptions, searchQuery, mvxId } = params || {}
+      const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<NDC>(this.ndcRepo, {
-        paginationOptions, ...(mvxId && { mvxId }), ...(searchQuery && {
-          associatedToField: {
-            filterType: "stringFilter", columnValue: searchQuery, columnName: 'ndcCode'
-          }
-        })
+        paginationOptions, associatedTo: 'NDC',
+        associatedToField: {
+          filterType: "stringFilter", columnValue: searchQuery, columnName: 'code'
+        }
       })
 
       const { data, ...pagination } = response;
@@ -117,5 +116,5 @@ export class NDCService {
       throw new InternalServerErrorException(error);
     }
   }
-  
+
 }

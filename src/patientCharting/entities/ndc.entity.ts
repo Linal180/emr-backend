@@ -25,7 +25,7 @@ export class NDC {
 
   // relationships
 
-  @OneToMany(() => NdcVaccineProduct, cvx => cvx.ndcCode, { onDelete: "CASCADE" })
+  @OneToMany(() => NdcVaccineProduct, cvx => cvx.ndcCode)
   ndcVaccine: NdcVaccineProduct[]
 
   //dates

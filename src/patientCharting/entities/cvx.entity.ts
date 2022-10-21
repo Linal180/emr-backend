@@ -35,7 +35,6 @@ export class CVX {
   @Field({ nullable: true })
   updateDate: string
 
-
   @Column({ nullable: true, default: false, type: "boolean" })
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   systematic: boolean;

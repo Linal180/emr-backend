@@ -581,6 +581,7 @@ type VaccineProduct {
   updateDate: String
   cvxId: String
   mvxId: String
+  systematic: Boolean
   cvx: CVX
   mvx: MVX
   ndcVaccine: [NdcVaccineProduct!]
@@ -2910,6 +2911,11 @@ type FamilyHistoriesPayload {
   response: ResponsePayloadResponse
 }
 
+type VaccineProductPayload {
+  vaccineProduct: VaccineProduct
+  response: ResponsePayloadResponse
+}
+
 type FindAllVaccineProductsPayload {
   vaccineProducts: [VaccineProduct!]
   pagination: PaginationPayload
@@ -3518,6 +3524,8 @@ type Query {
   findAllFamilyHistory(findAllFamilyHistoryInput: FindAllFamilyHistoryInput!): FamilyHistoriesPayload!
   getFamilyHistory(getFamilyHistoryInput: GetFamilyHistoryInput!): FamilyHistoryPayload!
   findAllVaccineProducts(findAllVaccineProductsInput: FindAllVaccineProductsInput!): FindAllVaccineProductsPayload!
+  fetchAllVaccineProducts(fetchAllVaccineProductsInput: FetchAllVaccineProductsInput!): FindAllVaccineProductsPayload!
+  getVaccineProduct(getVaccineProductInput: GetVaccineProductInput!): VaccineProductPayload!
   findAllSurgicalHistory(surgicalHistoryInput: SurgicalHistoryInput!): SurgicalHistoriesPayload!
   getSurgicalHistory(surgicalHistoryInput: GetSurgicalHistory!): SurgicalHistoryPayload!
   getPatientChartingInfo(patientChartingInfoInput: PatientChartingInfoInput!): PatientChartingInfoPayload!
@@ -3944,7 +3952,6 @@ input AgreementPaginationInput {
 
 input FindAllNdcInput {
   searchQuery: String
-  mvxId: String
   paginationOptions: PaginationInput!
 }
 
@@ -4043,6 +4050,15 @@ input GetFamilyHistoryInput {
 input FindAllVaccineProductsInput {
   searchQuery: String
   paginationOptions: PaginationInput!
+}
+
+input FetchAllVaccineProductsInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetVaccineProductInput {
+  id: String!
 }
 
 input SurgicalHistoryInput {
@@ -4380,6 +4396,9 @@ type Mutation {
   createFamilyHistory(createFamilyHistoryInput: CreateFamilyHistoryInput!): FamilyHistoryPayload!
   updateFamilyHistory(updateFamilyHistoryInput: UpdateFamilyHistoryInput!): FamilyHistoryPayload!
   removeFamilyHistory(removeFamilyHistoryInput: RemoveFamilyHistoryInput!): FamilyHistoryPayload!
+  addVaccineProduct(addVaccineProductInput: AddVaccineProductInput!): VaccineProductPayload!
+  updateVaccineProduct(updateVaccineProductInput: UpdateVaccineProductInput!): VaccineProductPayload!
+  removeVaccineProduct(removeVaccineProductInput: RemoveVaccineProductInput!): VaccineProductPayload!
   addSurgicalHistory(createSurgicalHistoryInput: CreateSurgicalHistoryInput!): SurgicalHistoryPayload!
   updateSurgicalHistory(updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!): SurgicalHistoryPayload!
   removeSurgicalHistory(removeSurgicalHistory: RemoveSurgicalHistory!): SurgicalHistoryPayload!
@@ -6012,6 +6031,27 @@ input UpdateFamilyHistoryRelativeInput {
 
 input RemoveFamilyHistoryInput {
   id: String
+}
+
+input AddVaccineProductInput {
+  name: String
+  status: String
+  cvxId: String
+  mvxId: String
+  ndcCodeId: String
+}
+
+input UpdateVaccineProductInput {
+  name: String
+  status: String
+  cvxId: String
+  mvxId: String
+  ndcCodeId: String
+  id: String!
+}
+
+input RemoveVaccineProductInput {
+  id: String!
 }
 
 input CreateSurgicalHistoryInput {
