@@ -167,11 +167,13 @@ export class VaccineProductService {
   async del(id: string): Promise<VaccineProduct> {
     try {
       const vaccineProduct = await this.findOne(id);
+      const ndcVaccineProducts = await this.ndcVaccineProductService.findByVaccineId(id);
+      await Promise.all(ndcVaccineProducts?.map(async ({ id }) => await this.ndcVaccineProductService.delete(id)))
       await this.vaccineProductRepo.delete(id);
       return vaccineProduct;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
-  
+
 }

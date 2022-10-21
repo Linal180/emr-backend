@@ -116,4 +116,13 @@ export class NdcVaccineProductService {
     }
   }
 
+  /**
+   * Deletes ndc vaccine product service
+   * @param id 
+   * @returns delete 
+   */
+  async delete(id: string): Promise<void> {
+    await this.ndcVaccineProductRepo.delete(id)
+  }
+
 }
