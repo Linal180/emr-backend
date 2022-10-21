@@ -14,53 +14,30 @@ export class FindAllVaccineProductsInput {
 
 }
 
+
+@InputType()
+export class FetchAllVaccineProductsInput extends FindAllVaccineProductsInput {
+
+}
+
+
 @InputType()
 export class AddVaccineProductInput {
 
   @Field({ nullable: true })
-  administrationDate: string;
+  name: string
 
   @Field({ nullable: true })
-  administerBy: string;
+  status: string
 
   @Field({ nullable: true })
-  amount: string;
-
-  @Field({ nullable: true })
-  units: string;
-
-  @Field({ nullable: true })
-  route: string;
-
-  @Field({ nullable: true })
-  site: string;
-
-  @Field({ nullable: true })
-  lotNo: string;
-
-  @Field({ nullable: true })
-  expiryDate: string;
-
-  @Field({ nullable: true })
-  visGiven: string;
-
-  @Field({ nullable: true })
-  visDate: string;
-
-  @Field({ nullable: true })
-  vaccineProductId: string;
+  cvxId: string
 
   @Field({ nullable: true })
   mvxId: string;
 
   @Field({ nullable: true })
-  ndcId: string;
-
-  @Field({ nullable: true })
-  patientId: string
-
-  @Field({ nullable: true })
-  appointmentId?: string
+  ndcCodeId: string;
 
 }
 

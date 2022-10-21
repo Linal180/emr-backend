@@ -29,7 +29,7 @@ export class NdcVaccineProduct {
   @Field(() => VaccineProduct, { nullable: true })
   vaccineProduct: VaccineProduct;
 
-  @ManyToOne(() => NDC, ndcCode => ndcCode.ndcVaccine, { onDelete: "CASCADE" })
+  @ManyToOne(() => NDC, ndcCode => ndcCode.ndcVaccine)
   @Field(() => NDC, { nullable: true })
   ndcCode: NDC;
 
