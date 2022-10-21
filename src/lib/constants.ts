@@ -202,6 +202,8 @@ export enum STATUS {
   IN_ACTIVE = "Inactive",
 }
 
+export type StatusType = 'Active' | 'Inactive'
+
 
 export type TemplateQuestionAnswerType = {
   title: string;

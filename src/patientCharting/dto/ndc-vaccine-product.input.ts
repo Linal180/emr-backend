@@ -19,3 +19,14 @@ export class FindAllNdcVaccineProductsInput {
   paginationOptions: PaginationInput;
 
 }
+
+
+@InputType()
+export class CreateNdcVaccineProductInput {
+
+@Field({ nullable: true })
+vaccineProductId: string;
+
+@Field({ nullable: true })
+ndcCodeId: string;
+}

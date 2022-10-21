@@ -32,12 +32,11 @@ export class CVXService {
 
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<CVX>(this.cvxRepo, {
-        paginationOptions, ...(searchQuery && {
-          associatedToField: {
-            filterType: "stringFilter", columnValue: searchQuery, columnName: 'name', columnName2: 'shortDescription',
-            columnName3: 'cvxCode',
-          }
-        })
+        paginationOptions, associatedTo: 'CVX',
+        associatedToField: {
+          filterType: "stringFilter", columnValue: searchQuery, columnName: 'name', columnName2: 'shortDescription',
+          columnName3: 'cvxCode',
+        }
       })
 
       const { data, ...pagination } = response;

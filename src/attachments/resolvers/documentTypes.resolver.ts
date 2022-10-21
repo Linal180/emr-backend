@@ -42,8 +42,8 @@ export class DocumentTypesResolver {
   }
 
   @Query(returns => DocumentTypePayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'fetchDocumentTypeByName')
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'fetchDocumentTypeByName')
   async fetchDocumentTypeByName(@Args('name') name: string): Promise<DocumentTypePayload> {
     const documentType = await this.documentTypeService.fetchDocumentTypeByName(name)
     return {

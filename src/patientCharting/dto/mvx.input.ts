@@ -9,7 +9,7 @@ export class FindAllMvxInput {
   searchQuery: string
 
   @Field({ nullable: true })
-  mvxCode: string
+  mvxCode?: string
 
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput
