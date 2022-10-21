@@ -166,6 +166,7 @@ enum AbnormalFlag {
 type LoincCodes {
   id: String!
   loincNum: String
+  isCovid: Boolean
   component: String
   property: String
   timeAspect: String
