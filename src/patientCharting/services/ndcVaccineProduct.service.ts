@@ -1,18 +1,24 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, getConnection, Repository } from "typeorm";
-import { HttpStatus, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { forwardRef, HttpStatus, Inject, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //entities
 import { NDC } from "../entities/ndc.entity";
 import { NdcVaccineProduct } from "../entities/ndcVaccineProduct.entity";
 //inputs
-import { FindAllNdcVaccineProductsInput } from "../dto/ndc-vaccine-product.input";
+import { CreateNdcVaccineProductInput, FindAllNdcVaccineProductsInput } from "../dto/ndc-vaccine-product.input";
 //payloads
 import { FindAllNdcVaccineProductsPayload } from "../dto/ndc-vaccine-product.payload";
+//service
+import { NDCService } from "./ndc.service";
+import { VaccineProductService } from "./vaccineProduct.service";
 
 export class NdcVaccineProductService {
   constructor(
     @InjectRepository(NdcVaccineProduct)
     private ndcVaccineProductRepo: Repository<NdcVaccineProduct>,
+    private readonly ndcService: NDCService,
+    @Inject(forwardRef(() => VaccineProductService))
+    private readonly vaccineProductService: VaccineProductService
   ) { }
 
 
@@ -81,6 +87,42 @@ export class NdcVaccineProductService {
     } catch (error) {
       throw new InternalServerErrorException(error)
     }
+  }
+
+  /**
+   * Creates ndc vaccine product service
+   * @param params 
+   * @returns create 
+   */
+  async create(params: CreateNdcVaccineProductInput): Promise<NdcVaccineProduct> {
+    try {
+      const { ndcCodeId, vaccineProductId } = params;
+      const ndcVaccineProductInstance = this.ndcVaccineProductRepo.create({ vaccineProductId, ndcCodeId })
+
+      const ndcInstance = await this.ndcService.findOne(ndcCodeId)
+
+      ndcVaccineProductInstance.ndcCode = ndcInstance
+      ndcVaccineProductInstance.ndcCodeId = ndcInstance?.id
+
+      const vaccineProductInstance = await this.vaccineProductService.findOne(vaccineProductId)
+
+      ndcVaccineProductInstance.vaccineProduct = vaccineProductInstance
+      ndcVaccineProductInstance.vaccineProductId = vaccineProductInstance?.id;
+
+      return await this.ndcVaccineProductRepo.save(ndcVaccineProductInstance)
+
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+  /**
+   * Deletes ndc vaccine product service
+   * @param id 
+   * @returns delete 
+   */
+  async delete(id: string): Promise<void> {
+    await this.ndcVaccineProductRepo.delete(id)
   }
 
 }

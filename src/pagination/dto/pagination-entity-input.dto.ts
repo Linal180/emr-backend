@@ -7,6 +7,9 @@ import { Speciality } from "src/providers/entities/doctor.entity";
 import { UserStatus } from "src/users/entities/user.entity";
 import PaginationInput from "./pagination-input.dto";
 
+
+type FilterType = 'enumFilter' | 'stringFilter'
+
 @InputType()
 export class PaginatedEntityInput {
   status?: UserStatus
@@ -34,7 +37,7 @@ export class PaginatedEntityInput {
   category?: { id: string }
   associatedToField?: {
     id?: string, columnValue?: string, columnValue2?: string, columnValue3?: string,
-    columnName?: string, columnName2?: string, columnName3?: string, filterType: string
+    columnName?: string, columnName2?: string, columnName3?: string, filterType: FilterType
   }
   associatedTo?: string;
   paginationOptions: PaginationInput
