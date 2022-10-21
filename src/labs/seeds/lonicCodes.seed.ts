@@ -28,7 +28,7 @@ export class CreateLoincCodesData implements Seeder {
       await Promise.all(loincCodesData.map(async (item) => {
         const getLoincCode = await getRepository(LoincCodes).findOne({ component: item.component })
         if (!getLoincCode) {
-          let loincCode = getRepository(LoincCodes).create(item)
+          let loincCode = getRepository(LoincCodes).create({ ...item, isCovid: true })
           await queryRunner.manager.save(loincCode);
         }
       }))
@@ -41,14 +41,14 @@ export class CreateLoincCodesData implements Seeder {
           await queryRunner.manager.save(specimenType);
         }
       }))
-    // }
+      // }
       await queryRunner.commitTransaction();
-  }
-  catch(error) {
-    await queryRunner.rollbackTransaction();
-    throw new InternalServerErrorException(error);
-  } finally {
-    await queryRunner.release();
-  }
+    }
+    catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

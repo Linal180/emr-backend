@@ -166,6 +166,7 @@ enum AbnormalFlag {
 type LoincCodes {
   id: String!
   loincNum: String
+  isCovid: Boolean
   component: String
   property: String
   timeAspect: String
@@ -3566,7 +3567,9 @@ type Query {
   patientChartingTemplates(findAllTemplatesInput: FindAllTemplatesInput!): FindAllQuestionTemplatesPayload!
   getPatientChartingTemplate(templateId: String!): QuestionTemplatePayload!
   patientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  latestPatientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
   reviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
+  latestReviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
 }
 
 input SearchLoincCodesInput {

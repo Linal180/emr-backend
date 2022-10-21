@@ -32,6 +32,16 @@ export class ReviewOfSystemResolver {
     };
   }
 
+  @Query(() => ReviewOfSystemPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'patientSocialHistory')
+  async latestReviewOfSystem(@Args('reviewOfSystemInput') reviewOfSystemInput: ReviewOfSystemInput): Promise<ReviewOfSystemPayload> {
+    return {
+      reviewOfSystem: await this.reviewOfSystemService.findPatientLatestRos(reviewOfSystemInput),
+      response: { status: 200, message: 'Illness history fetched successfully' }
+    };
+  }
+
 
   //mutations
   @Mutation(() => ReviewOfSystemPayload)

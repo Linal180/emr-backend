@@ -22,11 +22,14 @@ import { PatientMedication } from '../entities/patientMedication.entity';
 import { PatientMedicationService } from '../services/patientMedication.service';
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { LabTestsService } from 'src/labs/services/labTests.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 @Resolver(() => PatientProblems)
 export class ProblemResolver {
   constructor(
     private readonly problemService: ProblemService,
+    private readonly appointmentService: AppointmentService,
     private readonly patientMedicationService: PatientMedicationService,
     private readonly labTestsService: LabTestsService,
   ) { }
@@ -149,6 +152,13 @@ export class ProblemResolver {
   async labTests(@Parent() patientProblem: PatientProblems): Promise<LabTests[]> {
     if (patientProblem && patientProblem.id) {
       return await this.labTestsService.GetLabTestsByProblemId(patientProblem.id);
+    }
+  }
+
+  @ResolveField(() => Appointment)
+  async appointment(@Parent() patientProblem: PatientProblems): Promise<Appointment> {
+    if (patientProblem && patientProblem.appointmentId) {
+      return await this.appointmentService.findOne(patientProblem.appointmentId);
     }
   }
 }

@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 //entities
 import { PatientIllnessHistory } from "../entities/patientIllnessHistory.entity";
 //inputs
-import { CreatePatientIllnessHistoryInput } from "../dto/patientIllnessHistory-input.dto";
+import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput } from "../dto/patientIllnessHistory-input.dto";
 //services
 import { PatientService } from "src/patients/services/patient.service";
 import { AnswerResponsesService } from "./answerResponses.service";
@@ -31,6 +31,19 @@ export class PatientIllnessHistoryService {
   async findOneByAppointmentId(appointmentId: string): Promise<PatientIllnessHistory> {
     try {
       return await this.patientIllnessHistoryRepo.findOne({ appointmentId })
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+  async findPatientLatestIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput): Promise<PatientIllnessHistory> {
+    try {
+      const { appointmentId, patientId } = patientIllnessHistoryInput
+      if (appointmentId) {
+        return this.findOneByAppointmentId(appointmentId)
+      }
+      const allHPI = await this.patientIllnessHistoryRepo.find({ patientId })
+      return allHPI.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
     } catch (error) {
       throw new InternalServerErrorException(error)
     }
