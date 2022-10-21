@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 //entities
 import { ReviewOfSystem } from "../entities/reviewOfSystem.entity";
 //inputs
-import { CreateReviewOfSystemInput } from "../dto/reviewOfSystem-input.dto";
+import { CreateReviewOfSystemInput, ReviewOfSystemInput } from "../dto/reviewOfSystem-input.dto";
 //services
 import { PatientService } from "src/patients/services/patient.service";
 import { AnswerResponsesService } from "./answerResponses.service";
@@ -31,6 +31,19 @@ export class ReviewOfSystemService {
   async findOneByAppointmentId(appointmentId: string): Promise<ReviewOfSystem> {
     try {
       return await this.reviewOfSystemRepo.findOne({ appointmentId })
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
+
+  async findPatientLatestRos(reviewOfSystemInput: ReviewOfSystemInput): Promise<ReviewOfSystem> {
+    try {
+      const { patientId, appointmentId } = reviewOfSystemInput
+      if (appointmentId) {
+        return this.findOneByAppointmentId(appointmentId)
+      }
+      const allRos = await this.reviewOfSystemRepo.find({ patientId })
+      return allRos.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
     } catch (error) {
       throw new InternalServerErrorException(error)
     }
