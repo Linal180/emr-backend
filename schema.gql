@@ -2076,19 +2076,6 @@ enum UserStatus {
   ACTIVE
 }
 
-type SurgicalHistory {
-  id: String!
-  code: String
-  codeType: String
-  description: String
-  surgeryDate: String
-  notes: String
-  patientId: String
-  patient: Patient
-  createdAt: String
-  updatedAt: String
-}
-
 type Sections {
   id: String!
   name: String
@@ -2162,6 +2149,19 @@ type SocialHistory {
   updatedAt: String
 }
 
+type SurgicalHistory {
+  id: String!
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  notes: String
+  patientId: String
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -2213,6 +2213,7 @@ type Patient {
   policyHolderId: String
   attachments: [Attachment!]
   profileAttachment: String
+  primaryDoctor: Doctor
   createdAt: String!
   updatedAt: String!
   vaccines: [Vaccine!]
