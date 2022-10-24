@@ -1,6 +1,6 @@
 import { Not, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //entities
 import { ICDCodes } from "../entities/icdcodes.entity";
 //payloads
@@ -113,7 +113,9 @@ export class ICDCodeService {
    */
   async remove(id: string): Promise<ICDCodes> {
     try {
-      const icdCode = await this.utilsService.updateEntityManager(ICDCodes, id ,{isDeleted:true}, this.icdCodeRepo)
+      const icdCode = await this.icdCodeRepo.findOne(id)
+      if (!icdCode) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Icd not found' })
+       await this.utilsService.updateEntityManager(ICDCodes, id ,{isDeleted:true}, this.icdCodeRepo)
       return icdCode;
     } catch (error) {
       throw new InternalServerErrorException(error);
