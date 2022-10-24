@@ -155,7 +155,8 @@ export enum QuestionType {
 
 export enum TemplateType {
   HPI = 'hpi',
-  REVIEW_OF_SYSTEM = 'reviewOfSystem'
+  REVIEW_OF_SYSTEM = 'reviewOfSystem',
+  PHYSICAL_EXAM = 'physicalExam'
 }
 
 export enum ANSWER_TYPE {

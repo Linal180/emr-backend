@@ -5,6 +5,7 @@ import { PaginationModule } from "src/pagination/pagination.module";
 import { PatientModule } from "src/patients/patient.module";
 import { AnswerResponses } from "./entities/answerResponses.entity";
 import { PatientIllnessHistory } from "./entities/patientIllnessHistory.entity";
+import { PhysicalExam } from "./entities/physicalExam.entity";
 //entities
 import { QuestionAnswers } from "./entities/questionAnswers.entity";
 import { QuestionTemplate } from "./entities/questionTemplate.entity";
@@ -14,6 +15,7 @@ import { TemplateSections } from "./entities/templateSections.entity";
 import { AnswerResponsesResolver } from "./resolvers/answerResponses.resolver";
 import { ChartingTemplateResolver } from "./resolvers/chartingTemplate.resolver";
 import { PatientIllnessHistoryResolver } from "./resolvers/patientIllnessHistory.resolver";
+import { PhysicalExamResolver } from "./resolvers/physicalExam.resolver";
 import { QuestionAnswersResolver } from "./resolvers/questionAnswers.resolver";
 import { ReviewOfSystemResolver } from "./resolvers/reviewOfSystem.resolver";
 import { SectionQuestionsResolver } from "./resolvers/sectionQuestions.resolver";
@@ -21,6 +23,7 @@ import { TemplateSectionsResolver } from "./resolvers/templateSections.resolver"
 import { AnswerResponsesService } from "./services/answerResponses.service";
 import { ChartingTemplateService } from "./services/chartingTemplate.service";
 import { PatientIllnessHistoryService } from "./services/patientIllnessHistory.service";
+import { PhysicalExamService } from "./services/physicalExam.service";
 import { QuestionAnswersService } from "./services/questionAnswers.service";
 import { ReviewOfSystemService } from "./services/reviewOfSystem.service";
 import { SectionQuestionsService } from "./services/sectionQuestions.service";
@@ -31,7 +34,7 @@ import { TemplateSectionsService } from "./services/templateSections.service";
   imports: [
     //entities
     TypeOrmModule.forFeature([
-      TemplateSections, SectionQuestions, QuestionAnswers, QuestionTemplate, PatientIllnessHistory, AnswerResponses, ReviewOfSystem
+      TemplateSections, SectionQuestions, QuestionAnswers, QuestionTemplate, PatientIllnessHistory, AnswerResponses, ReviewOfSystem, PhysicalExam
     ]),
     //modules
     PaginationModule,
@@ -53,7 +56,9 @@ import { TemplateSectionsService } from "./services/templateSections.service";
     AnswerResponsesService,
     QuestionAnswersResolver,
     ReviewOfSystemResolver,
-    ReviewOfSystemService
+    ReviewOfSystemService,
+    PhysicalExamService,
+    PhysicalExamResolver
     //services
 
   ],

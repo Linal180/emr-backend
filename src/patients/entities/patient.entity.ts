@@ -30,6 +30,7 @@ import { SocialHistory } from 'src/socialHistory/entities/socialHistory.entity';
 import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
 import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
+import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -453,6 +454,10 @@ export class Patient {
   @OneToMany(() => ReviewOfSystem, reviewOfSystems => reviewOfSystems.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [ReviewOfSystem], { nullable: true })
   reviewOfSystems: ReviewOfSystem[];
+
+  @OneToMany(() => PhysicalExam, physicalExams => physicalExams.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PhysicalExam], { nullable: true })
+  physicalExams: PhysicalExam[];
 
   @OneToMany(() => PatientMedication, patientMedication => patientMedication.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [PatientMedication], { nullable: true })
