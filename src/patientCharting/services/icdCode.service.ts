@@ -31,10 +31,10 @@ export class ICDCodeService {
     try {
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<ICDCodes>(this.icdCodeRepo, {
-        paginationOptions, associatedTo: 'ICDCodes', associatedToField: {
+        paginationOptions, associatedTo: 'ICDCodes',isDeleted:false, associatedToField: {
           columnValue: searchQuery, columnName: 'code', columnName2: 'description', filterType: 'stringFilter'
         }
-      },  undefined, { columnName: "priority", order: "ASC" });
+      }, undefined, { columnName: "priority", order: "ASC" });
       const { data, ...pagination } = response;
       return {
         icdCodes: data,
@@ -113,8 +113,7 @@ export class ICDCodeService {
    */
   async remove(id: string): Promise<ICDCodes> {
     try {
-      const icdCode = await this.findOne(id);
-      await this.icdCodeRepo.delete(id);
+      const icdCode = await this.utilsService.updateEntityManager(ICDCodes, id ,{isDeleted:true}, this.icdCodeRepo)
       return icdCode;
     } catch (error) {
       throw new InternalServerErrorException(error);
