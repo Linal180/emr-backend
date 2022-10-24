@@ -106,7 +106,7 @@ export class CptCodeService {
       const { id } = params
       const cptCode = await this.cptCodeRepository.findOne(id);
       if (!cptCode) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Cpt not found' })
-      const removedCptCode = await this.utilsService.updateEntityManager(CPTCodes, id, { isDeleted: true }, this.cptCodeRepository)
+       await this.utilsService.updateEntityManager(CPTCodes, id, { isDeleted: true }, this.cptCodeRepository)
       return cptCode
     } catch (error) {
       throw new InternalServerErrorException(error);
