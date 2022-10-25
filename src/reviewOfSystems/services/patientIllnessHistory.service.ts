@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 //entities
 import { PatientIllnessHistory } from "../entities/patientIllnessHistory.entity";
 //inputs
-import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput } from "../dto/patientIllnessHistory-input.dto";
+import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput, UpdateNotes } from "../dto/patientIllnessHistory-input.dto";
 //services
 import { PatientService } from "src/patients/services/patient.service";
 import { AnswerResponsesService } from "./answerResponses.service";
@@ -56,6 +56,32 @@ export class PatientIllnessHistoryService {
    */
   async findOne(id: string): Promise<PatientIllnessHistory> {
     return await this.patientIllnessHistoryRepo.findOne(id)
+  }
+
+  async updateNotes(updateNotes: UpdateNotes): Promise<PatientIllnessHistory> {
+    const { appointmentId, patientId, id, notes } = updateNotes
+    if (id) {
+      const patientIllnessHistoryInstance = await this.patientIllnessHistoryRepo.findOne(id)
+      patientIllnessHistoryInstance.notes = notes
+      return await this.patientIllnessHistoryRepo.save(patientIllnessHistoryInstance)
+    } else {
+      const PatientPayload = await this.patientService.GetPatient(patientId);
+      const appointment = await this.appointmentService.findOne(appointmentId);
+      const { patient } = PatientPayload;
+
+      const patientIllnessHistoryInstance = await this.patientIllnessHistoryRepo.create({
+        notes
+      })
+
+      patientIllnessHistoryInstance.patient = patient
+      patientIllnessHistoryInstance.patientId = patient.id
+
+      //associate appointment
+      patientIllnessHistoryInstance.appointment = appointment
+      patientIllnessHistoryInstance.appointmentId = appointment.id
+
+      return await this.patientIllnessHistoryRepo.save(patientIllnessHistoryInstance)
+    }
   }
 
 

@@ -1801,6 +1801,7 @@ type QuestionTemplate {
 
 type PhysicalExam {
   id: String!
+  notes: String
   patientId: String
   templateIds: [String!]
   templates: [QuestionTemplate!]
@@ -1814,6 +1815,7 @@ type PhysicalExam {
 
 type ReviewOfSystem {
   id: String!
+  notes: String
   patientId: String
   templateIds: [String!]
   templates: [QuestionTemplate!]
@@ -1842,6 +1844,7 @@ type AnswerResponses {
 
 type PatientIllnessHistory {
   id: String!
+  notes: String
   patientId: String
   templateIds: [String!]
   templates: [QuestionTemplate!]
@@ -3437,6 +3440,27 @@ type ReviewOfSystemPayload {
   response: ResponsePayloadResponse
 }
 
+type Macros {
+  id: String!
+  expansion: String
+  providers: String
+  section: String
+  shortcut: String
+  createdAt: String
+  updatedAt: String
+}
+
+type MacrosPayload {
+  response: ResponsePayloadResponse
+  macros: [Macros!]!
+  pagination: PaginationPayload
+}
+
+type MacroPayload {
+  response: ResponsePayloadResponse
+  macro: Macros
+}
+
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3595,6 +3619,8 @@ type Query {
   latestReviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
   physicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
+  fetchAllMacros(macroInput: MacroPaginationInput!): MacrosPayload!
+  getMacro(getMacroInput: GetMacroInput!): MacroPayload!
 }
 
 input SearchLoincCodesInput {
@@ -4292,6 +4318,15 @@ input PhysicalExamInput {
   appointmentId: String
 }
 
+input MacroPaginationInput {
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetMacroInput {
+  id: String
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4457,8 +4492,11 @@ type Mutation {
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
   createShortUrl(createShortUrlInput: CreateShortUrlInput!): ShortUrlResponse!
   createPatientSocialHistory(createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!): PatientSocialHistoryPayload!
+  updateHPINotes(updateNotes: UpdateNotes!): PatientIllnessHistoryPayload!
   createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  updateROSNotes(updateNotes: UpdateNotes!): ReviewOfSystemPayload!
   createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
+  updatePENotes(updateNotes: UpdateNotes!): PhysicalExamPayload!
   createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
 }
 
@@ -6417,6 +6455,13 @@ input SocialDependentAnswerInput {
   name: String!
   note: String!
   value: String!
+}
+
+input UpdateNotes {
+  id: String
+  patientId: String
+  appointmentId: String
+  notes: String
 }
 
 input CreatePatientIllnessHistoryInput {
