@@ -23,6 +23,7 @@ import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
 import { SocialHistory } from 'src/socialHistory/entities/socialHistory.entity';
+import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
 import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
 import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
@@ -457,6 +458,10 @@ export class Patient {
   @OneToMany(() => ReviewOfSystem, reviewOfSystems => reviewOfSystems.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [ReviewOfSystem], { nullable: true })
   reviewOfSystems: ReviewOfSystem[];
+
+  @OneToMany(() => PhysicalExam, physicalExams => physicalExams.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PhysicalExam], { nullable: true })
+  physicalExams: PhysicalExam[];
 
   @OneToMany(() => PatientMedication, patientMedication => patientMedication.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [PatientMedication], { nullable: true })

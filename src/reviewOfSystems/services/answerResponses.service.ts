@@ -10,6 +10,7 @@ import { UtilsService } from "src/util/utils.service";
 import { PatientIllnessHistoryService } from "./patientIllnessHistory.service";
 import { QuestionAnswersService } from "./questionAnswers.service";
 import { ReviewOfSystemService } from "./reviewOfSystem.service";
+import { PhysicalExamService } from "./physicalExam.service";
 
 @Injectable()
 export class AnswerResponsesService {
@@ -19,6 +20,8 @@ export class AnswerResponsesService {
     private readonly utilsService: UtilsService,
     @Inject(forwardRef(() => PatientIllnessHistoryService))
     private readonly patientIllnessHistoryService: PatientIllnessHistoryService,
+    @Inject(forwardRef(() => PhysicalExamService))
+    private readonly physicalExamService: PhysicalExamService,
     @Inject(forwardRef(() => ReviewOfSystemService))
     private readonly reviewOfSystemService: ReviewOfSystemService,
     @Inject(forwardRef(() => QuestionAnswersService))
@@ -31,7 +34,7 @@ export class AnswerResponsesService {
    * @param params 
    * @returns create 
    */
-  async create(params: CreateAnswerResponsesInput, patientIllnessHistoryId?: string, reviewOfSystemId?: string): Promise<AnswerResponses> {
+  async create(params: CreateAnswerResponsesInput, patientIllnessHistoryId?: string, reviewOfSystemId?: string, physicalExamId?: string): Promise<AnswerResponses> {
     try {
       const instance = this.answerResponsesRepo.create(params);
       const { answerId, note, value } = params
@@ -45,6 +48,12 @@ export class AnswerResponsesService {
         const reviewOfSystem = await this.reviewOfSystemService.findOne(reviewOfSystemId)
         instance.reviewOfSystem = reviewOfSystem
         instance.reviewOfSystemId = reviewOfSystemId
+      }
+
+      if (physicalExamId) {
+        const physicalExam = await this.physicalExamService.findOne(physicalExamId)
+        instance.physicalExam = physicalExam
+        instance.physicalExamId = physicalExamId
       }
 
       if (answerId) {
@@ -78,6 +87,15 @@ export class AnswerResponsesService {
     return await this.answerResponsesRepo.find({ patientIllnessHistoryId })
   }
 
+    /**
+   * Finds by social id
+   * @param physicalExamId 
+   * @returns by social id 
+   */
+     async findByPhysicalExamId(physicalExamId: string): Promise<AnswerResponses[]> {
+      return await this.answerResponsesRepo.find({ physicalExamId })
+    }
+
   /**
    * Finds by social id
    * @param reviewOfSystemId 
@@ -93,18 +111,20 @@ export class AnswerResponsesService {
    * @param patientIllnessHistoryId 
    * @returns update 
    */
-  async update(params: CreateAnswerResponsesInput, patientIllnessHistoryId: string, reviewOfSystemId?: string): Promise<AnswerResponses> {
+  async update(params: CreateAnswerResponsesInput, patientIllnessHistoryId: string, reviewOfSystemId?: string, physicalExamId?: string): Promise<AnswerResponses> {
     try {
       const { answerId } = params
       let answerResponses
       if (patientIllnessHistoryId) {
         answerResponses = await this.answerResponsesRepo.findOne({ patientIllnessHistoryId, answerId });
-      } else {
+      } else if(reviewOfSystemId) {
         answerResponses = await this.answerResponsesRepo.findOne({ reviewOfSystemId, answerId });
+      }else{
+        answerResponses = await this.answerResponsesRepo.findOne({ physicalExamId, answerId });
       }
 
       if (!answerResponses) {
-        return await this.create(params, patientIllnessHistoryId, reviewOfSystemId)
+        return await this.create(params, patientIllnessHistoryId, reviewOfSystemId, physicalExamId)
       }
       if (patientIllnessHistoryId) {
         const patientIllnessHistory = await this.patientIllnessHistoryService.findOne(patientIllnessHistoryId)
@@ -116,6 +136,12 @@ export class AnswerResponsesService {
         const reviewOfSystem = await this.reviewOfSystemService.findOne(reviewOfSystemId)
         answerResponses.reviewOfSystem = reviewOfSystem
         answerResponses.reviewOfSystemId = reviewOfSystemId
+      }
+
+      if (physicalExamId) {
+        const physicalExam = await this.physicalExamService.findOne(physicalExamId)
+        answerResponses.physicalExam = physicalExam
+        answerResponses.physicalExamId = physicalExamId
       }
       return await this.utilsService.updateEntityManager(AnswerResponses, answerResponses.id, params, this.answerResponsesRepo)
     } catch (error) {
