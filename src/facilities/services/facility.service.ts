@@ -5,7 +5,6 @@ import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorExceptio
 import { UtilsService } from 'src/util/utils.service';
 import { PracticeService } from 'src/practice/practice.service';
 import { PaginationService } from 'src/pagination/pagination.service';
-import { PatientService } from 'src/patients/services/patient.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { BillingAddressService } from 'src/providers/services/billing-address.service';
 //inputs
