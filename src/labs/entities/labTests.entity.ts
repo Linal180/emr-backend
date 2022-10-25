@@ -1,13 +1,14 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { ICDCodes } from 'src/patientCharting/entities/icdcodes.entity';
-import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//entities
 import { LoincCodes } from './loincCodes.entity';
 import { Observations } from './observations.entity';
 import { TestSpecimens } from './testSpecimens.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
+import { ICDCodes } from 'src/patientCharting/entities/icdcodes.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 
 export enum LabTestStatus {
   ORDER_ENTERED = "Order Entered",
