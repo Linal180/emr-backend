@@ -3,6 +3,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 //entities
 import { Patient } from '../entities/patient.entity';
 import { Employer } from '../entities/employer.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
@@ -257,6 +258,14 @@ export class PatientResolver {
   async doctorPatients(@Parent() patient: Patient): Promise<DoctorPatient[]> {
     if (patient?.id) {
       const provider = await this.patientService.usualProvider(patient.id);
+      return provider;
+    }
+  }
+
+  @ResolveField(() => Doctor)
+  async primaryDoctor(@Parent() patient: Patient): Promise<Doctor> {
+    if (patient?.id) {
+      const provider = await this.patientService.getPrimaryProvider(patient.id);
       return provider;
     }
   }
