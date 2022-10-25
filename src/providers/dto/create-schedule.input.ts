@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CreateScheduleInput {
+export class SingleScheduleInput {
 
   @Field({ nullable: false })
   startAt: string;
@@ -21,10 +21,21 @@ export class CreateScheduleInput {
   @Field({ nullable: true })
   facilityId: string;
 
-  @Field(type => [String],{ nullable: false })
+  @Field(() => [String], { nullable: false })
   servicesIds: string[];
 
 }
+
+@InputType()
+export class CreateScheduleInput {
+
+  @Field(() => [SingleScheduleInput], { nullable: false })
+  schedules: SingleScheduleInput[]
+
+}
+
+@InputType()
+export class UpdateBulkScheduleInput extends CreateScheduleInput { }
 
 // @InputType()
 // export class CreateScheduleItemsInput {

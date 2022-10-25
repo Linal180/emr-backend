@@ -1,25 +1,27 @@
-import { ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, getConnection, In, IsNull, LessThan, MoreThan, Not, Raw } from 'typeorm'
 import * as moment from "moment";
-import { Appointment } from 'src/appointments/entities/appointment.entity';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
-import { Service } from 'src/facilities/entities/services.entity';
-import { ServicesService } from 'src/facilities/services/services.service';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { UtilsService } from 'src/util/utils.service';
-import { Connection, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
-import { FacilityService } from '../../facilities/services/facility.service';
-import { CreateScheduleInput } from '../dto/create-schedule.input';
-import { SlotsPayload } from '../dto/doctor-slots-payload.dto';
-import ScheduleInput from '../dto/schedule-input.dto';
-import { SchedulesPayload } from '../dto/schedules-payload.dto';
-import { GetDoctorSchedule, GetFacilitySchedule, GetSlots, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Brackets, getConnection, Connection, Repository, Between, In } from 'typeorm'
+import {
+  ConflictException, forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException
+} from '@nestjs/common';
+//entities
 import { Schedule } from '../entities/schedule.entity';
+import { Service } from 'src/facilities/entities/services.entity';
 import { ScheduleServices } from '../entities/scheduleServices.entity';
-import { ContactService } from './contact.service';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+//services
 import { DoctorService } from './doctor.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { ServicesService } from 'src/facilities/services/services.service';
+import { FacilityService } from '../../facilities/services/facility.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+//inputs
+import ScheduleInput from '../dto/schedule-input.dto';
+import { CreateScheduleInput, SingleScheduleInput, UpdateBulkScheduleInput } from '../dto/create-schedule.input';
+import { GetDoctorSchedule, GetFacilitySchedule, GetSchedules, GetSlots, RemoveSchedule, UpdateScheduleInput } from '../dto/update-schedule.input';
+//payloads
 import { Slots } from '../dto/slots-payload.dto';
+import { SchedulesPayload } from '../dto/schedules-payload.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -34,19 +36,42 @@ export class ScheduleService {
     @Inject(forwardRef(() => FacilityService))
     private readonly facilityService: FacilityService,
     private readonly paginationService: PaginationService,
-    @Inject(forwardRef(() => ContactService))
-    private readonly contactService: ContactService,
     private readonly servicesService: ServicesService,
     private readonly appointmentService: AppointmentService,
-    private readonly utilsService: UtilsService
   ) { }
+
+  async updateBulk(params: UpdateBulkScheduleInput) {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { schedules } = params || {}
+      if (!schedules?.length) {
+        throw new Error("Please provide schedules");
+      }
+      const { doctorId, facilityId } = schedules[0] || {}
+      const days = schedules?.map(({ day }) => (day))
+      const schedule = await this.getSchedules({ days, facilityId, providerId: doctorId });
+      const removedSchedule = await this.scheduleRepository.remove(schedule);
+      const newSchedules = await this.createSchedule(schedules);
+
+      await queryRunner.commitTransaction();
+      return newSchedules
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
 
   /**
    * Creates schedule
    * @param createScheduleInput 
    * @returns schedule 
    */
-  async createSchedule(createScheduleInput: CreateScheduleInput[]): Promise<Schedule> {
+  async createSchedule(createScheduleInput: SingleScheduleInput[]): Promise<Schedule> {
     //Transaction start
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
@@ -56,29 +81,29 @@ export class ScheduleService {
       for (let scheduleElement of createScheduleInput) {
         // create schedule
         const transformedScheduleElement = await this.getDeduplicateScheduleElement(scheduleElement)
-        const scheduleInstance = this.scheduleRepository.create((transformedScheduleElement as CreateScheduleInput))
+        const scheduleInstance = this.scheduleRepository.create((transformedScheduleElement as SingleScheduleInput))
         //fetch doctor
-        if ((transformedScheduleElement as CreateScheduleInput).doctorId) {
-          const doctor = await this.doctorService.findOne((transformedScheduleElement as CreateScheduleInput).doctorId)
+        if ((transformedScheduleElement as SingleScheduleInput).doctorId) {
+          const doctor = await this.doctorService.findOne((transformedScheduleElement as SingleScheduleInput).doctorId)
           scheduleInstance.doctor = doctor
           scheduleInstance.doctorId = doctor.id
         }
         //fetch facility
-        if ((transformedScheduleElement as CreateScheduleInput).facilityId) {
-          const facility = await this.facilityService.findOne((transformedScheduleElement as CreateScheduleInput).facilityId)
+        if ((transformedScheduleElement as SingleScheduleInput).facilityId) {
+          const facility = await this.facilityService.findOne((transformedScheduleElement as SingleScheduleInput).facilityId)
           scheduleInstance.facility = facility
           scheduleInstance.facilityId = facility.id
         }
         const schedule = await this.scheduleRepository.save(scheduleInstance);
-        if ((transformedScheduleElement as CreateScheduleInput).servicesIds) {
-          const services = await this.servicesService.findByIds((transformedScheduleElement as CreateScheduleInput).servicesIds)
+        if ((transformedScheduleElement as SingleScheduleInput).servicesIds) {
+          const services = await this.servicesService.findByIds((transformedScheduleElement as SingleScheduleInput).servicesIds)
           const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
           const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
           scheduleInstance.scheduleServices = serviceSchedule
           await this.scheduleServicesRepository.save(serviceSchedule)
-          // }
         }
       }
+
       await queryRunner.commitTransaction();
       return
     } catch (error) {
@@ -89,7 +114,7 @@ export class ScheduleService {
     }
   }
 
-  async getDeduplicateScheduleElement(scheduleElement: CreateScheduleInput | UpdateScheduleInput): Promise<CreateScheduleInput> {
+  async getDeduplicateScheduleElement(scheduleElement: SingleScheduleInput | UpdateScheduleInput): Promise<SingleScheduleInput> {
     let baseQuery = this.connection.getRepository(Schedule)
       .createQueryBuilder('schedules')
 
@@ -347,7 +372,7 @@ export class ScheduleService {
       const uTcEndDateOffset = moment(new Date(getSlots.currentDate)).endOf('day').utc().subtract(getSlots.offset, 'hours').toDate();
       //fetch doctor's booked appointment 
       const appointment = await this.appointmentService.findAppointmentByProviderId(getSlots, uTcStartDateOffset, uTcEndDateOffset)
-      let filteredAppointments= appointment
+      let filteredAppointments = appointment
       if (appointmentId) {
         filteredAppointments = appointment.filter((appointmentInfo) => appointmentInfo.id !== appointmentId)
       }
@@ -484,5 +509,15 @@ export class ScheduleService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  /**
+   * Gets schedules
+   * @param params 
+   * @returns schedules 
+   */
+  async getSchedules(params: GetSchedules): Promise<Schedule[]> {
+    const { facilityId, providerId: doctorId, days } = params;
+    return await this.scheduleRepository.find({ ...(facilityId && { facilityId }), ...(doctorId && { doctorId }), day: In(days) })
   }
 }

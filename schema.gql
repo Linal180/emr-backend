@@ -2694,15 +2694,15 @@ type ContactsPayload {
   pagination: PaginationPayload
 }
 
+type DoctorPayload {
+  doctor: Doctor
+  response: ResponsePayload
+}
+
 type AllDoctorPayload {
   response: ResponsePayload
   doctors: [Doctor]
   pagination: PaginationPayload
-}
-
-type DoctorPayload {
-  doctor: Doctor
-  response: ResponsePayload
 }
 
 type SchedulePayload {
@@ -4315,7 +4315,8 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
-  createSchedule(createScheduleInput: [CreateScheduleInput!]!): SchedulePayload!
+  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  updateBulkSchedule(updateBulkScheduleInput: UpdateBulkScheduleInput!): SchedulePayload!
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
@@ -5057,6 +5058,10 @@ input DisableDoctor {
 }
 
 input CreateScheduleInput {
+  schedules: [SingleScheduleInput!]!
+}
+
+input SingleScheduleInput {
   startAt: String!
   endAt: String!
   day: String!
@@ -5064,6 +5069,10 @@ input CreateScheduleInput {
   doctorId: String
   facilityId: String
   servicesIds: [String!]!
+}
+
+input UpdateBulkScheduleInput {
+  schedules: [SingleScheduleInput!]!
 }
 
 input UpdateScheduleInput {
