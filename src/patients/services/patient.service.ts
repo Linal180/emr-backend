@@ -19,6 +19,7 @@ import { CreateExternalAppointmentInput } from 'src/appointments/dto/create-exte
 import { PatientProviderInputs, UpdatePatientProvider, UpdatePatientProviderRelationInputs } from '../dto/update-patient-provider.input';
 //entities
 import { Patient } from '../entities/patient.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
@@ -738,6 +739,28 @@ export class PatientService {
         relations: ["doctor"]
       })
       return usualProvider
+    }
+    catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+
+  /**
+   * Gets primary provider
+   * @param id 
+   * @returns primary provider 
+   */
+  async getPrimaryProvider(id: string): Promise<Doctor> {
+    try {
+      const usualProvider = await this.doctorPatientRepository.findOne({
+        where: {
+          patientId: id, relation: DoctorPatientRelationType.PRIMARY_PROVIDER
+        },
+        order: { createdAt: "ASC" },
+        relations: ["doctor"]
+      })
+      return usualProvider?.doctor
     }
     catch (error) {
       throw new InternalServerErrorException(error);
