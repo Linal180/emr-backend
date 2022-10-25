@@ -32,6 +32,10 @@ export class ICDCodes {
   @Field(() => Int, { nullable: true })
   priority: number;
 
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isDeleted: boolean;
+
   @OneToMany(() => PatientProblems, patientProblems => patientProblems.ICDCode)
   patientProblems: PatientProblems[];
 

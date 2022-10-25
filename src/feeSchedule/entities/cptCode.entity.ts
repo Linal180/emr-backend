@@ -20,6 +20,10 @@ export class CPTCodes {
   @Field({ nullable: true })
   category: string;
 
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isDeleted: boolean;
+  
   @Column({ nullable: true })
   @Field({ nullable: true })
   description: string;
