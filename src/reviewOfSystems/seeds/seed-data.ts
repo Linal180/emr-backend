@@ -4049,7 +4049,8 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         ]
       }
     ]
-  }, {
+  },
+  {
     title: "Brief Pediatric Obesity ROS",
     templateType: TemplateType.REVIEW_OF_SYSTEM,
     sections: [
@@ -4131,7 +4132,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             ]
           }
         ]
-      },{
+      }, {
         name: 'Gastrointestinal',
         questions: [
           {
@@ -4208,7 +4209,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             ]
           }
         ]
-      },{
+      }, {
         name: HEMATOLOGIC_LYMPHATIC,
         questions: [
           {
@@ -4224,5 +4225,605 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         ]
       }
     ]
-  }
+  },
+  {
+    title: "Fibromyalgia Exam",
+    templateType: TemplateType.PHYSICAL_EXAM,
+    sections: [
+      {
+        name: 'Positive tender points using 4 kg force',
+        questions: [
+          {
+            name: "Method",
+            answers: [
+              { title: "using finger", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "using algometer", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: "Right Muscles",
+            answers: [
+              { title: "no tender points on suboccpital muscles", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on trapezius", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on supraspinatus", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on lateral epicondyle", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on gluteal", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on greater trochanter", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on medial knee", answerType: ANSWER_TYPE.NORMAL },
+              { title: "tender points on suboccpital muscles", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on trapezius", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on supraspinatus", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on lateral epicondyle", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on gluteal", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on greater trochanter", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on medial knee", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Left Muscles",
+            answers: [
+              { title: "no tender points on suboccpital muscles", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on trapezius", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on supraspinatus", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on lateral epicondyle", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on gluteal", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on greater trochanter", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no tender points on medial knee", answerType: ANSWER_TYPE.NORMAL },
+              { title: "tender points on suboccpital muscles", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on trapezius", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on supraspinatus", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on lateral epicondyle", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on gluteal", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on greater trochanter", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tender points on medial knee", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Findings",
+            answers: [
+              { title: "no tender points", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "total fibromyalgia tender points: fill/18",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: Array.from({ length: 10 }, (_, i) => i + 1).map((value) => {
+                  return {
+                    id: String(value),
+                    name: String(value)
+                  }
+                })
+              },
+            ]
+          },
+        ]
+      }
+    ]
+  },
+  {
+    title: "Mental Status Exam",
+    templateType: TemplateType.PHYSICAL_EXAM,
+    sections: [
+      {
+        name: 'Mental Status Exam',
+        questions: [
+          {
+            name: "Appearance",
+            answers: [
+              { title: "well-groomed", answerType: ANSWER_TYPE.NORMAL },
+              { title: "clean", answerType: ANSWER_TYPE.NORMAL },
+              { title: "normal weight", answerType: ANSWER_TYPE.NORMAL },
+              { title: "disheveled", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "body odor", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "soiled clothing", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "underweight", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "overweight", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "obesity", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "appears fatigued", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Behavior",
+            answers: [
+              { title: "eye contact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "cooperative", answerType: ANSWER_TYPE.NORMAL },
+              { title: "calm", answerType: ANSWER_TYPE.NORMAL },
+              { title: "pleasant", answerType: ANSWER_TYPE.NORMAL },
+              { title: "active", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "hyperactive", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "agitated", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "impulsive", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "disruptive", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "oppositional", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "guarded", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "aggressive", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Speech",
+            answers: [
+              { title: "fluent", answerType: ANSWER_TYPE.NORMAL },
+              { title: "clear", answerType: ANSWER_TYPE.NORMAL },
+              { title: "normal volume", answerType: ANSWER_TYPE.NORMAL },
+              { title: "soft", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "loud", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "lisp", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "slow", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "pressured", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "stutter", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "impediment", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "speech delay", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "absent speech", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "speech refusal", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "monotone", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "reciprocal", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Perception",
+            answers: [
+              { title: "no hallucinations", answerType: ANSWER_TYPE.NORMAL },
+              { title: "visual hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "auditory hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "olfactory hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tactile hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Cognition",
+            answers: [
+              { title: "alert", answerType: ANSWER_TYPE.NORMAL },
+              { title: "oriented to situation", answerType: ANSWER_TYPE.NORMAL },
+              { title: "oriented to time", answerType: ANSWER_TYPE.NORMAL },
+              { title: "oriented to person", answerType: ANSWER_TYPE.NORMAL },
+              { title: "memory intact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "normal concentrating ability", answerType: ANSWER_TYPE.NORMAL },
+              { title: "normal attention", answerType: ANSWER_TYPE.NORMAL },
+              { title: "disoriented to situation", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "disoriented to time", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "disoriented to place", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "disoriented to person", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "memory impaired", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "impaired concentration", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "impaired attention", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Intelligence",
+            answers: [
+              { title: "above average", answerType: ANSWER_TYPE.NORMAL },
+              { title: "below average", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "average", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: "Memory",
+            answers: [
+              { title: "remote", answerType: ANSWER_TYPE.NEUTRAL },
+              { title: "recent", answerType: ANSWER_TYPE.NEUTRAL },
+            ]
+          },
+          {
+            name: "Mood",
+            answers: [
+              { title: "euthymic", answerType: ANSWER_TYPE.NORMAL },
+              { title: "sad", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "irritable", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "labile", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "apathetic", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "elated", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "angry", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Affect",
+            answers: [
+              { title: "pleasant", answerType: ANSWER_TYPE.NORMAL },
+              { title: "happy", answerType: ANSWER_TYPE.NORMAL },
+              { title: "congruent to thought content", answerType: ANSWER_TYPE.NORMAL },
+              { title: "anxious", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "angry", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "hostile", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sullen", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "sad", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tearful", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "flat", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "constricted", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "incongruent to thought content", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "expansive", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "euphoric", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Insight",
+            answers: [
+              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "impaired", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Judgment",
+            answers: [
+              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "impaired", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Thought Processes",
+            answers: [
+              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "perseveration", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "circumstantial", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "tangential", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "loose", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "flight of ideas", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "thought blocking", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Thought Content",
+            answers: [
+              { title: "unremarkable", answerType: ANSWER_TYPE.NORMAL },
+              { title: "thoughts of self-harm", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "suicidal ideation", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "homicidal ideation", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "delusions", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "obsessions", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+          {
+            name: "Thought Content",
+            answers: [
+              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "tremor", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "vocal tic", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "motor tics", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "EPS", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "unsteady", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "abnormal movements", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+        ]
+      }
+    ]
+  },
+  {
+    title: "Brief Eye Exam",
+    templateType: TemplateType.PHYSICAL_EXAM,
+    sections: [
+      {
+        name: 'Constitutional',
+        questions: [
+          {
+            name: "General Appearance",
+            answers: [
+              { title: "healthy-appearing", answerType: ANSWER_TYPE.NORMAL },
+              { title: "well-nourished", answerType: ANSWER_TYPE.NORMAL },
+              { title: "well-developed", answerType: ANSWER_TYPE.NORMAL },
+              { title: "cachectic", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "too thin", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "overweight", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "obese", answerType: ANSWER_TYPE.ABNORMAL },
+              { title: "morbidly obese", answerType: ANSWER_TYPE.ABNORMAL },
+            ]
+          },
+        ]
+      },
+      {
+        name: 'Eyes',
+        questions: [
+          {
+            name: 'Lids',
+            answers: [
+              { title: "no erythema", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no swelling", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no lesions", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "erythema: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "swelling: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "lesions: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "ptosis: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "xanthelasma: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+          {
+            name: 'Conjunctivae',
+            answers: [
+              { title: "non-injected", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no discharge", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "injected: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'generalized', name: 'generalized' }, { id: 'localized', name: 'localized' }]
+              },
+              {
+                title: "injected: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "clear discharge: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "purulent discharge: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "mucoid discharge: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "exophthalmos: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "chemosis: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+          {
+            name: 'Pupils',
+            answers: [
+              { title: "PERRLA", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "nonreactive to light: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'generalized', name: 'generalized' }, { id: 'localized', name: 'localized' }]
+              },
+              {
+                title: "anisocoria: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+          {
+            name: 'Corneas',
+            answers: [
+              { title: "grossly intact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "fluorescein stain--normal", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no abrasion", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no opacity", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no ulceration", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no foreign body", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "fluorescein stain--abnormal: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "abrasion: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "opacity: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "ulceration: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "hazy: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "arcus senilis: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "foreign body: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+          {
+            name: 'EOM',
+            answers: [
+              { title: "EOMI", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no discharge", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "dysconjugated: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "strabismus: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "nystagmus: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+          {
+            name: 'Lens',
+            answers: [
+              { title: "clear", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "cataract: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+          {
+            name: 'Sclerae',
+            answers: [
+              { title: "non-icteric", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "injected: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "icteric: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              }, 
+              {
+                title: "abrasion: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              }, 
+              {
+                title: "hypopyon: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              }, 
+              {
+                title: "ciliary flush: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "hemorrhage: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+          {
+            name: 'Vision',
+            answers: [
+              { title: "peripheral vision grossly intact", answerType: ANSWER_TYPE.NORMAL },
+              { title: "acuity grossly intact", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "field cut: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "acuity impaired: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              }, 
+            ]
+          },
+          {
+            name: 'Optic Disc',
+            answers: [
+              { title: "no blurred margins", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no hemorrhages", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no papilledema", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no optic cupping", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no AV nicking", answerType: ANSWER_TYPE.NORMAL },
+              { title: "no exudates", answerType: ANSWER_TYPE.NORMAL },
+              {
+                title: "blurred margins: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "hemorrhages: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              }, 
+              {
+                title: "papilledema: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              }, 
+              {
+                title: "optic cupping: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              }, 
+              {
+                title: "AV nicking: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                title: "exudates: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+            ]
+          },
+        ]
+      },
+    ]
+  },
 ];

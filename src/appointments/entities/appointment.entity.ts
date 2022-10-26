@@ -20,6 +20,7 @@ import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
 import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
+import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -271,6 +272,10 @@ export class Appointment {
   @Field(() => ReviewOfSystem, { nullable: true })
   @OneToOne(() => ReviewOfSystem, (reviewOfSystem) => reviewOfSystem.appointment)
   reviewOfSystem: ReviewOfSystem;
+
+  @Field(() => PhysicalExam, { nullable: true })
+  @OneToOne(() => PhysicalExam, (physicalExam) => physicalExam.appointment)
+  physicalExam: PhysicalExam;
 
   @Field(() => Billing, { nullable: true })
   @OneToOne(() => Billing, (billing) => billing.appointment)

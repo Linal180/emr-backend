@@ -313,6 +313,7 @@ type ICDCodes {
   version: String
   systematic: Boolean
   priority: Int
+  isDeleted: Boolean
   createdAt: String
   updatedAt: String
 }
@@ -610,6 +611,7 @@ type CPTCodes {
   id: String!
   code: String
   category: String
+  isDeleted: Boolean
   description: String
   shortDescription: String
   longDescription: String
@@ -1751,23 +1753,17 @@ type SelectorType {
   name: String
 }
 
-type QuestionTemplate {
+type QuestionAnswers {
   id: String!
   name: String
   specialId: String
-  templateType: String
-  sections: [TemplateSections!]
-  createdAt: String
-  updatedAt: String
-}
-
-type TemplateSections {
-  id: String!
-  name: String
-  specialId: String
-  templateId: String
-  questions: [SectionQuestions!]
-  template: QuestionTemplate
+  answerType: String
+  questionType: String
+  options: [SelectorType!]
+  note: String
+  questionsId: String
+  questions: SectionQuestions
+  answers: [AnswerResponses!]
   createdAt: String
   updatedAt: String
 }
@@ -1784,16 +1780,35 @@ type SectionQuestions {
   updatedAt: String
 }
 
-type QuestionAnswers {
+type TemplateSections {
   id: String!
   name: String
   specialId: String
-  answerType: String
-  questionType: String
-  options: [SelectorType!]
-  note: String
-  questionsId: String
-  questions: SectionQuestions
+  templateId: String
+  questions: [SectionQuestions!]
+  template: QuestionTemplate
+  createdAt: String
+  updatedAt: String
+}
+
+type QuestionTemplate {
+  id: String!
+  name: String
+  specialId: String
+  templateType: String
+  sections: [TemplateSections!]
+  createdAt: String
+  updatedAt: String
+}
+
+type PhysicalExam {
+  id: String!
+  patientId: String
+  templateIds: [String!]
+  templates: [QuestionTemplate!]
+  patient: Patient
+  appointmentId: String
+  appointment: Appointment
   answers: [AnswerResponses!]
   createdAt: String
   updatedAt: String
@@ -1818,9 +1833,11 @@ type AnswerResponses {
   value: String
   patientIllnessHistoryId: String
   reviewOfSystemId: String
+  physicalExamId: String
   answer: QuestionAnswers
   patientIllnessHistory: PatientIllnessHistory
   reviewOfSystem: ReviewOfSystem
+  physicalExam: PhysicalExam
   createdAt: String
   updatedAt: String
 }
@@ -1884,6 +1901,7 @@ type Appointment {
   triageNote: TriageNotes
   patientIllnessHistory: PatientIllnessHistory
   reviewOfSystem: ReviewOfSystem
+  physicalExam: PhysicalExam
   billing: Billing
   upFrontPayment: UpFrontPayment
   transaction: Transactions
@@ -2076,19 +2094,6 @@ enum UserStatus {
   ACTIVE
 }
 
-type SurgicalHistory {
-  id: String!
-  code: String
-  codeType: String
-  description: String
-  surgeryDate: String
-  notes: String
-  patientId: String
-  patient: Patient
-  createdAt: String
-  updatedAt: String
-}
-
 type Sections {
   id: String!
   name: String
@@ -2162,6 +2167,19 @@ type SocialHistory {
   updatedAt: String
 }
 
+type SurgicalHistory {
+  id: String!
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  notes: String
+  patientId: String
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -2213,6 +2231,7 @@ type Patient {
   policyHolderId: String
   attachments: [Attachment!]
   profileAttachment: String
+  primaryDoctor: Doctor
   createdAt: String!
   updatedAt: String!
   vaccines: [Vaccine!]
@@ -2225,6 +2244,7 @@ type Patient {
   surgicalHistories: [SurgicalHistory!]
   patientIllnessHistories: [PatientIllnessHistory!]
   reviewOfSystems: [ReviewOfSystem!]
+  physicalExams: [PhysicalExam!]
   patientMedications: [PatientMedication!]
   facility: Facility
   doctorPatients: [DoctorPatient!]
@@ -2693,15 +2713,15 @@ type ContactsPayload {
   pagination: PaginationPayload
 }
 
+type DoctorPayload {
+  doctor: Doctor
+  response: ResponsePayload
+}
+
 type AllDoctorPayload {
   response: ResponsePayload
   doctors: [Doctor]
   pagination: PaginationPayload
-}
-
-type DoctorPayload {
-  doctor: Doctor
-  response: ResponsePayload
 }
 
 type SchedulePayload {
@@ -2879,6 +2899,7 @@ type ICDCodesWithSnowMedCode {
   version: String
   systematic: Boolean
   priority: Int
+  isDeleted: Boolean
   createdAt: String
   updatedAt: String
   snoMedCode: SnoMedCodes
@@ -3409,6 +3430,11 @@ type PatientIllnessHistoryPayload {
   response: ResponsePayloadResponse
 }
 
+type PhysicalExamPayload {
+  physicalExam: PhysicalExam
+  response: ResponsePayloadResponse
+}
+
 type ReviewOfSystemPayload {
   reviewOfSystem: ReviewOfSystem
   response: ResponsePayloadResponse
@@ -3570,6 +3596,8 @@ type Query {
   latestPatientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
   reviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
   latestReviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
+  physicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
+  latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
 }
 
 input SearchLoincCodesInput {
@@ -4262,6 +4290,11 @@ input ReviewOfSystemInput {
   appointmentId: String
 }
 
+input PhysicalExamInput {
+  patientId: String
+  appointmentId: String
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4314,7 +4347,8 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
-  createSchedule(createScheduleInput: [CreateScheduleInput!]!): SchedulePayload!
+  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  updateBulkSchedule(updateBulkScheduleInput: UpdateBulkScheduleInput!): SchedulePayload!
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
@@ -4428,6 +4462,7 @@ type Mutation {
   createPatientSocialHistory(createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!): PatientSocialHistoryPayload!
   createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
   createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
+  createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
 }
 
 input LoincCodeInput {
@@ -5056,6 +5091,10 @@ input DisableDoctor {
 }
 
 input CreateScheduleInput {
+  schedules: [SingleScheduleInput!]!
+}
+
+input SingleScheduleInput {
   startAt: String!
   endAt: String!
   day: String!
@@ -5063,6 +5102,10 @@ input CreateScheduleInput {
   doctorId: String
   facilityId: String
   servicesIds: [String!]!
+}
+
+input UpdateBulkScheduleInput {
+  schedules: [SingleScheduleInput!]!
 }
 
 input UpdateScheduleInput {
@@ -6394,6 +6437,14 @@ input AnswerResponsesInput {
 }
 
 input CreateReviewOfSystemInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  templateIds: [String!]
+  answerResponses: [AnswerResponsesInput!]!
+}
+
+input CreatePhysicalExamInput {
   id: String
   patientId: String
   appointmentId: String
