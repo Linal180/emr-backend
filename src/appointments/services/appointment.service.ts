@@ -576,7 +576,22 @@ export class AppointmentService {
    */
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
-      return await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, { ...updateAppointmentInput, token: createToken() }, this.appointmentRepository)
+      const appointment = await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, { ...updateAppointmentInput, token: createToken() }, this.appointmentRepository);
+      const { patient } = await this.patientService.GetPatient(appointment?.patientId)
+
+      if (patient?.email) {
+        if (appointment.appointmentCreateType === AppointmentCreateType.APPOINTMENT) {
+          this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointment.scheduleStartDateTime, appointment?.token, patient.id, false)
+        }
+
+        if (appointment.appointmentCreateType === AppointmentCreateType.TELEHEALTH) {
+          const provider = await this.doctorService.findOne(appointment?.providerId)
+          const scheduleTime = `${moment(appointment.scheduleStartDateTime).format("ddd MMM. DD, YYYY")} at ${moment(appointment.scheduleStartDateTime).format("hh:mm A")}`
+          this.mailerService.sendAppointmentTelehealthEmail(patient.email, patient.firstName + ' ' + patient.lastName, scheduleTime, provider.firstName + ' ' + provider.lastName, appointment.id)
+        }
+      }
+
+      return appointment;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
