@@ -65,7 +65,7 @@ export class CptCodeService {
     try {
       const { paginationOptions, code: searchString } = params
       const paginationResponse = await this.paginationService.willPaginate<CPTCodes>(this.cptCodeRepository, {
-        paginationOptions, associatedTo: 'CPTCodes', associatedToField: {
+        paginationOptions, associatedTo: 'CPTCodes',isDeleted:false, associatedToField: {
           columnValue: searchString, columnName: 'code', columnName2: "description",
           columnName3: 'shortDescription', filterType: 'stringFilter'
         }
@@ -106,7 +106,7 @@ export class CptCodeService {
       const { id } = params
       const cptCode = await this.cptCodeRepository.findOne(id);
       if (!cptCode) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Cpt not found' })
-      await this.cptCodeRepository.delete(id)
+       await this.utilsService.updateEntityManager(CPTCodes, id, { isDeleted: true }, this.cptCodeRepository)
       return cptCode
     } catch (error) {
       throw new InternalServerErrorException(error);

@@ -99,5 +99,6 @@ export class PaginatedEntityInput {
   forOrders?: boolean
   templateType?: string
   mvxCode?: string
+  isDeleted?: boolean
   section?: string
 }

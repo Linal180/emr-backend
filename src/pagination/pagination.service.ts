@@ -225,6 +225,7 @@ export class PaginationService {
       forOrders,
       templateType,
       mvxCode,
+      isDeleted,
       section,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
@@ -396,6 +397,7 @@ export class PaginationService {
         ...(claimFeedPayerId && { payerId: Raw(alias => `${alias} ILIKE '%${claimFeedPayerId}%'`) }),
         ...(claimFeedFromDate && { fromDos: Raw(alias => `${alias} = '${moment(claimFeedFromDate).format("YYYYMMDD")}'`) }),
         ...(claimFeedToDate && { thruDos: Raw(alias => `${alias} = '${moment(claimFeedToDate).format("YYYYMMDD")}'`) }),
+        ...(isDeleted != null && { isDeleted }),
       }
     };
 
