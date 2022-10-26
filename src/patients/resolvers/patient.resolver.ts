@@ -305,6 +305,13 @@ export class PatientResolver {
     }
   }
 
+  @ResolveField(() => Contact)
+  async primaryContact(@Parent() patient: Patient): Promise<Contact> {
+    if (patient?.id) {
+      return await this.contactService.findPrimaryContactByPatientId(patient.id);
+    }
+  }
+
   @ResolveField(() => [FamilyHistory])
   async familyHistory(@Parent() patient: Patient): Promise<FamilyHistory[]> {
     if (patient?.id) {

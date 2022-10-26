@@ -31,7 +31,7 @@ export class ICDCodeService {
     try {
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<ICDCodes>(this.icdCodeRepo, {
-        paginationOptions, associatedTo: 'ICDCodes',isDeleted:false, associatedToField: {
+        paginationOptions, associatedTo: 'ICDCodes', isDeleted: false, associatedToField: {
           columnValue: searchQuery, columnName: 'code', columnName2: 'description', filterType: 'stringFilter'
         }
       }, undefined, { columnName: "priority", order: "ASC" });
@@ -115,7 +115,7 @@ export class ICDCodeService {
     try {
       const icdCode = await this.icdCodeRepo.findOne(id)
       if (!icdCode) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Icd not found' })
-       await this.utilsService.updateEntityManager(ICDCodes, id ,{isDeleted:true}, this.icdCodeRepo)
+      await this.utilsService.updateEntityManager(ICDCodes, id, { isDeleted: true }, this.icdCodeRepo)
       return icdCode;
     } catch (error) {
       throw new InternalServerErrorException(error);

@@ -134,6 +134,21 @@ export class ContactService {
     });
   }
 
+
+  /**
+   * Finds primary contact by patient id
+   * @param id 
+   * @returns primary contact by patient id 
+   */
+  async findPrimaryContactByPatientId(id: string): Promise<Contact> {
+    return await this.contactRepository.findOne({
+      where: {
+        patientId: id,
+        primaryContact: true
+      }
+    });
+  }
+
   /**
    * Removes contact
    * @param { id } 
