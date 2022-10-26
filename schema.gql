@@ -2235,6 +2235,7 @@ type Patient {
   attachments: [Attachment!]
   profileAttachment: String
   primaryDoctor: Doctor
+  primaryContact: Contact
   createdAt: String!
   updatedAt: String!
   vaccines: [Vaccine!]
