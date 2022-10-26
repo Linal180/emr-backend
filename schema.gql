@@ -3444,8 +3444,9 @@ type Macros {
   id: String!
   expansion: String
   providers: String
-  section: String
+  section: [String!]
   shortcut: String
+  systematic: Boolean
   createdAt: String
   updatedAt: String
 }
@@ -4320,6 +4321,7 @@ input PhysicalExamInput {
 
 input MacroPaginationInput {
   searchString: String
+  section: String
   paginationOptions: PaginationInput!
 }
 
@@ -4498,6 +4500,9 @@ type Mutation {
   createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
   updatePENotes(updateNotes: UpdateNotes!): PhysicalExamPayload!
   createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
+  createMacro(createMacroInput: CreateMacroInput!): MacroPayload!
+  updateMacro(updateMacroInput: UpdateMacroInput!): MacroPayload!
+  removeMacro(removeMacroInput: RemoveMacroInput!): MacroPayload!
 }
 
 input LoincCodeInput {
@@ -6492,4 +6497,21 @@ input CreatePhysicalExamInput {
   appointmentId: String
   templateIds: [String!]
   answerResponses: [AnswerResponsesInput!]!
+}
+
+input CreateMacroInput {
+  shortcut: String
+  section: [String!]
+  expansion: String
+}
+
+input UpdateMacroInput {
+  shortcut: String
+  section: [String!]
+  expansion: String
+  id: String!
+}
+
+input RemoveMacroInput {
+  id: String!
 }

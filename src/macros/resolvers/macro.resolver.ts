@@ -1,4 +1,4 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 //service
 import { MacroService } from '../services/macro.service';
 //entity
@@ -7,6 +7,7 @@ import { Macros } from '../entities/macro.entity';
 import { MacroPayload, MacrosPayload } from '../dto/macros-payload.dto';
 import { GetMacroInput, MacroPaginationInput } from '../dto/macros-input.dto';
 import { HttpStatus, NotFoundException } from '@nestjs/common';
+import { CreateMacroInput, RemoveMacroInput, UpdateMacroInput } from '../dto/create-macro.input';
 
 @Resolver(() => Macros)
 export class MacroResolver {
@@ -39,6 +40,40 @@ export class MacroResolver {
     return {
       macro,
       response: { status: 200, message: "Macro is fetch successfully." }
+    };
+  }
+
+  //mutations
+
+  @Mutation(() => MacroPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'createNdcCode')
+  async createMacro(@Args('createMacroInput') createMacroInput: CreateMacroInput): Promise<MacroPayload> {
+    return {
+      macro: await this.macroService.create(createMacroInput),
+      response: { status: 200, message: 'Macro created successfully.' }
+    };
+  }
+
+  @Mutation(() => MacroPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updateMacro')
+  async updateMacro(@Args('updateMacroInput') updateMacroInput: UpdateMacroInput): Promise<MacroPayload> {
+    return {
+      macro: await this.macroService.update(updateMacroInput),
+      response: { status: 200, message: 'Macro is updated successfully' }
+    };
+  }
+
+
+  @Mutation(() => MacroPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'removeIcdCode')
+  async removeMacro(@Args('removeMacroInput') removeMacroInput: RemoveMacroInput): Promise<MacroPayload> {
+    const { id } = removeMacroInput
+    return {
+      macro: await this.macroService.remove(id),
+      response: { status: 200, message: 'Macro is removed successfully' }
     };
   }
 }

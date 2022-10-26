@@ -1,4 +1,5 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { TemplateType } from "src/lib/constants";
 import { Connection, getRepository } from "typeorm";
 import { Factory, Seeder } from "typeorm-seeding";
 //entities
@@ -20,10 +21,14 @@ export class CreateMacros implements Seeder {
         for (let index = 0; index < textMacrosData.length; index++) {
           const macro = textMacrosData[index];
           const {
-            expansion, shortcut, providers, section
+            expansion, shortcut, providers
           } = macro || {}
           const macroObj = macroRepo.create({
-            expansion, providers, section, shortcut
+            expansion,
+            providers,
+            systematic: true,
+            section: [TemplateType.HPI, TemplateType.REVIEW_OF_SYSTEM, TemplateType.PHYSICAL_EXAM],
+            shortcut
           })
 
           const savedMacroObj = await queryRunner.manager.save(macroObj);

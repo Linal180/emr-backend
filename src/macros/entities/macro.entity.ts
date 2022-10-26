@@ -17,13 +17,17 @@ export class Macros {
   @Field({ nullable: true })
   providers: string
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  section: string
+  @Column({ nullable: true, type: 'text', array: true })
+  @Field(() => [String], { nullable: true })
+  section: string[]
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   shortcut: string
+
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  systematic: boolean;
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field({ nullable: true })

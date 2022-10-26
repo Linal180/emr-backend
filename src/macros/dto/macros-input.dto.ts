@@ -7,6 +7,9 @@ export class MacroPaginationInput {
   @Field({ nullable: true })
   searchString?: string
 
+  @Field({ nullable: true })
+  section?: string
+
   @Field(type => PaginationInput)
   paginationOptions: PaginationInput
 }
