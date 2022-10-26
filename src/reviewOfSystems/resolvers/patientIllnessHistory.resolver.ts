@@ -9,7 +9,7 @@ import { PatientIllnessHistoryService } from "../services/patientIllnessHistory.
 //payloads
 import { PatientIllnessHistoryPayload } from "../dto/patientIllnessHistory-payload";
 //inputs
-import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput } from "../dto/patientIllnessHistory-input.dto";
+import { CreatePatientIllnessHistoryInput, PatientIllnessHistoryInput, UpdateNotes } from "../dto/patientIllnessHistory-input.dto";
 import { PatientIllnessHistory } from "../entities/patientIllnessHistory.entity";
 import { AnswerResponses } from "../entities/answerResponses.entity";
 import { AnswerResponsesService } from "../services/answerResponses.service";
@@ -44,6 +44,16 @@ export class PatientIllnessHistoryResolver {
     };
   }
 
+  //mutations
+  @Mutation(() => PatientIllnessHistoryPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'createPatientIllnessHistory')
+  async updateHPINotes(@Args('updateNotes') updateNotes: UpdateNotes): Promise<PatientIllnessHistoryPayload> {
+    return {
+      patientIllnessHistory: await this.patientIllnessHistoryService.updateNotes(updateNotes),
+      response: { status: 200, message: `Illness history ${updateNotes?.id ? "updated" : "created"} successfully` }
+    };
+  }
 
   //mutations
   @Mutation(() => PatientIllnessHistoryPayload)

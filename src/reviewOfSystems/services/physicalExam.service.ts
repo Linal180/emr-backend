@@ -9,6 +9,7 @@ import { CreatePhysicalExamInput, PhysicalExamInput } from "../dto/physicalExam-
 import { PatientService } from "src/patients/services/patient.service";
 import { AnswerResponsesService } from "./answerResponses.service";
 import { AppointmentService } from "src/appointments/services/appointment.service";
+import { UpdateNotes } from "../dto/patientIllnessHistory-input.dto";
 
 
 @Injectable()
@@ -58,6 +59,31 @@ export class PhysicalExamService {
     return await this.physicalExamRepo.findOne(id)
   }
 
+  async updateNotes(updateNotes: UpdateNotes): Promise<PhysicalExam> {
+    const { appointmentId, patientId, id, notes } = updateNotes
+    if (id) {
+      const physicalExamInstance = await this.physicalExamRepo.findOne(id)
+      physicalExamInstance.notes = notes
+      return await this.physicalExamRepo.save(physicalExamInstance)
+    } else {
+      const PatientPayload = await this.patientService.GetPatient(patientId);
+      const appointment = await this.appointmentService.findOne(appointmentId);
+      const { patient } = PatientPayload;
+
+      const physicalExamInstance = await this.physicalExamRepo.create({
+        notes
+      })
+
+      physicalExamInstance.patient = patient
+      physicalExamInstance.patientId = patient.id
+
+      //associate appointment
+      physicalExamInstance.appointment = appointment
+      physicalExamInstance.appointmentId = appointment.id
+
+      return await this.physicalExamRepo.save(physicalExamInstance)
+    }
+  }
 
   /**
    * Creates or update

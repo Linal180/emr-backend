@@ -12,6 +12,7 @@ import { ReviewOfSystemPayload } from "../dto/reviewOfSystem-payload";
 import { CreateReviewOfSystemInput, ReviewOfSystemInput } from "../dto/reviewOfSystem-input.dto";
 import { QuestionTemplate } from "../entities/questionTemplate.entity";
 import { ChartingTemplateService } from "../services/chartingTemplate.service";
+import { UpdateNotes } from "../dto/patientIllnessHistory-input.dto";
 
 @Resolver(() => ReviewOfSystem)
 export class ReviewOfSystemResolver {
@@ -39,6 +40,17 @@ export class ReviewOfSystemResolver {
     return {
       reviewOfSystem: await this.reviewOfSystemService.findPatientLatestRos(reviewOfSystemInput),
       response: { status: 200, message: 'Illness history fetched successfully' }
+    };
+  }
+
+  //mutations
+  @Mutation(() => ReviewOfSystemPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'createPatientIllnessHistory')
+  async updateROSNotes(@Args('updateNotes') updateNotes: UpdateNotes): Promise<ReviewOfSystemPayload> {
+    return {
+      reviewOfSystem: await this.reviewOfSystemService.updateNotes(updateNotes),
+      response: { status: 200, message: `Review Of System ${updateNotes?.id ? "updated" : "created"} successfully` }
     };
   }
 
