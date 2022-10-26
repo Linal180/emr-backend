@@ -14,6 +14,10 @@ export class PatientIllnessHistory {
   @Field()
   id: string
 
+  @Column({ nullable: true, type: "jsonb" })
+  @Field({ nullable: true })
+  notes: string;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientId: string

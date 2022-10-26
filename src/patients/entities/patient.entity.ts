@@ -11,6 +11,7 @@ import { DoctorPatient } from './doctorPatient.entity';
 import { PatientConsent } from './patientConsent.entity';
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { Policy } from 'src/insurance/entities/policy.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Billing } from 'src/billings/entities/billing.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
@@ -19,17 +20,18 @@ import { Vaccine } from 'src/patientCharting/entities/vaccines.entity';
 import { Attachment } from '../../attachments/entities/attachment.entity';
 import { PolicyHolder } from 'src/insurance/entities/policy-holder.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
+import { SocialHistory } from 'src/socialHistory/entities/socialHistory.entity';
+import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
 import { FamilyHistory } from 'src/patientCharting/entities/familyHistory.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
 import { SurgicalHistory } from 'src/patientCharting/entities/surgicalHistory.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
-import { SocialHistory } from 'src/socialHistory/entities/socialHistory.entity';
-import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
-import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
 
 export enum COMMUNICATIONTYPE {
   PHONE = "phone",
@@ -209,19 +211,15 @@ export class Patient {
     default: GENDERIDENTITY.MALE,
     nullable: true,
   })
-  @Field(type => GENDERIDENTITY)
+  @Field(() => GENDERIDENTITY)
   gender: GENDERIDENTITY
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   dob: string;
 
-  @Column({
-    type: "enum",
-    enum: COMMUNICATIONTYPE,
-    default: COMMUNICATIONTYPE.PHONE
-  })
-  @Field(type => COMMUNICATIONTYPE)
+  @Column({ type: "enum", enum: COMMUNICATIONTYPE, default: COMMUNICATIONTYPE.PHONE })
+  @Field(() => COMMUNICATIONTYPE)
   preferredCommunicationMethod: COMMUNICATIONTYPE
 
   @Column({ nullable: true })
@@ -284,81 +282,41 @@ export class Patient {
   @Field({ nullable: true })
   pharmacy: string;
 
-  @Column({
-    type: "enum",
-    enum: RACE,
-    default: RACE.OTHER
-  })
-  @Field(type => RACE, { nullable: true })
+  @Column({ type: "enum", enum: RACE, default: RACE.OTHER })
+  @Field(() => RACE, { nullable: true })
   race: RACE
 
-  @Column({
-    type: "enum",
-    enum: ETHNICITY,
-    default: ETHNICITY.NONE
-  })
+  @Column({ type: "enum", enum: ETHNICITY, default: ETHNICITY.NONE })
   @Field(type => ETHNICITY, { nullable: true })
   ethnicity: ETHNICITY
 
-  @Column({
-    type: "enum",
-    enum: MARITIALSTATUS,
-    default: MARITIALSTATUS.SINGLE,
-    nullable: true
-  })
-  @Field(type => MARITIALSTATUS, { nullable: true })
+  @Column({ type: "enum", enum: MARITIALSTATUS, default: MARITIALSTATUS.SINGLE, nullable: true })
+  @Field(() => MARITIALSTATUS, { nullable: true })
   maritialStatus: MARITIALSTATUS
 
 
-  @Column({
-    type: "enum",
-    enum: SEXUALORIENTATION,
-    default: SEXUALORIENTATION.NONE,
-    nullable: true,
-  })
-  @Field(type => SEXUALORIENTATION, { nullable: true })
+  @Column({ type: "enum", enum: SEXUALORIENTATION, default: SEXUALORIENTATION.NONE, nullable: true, })
+  @Field(() => SEXUALORIENTATION, { nullable: true })
   sexualOrientation: SEXUALORIENTATION
 
-  @Column({
-    type: "enum",
-    enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.NONE,
-    nullable: true,
-  })
-  @Field(type => GENDERIDENTITY, { nullable: true })
+  @Column({ type: "enum", enum: GENDERIDENTITY, default: GENDERIDENTITY.NONE, nullable: true, })
+  @Field(() => GENDERIDENTITY, { nullable: true })
   genderIdentity: GENDERIDENTITY
 
-  @Column({
-    type: "enum",
-    enum: GENDERIDENTITY,
-    default: GENDERIDENTITY.NONE,
-    nullable: true,
-  })
-  @Field(type => GENDERIDENTITY, { nullable: true })
+  @Column({ type: "enum", enum: GENDERIDENTITY, default: GENDERIDENTITY.NONE, nullable: true, })
+  @Field(() => GENDERIDENTITY, { nullable: true })
   sexAtBirth: GENDERIDENTITY
 
-  @Column({
-    type: "enum",
-    enum: PRONOUNS,
-    default: PRONOUNS.NONE
-  })
-  @Field(type => PRONOUNS, { nullable: true })
+  @Column({ type: "enum", enum: PRONOUNS, default: PRONOUNS.NONE })
+  @Field(() => PRONOUNS, { nullable: true })
   pronouns: PRONOUNS
 
-  @Column({
-    type: "enum",
-    enum: HOMEBOUND,
-    default: HOMEBOUND.NO
-  })
-  @Field(type => HOMEBOUND, { nullable: true })
+  @Column({ type: "enum", enum: HOMEBOUND, default: HOMEBOUND.NO })
+  @Field(() => HOMEBOUND, { nullable: true })
   homeBound: HOMEBOUND
 
-  @Column({
-    type: "enum",
-    enum: HOLDSTATEMENT,
-    default: HOLDSTATEMENT.NONE
-  })
-  @Field(type => HOLDSTATEMENT, { nullable: true })
+  @Column({ type: "enum", enum: HOLDSTATEMENT, default: HOLDSTATEMENT.NONE })
+  @Field(() => HOLDSTATEMENT, { nullable: true })
   holdStatement: HOLDSTATEMENT
 
   @Column({ nullable: true, default: false })
@@ -400,6 +358,12 @@ export class Patient {
 
   @Field({ nullable: true })
   profileAttachment: string;
+
+  @Field(() => Doctor, { nullable: true })
+  primaryDoctor: Doctor;
+
+  @Field(() => Contact, { nullable: true })
+  primaryContact: Contact;
 
   //dates
 
@@ -453,6 +417,10 @@ export class Patient {
   @OneToMany(() => ReviewOfSystem, reviewOfSystems => reviewOfSystems.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [ReviewOfSystem], { nullable: true })
   reviewOfSystems: ReviewOfSystem[];
+
+  @OneToMany(() => PhysicalExam, physicalExams => physicalExams.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
+  @Field(() => [PhysicalExam], { nullable: true })
+  physicalExams: PhysicalExam[];
 
   @OneToMany(() => PatientMedication, patientMedication => patientMedication.patient, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(() => [PatientMedication], { nullable: true })

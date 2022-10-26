@@ -33,3 +33,18 @@ export class CreatePatientIllnessHistoryInput {
   answerResponses: AnswerResponsesInput[]
 
 }
+
+@InputType()
+export class UpdateNotes {
+  @Field({ nullable: true })
+  id?: string;
+
+  @Field({ nullable: true })
+  patientId: string;
+
+  @Field({ nullable: true })
+  appointmentId: string;
+
+  @Field({ nullable: true })
+  notes?: string
+}

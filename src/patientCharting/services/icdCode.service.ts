@@ -1,6 +1,6 @@
 import { Not, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 //entities
 import { ICDCodes } from "../entities/icdcodes.entity";
 //payloads
@@ -31,10 +31,10 @@ export class ICDCodeService {
     try {
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<ICDCodes>(this.icdCodeRepo, {
-        paginationOptions, associatedTo: 'ICDCodes', associatedToField: {
+        paginationOptions, associatedTo: 'ICDCodes', isDeleted: false, associatedToField: {
           columnValue: searchQuery, columnName: 'code', columnName2: 'description', filterType: 'stringFilter'
         }
-      },  undefined, { columnName: "priority", order: "ASC" });
+      }, undefined, { columnName: "priority", order: "ASC" });
       const { data, ...pagination } = response;
       return {
         icdCodes: data,
@@ -113,8 +113,9 @@ export class ICDCodeService {
    */
   async remove(id: string): Promise<ICDCodes> {
     try {
-      const icdCode = await this.findOne(id);
-      await this.icdCodeRepo.delete(id);
+      const icdCode = await this.icdCodeRepo.findOne(id)
+      if (!icdCode) throw new NotFoundException({ status: HttpStatus.NOT_FOUND, error: 'Icd not found' })
+      await this.utilsService.updateEntityManager(ICDCodes, id, { isDeleted: true }, this.icdCodeRepo)
       return icdCode;
     } catch (error) {
       throw new InternalServerErrorException(error);

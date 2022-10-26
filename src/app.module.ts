@@ -35,6 +35,7 @@ import { AppService } from './app.service';
 //controller
 import { AppController } from './app.controller';
 import { ReviewOfSystemModule } from './reviewOfSystems/reviewOfSystems.module';
+import { MacroModule } from './macros/macros.module';
 
 @Module({
   imports: [
@@ -80,7 +81,8 @@ import { ReviewOfSystemModule } from './reviewOfSystems/reviewOfSystems.module';
     PatientChartingModule,
     ShortUrlModule,
     SocialHistoryModule,
-    ReviewOfSystemModule
+    ReviewOfSystemModule,
+    MacroModule
   ],
   controllers: [AppController],
   providers: [AppService],

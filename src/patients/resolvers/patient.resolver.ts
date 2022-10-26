@@ -3,6 +3,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 //entities
 import { Patient } from '../entities/patient.entity';
 import { Employer } from '../entities/employer.entity';
+import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { DoctorPatient } from '../entities/doctorPatient.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
@@ -261,6 +262,14 @@ export class PatientResolver {
     }
   }
 
+  @ResolveField(() => Doctor)
+  async primaryDoctor(@Parent() patient: Patient): Promise<Doctor> {
+    if (patient?.id) {
+      const provider = await this.patientService.getPrimaryProvider(patient.id);
+      return provider;
+    }
+  }
+
   @ResolveField(() => Facility)
   async facility(@Parent() patient: Patient): Promise<Facility> {
     if (patient && patient?.facilityId) {
@@ -293,6 +302,13 @@ export class PatientResolver {
   async contacts(@Parent() patient: Patient): Promise<Contact[]> {
     if (patient?.id) {
       return await this.contactService.findContactsByPatientId(patient.id);
+    }
+  }
+
+  @ResolveField(() => Contact)
+  async primaryContact(@Parent() patient: Patient): Promise<Contact> {
+    if (patient?.id) {
+      return await this.contactService.findPrimaryContactByPatientId(patient.id);
     }
   }
 

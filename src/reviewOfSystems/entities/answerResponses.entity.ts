@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { PatientIllnessHistory } from "./patientIllnessHistory.entity";
+import { PhysicalExam } from "./physicalExam.entity";
 import { QuestionAnswers } from "./questionAnswers.entity";
 import { ReviewOfSystem } from "./reviewOfSystem.entity";
 
@@ -28,6 +29,10 @@ export class AnswerResponses {
   @Field({ nullable: true })
   reviewOfSystemId: string
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  physicalExamId: string
+
   @ManyToOne(() => QuestionAnswers, answer => answer.answers, { onDelete: 'CASCADE' })
   @Field(() => QuestionAnswers, { nullable: true })
   answer: QuestionAnswers;
@@ -39,6 +44,10 @@ export class AnswerResponses {
   @ManyToOne(() => ReviewOfSystem, reviewOfSystem => reviewOfSystem.answers, { onDelete: 'CASCADE' })
   @Field(() => ReviewOfSystem, { nullable: true })
   reviewOfSystem: ReviewOfSystem;
+
+  @ManyToOne(() => PhysicalExam, physicalExam => physicalExam.answers, { onDelete: 'CASCADE' })
+  @Field(() => PhysicalExam, { nullable: true })
+  physicalExam: PhysicalExam;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
