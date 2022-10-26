@@ -100,4 +100,5 @@ export class PaginatedEntityInput {
   templateType?: string
   mvxCode?: string
   isDeleted?: boolean
+  section?: string
 }
