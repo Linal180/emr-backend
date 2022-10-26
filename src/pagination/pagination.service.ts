@@ -226,6 +226,7 @@ export class PaginationService {
       templateType,
       mvxCode,
       isDeleted,
+      section,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -296,7 +297,7 @@ export class PaginationService {
         ...(roleName && {
           role: Raw(alias => `${alias} ILIKE '%${roleName}%'`),
         }),
-        
+
         ...(specimenTypeName && {
           name: Raw(alias => `${alias} ILIKE '%${specimenTypeName}%'`),
         }),
@@ -365,6 +366,9 @@ export class PaginationService {
         }),
         ...(documentPracticeId && {
           practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${documentPracticeId}'`),
+        }),
+        ...(section && {
+          section: Raw(alias => `:section = ANY (Macros.section)`, { section: section }),
         }),
         ...(agreementPracticeId && {
           practiceId: Raw(alias => `${alias} Is null OR ${alias} = '${agreementPracticeId}'`),

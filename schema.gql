@@ -1803,6 +1803,7 @@ type QuestionTemplate {
 
 type PhysicalExam {
   id: String!
+  notes: String
   patientId: String
   templateIds: [String!]
   templates: [QuestionTemplate!]
@@ -1816,6 +1817,7 @@ type PhysicalExam {
 
 type ReviewOfSystem {
   id: String!
+  notes: String
   patientId: String
   templateIds: [String!]
   templates: [QuestionTemplate!]
@@ -1844,6 +1846,7 @@ type AnswerResponses {
 
 type PatientIllnessHistory {
   id: String!
+  notes: String
   patientId: String
   templateIds: [String!]
   templates: [QuestionTemplate!]
@@ -2094,19 +2097,6 @@ enum UserStatus {
   ACTIVE
 }
 
-type SurgicalHistory {
-  id: String!
-  code: String
-  codeType: String
-  description: String
-  surgeryDate: String
-  notes: String
-  patientId: String
-  patient: Patient
-  createdAt: String
-  updatedAt: String
-}
-
 type Sections {
   id: String!
   name: String
@@ -2180,6 +2170,19 @@ type SocialHistory {
   updatedAt: String
 }
 
+type SurgicalHistory {
+  id: String!
+  code: String
+  codeType: String
+  description: String
+  surgeryDate: String
+  notes: String
+  patientId: String
+  patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
 type Patient {
   id: String!
   suffix: String
@@ -2231,6 +2234,7 @@ type Patient {
   policyHolderId: String
   attachments: [Attachment!]
   profileAttachment: String
+  primaryDoctor: Doctor
   createdAt: String!
   updatedAt: String!
   vaccines: [Vaccine!]
@@ -2712,15 +2716,15 @@ type ContactsPayload {
   pagination: PaginationPayload
 }
 
+type DoctorPayload {
+  doctor: Doctor
+  response: ResponsePayload
+}
+
 type AllDoctorPayload {
   response: ResponsePayload
   doctors: [Doctor]
   pagination: PaginationPayload
-}
-
-type DoctorPayload {
-  doctor: Doctor
-  response: ResponsePayload
 }
 
 type SchedulePayload {
@@ -3439,6 +3443,28 @@ type ReviewOfSystemPayload {
   response: ResponsePayloadResponse
 }
 
+type Macros {
+  id: String!
+  expansion: String
+  providers: String
+  section: [String!]
+  shortcut: String
+  systematic: Boolean
+  createdAt: String
+  updatedAt: String
+}
+
+type MacrosPayload {
+  response: ResponsePayloadResponse
+  macros: [Macros!]!
+  pagination: PaginationPayload
+}
+
+type MacroPayload {
+  response: ResponsePayloadResponse
+  macro: Macros
+}
+
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3597,6 +3623,8 @@ type Query {
   latestReviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
   physicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
+  fetchAllMacros(macroInput: MacroPaginationInput!): MacrosPayload!
+  getMacro(getMacroInput: GetMacroInput!): MacroPayload!
 }
 
 input SearchLoincCodesInput {
@@ -4294,6 +4322,16 @@ input PhysicalExamInput {
   appointmentId: String
 }
 
+input MacroPaginationInput {
+  searchString: String
+  section: String
+  paginationOptions: PaginationInput!
+}
+
+input GetMacroInput {
+  id: String
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4346,7 +4384,8 @@ type Mutation {
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): DoctorPayload!
   removeDoctor(removeDoctor: RemoveDoctor!): DoctorPayload!
   disableDoctor(disableDoctor: DisableDoctor!): DoctorPayload!
-  createSchedule(createScheduleInput: [CreateScheduleInput!]!): SchedulePayload!
+  createSchedule(createScheduleInput: CreateScheduleInput!): SchedulePayload!
+  updateBulkSchedule(updateBulkScheduleInput: UpdateBulkScheduleInput!): SchedulePayload!
   updateSchedule(updateScheduleInput: UpdateScheduleInput!): SchedulePayload!
   removeSchedule(removeSchedule: RemoveSchedule!): SchedulePayload!
   createPatient(createPatientInput: CreatePatientInput!): PatientPayload!
@@ -4458,9 +4497,15 @@ type Mutation {
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
   createShortUrl(createShortUrlInput: CreateShortUrlInput!): ShortUrlResponse!
   createPatientSocialHistory(createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!): PatientSocialHistoryPayload!
+  updateHPINotes(updateNotes: UpdateNotes!): PatientIllnessHistoryPayload!
   createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  updateROSNotes(updateNotes: UpdateNotes!): ReviewOfSystemPayload!
   createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
+  updatePENotes(updateNotes: UpdateNotes!): PhysicalExamPayload!
   createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
+  createMacro(createMacroInput: CreateMacroInput!): MacroPayload!
+  updateMacro(updateMacroInput: UpdateMacroInput!): MacroPayload!
+  removeMacro(removeMacroInput: RemoveMacroInput!): MacroPayload!
 }
 
 input LoincCodeInput {
@@ -5089,6 +5134,10 @@ input DisableDoctor {
 }
 
 input CreateScheduleInput {
+  schedules: [SingleScheduleInput!]!
+}
+
+input SingleScheduleInput {
   startAt: String!
   endAt: String!
   day: String!
@@ -5096,6 +5145,10 @@ input CreateScheduleInput {
   doctorId: String
   facilityId: String
   servicesIds: [String!]!
+}
+
+input UpdateBulkScheduleInput {
+  schedules: [SingleScheduleInput!]!
 }
 
 input UpdateScheduleInput {
@@ -6412,6 +6465,13 @@ input SocialDependentAnswerInput {
   value: String!
 }
 
+input UpdateNotes {
+  id: String
+  patientId: String
+  appointmentId: String
+  notes: String
+}
+
 input CreatePatientIllnessHistoryInput {
   id: String
   patientId: String
@@ -6440,4 +6500,21 @@ input CreatePhysicalExamInput {
   appointmentId: String
   templateIds: [String!]
   answerResponses: [AnswerResponsesInput!]!
+}
+
+input CreateMacroInput {
+  shortcut: String
+  section: [String!]
+  expansion: String
+}
+
+input UpdateMacroInput {
+  shortcut: String
+  section: [String!]
+  expansion: String
+  id: String!
+}
+
+input RemoveMacroInput {
+  id: String!
 }

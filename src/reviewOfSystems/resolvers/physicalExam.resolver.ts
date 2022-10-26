@@ -2,18 +2,17 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 // entities
 import { QuestionTemplate } from "../entities/questionTemplate.entity";
-import { TemplateSections } from "../entities/templateSections.entity";
+import { AnswerResponses } from "../entities/answerResponses.entity";
+import { PhysicalExam } from "../entities/physicalExam.entity";
 // services
 import { PhysicalExamService } from "../services/physicalExam.service";
-import { TemplateSectionsService } from "../services/templateSections.service";
+import { AnswerResponsesService } from "../services/answerResponses.service";
+import { ChartingTemplateService } from "../services/chartingTemplate.service";
 //payloads
 import { PhysicalExamPayload } from "../dto/physicalExam-payload";
 //inputs
+import { UpdateNotes } from "../dto/patientIllnessHistory-input.dto";
 import { CreatePhysicalExamInput, PhysicalExamInput } from "../dto/physicalExam-input.dto";
-import { AnswerResponses } from "../entities/answerResponses.entity";
-import { AnswerResponsesService } from "../services/answerResponses.service";
-import { ChartingTemplateService } from "../services/chartingTemplate.service";
-import { PhysicalExam } from "../entities/physicalExam.entity";
 
 @Resolver(() => PhysicalExam)
 export class PhysicalExamResolver {
@@ -41,6 +40,17 @@ export class PhysicalExamResolver {
     return {
       physicalExam: await this.physicalExamService.findPatientLatestPhysicalExam(physicalExamInput),
       response: { status: 200, message: 'Physical Exam fetched successfully' }
+    };
+  }
+
+  //mutations
+  @Mutation(() => PhysicalExamPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'createPatientIllnessHistory')
+  async updatePENotes(@Args('updateNotes') updateNotes: UpdateNotes): Promise<PhysicalExamPayload> {
+    return {
+      physicalExam: await this.physicalExamService.updateNotes(updateNotes),
+      response: { status: 200, message: `Physical Exam ${updateNotes?.id ? "updated" : "created"} successfully` }
     };
   }
 

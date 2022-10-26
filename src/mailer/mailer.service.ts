@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MailService } from '@sendgrid/mail';
-import { DynamicTemplateData, TemplateSwitch } from './dto/dynamicTemplateData.dto';
+import { ClientResponse, MailService } from '@sendgrid/mail';
+import { DynamicTemplateData, RemainderEmailType, TemplateSwitch } from './dto/dynamicTemplateData.dto';
 
 
 @Injectable()
@@ -93,22 +93,33 @@ export class MailerService {
     }
   }
 
-  async sendAppointmentReminderEmail(email: string, fullName: string, slotStartTime: string, facilityName: string, patientPortal: boolean) {
-    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
-    const emrAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
-    const portalAppBaseUrl = patientPortal ? patientAppBaseUrl : emrAppBaseUrl
+  /**
+   * Sends appointment reminder email
+   * @param params 
+   * @returns appointment reminder email 
+   */
+  async sendAppointmentReminderEmail(params: RemainderEmailType): Promise<ClientResponse> {
+
+    const { email: to, facilityName, fullName, facilityEmail, facilityPhone, slotStartTime } = params
+
+    const from = this.configService.get('FROM_EMAIL')
+    const templateId = this.configService.get('APPOINTMENT_REMINDER_TEMPLATE_ID')
+
     const msg = {
-      to: email,
-      from: this.configService.get('FROM_EMAIL'),
-      templateId: this.configService.get('APPOINTMENT_REMINDER_TEMPLATE_ID'),
+      to,
+      from,
+      templateId,
       dynamicTemplateData: {
         fullName,
         scheduleStartDateTime: slotStartTime,
-        facilityName
+        facilityName,
+        facilityEmail,
+        facilityPhone
       }
     };
     try {
-      await this.sgMail.send(msg);
+      const [response] = await this.sgMail.send(msg);
+      return response
     } catch (error) {
       console.error(error);
       if (error.response) {

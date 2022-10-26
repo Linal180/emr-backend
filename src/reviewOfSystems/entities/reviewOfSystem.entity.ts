@@ -13,10 +13,13 @@ export class ReviewOfSystem {
   @Field()
   id: string
 
+  @Column({ nullable: true, type: "jsonb" })
+  @Field({ nullable: true })
+  notes: string;
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   patientId: string
-
 
   @Column({ nullable: true, array: false, type: 'jsonb' })
   @Field(() => [String], { nullable: true })

@@ -33,7 +33,7 @@ export class MVXService {
       const response = await this.paginationService.willPaginate<MVX>(this.mvxRepo, {
         paginationOptions, mvxCode, associatedToField: {
           filterType: "stringFilter", columnValue: searchQuery, columnName: 'manufacturerName', columnName2: 'mvxCode',
-        }
+        }, associatedTo: 'MVX'
       })
 
       const { data, ...pagination } = response;
@@ -65,7 +65,7 @@ export class MVXService {
   async findOneByCode(code: string, id?: string): Promise<MVX> {
     return await this.mvxRepo.findOne({ mvxCode: code, ...(id && { id: Not(id) }) })
   }
- 
+
   /**
    * Creates mvx service
    * @param params 

@@ -9,6 +9,7 @@ import { CreateReviewOfSystemInput, ReviewOfSystemInput } from "../dto/reviewOfS
 import { PatientService } from "src/patients/services/patient.service";
 import { AnswerResponsesService } from "./answerResponses.service";
 import { AppointmentService } from "src/appointments/services/appointment.service";
+import { UpdateNotes } from "../dto/patientIllnessHistory-input.dto";
 
 
 @Injectable()
@@ -56,6 +57,32 @@ export class ReviewOfSystemService {
    */
   async findOne(id: string): Promise<ReviewOfSystem> {
     return await this.reviewOfSystemRepo.findOne(id)
+  }
+
+  async updateNotes(updateNotes: UpdateNotes): Promise<ReviewOfSystem> {
+    const { appointmentId, patientId, id, notes } = updateNotes
+    if (id) {
+      const reviewOfSystemInstance = await this.reviewOfSystemRepo.findOne(id)
+      reviewOfSystemInstance.notes = notes
+      return await this.reviewOfSystemRepo.save(reviewOfSystemInstance)
+    } else {
+      const PatientPayload = await this.patientService.GetPatient(patientId);
+      const appointment = await this.appointmentService.findOne(appointmentId);
+      const { patient } = PatientPayload;
+
+      const reviewOfSystemInstance = await this.reviewOfSystemRepo.create({
+        notes
+      })
+
+      reviewOfSystemInstance.patient = patient
+      reviewOfSystemInstance.patientId = patient.id
+
+      //associate appointment
+      reviewOfSystemInstance.appointment = appointment
+      reviewOfSystemInstance.appointmentId = appointment.id
+
+      return await this.reviewOfSystemRepo.save(reviewOfSystemInstance)
+    }
   }
 
 

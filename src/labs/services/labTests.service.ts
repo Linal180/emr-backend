@@ -1,48 +1,57 @@
-import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import * as moment from 'moment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, ILike, Repository } from 'typeorm';
-import * as moment from 'moment';
-import { AppointmentService } from 'src/appointments/services/appointment.service';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { ProblemService } from 'src/patientCharting/services/patientProblems.service';
-import { Patient } from 'src/patients/entities/patient.entity';
-import { PatientService } from 'src/patients/services/patient.service';
-import { ContactService } from 'src/providers/services/contact.service';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import CreateLabTestInput from '../dto/create-lab-test-input.dto';
-import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
-import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
-import LabTestInput from '../dto/lab-test.input';
-import { LabResultPayload, LabTestPayload } from '../dto/labTest-payload.dto';
-import { LabTestsPayload } from '../dto/labTests-payload.dto';
-import { RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input';
-import { LabTests } from '../entities/labTests.entity';
+import { forwardRef, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
 import { LoincCodesService } from './loincCodes.service';
 import { TestSpecimenService } from './testSpecimen.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
+import { PatientService } from 'src/patients/services/patient.service';
+import { ContactService } from 'src/providers/services/contact.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { ProblemService } from 'src/patientCharting/services/patientProblems.service';
+//entities
+import { LabTests } from '../entities/labTests.entity';
+import { Patient } from 'src/patients/entities/patient.entity';
 import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
+//inputs
+import LabTestInput from '../dto/lab-test.input';
+import CreateLabTestInput from '../dto/create-lab-test-input.dto';
+import LabTestByOrderNumInput from '../dto/lab-test-orderNum.dto';
+import CreateLabTestItemInput from '../dto/create-lab-test-Item-input.dto';
+import { RemoveLabTest, UpdateLabTestInput } from '../dto/update-lab-test.input';
+//payloads
+import { LabTestsPayload } from '../dto/labTests-payload.dto';
+import { LabResultPayload, LabTestPayload } from '../dto/labTest-payload.dto';
 
 @Injectable()
 export class LabTestsService {
   constructor(
     @InjectRepository(LabTests)
     private labTestsRepository: Repository<LabTests>,
-    private readonly paginationService: PaginationService,
     @Inject(forwardRef(() => ProblemService))
     private readonly problemService: ProblemService,
-    private readonly loincCodesService: LoincCodesService,
-    private readonly patientService: PatientService,
     private readonly doctorService: DoctorService,
+    private readonly patientService: PatientService,
+    private readonly contactService: ContactService,
     private readonly facilityService: FacilityService,
-    private readonly testSpecimenService: TestSpecimenService,
+    private readonly paginationService: PaginationService,
+    private readonly loincCodesService: LoincCodesService,
     private readonly appointmentService: AppointmentService,
-    private readonly contactService: ContactService
+    private readonly testSpecimenService: TestSpecimenService,
   ) { }
 
+  /**
+   * Creates lab test
+   * @param createLabTestInput 
+   * @returns lab test 
+   */
   async createLabTest(createLabTestInput: CreateLabTestInput): Promise<LabTests> {
     try {
       const { createLabTestItemInput } = createLabTestInput
-      const { primaryProviderId, patientId, collectedDate } = createLabTestItemInput
+      const { collectedDate } = createLabTestItemInput
       //get test 
       const testName = await this.loincCodesService.findOne(createLabTestInput.test)
       //get patient 
@@ -77,9 +86,9 @@ export class LabTestsService {
         labTestInstance.patientProblem = patientProblem
       }
 
-      if (primaryProviderId) {
-        await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
-      }
+      // if (primaryProviderId) {
+      //   await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
+      // }
 
       labTestInstance.test = testName
       labTestInstance.patient = patient
@@ -89,11 +98,15 @@ export class LabTestsService {
     }
   }
 
-
+  /**
+   * Updates lab test
+   * @param updateLabTestInput 
+   * @returns lab test 
+   */
   async updateLabTest(updateLabTestInput: UpdateLabTestInput): Promise<LabTests> {
     try {
       const { updateLabTestItemInput } = updateLabTestInput
-      const { primaryProviderId, patientId, collectedDate } = updateLabTestItemInput
+      const { collectedDate } = updateLabTestItemInput
 
       //create lab test 
       const labTestInstance = this.labTestsRepository.create({
@@ -131,9 +144,9 @@ export class LabTestsService {
         labTestInstance.doctor = doctor
       }
 
-      if (primaryProviderId) {
-        await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
-      }
+      // if (primaryProviderId) {
+      //   await this.patientService.updatePatientProvider({ patientId, providerId: primaryProviderId, relation: DoctorPatientRelationType.PRIMARY_PROVIDER })
+      // }
 
       if (updateLabTestInput.test) {
         //get test 
@@ -153,6 +166,11 @@ export class LabTestsService {
     }
   }
 
+  /**
+   * Finds all lab test
+   * @param labTestInput 
+   * @returns all lab test 
+   */
   async findAllLabTest(labTestInput: LabTestInput): Promise<LabTestsPayload> {
     try {
       const { paginationOptions, orderNumber, patientId, labTestStatus, practiceId, receivedDate, shouldFetchReceived, shouldFetchPending } = labTestInput
@@ -197,6 +215,11 @@ export class LabTestsService {
     }
   }
 
+  /**
+   * Finds lab tests by order num
+   * @param labTestByOrderNumInput 
+   * @returns lab tests by order num 
+   */
   async findLabTestsByOrderNum(labTestByOrderNumInput: LabTestByOrderNumInput): Promise<LabTestsPayload> {
     if (labTestByOrderNumInput.paginationOptions) {
       try {
@@ -235,6 +258,11 @@ export class LabTestsService {
     });
   }
 
+  /**
+   * Finds one
+   * @param id 
+   * @returns one 
+   */
   async findOne(id: string): Promise<LabTests> {
     const labTest = await this.labTestsRepository.findOne(id);
     if (labTest) {
@@ -246,6 +274,11 @@ export class LabTestsService {
     });
   }
 
+  /**
+   * Gets lab test
+   * @param id 
+   * @returns lab test 
+   */
   async GetLabTest(id: string): Promise<LabTestPayload> {
     const labTest = await this.findOne(id);
     if (labTest) {
@@ -253,10 +286,20 @@ export class LabTestsService {
     }
   }
 
+  /**
+   * Gets lab tests by problem id
+   * @param problemId 
+   * @returns lab tests by problem id 
+   */
   async GetLabTestsByProblemId(problemId: string): Promise<LabTests[]> {
     return await this.labTestsRepository.find({ where: { patientProblemId: problemId } });
   }
 
+  /**
+   * Updates patient lab test signed
+   * @param problemId 
+   * @returns  
+   */
   async updatePatientLabTestSigned(problemId: string) {
     const labTests = await this.labTestsRepository.find({ where: { patientProblemId: problemId } })
     labTests.forEach(async (labTest) => {
@@ -266,6 +309,12 @@ export class LabTestsService {
     return labTests
   }
 
+  /**
+   * Finds lab test by test and order no
+   * @param orderNum 
+   * @param testName 
+   * @returns lab test by test and order no 
+   */
   async findLabTestByTestAndOrderNo(orderNum: string, testName: string): Promise<LabTests> {
     const labTest = await this.labTestsRepository.findOne({
       relations: ['test', 'testObservations'],
@@ -281,6 +330,10 @@ export class LabTestsService {
     }
   }
 
+  /**
+   * Removes lab test
+   * @param { id } 
+   */
   async removeLabTest({ id }: RemoveLabTest) {
     try {
       const labTest = await this.findOne(id)
@@ -297,6 +350,11 @@ export class LabTestsService {
     }
   }
 
+  /**
+   * Updates lab tests by order number
+   * @param updateLabTestItemInput 
+   * @returns lab tests by order number 
+   */
   async updateLabTestsByOrderNumber(updateLabTestItemInput: CreateLabTestItemInput): Promise<LabTests[]> {
     try {
       const labTests = await this.labTestsRepository.find({ orderNumber: updateLabTestItemInput.orderNumber })
@@ -327,6 +385,12 @@ export class LabTestsService {
     }
   }
 
+
+  /**
+   * Finds lab result info
+   * @param orderNumber 
+   * @returns lab result info 
+   */
   async findLabResultInfo(orderNumber): Promise<LabResultPayload> {
     const labTests = await this.labTestsRepository.find({ orderNumber })
     const { patientId, primaryProviderId } = labTests?.[0] || {}
@@ -342,9 +406,5 @@ export class LabTestsService {
       doctor,
       labTests
     }
-  }
-
-  async find() {
-    return this.labTestsRepository.find()
   }
 }

@@ -25,7 +25,6 @@ import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaymentService } from 'src/payment/services/payment.service';
-import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
@@ -59,7 +58,6 @@ export class AppointmentService {
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService,
     private readonly contractService: ContractService,
-    private readonly paginationService: PaginationService,
     private readonly patientConsentService: PatientConsentService,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService
@@ -276,9 +274,12 @@ export class AppointmentService {
         relations: ['patient', 'facility', 'provider'],
         where: { id: appointmentId }
       })
+
       const { patient, facility, provider, timeZone } = appointmentInfo || {}
-      const patientContacts = await this.contactService.findContactsByPatientId(patient.id)
+
+      const patientContacts = await this.contactService.findContactsByPatientId(patient?.id)
       const { phone, email } = patientContacts.find((item) => item.primaryContact) || {}
+
       const slotStart = momentTimezone(appointmentInfo.scheduleStartDateTime).tz(timeZone).format('MM-DD-YYYY hh:mm A')
       const slotStartTime = `${slotStart} ( ${timeZone} Time Zone )`
 
@@ -297,7 +298,18 @@ export class AppointmentService {
       }
 
       if (email) {
-        await this.mailerService.sendAppointmentReminderEmail(patient.email, patient.firstName + ' ' + patient.lastName, slotStartTime, facility.name, false)
+        const { email, phone } = await this.contactService.findPrimaryContactByFacilityId(facility?.id);
+
+        const inputs = {
+          email: patient?.email,
+          fullName: patient?.firstName + ' ' + patient?.lastName,
+          slotStartTime,
+          facilityName: facility?.name,
+          facilityEmail: email,
+          facilityPhone: phone,
+        }
+
+        await this.mailerService.sendAppointmentReminderEmail(inputs)
       }
     } catch (error) {
       throw new InternalServerErrorException(error);
