@@ -5,6 +5,7 @@ import {
 //entities
 import { Service } from './services.entity';
 import { Taxonomy } from './taxonomy.entity';
+import { Room } from 'src/room/entities/room.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
@@ -165,12 +166,17 @@ export class Facility {
     default: ServiceCode.Pharmacy_01,
     nullable: true
   })
+
   @Field(type => ServiceCode, { nullable: true })
   serviceCode: ServiceCode
 
   @Field(() => [Staff], { nullable: true })
   @OneToMany(() => Staff, staff => staff.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   staff: Staff[];
+
+  @Field(() => [Room], { nullable: true })
+  @OneToMany(() => Room, room => room.facility, {  onDelete: "CASCADE" })
+  rooms: Room[];
 
   @Field(() => [Doctor], { nullable: true })
   @OneToMany(() => Doctor, doctor => doctor.facility, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
