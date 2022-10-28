@@ -39,7 +39,7 @@ export class UpFrontPaymentService {
       }
 
       if (upFrontPaymentTypes) {
-        if(upFrontPayment){
+        if (upFrontPayment) {
           await this.upFrontPaymentTypeRepo.delete({ upFrontPaymentId: upFrontPayment.id })
         }
         const createdUpFrontPaymentTypes = await Promise.all(upFrontPaymentTypes?.map(async (upFrontPaymentToCreate) => {
@@ -70,5 +70,13 @@ export class UpFrontPaymentService {
     return await this.upFrontPaymentRepo.findOne({
       appointmentId
     })
+  }
+
+  async fetchUpFrontPaymentTypes(upFrontPaymentId: string): Promise<UpFrontPaymentType[]> {
+    if (upFrontPaymentId) {
+      return await this.upFrontPaymentTypeRepo.find({
+        upFrontPaymentId
+      })
+    }
   }
 }
