@@ -1045,7 +1045,6 @@ export class BillingService {
     const { cptCodes } = cptCodesPayload || {}
 
     const UpFrontPaymentTypes = await this.upFrontPaymentService.fetchUpFrontPaymentTypes(upFrontPayment?.id)
-    console.log("UpFrontPaymentTypes", UpFrontPaymentTypes, upFrontPayment)
     const copay = UpFrontPaymentTypes?.find((type) => type.paymentType === UPFRONT_PAYMENT_TYPES.Copay)
     const additional = UpFrontPaymentTypes?.find((type) => type.paymentType === UPFRONT_PAYMENT_TYPES.Additional)
     const previous = UpFrontPaymentTypes?.find((type) => type.paymentType === UPFRONT_PAYMENT_TYPES.Previous)
