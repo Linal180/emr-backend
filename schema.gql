@@ -3222,6 +3222,12 @@ type LiveClaimFeed {
   updatedAt: String
 }
 
+type PaymentInfo {
+  deductible: String
+  copay: String
+  previous: String
+}
+
 type SuperBillPayload {
   appointmentInfo: Appointment
   providerInfo: Doctor
@@ -3229,6 +3235,8 @@ type SuperBillPayload {
   policyHolderInfo: PolicyHolder
   billingInfo: Billing
   patientInfo: Patient
+  cptCodes: [CPTCodes!]
+  paymentInfo: PaymentInfo
   response: ResponsePayload
 }
 
