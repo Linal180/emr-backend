@@ -165,6 +165,12 @@ export enum ANSWER_TYPE {
   ABNORMAL = "Abnormal"
 }
 
+export enum UPFRONT_PAYMENT_TYPES {
+  Copay = 'Copay',
+  Additional = 'Additional',
+  Previous = 'Previous'
+}
+
 export type SocialDependentQuestions = {
   title: string
   note: string;
