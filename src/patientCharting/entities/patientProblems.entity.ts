@@ -62,6 +62,10 @@ export class PatientProblems {
   @Field({ nullable: true })
   note: string;
 
+  @Column({ nullable: true, type: "jsonb" })
+  @Field({ nullable: true })
+  apNotes: string;
+
   @Column({ nullable: true, default: false })
   @Field({ nullable: true })
   isSigned: boolean;

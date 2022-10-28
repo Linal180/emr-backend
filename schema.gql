@@ -380,6 +380,7 @@ type PatientProblems {
   problemSeverity: ProblemSeverity!
   problemStartDate: String
   note: String
+  apNotes: String
   isSigned: Boolean
   forOrders: Boolean
   patientId: String
@@ -4464,6 +4465,7 @@ type Mutation {
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   updatePatientProblemSigned(updateProblemSignedInput: UpdateProblemSignedInput!): PatientProblemPayload!
+  updatePatientProblemNotes(updateProblemNotesInput: UpdateProblemNotesInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
   createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
   updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
@@ -6012,6 +6014,11 @@ input UpdateProblemInput {
 input UpdateProblemSignedInput {
   id: String
   isSigned: Boolean
+}
+
+input UpdateProblemNotesInput {
+  id: String
+  notes: String
 }
 
 input RemoveProblem {

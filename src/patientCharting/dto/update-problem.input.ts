@@ -55,3 +55,12 @@ export class UpdateProblemSignedInput {
   @Field({ nullable: true })
   isSigned: boolean;
 }
+
+@InputType()
+export class UpdateProblemNotesInput {
+  @Field({ nullable: true })
+  id: string;
+
+  @Field({ nullable: true })
+  notes: string;
+}
