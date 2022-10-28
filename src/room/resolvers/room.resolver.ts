@@ -1,6 +1,7 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 //services
 import { RoomService } from '../services/room.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
 //entities
 import { Room } from '../entities/room.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
@@ -13,6 +14,7 @@ import { CreateRoomInput, FindAllRoomInput, GetRoomInput, RemoveRoomInput, Updat
 export class RoomResolver {
   constructor(
     private readonly roomService: RoomService,
+    private readonly facilityService: FacilityService,
   ) { }
 
   //queries
@@ -85,11 +87,11 @@ export class RoomResolver {
 
   //resolve fields
 
-  // @ResolveField(() => Facility)
-  // async facility(@Parent() room: Room): Promise<Facility> {
-  //   if (room?.cptCodeId) {
-  //     return await this.cptCodeService.findOne({ id: room?.cptCodeId });
-  //   }
-  // }
+  @ResolveField(() => Facility)
+  async facility(@Parent() room: Room): Promise<Facility> {
+    if (room?.facilityId) {
+      return await this.facilityService.findOne(room?.facilityId);
+    }
+  }
 
 }

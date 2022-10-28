@@ -8,12 +8,16 @@ import { RoomResolver } from './resolvers/room.resolver';
 import { Room } from './entities/room.entity';
 //modules
 import { UtilsModule } from 'src/util/utils.module';
+import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Room]),
+  imports: [
+    TypeOrmModule.forFeature([Room]),
+    UtilsModule,
+    FacilityModule,
     PaginationModule,
-    UtilsModule],
+  ],
   providers: [RoomService, RoomResolver]
 })
 export class RoomModule { }
