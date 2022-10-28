@@ -20,9 +20,15 @@ export class Room {
   @Field({ nullable: true })
   number: string;
 
+  //relationship fields
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   facilityId: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  practiceId: string;
 
   //relationship 
 

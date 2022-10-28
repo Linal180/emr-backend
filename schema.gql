@@ -1978,6 +1978,7 @@ type Room {
   name: String
   number: String
   facilityId: String
+  practiceId: String
   facility: Facility
   createdAt: String!
   updatedAt: String!
@@ -4367,6 +4368,7 @@ input GetMacroInput {
 
 input FindAllRoomInput {
   facilityId: String
+  practiceId: String
   searchString: String
   paginationOptions: PaginationInput!
 }

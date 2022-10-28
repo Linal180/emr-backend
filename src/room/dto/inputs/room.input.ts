@@ -4,8 +4,12 @@ import PaginationInput from "src/pagination/dto/pagination-input.dto"
 
 @InputType()
 export class FindAllRoomInput {
+
   @Field({ nullable: true })
-  facilityId: string
+  facilityId?: string
+
+  @Field({ nullable: true })
+  practiceId?: string
 
   @Field({ nullable: true })
   searchString?: string

@@ -29,10 +29,10 @@ export class RoomService {
   async findAll(params: FindAllRoomInput): Promise<FindAllRoomPayload> {
     try {
 
-      const { paginationOptions, searchString, facilityId } = params || {}
+      const { paginationOptions, searchString, facilityId, practiceId } = params || {}
       const response = await this.paginationService.willPaginate<Room>(this.roomRepo, {
-        paginationOptions, facilityId, associatedToField: {
-          filterType: "stringFilter", columnValue: searchString, columnName: 'manufacturerName', columnName2: 'mvxCode',
+        paginationOptions, facilityId, practiceId, associatedToField: {
+          filterType: "stringFilter", columnValue: searchString, columnName: 'name', columnName2: 'number'
         }, associatedTo: 'Room'
       })
 
@@ -81,6 +81,7 @@ export class RoomService {
       const roomInstance = this.roomRepo.create(params);
       const { facility } = await this.facilityService.GetFacility(facilityId);
       roomInstance.facility = facility
+      roomInstance.practiceId = facility?.practiceId
       return await this.roomRepo.save(roomInstance)
     } catch (error) {
       throw new InternalServerErrorException(error)
@@ -103,6 +104,7 @@ export class RoomService {
       const { facility } = await this.facilityService.GetFacility(facilityId);
       roomInstance.facility = facility
       roomInstance.facilityId = facility?.id
+      roomInstance.practiceId = facility?.practiceId
       return await this.roomRepo.save({ ...roomInstance, number, name })
     } catch (error) {
       throw new InternalServerErrorException(error);
