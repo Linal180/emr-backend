@@ -62,8 +62,8 @@ export class RoomService {
    * @param [id] 
    * @returns one by no 
    */
-  async findOneByNo(number: string, id?: string): Promise<Room> {
-    return await this.roomRepo.findOne({ number, ...(id && { id: Not(id) }) })
+  async findOneByNo(number: string, facilityId: string, id?: string): Promise<Room> {
+    return await this.roomRepo.findOne({ facilityId, number, ...(id && { id: Not(id) }) })
   }
 
   /**
@@ -74,7 +74,7 @@ export class RoomService {
   async create(params: CreateRoomInput): Promise<Room> {
     try {
       const { number, facilityId } = params;
-      const oldRoom = await this.findOneByNo(number);
+      const oldRoom = await this.findOneByNo(number, facilityId);
       if (oldRoom) {
         throw new Error(`Room is already exist with Number: ${number}`);
       }
@@ -96,7 +96,7 @@ export class RoomService {
   async update(params: UpdateRoomInput): Promise<Room> {
     try {
       const { id, number, facilityId, name } = params || {}
-      const oldRoom = await this.findOneByNo(number, id);
+      const oldRoom = await this.findOneByNo(number, facilityId, id);
       if (oldRoom) {
         throw new Error(`Room is already exist with Number: ${number}`);
       }
