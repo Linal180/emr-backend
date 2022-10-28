@@ -1973,6 +1973,16 @@ enum ServiceType {
   EXTERNAL
 }
 
+type Room {
+  id: String!
+  name: String
+  number: String
+  facilityId: String
+  facility: Facility
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Facility {
   id: String!
   name: String!
@@ -1992,6 +2002,7 @@ type Facility {
   practiceId: String
   serviceCode: ServiceCode
   staff: [Staff!]
+  rooms: [Room!]
   doctors: [Doctor!]
   appointments: [Appointment!]
   agreements: [Agreement!]
@@ -3466,6 +3477,17 @@ type MacroPayload {
   macro: Macros
 }
 
+type RoomPayload {
+  room: Room
+  response: ResponsePayloadResponse
+}
+
+type FindAllRoomPayload {
+  rooms: [Room!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3626,6 +3648,8 @@ type Query {
   latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   fetchAllMacros(macroInput: MacroPaginationInput!): MacrosPayload!
   getMacro(getMacroInput: GetMacroInput!): MacroPayload!
+  findAllRoom(findAllRoomInput: FindAllRoomInput!): FindAllRoomPayload!
+  getRoom(getRoomInput: GetRoomInput!): RoomPayload!
 }
 
 input SearchLoincCodesInput {
@@ -4333,6 +4357,16 @@ input GetMacroInput {
   id: String
 }
 
+input FindAllRoomInput {
+  facilityId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetRoomInput {
+  id: String!
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4507,6 +4541,9 @@ type Mutation {
   createMacro(createMacroInput: CreateMacroInput!): MacroPayload!
   updateMacro(updateMacroInput: UpdateMacroInput!): MacroPayload!
   removeMacro(removeMacroInput: RemoveMacroInput!): MacroPayload!
+  createRoom(createRoomInput: CreateRoomInput!): RoomPayload!
+  updateRoom(updateRoomInput: UpdateRoomInput!): RoomPayload!
+  removeRoom(removeRoomInput: RemoveRoomInput!): RoomPayload!
 }
 
 input LoincCodeInput {
@@ -6517,5 +6554,22 @@ input UpdateMacroInput {
 }
 
 input RemoveMacroInput {
+  id: String!
+}
+
+input CreateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+}
+
+input UpdateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+  id: String!
+}
+
+input RemoveRoomInput {
   id: String!
 }

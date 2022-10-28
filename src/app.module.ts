@@ -26,6 +26,9 @@ import { FeeScheduleModule } from './feeSchedule/feeSchedule.module';
 import { AppointmentModule } from './appointments/appointment.module';
 import { SocialHistoryModule } from './socialHistory/socialHistory.module';
 import { PatientChartingModule } from './patientCharting/patientCharting.module';
+import { ReviewOfSystemModule } from './reviewOfSystems/reviewOfSystems.module';
+import { MacroModule } from './macros/macros.module';
+import { RoomModule } from './room/room.module';
 //configs, 
 import { DatabaseConfig } from './database.config';
 import configuration from './config/configuration';
@@ -34,8 +37,6 @@ import { LogDatabaseConfig } from './logDatabase.config';
 import { AppService } from './app.service';
 //controller
 import { AppController } from './app.controller';
-import { ReviewOfSystemModule } from './reviewOfSystems/reviewOfSystems.module';
-import { MacroModule } from './macros/macros.module';
 
 @Module({
   imports: [
@@ -82,7 +83,8 @@ import { MacroModule } from './macros/macros.module';
     ShortUrlModule,
     SocialHistoryModule,
     ReviewOfSystemModule,
-    MacroModule
+    MacroModule,
+    RoomModule
   ],
   controllers: [AppController],
   providers: [AppService],
