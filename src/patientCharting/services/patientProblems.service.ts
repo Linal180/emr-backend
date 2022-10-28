@@ -20,7 +20,7 @@ import { generateString } from 'src/lib/helper';
 //inputs
 import PatientProblemInput from '../dto/problem-input.dto';
 import { CreateProblemInput } from '../dto/create-problem.input';
-import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemSignedInput } from '../dto/update-problem.input';
+import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemNotesInput, UpdateProblemSignedInput } from '../dto/update-problem.input';
 //payloads
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
@@ -140,6 +140,21 @@ export class ProblemService {
       if (id) {
         const patientProblem = await this.GetPatientProblem(id)
         patientProblem.isSigned = isSigned
+        await this.patientMedicationService.updatePatientMedicationsSigned(id)
+        await this.labTestService.updatePatientLabTestSigned(id)
+        return await this.patientProblemsRepository.save(patientProblem)
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updatePatientProblemNotes(updateProblemNotesInput: UpdateProblemNotesInput): Promise<PatientProblems> {
+    try {
+      const { id, notes } = updateProblemNotesInput
+      if (id) {
+        const patientProblem = await this.GetPatientProblem(id)
+        patientProblem.apNotes = notes
         await this.patientMedicationService.updatePatientMedicationsSigned(id)
         await this.labTestService.updatePatientLabTestSigned(id)
         return await this.patientProblemsRepository.save(patientProblem)

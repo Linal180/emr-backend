@@ -380,6 +380,7 @@ type PatientProblems {
   problemSeverity: ProblemSeverity!
   problemStartDate: String
   note: String
+  apNotes: String
   isSigned: Boolean
   forOrders: Boolean
   patientId: String
@@ -1973,6 +1974,17 @@ enum ServiceType {
   EXTERNAL
 }
 
+type Room {
+  id: String!
+  name: String
+  number: String
+  facilityId: String
+  practiceId: String
+  facility: Facility
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Facility {
   id: String!
   name: String!
@@ -1992,6 +2004,7 @@ type Facility {
   practiceId: String
   serviceCode: ServiceCode
   staff: [Staff!]
+  rooms: [Room!]
   doctors: [Doctor!]
   appointments: [Appointment!]
   agreements: [Agreement!]
@@ -3211,6 +3224,12 @@ type LiveClaimFeed {
   updatedAt: String
 }
 
+type PaymentInfo {
+  deductible: String
+  copay: String
+  previous: String
+}
+
 type SuperBillPayload {
   appointmentInfo: Appointment
   providerInfo: Doctor
@@ -3218,6 +3237,8 @@ type SuperBillPayload {
   policyHolderInfo: PolicyHolder
   billingInfo: Billing
   patientInfo: Patient
+  cptCodes: [CPTCodes!]
+  paymentInfo: PaymentInfo
   response: ResponsePayload
 }
 
@@ -3466,6 +3487,17 @@ type MacroPayload {
   macro: Macros
 }
 
+type RoomPayload {
+  room: Room
+  response: ResponsePayloadResponse
+}
+
+type FindAllRoomPayload {
+  rooms: [Room!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3626,6 +3658,8 @@ type Query {
   latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   fetchAllMacros(macroInput: MacroPaginationInput!): MacrosPayload!
   getMacro(getMacroInput: GetMacroInput!): MacroPayload!
+  findAllRoom(findAllRoomInput: FindAllRoomInput!): FindAllRoomPayload!
+  getRoom(getRoomInput: GetRoomInput!): RoomPayload!
 }
 
 input SearchLoincCodesInput {
@@ -4333,6 +4367,17 @@ input GetMacroInput {
   id: String
 }
 
+input FindAllRoomInput {
+  facilityId: String
+  practiceId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetRoomInput {
+  id: String!
+}
+
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4456,6 +4501,7 @@ type Mutation {
   addPatientProblem(createProblemInput: CreateProblemInput!): PatientProblemPayload!
   updatePatientProblem(updateProblemInput: UpdateProblemInput!): PatientProblemPayload!
   updatePatientProblemSigned(updateProblemSignedInput: UpdateProblemSignedInput!): PatientProblemPayload!
+  updatePatientProblemNotes(updateProblemNotesInput: UpdateProblemNotesInput!): PatientProblemPayload!
   removePatientProblem(removeProblem: RemoveProblem!): PatientProblemPayload!
   createIcdCode(createIcdCodeInput: CreateIcdCodeInput!): IcdCodePayload!
   updateIcdCode(updateIcdCodeInput: UpdateIcdCodeInput!): IcdCodePayload!
@@ -4507,6 +4553,9 @@ type Mutation {
   createMacro(createMacroInput: CreateMacroInput!): MacroPayload!
   updateMacro(updateMacroInput: UpdateMacroInput!): MacroPayload!
   removeMacro(removeMacroInput: RemoveMacroInput!): MacroPayload!
+  createRoom(createRoomInput: CreateRoomInput!): RoomPayload!
+  updateRoom(updateRoomInput: UpdateRoomInput!): RoomPayload!
+  removeRoom(removeRoomInput: RemoveRoomInput!): RoomPayload!
 }
 
 input LoincCodeInput {
@@ -6006,6 +6055,11 @@ input UpdateProblemSignedInput {
   isSigned: Boolean
 }
 
+input UpdateProblemNotesInput {
+  id: String
+  notes: String
+}
+
 input RemoveProblem {
   id: String!
 }
@@ -6517,5 +6571,22 @@ input UpdateMacroInput {
 }
 
 input RemoveMacroInput {
+  id: String!
+}
+
+input CreateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+}
+
+input UpdateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+  id: String!
+}
+
+input RemoveRoomInput {
   id: String!
 }

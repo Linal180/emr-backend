@@ -7,7 +7,7 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PatientProblemInput from '../dto/problem-input.dto';
 import { CreateProblemInput } from '../dto/create-problem.input';
 import {
-  GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemSignedInput
+  GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemNotesInput, UpdateProblemSignedInput
 } from '../dto/update-problem.input';
 //payloads
 import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
@@ -61,6 +61,16 @@ export class ProblemResolver {
     return {
       patientProblem: await this.problemService.updatePatientProblemSigned(updateProblemSignedInput),
       response: { status: 200, message: 'Diagnose signed successfully' }
+    };
+  }
+
+  @Mutation(() => PatientProblemPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'updatePatientProblem')
+  async updatePatientProblemNotes(@Args('updateProblemNotesInput') updateProblemNotesInput: UpdateProblemNotesInput) {
+    return {
+      patientProblem: await this.problemService.updatePatientProblemNotes(updateProblemNotesInput),
+      response: { status: 200, message: 'Diagnose notes updated successfully' }
     };
   }
 

@@ -42,6 +42,9 @@ import { ClaimInput, CreateClaimInput, GetClaimFileInput } from '../dto/claim-in
 //helpers
 import { claimMedValidation } from 'src/lib/validations';
 import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } from 'src/lib/helper';
+import { CptCodeService } from 'src/feeSchedule/services/cptCode.service';
+import { UpFrontPaymentService } from './upFrontPayment.service';
+import { UPFRONT_PAYMENT_TYPES } from 'src/lib/constants';
 
 @Injectable()
 export class BillingService {
@@ -67,6 +70,8 @@ export class BillingService {
     private readonly feeScheduleService: FeeScheduleService,
     private readonly policyHolderService: PolicyHolderService,
     private readonly billingAddressService: BillingAddressService,
+    private readonly cptCodeService: CptCodeService,
+    private readonly upFrontPaymentService: UpFrontPaymentService,
   ) { }
 
 
@@ -1020,6 +1025,7 @@ export class BillingService {
    */
   async getSuperBillInfo(appointmentId): Promise<SuperBillPayload> {
     const billingInfo = await this.fetchBillingDetailsByAppointmentId(appointmentId)
+    const upFrontPayment = await this.upFrontPaymentService.fetchUpFrontPaymentByAppointmentId(appointmentId)
     const appointmentInfo = await this.appointmentService.findOne(appointmentId)
     const patientInfo = await this.patientService.findOne(appointmentInfo.patientId)
     const providersInfo = await this.patientService.usualProvider(patientInfo.id)
@@ -1035,6 +1041,20 @@ export class BillingService {
       policyHolderInfo = await this.policyHolderService.findOne(insuranceDetail?.policyHolderId)
     }
 
+    const cptCodesPayload = await this.cptCodeService.findAllCPTCodes({ paginationOptions: { limit: 50, page: 1 } })
+    const { cptCodes } = cptCodesPayload || {}
+
+    const UpFrontPaymentTypes = await this.upFrontPaymentService.fetchUpFrontPaymentTypes(upFrontPayment?.id)
+    const copay = UpFrontPaymentTypes?.find((type) => type.paymentType === UPFRONT_PAYMENT_TYPES.Copay)
+    const additional = UpFrontPaymentTypes?.find((type) => type.paymentType === UPFRONT_PAYMENT_TYPES.Additional)
+    const previous = UpFrontPaymentTypes?.find((type) => type.paymentType === UPFRONT_PAYMENT_TYPES.Previous)
+
+    const paymentInfo = {
+      deductible: additional?.amount,
+      copay: copay?.amount,
+      previous: previous?.amount
+    }
+
     const primaryProvider = providersInfo.find((providerInfo) => providerInfo.relation === DoctorPatientRelationType.PRIMARY_PROVIDER)?.doctor
 
     return {
@@ -1043,7 +1063,9 @@ export class BillingService {
       insuranceDetail,
       policyHolderInfo,
       patientInfo,
-      billingInfo
+      billingInfo,
+      cptCodes,
+      paymentInfo
     }
   }
 
