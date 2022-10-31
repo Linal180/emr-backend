@@ -40,6 +40,8 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 //decorators, exceptions
 import { HttpExceptionFilterGql } from 'src/exception-filter';
 import { CurrentUser } from '../../customDecorators/current-user.decorator';
+import { StaffService } from 'src/providers/services/staff.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
 
 @Resolver(() => User)
 @UseFilters(HttpExceptionFilterGql)
@@ -47,16 +49,18 @@ export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
-    private readonly attachmentsService: AttachmentsService
+    private readonly attachmentsService: AttachmentsService,
+    private readonly staffService: StaffService,
+    private readonly doctorService: DoctorService,
   ) { }
 
   // Queries 
   @Query(() => UsersPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'fetchAllUsers')
   async fetchAllUsers(@Args('userInput') usersInput: UsersInput): Promise<UsersPayload> {
     const response = await this.usersService.findAll(usersInput);
-    const {users } = response
+    const { users } = response
     if (users?.length) {
       return {
         ...response,
@@ -346,6 +350,42 @@ export class UsersResolver {
   async attachments(@Parent() user: User): Promise<Attachment[]> {
     if (user) {
       return await this.attachmentsService.findAttachments(user.id, AttachmentType.SUPER_ADMIN);
+    }
+  }
+
+  @ResolveField(() => String)
+  async firstName(@Parent() user: User): Promise<string> {
+    if (user) {
+      const { userType } = user
+      if(userType==='doctor'){
+        const { firstName }= await this.doctorService.findOne(user.userId)
+        return firstName
+      }
+
+      if(userType==='staff'){
+        const { firstName }= await this.staffService.findOne(user.userId)
+        return firstName
+      }
+
+      return ''
+    }
+  }
+
+  @ResolveField(() => String)
+  async lastName(@Parent() user: User): Promise<string> {
+    if (user) {
+      const { userType } = user
+      if(userType==='doctor'){
+        const { lastName }= await this.doctorService.findOne(user.userId)
+        return lastName
+      }
+
+      if(userType==='staff'){
+        const { lastName }= await this.staffService.findOne(user.userId)
+        return lastName
+      }
+
+      return ''
     }
   }
 }
