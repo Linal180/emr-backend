@@ -15,8 +15,8 @@ export class ImagingTestService {
   constructor(
     @InjectRepository(ImagingTest)
     private imagingTestRepo: Repository<ImagingTest>,
-    private readonly paginationService: PaginationService,
     private readonly utilsService: UtilsService,
+    private readonly paginationService: PaginationService,
   ) { }
 
 
@@ -31,7 +31,7 @@ export class ImagingTestService {
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<ImagingTest>(this.imagingTestRepo, {
         paginationOptions, associatedToField: {
-          filterType: "stringFilter", columnValue: searchQuery, columnName: 'manufacturerName', columnName2: 'mvxCode',
+          filterType: "stringFilter", columnValue: searchQuery, columnName: 'name',
         }, associatedTo: 'ImagingTest'
       })
 
@@ -56,8 +56,9 @@ export class ImagingTestService {
   }
 
 
+ 
   /**
-   * Creates mvx service
+   * Creates imaging test service
    * @param params 
    * @returns create 
    */
@@ -71,8 +72,9 @@ export class ImagingTestService {
   }
 
 
+
   /**
-   * Updates mvx service
+   * Updates imaging test service
    * @param params 
    * @returns update 
    */
@@ -86,8 +88,9 @@ export class ImagingTestService {
     }
   }
 
+ 
   /**
-   * Removes mvx service
+   * Removes imaging test service
    * @param id 
    * @returns remove 
    */

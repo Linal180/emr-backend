@@ -2867,6 +2867,17 @@ type LoincCodesPayload {
   pagination: PaginationPayload
 }
 
+type FindAllImagingTestPayload {
+  imagingTests: [ImagingTest!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type ImagingTestPayload {
+  imagingTest: ImagingTest
+  response: ResponsePayloadResponse
+}
+
 type TestSpecimenTypesPayload {
   response: ResponsePayload
   specimenTypes: [SpecimenTypes!]
@@ -3559,6 +3570,8 @@ type Query {
   findLabResultInfo(orderNumber: String!): LabResultPayload!
   findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
   getSpecimenTypeByName(name: String!): SpecimenTypes!
+  findAllImagingTest(findAllImagingTestInput: FindAllImagingTestInput!): FindAllImagingTestPayload!
+  getImagingTestCode(getImagingTestCodeInput: GetImagingTestCodeInput!): ImagingTestPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
@@ -3751,6 +3764,15 @@ input LabTestInput {
 input TestSpecimenTypeInput {
   specimenTypeName: String
   paginationOptions: PaginationInput!
+}
+
+input FindAllImagingTestInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetImagingTestCodeInput {
+  id: String!
 }
 
 input PracticeInput {
@@ -4442,6 +4464,9 @@ type Mutation {
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
   syncLabResults(updateObservationInput: UpdateObservationInput!): LabTestObservationPayload!
   removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
+  createImagingTestCode(createImagingTestCodeInput: CreateImagingTestCodeInput!): ImagingTestPayload!
+  updateImagingTestCode(updateImagingTestCodeInput: UpdateImagingTestCodeInput!): ImagingTestPayload!
+  removeImagingTestCode(removeImagingTestCodeInput: RemoveImagingTestCodeInput!): ImagingTestPayload!
   createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
   updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
   removePractice(removePractice: RemovePractice!): PracticePayload!
@@ -4743,6 +4768,19 @@ input UpdateObservationItemInput {
 }
 
 input RemoveLabTestObservation {
+  id: String!
+}
+
+input CreateImagingTestCodeInput {
+  name: String!
+}
+
+input UpdateImagingTestCodeInput {
+  name: String
+  id: String!
+}
+
+input RemoveImagingTestCodeInput {
   id: String!
 }
 

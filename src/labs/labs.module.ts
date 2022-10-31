@@ -22,11 +22,13 @@ import { TestSpecimens } from './entities/testSpecimens.entity';
 //resolver
 import { LabTestsResolver } from './resolvers/labTests.resolver';
 import { LoincCodesResolver } from './resolvers/loincCodes.resolver';
+import { ImagingTestResolver } from './resolvers/imagingTest.resolver';
 import { TestSpecimenResolver } from './resolvers/testSpecimen.resolver';
 import { LabTestObservationResolver } from './resolvers/labTestObservations.resolver';
 //services
 import { LabTestsService } from './services/labTests.service';
 import { LoincCodesService } from './services/loincCodes.service';
+import { ImagingTestService } from './services/imagingTest.service';
 import { TestSpecimenService } from './services/testSpecimen.service';
 import { LabTestsObservationsService } from './services/labTestObservation.service';
 //controller, subscriber
@@ -50,7 +52,8 @@ import { LabTestsObservationsController } from './labs.controller';
   controllers: [LabTestsObservationsController],
   providers: [
     ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver,
-    LabTestsService, LabTestObservationResolver, LabTestsObservationsService, TestSpecimenResolver
+    LabTestsService, LabTestObservationResolver, LabTestsObservationsService, TestSpecimenResolver,
+    ImagingTestService, ImagingTestResolver
   ],
   exports: [LoincCodesService, LabTestsService, TestSpecimenService, LabTestsObservationsService, TypeOrmModule],
 })
