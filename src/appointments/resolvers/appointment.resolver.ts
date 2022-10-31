@@ -27,6 +27,7 @@ import {
 import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
 import { PolicyService } from 'src/insurance/services/policy.service';
 import { Policy } from 'src/insurance/entities/policy.entity';
+import { Scribe } from '../entities/scribe.entity';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
