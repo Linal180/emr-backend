@@ -54,6 +54,12 @@ export class User {
   @Field()
   inviteSentAt: string;
 
+  @Field()
+  firstName: string;
+
+  @Field()
+  lastName: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
   inviteAcceptedAt: string;

@@ -8,13 +8,16 @@ export default class UsersInput {
   @Field(() => UserStatus, { nullable: true })
   status?: UserStatus
 
-  @Field( { nullable: true })
+  @Field({ nullable: true })
   role?: string
 
-  @Field( { nullable: true })
+  @Field(() => [String], { nullable: true })
+  roles?: string[]
+
+  @Field({ nullable: true })
   facilityId?: string;
 
-  @Field( { nullable: true })
+  @Field({ nullable: true })
   searchString?: string;
 
   @Field(() => PaginationInput)

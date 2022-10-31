@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 //entities
+import { Scribe } from './scribe.entity';
 import { Contract } from './contract.entity';
 import { Invoice } from 'src/payment/entity/invoice.entity'
 import { LabTests } from 'src/labs/entities/labTests.entity';
@@ -265,6 +266,10 @@ export class Appointment {
   @Field(() => Contract, { nullable: true })
   @OneToOne(() => Contract, (contract) => contract.appointment, { eager: true })
   contract: Contract;
+
+  @OneToOne(() => Scribe, (scribe) => scribe.appointment, { eager: true })
+  @Field(() => Scribe, { nullable: true })
+  scribe: Scribe;
 
   @Field(() => TriageNotes, { nullable: true })
   @OneToOne(() => TriageNotes, (triageNote) => triageNote.appointment)

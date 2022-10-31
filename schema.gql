@@ -1891,6 +1891,16 @@ type PhysicalExam {
   updatedAt: String
 }
 
+type Scribe {
+  id: String!
+  userType: String
+  userId: String
+  firstName: String
+  lastName: String
+  isScribed: Boolean
+  appointment: Appointment
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1935,6 +1945,7 @@ type Appointment {
   labTests: [LabTests!]
   invoice: Invoice
   contract: Contract
+  scribe: Scribe
   triageNote: TriageNotes
   patientIllnessHistory: PatientIllnessHistory
   reviewOfSystem: ReviewOfSystem
@@ -2124,6 +2135,8 @@ type User {
   email: String!
   phone: String
   inviteSentAt: String!
+  firstName: String!
+  lastName: String!
   inviteAcceptedAt: String!
   userId: String!
   token: String
@@ -2751,6 +2764,11 @@ type AppointmentInsuranceStatus {
   response: ResponsePayload
   id: String!
   insuranceStatus: String
+}
+
+type ScribePayload {
+  response: ResponsePayload
+  scribe: Scribe
 }
 
 type ContactPayload {
@@ -3747,6 +3765,7 @@ input GetPractice {
 input UsersInput {
   status: UserStatus
   role: String
+  roles: [String!]
   facilityId: String
   searchString: String
   paginationOptions: PaginationInput!
@@ -4493,6 +4512,9 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput!): AppointmentPayload!
+  createScribe(createScribeInput: CreateScribeInput!): ScribePayload!
+  updateScribe(updateScribeInput: UpdateScribeInput!): ScribePayload!
+  updateScribeCheck(scribeCheckInput: ScribeCheckInput!): ScribePayload!
   createCPTCode(createCPTCodeInput: CreateCPTCodeInput!): CPTCodePayload!
   updateCPTCode(updateCPTCodeInput: UpdateCPTCodeInput!): CPTCodePayload!
   removeCPTCode(removeCPTCodeInput: RemoveCPTCodeInput!): CPTCodePayload!
@@ -5676,6 +5698,29 @@ input UpdateAppointmentStatusInput {
 input AppointmentReminderInput {
   appointmentId: String
   timeZone: String
+}
+
+input CreateScribeInput {
+  appointmentId: String
+  userId: String
+  userType: String
+  firstName: String
+  lastName: String
+}
+
+input UpdateScribeInput {
+  appointmentId: String
+  userId: String
+  userType: String
+  firstName: String
+  lastName: String
+  id: String!
+}
+
+input ScribeCheckInput {
+  id: String
+  appointmentId: String
+  isScribed: Boolean
 }
 
 input CreateCPTCodeInput {
