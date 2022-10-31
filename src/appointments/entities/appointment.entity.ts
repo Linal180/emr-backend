@@ -21,6 +21,7 @@ import { PatientMedication } from 'src/patientCharting/entities/patientMedicatio
 import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
 import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
 import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
+import { Scribe } from './scribe.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -260,6 +261,10 @@ export class Appointment {
   @Field(() => Contract, { nullable: true })
   @OneToOne(() => Contract, (contract) => contract.appointment, { eager: true })
   contract: Contract;
+
+  @OneToOne(() => Scribe, (scribe) => scribe.appointment, { eager: true })
+  @Field(() => Scribe, { nullable: true })
+  scribe: Scribe;
 
   @Field(() => TriageNotes, { nullable: true })
   @OneToOne(() => TriageNotes, (triageNote) => triageNote.appointment)

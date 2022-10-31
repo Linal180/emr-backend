@@ -17,10 +17,13 @@ import { ContractService } from './services/contract.service';
 import { AppointmentService } from './services/appointment.service';
 //resolvers
 import { AppointmentResolver } from './resolvers/appointment.resolver';
+import { ScribeService } from './services/scribe.service';
+import { ScribeResolver } from './resolvers/scribe.resolver';
+import { Scribe } from './entities/scribe.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Appointment, Contract]),
+    TypeOrmModule.forFeature([Appointment, Contract, Scribe]),
     forwardRef(() => UsersModule),
     PaginationModule,
     forwardRef(() => ProviderModule),
@@ -31,7 +34,7 @@ import { AppointmentResolver } from './resolvers/appointment.resolver';
     forwardRef(() => PaymentModule),
     forwardRef(() => InsuranceModule),
   ],
-  providers: [AppointmentResolver, AppointmentService, ContractService],
+  providers: [AppointmentResolver, AppointmentService, ContractService, ScribeService, ScribeResolver],
   exports: [AppointmentService, TypeOrmModule, ContractService],
 })
 export class AppointmentModule { }
