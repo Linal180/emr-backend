@@ -10,17 +10,18 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { ImagingOrder } from 'src/labs/entities/imagingOrder.entity';
 import { Vaccine } from 'src/patientCharting/entities/vaccines.entity';
 import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
+import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
+import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
-import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
-import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
-import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -232,6 +233,10 @@ export class Appointment {
   invoiceId: string;
 
   //relationships
+
+  @OneToMany(() => ImagingOrder, imagingOrder => imagingOrder.appointment)
+  @Field(() => [ImagingOrder], { nullable: true })
+  imagingOrders: ImagingOrder[];
 
   @ManyToOne(() => Service, facilityService => facilityService.appointments, { onDelete: 'CASCADE' })
   @Field(() => Service, { nullable: true })

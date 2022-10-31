@@ -1,47 +1,57 @@
-import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppointmentModule } from 'src/appointments/appointment.module';
-import { AttachmentsModule } from 'src/attachments/attachments.module';
-import { FacilityModule } from 'src/facilities/facility.module';
+import { forwardRef, Module } from '@nestjs/common';
+//modules
+import { UsersModule } from 'src/users/users.module';
 import { MailerModule } from 'src/mailer/mailer.module';
-import { PaginationModule } from 'src/pagination/pagination.module';
-import { PatientChartingModule } from 'src/patientCharting/patientCharting.module';
 import { PatientModule } from 'src/patients/patient.module';
 import { PracticeModule } from 'src/practice/practice.module';
 import { ProviderModule } from 'src/providers/provider.module';
-import { UsersModule } from 'src/users/users.module';
+import { FacilityModule } from 'src/facilities/facility.module';
+import { PaginationModule } from 'src/pagination/pagination.module';
+import { AttachmentsModule } from 'src/attachments/attachments.module';
+import { AppointmentModule } from 'src/appointments/appointment.module';
+import { PatientChartingModule } from 'src/patientCharting/patientCharting.module';
+//entities
 import { LabTests } from './entities/labTests.entity';
 import { LoincCodes } from './entities/loincCodes.entity';
+import { ImagingTest } from './entities/imagingTest.entity';
+import { ImagingOrder } from './entities/imagingOrder.entity';
 import { Observations } from './entities/observations.entity';
 import { SpecimenTypes } from './entities/specimenTypes.entity';
 import { TestSpecimens } from './entities/testSpecimens.entity';
-import { LabTestsObservationsController } from './labs.controller';
-import { ObservationsSubscriber } from './labs.subscriber';
-import { LabTestObservationResolver } from './resolvers/labTestObservations.resolver';
+//resolver
 import { LabTestsResolver } from './resolvers/labTests.resolver';
 import { LoincCodesResolver } from './resolvers/loincCodes.resolver';
 import { TestSpecimenResolver } from './resolvers/testSpecimen.resolver';
-import { LabTestsObservationsService } from './services/labTestObservation.service';
+import { LabTestObservationResolver } from './resolvers/labTestObservations.resolver';
+//services
 import { LabTestsService } from './services/labTests.service';
 import { LoincCodesService } from './services/loincCodes.service';
 import { TestSpecimenService } from './services/testSpecimen.service';
+import { LabTestsObservationsService } from './services/labTestObservation.service';
+//controller, subscriber
+import { ObservationsSubscriber } from './labs.subscriber';
+import { LabTestsObservationsController } from './labs.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([LoincCodes, LabTests, SpecimenTypes, TestSpecimens, Observations]),
-    forwardRef(() => UsersModule),
-    forwardRef(() => PaginationModule),
-    PracticeModule,
-    forwardRef(() => PatientChartingModule),
-    forwardRef(()=>PatientModule),
-    forwardRef(()=>AttachmentsModule),
-    AppointmentModule,
-    FacilityModule,
+    TypeOrmModule.forFeature([LoincCodes, LabTests, SpecimenTypes, TestSpecimens, Observations, ImagingOrder, ImagingTest]),
     MailerModule,
-    forwardRef(() => ProviderModule)
+    PracticeModule,
+    FacilityModule,
+    AppointmentModule,
+    forwardRef(() => UsersModule),
+    forwardRef(() => PatientModule),
+    forwardRef(() => ProviderModule),
+    forwardRef(() => PaginationModule),
+    forwardRef(() => AttachmentsModule),
+    forwardRef(() => PatientChartingModule),
   ],
   controllers: [LabTestsObservationsController],
-  providers: [ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver, LabTestsService, LabTestObservationResolver, LabTestsObservationsService, TestSpecimenResolver],
+  providers: [
+    ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver,
+    LabTestsService, LabTestObservationResolver, LabTestsObservationsService, TestSpecimenResolver
+  ],
   exports: [LoincCodesService, LabTestsService, TestSpecimenService, LabTestsObservationsService, TypeOrmModule],
 })
 export class LabModule { }

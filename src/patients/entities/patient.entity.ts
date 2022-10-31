@@ -16,6 +16,7 @@ import { Billing } from 'src/billings/entities/billing.entity';
 import { Contact } from 'src/providers/entities/contact.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { ImagingOrder } from 'src/labs/entities/imagingOrder.entity';
 import { Vaccine } from 'src/patientCharting/entities/vaccines.entity';
 import { Attachment } from '../../attachments/entities/attachment.entity';
 import { PolicyHolder } from 'src/insurance/entities/policy-holder.entity';
@@ -376,6 +377,10 @@ export class Patient {
   updatedAt: string;
 
   //relationships
+
+  @OneToMany(() => ImagingOrder, imagingOrder => imagingOrder.patient)
+  @Field(() => [ImagingOrder], { nullable: true })
+  imagingOrders: ImagingOrder[];
 
   @OneToMany(() => Vaccine, familyHistory => familyHistory.patient, { onDelete: "CASCADE" })
   @Field(() => [Vaccine], { nullable: true })
