@@ -227,6 +227,7 @@ export class PaginationService {
       mvxCode,
       isDeleted,
       section,
+      roles,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -294,10 +295,12 @@ export class PaginationService {
         ...(role && {
           role: Not(role)
         }),
+        ...(roles && {
+          userType: Raw(alias => `${alias} IN (:...data)`, { data: roles })
+        }),
         ...(roleName && {
           role: Raw(alias => `${alias} ILIKE '%${roleName}%'`),
         }),
-
         ...(specimenTypeName && {
           name: Raw(alias => `${alias} ILIKE '%${specimenTypeName}%'`),
         }),
