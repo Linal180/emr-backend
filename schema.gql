@@ -53,6 +53,16 @@ type Role {
   updatedAt: String
 }
 
+type Scribe {
+  id: String!
+  userType: String
+  userId: String
+  firstName: String
+  lastName: String
+  isScribed: Boolean
+  appointment: Appointment
+}
+
 type Contract {
   id: String!
   contractNumber: String
@@ -1889,16 +1899,6 @@ type PhysicalExam {
   answers: [AnswerResponses!]
   createdAt: String
   updatedAt: String
-}
-
-type Scribe {
-  id: String!
-  userType: String
-  userId: String
-  firstName: String
-  lastName: String
-  isScribed: Boolean
-  appointment: Appointment
 }
 
 type Appointment {
