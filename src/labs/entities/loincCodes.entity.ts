@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { LabTests } from './labTests.entity';
 import { Observations } from './observations.entity';
@@ -194,6 +194,10 @@ export class LoincCodes {
   @Column({ nullable: true })
   @Field({ nullable: true })
   displayName: string;
+
+  @Column({ nullable: true, default: 0, type: 'bigint' })
+  @Field(() => Int, { nullable: true })
+  priority: number;
 
   @OneToMany(() => LabTests, labTests => labTests.test, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
   @Field(type => [LabTests], { nullable: true })
