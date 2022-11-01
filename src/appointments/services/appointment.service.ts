@@ -588,10 +588,11 @@ export class AppointmentService {
    */
   async updateAppointment(updateAppointmentInput: UpdateAppointmentInput): Promise<Appointment> {
     try {
-      const appointment = await this.utilsService.updateEntityManager(Appointment, updateAppointmentInput.id, { ...updateAppointmentInput, token: createToken() }, this.appointmentRepository);
+      const { shouldSendEmail, ...appointmentInfoToUpdate } = updateAppointmentInput
+      const appointment = await this.utilsService.updateEntityManager(Appointment, appointmentInfoToUpdate.id, { ...appointmentInfoToUpdate, token: createToken() }, this.appointmentRepository);
       const { patient } = await this.patientService.GetPatient(appointment?.patientId)
 
-      if (patient?.email) {
+      if (patient?.email && shouldSendEmail) {
         if (appointment.appointmentCreateType === AppointmentCreateType.APPOINTMENT) {
           this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointment.scheduleStartDateTime, appointment?.token, patient.id, false)
         }
