@@ -57,6 +57,9 @@ export class CreateImagingOrderInput {
   patientId: string;
 
   @Field({ nullable: true })
+  problemId: string;
+
+  @Field({ nullable: true })
   appointmentId?: string;
 
   @Field(() => [String], { nullable: true })

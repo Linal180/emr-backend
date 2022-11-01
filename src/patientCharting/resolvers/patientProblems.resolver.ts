@@ -15,23 +15,23 @@ import { PatientProblemPayload } from '../dto/problem-payload.dto';
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 //entities
+import { LabTests } from 'src/labs/entities/labTests.entity';
 import { PatientProblems } from '../entities/patientProblems.entity';
+import { PatientMedication } from '../entities/patientMedication.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 //services
 import { ProblemService } from '../services/patientProblems.service';
-import { PatientMedication } from '../entities/patientMedication.entity';
-import { PatientMedicationService } from '../services/patientMedication.service';
-import { LabTests } from 'src/labs/entities/labTests.entity';
 import { LabTestsService } from 'src/labs/services/labTests.service';
+import { PatientMedicationService } from '../services/patientMedication.service';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 @Resolver(() => PatientProblems)
 export class ProblemResolver {
   constructor(
     private readonly problemService: ProblemService,
+    private readonly labTestsService: LabTestsService,
     private readonly appointmentService: AppointmentService,
     private readonly patientMedicationService: PatientMedicationService,
-    private readonly labTestsService: LabTestsService,
   ) { }
 
   @Mutation(() => PatientProblemPayload)

@@ -8,6 +8,7 @@ import { ImagingTestService } from "./imagingTest.service";
 import { PaginationService } from "src/pagination/pagination.service";
 import { PatientService } from "src/patients/services/patient.service";
 import { AppointmentService } from "src/appointments/services/appointment.service";
+import { ProblemService } from "src/patientCharting/services/patientProblems.service";
 //payloads
 import { FindAllImagingOrderPayload } from "../dto/image-order.payload";
 //inputs
@@ -20,6 +21,7 @@ export class ImagingOrderService {
     private imagingOrderRepo: Repository<ImagingOrder>,
     private readonly connection: Connection,
     private readonly patientService: PatientService,
+    private readonly problemService: ProblemService,
     private readonly paginationService: PaginationService,
     private readonly appointmentService: AppointmentService,
     private readonly imagingTestService: ImagingTestService,
@@ -71,7 +73,7 @@ export class ImagingOrderService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { patientId, appointmentId, imagingTests, ...rest } = params
+      const { patientId, appointmentId, imagingTests, problemId, ...rest } = params
 
       //create imaging order
       const imagingTestInstance = this.imagingOrderRepo.create(rest);
@@ -81,6 +83,13 @@ export class ImagingOrderService {
         const appointmentInstance = await this.appointmentService.findOne(appointmentId)
         imagingTestInstance.appointment = appointmentInstance
         imagingTestInstance.appointmentId = appointmentInstance?.id
+      }
+
+      // associate problem
+      if (problemId) {
+        const problemInstance = await this.problemService.findOne(problemId)
+        imagingTestInstance.patientProblem = problemInstance
+        imagingTestInstance.patientProblemId = problemInstance?.id
       }
 
       // associate patient
@@ -118,7 +127,7 @@ export class ImagingOrderService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { id, patientId, appointmentId, imagingTests, ...rest } = params
+      const { id, patientId, appointmentId, imagingTests, problemId, ...rest } = params
 
       //create imaging order
       const imagingTestInstance = await this.findOne(id);
@@ -132,6 +141,13 @@ export class ImagingOrderService {
         const appointmentInstance = await this.appointmentService.findOne(appointmentId)
         imagingTestInstance.appointment = appointmentInstance
         imagingTestInstance.appointmentId = appointmentInstance?.id
+      }
+
+      // associate problem
+      if (problemId) {
+        const problemInstance = await this.problemService.findOne(problemId)
+        imagingTestInstance.patientProblem = problemInstance
+        imagingTestInstance.patientProblemId = problemInstance?.id
       }
 
       // associate patient

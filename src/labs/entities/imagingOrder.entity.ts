@@ -5,6 +5,7 @@ import { LabTestStatus } from "./labTests.entity";
 import { ImagingTest } from "./imagingTest.entity";
 import { Patient } from "src/patients/entities/patient.entity";
 import { Appointment } from "src/appointments/entities/appointment.entity";
+import { PatientProblems } from "src/patientCharting/entities/patientProblems.entity";
 
 @Entity({ name: 'ImagingOrder' })
 @ObjectType()
@@ -72,6 +73,10 @@ export class ImagingOrder {
   @Field({ nullable: true })
   appointmentId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  patientProblemId: string;
+
   //relationship
 
   @OneToMany(() => ImagingTest, imagingTest => imagingTest.imagingOrder)
@@ -83,6 +88,9 @@ export class ImagingOrder {
 
   @ManyToOne(() => Appointment, image => image.imagingOrders)
   appointment: Appointment;
+
+  @ManyToOne(() => PatientProblems, image => image.imagingOrders)
+  patientProblem: PatientProblems;
 
   //dates
 

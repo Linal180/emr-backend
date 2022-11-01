@@ -4,11 +4,12 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGenerate
 import { ICDCodes } from './icdcodes.entity';
 import { SnoMedCodes } from './snowMedCodes.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
+import { LabTests } from 'src/labs/entities/labTests.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { PatientMedication } from './patientMedication.entity';
-import { LabTests } from 'src/labs/entities/labTests.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { ImagingOrder } from 'src/labs/entities/imagingOrder.entity';
 
 export enum ProblemType {
   ACTIVE = "active",
@@ -113,6 +114,10 @@ export class PatientProblems {
   @OneToMany(() => LabTests, labTests => labTests.patient)
   @Field(() => [LabTests], { nullable: true })
   labTests: LabTests[];
+
+  @OneToMany(() => ImagingOrder, labTests => labTests.patient)
+  @Field(() => [ImagingOrder], { nullable: true })
+  imagingOrders: ImagingOrder[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
