@@ -211,6 +211,7 @@ type LoincCodes {
   versionFirstRelease: String
   validHl7AttachmentRequest: String
   displayName: String
+  priority: Int
   labTests: [LabTests!]
   observations: [Observations!]
   createdAt: String
