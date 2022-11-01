@@ -79,9 +79,9 @@ export class ImagingOrder {
 
   //relationship
 
-  @OneToMany(() => ImagingTest, imagingTest => imagingTest.imagingOrder)
-  @Field(() => [ImagingTest], { nullable: true })
-  imagingTests: ImagingTest[];
+  // @OneToMany(() => ImagingTest, imagingTest => imagingTest.imagingOrder)
+  // @Field(() => [ImagingTest], { nullable: true })
+  // imagingTests: ImagingTest[];
 
   @ManyToOne(() => Patient, image => image.imagingOrders)
   patient: Patient;

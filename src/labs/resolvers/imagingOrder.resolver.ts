@@ -91,10 +91,10 @@ export class ImagingOrderResolver {
 
 	//resolve fields
 
-	@ResolveField(() => [ImagingTest])
-	async imagingTests(@Parent() imagingOrder: ImagingOrder): Promise<ImagingTest[]> {
-		if (imagingOrder?.id) {
-			return await this.imagingTestService.findByOrderId(imagingOrder.id);
-		}
-	}
+	// @ResolveField(() => [ImagingTest])
+	// async imagingTests(@Parent() imagingOrder: ImagingOrder): Promise<ImagingTest[]> {
+	// 	if (imagingOrder?.id) {
+	// 		return await this.imagingTestService.findByOrderId(imagingOrder.id);
+	// 	}
+	// }
 }

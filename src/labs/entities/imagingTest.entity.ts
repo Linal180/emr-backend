@@ -18,15 +18,15 @@ export class ImagingTest {
 
   // relationship fields
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  imagingOrderId: string;
+  // @Column({ nullable: true })
+  // @Field({ nullable: true })
+  // imagingOrderId: string;
 
   // relationships
 
-  @ManyToOne(() => ImagingOrder, image => image.imagingTests)
-  @Field(() => ImagingOrder, { nullable: true })
-  imagingOrder: ImagingOrder;
+  // @ManyToOne(() => ImagingOrder, image => image.imagingTests)
+  // @Field(() => ImagingOrder, { nullable: true })
+  // imagingOrder: ImagingOrder;
 
   //dates
 
