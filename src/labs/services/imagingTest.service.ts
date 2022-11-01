@@ -4,7 +4,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //entities
 import { ImagingTest } from "../entities/imagingTest.entity";
 //inputs
-import { CreateImagingTestCodeInput, FindAllImagingTestInput, UpdateImagingTestCodeInput } from "../dto/image-test.input";
+import { CreateImagingTestInput, FindAllImagingTestInput, UpdateImagingTestInput } from "../dto/image-test.input";
 //services
 import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
@@ -62,7 +62,7 @@ export class ImagingTestService {
    * @param params 
    * @returns create 
    */
-  async create(params: CreateImagingTestCodeInput): Promise<ImagingTest> {
+  async create(params: CreateImagingTestInput): Promise<ImagingTest> {
     try {
       const imagingTestInstance = this.imagingTestRepo.create(params)
       return await this.imagingTestRepo.save(imagingTestInstance)
@@ -76,7 +76,7 @@ export class ImagingTestService {
    * @param params 
    * @returns update 
    */
-  async update(params: UpdateImagingTestCodeInput): Promise<ImagingTest> {
+  async update(params: UpdateImagingTestInput): Promise<ImagingTest> {
     try {
       const { id } = params || {}
       const imagingTestInstance = await this.utilsService.updateEntityManager(ImagingTest, id, params, this.imagingTestRepo)

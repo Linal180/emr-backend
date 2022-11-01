@@ -13,7 +13,7 @@ export class FindAllImagingTestInput {
 }
 
 @InputType()
-export class CreateImagingTestCodeInput {
+export class CreateImagingTestInput {
 
   @Field()
   name: string;
@@ -21,14 +21,14 @@ export class CreateImagingTestCodeInput {
 }
 
 @InputType()
-export class UpdateImagingTestCodeInput extends PartialType(CreateImagingTestCodeInput) {
+export class UpdateImagingTestInput extends PartialType(CreateImagingTestInput) {
 
   @Field()
   id: string;
 }
 
 @InputType()
-export class GetImagingTestCodeInput extends PickType(UpdateImagingTestCodeInput, ['id'] as const) { }
+export class GetImagingTestInput extends PickType(UpdateImagingTestInput, ['id'] as const) { }
 
 @InputType()
-export class RemoveImagingTestCodeInput extends PickType(UpdateImagingTestCodeInput, ['id'] as const) { }
+export class RemoveImagingTestInput extends PickType(UpdateImagingTestInput, ['id'] as const) { }

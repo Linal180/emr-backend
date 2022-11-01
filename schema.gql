@@ -3569,7 +3569,7 @@ type Query {
   findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
   getSpecimenTypeByName(name: String!): SpecimenTypes!
   findAllImagingTest(findAllImagingTestInput: FindAllImagingTestInput!): FindAllImagingTestPayload!
-  getImagingTestCode(getImagingTestCodeInput: GetImagingTestCodeInput!): ImagingTestPayload!
+  getImagingTest(getImagingTestInput: GetImagingTestInput!): ImagingTestPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
@@ -3769,7 +3769,7 @@ input FindAllImagingTestInput {
   paginationOptions: PaginationInput!
 }
 
-input GetImagingTestCodeInput {
+input GetImagingTestInput {
   id: String!
 }
 
@@ -4462,9 +4462,9 @@ type Mutation {
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
   syncLabResults(updateObservationInput: UpdateObservationInput!): LabTestObservationPayload!
   removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
-  createImagingTestCode(createImagingTestCodeInput: CreateImagingTestCodeInput!): ImagingTestPayload!
-  updateImagingTestCode(updateImagingTestCodeInput: UpdateImagingTestCodeInput!): ImagingTestPayload!
-  removeImagingTestCode(removeImagingTestCodeInput: RemoveImagingTestCodeInput!): ImagingTestPayload!
+  createImagingTest(createImagingTestInput: CreateImagingTestInput!): ImagingTestPayload!
+  updateImagingTest(updateImagingTestInput: UpdateImagingTestInput!): ImagingTestPayload!
+  removeImagingTest(removeImagingTestInput: RemoveImagingTestInput!): ImagingTestPayload!
   createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
   updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
   removePractice(removePractice: RemovePractice!): PracticePayload!
@@ -4769,16 +4769,16 @@ input RemoveLabTestObservation {
   id: String!
 }
 
-input CreateImagingTestCodeInput {
+input CreateImagingTestInput {
   name: String!
 }
 
-input UpdateImagingTestCodeInput {
+input UpdateImagingTestInput {
   name: String
   id: String!
 }
 
-input RemoveImagingTestCodeInput {
+input RemoveImagingTestInput {
   id: String!
 }
 
