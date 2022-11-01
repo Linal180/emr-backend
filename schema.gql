@@ -395,7 +395,7 @@ type ImagingTest {
 
 type ImagingOrder {
   id: String!
-  labTestStatus: LabTestStatus!
+  labTestStatus: LabTestStatus
   orderNumber: String
   collectedDate: String
   receivedDate: String

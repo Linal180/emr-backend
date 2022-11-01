@@ -57,7 +57,7 @@ import { LabTestsObservationsController } from './labs.controller';
     LabTestsService, LabTestObservationResolver, LabTestsObservationsService, TestSpecimenResolver,
     ImagingTestService, ImagingTestResolver, ImagingOrderService, ImagingOrderResolver
   ],
-  exports: [LoincCodesService, LabTestsService, TestSpecimenService, LabTestsObservationsService, TypeOrmModule],
+  exports: [ImagingOrderService, LoincCodesService, LabTestsService, TestSpecimenService, LabTestsObservationsService, TypeOrmModule],
 })
 export class LabModule { }
 

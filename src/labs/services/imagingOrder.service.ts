@@ -188,4 +188,13 @@ export class ImagingOrderService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  /**
+   * Finds by problem id
+   * @param patientProblemId 
+   * @returns by problem id 
+   */
+  async findByProblemId(patientProblemId: string): Promise<ImagingOrder[]> {
+    return await this.imagingOrderRepo.find({ patientProblemId })
+  }
 }

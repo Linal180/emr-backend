@@ -17,11 +17,13 @@ import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 //entities
 import { LabTests } from 'src/labs/entities/labTests.entity';
 import { PatientProblems } from '../entities/patientProblems.entity';
+import { ImagingOrder } from 'src/labs/entities/imagingOrder.entity';
 import { PatientMedication } from '../entities/patientMedication.entity';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 //services
 import { ProblemService } from '../services/patientProblems.service';
 import { LabTestsService } from 'src/labs/services/labTests.service';
+import { ImagingOrderService } from 'src/labs/services/imagingOrder.service';
 import { PatientMedicationService } from '../services/patientMedication.service';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
 
@@ -31,6 +33,7 @@ export class ProblemResolver {
     private readonly problemService: ProblemService,
     private readonly labTestsService: LabTestsService,
     private readonly appointmentService: AppointmentService,
+    private readonly imagingOrderService: ImagingOrderService,
     private readonly patientMedicationService: PatientMedicationService,
   ) { }
 
@@ -169,6 +172,13 @@ export class ProblemResolver {
   async appointment(@Parent() patientProblem: PatientProblems): Promise<Appointment> {
     if (patientProblem && patientProblem.appointmentId) {
       return await this.appointmentService.findOne(patientProblem.appointmentId);
+    }
+  }
+
+  @ResolveField(() => [ImagingOrder])
+  async imagingOrders(@Parent() patientProblem: PatientProblems): Promise<ImagingOrder[]> {
+    if (patientProblem?.id) {
+      return await this.imagingOrderService.findByProblemId(patientProblem.id);
     }
   }
 }

@@ -16,7 +16,7 @@ export class ImagingOrder {
   id: string;
 
   @Column({ type: "enum", enum: LabTestStatus, default: LabTestStatus.ORDER_ENTERED })
-  @Field(() => LabTestStatus)
+  @Field(() => LabTestStatus, { nullable: true })
   labTestStatus: LabTestStatus
 
   @Column({ nullable: true })
