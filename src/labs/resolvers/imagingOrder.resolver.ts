@@ -1,11 +1,13 @@
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //inputs
 import { CreateImagingOrderCodeInput, FindAllImagingOrderInput, GetImagingOrderCodeInput, RemoveImagingOrderCodeInput, UpdateImagingOrderCodeInput } from "../dto/image-order.input";
 //payloads
 import { FindAllImagingOrderPayload, ImagingOrderPayload } from "../dto/image-order.payload";
 //entities
+import { ImagingTest } from "../entities/imagingTest.entity";
 import { ImagingOrder } from "../entities/imagingOrder.entity";
 //services
+import { ImagingTestService } from "../services/imagingTest.service";
 import { ImagingOrderService } from "../services/imagingOrder.service";
 
 @Resolver(() => ImagingOrder)
@@ -13,6 +15,7 @@ export class ImagingOrderResolver {
 
 	constructor(
 		private readonly imagingOrderService: ImagingOrderService,
+		private readonly imagingTestService: ImagingTestService,
 	) { }
 
 	@Query(() => FindAllImagingOrderPayload)
@@ -79,5 +82,14 @@ export class ImagingOrderResolver {
 			imagingOrder: await this.imagingOrderService.remove(id),
 			response: { status: 200, message: 'ImagingOrder code is removed successfully' }
 		};
+	}
+
+	//resolve fields
+
+	@ResolveField(() => [ImagingTest])
+	async testObservations(@Parent() imagingOrder: ImagingOrder): Promise<ImagingTest[]> {
+		if (imagingOrder?.id) {
+			return await this.imagingTestService.findByOrderId(imagingOrder.id);
+		}
 	}
 }

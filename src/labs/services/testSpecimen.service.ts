@@ -5,7 +5,7 @@ import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
 import CreateSpecimenItemInput from '../dto/create-specimen-Item-input.dto';
 import { TestSpecimenTypeInput } from '../dto/testSpecimenType-input.dto';
-import { TestSpecimenTypesPayload } from '../dto/testSpecimenTypes-payload.dto copy';
+import { TestSpecimenTypesPayload } from '../dto/testSpecimenTypes-payload.dto';
 import { UpdateSpecimenItemInput } from '../dto/update-specimen-Item-input.dto';
 import { SpecimenTypes } from '../entities/specimenTypes.entity';
 import { TestSpecimens } from '../entities/testSpecimens.entity';

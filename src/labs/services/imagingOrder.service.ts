@@ -1,11 +1,13 @@
-import { Repository } from "typeorm";
+import { Connection, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //entities
 import { ImagingOrder } from "../entities/imagingOrder.entity";
 //services
-import { UtilsService } from "src/util/utils.service";
+import { ImagingTestService } from "./imagingTest.service";
 import { PaginationService } from "src/pagination/pagination.service";
+import { PatientService } from "src/patients/services/patient.service";
+import { AppointmentService } from "src/appointments/services/appointment.service";
 //payloads
 import { FindAllImagingOrderPayload } from "../dto/image-order.payload";
 //inputs
@@ -16,8 +18,11 @@ export class ImagingOrderService {
   constructor(
     @InjectRepository(ImagingOrder)
     private imagingOrderRepo: Repository<ImagingOrder>,
-    private readonly utilsService: UtilsService,
+    private readonly connection: Connection,
+    private readonly patientService: PatientService,
     private readonly paginationService: PaginationService,
+    private readonly appointmentService: AppointmentService,
+    private readonly imagingTestService: ImagingTestService,
   ) { }
 
   /**
@@ -31,7 +36,7 @@ export class ImagingOrderService {
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<ImagingOrder>(this.imagingOrderRepo, {
         paginationOptions, associatedToField: {
-          filterType: "stringFilter", columnValue: searchQuery, columnName: 'name',
+          filterType: "stringFilter", columnValue: searchQuery, columnName: 'orderNumber',
         }, associatedTo: 'ImagingOrder'
       })
 
@@ -55,23 +60,52 @@ export class ImagingOrderService {
     return await this.imagingOrderRepo.findOne(id);
   }
 
-
-
   /**
    * Creates imaging test service
    * @param params 
    * @returns create 
    */
   async create(params: CreateImagingOrderCodeInput): Promise<ImagingOrder> {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const imagingTestInstance = this.imagingOrderRepo.create(params)
-      return await this.imagingOrderRepo.save(imagingTestInstance)
+      const { patientId, appointmentId, imagingTests, ...rest } = params
+
+      //create imaging order
+      const imagingTestInstance = this.imagingOrderRepo.create(rest);
+
+      // associate appointment
+      if (appointmentId) {
+        const appointmentInstance = await this.appointmentService.findOne(appointmentId)
+        imagingTestInstance.appointment = appointmentInstance
+        imagingTestInstance.appointmentId = appointmentInstance?.id
+      }
+
+      // associate patient
+      if (patientId) {
+        const patientInstance = await this.patientService.findOne(patientId);
+        imagingTestInstance.patient = patientInstance
+        imagingTestInstance.patientId = patientInstance?.id
+      }
+
+      // associate imaging test
+      if (imagingTests?.length) {
+        const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
+        imagingTestInstance.imagingTests = imagingTestInstances
+      }
+      //save imaging order
+      const imagingOrder = await this.imagingOrderRepo.save(imagingTestInstance)
+      await queryRunner.commitTransaction();
+      return imagingOrder
     } catch (error) {
-      throw new InternalServerErrorException(error)
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
     }
   }
-
-
 
   /**
    * Updates imaging test service
@@ -79,15 +113,50 @@ export class ImagingOrderService {
    * @returns update 
    */
   async update(params: UpdateImagingOrderCodeInput): Promise<ImagingOrder> {
+    //Transaction start
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const { id } = params || {}
-      const imagingTestInstance = await this.utilsService.updateEntityManager(ImagingOrder, id, params, this.imagingOrderRepo)
-      return imagingTestInstance;
+      const { id, patientId, appointmentId, imagingTests, ...rest } = params
+
+      //create imaging order
+      const imagingTestInstance = await this.findOne(id);
+
+      if (!imagingTestInstance) {
+        throw new Error("Imaging Test not found");
+      }
+
+      // associate appointment
+      if (appointmentId) {
+        const appointmentInstance = await this.appointmentService.findOne(appointmentId)
+        imagingTestInstance.appointment = appointmentInstance
+        imagingTestInstance.appointmentId = appointmentInstance?.id
+      }
+
+      // associate patient
+      if (patientId) {
+        const patientInstance = await this.patientService.findOne(patientId);
+        imagingTestInstance.patient = patientInstance
+        imagingTestInstance.patientId = patientInstance?.id
+      }
+
+      // associate imaging test
+      if (imagingTests?.length) {
+        const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
+        imagingTestInstance.imagingTests = imagingTestInstances
+      }
+      //save imaging order
+      const imagingOrder = await this.imagingOrderRepo.save({ ...imagingTestInstance, ...rest })
+      await queryRunner.commitTransaction();
+      return imagingOrder
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(error);
+    } finally {
+      await queryRunner.release();
     }
   }
-
 
   /**
    * Removes imaging test service

@@ -1718,8 +1718,6 @@ type ImagingOrder {
   patientId: String
   appointmentId: String
   imagingTests: [ImagingTest!]
-  patient: Patient
-  appointment: Appointment
   createdAt: String
   updatedAt: String
 }
@@ -2837,6 +2835,12 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
+type LabTestsPayload {
+  response: ResponsePayload
+  labTests: [LabTests]
+  pagination: PaginationPayload
+}
+
 type LabTestPayload {
   response: ResponsePayload
   labTest: LabTests
@@ -2848,12 +2852,6 @@ type LabResultPayload {
   facilityInfo: Facility
   doctor: Doctor
   labTests: [LabTests!]
-}
-
-type LabTestsPayload {
-  response: ResponsePayload
-  labTests: [LabTests]
-  pagination: PaginationPayload
 }
 
 type LoincCodePayload {

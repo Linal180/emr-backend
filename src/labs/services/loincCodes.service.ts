@@ -1,12 +1,16 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationService } from 'src/pagination/pagination.service';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
 import { UtilsService } from 'src/util/utils.service';
-import { Like, Repository } from 'typeorm';
-import { default as LoincCodeInput } from '../dto/create-loincCode-input.dto';
+import { PaginationService } from 'src/pagination/pagination.service';
+//inputs
 import { SearchLoincCodesInput } from '../dto/loincCodes-input.dto';
-import { LoincCodesPayload } from '../dto/loincCodes-payload.dto';
 import { UpdateLoincCodeInput } from '../dto/update-loincCode.input';
+import { default as LoincCodeInput } from '../dto/create-loincCode-input.dto';
+//payloads
+import { LoincCodesPayload } from '../dto/loincCodes-payload.dto';
+//entities
 import { LoincCodes } from '../entities/loincCodes.entity';
 
 @Injectable()
@@ -14,8 +18,8 @@ export class LoincCodesService {
   constructor(
     @InjectRepository(LoincCodes)
     private loincCodesRepository: Repository<LoincCodes>,
+    private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
-    private readonly utilsService: UtilsService
   ) { }
 
   /**

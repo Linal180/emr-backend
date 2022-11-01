@@ -79,11 +79,9 @@ export class ImagingOrder {
   imagingTests: ImagingTest[];
 
   @ManyToOne(() => Patient, image => image.imagingOrders)
-  @Field(() => Patient, { nullable: true })
   patient: Patient;
 
   @ManyToOne(() => Appointment, image => image.imagingOrders)
-  @Field(() => Appointment, { nullable: true })
   appointment: Appointment;
 
   //dates

@@ -1,7 +1,6 @@
-import { Field, InputType, OmitType, PartialType, PickType } from "@nestjs/graphql";
+import { Field, InputType, PartialType, PickType } from "@nestjs/graphql";
 //inputs
 import PaginationInput from "src/pagination/dto/pagination-input.dto";
-import { ImagingOrder } from "../entities/imagingOrder.entity";
 //entities
 import { LabTestStatus } from "../entities/labTests.entity";
 
@@ -59,6 +58,10 @@ export class CreateImagingOrderCodeInput {
 
   @Field({ nullable: true })
   appointmentId?: string;
+
+  @Field(() => [String], { nullable: true })
+  imagingTests?: string[];
+
 
 }
 

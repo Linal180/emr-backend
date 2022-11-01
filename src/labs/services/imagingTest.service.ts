@@ -57,8 +57,6 @@ export class ImagingTestService {
     return await this.imagingTestRepo.findOne(id);
   }
 
-
-
   /**
    * Creates imaging test service
    * @param params 
@@ -72,8 +70,6 @@ export class ImagingTestService {
       throw new InternalServerErrorException(error)
     }
   }
-
-
 
   /**
    * Updates imaging test service
@@ -104,6 +100,15 @@ export class ImagingTestService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  /**
+   * Finds by order id
+   * @param imagingOrderId 
+   * @returns by order id 
+   */
+  async findByOrderId(imagingOrderId: string): Promise<ImagingTest[]> {
+    return await this.imagingTestRepo.find({ imagingOrderId })
   }
 
 }
