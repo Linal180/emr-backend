@@ -157,7 +157,7 @@ export class VaccineProductService {
         vaccineProductInstance.mvxId = mvxCode?.id;
       }
 
-      const vaccineProduct = await this.vaccineProductRepo.save({ name, status, ...vaccineProductInstance });
+      const vaccineProduct = await this.vaccineProductRepo.save({ ...vaccineProductInstance, name, status });
 
       if (ndcCodeId) {
         await this.ndcVaccineProductService.create({ ndcCodeId, vaccineProductId: vaccineProduct?.id })

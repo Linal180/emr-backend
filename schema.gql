@@ -5640,6 +5640,7 @@ input UpdateAppointmentInput {
   status: AppointmentStatus
   checkInActiveStep: String
   checkedOutAt: String
+  shouldSendEmail: Boolean = false
 }
 
 input UpdateAppointmentBillingStatusInput {
