@@ -11,7 +11,7 @@ import { AppointmentService } from "src/appointments/services/appointment.servic
 //payloads
 import { FindAllImagingOrderPayload } from "../dto/image-order.payload";
 //inputs
-import { CreateImagingOrderCodeInput, FindAllImagingOrderInput, UpdateImagingOrderCodeInput } from "../dto/image-order.input";
+import { CreateImagingOrderInput, FindAllImagingOrderInput, UpdateImagingOrderInput } from "../dto/image-order.input";
 
 @Injectable()
 export class ImagingOrderService {
@@ -65,7 +65,7 @@ export class ImagingOrderService {
    * @param params 
    * @returns create 
    */
-  async create(params: CreateImagingOrderCodeInput): Promise<ImagingOrder> {
+  async create(params: CreateImagingOrderInput): Promise<ImagingOrder> {
     //Transaction start
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
@@ -112,7 +112,7 @@ export class ImagingOrderService {
    * @param params 
    * @returns update 
    */
-  async update(params: UpdateImagingOrderCodeInput): Promise<ImagingOrder> {
+  async update(params: UpdateImagingOrderInput): Promise<ImagingOrder> {
     //Transaction start
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();

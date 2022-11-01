@@ -2882,6 +2882,17 @@ type TestSpecimenTypesPayload {
   pagination: PaginationPayload
 }
 
+type FindAllImagingOrderPayload {
+  imagingOrders: [ImagingOrder!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type ImagingOrderPayload {
+  imagingOrder: ImagingOrder
+  response: ResponsePayloadResponse
+}
+
 type LabTestObservationPayload {
   response: ResponsePayload
   labTestObservation: Observations
@@ -3570,6 +3581,8 @@ type Query {
   getSpecimenTypeByName(name: String!): SpecimenTypes!
   findAllImagingTest(findAllImagingTestInput: FindAllImagingTestInput!): FindAllImagingTestPayload!
   getImagingTest(getImagingTestInput: GetImagingTestInput!): ImagingTestPayload!
+  findAllImagingOrder(findAllImagingOrderInput: FindAllImagingOrderInput!): FindAllImagingOrderPayload!
+  getImagingOrder(getImagingOrderInput: GetImagingOrderInput!): ImagingOrderPayload!
   findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
   getPractice(getPractice: GetPractice!): PracticePayload!
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
@@ -3770,6 +3783,15 @@ input FindAllImagingTestInput {
 }
 
 input GetImagingTestInput {
+  id: String!
+}
+
+input FindAllImagingOrderInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetImagingOrderInput {
   id: String!
 }
 
@@ -4465,6 +4487,9 @@ type Mutation {
   createImagingTest(createImagingTestInput: CreateImagingTestInput!): ImagingTestPayload!
   updateImagingTest(updateImagingTestInput: UpdateImagingTestInput!): ImagingTestPayload!
   removeImagingTest(removeImagingTestInput: RemoveImagingTestInput!): ImagingTestPayload!
+  createImagingOrder(createImagingOrderInput: CreateImagingOrderInput!): ImagingOrderPayload!
+  updateImagingOrder(updateImagingOrderInput: UpdateImagingOrderInput!): ImagingOrderPayload!
+  removeImagingOrder(removeImagingOrderInput: RemoveImagingOrderInput!): ImagingOrderPayload!
   createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
   updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
   removePractice(removePractice: RemovePractice!): PracticePayload!
@@ -4779,6 +4804,47 @@ input UpdateImagingTestInput {
 }
 
 input RemoveImagingTestInput {
+  id: String!
+}
+
+input CreateImagingOrderInput {
+  labTestStatus: LabTestStatus!
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  providerNotes: String
+  isSigned: Boolean
+  patientId: String
+  appointmentId: String
+  imagingTests: [String!]
+}
+
+input UpdateImagingOrderInput {
+  labTestStatus: LabTestStatus
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  providerNotes: String
+  isSigned: Boolean
+  patientId: String
+  appointmentId: String
+  imagingTests: [String!]
+  id: String!
+}
+
+input RemoveImagingOrderInput {
   id: String!
 }
 

@@ -15,7 +15,7 @@ export class FindAllImagingOrderInput {
 }
 
 @InputType()
-export class CreateImagingOrderCodeInput {
+export class CreateImagingOrderInput {
 
   @Field(() => LabTestStatus)
   labTestStatus?: LabTestStatus
@@ -66,14 +66,14 @@ export class CreateImagingOrderCodeInput {
 }
 
 @InputType()
-export class UpdateImagingOrderCodeInput extends PartialType(CreateImagingOrderCodeInput) {
+export class UpdateImagingOrderInput extends PartialType(CreateImagingOrderInput) {
 
   @Field()
   id: string;
 }
 
 @InputType()
-export class GetImagingOrderCodeInput extends PickType(UpdateImagingOrderCodeInput, ['id'] as const) { }
+export class GetImagingOrderInput extends PickType(UpdateImagingOrderInput, ['id'] as const) { }
 
 @InputType()
-export class RemoveImagingOrderCodeInput extends PickType(UpdateImagingOrderCodeInput, ['id'] as const) { }
+export class RemoveImagingOrderInput extends PickType(UpdateImagingOrderInput, ['id'] as const) { }

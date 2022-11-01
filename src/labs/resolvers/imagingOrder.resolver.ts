@@ -1,6 +1,9 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 //inputs
-import { CreateImagingOrderCodeInput, FindAllImagingOrderInput, GetImagingOrderCodeInput, RemoveImagingOrderCodeInput, UpdateImagingOrderCodeInput } from "../dto/image-order.input";
+import {
+	CreateImagingOrderInput, FindAllImagingOrderInput, GetImagingOrderInput, RemoveImagingOrderInput,
+	UpdateImagingOrderInput
+} from "../dto/image-order.input";
 //payloads
 import { FindAllImagingOrderPayload, ImagingOrderPayload } from "../dto/image-order.payload";
 //entities
@@ -17,6 +20,8 @@ export class ImagingOrderResolver {
 		private readonly imagingOrderService: ImagingOrderService,
 		private readonly imagingTestService: ImagingTestService,
 	) { }
+
+	// queries
 
 	@Query(() => FindAllImagingOrderPayload)
 	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -36,9 +41,9 @@ export class ImagingOrderResolver {
 
 	@Query(() => ImagingOrderPayload)
 	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-	// @SetMetadata('name', 'getImagingOrderCode')
-	async getImagingOrderCode(@Args('getImagingOrderCodeInput') getImagingOrderCodeInput: GetImagingOrderCodeInput): Promise<ImagingOrderPayload> {
-		const { id } = getImagingOrderCodeInput
+	// @SetMetadata('name', 'getImagingOrder')
+	async getImagingOrder(@Args('getImagingOrderInput') getImagingOrderInput: GetImagingOrderInput): Promise<ImagingOrderPayload> {
+		const { id } = getImagingOrderInput
 		const imagingOrder = await this.imagingOrderService.findOne(id)
 		if (imagingOrder) {
 			return {
@@ -54,40 +59,40 @@ export class ImagingOrderResolver {
 
 	@Mutation(() => ImagingOrderPayload)
 	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-	// @SetMetadata('name', 'createImagingOrderCode')
-	async createImagingOrderCode(@Args('createImagingOrderCodeInput') createImagingOrderCodeInput: CreateImagingOrderCodeInput): Promise<ImagingOrderPayload> {
+	// @SetMetadata('name', 'createImagingOrder')
+	async createImagingOrder(@Args('createImagingOrderInput') createImagingOrderInput: CreateImagingOrderInput): Promise<ImagingOrderPayload> {
 		return {
-			imagingOrder: await this.imagingOrderService.create(createImagingOrderCodeInput),
-			response: { status: 200, message: 'ImagingOrder code created successfully.' }
+			imagingOrder: await this.imagingOrderService.create(createImagingOrderInput),
+			response: { status: 200, message: 'Imaging Order created successfully.' }
 		};
 	}
 
 	@Mutation(() => ImagingOrderPayload)
 	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-	// @SetMetadata('name', 'updateImagingOrderCode')
-	async updateImagingOrderCode(@Args('updateImagingOrderCodeInput') updateImagingOrderCodeInput: UpdateImagingOrderCodeInput): Promise<ImagingOrderPayload> {
+	// @SetMetadata('name', 'updateImagingOrder')
+	async updateImagingOrder(@Args('updateImagingOrderInput') updateImagingOrderInput: UpdateImagingOrderInput): Promise<ImagingOrderPayload> {
 		return {
-			imagingOrder: await this.imagingOrderService.update(updateImagingOrderCodeInput),
-			response: { status: 200, message: 'ImagingOrder code is updated successfully' }
+			imagingOrder: await this.imagingOrderService.update(updateImagingOrderInput),
+			response: { status: 200, message: 'Imaging Order is updated successfully' }
 		};
 	}
 
 
 	@Mutation(() => ImagingOrderPayload)
 	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-	// @SetMetadata('name', 'removeImagingOrderCode')
-	async removeImagingOrderCode(@Args('removeImagingOrderCodeInput') removeImagingOrderCodeInput: RemoveImagingOrderCodeInput): Promise<ImagingOrderPayload> {
-		const { id } = removeImagingOrderCodeInput
+	// @SetMetadata('name', 'removeImagingOrder')
+	async removeImagingOrder(@Args('removeImagingOrderInput') removeImagingOrderInput: RemoveImagingOrderInput): Promise<ImagingOrderPayload> {
+		const { id } = removeImagingOrderInput
 		return {
 			imagingOrder: await this.imagingOrderService.remove(id),
-			response: { status: 200, message: 'ImagingOrder code is removed successfully' }
+			response: { status: 200, message: 'Imaging Order is removed successfully' }
 		};
 	}
 
 	//resolve fields
 
 	@ResolveField(() => [ImagingTest])
-	async testObservations(@Parent() imagingOrder: ImagingOrder): Promise<ImagingTest[]> {
+	async imagingTests(@Parent() imagingOrder: ImagingOrder): Promise<ImagingTest[]> {
 		if (imagingOrder?.id) {
 			return await this.imagingTestService.findByOrderId(imagingOrder.id);
 		}

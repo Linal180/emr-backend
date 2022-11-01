@@ -24,12 +24,14 @@ import { LabTestsResolver } from './resolvers/labTests.resolver';
 import { LoincCodesResolver } from './resolvers/loincCodes.resolver';
 import { ImagingTestResolver } from './resolvers/imagingTest.resolver';
 import { TestSpecimenResolver } from './resolvers/testSpecimen.resolver';
+import { ImagingOrderResolver } from './resolvers/imagingOrder.resolver';
 import { LabTestObservationResolver } from './resolvers/labTestObservations.resolver';
 //services
 import { LabTestsService } from './services/labTests.service';
 import { LoincCodesService } from './services/loincCodes.service';
 import { ImagingTestService } from './services/imagingTest.service';
 import { TestSpecimenService } from './services/testSpecimen.service';
+import { ImagingOrderService } from './services/imagingOrder.service';
 import { LabTestsObservationsService } from './services/labTestObservation.service';
 //controller, subscriber
 import { ObservationsSubscriber } from './labs.subscriber';
@@ -53,7 +55,7 @@ import { LabTestsObservationsController } from './labs.controller';
   providers: [
     ObservationsSubscriber, LoincCodesResolver, LoincCodesService, TestSpecimenService, LabTestsResolver,
     LabTestsService, LabTestObservationResolver, LabTestsObservationsService, TestSpecimenResolver,
-    ImagingTestService, ImagingTestResolver
+    ImagingTestService, ImagingTestResolver, ImagingOrderService, ImagingOrderResolver
   ],
   exports: [LoincCodesService, LabTestsService, TestSpecimenService, LabTestsObservationsService, TypeOrmModule],
 })
