@@ -16,7 +16,7 @@ export class ImagingOrderTestResolver {
 
 
   @ResolveField(() => ImagingTest)
-  async imagingTests(@Parent() imagingOrderTest: ImagingOrderTest): Promise<ImagingTest> {
+  async imagingTest(@Parent() imagingOrderTest: ImagingOrderTest): Promise<ImagingTest> {
     if (imagingOrderTest?.imagingTestId) {
       return await this.imagingTestService.findOne(imagingOrderTest?.imagingTestId)
     }

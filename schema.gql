@@ -398,7 +398,6 @@ type ImagingOrderTest {
   imagingTest: ImagingTest
   createdAt: String!
   updatedAt: String!
-  imagingTests: ImagingTest!
 }
 
 type ImagingOrder {

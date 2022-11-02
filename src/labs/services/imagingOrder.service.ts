@@ -1,10 +1,10 @@
 import { Connection, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 //entities
 import { ImagingOrder } from "../entities/imagingOrder.entity";
 //services
-import { ImagingTestService } from "./imagingTest.service";
+import { ImagingOrderTestService } from "./imagingOrderTest.service";
 import { PaginationService } from "src/pagination/pagination.service";
 import { PatientService } from "src/patients/services/patient.service";
 import { AppointmentService } from "src/appointments/services/appointment.service";
@@ -24,7 +24,8 @@ export class ImagingOrderService {
     private readonly problemService: ProblemService,
     private readonly paginationService: PaginationService,
     private readonly appointmentService: AppointmentService,
-    private readonly imagingTestService: ImagingTestService,
+    @Inject(forwardRef(() => ImagingOrderTestService))
+    private readonly imagingOrderTestService: ImagingOrderTestService,
   ) { }
 
   /**
@@ -98,14 +99,16 @@ export class ImagingOrderService {
         imagingTestInstance.patient = patientInstance
         imagingTestInstance.patientId = patientInstance?.id
       }
-
-      // associate imaging test
-      // if (imagingTests?.length) {
-      //   const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
-      //   imagingTestInstance.imagingTests = imagingTestInstances
-      // }
       //save imaging order
       const imagingOrder = await this.imagingOrderRepo.save(imagingTestInstance)
+
+      // associate imaging order test
+      if (imagingTests?.length) {
+        await Promise.all(imagingTests?.map(async (imagingTestId) => {
+          return await this.imagingOrderTestService.create({ imagingTestId, imagingOrderId: imagingOrder?.id })
+        }));
+      }
+
       await queryRunner.commitTransaction();
       return imagingOrder
     } catch (error) {
@@ -157,13 +160,15 @@ export class ImagingOrderService {
         imagingTestInstance.patientId = patientInstance?.id
       }
 
-      // associate imaging test
-      // if (imagingTests?.length) {
-      //   const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
-      //   imagingTestInstance.imagingTests = imagingTestInstances
-      // }
       //save imaging order
       const imagingOrder = await this.imagingOrderRepo.save({ ...imagingTestInstance, ...rest })
+
+      // associate imaging order test
+      if (imagingTests?.length) {
+        await Promise.all(imagingTests?.map(async (imagingTestId) => {
+          return await this.imagingOrderTestService.create({ imagingTestId, imagingOrderId: imagingOrder?.id })
+        }));
+      }
       await queryRunner.commitTransaction();
       return imagingOrder
     } catch (error) {
