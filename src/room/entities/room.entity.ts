@@ -1,7 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { Facility } from "src/facilities/entities/facility.entity";
+import { Appointment } from "src/appointments/entities/appointment.entity";
 
 
 @Entity({ name: 'Room' })
@@ -35,6 +36,9 @@ export class Room {
   @ManyToOne(() => Facility, facility => facility.rooms)
   @Field(() => Facility, { nullable: true })
   facility: Facility;
+
+  @OneToMany(() => Appointment, appointment => appointment.room)
+  appointment: Appointment[];
 
   //dates
 

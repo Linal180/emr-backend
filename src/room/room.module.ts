@@ -18,6 +18,7 @@ import { PaginationModule } from 'src/pagination/pagination.module';
     FacilityModule,
     PaginationModule,
   ],
-  providers: [RoomService, RoomResolver]
+  providers: [RoomService, RoomResolver],
+  exports: [RoomService, TypeOrmModule]
 })
 export class RoomModule { }

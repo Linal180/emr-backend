@@ -8,3 +8,13 @@ export class AppointmentReminderInput {
     @Field({ nullable: true })
     timeZone?: string
 }
+
+@InputType()
+export class AssociateRoomToAppointmentInput {
+    
+    @Field()
+    appointmentId: string
+
+    @Field()
+    roomId: string
+}
