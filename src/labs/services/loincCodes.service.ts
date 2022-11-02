@@ -45,7 +45,12 @@ export class LoincCodesService {
   async findAllLoincCode(searchLoincCodesInput: SearchLoincCodesInput): Promise<LoincCodesPayload> {
     const [first] = searchLoincCodesInput.searchTerm ? searchLoincCodesInput.searchTerm.split(' ') : ''
     try {
-      const paginationResponse = await this.paginationService.willPaginate<LoincCodes>(this.loincCodesRepository, { ...searchLoincCodesInput, associatedTo: "LoincCodes", associatedToField: { columnValue: first, columnName: 'loincNum', columnName2: 'component', columnName3: 'property', filterType: 'stringFilter' } })
+      const paginationResponse = await this.paginationService.willPaginate<LoincCodes>(
+        this.loincCodesRepository,
+        { ...searchLoincCodesInput, associatedTo: "LoincCodes", associatedToField: { columnValue: first, columnName: 'loincNum', columnName2: 'component', columnName3: 'property', filterType: 'stringFilter' } }
+        , undefined,
+        { columnName: 'priority', order: 'DESC' }
+      )
       return {
         pagination: {
           ...paginationResponse

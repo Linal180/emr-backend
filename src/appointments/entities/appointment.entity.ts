@@ -206,6 +206,10 @@ export class Appointment {
   @Field({ nullable: true })
   timeZone: string;
 
+  @Column({ nullable: true, array: false, type: 'jsonb' })
+  @Field(() => [String], { nullable: true })
+  intakeSteps: string[]
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   providerId: string;
