@@ -38,7 +38,6 @@ export class Room {
   facility: Facility;
 
   @OneToMany(() => Appointment, appointment => appointment.room)
-  @Field(() => [Appointment], { nullable: true })
   appointment: Appointment[];
 
   //dates

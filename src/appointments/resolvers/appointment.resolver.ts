@@ -1,43 +1,51 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-//entities , inputs, dtos, services
-import PermissionGuard from 'src/users/auth/role.guard';
+// entities
+import { Room } from 'src/room/entities/room.entity';
 import { Invoice } from 'src/payment/entity/invoice.entity';
-import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import { Appointment } from '../entities/appointment.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
-import { AppointmentPayload, PatientPastUpcomingAppointmentPayload } from '../dto/appointment-payload.dto';
-import { AppointmentService } from '../services/appointment.service';
-import { InvoiceService } from 'src/payment/services/invoice.service';
-import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
-import { DoctorService } from 'src/providers/services/doctor.service';
-import { PatientService } from 'src/patients/services/patient.service';
+// inputs
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
-import { FacilityService } from 'src/facilities/services/facility.service';
-import { ServicesService } from 'src/facilities/services/services.service';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import { AppointmentReminderInput, AssociateRoomToAppointmentInput } from '../dto/appointment-reminder-input.dto';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
+import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
   CancelAppointment, GetAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentInput, UpdateAppointmentStatusInput, UpdateAppointmentBillingStatusInput, GetAppointmentWithToken
 } from '../dto/update-appointment.input';
-import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
+// services
+import { RoomService } from 'src/room/services/room.service';
+import { AppointmentService } from '../services/appointment.service';
+import { InvoiceService } from 'src/payment/services/invoice.service';
+import { DoctorService } from 'src/providers/services/doctor.service';
 import { PolicyService } from 'src/insurance/services/policy.service';
-import { Policy } from 'src/insurance/entities/policy.entity';
-import { Scribe } from '../entities/scribe.entity';
+import { PatientService } from 'src/patients/services/patient.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { ServicesService } from 'src/facilities/services/services.service';
+//guards
+import PermissionGuard from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+// payloads
+import { AppointmentPayload, PatientPastUpcomingAppointmentPayload } from '../dto/appointment-payload.dto';
+import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
-  constructor(private readonly appointmentService: AppointmentService,
-    private readonly patientService: PatientService,
+
+  constructor(
+    private readonly roomService: RoomService,
     private readonly doctorService: DoctorService,
-    private readonly invoiceService: InvoiceService,
-    private readonly facilityService: FacilityService,
     private readonly policyService: PolicyService,
-    private readonly servicesService: ServicesService) { }
+    private readonly invoiceService: InvoiceService,
+    private readonly patientService: PatientService,
+    private readonly facilityService: FacilityService,
+    private readonly servicesService: ServicesService,
+    private readonly appointmentService: AppointmentService,
+  ) { }
 
   //mutations
 
@@ -111,6 +119,16 @@ export class AppointmentResolver {
     return {
       appointment: await this.appointmentService.sendAppointmentReminder(appointmentReminderInput),
       response: { status: 200, message: 'Appointment reminder sent successfully' }
+    };
+  }
+
+  @Mutation(() => AppointmentPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'associateRoomToAppointment')
+  async associateRoomToAppointment(@Args('associateRoomToAppointmentInput') associateRoomToAppointmentInput: AssociateRoomToAppointmentInput): Promise<AppointmentPayload> {
+    return {
+      appointment: await this.appointmentService.associateRoomToAppointment(associateRoomToAppointmentInput),
+      response: { status: 200, message: 'Ok' }
     };
   }
 
@@ -238,14 +256,14 @@ export class AppointmentResolver {
 
   //resolve fields
 
-  @ResolveField(() => [Patient])
+  @ResolveField(() => Patient)
   async patient(@Parent() appointment: Appointment): Promise<Patient> {
     if (appointment && appointment.patientId) {
       return await this.patientService.findOne(appointment.patientId);
     }
   }
 
-  @ResolveField(() => [String])
+  @ResolveField(() => String)
   async primaryInsurance(@Parent() appointment: Appointment): Promise<string> {
     if (appointment && appointment.patientId) {
       const primaryInsurance = await this.policyService.getPrimaryInsurance(appointment.patientId);
@@ -253,31 +271,38 @@ export class AppointmentResolver {
     }
   }
 
-  @ResolveField(() => [Doctor])
+  @ResolveField(() => Doctor)
   async provider(@Parent() appointment: Appointment): Promise<Doctor> {
     if (appointment && appointment.providerId) {
       return await this.doctorService.findOne(appointment.providerId);
     }
   }
 
-  @ResolveField(() => [Facility])
+  @ResolveField(() => Facility)
   async facility(@Parent() appointment: Appointment): Promise<Facility> {
     if (appointment && appointment.facilityId) {
       return await this.facilityService.findOne(appointment.facilityId);
     }
   }
 
-  @ResolveField(() => [Service])
+  @ResolveField(() => Service)
   async appointmentType(@Parent() appointment: Appointment): Promise<Service> {
     if (appointment && appointment.appointmentTypeId) {
       return await this.servicesService.findOne(appointment.appointmentTypeId);
     }
   }
 
-  @ResolveField(() => [Invoice])
+  @ResolveField(() => Invoice)
   async invoice(@Parent() appointment: Appointment): Promise<Invoice> {
     if (appointment) {
       return await this.invoiceService.findInvoiceByAppointmentId(appointment.id);
+    }
+  }
+
+  @ResolveField(() => Room)
+  async room(@Parent() appointment: Appointment): Promise<Room> {
+    if (appointment?.roomId) {
+      return await this.roomService.findOne(appointment.roomId);
     }
   }
 

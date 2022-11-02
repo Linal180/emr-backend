@@ -1925,7 +1925,6 @@ type Room {
   facilityId: String
   practiceId: String
   facility: Facility
-  appointment: [Appointment!]
   createdAt: String!
   updatedAt: String!
 }
@@ -2588,52 +2587,22 @@ type PaginationPayload {
   totalPages: Int
 }
 
-type BraintreePayload {
-  clientToken: String!
-}
-
-type TransactionsPayload {
-  response: ResponsePayload
-  transactions: [Transactions]
-  pagination: PaginationPayload
-}
-
-type TransactionPayload {
-  response: ResponsePayload
-  transaction: Transactions!
-}
-
-type AppointmentPayload {
-  response: ResponsePayload
-  appointment: Appointment
-}
-
-type PatientPastUpcomingAppointment {
-  pastAppointment: Appointment
-  upcomingAppointment: Appointment
-}
-
-type PatientPastUpcomingAppointmentPayload {
-  response: ResponsePayload
-  appointments: PatientPastUpcomingAppointment
-}
-
-type InvoicePayload {
-  response: ResponsePayload
-  invoice: Invoice
-}
-
-type InvoicesPayload {
-  response: ResponsePayload
-  invoices: [Invoice]
-  pagination: PaginationPayload
-}
-
 type ResponsePayloadResponse {
   status: Float
   error: String
   message: String
   name: String
+}
+
+type RoomPayload {
+  room: Room
+  response: ResponsePayloadResponse
+}
+
+type FindAllRoomPayload {
+  rooms: [Room!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
 type AllCPTCodePayload {
@@ -2720,6 +2689,47 @@ type TaxonomyPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
+type TransactionsPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transaction: Transactions!
+}
+
+type AppointmentPayload {
+  response: ResponsePayload
+  appointment: Appointment
+}
+
+type PatientPastUpcomingAppointment {
+  pastAppointment: Appointment
+  upcomingAppointment: Appointment
+}
+
+type PatientPastUpcomingAppointmentPayload {
+  response: ResponsePayload
+  appointments: PatientPastUpcomingAppointment
+}
+
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
+}
+
 type Response {
   status: Int
   message: String
@@ -2775,6 +2785,11 @@ type PolicyEligibilityWithPatientPayload {
   response: Response
 }
 
+type ScribePayload {
+  response: ResponsePayload
+  scribe: Scribe
+}
+
 type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
@@ -2785,11 +2800,6 @@ type AppointmentInsuranceStatus {
   response: ResponsePayload
   id: String!
   insuranceStatus: String
-}
-
-type ScribePayload {
-  response: ResponsePayload
-  scribe: Scribe
 }
 
 type ContactPayload {
@@ -3582,17 +3592,6 @@ type MacroPayload {
   macro: Macros
 }
 
-type RoomPayload {
-  room: Room
-  response: ResponsePayloadResponse
-}
-
-type FindAllRoomPayload {
-  rooms: [Room!]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3662,6 +3661,13 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAppointmentInsuranceStatus(appointmentId: String!): AppointmentInsuranceStatus!
+  findAllRoom(findAllRoomInput: FindAllRoomInput!): FindAllRoomPayload!
+  getRoom(getRoomInput: GetRoomInput!): RoomPayload!
+  getToken: BraintreePayload!
+  getTransaction(id: String!): TransactionPayload!
+  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  fetchAgreement(agreementId: String!): AgreementPayload!
+  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
@@ -3670,9 +3676,6 @@ type Query {
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptFeeSchedule(findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!): AllCPTFeeSchedulesPayload!
   getCptFeeSchedule(getCptFeeScheduleInput: GetCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  getToken: BraintreePayload!
-  getTransaction(id: String!): TransactionPayload!
-  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   getInsurance(getInsuranceInput: GetInsuranceInput!): InsurancePayload!
@@ -3683,8 +3686,6 @@ type Query {
   fetchPolicyHolder(id: String!): PolicyHolder!
   getPoliciesEligibilities(policyEligibilityInput: PolicyEligibilityPaginationInput!): PolicyEligibilitiesPayload!
   getPoliciesEligibility(id: String!): PolicyEligibilityWithPatientPayload!
-  fetchAgreement(agreementId: String!): AgreementPayload!
-  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
   findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
   getNdcCode(getNdcCodeInput: GetNdcCodeInput!): NdcPayload!
   findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
@@ -3757,8 +3758,6 @@ type Query {
   latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   fetchAllMacros(macroInput: MacroPaginationInput!): MacrosPayload!
   getMacro(getMacroInput: GetMacroInput!): MacroPayload!
-  findAllRoom(findAllRoomInput: FindAllRoomInput!): FindAllRoomPayload!
-  getRoom(getRoomInput: GetRoomInput!): RoomPayload!
 }
 
 input SearchLoincCodesInput {
@@ -4085,6 +4084,29 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input FindAllRoomInput {
+  facilityId: String
+  practiceId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetRoomInput {
+  id: String!
+}
+
+input InvoiceInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input AgreementPaginationInput {
+  agreementFacilityId: String
+  agreementPracticeId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
 input FindAllCPTCodesInput {
   code: String
   paginationOptions: PaginationInput!
@@ -4123,11 +4145,6 @@ input GetCptFeeScheduleInput {
   id: String!
 }
 
-input InvoiceInputs {
-  facilityId: String
-  paginationOptions: PaginationInput!
-}
-
 input InsurancePaginationInput {
   searchString: String
   paginationOptions: PaginationInput!
@@ -4149,13 +4166,6 @@ input PolicyHolderPaginationInput {
 input PolicyEligibilityPaginationInput {
   patientId: String
   searchTerm: String
-  paginationOptions: PaginationInput!
-}
-
-input AgreementPaginationInput {
-  agreementFacilityId: String
-  agreementPracticeId: String
-  searchString: String
   paginationOptions: PaginationInput!
 }
 
@@ -4485,17 +4495,6 @@ input GetMacroInput {
   id: String
 }
 
-input FindAllRoomInput {
-  facilityId: String
-  practiceId: String
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input GetRoomInput {
-  id: String!
-}
-
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4583,9 +4582,23 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput!): AppointmentPayload!
+  associateRoomToAppointment(associateRoomToAppointmentInput: AssociateRoomToAppointmentInput!): AppointmentPayload!
   createScribe(createScribeInput: CreateScribeInput!): ScribePayload!
   updateScribe(updateScribeInput: UpdateScribeInput!): ScribePayload!
   updateScribeCheck(scribeCheckInput: ScribeCheckInput!): ScribePayload!
+  createRoom(createRoomInput: CreateRoomInput!): RoomPayload!
+  updateRoom(updateRoomInput: UpdateRoomInput!): RoomPayload!
+  removeRoom(removeRoomInput: RemoveRoomInput!): RoomPayload!
+  chargePayment(paymentInput: PaymentInput!): TransactionPayload!
+  chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
+  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  achPayment(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
+  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
+  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
+  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
+  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
+  removeAgreement(agreementId: String!): AgreementPayload!
   createCPTCode(createCPTCodeInput: CreateCPTCodeInput!): CPTCodePayload!
   updateCPTCode(updateCPTCodeInput: UpdateCPTCodeInput!): CPTCodePayload!
   removeCPTCode(removeCPTCodeInput: RemoveCPTCodeInput!): CPTCodePayload!
@@ -4598,21 +4611,11 @@ type Mutation {
   createCptFeeSchedule(createCptFeeScheduleInput: CreateCptFeeScheduleInput!): CPTFeeSchedulePayload!
   removeCptFeeSchedule(removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!): CPTFeeSchedulePayload!
   updateCptFeeSchedule(updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  chargePayment(paymentInput: PaymentInput!): TransactionPayload!
-  chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
-  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
-  achPayment(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
-  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
-  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
-  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
   createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
   createCopay(createCopayInput: CopayInput!): Copay!
   getEligibilityAndCoverage(policyId: String!): PolicyEligibilityPayload!
-  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
-  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
-  removeAgreement(agreementId: String!): AgreementPayload!
   createNdcCode(createNdcCodeInput: CreateNdcCodeInput!): NdcPayload!
   updateNdcCode(updateNdcCodeInput: UpdateNdcCodeInput!): NdcPayload!
   removeNdcCode(removeNdcCodeInput: RemoveNdcCodeInput!): NdcPayload!
@@ -4680,9 +4683,6 @@ type Mutation {
   createMacro(createMacroInput: CreateMacroInput!): MacroPayload!
   updateMacro(updateMacroInput: UpdateMacroInput!): MacroPayload!
   removeMacro(removeMacroInput: RemoveMacroInput!): MacroPayload!
-  createRoom(createRoomInput: CreateRoomInput!): RoomPayload!
-  updateRoom(updateRoomInput: UpdateRoomInput!): RoomPayload!
-  removeRoom(removeRoomInput: RemoveRoomInput!): RoomPayload!
 }
 
 input LoincCodeInput {
@@ -5829,6 +5829,11 @@ input AppointmentReminderInput {
   timeZone: String
 }
 
+input AssociateRoomToAppointmentInput {
+  appointmentId: String!
+  roomId: String!
+}
+
 input CreateScribeInput {
   appointmentId: String
   userId: String
@@ -5850,6 +5855,105 @@ input ScribeCheckInput {
   id: String
   appointmentId: String
   isScribed: Boolean
+}
+
+input CreateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+}
+
+input UpdateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+  id: String!
+}
+
+input RemoveRoomInput {
+  id: String!
+}
+
+input PaymentInput {
+  clientIntent: String
+  price: String
+  providerId: String
+  facilityId: String
+  patientId: String
+  appointmentId: String
+  serviceId: String
+}
+
+input PaymentInputsAfterAppointment {
+  clientIntent: String!
+  price: String!
+  providerId: String
+  facilityId: String
+  patientId: String!
+  appointmentId: String!
+}
+
+input GetAllTransactionsInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input ACHPaymentInputs {
+  token: String!
+  firstName: String
+  lastName: String
+  price: String!
+  patientId: String
+  doctorId: String
+  facilityId: String
+  appointmentId: String
+  company: String
+  deviceData: String
+}
+
+input CreateInvoiceInputs {
+  paymentTransactionId: String
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  appointmentId: String!
+}
+
+input CreateExternalInvoiceInputs {
+  paymentTransactionId: String!
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String!
+  status: STATUS!
+  amount: String!
+}
+
+input InvoiceStatusInputs {
+  status: STATUS!
+  id: String!
+}
+
+input AgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
+}
+
+input UpdateAgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
+  id: String!
 }
 
 input CreateCPTCodeInput {
@@ -5954,69 +6058,6 @@ input UpdateCptFeeScheduleInput {
   id: String!
 }
 
-input PaymentInput {
-  clientIntent: String
-  price: String
-  providerId: String
-  facilityId: String
-  patientId: String
-  appointmentId: String
-  serviceId: String
-}
-
-input PaymentInputsAfterAppointment {
-  clientIntent: String!
-  price: String!
-  providerId: String
-  facilityId: String
-  patientId: String!
-  appointmentId: String!
-}
-
-input GetAllTransactionsInputs {
-  facilityId: String
-  paginationOptions: PaginationInput!
-}
-
-input ACHPaymentInputs {
-  token: String!
-  firstName: String
-  lastName: String
-  price: String!
-  patientId: String
-  doctorId: String
-  facilityId: String
-  appointmentId: String
-  company: String
-  deviceData: String
-}
-
-input CreateInvoiceInputs {
-  paymentTransactionId: String
-  facilityId: String!
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String
-  status: STATUS!
-  amount: String!
-  appointmentId: String!
-}
-
-input CreateExternalInvoiceInputs {
-  paymentTransactionId: String!
-  facilityId: String!
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String!
-  status: STATUS!
-  amount: String!
-}
-
-input InvoiceStatusInputs {
-  status: STATUS!
-  id: String!
-}
-
 input CreatePolicyInput {
   orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
@@ -6101,25 +6142,6 @@ input UpdatePolicyHolderInput {
   ssn: String
   sex: POLICY_HOLDER_GENDER_IDENTITY
   dob: String
-  id: String!
-}
-
-input AgreementInput {
-  title: String
-  body: String
-  viewAgreementBeforeAgreeing: Boolean
-  signatureRequired: Boolean
-  facilityId: String
-  practiceId: String
-}
-
-input UpdateAgreementInput {
-  title: String
-  body: String
-  viewAgreementBeforeAgreeing: Boolean
-  signatureRequired: Boolean
-  facilityId: String
-  practiceId: String
   id: String!
 }
 
@@ -6779,22 +6801,5 @@ input UpdateMacroInput {
 }
 
 input RemoveMacroInput {
-  id: String!
-}
-
-input CreateRoomInput {
-  facilityId: String
-  name: String
-  number: String
-}
-
-input UpdateRoomInput {
-  facilityId: String
-  name: String
-  number: String
-  id: String!
-}
-
-input RemoveRoomInput {
   id: String!
 }
