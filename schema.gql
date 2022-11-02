@@ -53,6 +53,16 @@ type Role {
   updatedAt: String
 }
 
+type Scribe {
+  id: String!
+  userType: String
+  userId: String
+  firstName: String
+  lastName: String
+  isScribed: Boolean
+  appointment: Appointment
+}
+
 type Contract {
   id: String!
   contractNumber: String
@@ -375,6 +385,53 @@ type PatientMedication {
   updatedAt: String
 }
 
+type ImagingTest {
+  id: String!
+  name: String
+  createdAt: String
+  updatedAt: String
+}
+
+type ImagingOrderTest {
+  id: String!
+  imagingOrderId: String
+  imagingTestId: String
+  imagingTest: ImagingTest
+  createdAt: String!
+  updatedAt: String!
+}
+
+type ImagingOrder {
+  id: String!
+  labTestStatus: ImagingOrderStatus
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  providerNotes: String
+  isSigned: Boolean
+  patientId: String
+  appointmentId: String
+  patientProblemId: String
+  imagingOrderTest: [ImagingOrderTest!]
+  createdAt: String
+  updatedAt: String
+}
+
+"""The imaging order status assigned"""
+enum ImagingOrderStatus {
+  ORDER_ENTERED
+  DISCONTINUED
+  IN_PROGRESS
+  RESULT_RECEIVED
+  RESULT_REVIEWED_WITH_PATIENT
+}
+
 type PatientProblems {
   id: String!
   problemType: ProblemType!
@@ -394,6 +451,7 @@ type PatientProblems {
   snowMedCode: SnoMedCodes
   patientMedications: [PatientMedication!]
   labTests: [LabTests!]
+  imagingOrders: [ImagingOrder!]
   createdAt: String
   updatedAt: String
 }
@@ -1709,17 +1767,6 @@ type Vaccine {
   updatedAt: String
 }
 
-type TriageNotes {
-  id: String!
-  notes: String
-  patientId: String
-  appointmentId: String
-  patient: Patient
-  appointment: Appointment
-  createdAt: String
-  updatedAt: String
-}
-
 type UpFrontPaymentType {
   id: String!
   paymentType: String
@@ -1746,6 +1793,17 @@ type UpFrontPayment {
   patientId: String
   appointment: Appointment
   patient: Patient
+  createdAt: String
+  updatedAt: String
+}
+
+type TriageNotes {
+  id: String!
+  notes: String
+  patientId: String
+  appointmentId: String
+  patient: Patient
+  appointment: Appointment
   createdAt: String
   updatedAt: String
 }
@@ -1803,7 +1861,7 @@ type QuestionTemplate {
   updatedAt: String
 }
 
-type PhysicalExam {
+type PatientIllnessHistory {
   id: String!
   notes: String
   patientId: String
@@ -1846,7 +1904,7 @@ type AnswerResponses {
   updatedAt: String
 }
 
-type PatientIllnessHistory {
+type PhysicalExam {
   id: String!
   notes: String
   patientId: String
@@ -1860,14 +1918,15 @@ type PatientIllnessHistory {
   updatedAt: String
 }
 
-type Scribe {
+type Room {
   id: String!
-  userType: String
-  userId: String
-  firstName: String
-  lastName: String
-  isScribed: Boolean
-  appointment: Appointment
+  name: String
+  number: String
+  facilityId: String
+  practiceId: String
+  facility: Facility
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Appointment {
@@ -1899,13 +1958,17 @@ type Appointment {
   scheduleEndDateTime: String
   appointmentDate: String
   timeZone: String
+  intakeSteps: [String!]
+  cardLast4Digits: String
   providerId: String
   patientId: String
   facilityId: String
   practiceId: String
   appointmentTypeId: String
-  cardLast4Digits: String
   invoiceId: String
+  roomId: String
+  room: Room
+  imagingOrders: [ImagingOrder!]
   appointmentType: Service
   facility: Facility
   provider: Doctor
@@ -1984,17 +2047,6 @@ type Service {
 enum ServiceType {
   INTERNAL
   EXTERNAL
-}
-
-type Room {
-  id: String!
-  name: String
-  number: String
-  facilityId: String
-  practiceId: String
-  facility: Facility
-  createdAt: String!
-  updatedAt: String!
 }
 
 type Facility {
@@ -2265,6 +2317,7 @@ type Patient {
   primaryContact: Contact
   createdAt: String!
   updatedAt: String!
+  imagingOrders: [ImagingOrder!]
   vaccines: [Vaccine!]
   familyHistory: [FamilyHistory!]
   user: User
@@ -2534,52 +2587,22 @@ type PaginationPayload {
   totalPages: Int
 }
 
-type BraintreePayload {
-  clientToken: String!
-}
-
-type TransactionsPayload {
-  response: ResponsePayload
-  transactions: [Transactions]
-  pagination: PaginationPayload
-}
-
-type TransactionPayload {
-  response: ResponsePayload
-  transaction: Transactions!
-}
-
-type AppointmentPayload {
-  response: ResponsePayload
-  appointment: Appointment
-}
-
-type PatientPastUpcomingAppointment {
-  pastAppointment: Appointment
-  upcomingAppointment: Appointment
-}
-
-type PatientPastUpcomingAppointmentPayload {
-  response: ResponsePayload
-  appointments: PatientPastUpcomingAppointment
-}
-
-type InvoicePayload {
-  response: ResponsePayload
-  invoice: Invoice
-}
-
-type InvoicesPayload {
-  response: ResponsePayload
-  invoices: [Invoice]
-  pagination: PaginationPayload
-}
-
 type ResponsePayloadResponse {
   status: Float
   error: String
   message: String
   name: String
+}
+
+type RoomPayload {
+  room: Room
+  response: ResponsePayloadResponse
+}
+
+type FindAllRoomPayload {
+  rooms: [Room!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
 }
 
 type AllCPTCodePayload {
@@ -2666,6 +2689,47 @@ type TaxonomyPayload {
   pagination: PaginationPayload
 }
 
+type BraintreePayload {
+  clientToken: String!
+}
+
+type TransactionsPayload {
+  response: ResponsePayload
+  transactions: [Transactions]
+  pagination: PaginationPayload
+}
+
+type TransactionPayload {
+  response: ResponsePayload
+  transaction: Transactions!
+}
+
+type AppointmentPayload {
+  response: ResponsePayload
+  appointment: Appointment
+}
+
+type PatientPastUpcomingAppointment {
+  pastAppointment: Appointment
+  upcomingAppointment: Appointment
+}
+
+type PatientPastUpcomingAppointmentPayload {
+  response: ResponsePayload
+  appointments: PatientPastUpcomingAppointment
+}
+
+type InvoicePayload {
+  response: ResponsePayload
+  invoice: Invoice
+}
+
+type InvoicesPayload {
+  response: ResponsePayload
+  invoices: [Invoice]
+  pagination: PaginationPayload
+}
+
 type Response {
   status: Int
   message: String
@@ -2721,6 +2785,11 @@ type PolicyEligibilityWithPatientPayload {
   response: Response
 }
 
+type ScribePayload {
+  response: ResponsePayload
+  scribe: Scribe
+}
+
 type AppointmentsPayload {
   response: ResponsePayload
   appointments: [Appointment]
@@ -2731,11 +2800,6 @@ type AppointmentInsuranceStatus {
   response: ResponsePayload
   id: String!
   insuranceStatus: String
-}
-
-type ScribePayload {
-  response: ResponsePayload
-  scribe: Scribe
 }
 
 type ContactPayload {
@@ -2804,9 +2868,10 @@ type AgreementPayload {
   pagination: PaginationPayload
 }
 
-type LabTestObservationPayload {
+type LabTestsPayload {
   response: ResponsePayload
-  labTestObservation: Observations
+  labTests: [LabTests]
+  pagination: PaginationPayload
 }
 
 type LabTestPayload {
@@ -2822,12 +2887,6 @@ type LabResultPayload {
   labTests: [LabTests!]
 }
 
-type LabTestsPayload {
-  response: ResponsePayload
-  labTests: [LabTests]
-  pagination: PaginationPayload
-}
-
 type LoincCodePayload {
   response: ResponsePayload
   loincCode: LoincCodes
@@ -2839,10 +2898,37 @@ type LoincCodesPayload {
   pagination: PaginationPayload
 }
 
+type FindAllImagingTestPayload {
+  imagingTests: [ImagingTest!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type ImagingTestPayload {
+  imagingTest: ImagingTest
+  response: ResponsePayloadResponse
+}
+
 type TestSpecimenTypesPayload {
   response: ResponsePayload
   specimenTypes: [SpecimenTypes!]
   pagination: PaginationPayload
+}
+
+type FindAllImagingOrderPayload {
+  imagingOrders: [ImagingOrder!]
+  pagination: PaginationPayload
+  response: ResponsePayloadResponse
+}
+
+type ImagingOrderPayload {
+  imagingOrder: ImagingOrder
+  response: ResponsePayloadResponse
+}
+
+type LabTestObservationPayload {
+  response: ResponsePayload
+  labTestObservation: Observations
 }
 
 type FindAllNdcPayload {
@@ -3506,17 +3592,6 @@ type MacroPayload {
   macro: Macros
 }
 
-type RoomPayload {
-  room: Room
-  response: ResponsePayloadResponse
-}
-
-type FindAllRoomPayload {
-  rooms: [Room!]
-  pagination: PaginationPayload
-  response: ResponsePayloadResponse
-}
-
 type Query {
   findAllLoincCodes(searchLoincCodesInput: SearchLoincCodesInput!): LoincCodesPayload!
   findLoincCode(id: String!): LoincCodes!
@@ -3526,6 +3601,12 @@ type Query {
   findLabResultInfo(orderNumber: String!): LabResultPayload!
   findAllTestSpecimenTypes(testSpecimenTypeInput: TestSpecimenTypeInput!): TestSpecimenTypesPayload!
   getSpecimenTypeByName(name: String!): SpecimenTypes!
+  findAllImagingTest(findAllImagingTestInput: FindAllImagingTestInput!): FindAllImagingTestPayload!
+  getImagingTest(getImagingTestInput: GetImagingTestInput!): ImagingTestPayload!
+  findAllImagingOrder(findAllImagingOrderInput: FindAllImagingOrderInput!): FindAllImagingOrderPayload!
+  getImagingOrder(getImagingOrderInput: GetImagingOrderInput!): ImagingOrderPayload!
+  findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
+  getPractice(getPractice: GetPractice!): PracticePayload!
   fetchAllUsers(userInput: UsersInput!): UsersPayload!
   fetchUser: UserPayload!
   getUser(getUser: GetUser!): UserPayload!
@@ -3563,8 +3644,6 @@ type Query {
   getFacilityPatients(getFacilityPatientsInput: GetFacilityPatientsInput!): PatientsPayload!
   findAllDoctorPatients(doctorPatientsInput: DoctorPatientsInput!): DoctorPatientsPayload!
   findPatientConsent(patientInput: PatientConsentInput!): PatientConsentPayload!
-  findAllPractices(practiceInput: PracticeInput!): PracticesPayload!
-  getPractice(getPractice: GetPractice!): PracticePayload!
   getAttachments(getAttachment: GetAttachment!): AttachmentsPayload!
   getAttachmentsByLabOrder(getAttachmentsByLabOrder: GetAttachmentsByLabOrder!): AttachmentsPayload!
   getAttachmentsByPolicyId(getAttachmentsByPolicyId: GetAttachmentsByPolicyId!): AttachmentWithPreSignedUrlPayload!
@@ -3582,6 +3661,13 @@ type Query {
   getPatientAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): AppointmentsPayload!
   getPatientPastUpcomingAppointment(getPatientAppointmentInput: GetPatientAppointmentInput!): PatientPastUpcomingAppointmentPayload!
   findAppointmentInsuranceStatus(appointmentId: String!): AppointmentInsuranceStatus!
+  findAllRoom(findAllRoomInput: FindAllRoomInput!): FindAllRoomPayload!
+  getRoom(getRoomInput: GetRoomInput!): RoomPayload!
+  getToken: BraintreePayload!
+  getTransaction(id: String!): TransactionPayload!
+  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
+  fetchAgreement(agreementId: String!): AgreementPayload!
+  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
   findAllCptCodes(findAllCptCodesInput: FindAllCPTCodesInput!): AllCPTCodePayload!
   getCPTCode(getCPTCodeInput: GetCPTCodeInput!): CPTCodePayload!
   findAllModifiers(findAllModifierInput: FindAllModifierInput!): AllModifiersPayload!
@@ -3590,9 +3676,6 @@ type Query {
   getFeeSchedule(getFeeScheduleInput: GetFeeScheduleInput!): FeeSchedulePayload!
   findAllCptFeeSchedule(findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!): AllCPTFeeSchedulesPayload!
   getCptFeeSchedule(getCptFeeScheduleInput: GetCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  getToken: BraintreePayload!
-  getTransaction(id: String!): TransactionPayload!
-  getAllInvoices(invoiceInput: InvoiceInputs!): InvoicesPayload!
   fetchAllInsurances(insuranceInput: InsurancePaginationInput!): InsurancesPayload!
   fetchInsurance(searchTerm: String!): InsurancesPayload!
   getInsurance(getInsuranceInput: GetInsuranceInput!): InsurancePayload!
@@ -3603,8 +3686,6 @@ type Query {
   fetchPolicyHolder(id: String!): PolicyHolder!
   getPoliciesEligibilities(policyEligibilityInput: PolicyEligibilityPaginationInput!): PolicyEligibilitiesPayload!
   getPoliciesEligibility(id: String!): PolicyEligibilityWithPatientPayload!
-  fetchAgreement(agreementId: String!): AgreementPayload!
-  fetchAllAgreements(agreementPaginationInput: AgreementPaginationInput!): AgreementsPayload!
   findAllNdc(findAllNdcInput: FindAllNdcInput!): FindAllNdcPayload!
   getNdcCode(getNdcCodeInput: GetNdcCodeInput!): NdcPayload!
   findAllCvx(findAllCvxInput: FindAllCvxInput!): FindAllCvxPayload!
@@ -3677,8 +3758,6 @@ type Query {
   latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   fetchAllMacros(macroInput: MacroPaginationInput!): MacrosPayload!
   getMacro(getMacroInput: GetMacroInput!): MacroPayload!
-  findAllRoom(findAllRoomInput: FindAllRoomInput!): FindAllRoomPayload!
-  getRoom(getRoomInput: GetRoomInput!): RoomPayload!
 }
 
 input SearchLoincCodesInput {
@@ -3718,6 +3797,33 @@ input LabTestInput {
 input TestSpecimenTypeInput {
   specimenTypeName: String
   paginationOptions: PaginationInput!
+}
+
+input FindAllImagingTestInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetImagingTestInput {
+  id: String!
+}
+
+input FindAllImagingOrderInput {
+  searchQuery: String
+  paginationOptions: PaginationInput!
+}
+
+input GetImagingOrderInput {
+  id: String!
+}
+
+input PracticeInput {
+  practiceName: String
+  paginationOptions: PaginationInput!
+}
+
+input GetPractice {
+  id: String
 }
 
 input UsersInput {
@@ -3892,15 +3998,6 @@ input PatientConsentInput {
   id: String!
 }
 
-input PracticeInput {
-  practiceName: String
-  paginationOptions: PaginationInput!
-}
-
-input GetPractice {
-  id: String
-}
-
 input GetAttachment {
   typeId: String!
   attachmentName: String
@@ -3987,6 +4084,29 @@ input GetPatientAppointmentInput {
   patientId: String!
 }
 
+input FindAllRoomInput {
+  facilityId: String
+  practiceId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input GetRoomInput {
+  id: String!
+}
+
+input InvoiceInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input AgreementPaginationInput {
+  agreementFacilityId: String
+  agreementPracticeId: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
 input FindAllCPTCodesInput {
   code: String
   paginationOptions: PaginationInput!
@@ -4025,11 +4145,6 @@ input GetCptFeeScheduleInput {
   id: String!
 }
 
-input InvoiceInputs {
-  facilityId: String
-  paginationOptions: PaginationInput!
-}
-
 input InsurancePaginationInput {
   searchString: String
   paginationOptions: PaginationInput!
@@ -4051,13 +4166,6 @@ input PolicyHolderPaginationInput {
 input PolicyEligibilityPaginationInput {
   patientId: String
   searchTerm: String
-  paginationOptions: PaginationInput!
-}
-
-input AgreementPaginationInput {
-  agreementFacilityId: String
-  agreementPracticeId: String
-  searchString: String
   paginationOptions: PaginationInput!
 }
 
@@ -4387,17 +4495,6 @@ input GetMacroInput {
   id: String
 }
 
-input FindAllRoomInput {
-  facilityId: String
-  practiceId: String
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input GetRoomInput {
-  id: String!
-}
-
 type Mutation {
   createLoincCode(loincCodeInput: LoincCodeInput!): LoincCodePayload!
   updateLoincCode(updateLoincCodeInput: UpdateLoincCodeInput!): LoincCodePayload!
@@ -4409,6 +4506,15 @@ type Mutation {
   updateLabTestObservation(updateLabTestObservationInput: UpdateLabTestObservationInput!): LabTestObservationPayload!
   syncLabResults(updateObservationInput: UpdateObservationInput!): LabTestObservationPayload!
   removeLabTestObservation(removeLabTestObservation: RemoveLabTestObservation!): LabTestObservationPayload!
+  createImagingTest(createImagingTestInput: CreateImagingTestInput!): ImagingTestPayload!
+  updateImagingTest(updateImagingTestInput: UpdateImagingTestInput!): ImagingTestPayload!
+  removeImagingTest(removeImagingTestInput: RemoveImagingTestInput!): ImagingTestPayload!
+  createImagingOrder(createImagingOrderInput: CreateImagingOrderInput!): ImagingOrderPayload!
+  updateImagingOrder(updateImagingOrderInput: UpdateImagingOrderInput!): ImagingOrderPayload!
+  removeImagingOrder(removeImagingOrderInput: RemoveImagingOrderInput!): ImagingOrderPayload!
+  createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
+  updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
+  removePractice(removePractice: RemovePractice!): PracticePayload!
   login(loginUser: LoginUserInput!): AccessUserPayload!
   verifyOTP(verifyCodeInput: VerifyCodeInput!): UserPayload!
   resentOTP: UserPayload!
@@ -4464,9 +4570,6 @@ type Mutation {
   updatePatientNoteInfo(updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!): PatientPayload!
   updatePatientProviderRelation(updatePatientProviderRelationInputs: UpdatePatientProviderRelationInputs!): PatientDoctorPayload!
   createPatientConsent(createPatientConsentInputs: CreatePatientConsentInputs!): PatientConsentPayload!
-  createPractice(createPracticeInput: CreatePracticeInput!): PracticePayload!
-  updatePractice(updatePracticeInput: UpdatePracticeInput!): PracticePayload!
-  removePractice(removePractice: RemovePractice!): PracticePayload!
   createAttachmentData(createAttachmentInput: CreateAttachmentInput!): AttachmentPayload!
   removeAttachmentData(removeAttachment: RemoveAttachment!): AttachmentPayload!
   removeAttachmentMedia(id: String!): AttachmentPayload!
@@ -4479,9 +4582,23 @@ type Mutation {
   cancelAppointment(cancelAppointment: CancelAppointment!): AppointmentPayload!
   updateAppointmentStatus(appointmentStatusInput: UpdateAppointmentStatusInput!): AppointmentPayload!
   sendAppointmentReminder(appointmentReminderInput: AppointmentReminderInput!): AppointmentPayload!
+  associateRoomToAppointment(associateRoomToAppointmentInput: AssociateRoomToAppointmentInput!): AppointmentPayload!
   createScribe(createScribeInput: CreateScribeInput!): ScribePayload!
   updateScribe(updateScribeInput: UpdateScribeInput!): ScribePayload!
   updateScribeCheck(scribeCheckInput: ScribeCheckInput!): ScribePayload!
+  createRoom(createRoomInput: CreateRoomInput!): RoomPayload!
+  updateRoom(updateRoomInput: UpdateRoomInput!): RoomPayload!
+  removeRoom(removeRoomInput: RemoveRoomInput!): RoomPayload!
+  chargePayment(paymentInput: PaymentInput!): TransactionPayload!
+  chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
+  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
+  achPayment(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
+  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
+  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
+  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
+  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
+  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
+  removeAgreement(agreementId: String!): AgreementPayload!
   createCPTCode(createCPTCodeInput: CreateCPTCodeInput!): CPTCodePayload!
   updateCPTCode(updateCPTCodeInput: UpdateCPTCodeInput!): CPTCodePayload!
   removeCPTCode(removeCPTCodeInput: RemoveCPTCodeInput!): CPTCodePayload!
@@ -4494,21 +4611,11 @@ type Mutation {
   createCptFeeSchedule(createCptFeeScheduleInput: CreateCptFeeScheduleInput!): CPTFeeSchedulePayload!
   removeCptFeeSchedule(removeCptFeeScheduleInput: RemoveCptFeeScheduleInput!): CPTFeeSchedulePayload!
   updateCptFeeSchedule(updateCptFeeScheduleInput: UpdateCptFeeScheduleInput!): CPTFeeSchedulePayload!
-  chargePayment(paymentInput: PaymentInput!): TransactionPayload!
-  chargeAfterAppointment(paymentInput: PaymentInputsAfterAppointment!): AppointmentPayload!
-  getAllTransactions(transactionInputs: GetAllTransactionsInputs!): TransactionsPayload!
-  achPayment(achPaymentInputs: ACHPaymentInputs!): TransactionPayload!
-  createInvoice(createInvoiceInputs: CreateInvoiceInputs!): InvoicePayload!
-  createExternalInvoice(createExternalInvoiceInputs: CreateExternalInvoiceInputs!): InvoicePayload!
-  updateInvoiceStatus(invoiceStatusInputs: InvoiceStatusInputs!): InvoicePayload!
   createPolicy(createPolicyInput: CreatePolicyInput!): PolicyPayload!
   updatePolicy(updatePolicyInput: UpdatePolicyInput!): PolicyPayload!
   createPolicyHolder(createPolicyHolderInput: PolicyHolderInput!): PolicyHolder!
   createCopay(createCopayInput: CopayInput!): Copay!
   getEligibilityAndCoverage(policyId: String!): PolicyEligibilityPayload!
-  createAgreement(createAgreementInput: AgreementInput!): AgreementPayload!
-  updateAgreement(updateAgreementInput: UpdateAgreementInput!): AgreementPayload!
-  removeAgreement(agreementId: String!): AgreementPayload!
   createNdcCode(createNdcCodeInput: CreateNdcCodeInput!): NdcPayload!
   updateNdcCode(updateNdcCodeInput: UpdateNdcCodeInput!): NdcPayload!
   removeNdcCode(removeNdcCodeInput: RemoveNdcCodeInput!): NdcPayload!
@@ -4576,9 +4683,6 @@ type Mutation {
   createMacro(createMacroInput: CreateMacroInput!): MacroPayload!
   updateMacro(updateMacroInput: UpdateMacroInput!): MacroPayload!
   removeMacro(removeMacroInput: RemoveMacroInput!): MacroPayload!
-  createRoom(createRoomInput: CreateRoomInput!): RoomPayload!
-  updateRoom(updateRoomInput: UpdateRoomInput!): RoomPayload!
-  removeRoom(removeRoomInput: RemoveRoomInput!): RoomPayload!
 }
 
 input LoincCodeInput {
@@ -4713,136 +4817,68 @@ input RemoveLabTestObservation {
   id: String!
 }
 
-input LoginUserInput {
-  email: String!
-  password: String!
-}
-
-input VerifyCodeInput {
-  id: String
-  otpCode: String!
-}
-
-input RegisterUserInput {
-  firstName: String
-  lastName: String
-  password: String!
-  email: String!
-
-  """string type role - Sign-up"""
-  roleType: String
-  adminId: String
-  facilityId: String
-  phone: String
-  zipCode: String
-  isAdmin: Boolean
-}
-
-input ForgotPasswordInput {
-  email: String!
-}
-
-input VerifyEmailInput {
-  token: String!
-}
-
-input ResendVerificationEmail {
-  email: String
-}
-
-input UserInfoInput {
-  id: String!
-  email: String
-  phone: String
-  autoLogoutTime: String
-  facilityId: String
-}
-
-input ResetPasswordInput {
-  password: String!
-  token: String!
-}
-
-input UpdatePasswordInput {
-  id: String!
-  newPassword: String!
-  oldPassword: String!
-}
-
-input UserIdInput {
-  userId: String!
-  adminId: String
-  isEnabled: Boolean
-}
-
-input TwoFactorInput {
-  userId: String!
-  password: String
-  isTwoFactorEnabled: Boolean!
-}
-
-input UpdateUserInput {
-  firstName: String
-  lastName: String
-  email: String
-  adminId: String
-  facilityId: String
-  phone: String
-  zipCode: String
-  isAdmin: Boolean
-  id: String!
-  emailVerified: Boolean
-  token: String
-}
-
-input UpdateRoleInput {
-  id: String!
-  roles: [String!]!
-}
-
-input PermissionItemInput {
+input CreateImagingTestInput {
   name: String!
-  moduleType: String!
-  roleId: String
 }
 
-input RolePermissionItemInput {
-  roleId: String!
-  permissionsId: [String!]
-}
-
-input UpdatePermissionItemInput {
+input UpdateImagingTestInput {
   name: String
-  moduleType: String
-  roleId: String
-  id: String
+  id: String!
 }
 
-input RemovePermission {
-  id: String
+input RemoveImagingTestInput {
+  id: String!
 }
 
-input RoleItemInput {
-  role: String!
-  description: String
-  customRole: Boolean!
+input CreateImagingOrderInput {
+  labTestStatus: ImagingOrderStatus = ORDER_ENTERED
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  providerNotes: String
+  isSigned: Boolean
+  patientId: String
+  problemId: String
+  appointmentId: String
+  imagingTests: [String!]
 }
 
-input UpdateRoleItemInput {
-  role: String
-  description: String
-  customRole: Boolean
-  id: String
+input UpdateImagingOrderInput {
+  labTestStatus: ImagingOrderStatus = ORDER_ENTERED
+  orderNumber: String
+  collectedDate: String
+  receivedDate: String
+  accessionNumber: String
+  labName: String
+  vendorName: String
+  testDate: String
+  testTime: String
+  testNotes: String
+  providerNotes: String
+  isSigned: Boolean
+  patientId: String
+  problemId: String
+  appointmentId: String
+  imagingTests: [String!]
+  id: String!
 }
 
-input RemoveRole {
-  id: String
+input RemoveImagingOrderInput {
+  id: String!
 }
 
-input CreateFacilityInput {
-  createFacilityItemInput: CreateFacilityItemInput!
-  createContactInput: CreateContactInput!
-  createBillingAddressInput: CreateBillingAddressInput!
+input CreatePracticeInput {
+  createFacilityItemInput: CreateFacilityItemInput
+  createFacilityContactInput: CreateContactInput
+  createContactInput: CreateContactInput
+  registerUserInput: RegisterUserInput
+  createPracticeItemInput: CreatePracticeItemInput
 }
 
 input CreateFacilityItemInput {
@@ -4896,6 +4932,176 @@ input CreateContactInput {
   patientId: String
   employerName: String
   insuranceId: String
+}
+
+input RegisterUserInput {
+  firstName: String
+  lastName: String
+  password: String!
+  email: String!
+
+  """string type role - Sign-up"""
+  roleType: String
+  adminId: String
+  facilityId: String
+  phone: String
+  zipCode: String
+  isAdmin: Boolean
+}
+
+input CreatePracticeItemInput {
+  name: String
+  phone: String
+  fax: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  npi: String
+  taxId: String
+  taxonomyCodeId: String
+}
+
+input UpdatePracticeInput {
+  updatePracticeItemInput: UpdatePracticeItemInput
+  updateUserInput: UpdateUserInput
+}
+
+input UpdatePracticeItemInput {
+  name: String
+  phone: String
+  fax: String
+  ein: String
+  upin: String
+  medicare: String
+  medicaid: String
+  champus: String
+  npi: String
+  taxId: String
+  taxonomyCodeId: String
+  id: String
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  email: String
+  adminId: String
+  facilityId: String
+  phone: String
+  zipCode: String
+  isAdmin: Boolean
+  id: String!
+  emailVerified: Boolean
+  token: String
+}
+
+input RemovePractice {
+  id: String
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input VerifyCodeInput {
+  id: String
+  otpCode: String!
+}
+
+input ForgotPasswordInput {
+  email: String!
+}
+
+input VerifyEmailInput {
+  token: String!
+}
+
+input ResendVerificationEmail {
+  email: String
+}
+
+input UserInfoInput {
+  id: String!
+  email: String
+  phone: String
+  autoLogoutTime: String
+  facilityId: String
+}
+
+input ResetPasswordInput {
+  password: String!
+  token: String!
+}
+
+input UpdatePasswordInput {
+  id: String!
+  newPassword: String!
+  oldPassword: String!
+}
+
+input UserIdInput {
+  userId: String!
+  adminId: String
+  isEnabled: Boolean
+}
+
+input TwoFactorInput {
+  userId: String!
+  password: String
+  isTwoFactorEnabled: Boolean!
+}
+
+input UpdateRoleInput {
+  id: String!
+  roles: [String!]!
+}
+
+input PermissionItemInput {
+  name: String!
+  moduleType: String!
+  roleId: String
+}
+
+input RolePermissionItemInput {
+  roleId: String!
+  permissionsId: [String!]
+}
+
+input UpdatePermissionItemInput {
+  name: String
+  moduleType: String
+  roleId: String
+  id: String
+}
+
+input RemovePermission {
+  id: String
+}
+
+input RoleItemInput {
+  role: String!
+  description: String
+  customRole: Boolean!
+}
+
+input UpdateRoleItemInput {
+  role: String
+  description: String
+  customRole: Boolean
+  id: String
+}
+
+input RemoveRole {
+  id: String
+}
+
+input CreateFacilityInput {
+  createFacilityItemInput: CreateFacilityItemInput!
+  createContactInput: CreateContactInput!
+  createBillingAddressInput: CreateBillingAddressInput!
 }
 
 input CreateBillingAddressInput {
@@ -5456,52 +5662,6 @@ input CreatePatientConsentInputs {
   body: String
 }
 
-input CreatePracticeInput {
-  createFacilityItemInput: CreateFacilityItemInput
-  createFacilityContactInput: CreateContactInput
-  createContactInput: CreateContactInput
-  registerUserInput: RegisterUserInput
-  createPracticeItemInput: CreatePracticeItemInput
-}
-
-input CreatePracticeItemInput {
-  name: String
-  phone: String
-  fax: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  npi: String
-  taxId: String
-  taxonomyCodeId: String
-}
-
-input UpdatePracticeInput {
-  updatePracticeItemInput: UpdatePracticeItemInput
-  updateUserInput: UpdateUserInput
-}
-
-input UpdatePracticeItemInput {
-  name: String
-  phone: String
-  fax: String
-  ein: String
-  upin: String
-  medicare: String
-  medicaid: String
-  champus: String
-  npi: String
-  taxId: String
-  taxonomyCodeId: String
-  id: String
-}
-
-input RemovePractice {
-  id: String
-}
-
 input CreateAttachmentInput {
   """enum type for module type - Upload Media"""
   type: AttachmentType!
@@ -5641,6 +5801,7 @@ input UpdateAppointmentInput {
   checkInActiveStep: String
   checkedOutAt: String
   shouldSendEmail: Boolean = false
+  intakeSteps: [String!]
 }
 
 input UpdateAppointmentBillingStatusInput {
@@ -5668,6 +5829,11 @@ input AppointmentReminderInput {
   timeZone: String
 }
 
+input AssociateRoomToAppointmentInput {
+  appointmentId: String!
+  roomId: String!
+}
+
 input CreateScribeInput {
   appointmentId: String
   userId: String
@@ -5689,6 +5855,105 @@ input ScribeCheckInput {
   id: String
   appointmentId: String
   isScribed: Boolean
+}
+
+input CreateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+}
+
+input UpdateRoomInput {
+  facilityId: String
+  name: String
+  number: String
+  id: String!
+}
+
+input RemoveRoomInput {
+  id: String!
+}
+
+input PaymentInput {
+  clientIntent: String
+  price: String
+  providerId: String
+  facilityId: String
+  patientId: String
+  appointmentId: String
+  serviceId: String
+}
+
+input PaymentInputsAfterAppointment {
+  clientIntent: String!
+  price: String!
+  providerId: String
+  facilityId: String
+  patientId: String!
+  appointmentId: String!
+}
+
+input GetAllTransactionsInputs {
+  facilityId: String
+  paginationOptions: PaginationInput!
+}
+
+input ACHPaymentInputs {
+  token: String!
+  firstName: String
+  lastName: String
+  price: String!
+  patientId: String
+  doctorId: String
+  facilityId: String
+  appointmentId: String
+  company: String
+  deviceData: String
+}
+
+input CreateInvoiceInputs {
+  paymentTransactionId: String
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String
+  status: STATUS!
+  amount: String!
+  appointmentId: String!
+}
+
+input CreateExternalInvoiceInputs {
+  paymentTransactionId: String!
+  facilityId: String!
+  generatedBy: String
+  billingType: BILLING_TYPE!
+  paymentMethod: String!
+  status: STATUS!
+  amount: String!
+}
+
+input InvoiceStatusInputs {
+  status: STATUS!
+  id: String!
+}
+
+input AgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
+}
+
+input UpdateAgreementInput {
+  title: String
+  body: String
+  viewAgreementBeforeAgreeing: Boolean
+  signatureRequired: Boolean
+  facilityId: String
+  practiceId: String
+  id: String!
 }
 
 input CreateCPTCodeInput {
@@ -5793,69 +6058,6 @@ input UpdateCptFeeScheduleInput {
   id: String!
 }
 
-input PaymentInput {
-  clientIntent: String
-  price: String
-  providerId: String
-  facilityId: String
-  patientId: String
-  appointmentId: String
-  serviceId: String
-}
-
-input PaymentInputsAfterAppointment {
-  clientIntent: String!
-  price: String!
-  providerId: String
-  facilityId: String
-  patientId: String!
-  appointmentId: String!
-}
-
-input GetAllTransactionsInputs {
-  facilityId: String
-  paginationOptions: PaginationInput!
-}
-
-input ACHPaymentInputs {
-  token: String!
-  firstName: String
-  lastName: String
-  price: String!
-  patientId: String
-  doctorId: String
-  facilityId: String
-  appointmentId: String
-  company: String
-  deviceData: String
-}
-
-input CreateInvoiceInputs {
-  paymentTransactionId: String
-  facilityId: String!
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String
-  status: STATUS!
-  amount: String!
-  appointmentId: String!
-}
-
-input CreateExternalInvoiceInputs {
-  paymentTransactionId: String!
-  facilityId: String!
-  generatedBy: String
-  billingType: BILLING_TYPE!
-  paymentMethod: String!
-  status: STATUS!
-  amount: String!
-}
-
-input InvoiceStatusInputs {
-  status: STATUS!
-  id: String!
-}
-
 input CreatePolicyInput {
   orderOfBenefit: OrderOfBenefitType
   policyHolderRelationship: PolicyHolderRelationshipType
@@ -5940,25 +6142,6 @@ input UpdatePolicyHolderInput {
   ssn: String
   sex: POLICY_HOLDER_GENDER_IDENTITY
   dob: String
-  id: String!
-}
-
-input AgreementInput {
-  title: String
-  body: String
-  viewAgreementBeforeAgreeing: Boolean
-  signatureRequired: Boolean
-  facilityId: String
-  practiceId: String
-}
-
-input UpdateAgreementInput {
-  title: String
-  body: String
-  viewAgreementBeforeAgreeing: Boolean
-  signatureRequired: Boolean
-  facilityId: String
-  practiceId: String
   id: String!
 }
 
@@ -6618,22 +6801,5 @@ input UpdateMacroInput {
 }
 
 input RemoveMacroInput {
-  id: String!
-}
-
-input CreateRoomInput {
-  facilityId: String
-  name: String
-  number: String
-}
-
-input UpdateRoomInput {
-  facilityId: String
-  name: String
-  number: String
-  id: String!
-}
-
-input RemoveRoomInput {
   id: String!
 }

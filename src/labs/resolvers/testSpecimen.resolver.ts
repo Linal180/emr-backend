@@ -1,18 +1,26 @@
+import { Args, Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver, Query, ResolveField, Parent } from '@nestjs/graphql';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//guards
 import PermissionGuard from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//inputs
 import { TestSpecimenTypeInput } from '../dto/testSpecimenType-input.dto';
-import { TestSpecimenTypesPayload } from '../dto/testSpecimenTypes-payload.dto copy';
-import { UpdateLoincCodeInput } from '../dto/update-loincCode.input';
+import { TestSpecimenTypesPayload } from '../dto/testSpecimenTypes-payload.dto';
+//entities
 import { SpecimenTypes } from '../entities/specimenTypes.entity';
 import { TestSpecimens } from '../entities/testSpecimens.entity';
+//services
 import { TestSpecimenService } from '../services/testSpecimen.service';
 
 @Resolver(() => TestSpecimens)
 export class TestSpecimenResolver {
-  constructor(private readonly testSpecimenService: TestSpecimenService) { }
-  @Query(returns => TestSpecimenTypesPayload)
+  constructor(
+    private readonly testSpecimenService: TestSpecimenService
+  ) { }
+
+  // queries
+
+  @Query(() => TestSpecimenTypesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllTestSpecimenTypes')
   async findAllTestSpecimenTypes(@Args('testSpecimenTypeInput') testSpecimenTypeInput: TestSpecimenTypeInput): Promise<TestSpecimenTypesPayload> {
@@ -31,7 +39,7 @@ export class TestSpecimenResolver {
     });
   }
 
-  @Query(returns => SpecimenTypes)
+  @Query(() => SpecimenTypes)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getSpecimenTypeByName')
   async getSpecimenTypeByName(@Args('name') name: string): Promise<SpecimenTypes> {
@@ -45,10 +53,12 @@ export class TestSpecimenResolver {
     });
   }
 
-  @ResolveField((returns) => SpecimenTypes)
+  // resolve fields
+
+  @ResolveField(() => SpecimenTypes)
   async specimenTypes(@Parent() testSpecimens: TestSpecimens): Promise<SpecimenTypes> {
     if (testSpecimens && testSpecimens.specimenTypesId) {
-     return await this.testSpecimenService.findSpecimenTypeById(testSpecimens.specimenTypesId);
+      return await this.testSpecimenService.findSpecimenTypeById(testSpecimens.specimenTypesId);
     }
   }
 }

@@ -1,17 +1,24 @@
 import { SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
+//guards
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PermissionGuard from 'src/users/auth/role.guard';
-import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
-import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
-import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
+//inputs
 import { UpdateObservationInput } from '../dto/update-observationItem-input.dto';
+import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
+import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
+//payloads
+import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
+//entities
 import { Observations } from '../entities/observations.entity';
+//services
 import { LabTestsObservationsService } from '../services/labTestObservation.service';
 
 @Resolver(() => Observations)
 export class LabTestObservationResolver {
   constructor(private readonly labTestsObservationsService: LabTestsObservationsService) { }
+
+  // mutations
 
   @Mutation(() => LabTestObservationPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)

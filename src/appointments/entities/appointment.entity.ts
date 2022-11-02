@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 //entities
+import { Scribe } from './scribe.entity';
 import { Contract } from './contract.entity';
 import { Invoice } from 'src/payment/entity/invoice.entity'
 import { LabTests } from 'src/labs/entities/labTests.entity';
@@ -10,18 +11,19 @@ import { Patient } from 'src/patients/entities/patient.entity';
 import { Transactions } from 'src/payment/entity/payment.entity';
 import { Service } from 'src/facilities/entities/services.entity';
 import { Facility } from 'src/facilities/entities/facility.entity';
+import { ImagingOrder } from 'src/labs/entities/imagingOrder.entity';
 import { Vaccine } from 'src/patientCharting/entities/vaccines.entity';
 import { PatientConsent } from 'src/patients/entities/patientConsent.entity';
+import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { TriageNotes } from 'src/patientCharting/entities/triageNotes.entity';
+import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
 import { PatientVitals } from 'src/patientCharting/entities/patientVitals.entity';
+import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
 import { PatientProblems } from 'src/patientCharting/entities/patientProblems.entity';
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
-import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
-import { ReviewOfSystem } from 'src/reviewOfSystems/entities/reviewOfSystem.entity';
-import { PhysicalExam } from 'src/reviewOfSystems/entities/physicalExam.entity';
-import { Scribe } from './scribe.entity';
+import { Room } from 'src/room/entities/room.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -205,6 +207,16 @@ export class Appointment {
   @Field({ nullable: true })
   timeZone: string;
 
+  @Column({ nullable: true, array: false, type: 'jsonb' })
+  @Field(() => [String], { nullable: true })
+  intakeSteps: string[]
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  cardLast4Digits?: string
+
+  // relationship columns
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   providerId: string;
@@ -225,14 +237,22 @@ export class Appointment {
   @Field({ nullable: true })
   appointmentTypeId: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  cardLast4Digits?: string
-
   @Field({ nullable: true })
   invoiceId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  roomId: string;
+
   //relationships
+
+  @ManyToOne(() => Room, room => room.appointment)
+  @Field(() => Room, { nullable: true })
+  room: Room;
+
+  @OneToMany(() => ImagingOrder, imagingOrder => imagingOrder.appointment)
+  @Field(() => [ImagingOrder], { nullable: true })
+  imagingOrders: ImagingOrder[];
 
   @ManyToOne(() => Service, facilityService => facilityService.appointments, { onDelete: 'CASCADE' })
   @Field(() => Service, { nullable: true })

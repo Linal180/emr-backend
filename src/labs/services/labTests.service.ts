@@ -15,7 +15,6 @@ import { ProblemService } from 'src/patientCharting/services/patientProblems.ser
 //entities
 import { LabTests } from '../entities/labTests.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
-import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
 //inputs
 import LabTestInput from '../dto/lab-test.input';
 import CreateLabTestInput from '../dto/create-lab-test-input.dto';
