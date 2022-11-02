@@ -6,12 +6,12 @@ import { SpecimenTypes } from '../entities/specimenTypes.entity';
 
 @ObjectType()
 export class TestSpecimenTypesPayload extends ResponsePayloadResponse {
-    @Field(type => [SpecimenTypes], { nullable: true })
+    @Field(() => [SpecimenTypes], { nullable: true })
     specimenTypes: SpecimenTypes[];
 
     @Field({ nullable: true })
     response?: ResponsePayload
 
-    @Field(type => PaginationPayload, { nullable: true })
+    @Field(() => PaginationPayload, { nullable: true })
     pagination?: PaginationPayload
 }

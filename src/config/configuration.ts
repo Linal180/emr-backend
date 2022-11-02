@@ -11,7 +11,7 @@ export default () => {
       ssl: {
         rejectUnauthorized: false,
       },
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
@@ -29,7 +29,7 @@ export default () => {
       ssl: {
         rejectUnauthorized: false,
       },
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity.logs{.ts,.js}"],
     };
@@ -49,7 +49,7 @@ export default () => {
       database: process.env.DATABASE_NAME || "emr-pro",
       timezone: 'Z',
       migrationsRun: true,
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrations/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity{.ts,.js}"],
     };
@@ -70,7 +70,7 @@ export default () => {
       database: process.env.DATABASE_LOG_NAME || "emr-pro-logs",
       timezone: 'Z',
       migrationsRun: true,
-      logging: false,
+      logging: true,
       migrations: ["dist/src/migrationsLogs/*{.ts,.js}"],
       entities: ["dist/src/**/*.entity.logs{.ts,.js}"],
     };

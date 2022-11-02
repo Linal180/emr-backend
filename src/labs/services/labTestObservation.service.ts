@@ -1,40 +1,45 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
-import * as moment from 'moment';
 import * as pdf from 'html-pdf'
-import { InjectRepository } from '@nestjs/typeorm';
-import { AttachmentsService } from 'src/attachments/services/attachments.service';
-import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
-import { AttachmentType } from 'src/attachments/entities/attachment.entity';
-import { UtilsService } from 'src/util/utils.service';
+import * as moment from 'moment';
 import { Repository } from 'typeorm';
-import { File } from '../../aws/dto/file-input.dto';
-import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
-import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
-import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
-import { LabTests, LabTestStatus } from '../entities/labTests.entity';
-import { Observations, AbnormalFlag } from '../entities/observations.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+//services
 import { LabTestsService } from './labTests.service';
+import { UtilsService } from 'src/util/utils.service';
 import { LoincCodesService } from './loincCodes.service';
-import { UpdateObservationInput } from '../dto/update-observationItem-input.dto';
-import template from "../../lib/templates"
 import { MailerService } from 'src/mailer/mailer.service';
-import { DocumentTypesService } from 'src/attachments/services/documentType.service';
-import { FacilityService } from 'src/facilities/services/facility.service';
 import { PracticeService } from 'src/practice/practice.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
+import { DocumentTypesService } from 'src/attachments/services/documentType.service';
+//inputs
+import { File } from '../../aws/dto/file-input.dto';
+import { UpdateObservationInput } from '../dto/update-observationItem-input.dto';
+import CreateLabTestObservationInput from '../dto/create-lab-test-observation-input.dto';
+import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
+import UpdateLabTestObservationInput, { RemoveLabTestObservation } from '../dto/update-lab-test-observationItem.input';
+//entities
+import { LabTests, LabTestStatus } from '../entities/labTests.entity';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
+import { Observations, AbnormalFlag } from '../entities/observations.entity';
+//payload
+import template from "../../lib/templates"
+import { LabTestObservationPayload } from '../dto/labTestObservation-payload.dto';
+
 
 @Injectable()
 export class LabTestsObservationsService {
   constructor(
     @InjectRepository(Observations)
     private ObservationsRepository: Repository<Observations>,
-    private readonly labTestsService: LabTestsService,
     private readonly utilsService: UtilsService,
+    private readonly mailerService: MailerService,
+    private readonly practiceService: PracticeService,
+    private readonly facilityService: FacilityService,
+    private readonly labTestsService: LabTestsService,
+    private readonly loincCodesService: LoincCodesService,
     private readonly attachmentsService: AttachmentsService,
     private readonly documentTypeService: DocumentTypesService,
-    private readonly loincCodesService: LoincCodesService,
-    private readonly facilityService: FacilityService,
-    private readonly practiceService: PracticeService,
-    private readonly mailerService: MailerService
   ) { }
 
   /**
