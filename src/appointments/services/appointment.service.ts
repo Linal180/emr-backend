@@ -23,6 +23,7 @@ import {
 import { ContractService } from './contract.service';
 import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
+import { RoomService } from 'src/room/services/room.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaymentService } from 'src/payment/services/payment.service';
 import { PatientService } from 'src/patients/services/patient.service';
@@ -32,7 +33,7 @@ import { ServicesService } from 'src/facilities/services/services.service';
 import { PatientConsentService } from 'src/patients/services/patientConsent.service';
 //  inputs
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
-import { AppointmentReminderInput } from '../dto/appointment-reminder-input.dto';
+import { AppointmentReminderInput, AssociateRoomToAppointmentInput } from '../dto/appointment-reminder-input.dto';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
@@ -50,6 +51,7 @@ export class AppointmentService {
     @InjectRepository(Appointment)
     private appointmentRepository: Repository<Appointment>,
     private readonly connection: Connection,
+    private readonly roomService: RoomService,
     private readonly utilsService: UtilsService,
     private readonly mailerService: MailerService,
     private readonly doctorService: DoctorService,
@@ -316,6 +318,23 @@ export class AppointmentService {
     }
   }
 
+  /**
+   * Associates room to appointment
+   * @param params 
+   * @returns room to appointment 
+   */
+  async associateRoomToAppointment(params: AssociateRoomToAppointmentInput): Promise<Appointment> {
+    try {
+      const { appointmentId, roomId } = params
+      const appointmentInstance = await this.findOne(appointmentId);
+      const roomInstance = await this.roomService.findOne(roomId);
+      appointmentInstance.room = roomInstance
+      appointmentInstance.roomId = roomInstance?.id
+      return await this.appointmentRepository.save(appointmentInstance)
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
   /**
    * Finds appointment query

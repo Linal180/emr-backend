@@ -1,18 +1,25 @@
-import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
+//guards
 import PermissionGuard from 'src/users/auth/role.guard';
-import { default as LoincCodeInput } from '../dto/create-loincCode-input.dto';
-import { LoincCodePayload } from '../dto/loincCode-payload.dto';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+// inputs
 import { SearchLoincCodesInput } from '../dto/loincCodes-input.dto';
-import { LoincCodesPayload } from '../dto/loincCodes-payload.dto';
 import { UpdateLoincCodeInput } from '../dto/update-loincCode.input';
+import { default as LoincCodeInput } from '../dto/create-loincCode-input.dto';
+//payloads
+import { LoincCodePayload } from '../dto/loincCode-payload.dto';
+import { LoincCodesPayload } from '../dto/loincCodes-payload.dto';
+// entities
 import { LoincCodes } from '../entities/loincCodes.entity';
+// services
 import { LoincCodesService } from '../services/loincCodes.service';
 
 @Resolver(() => LoincCodes)
 export class LoincCodesResolver {
   constructor(private readonly loincCodesService: LoincCodesService) { }
+
+  // mutations
 
   @Mutation(() => LoincCodePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -34,7 +41,9 @@ export class LoincCodesResolver {
     };
   }
 
-  @Query(returns => LoincCodesPayload)
+  // queries
+
+  @Query(() => LoincCodesPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllLoincCodes')
   async findAllLoincCodes(@Args('searchLoincCodesInput') searchLoincCodesInput: SearchLoincCodesInput): Promise<LoincCodesPayload> {
@@ -53,11 +62,11 @@ export class LoincCodesResolver {
     });
   }
 
-  @Query(returns => LoincCodes)
+  @Query(() => LoincCodes)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findLoincCode')
   async findLoincCode(@Args('id') id: string): Promise<LoincCodes> {
     return await this.loincCodesService.findOne(id)
-    
+
   }
 }
