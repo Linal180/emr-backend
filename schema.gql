@@ -1899,6 +1899,7 @@ type Appointment {
   scheduleEndDateTime: String
   appointmentDate: String
   timeZone: String
+  intakeSteps: [String!]
   providerId: String
   patientId: String
   facilityId: String
@@ -5641,6 +5642,7 @@ input UpdateAppointmentInput {
   checkInActiveStep: String
   checkedOutAt: String
   shouldSendEmail: Boolean = false
+  intakeSteps: [String!]
 }
 
 input UpdateAppointmentBillingStatusInput {
