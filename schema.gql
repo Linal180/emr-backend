@@ -387,15 +387,23 @@ type PatientMedication {
 type ImagingTest {
   id: String!
   name: String
-  imagingOrderId: String
-  imagingOrder: ImagingOrder
   createdAt: String
   updatedAt: String
 }
 
+type ImagingOrderTest {
+  id: String!
+  imagingOrderId: String
+  imagingTestId: String
+  imagingTest: ImagingTest
+  createdAt: String!
+  updatedAt: String!
+  imagingTests: ImagingTest!
+}
+
 type ImagingOrder {
   id: String!
-  labTestStatus: LabTestStatus
+  labTestStatus: ImagingOrderStatus
   orderNumber: String
   collectedDate: String
   receivedDate: String
@@ -410,9 +418,18 @@ type ImagingOrder {
   patientId: String
   appointmentId: String
   patientProblemId: String
-  imagingTests: [ImagingTest!]
+  imagingOrderTest: [ImagingOrderTest!]
   createdAt: String
   updatedAt: String
+}
+
+"""The imaging order status assigned"""
+enum ImagingOrderStatus {
+  ORDER_ENTERED
+  DISCONTINUED
+  IN_PROGRESS
+  RESULT_RECEIVED
+  RESULT_REVIEWED_WITH_PATIENT
 }
 
 type PatientProblems {
@@ -4810,7 +4827,7 @@ input RemoveImagingTestInput {
 }
 
 input CreateImagingOrderInput {
-  labTestStatus: LabTestStatus!
+  labTestStatus: ImagingOrderStatus = ORDER_ENTERED
   orderNumber: String
   collectedDate: String
   receivedDate: String
@@ -4829,7 +4846,7 @@ input CreateImagingOrderInput {
 }
 
 input UpdateImagingOrderInput {
-  labTestStatus: LabTestStatus
+  labTestStatus: ImagingOrderStatus = ORDER_ENTERED
   orderNumber: String
   collectedDate: String
   receivedDate: String

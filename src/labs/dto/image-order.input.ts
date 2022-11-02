@@ -2,7 +2,7 @@ import { Field, InputType, PartialType, PickType } from "@nestjs/graphql";
 //inputs
 import PaginationInput from "src/pagination/dto/pagination-input.dto";
 //entities
-import { LabTestStatus } from "../entities/labTests.entity";
+import { ImagingOrderStatus } from "../entities/imagingOrder.entity";
 
 @InputType()
 export class FindAllImagingOrderInput {
@@ -17,8 +17,8 @@ export class FindAllImagingOrderInput {
 @InputType()
 export class CreateImagingOrderInput {
 
-  @Field(() => LabTestStatus)
-  labTestStatus?: LabTestStatus
+  @Field(() => ImagingOrderStatus, { defaultValue: ImagingOrderStatus.ORDER_ENTERED })
+  labTestStatus?: ImagingOrderStatus
 
   @Field({ nullable: true })
   orderNumber?: string;

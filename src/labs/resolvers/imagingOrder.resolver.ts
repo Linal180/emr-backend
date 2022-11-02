@@ -7,8 +7,8 @@ import {
 //payloads
 import { FindAllImagingOrderPayload, ImagingOrderPayload } from "../dto/image-order.payload";
 //entities
-import { ImagingTest } from "../entities/imagingTest.entity";
 import { ImagingOrder } from "../entities/imagingOrder.entity";
+import { ImagingOrderTest } from "../entities/imagingOrderTest.entity";
 //services
 import { ImagingTestService } from "../services/imagingTest.service";
 import { ImagingOrderService } from "../services/imagingOrder.service";
@@ -91,10 +91,11 @@ export class ImagingOrderResolver {
 
 	//resolve fields
 
-	// @ResolveField(() => [ImagingTest])
-	// async imagingTests(@Parent() imagingOrder: ImagingOrder): Promise<ImagingTest[]> {
-	// 	if (imagingOrder?.id) {
-	// 		return await this.imagingTestService.findByOrderId(imagingOrder.id);
-	// 	}
-	// }
+	@ResolveField(() => [ImagingOrderTest])
+	async imagingOrderTest(@Parent() imagingOrder: ImagingOrder): Promise<ImagingOrderTest[]> {
+		if (imagingOrder?.id) {
+			return []
+			// return await this.imagingTestService.findByOrderId(imagingOrder.id);
+		}
+	}
 }

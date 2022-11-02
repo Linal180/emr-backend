@@ -107,8 +107,8 @@ export class ImagingTestService {
    * @param imagingOrderId 
    * @returns by order id 
    */
-  async findByOrderId(imagingOrderId: string): Promise<ImagingTest[]> {
-    return await this.imagingTestRepo.find({ imagingOrderId })
-  }
+  // async findByOrderId(imagingOrderId: string): Promise<ImagingTest[]> {
+  //   return await this.imagingTestRepo.find({ imagingOrderId })
+  // }
 
 }

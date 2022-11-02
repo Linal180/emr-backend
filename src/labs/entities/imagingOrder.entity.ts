@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { LabTestStatus } from "./labTests.entity";
@@ -6,6 +6,21 @@ import { ImagingTest } from "./imagingTest.entity";
 import { Patient } from "src/patients/entities/patient.entity";
 import { Appointment } from "src/appointments/entities/appointment.entity";
 import { PatientProblems } from "src/patientCharting/entities/patientProblems.entity";
+import { ImagingOrderTest } from "./imagingOrderTest.entity";
+
+export enum ImagingOrderStatus {
+  ORDER_ENTERED = "Order Entered",
+  DISCONTINUED = "Discontinued",
+  IN_PROGRESS = "In Progress",
+  RESULT_RECEIVED = "Results Received",
+  RESULT_REVIEWED_WITH_PATIENT = "Results Reviewed with Patient"
+}
+
+registerEnumType(ImagingOrderStatus, {
+  name: "ImagingOrderStatus",
+  description: "The imaging order status assigned",
+});
+
 
 @Entity({ name: 'ImagingOrder' })
 @ObjectType()
@@ -15,9 +30,9 @@ export class ImagingOrder {
   @Field()
   id: string;
 
-  @Column({ type: "enum", enum: LabTestStatus, default: LabTestStatus.ORDER_ENTERED })
-  @Field(() => LabTestStatus, { nullable: true })
-  labTestStatus: LabTestStatus
+  @Column({ type: "enum", enum: ImagingOrderStatus, default: ImagingOrderStatus.ORDER_ENTERED, nullable: true })
+  @Field(() => ImagingOrderStatus, { nullable: true })
+  labTestStatus: ImagingOrderStatus
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -79,9 +94,9 @@ export class ImagingOrder {
 
   //relationship
 
-  // @OneToMany(() => ImagingTest, imagingTest => imagingTest.imagingOrder)
-  // @Field(() => [ImagingTest], { nullable: true })
-  // imagingTests: ImagingTest[];
+  @OneToMany(() => ImagingOrderTest, imagingOrderTest => imagingOrderTest.imagingOrder, { onDelete: "CASCADE" })
+  @Field(() => [ImagingOrderTest], { nullable: true })
+  imagingOrderTest: ImagingOrderTest[];
 
   @ManyToOne(() => Patient, image => image.imagingOrders)
   patient: Patient;

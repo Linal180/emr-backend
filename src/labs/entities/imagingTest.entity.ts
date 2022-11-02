@@ -1,7 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { ImagingOrder } from "./imagingOrder.entity";
+import { ImagingOrderTest } from "./imagingOrderTest.entity";
 
 
 @Entity({ name: 'ImagingTest' })
@@ -16,17 +17,10 @@ export class ImagingTest {
   @Field({ nullable: true })
   name: string;
 
-  // relationship fields
-
-  // @Column({ nullable: true })
-  // @Field({ nullable: true })
-  // imagingOrderId: string;
-
   // relationships
 
-  // @ManyToOne(() => ImagingOrder, image => image.imagingTests)
-  // @Field(() => ImagingOrder, { nullable: true })
-  // imagingOrder: ImagingOrder;
+  @OneToMany(() => ImagingOrderTest, imagingOrderTest => imagingOrderTest.imagingTest)
+  imagingOrderTest: ImagingOrderTest[];
 
   //dates
 

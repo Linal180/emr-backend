@@ -100,10 +100,10 @@ export class ImagingOrderService {
       }
 
       // associate imaging test
-      if (imagingTests?.length) {
-        const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
-        imagingTestInstance.imagingTests = imagingTestInstances
-      }
+      // if (imagingTests?.length) {
+      //   const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
+      //   imagingTestInstance.imagingTests = imagingTestInstances
+      // }
       //save imaging order
       const imagingOrder = await this.imagingOrderRepo.save(imagingTestInstance)
       await queryRunner.commitTransaction();
@@ -158,10 +158,10 @@ export class ImagingOrderService {
       }
 
       // associate imaging test
-      if (imagingTests?.length) {
-        const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
-        imagingTestInstance.imagingTests = imagingTestInstances
-      }
+      // if (imagingTests?.length) {
+      //   const imagingTestInstances = await Promise.all(imagingTests?.map(async (id) => await this.imagingTestService.findOne(id)));
+      //   imagingTestInstance.imagingTests = imagingTestInstances
+      // }
       //save imaging order
       const imagingOrder = await this.imagingOrderRepo.save({ ...imagingTestInstance, ...rest })
       await queryRunner.commitTransaction();
