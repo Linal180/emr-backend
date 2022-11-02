@@ -23,6 +23,7 @@ import { PatientProblems } from 'src/patientCharting/entities/patientProblems.en
 import { PatientAllergies } from 'src/patientCharting/entities/patientAllergies.entity';
 import { PatientMedication } from 'src/patientCharting/entities/patientMedication.entity';
 import { PatientIllnessHistory } from 'src/reviewOfSystems/entities/patientIllnessHistory.entity';
+import { Room } from 'src/room/entities/room.entity';
 
 export enum PaymentType {
   SELF = "self",
@@ -212,6 +213,12 @@ export class Appointment {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
+  cardLast4Digits?: string
+
+  // relationship columns
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   providerId: string;
 
   @Column({ nullable: true })
@@ -230,14 +237,18 @@ export class Appointment {
   @Field({ nullable: true })
   appointmentTypeId: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  cardLast4Digits?: string
-
   @Field({ nullable: true })
   invoiceId: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  roomId: string;
+
   //relationships
+
+  @ManyToOne(() => Room, room => room.appointment)
+  @Field(() => Room, { nullable: true })
+  room: Room;
 
   @OneToMany(() => ImagingOrder, imagingOrder => imagingOrder.appointment)
   @Field(() => [ImagingOrder], { nullable: true })

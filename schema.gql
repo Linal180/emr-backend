@@ -1918,6 +1918,18 @@ type PhysicalExam {
   updatedAt: String
 }
 
+type Room {
+  id: String!
+  name: String
+  number: String
+  facilityId: String
+  practiceId: String
+  facility: Facility
+  appointment: [Appointment!]
+  createdAt: String!
+  updatedAt: String!
+}
+
 type Appointment {
   id: String!
   isExternal: Boolean
@@ -1948,13 +1960,15 @@ type Appointment {
   appointmentDate: String
   timeZone: String
   intakeSteps: [String!]
+  cardLast4Digits: String
   providerId: String
   patientId: String
   facilityId: String
   practiceId: String
   appointmentTypeId: String
-  cardLast4Digits: String
   invoiceId: String
+  roomId: String
+  room: Room
   imagingOrders: [ImagingOrder!]
   appointmentType: Service
   facility: Facility
@@ -2034,17 +2048,6 @@ type Service {
 enum ServiceType {
   INTERNAL
   EXTERNAL
-}
-
-type Room {
-  id: String!
-  name: String
-  number: String
-  facilityId: String
-  practiceId: String
-  facility: Facility
-  createdAt: String!
-  updatedAt: String!
 }
 
 type Facility {
