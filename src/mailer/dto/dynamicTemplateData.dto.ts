@@ -29,4 +29,16 @@ export type AppointmentConfirmationEmailType = {
   patientPortal: boolean;
 }
 
+type EmailForgotInviteType = 'FORGOT_PASSWORD_TEMPLATE_ID' | 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID' | 'INVITATION_TEMPLATE_ID'
+
+export type SendEmailForgotPasswordType = {
+  email: string,
+  userId: string,
+  fullName: string,
+  providerName: string,
+  isAdmin: boolean,
+  token: string,
+  isInvite: EmailForgotInviteType
+}
+
 export type TemplateSwitch = "requestInviteAdmin" | "newSignUp" | "requestInviteUser" | "requestInviteUserReject" | "caseAssigned" | "caseCreated" | "caseStatusUpdate" | "requestInitated" | "requestApproved" | "updateNeeded" | "updateDeclined" | "patientPortalInvitation";
