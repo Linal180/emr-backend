@@ -33,8 +33,8 @@ import { ServicesService } from 'src/facilities/services/services.service';
 import { PatientConsentService } from 'src/patients/services/patientConsent.service';
 //  inputs
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
-import { AppointmentReminderInput, AssociateRoomToAppointmentInput } from '../dto/appointment-reminder-input.dto';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
+import { AppointmentReminderInput, AssociateRoomToAppointmentInput } from '../dto/appointment-reminder-input.dto';
 import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
   CancelAppointment, GetAppointments, GetAppointmentWithToken, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
@@ -45,6 +45,7 @@ import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPa
 import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appointment-payload.dto';
 // helpers
 import { createToken } from 'src/lib/helper';
+
 @Injectable()
 export class AppointmentService {
   constructor(
@@ -103,7 +104,7 @@ export class AppointmentService {
           appointmentInstance.patientId = patient.id
         }
         //associate facility 
-        let facility
+        let facility: null | Facility
         if (createAppointmentInput.facilityId) {
           facility = await this.facilityService.findOne(createAppointmentInput.facilityId)
           appointmentInstance.facility = facility
@@ -136,7 +137,19 @@ export class AppointmentService {
 
         if (patient?.email) {
           if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.APPOINTMENT) {
-            this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointmentInstance.scheduleStartDateTime, token, patient.id, false)
+
+            const { email, phone } = await this.contactService.findPrimaryContactByFacilityId(facility?.id);
+
+            this.mailerService.sendAppointmentConfirmationsEmail({
+              id: patient?.id,
+              patientPortal: false,
+              facilityEmail: email,
+              facilityPhone: phone,
+              email: patient?.email,
+              token: appointment?.token,
+              slotStartTime: appointment?.scheduleStartDateTime,
+              fullName: `${patient?.firstName || ''} ${patient?.lastName || ''}`,
+            })
           }
 
           if (createAppointmentInput.appointmentCreateType === AppointmentCreateType.TELEHEALTH) {
@@ -174,7 +187,7 @@ export class AppointmentService {
       //create patient 
       const appointmentNumber = await this.utilsService.generateString(8)
       const patient = await this.patientService.GetPatientByEmail(createExternalAppointmentInput.createPatientItemInput.email)
-      let patientInstance;
+      let patientInstance: null | Patient;
       if (!patient) {
         patientInstance = await this.patientService.addPatient(createExternalAppointmentInput)
       } else {
@@ -208,7 +221,22 @@ export class AppointmentService {
       const token = createToken();
       appointmentInstance.token = token;
       const appointment = await this.appointmentRepository.save(appointmentInstance);
-      this.mailerService.sendAppointmentConfirmationsEmail(patientInstance.email, patientInstance.firstName + ' ' + patientInstance.lastName, appointmentInstance.scheduleStartDateTime, token, patientInstance.id, false)
+
+      if (patientInstance?.email) {
+        const { email, phone } = await this.contactService.findPrimaryContactByFacilityId(facility?.id);
+
+        this.mailerService.sendAppointmentConfirmationsEmail({
+          token: token,
+          facilityEmail: email,
+          facilityPhone: phone,
+          patientPortal: false,
+          id: patientInstance?.id,
+          email: patientInstance?.email,
+          slotStartTime: appointmentInstance?.scheduleStartDateTime,
+          fullName: `${patientInstance?.firstName || ''} ${patientInstance?.lastName || ''}`,
+        })
+      }
+
       await queryRunner.commitTransaction();
       if (patientInstance.phoneEmailPermission) {
         this.triggerSmsNotification(appointment, provider, patientInstance, facility, true)
@@ -613,7 +641,18 @@ export class AppointmentService {
 
       if (patient?.email && shouldSendEmail) {
         if (appointment.appointmentCreateType === AppointmentCreateType.APPOINTMENT) {
-          this.mailerService.sendAppointmentConfirmationsEmail(patient.email, patient.firstName + ' ' + patient.lastName, appointment.scheduleStartDateTime, appointment?.token, patient.id, false)
+          const { email, phone } = await this.contactService.findPrimaryContactByFacilityId(appointment?.facilityId);
+
+          this.mailerService.sendAppointmentConfirmationsEmail({
+            id: patient?.id,
+            facilityEmail: email,
+            facilityPhone: phone,
+            patientPortal: false,
+            email: patient?.email,
+            token: appointment?.token,
+            slotStartTime: appointment?.scheduleStartDateTime,
+            fullName: `${patient?.firstName || ''} ${patient?.lastName || ''}`,
+          })
         }
 
         if (appointment.appointmentCreateType === AppointmentCreateType.TELEHEALTH) {
