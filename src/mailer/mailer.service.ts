@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientResponse, MailService } from '@sendgrid/mail';
-import { DynamicTemplateData, RemainderEmailType, TemplateSwitch } from './dto/dynamicTemplateData.dto';
+import { AppointmentConfirmationEmailType, DynamicTemplateData, RemainderEmailType, TemplateSwitch } from './dto/dynamicTemplateData.dto';
 
 
 @Injectable()
@@ -66,25 +66,42 @@ export class MailerService {
     }
   }
 
-  async sendAppointmentConfirmationsEmail(email: string, fullName: string, slotStartTime: string, token: string, id: string, patientPortal: boolean) {
-    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+
+  /**
+   * Sends appointment confirmations email
+   * @param params 
+   * @returns appointment confirmations email 
+   */
+  async sendAppointmentConfirmationsEmail(params: AppointmentConfirmationEmailType): Promise<ClientResponse> {
+
+    const { email: to, fullName, id, patientPortal, slotStartTime, token, facilityEmail, facilityPhone } = params
+
+    const from = this.configService.get('FROM_EMAIL')
     const emrAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const templateId = this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID');
+
     const portalAppBaseUrl = patientPortal ? patientAppBaseUrl : emrAppBaseUrl
-    const url = `${portalAppBaseUrl}/cancel-appointment/${token}`
-    const moreInfo = `${portalAppBaseUrl}/patient-information/${id}`
+    const cancelAppointment = `${portalAppBaseUrl}/cancel-appointment/${token}`
+    const moreInfo = `${portalAppBaseUrl}/patient-information/${id}`;
+
     const msg = {
-      to: email,
-      from: this.configService.get('FROM_EMAIL'),
-      templateId: this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID'),
+      to,
+      from,
+      templateId,
       dynamicTemplateData: {
         fullName,
         slotStartTime,
-        cancelAppointment: url,
-        moreInfo: moreInfo
+        cancelAppointment,
+        moreInfo,
+        facilityEmail,
+        facilityPhone: `+1 ${facilityPhone}`
       }
     };
+
     try {
-      await this.sgMail.send(msg);
+      const [response] = await this.sgMail.send(msg);
+      return response;
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -114,7 +131,7 @@ export class MailerService {
         scheduleStartDateTime: slotStartTime,
         facilityName,
         facilityEmail,
-        facilityPhone
+        facilityPhone: `+1 ${facilityPhone}`
       }
     };
     try {

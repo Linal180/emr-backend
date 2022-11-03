@@ -18,4 +18,15 @@ export type RemainderEmailType = {
   facilityPhone: string,
 }
 
+export type AppointmentConfirmationEmailType = {
+  id: string;
+  email: string;
+  token: string;
+  fullName: string;
+  slotStartTime: string;
+  facilityEmail: string;
+  facilityPhone: string;
+  patientPortal: boolean;
+}
+
 export type TemplateSwitch = "requestInviteAdmin" | "newSignUp" | "requestInviteUser" | "requestInviteUserReject" | "caseAssigned" | "caseCreated" | "caseStatusUpdate" | "requestInitated" | "requestApproved" | "updateNeeded" | "updateDeclined" | "patientPortalInvitation";
