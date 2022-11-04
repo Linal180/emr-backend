@@ -102,4 +102,6 @@ export class PaginatedEntityInput {
   isDeleted?: boolean
   section?: string
   roles?: string[]
+  appointmentFromDate?: string
+  appointmentToDate?: string
 }

@@ -35,7 +35,7 @@ import { PatientConsentService } from 'src/patients/services/patientConsent.serv
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
 import { AppointmentReminderInput, AssociateRoomToAppointmentInput } from '../dto/appointment-reminder-input.dto';
-import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
+import { AppointmentInput, FindAllCalendarAppointmentsInput, FindAppointmentDateInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
   CancelAppointment, GetAppointments, GetAppointmentWithToken, GetFacilityAppointmentsInput, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentBillingStatusInput, UpdateAppointmentInput, UpdateAppointmentStatusInput
@@ -45,6 +45,8 @@ import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPa
 import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appointment-payload.dto';
 // helpers
 import { createToken } from 'src/lib/helper';
+import { PaginationService } from 'src/pagination/pagination.service';
+import { CalendarViewType, FromToDate } from 'src/lib/constants';
 
 @Injectable()
 export class AppointmentService {
@@ -61,10 +63,66 @@ export class AppointmentService {
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService,
     private readonly contractService: ContractService,
+    private readonly paginationService: PaginationService,
     private readonly patientConsentService: PatientConsentService,
     @Inject(forwardRef(() => PaymentService))
     private readonly paymentService: PaymentService
   ) { }
+
+  findAppointmentDate(params: FindAppointmentDateInput): FromToDate {
+    const { appointmentDate, currentView } = params;
+
+    const date = moment(appointmentDate, 'YYYY-MM-DD')
+
+    switch (currentView) {
+      case CalendarViewType.Day:
+        return {
+          fromDate: date.subtract(1, 'day').format('YYYY-MM-DD'),
+          toDate: date.add(1, 'day').format('YYYY-MM-DD')
+        }
+
+      case CalendarViewType.Month:
+        return {
+          fromDate: date.set('day', 1).format('YYYY-MM-DD'),
+          toDate: date.add(1, 'month').set('day', 1).format('YYYY-MM-DD'),
+        }
+
+      case CalendarViewType.Week:
+        return {
+          fromDate: date.subtract(7, 'day').format('YYYY-MM-DD'),
+          toDate: date.add(7, 'day').format('YYYY-MM-DD'),
+        }
+
+      default:
+        return {
+          fromDate: date.set('day', 1).format('YYYY-MM-DD'),
+          toDate: date.add(1, 'month').set('day', 1).format('YYYY-MM-DD'),
+        }
+    }
+  }
+
+  /**
+   * Finds calendar appointment
+   * @param params 
+   * @returns calendar appointment 
+   */
+  async findCalendarAppointment(params: FindAllCalendarAppointmentsInput): Promise<AppointmentsPayload> {
+    try {
+      const { appointmentDate, currentView, paginationOptions, facilityId, practiceId, providerId } = params;
+
+      const { fromDate, toDate } = this.findAppointmentDate({ appointmentDate, currentView })
+
+      const { data: appointments, ...pagination } = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository,
+        {
+          paginationOptions, facilityId, practiceId, providerId,
+          appointmentFromDate: fromDate, appointmentToDate: toDate
+        }, undefined, { columnName: 'appointmentDate', order: 'ASC' });
+
+      return { appointments, pagination }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
 
   /**
    * Creates appointment
