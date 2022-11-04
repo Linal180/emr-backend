@@ -3653,6 +3653,7 @@ type Query {
   fetchDocumentType(id: String!): DocumentTypesPayload!
   fetchDocumentTypeByName(name: String!): DocumentTypePayload!
   findAllAppointments(appointmentInput: AppointmentInput!): AppointmentsPayload!
+  findAllCalendarAppointments(findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput!): AppointmentsPayload!
   findAllUpcomingAppointments(upComingAppointmentsInput: UpComingAppointmentsInput!): AppointmentsPayload!
   findPatientLastAppointment(lastVisitedAppointmentInput: LastVisitedAppointmentInput!): AppointmentPayload!
   getAppointment(getAppointment: GetAppointment!): AppointmentPayload!
@@ -4044,6 +4045,23 @@ input AppointmentInput {
   sortBy: String
   appointmentDate: String
   isCheckedIn: Boolean = false
+}
+
+input FindAllCalendarAppointmentsInput {
+  paginationOptions: PaginationInput!
+  practiceId: String
+  facilityId: String
+  sortBy: String
+  appointmentDate: String!
+  providerId: String
+  currentView: CalendarViewType!
+}
+
+"""Calendar View Type """
+enum CalendarViewType {
+  Week
+  Month
+  Day
 }
 
 input UpComingAppointmentsInput {

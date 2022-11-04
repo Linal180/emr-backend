@@ -12,7 +12,7 @@ import { Facility } from 'src/facilities/entities/facility.entity';
 import { CreateAppointmentInput } from '../dto/create-appointment.input';
 import { AppointmentReminderInput, AssociateRoomToAppointmentInput } from '../dto/appointment-reminder-input.dto';
 import { CreateExternalAppointmentInput } from '../dto/create-external-appointment.input';
-import { AppointmentInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
+import { AppointmentInput, FindAllCalendarAppointmentsInput, LastVisitedAppointmentInput, UpComingAppointmentsInput } from '../dto/appointment-input.dto';
 import {
   CancelAppointment, GetAppointment, GetAppointments, GetPatientAppointmentInput, RemoveAppointment,
   UpdateAppointmentInput, UpdateAppointmentStatusInput, UpdateAppointmentBillingStatusInput, GetAppointmentWithToken
@@ -142,6 +142,26 @@ export class AppointmentResolver {
     if (appointments) {
       return {
         ...appointments,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+    throw new NotFoundException({
+      status: HttpStatus.NOT_FOUND,
+      error: 'Appointments not found',
+    });
+  }
+
+  @Query(() => AppointmentsPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllCalendarAppointments')
+  async findAllCalendarAppointments(@Args('findAllCalendarAppointmentsInput') findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput): Promise<AppointmentsPayload> {
+    const { appointments, pagination } = await this.appointmentService.findCalendarAppointment(findAllCalendarAppointmentsInput)
+    if (appointments) {
+      return {
+        appointments,
+        pagination,
         response: {
           message: "OK", status: 200,
         }
