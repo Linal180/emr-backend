@@ -36,10 +36,12 @@ interface FilterOptionsResponse {
   join?: JoinOptions
 }
 
-interface OrderByColumn {
-  columnName: string
+interface OrderByColumn<T> {
+  columnName: keyof T,
   order: 'ASC' | 'DESC'
 }
+
+type SelectColumnsType<T> = keyof T
 
 @Injectable()
 export class PaginationService {
@@ -51,7 +53,7 @@ export class PaginationService {
    * @param paginationInput 
    * @returns paginated response PaginationPayloadInterface<T>
    */
-  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: string[], orderByColumn?: OrderByColumn): Promise<PaginationPayloadInterface<T>> {
+  async willPaginate<T>(repository: Repository<T>, paginationInput: PaginatedEntityInput, select?: SelectColumnsType<T>[], orderByColumn?: OrderByColumn<T>): Promise<PaginationPayloadInterface<T>> {
     try {
       const { associatedTo, associatedToField } = paginationInput;
       const { skip, take, order, where } = this.orchestrateOptions(paginationInput);
@@ -228,6 +230,8 @@ export class PaginationService {
       isDeleted,
       section,
       roles,
+      appointmentFromDate,
+      appointmentToDate,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -401,6 +405,9 @@ export class PaginationService {
         ...(claimFeedFromDate && { fromDos: Raw(alias => `${alias} = '${moment(claimFeedFromDate).format("YYYYMMDD")}'`) }),
         ...(claimFeedToDate && { thruDos: Raw(alias => `${alias} = '${moment(claimFeedToDate).format("YYYYMMDD")}'`) }),
         ...(isDeleted != null && { isDeleted }),
+        ...(appointmentFromDate && appointmentToDate && {
+          appointmentDate: Raw(alias => `"Appointment"."appointmentDate"::timestamp >= '${appointmentFromDate}' AND "Appointment"."appointmentDate"::timestamp <= '${appointmentToDate}'`)
+        }),
       }
     };
 

@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientResponse, MailService } from '@sendgrid/mail';
-import { DynamicTemplateData, RemainderEmailType, TemplateSwitch } from './dto/dynamicTemplateData.dto';
+import {
+  AppointmentConfirmationEmailType, DynamicTemplateData, RemainderEmailType, SendEmailForgotPasswordType, TemplateSwitch
+} from './dto/dynamicTemplateData.dto';
 
 
 @Injectable()
@@ -29,35 +31,35 @@ export class MailerService {
     "patientPortalInvitation": this.configService.get("PATIENT_PORTAL_INVITATION_TEMPLATE_ID")
   })[templateName]
 
+
   /**
    * Sends email forgot password
-   * @param email 
-   * @param userId 
-   * @param fullName 
+   * @param params 
+   * @returns email forgot password 
    */
-  async sendEmailForgotPassword(email: string, userId: string, fullName: string, providerName: string, isAdmin: boolean, token: string, isInvite: string) {
-    const portalAppBaseUrl = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') : this.configService.get('ADMIN_APP_BASE_URL')
-    let templateId = ''
-    if (isInvite === 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID') {
-      templateId = this.configService.get('PATIENT_PORTAL_INVITATION_TEMPLATE_ID')
-    } else if (isInvite === 'INVITATION_TEMPLATE_ID') {
-      templateId = this.configService.get('INVITATION_TEMPLATE_ID')
-    } else if (isInvite === 'FORGOT_PASSWORD_TEMPLATE_ID') {
-      templateId = this.configService.get('FORGOT_PASSWORD_TEMPLATE_ID')
-    }
+  async sendEmailForgotPassword(params: SendEmailForgotPasswordType): Promise<ClientResponse> {
+
+    const { email, fullName, isAdmin, isInvite, providerName, token } = params
+
+    const portalAppBaseUrl: string = isAdmin ? this.configService.get('PATIENT_PORTAL_APP_BASE_URL') : this.configService.get('ADMIN_APP_BASE_URL')
+    const templateId: string = this.configService.get(isInvite)
+    const from: string = this.configService.get('FROM_EMAIL')
+
     const url = isInvite ? `${portalAppBaseUrl}/set-password?token=${token}` : `${portalAppBaseUrl}/reset-password?token=${token}`
     const msg = {
       to: email,
-      from: this.configService.get('FROM_EMAIL'),
-      templateId: templateId,
+      from,
+      templateId,
       dynamicTemplateData: {
         fullName,
         providerName,
         resetPasswordURL: url
       }
     };
+    
     try {
-      await this.sgMail.send(msg);
+      const [response] = await this.sgMail.send(msg);
+      return response;
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -66,25 +68,42 @@ export class MailerService {
     }
   }
 
-  async sendAppointmentConfirmationsEmail(email: string, fullName: string, slotStartTime: string, token: string, id: string, patientPortal: boolean) {
-    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+
+  /**
+   * Sends appointment confirmations email
+   * @param params 
+   * @returns appointment confirmations email 
+   */
+  async sendAppointmentConfirmationsEmail(params: AppointmentConfirmationEmailType): Promise<ClientResponse> {
+
+    const { email: to, fullName, id, patientPortal, slotStartTime, token, facilityEmail, facilityPhone } = params
+
+    const from = this.configService.get('FROM_EMAIL')
     const emrAppBaseUrl = this.configService.get('PORTAL_APP_BASE_URL');
+    const patientAppBaseUrl = this.configService.get('PATIENT_PORTAL_APP_BASE_URL');
+    const templateId = this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID');
+
     const portalAppBaseUrl = patientPortal ? patientAppBaseUrl : emrAppBaseUrl
-    const url = `${portalAppBaseUrl}/cancel-appointment/${token}`
-    const moreInfo = `${portalAppBaseUrl}/patient-information/${id}`
+    const cancelAppointment = `${portalAppBaseUrl}/cancel-appointment/${token}`
+    const moreInfo = `${portalAppBaseUrl}/patient-information/${id}`;
+
     const msg = {
-      to: email,
-      from: this.configService.get('FROM_EMAIL'),
-      templateId: this.configService.get('APPOINTMENT_CONFIRMATION_TEMPLATE_ID'),
+      to,
+      from,
+      templateId,
       dynamicTemplateData: {
         fullName,
         slotStartTime,
-        cancelAppointment: url,
-        moreInfo: moreInfo
+        cancelAppointment,
+        moreInfo,
+        facilityEmail,
+        facilityPhone: `+1 ${facilityPhone}`
       }
     };
+
     try {
-      await this.sgMail.send(msg);
+      const [response] = await this.sgMail.send(msg);
+      return response;
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -114,7 +133,7 @@ export class MailerService {
         scheduleStartDateTime: slotStartTime,
         facilityName,
         facilityEmail,
-        facilityPhone
+        facilityPhone: `+1 ${facilityPhone}`
       }
     };
     try {

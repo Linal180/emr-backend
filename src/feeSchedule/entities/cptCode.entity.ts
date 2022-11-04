@@ -1,9 +1,8 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { CVX } from "src/patientCharting/entities/cvx.entity";
-import { VaccineProduct } from "src/patientCharting/entities/vaccineProduct.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
 import { CptFeeSchedule } from "./cptFeeSchedule.entity";
+import { CVX } from "src/patientCharting/entities/cvx.entity";
 
 @Entity({ name: 'CPTCodes' })
 @ObjectType()

@@ -137,14 +137,21 @@ export class DoctorService {
         await this.usersService.updateUserInfo({ phone: updateDoctorInput.updateContactInput.phone, email, id: user.id })
 
         if (isNewEmail) {
-          let isAdmin = false
-          let isInvite = 'INVITATION_TEMPLATE_ID';
+
           let userInstance = await this.usersService.update({ ...user, email, emailVerified: false });
           if (!userInstance.token) {
             userInstance = await this.usersService.update({ ...userInstance, token: createToken() });
           }
-          const token = userInstance.token || createToken()
-          this.mailerService.sendEmailForgotPassword(userInstance.email, user.id, userInstance.email, '', isAdmin, userInstance.token, isInvite)
+
+          this.mailerService.sendEmailForgotPassword({
+            fullName: '',
+            isAdmin: false,
+            userId: user?.id,
+            token: userInstance?.token,
+            email: userInstance?.email,
+            isInvite: 'INVITATION_TEMPLATE_ID',
+            providerName: `${doctor?.firstName || ''} ${doctor?.lastName || ''}`,
+          })
         }
         return doctor
       }

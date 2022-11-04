@@ -251,6 +251,17 @@ export type TemplatesType = {
   sections: TemplateSectionType[]
 }
 
+export enum CalendarViewType {
+  Week,
+  Month,
+  Day
+}
+
+export interface FromToDate  {
+  fromDate: string
+  toDate: string
+}
+
 export type CreateTemplateType = {
   templateName: string;
   templateType: TemplateType;
