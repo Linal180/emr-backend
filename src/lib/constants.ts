@@ -219,9 +219,20 @@ export type TemplateQuestionAnswerType = {
   options?: SelectorType[]
 }
 
+export type CreateTemplateQuestionAnswer = {
+  title: string;
+  answerType: string
+  values?: string[]
+}
+
 export type TemplateQuestionType = {
   name: string;
   answers: TemplateQuestionAnswerType[]
+}
+
+export type CreateTemplateQuestion = {
+  title: string;
+  answers: CreateTemplateQuestionAnswer[]
 }
 
 export type TemplateSectionType = {
@@ -229,8 +240,19 @@ export type TemplateSectionType = {
   questions: TemplateQuestionType[]
 }
 
+export type CreateTemplateSection = {
+  title: string;
+  questions: CreateTemplateQuestion[]
+}
+
 export type TemplatesType = {
   title: string;
   templateType: TemplateType;
   sections: TemplateSectionType[]
+}
+
+export type CreateTemplateType = {
+  templateName: string;
+  templateType: TemplateType;
+  sections: CreateTemplateSection[]
 }

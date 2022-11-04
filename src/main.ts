@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PatientModule } from './patients/patient.module';
 import { LoggingInterceptor } from './logging.interceptor';
+import { ReviewOfSystemModule } from './reviewOfSystems/reviewOfSystems.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -20,7 +21,7 @@ async function bootstrap() {
     .addTag('EMR')
     .build();
   const document = SwaggerModule.createDocument(app, config, {
-    include: [PatientModule],
+    include: [PatientModule, ReviewOfSystemModule],
   });
   SwaggerModule.setup('api', app, document,);
 

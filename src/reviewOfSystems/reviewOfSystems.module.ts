@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppointmentModule } from "src/appointments/appointment.module";
 import { PaginationModule } from "src/pagination/pagination.module";
 import { PatientModule } from "src/patients/patient.module";
+import { ChartingTemplateController } from "./chartingTemplate.controller";
 import { AnswerResponses } from "./entities/answerResponses.entity";
 import { PatientIllnessHistory } from "./entities/patientIllnessHistory.entity";
 import { PhysicalExam } from "./entities/physicalExam.entity";
@@ -62,6 +63,7 @@ import { TemplateSectionsService } from "./services/templateSections.service";
     //services
 
   ],
+  controllers: [ChartingTemplateController],
   exports: [],
 })
 
