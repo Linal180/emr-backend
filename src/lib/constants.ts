@@ -219,14 +219,30 @@ export type TemplateQuestionAnswerType = {
   options?: SelectorType[]
 }
 
+export type CreateTemplateQuestionAnswer = {
+  title: string;
+  answerType: string
+  values?: string[]
+}
+
 export type TemplateQuestionType = {
   name: string;
   answers: TemplateQuestionAnswerType[]
 }
 
+export type CreateTemplateQuestion = {
+  title: string;
+  answers: CreateTemplateQuestionAnswer[]
+}
+
 export type TemplateSectionType = {
   name: string;
   questions: TemplateQuestionType[]
+}
+
+export type CreateTemplateSection = {
+  title: string;
+  questions: CreateTemplateQuestion[]
 }
 
 export type TemplatesType = {
@@ -244,4 +260,10 @@ export enum CalendarViewType {
 export interface FromToDate  {
   fromDate: string
   toDate: string
+}
+
+export type CreateTemplateType = {
+  templateName: string;
+  templateType: TemplateType;
+  sections: CreateTemplateSection[]
 }
