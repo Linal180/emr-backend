@@ -86,12 +86,19 @@ export class UsersService {
         const user = await this.usersRepository.save(userInstance);
         await this.saveUserId(user.id, user);
         // SEND EMAIL TO USER FOR RESET PASSWORD
-        let isInvite = 'INVITATION_TEMPLATE_ID';
-        let isAdmin = false
         const roles = await this.findAllRoles()
         const patientRole = roles.find((item) => item.role === 'patient')
         if (registerUserInput.roleType !== patientRole.role) {
-          this.mailerService.sendEmailForgotPassword(user.email, user.id, user.email, '', isAdmin, token, isInvite)
+
+          this.mailerService.sendEmailForgotPassword({
+            email: user.email,
+            userId: user.id,
+            fullName: '',
+            providerName: '',
+            isAdmin: false,
+            token,
+            isInvite: 'INVITATION_TEMPLATE_ID'
+          })
         }
         return user;
       }
@@ -614,7 +621,16 @@ export class UsersService {
       if (user) {
         const isAdmin = roles.some(role => role.includes('patient'))
         const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
-        this.mailerService.sendEmailForgotPassword(user.email, user.id, `${user.email} ${user.email}`, '', isAdmin, token, isInvite)
+        
+        this.mailerService.sendEmailForgotPassword({
+          email: user.email,
+          userId: user.id,
+          fullName: '',
+          providerName: '',
+          isAdmin, token,
+          isInvite
+        })
+
         delete user.roles
         await this.usersRepository.save(user);
         return user

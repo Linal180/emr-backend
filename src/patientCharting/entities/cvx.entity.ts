@@ -1,7 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { CPTCodes } from "src/feeSchedule/entities/cptCode.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+// entities
 import { VaccineProduct } from "./vaccineProduct.entity";
+import { CPTCodes } from "src/feeSchedule/entities/cptCode.entity";
 
 @Entity({ name: 'CVX' })
 @ObjectType()
@@ -47,7 +48,7 @@ export class CVX {
 
   //relationships
 
-  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cvx, { onDelete: "CASCADE" })
+  @OneToMany(() => VaccineProduct, vaccineProduct => vaccineProduct.cvx)
   @Field(() => [VaccineProduct], { nullable: true })
   vaccineProduct: VaccineProduct[]
 

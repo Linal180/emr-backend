@@ -1,7 +1,12 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, PickType, registerEnumType } from '@nestjs/graphql';
+import { CalendarViewType } from 'src/lib/constants';
 import PaginationInput from 'src/pagination/dto/pagination-input.dto';
 import { AppointmentStatus } from '../entities/appointment.entity';
 
+registerEnumType(CalendarViewType, {
+    name: "CalendarViewType",
+    description: "Calendar View Type "
+})
 @InputType()
 export class AppointmentInput {
     @Field(() => PaginationInput)
@@ -67,3 +72,31 @@ export class LastVisitedAppointmentInput {
     @Field({ nullable: true })
     patientId?: string
 }
+
+@InputType()
+export class FindAllCalendarAppointmentsInput {
+
+    @Field(() => PaginationInput)
+    paginationOptions: PaginationInput
+
+    @Field({ nullable: true })
+    practiceId?: string
+
+    @Field({ nullable: true })
+    facilityId?: string
+
+    @Field({ nullable: true })
+    sortBy?: string
+
+    @Field()
+    appointmentDate: string
+
+    @Field({ nullable: true })
+    providerId?: string
+
+    @Field(() => CalendarViewType)
+    currentView: CalendarViewType
+}
+
+@InputType()
+export class FindAppointmentDateInput extends PickType(FindAllCalendarAppointmentsInput, ['appointmentDate', 'currentView']) { }
