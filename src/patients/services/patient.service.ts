@@ -269,7 +269,7 @@ export class PatientService {
         }
         patientInstance.contacts = contacts
         //update patient's provider
-        let doctor = null
+        let doctor: Doctor | null = null
         if (usualProviderId) {
           doctor = await this.doctorService.findOne(usualProviderId)
           // const doctor = await this.doctorService.findOne(updatePatientInput.updatePatientItemInput.usualProviderId)
@@ -291,11 +291,17 @@ export class PatientService {
         if (isNewEmail && user) {
           const userInstance = await this.usersService.update({ ...user, email, emailVerified: false });
           const token = createToken();
-          const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
-          this.mailerService.sendEmailForgotPassword(userInstance?.email, userInstance?.id,
-            patientInstance?.firstName + ' ' + patientInstance?.lastName,
-            `${doctor?.firstName} ${doctor?.lastName}`, true, token, inviteTemplateId
-          )
+
+          this.mailerService.sendEmailForgotPassword({
+            token,
+            isAdmin: true,
+            userId: userInstance?.id,
+            email: userInstance?.email,
+            isInvite: 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID',
+            providerName: `${doctor?.firstName || ''} ${doctor?.lastName || ''}`,
+            fullName: `${patientInstance?.firstName || ''} ${patientInstance?.lastName || ''}`,
+          })
+
         }
         patientInstance.email = email
         const patient = await queryRunner.manager.save(patientInstance);
@@ -475,7 +481,9 @@ export class PatientService {
         const { role } = patientRole || {}
 
         const inviteTemplateId = 'PATIENT_PORTAL_INVITATION_TEMPLATE_ID';
+
         const userAlreadyExist = await this.usersService.findOneByEmail(patientInstance.email)
+
         if (!userAlreadyExist) {
           const user = await this.usersService.create({
             firstName: patientInstance.firstName, lastName: patientInstance.lastName, email: patientInstance.email,
@@ -485,13 +493,32 @@ export class PatientService {
           patientInstance.user = user
           const patient = await this.patientRepository.save(patientInstance)
           await this.usersService.saveUserId(patient?.id, user);
-          this.mailerService.sendEmailForgotPassword(user?.email, user?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${patientInstance?.firstName} ${patientInstance?.lastName}`, true, user?.token, inviteTemplateId)
+          this.mailerService.sendEmailForgotPassword({
+            isAdmin: true,
+            userId: user?.id,
+            email: user?.email,
+            token: user?.token,
+            isInvite: inviteTemplateId,
+            fullName: `${patientInstance?.firstName || ''} ${patientInstance?.lastName || ''}`,
+            providerName: `${firstName || ''} ${lastName || ''}`,
+          })
           return patient
         } else {
+
           const token = createToken();
           userAlreadyExist.token = token;
           await this.usersService.save(userAlreadyExist);
-          this.mailerService.sendEmailForgotPassword(userAlreadyExist?.email, userAlreadyExist?.id, patientInstance?.firstName + ' ' + patientInstance?.lastName, `${patientInstance?.firstName} ${patientInstance?.lastName}`, true, token, inviteTemplateId)
+
+          this.mailerService.sendEmailForgotPassword({
+            token,
+            isAdmin: true,
+            isInvite: inviteTemplateId,
+            userId: userAlreadyExist?.id,
+            email: userAlreadyExist?.email,
+            providerName: `${firstName || ''} ${lastName || ""}`,
+            fullName: `${patientInstance?.firstName || ''} ${patientInstance?.lastName || ""}`,
+          })
+
           return patientInstance
         }
       } else if (patientInstance && !patientInstance?.email) {
