@@ -14,25 +14,28 @@ import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 //services
 import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
+import { PermissionsService } from './permissions.service';
+import { RolePermissionsService } from './rolePermissions.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { FacilityService } from '../../facilities/services/facility.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
-//inputs, dto's, payload
+//inputs
 import { File } from 'src/aws/dto/file-input.dto';
 import UsersInput from './../dto/users-input.dto';
 import { UserIdInput } from './../dto/user-id-input.dto';
-import { UsersPayload } from './../dto/users-payload.dto';
 import { UserInfoInput } from '../dto/user-info-input.dto';
 import { TwoFactorInput } from '../dto/twoFactor-input.dto';
 import { UpdateRoleInput } from './../dto/update-role-input.dto';
 import { RegisterUserInput } from './../dto/register-user-input.dto';
 import { UpdatePasswordInput } from './../dto/update-password-input.dto';
 import { EmergencyAccessUserInput } from '../dto/emergency-access-user-input.dto';
-import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
-import { AccessUserPayload, User2FAVerifiedPayload } from './../dto/access-user.dto';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 import { ResendVerificationEmail, UpdateUserInput } from './../dto/update-user-input.dto';
+// payload
+import { UsersPayload } from './../dto/users-payload.dto';
+import { EmergencyAccessUserPayload } from '../dto/emergency-access-user-payload';
+import { AccessUserPayload, User2FAVerifiedPayload } from './../dto/access-user.dto';
 //helpers
 import { createToken } from '../../lib/helper';
 
@@ -41,6 +44,12 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+    private readonly utilsService: UtilsService,
+    private readonly mailerService: MailerService,
+    private readonly paginationService: PaginationService,
+    private readonly permissionsService: PermissionsService,
+    private readonly rolePermissionsService: RolePermissionsService,
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
     @Inject(forwardRef(() => FacilityService))
@@ -49,10 +58,6 @@ export class UsersService {
     private readonly patientService: PatientService,
     @Inject(forwardRef(() => AttachmentsService))
     private readonly attachmentsService: AttachmentsService,
-    private readonly jwtService: JwtService,
-    private readonly utilsService: UtilsService,
-    private readonly mailerService: MailerService,
-    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -176,9 +181,9 @@ export class UsersService {
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
       let shouldUserUpdateEmergencyAccess = true
-
+      debugger
       const { roles } = updateRoleInput
-      const isSuperAdmin = roles.includes("super-admin");
+      const isSuperAdmin = roles?.includes("super-admin");
       if (isSuperAdmin) {
         throw new ConflictException({
           status: HttpStatus.CONFLICT,
@@ -187,11 +192,12 @@ export class UsersService {
       }
 
       const user = await this.findUserById(updateRoleInput.id);
-      if (updateRoleInput.roles.includes('emergency-access')) {
-        const permissions = user.roles.map((role) => role?.rolePermissions.map((item) => item?.permission))
-        const permissionsFlat = permissions.flat()
+      if (updateRoleInput?.roles?.includes('emergency-access')) {
+        const { roles: userRoles } = await this.findRolesByUserId(user?.id)
+        const rolePermissions = await Promise.all(userRoles?.map(async (role) => await this.rolePermissionsService.findOneByRoleId(role?.id, ['permission'])))
+        const permissionsFlat = rolePermissions.map(({ permission }) => permission)
 
-        shouldUserUpdateEmergencyAccess = !!permissionsFlat.find(permission => permission.name === 'emergencyAccess')
+        shouldUserUpdateEmergencyAccess = !!permissionsFlat?.find(({ name }) => name === 'emergencyAccess')
         if (!shouldUserUpdateEmergencyAccess) {
           throw new ConflictException({
             status: HttpStatus.CONFLICT,
@@ -621,7 +627,7 @@ export class UsersService {
       if (user) {
         const isAdmin = roles.some(role => role.includes('patient'))
         const isInvite = 'FORGOT_PASSWORD_TEMPLATE_ID';
-        
+
         this.mailerService.sendEmailForgotPassword({
           email: user.email,
           userId: user.id,

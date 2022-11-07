@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+//entities
 import { Permission } from './permissions.entity';
 import { Role } from './role.entity';
-
 
 @Entity({ name: 'RolePermissions' })
 @ObjectType()
@@ -15,21 +15,27 @@ export class RolePermission {
   @Field({ nullable: true })
   isMutable: boolean
 
+  //relationships
+
   @ManyToOne(() => Permission, permission => permission.rolePermissions, { eager: true })
-  @Field(type => Permission, { nullable: true })
+  @Field(() => Permission, { nullable: true })
   permission: Permission;
+
+  @ManyToOne(() => Role, role => role.rolePermissions, { onDelete: "CASCADE" })
+  @Field(() => Role, { nullable: true })
+  role: Role;
+
+  //relationship columns
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  roleId: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   permissionId: string
 
-  @ManyToOne(() => Role, role => role.rolePermissions, { onDelete: "CASCADE" })
-  @Field(type => Role, { nullable: true })
-  role: Role;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  roleId: string
+  //dates
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()

@@ -1,10 +1,14 @@
-import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationService } from 'src/pagination/pagination.service';
-import { UtilsService } from 'src/util/utils.service';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+//services
+import { UtilsService } from 'src/util/utils.service';
+import { PaginationService } from 'src/pagination/pagination.service';
+//inputs
 import RoleInput, { RemoveRole, RoleItemInput, UpdateRoleItemInput } from '../dto/role-input.dto';
+//payloads
 import RolesPayload, { RolePayload } from '../dto/roles-payload.dto';
+//entities
 import { Role } from '../entities/role.entity';
 
 @Injectable()
@@ -12,8 +16,8 @@ export class RolesService {
   constructor(
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
-    private readonly paginationService: PaginationService,
     private readonly utilsService: UtilsService,
+    private readonly paginationService: PaginationService,
   ) { }
 
   /**
@@ -112,14 +116,6 @@ export class RolesService {
   async removeRole({ id }: RemoveRole) {
     try {
       await this.roleRepository.delete(id)
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
-
-  async findRolesByUserId() {
-    try {
-      return await this.roleRepository.find({ relations: ['users'] })
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

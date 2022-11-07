@@ -267,3 +267,5 @@ export type CreateTemplateType = {
   templateType: TemplateType;
   sections: CreateTemplateSection[]
 }
+
+export type RolePermissionRelationsType = 'permission' | 'role'

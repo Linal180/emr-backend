@@ -22,12 +22,12 @@ export class Role {
   @Field({ nullable: true })
   customRole: boolean
 
-  @ManyToMany(type => User, user => user.roles)
-  @Field((type) => User, { nullable: true })
+  @ManyToMany(() => User, user => user.roles)
+  @Field(() => User, { nullable: true })
   users: User[];
 
   @OneToMany(() => RolePermission, rolePermission => rolePermission.role)
-  @Field((type) => [RolePermission], { nullable: true })
+  @Field(() => [RolePermission], { nullable: true })
   rolePermissions: RolePermission[];
 
   @CreateDateColumn({ type: 'timestamptz' })

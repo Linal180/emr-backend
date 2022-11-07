@@ -1,20 +1,39 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { AttachmentsService } from 'src/attachments/services/attachments.service';
-import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
-import PermissionGuard from 'src/users/auth/role.guard';
-import { AllStaffPayload } from '../dto/all-staff-payload.dto';
-import { CreateStaffInput } from '../dto/create-staff.input';
-import StaffInput from '../dto/staff-input.dto';
-import { StaffPayload } from '../dto/staff-payload.dto';
-import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
-import { Staff } from '../entities/staff.entity';
+//services
 import { StaffService } from '../services/staff.service';
+import { UsersService } from 'src/users/services/users.service';
+import { PracticeService } from 'src/practice/practice.service';
+import { FacilityService } from 'src/facilities/services/facility.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
+//entities
+import { Staff } from '../entities/staff.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Practice } from 'src/practice/entities/practice.entity';
+import { Facility } from 'src/facilities/entities/facility.entity';
+import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
+//guards
+import PermissionGuard from 'src/users/auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//payloads
+import { StaffPayload } from '../dto/staff-payload.dto';
+import { AllStaffPayload } from '../dto/all-staff-payload.dto';
+// input
+import StaffInput from '../dto/staff-input.dto';
+import { CreateStaffInput } from '../dto/create-staff.input';
+import { DisableStaff, GetStaff, RemoveStaff, UpdateStaffInput } from '../dto/update-facility.input';
 
 @Resolver(() => Staff)
 export class StaffResolver {
-  constructor(private readonly staffService: StaffService, private readonly attachmentsService: AttachmentsService,) { }
+  constructor(
+    private readonly staffService: StaffService,
+    private readonly usersService: UsersService,
+    private readonly facilityService: FacilityService,
+    private readonly practiceService: PracticeService,
+    private readonly attachmentsService: AttachmentsService,
+  ) { }
+
+  //mutations
 
   @Mutation(() => StaffPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -36,7 +55,25 @@ export class StaffResolver {
     };
   }
 
-  @Query(returns => AllStaffPayload)
+  @Mutation(() => StaffPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeStaff')
+  async removeStaff(@Args('removeStaff') removeStaff: RemoveStaff) {
+    await this.staffService.removeStaff(removeStaff);
+    return { response: { status: 200, message: 'Staff Deleted' } };
+  }
+
+  @Mutation(() => StaffPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'disableStaff')
+  async disableStaff(@Args('disableStaff') disableStaff: DisableStaff) {
+    await this.staffService.disableStaff(disableStaff);
+    return { response: { status: 200, message: 'Staff Disabled' } };
+  }
+
+  // queries
+
+  @Query(() => AllStaffPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllStaff')
   async findAllStaff(@Args('staffInput') staffInput: StaffInput): Promise<AllStaffPayload> {
@@ -55,7 +92,7 @@ export class StaffResolver {
     });
   }
 
-  @Query(returns => StaffPayload)
+  @Query(() => StaffPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getStaff')
   async getStaff(@Args('getStaff') getStaff: GetStaff): Promise<StaffPayload> {
@@ -65,26 +102,33 @@ export class StaffResolver {
     };
   }
 
-  @Mutation(() => StaffPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'removeStaff')
-  async removeStaff(@Args('removeStaff') removeStaff: RemoveStaff) {
-    await this.staffService.removeStaff(removeStaff);
-    return { response: { status: 200, message: 'Staff Deleted' } };
-  }
+  //resolve fields
 
-  @Mutation(() => StaffPayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'disableStaff')
-  async disableStaff(@Args('disableStaff') disableStaff: DisableStaff) {
-    await this.staffService.disableStaff(disableStaff);
-    return { response: { status: 200, message: 'Staff Disabled' } };
-  }
-
-  @ResolveField((returns) => [Attachment])
+  @ResolveField(() => [Attachment])
   async attachments(@Parent() staff: Staff): Promise<Attachment[]> {
     if (staff) {
       return await this.attachmentsService.findAttachments(staff.id, AttachmentType.STAFF);
+    }
+  }
+
+  @ResolveField(() => User)
+  async user(@Parent() staff: Staff): Promise<User> {
+    if (staff) {
+      return await this.usersService.findUserByUserId(staff?.id);
+    }
+  }
+
+  @ResolveField(() => Facility)
+  async facility(@Parent() staff: Staff): Promise<Facility> {
+    if (staff?.facilityId) {
+      return await this.facilityService.findOne(staff?.facilityId);
+    }
+  }
+
+  @ResolveField(() => Practice)
+  async practice(@Parent() staff: Staff): Promise<Practice> {
+    if (staff?.practiceId) {
+      return await this.practiceService.findOne(staff?.practiceId);
     }
   }
 }
