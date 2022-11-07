@@ -32,7 +32,7 @@ export class CVXService {
 
       const { paginationOptions, searchQuery } = params || {}
       const response = await this.paginationService.willPaginate<CVX>(this.cvxRepo, {
-        paginationOptions, associatedTo: 'CVX',
+        paginationOptions, isDeleted: false, associatedTo: 'CVX',
         associatedToField: {
           filterType: "stringFilter", columnValue: searchQuery, columnName: 'name', columnName2: 'shortDescription',
           columnName3: 'cvxCode',
@@ -126,8 +126,8 @@ export class CVXService {
   async remove(id: string): Promise<CVX> {
     try {
       const cvxInstance = await this.findOne(id);
-      await this.cvxRepo.delete(id);
-      return cvxInstance;
+      const cvxUpdated = await this.utilsService.updateEntityManager(CVX, id, { ...cvxInstance, isDeleted: true }, this.cvxRepo)
+      return cvxUpdated;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

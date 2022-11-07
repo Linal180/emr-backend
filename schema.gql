@@ -660,6 +660,7 @@ type CVX {
   notes: String
   updateDate: String
   systematic: Boolean
+  isDeleted: Boolean
   cptCodeId: String
   vaccineProduct: [VaccineProduct!]
   cptCode: CPTCodes
