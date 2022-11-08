@@ -62,6 +62,7 @@ import { PatientAllergiesService } from './services/patientAllergies.service';
 import { PatientMedicationService } from './services/patientMedication.service';
 import { NdcVaccineProductService } from './services/ndcVaccineProduct.service';
 import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
+import { ReviewOfSystemModule } from 'src/reviewOfSystems/reviewOfSystems.module';
 
 
 @Module({
@@ -78,6 +79,7 @@ import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.s
     forwardRef(() => PaginationModule),
     FeeScheduleModule,
     AppointmentModule,
+    forwardRef(() => ReviewOfSystemModule),
   ],
   providers: [
     //services

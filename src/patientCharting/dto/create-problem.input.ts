@@ -44,4 +44,7 @@ export class CreateProblemInput {
 
   @Field({ nullable: true, defaultValue: false })
   forOrders: boolean;
+
+  @Field({ nullable: true, defaultValue: false })
+  shouldCreateTemplate: boolean;
 }

@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppointmentModule } from "src/appointments/appointment.module";
 import { PaginationModule } from "src/pagination/pagination.module";
@@ -38,8 +38,8 @@ import { TemplateSectionsService } from "./services/templateSections.service";
       TemplateSections, SectionQuestions, QuestionAnswers, QuestionTemplate, PatientIllnessHistory, AnswerResponses, ReviewOfSystem, PhysicalExam
     ]),
     //modules
-    PaginationModule,
-    PatientModule,
+    forwardRef(() => PaginationModule),
+    forwardRef(() => PatientModule) ,
     AppointmentModule
   ],
   providers: [
@@ -64,7 +64,7 @@ import { TemplateSectionsService } from "./services/templateSections.service";
 
   ],
   controllers: [ChartingTemplateController],
-  exports: [],
+  exports: [ChartingTemplateService, ReviewOfSystemService, PatientIllnessHistoryService, PhysicalExamService],
 })
 
 export class ReviewOfSystemModule { }

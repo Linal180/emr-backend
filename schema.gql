@@ -3139,6 +3139,32 @@ type MedicationsPayload {
   pagination: PaginationPayload
 }
 
+type FindAllQuestionTemplatesPayload {
+  templates: [QuestionTemplate!]!
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
+type QuestionTemplatePayload {
+  template: QuestionTemplate!
+  response: ResponsePayload
+}
+
+type PatientIllnessHistoryPayload {
+  patientIllnessHistory: PatientIllnessHistory
+  response: ResponsePayloadResponse
+}
+
+type PhysicalExamPayload {
+  physicalExam: PhysicalExam
+  response: ResponsePayloadResponse
+}
+
+type ReviewOfSystemPayload {
+  reviewOfSystem: ReviewOfSystem
+  response: ResponsePayloadResponse
+}
+
 type PatientsPayload {
   response: ResponsePayload
   patients: [Patient]
@@ -3540,32 +3566,6 @@ type PatientSocialHistoryPayload {
   response: ResponsePayloadResponse
 }
 
-type FindAllQuestionTemplatesPayload {
-  templates: [QuestionTemplate!]!
-  pagination: PaginationPayload
-  response: ResponsePayload
-}
-
-type QuestionTemplatePayload {
-  template: QuestionTemplate!
-  response: ResponsePayload
-}
-
-type PatientIllnessHistoryPayload {
-  patientIllnessHistory: PatientIllnessHistory
-  response: ResponsePayloadResponse
-}
-
-type PhysicalExamPayload {
-  physicalExam: PhysicalExam
-  response: ResponsePayloadResponse
-}
-
-type ReviewOfSystemPayload {
-  reviewOfSystem: ReviewOfSystem
-  response: ResponsePayloadResponse
-}
-
 type Macros {
   id: String!
   expansion: String
@@ -3698,6 +3698,7 @@ type Query {
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: SearchSnoMedCodesInput!): snoMedCodesPayload!
   getPatientProblem(getPatientProblem: GetPatientProblem!): PatientProblemPayload!
   findAllIcdCodes(findAllIcdCodesInput: FindAllIcdCodesInput!): FindAllIcdCodesPayload!
+  findChiefComplaintProblems(allIcdCodesInput: AllIcdCodesInput!): FindAllIcdCodesPayload!
   getIcdCode(getIcdCodeInput: GetIcdCodeInput!): IcdCodePayload!
   findAllVaccines(findAllVaccinesInput: FindAllVaccinesInput!): FindAllVaccinesPayload!
   getVaccine(getVaccineInput: GetVaccineInput!): VaccinePayload!
@@ -3720,6 +3721,14 @@ type Query {
   findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
   findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
   getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
+  patientChartingTemplates(findAllTemplatesInput: FindAllTemplatesInput!): FindAllQuestionTemplatesPayload!
+  getPatientChartingTemplate(templateId: String!): QuestionTemplatePayload!
+  patientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  latestPatientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  reviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
+  latestReviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
+  physicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
+  latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
   fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
   generateClaimNo: ClaimNumberPayload!
@@ -3745,14 +3754,6 @@ type Query {
   getShortUrl(getShortUrlInput: GetShortUrlInput!): ShortUrlResponse!
   findAllSections(findAllSectionsInput: FindAllSectionsInput!): FindAllSectionsPayload!
   patientSocialHistory(patientSocialHistoryInput: PatientSocialHistoryInput!): PatientSocialHistoryPayload!
-  patientChartingTemplates(findAllTemplatesInput: FindAllTemplatesInput!): FindAllQuestionTemplatesPayload!
-  getPatientChartingTemplate(templateId: String!): QuestionTemplatePayload!
-  patientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
-  latestPatientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
-  reviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
-  latestReviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
-  physicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
-  latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   fetchAllMacros(macroInput: MacroPaginationInput!): MacrosPayload!
   getMacro(getMacroInput: GetMacroInput!): MacroPayload!
 }
@@ -4247,6 +4248,10 @@ input FindAllIcdCodesInput {
   paginationOptions: PaginationInput!
 }
 
+input AllIcdCodesInput {
+  searchQuery: String
+}
+
 input GetIcdCodeInput {
   id: String!
 }
@@ -4353,6 +4358,27 @@ input MedicationInput {
 
 input GetPatientMedication {
   id: String!
+}
+
+input FindAllTemplatesInput {
+  templateType: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input PatientIllnessHistoryInput {
+  patientId: String
+  appointmentId: String
+}
+
+input ReviewOfSystemInput {
+  patientId: String
+  appointmentId: String
+}
+
+input PhysicalExamInput {
+  patientId: String
+  appointmentId: String
 }
 
 input GetClaimInput {
@@ -4476,27 +4502,6 @@ input FindAllSectionsInput {
 
 input PatientSocialHistoryInput {
   patientId: String
-}
-
-input FindAllTemplatesInput {
-  templateType: String
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input PatientIllnessHistoryInput {
-  patientId: String
-  appointmentId: String
-}
-
-input ReviewOfSystemInput {
-  patientId: String
-  appointmentId: String
-}
-
-input PhysicalExamInput {
-  patientId: String
-  appointmentId: String
 }
 
 input MacroPaginationInput {
@@ -4671,6 +4676,12 @@ type Mutation {
   addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
   updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
   removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
+  updateHPINotes(updateNotes: UpdateNotes!): PatientIllnessHistoryPayload!
+  createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  updateROSNotes(updateNotes: UpdateNotes!): ReviewOfSystemPayload!
+  createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
+  updatePENotes(updateNotes: UpdateNotes!): PhysicalExamPayload!
+  createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
   sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
@@ -4688,12 +4699,6 @@ type Mutation {
   getFormPublicMediaUrl(getPublicMediaInput: GetPublicMediaInput!): FormMediaPayload!
   createShortUrl(createShortUrlInput: CreateShortUrlInput!): ShortUrlResponse!
   createPatientSocialHistory(createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!): PatientSocialHistoryPayload!
-  updateHPINotes(updateNotes: UpdateNotes!): PatientIllnessHistoryPayload!
-  createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
-  updateROSNotes(updateNotes: UpdateNotes!): ReviewOfSystemPayload!
-  createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
-  updatePENotes(updateNotes: UpdateNotes!): PhysicalExamPayload!
-  createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
   createMacro(createMacroInput: CreateMacroInput!): MacroPayload!
   updateMacro(updateMacroInput: UpdateMacroInput!): MacroPayload!
   removeMacro(removeMacroInput: RemoveMacroInput!): MacroPayload!
@@ -6283,6 +6288,7 @@ input CreateProblemInput {
   note: String
   isSigned: Boolean = false
   forOrders: Boolean = false
+  shouldCreateTemplate: Boolean = false
 }
 
 input UpdateProblemInput {
@@ -6545,6 +6551,43 @@ input RemovePatientMedication {
   id: String!
 }
 
+input UpdateNotes {
+  id: String
+  patientId: String
+  appointmentId: String
+  notes: String
+}
+
+input CreatePatientIllnessHistoryInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  templateIds: [String!]
+  answerResponses: [AnswerResponsesInput!]!
+}
+
+input AnswerResponsesInput {
+  answerId: String!
+  note: String
+  value: String
+}
+
+input CreateReviewOfSystemInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  templateIds: [String!]
+  answerResponses: [AnswerResponsesInput!]!
+}
+
+input CreatePhysicalExamInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  templateIds: [String!]
+  answerResponses: [AnswerResponsesInput!]!
+}
+
 input SendSmsInput {
   message: String
   to: String
@@ -6762,43 +6805,6 @@ input SocialDependentAnswerInput {
   name: String!
   note: String!
   value: String!
-}
-
-input UpdateNotes {
-  id: String
-  patientId: String
-  appointmentId: String
-  notes: String
-}
-
-input CreatePatientIllnessHistoryInput {
-  id: String
-  patientId: String
-  appointmentId: String
-  templateIds: [String!]
-  answerResponses: [AnswerResponsesInput!]!
-}
-
-input AnswerResponsesInput {
-  answerId: String!
-  note: String
-  value: String
-}
-
-input CreateReviewOfSystemInput {
-  id: String
-  patientId: String
-  appointmentId: String
-  templateIds: [String!]
-  answerResponses: [AnswerResponsesInput!]!
-}
-
-input CreatePhysicalExamInput {
-  id: String
-  patientId: String
-  appointmentId: String
-  templateIds: [String!]
-  answerResponses: [AnswerResponsesInput!]!
 }
 
 input CreateMacroInput {
