@@ -19,7 +19,7 @@ export class CreateICDCodes implements Seeder {
       let iCDCodesDataLimited = iCDCodesData
       // if (!iCDCodes.length) {
       await Promise.all(iCDCodesDataLimited.map(async (item) => {
-        const getICDCode = await getRepository(ICDCodes).findOne({ code: item.code })
+        const getICDCode = await getRepository(ICDCodes).findOne({ code: item.code, description: item.description })
         if (!getICDCode) {
           let icdCode = getRepository(ICDCodes).create(item)
           icdCode = await queryRunner.manager.save(icdCode);

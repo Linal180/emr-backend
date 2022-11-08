@@ -1,20 +1,19 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { ILike, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 //entities
+import { QuestionTemplate } from "../entities/questionTemplate.entity";
 //inputs
 import { FindAllTemplatesInput } from "../dto/questionTemplate-input.dto";
 //payloads
 import { FindAllQuestionTemplatesPayload, QuestionTemplatePayload } from "../dto/questionTemplate-payload.dto";
 //service
-import { PaginationService } from "src/pagination/pagination.service";
-import { UtilsService } from "src/util/utils.service";
-//constants
-import { QuestionTemplate } from "../entities/questionTemplate.entity";
-import { CreateTemplateType, TemplatesType } from "src/lib/constants";
+import { QuestionAnswersService } from "./questionAnswers.service";
 import { TemplateSectionsService } from "./templateSections.service";
 import { SectionQuestionsService } from "./sectionQuestions.service";
-import { QuestionAnswersService } from "./questionAnswers.service";
+import { PaginationService } from "src/pagination/pagination.service";
+//constants
+import { CreateTemplateType } from "src/lib/constants";
 
 
 @Injectable()
@@ -22,7 +21,6 @@ export class ChartingTemplateService {
   constructor(
     @InjectRepository(QuestionTemplate)
     private questionTemplateRepository: Repository<QuestionTemplate>,
-    private readonly utilsService: UtilsService,
     private readonly paginationService: PaginationService,
     private readonly templateSectionsService: TemplateSectionsService,
     private readonly sectionQuestionsService: SectionQuestionsService,
@@ -55,6 +53,11 @@ export class ChartingTemplateService {
     }
   }
 
+  /**
+   * Creates charting template service
+   * @param templateData 
+   * @returns create 
+   */
   async create(templateData: CreateTemplateType): Promise<QuestionTemplatePayload> {
     try {
       const { templateName, sections, templateType } = templateData
@@ -99,6 +102,23 @@ export class ChartingTemplateService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  /**
+   * Finds templates
+   * @param searchString 
+   * @returns templates 
+   */
+  async findTemplates(searchString: string): Promise<QuestionTemplate[]> {
+    try {
+      const templates = await this.questionTemplateRepository.find({
+        where: {
+          name: ILike(`%${searchString}%`)
+        }
+      })
+
+      return templates
+    } catch (error) { }
   }
 
 }

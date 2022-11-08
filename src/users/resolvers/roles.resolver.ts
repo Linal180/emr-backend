@@ -1,18 +1,28 @@
 import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//guards
 import PermissionGuard from '../auth/role.guard';
+import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
+//inputs
 import RoleInput, { GetRole, RemoveRole, RoleItemInput, UpdateRoleItemInput } from '../dto/role-input.dto';
+//payload
 import RolesPayload, { RolePayload } from '../dto/roles-payload.dto';
+//entities
 import { Role } from '../entities/role.entity';
 import { RolePermission } from '../entities/rolePermissions.entity';
-import { User } from '../entities/user.entity';
-import { PermissionsService } from '../services/permissions.service';
+//services
 import { RolesService } from '../services/roles.service';
+import { PermissionsService } from '../services/permissions.service';
+import { RolePermissionsService } from '../services/rolePermissions.service';
 
 @Resolver(() => Role)
 export class RoleResolver {
-  constructor(private readonly rolesService: RolesService,private readonly permissionsService: PermissionsService) { }
+  constructor(
+    private readonly rolesService: RolesService,
+    private readonly rolePermissionsService: RolePermissionsService
+  ) { }
+
+  //mutations
 
   @Mutation(() => RolePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
@@ -23,9 +33,9 @@ export class RoleResolver {
       response: { status: 200, message: 'Role created successfully' }
     };
   }
-  
+
   @Mutation(() => RolePayload)
-  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   async updateRole(@Args('updateRoleItemInput') updateRoleItemInput: UpdateRoleItemInput) {
     return {
       role: await this.rolesService.updateRole(updateRoleItemInput),
@@ -33,8 +43,18 @@ export class RoleResolver {
     };
   }
 
-  @Query(returns => RolesPayload)
-  @UseGuards(JwtAuthGraphQLGuard,PermissionGuard)
+  @Mutation(() => RolePayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  @SetMetadata('name', 'removeRole')
+  async removeRole(@Args('removeRole') removeRole: RemoveRole) {
+    await this.rolesService.removeRole(removeRole);
+    return { response: { status: 200, message: 'Role Deleted' } };
+  }
+
+  //queries
+
+  @Query(() => RolesPayload)
+  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getAllRoles')
   async getAllRoles(@Args('roleInput') roleInput: RoleInput): Promise<RolesPayload> {
     const roles = await this.rolesService.findAllRole(roleInput)
@@ -52,7 +72,7 @@ export class RoleResolver {
     });
   }
 
-  @Query(returns => RolePayload)
+  @Query(() => RolePayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'getRole')
   async getRole(@Args('getRole') getRole: GetRole): Promise<RolePayload> {
@@ -63,17 +83,13 @@ export class RoleResolver {
     };
   }
 
-  @Mutation(() => RolePayload)
-  @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  @SetMetadata('name', 'removeRole')
-  async removeRole(@Args('removeRole') removeRole: RemoveRole) {
-    await this.rolesService.removeRole(removeRole);
-    return { response: { status: 200, message: 'Role Deleted' } };
-  }
+  // resolvers
 
-  @ResolveField((returns) => [RolePermission])
-  async rolePermissions(@Parent() role: Role):  Promise<RolePermission[]>  {
-    const rolePermissions=await this.permissionsService.findPermissionsByRoleId(role.id)
-    return rolePermissions
+  @ResolveField(() => [RolePermission])
+  async rolePermissions(@Parent() role: Role): Promise<RolePermission[]> {
+    if (role.id) {
+      const rolePermissions = await this.rolePermissionsService.findByRoleId(role.id)
+      return rolePermissions
+    }
   }
 }

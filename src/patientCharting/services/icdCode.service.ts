@@ -1,15 +1,15 @@
-import { Not, Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Not, Repository } from "typeorm";
 //entities
 import { ICDCodes } from "../entities/icdcodes.entity";
 //payloads
 import { FindAllIcdCodesPayload } from "../dto/icdCodes.payload";
 //inputs
-import { CreateIcdCodeInput, FindAllIcdCodesInput, UpdateIcdCodeInput } from "../dto/icdCodes.input";
+import { AllIcdCodesInput, CreateIcdCodeInput, FindAllIcdCodesInput, UpdateIcdCodeInput } from "../dto/icdCodes.input";
 //services
-import { UtilsService } from "src/util/utils.service";
 import { PaginationService } from "src/pagination/pagination.service";
+import { UtilsService } from "src/util/utils.service";
 
 
 @Injectable()
@@ -39,6 +39,29 @@ export class ICDCodeService {
       return {
         icdCodes: data,
         pagination
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   * Finds all
+   * @param params 
+   * @returns all 
+   */
+  async findChiefComplaintProblems(params: AllIcdCodesInput): Promise<FindAllIcdCodesPayload> {
+    try {
+      const data = await this.icdCodeRepo.find({
+        where: {
+          description: In(["Abnormal Blood Sugar", "Anxeity / Nerves", "COVID-19 Asymptoms", "COVID-19 Vaccine", "Behavioural Health", "Change in Appetite", "Change of taste",
+            "Excessive Hunger", "Fainting", "Fatigue", "Fever", "Light Headedness", "Often Hot", "Poor Balance",
+            "Sleeping Difficulty", "Confusion", "Depression", "Dizziness"
+          ])
+        }
+      })
+      return {
+        icdCodes: data,
       }
     } catch (error) {
       throw new InternalServerErrorException(error);

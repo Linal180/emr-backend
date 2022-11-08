@@ -26,6 +26,7 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { RoomService } from 'src/room/services/room.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PaymentService } from 'src/payment/services/payment.service';
+import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { ContactService } from 'src/providers/services/contact.service';
 import { FacilityService } from 'src/facilities/services/facility.service';
@@ -45,7 +46,6 @@ import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPa
 import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appointment-payload.dto';
 // helpers
 import { createToken } from 'src/lib/helper';
-import { PaginationService } from 'src/pagination/pagination.service';
 import { CalendarViewType, FromToDate } from 'src/lib/constants';
 
 @Injectable()
@@ -69,34 +69,40 @@ export class AppointmentService {
     private readonly paymentService: PaymentService
   ) { }
 
+  /**
+   * Finds appointment date
+   * @param params 
+   * @returns appointment date 
+   */
   findAppointmentDate(params: FindAppointmentDateInput): FromToDate {
     const { appointmentDate, currentView } = params;
 
-    const date = moment(appointmentDate, 'YYYY-MM-DD')
-
+    const [, , day] = appointmentDate?.split('-')
+    const from = moment(appointmentDate, 'YYYY-MM-DD')
+    const to = moment(appointmentDate, 'YYYY-MM-DD')
     switch (currentView) {
       case CalendarViewType.Day:
         return {
-          fromDate: date.subtract(1, 'day').format('YYYY-MM-DD'),
-          toDate: date.add(1, 'day').format('YYYY-MM-DD')
+          fromDate: from.subtract(1, 'day').format('YYYY-MM-DD'),
+          toDate: to.add(1, 'day').format('YYYY-MM-DD')
         }
 
       case CalendarViewType.Month:
         return {
-          fromDate: date.set('day', 1).format('YYYY-MM-DD'),
-          toDate: date.add(1, 'month').set('day', 1).format('YYYY-MM-DD'),
+          fromDate: from.set('day', 2 + (-day)).format('YYYY-MM-DD'),
+          toDate: to.add(1, 'month').set('day', 5 + (-day)).format('YYYY-MM-DD'),
         }
 
       case CalendarViewType.Week:
         return {
-          fromDate: date.subtract(7, 'day').format('YYYY-MM-DD'),
-          toDate: date.add(7, 'day').format('YYYY-MM-DD'),
+          fromDate: from.subtract(7, 'day').format('YYYY-MM-DD'),
+          toDate: to.add(7, 'day').format('YYYY-MM-DD'),
         }
 
       default:
         return {
-          fromDate: date.set('day', 1).format('YYYY-MM-DD'),
-          toDate: date.add(1, 'month').set('day', 1).format('YYYY-MM-DD'),
+          fromDate: from.set('day', 2 + (-day)).format('YYYY-MM-DD'),
+          toDate: to.add(1, 'month').set('day', 5 + (-day)).format('YYYY-MM-DD'),
         }
     }
   }
@@ -109,7 +115,6 @@ export class AppointmentService {
   async findCalendarAppointment(params: FindAllCalendarAppointmentsInput): Promise<AppointmentsPayload> {
     try {
       const { appointmentDate, currentView, paginationOptions, facilityId, practiceId, providerId } = params;
-
       const { fromDate, toDate } = this.findAppointmentDate({ appointmentDate, currentView })
 
       const { data: appointments, ...pagination } = await this.paginationService.willPaginate<Appointment>(this.appointmentRepository,
@@ -413,9 +418,14 @@ export class AppointmentService {
     try {
       const { appointmentId, roomId } = params
       const appointmentInstance = await this.findOne(appointmentId);
-      const roomInstance = await this.roomService.findOne(roomId);
-      appointmentInstance.room = roomInstance
-      appointmentInstance.roomId = roomInstance?.id
+      if (roomId) {
+        const roomInstance = await this.roomService.findOne(roomId);
+        appointmentInstance.room = roomInstance
+        appointmentInstance.roomId = roomInstance?.id
+      } else {
+        appointmentInstance.room = null
+        appointmentInstance.roomId = null
+      }
       return await this.appointmentRepository.save(appointmentInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);

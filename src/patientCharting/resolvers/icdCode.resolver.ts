@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 //inputs
-import { FindAllIcdCodesInput, GetIcdCodeInput, CreateIcdCodeInput, RemoveIcdCodeInput, UpdateIcdCodeInput } from "../dto/icdCodes.input";
+import { FindAllIcdCodesInput, GetIcdCodeInput, CreateIcdCodeInput, RemoveIcdCodeInput, UpdateIcdCodeInput, AllIcdCodesInput } from "../dto/icdCodes.input";
 //payloads
 import { FindAllIcdCodesPayload, IcdCodePayload } from "../dto/icdCodes.payload";
 //entities
@@ -11,31 +11,47 @@ import { ICDCodeService } from "../services/icdCode.service";
 
 @Resolver(() => ICDCodes)
 export class IcdCodeResolver {
-  
-  constructor(
-    private readonly icdCodeService: ICDCodeService,
-  ) { }
 
-  //queries
+	constructor(
+		private readonly icdCodeService: ICDCodeService,
+	) { }
 
-  @Query(() => FindAllIcdCodesPayload)
-  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
-  // @SetMetadata('name', 'findAllIcdCodes')
-  async findAllIcdCodes(@Args('findAllIcdCodesInput') findAllIcdCodesInput: FindAllIcdCodesInput): Promise<FindAllIcdCodesPayload> {
-    const { icdCodes, pagination } = await this.icdCodeService.findAll(findAllIcdCodesInput);
-    if (icdCodes) {
-      return {
-        icdCodes,
-        pagination,
-        response: {
-          message: "OK", status: 200,
-        }
-      }
-    }
-  }
+	//queries
+
+	@Query(() => FindAllIcdCodesPayload)
+	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+	// @SetMetadata('name', 'findAllIcdCodes')
+	async findAllIcdCodes(@Args('findAllIcdCodesInput') findAllIcdCodesInput: FindAllIcdCodesInput): Promise<FindAllIcdCodesPayload> {
+		const { icdCodes, pagination } = await this.icdCodeService.findAll(findAllIcdCodesInput);
+		if (icdCodes) {
+			return {
+				icdCodes,
+				pagination,
+				response: {
+					message: "OK", status: 200,
+				}
+			}
+		}
+	}
+
+	@Query(() => FindAllIcdCodesPayload)
+	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+	// @SetMetadata('name', 'findAllIcdCodes')
+	async findChiefComplaintProblems(@Args('allIcdCodesInput') allIcdCodesInput: AllIcdCodesInput): Promise<FindAllIcdCodesPayload> {
+		const { icdCodes, pagination } = await this.icdCodeService.findChiefComplaintProblems(allIcdCodesInput);
+		if (icdCodes) {
+			return {
+				icdCodes,
+				pagination,
+				response: {
+					message: "OK", status: 200,
+				}
+			}
+		}
+	}
 
 
-  @Query(() => IcdCodePayload)
+	@Query(() => IcdCodePayload)
 	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
 	// @SetMetadata('name', 'getIcdCode')
 	async getIcdCode(@Args('getIcdCodeInput') getIcdCodeInput: GetIcdCodeInput): Promise<IcdCodePayload> {
@@ -51,7 +67,7 @@ export class IcdCodeResolver {
 		}
 	}
 
-  //mutations
+	//mutations
 
 	@Mutation(() => IcdCodePayload)
 	// @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
