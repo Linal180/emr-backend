@@ -432,6 +432,7 @@ export class UserFormsService {
    */
   async updatePatientAppointment(form: Form, userForm: UserForms, inputs: CreateUserFormInput): Promise<Appointment> {
     try {
+      debugger
       const { type, id, facilityId, practiceId } = form;
       const { userFormElements: userFormElementInputs } = inputs
       const formElements = await this.formService.getFormElements(id)
@@ -568,7 +569,9 @@ export class UserFormsService {
                   } else {
                     appointmentContract = await this.contractService.update({
                       contractNumber: contractNo || null,
-                      organizationName: organizationName || null
+                      organizationName: organizationName || null,
+                      id: contract?.id,
+                      appointmentId: appointment?.id
                     })
                   }
                 }
