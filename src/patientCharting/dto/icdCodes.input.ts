@@ -41,3 +41,10 @@ export class FindAllIcdCodesInput {
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput
 }
+
+@InputType()
+export class AllIcdCodesInput {
+
+  @Field({ nullable: true })
+  searchQuery: string;
+}
