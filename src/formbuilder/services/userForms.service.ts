@@ -568,7 +568,9 @@ export class UserFormsService {
                   } else {
                     appointmentContract = await this.contractService.update({
                       contractNumber: contractNo || null,
-                      organizationName: organizationName || null
+                      organizationName: organizationName || null,
+                      id: contract?.id,
+                      appointmentId: appointment?.id
                     })
                   }
                 }

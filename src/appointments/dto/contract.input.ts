@@ -2,7 +2,7 @@ import { Field, InputType, PartialType } from "@nestjs/graphql";
 
 @InputType()
 export class CreateContractInput {
-  
+
   @Field({ nullable: true })
   contractNumber: string;
 
@@ -12,11 +12,11 @@ export class CreateContractInput {
 
 
 @InputType()
-export class UpdateContractInput extends  PartialType(CreateContractInput) {
-  
-  @Field({ nullable: true })
-  contractNumber: string;
+export class UpdateContractInput extends PartialType(CreateContractInput) {
+
+  @Field()
+  id: string;
 
   @Field({ nullable: true })
-  organizationName: string;
+  appointmentId: string;
 }
