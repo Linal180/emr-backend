@@ -9,20 +9,20 @@ export class Permission {
   @Field()
   id: string;
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   name: string
 
-  @Column({nullable: true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   moduleType: string
 
-  @Column({nullable: true, default: true})
-  @Field({nullable: true})
+  @Column({ nullable: true, default: true })
+  @Field({ nullable: true })
   status: boolean
 
-  @OneToMany(() => RolePermission, rolePermission => rolePermission.permission, {onDelete: "CASCADE"})
-  @Field(type => [RolePermission], { nullable: true })
+  @OneToMany(() => RolePermission, rolePermission => rolePermission.permission, { onDelete: "CASCADE" })
+  @Field(() => [RolePermission], { nullable: true })
   rolePermissions: RolePermission[];
 
   @CreateDateColumn({ type: 'timestamptz' })

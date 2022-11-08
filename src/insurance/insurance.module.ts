@@ -1,38 +1,42 @@
 import { HttpModule } from '@nestjs/axios';
-import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Insurance } from './entities/insurance.entity';
-import { InsuranceService } from './services/insurance.service';
-import { InsuranceResolver } from './resolvers/insurance.resolver';
-import { Policy } from './entities/policy.entity';
-import { PolicyHolder } from './entities/policy-holder.entity';
-import { PolicyService } from './services/policy.service';
-import { PolicyResolver } from './resolvers/policy.resolver';
+import { forwardRef, Module } from '@nestjs/common';
+//entities
 import { Copay } from './entities/copay.entity';
-import { PatientModule } from 'src/patients/patient.module';
-import { PolicyHolderService } from './services/policy-holder.service';
-import { PolicyHolderResolver } from './resolvers/policy-holder.resolver';
-import { CopayResolver } from './resolvers/copay.resolver';
-import { CopayService } from './services/copay.service';
-import { ProviderModule } from 'src/providers/provider.module';
-import { PaginationModule } from 'src/pagination/pagination.module';
-import { UsersModule } from 'src/users/users.module';
-import { PolicyEligibility } from './entities/policy-eligibility.entity';
+import { Policy } from './entities/policy.entity';
+import { Insurance } from './entities/insurance.entity';
+import { PolicyHolder } from './entities/policy-holder.entity';
 import { PolicyCoverage } from './entities/policy-coverage.entity';
+import { PolicyEligibility } from './entities/policy-eligibility.entity';
+//services
+import { CopayService } from './services/copay.service';
+import { PolicyService } from './services/policy.service';
+import { InsuranceService } from './services/insurance.service';
+import { PolicyHolderService } from './services/policy-holder.service';
+//resolvers
+import { CopayResolver } from './resolvers/copay.resolver';
+import { PolicyResolver } from './resolvers/policy.resolver';
+import { InsuranceResolver } from './resolvers/insurance.resolver';
+import { PolicyHolderResolver } from './resolvers/policy-holder.resolver';
 import { PolicyEligibilityResolver } from './resolvers/policy-eligibilities.resolver';
-import { FacilityModule } from 'src/facilities/facility.module';
+// modules
+import { UsersModule } from 'src/users/users.module';
+import { PatientModule } from 'src/patients/patient.module';
 import { PracticeModule } from 'src/practice/practice.module';
+import { ProviderModule } from 'src/providers/provider.module';
+import { FacilityModule } from 'src/facilities/facility.module';
+import { PaginationModule } from 'src/pagination/pagination.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Insurance, Policy, PolicyHolder, Copay, PolicyEligibility, PolicyCoverage]),
+    HttpModule,
+    PaginationModule,
     forwardRef(() => UsersModule),
     forwardRef(() => PatientModule),
-    PaginationModule,
     forwardRef(() => ProviderModule),
-    FacilityModule,
-    PracticeModule,
-    HttpModule
+    forwardRef(() => FacilityModule),
+    forwardRef(() => PracticeModule),
   ],
   providers: [
     InsuranceResolver, InsuranceService, PolicyResolver, PolicyService, PolicyHolderService, PolicyHolderResolver,

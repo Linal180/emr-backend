@@ -5,11 +5,12 @@ import {
 } from '@nestjs/common';
 //entities
 import { Role } from '../entities/role.entity';
-import { RolesService } from './roles.service';
 import { Permission } from '../entities/permissions.entity';
 import { RolePermission } from '../entities/rolePermissions.entity';
 //services
+import { RolesService } from './roles.service';
 import { UtilsService } from 'src/util/utils.service';
+import { RolePermissionsService } from './rolePermissions.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 //inputs, dto's
 import { RolePermissionItemInput } from '../dto/rolepermission-input.dto';
@@ -23,11 +24,13 @@ export class PermissionsService {
   constructor(
     @InjectRepository(Permission)
     private permissionsRepository: Repository<Permission>,
-    @InjectRepository(RolePermission)
-    private rolePermissionRepository: Repository<RolePermission>,
-    private readonly paginationService: PaginationService,
-    private readonly utilsService: UtilsService,
     private readonly rolesService: RolesService,
+    private readonly utilsService: UtilsService,
+    private readonly paginationService: PaginationService,
+    private readonly rolePermissionsService: RolePermissionsService,
+
+    // @InjectRepository(RolePermission)
+    // private rolePermissionRepository: Repository<RolePermission>,
   ) { }
 
   /**
@@ -73,8 +76,7 @@ export class PermissionsService {
       }
       const rolePermissionPayload = await this.rolePermissionPayload(permissions, role)
       //creating role permission
-      const rolePermissionInstance = await this.rolePermissionRepository.create(rolePermissionPayload)
-      await this.rolePermissionRepository.save(rolePermissionInstance)
+      await this.rolePermissionsService.createRolePermissions(rolePermissionPayload)
       return
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -105,25 +107,6 @@ export class PermissionsService {
         id: In(ids)
       }
     })
-  }
-
-  /**
-   * find role permissions
-   * @param roleId
-   * @returns  permissions
-   */
-  async findPermissionsByRoleId(id: string) {
-    try {
-      return await this.rolePermissionRepository.find({
-        where: {
-          role: {
-            id
-          }
-        },
-      })
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
   }
 
   /**

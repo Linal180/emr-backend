@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 //services
 import { RoomService } from './services/room.service';
@@ -15,8 +15,8 @@ import { PaginationModule } from 'src/pagination/pagination.module';
   imports: [
     TypeOrmModule.forFeature([Room]),
     UtilsModule,
-    FacilityModule,
     PaginationModule,
+    forwardRef(() => FacilityModule),
   ],
   providers: [RoomService, RoomResolver],
   exports: [RoomService, TypeOrmModule]

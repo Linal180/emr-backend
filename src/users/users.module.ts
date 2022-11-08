@@ -24,6 +24,7 @@ import { RolePermissionResolver } from "./resolvers/rolePermissions.resolver";
 import { RolesService } from "./services/roles.service";
 import { UsersService } from "./services/users.service";
 import { PermissionsService } from "./services/permissions.service";
+import { RolePermissionsService } from "./services/rolePermissions.service";
 //controllers, subscriber, strategy
 import { JwtStrategy } from "./auth/jwt.strategy";
 import { UsersController } from "./users.controller";
@@ -48,7 +49,7 @@ import { UserSubscriber } from "./subscribers/user.subscriber";
     forwardRef(() => AttachmentsModule),
   ],
   providers: [UsersService, UsersResolver, PermissionResolver, RoleResolver, PermissionsService,
-    RolePermissionResolver, RolesService, JwtStrategy, UserSubscriber],
+    RolePermissionResolver,RolePermissionsService, RolesService, JwtStrategy, UserSubscriber],
   controllers: [UsersController],
   exports: [UsersService, TypeOrmModule, RolesService],
 })

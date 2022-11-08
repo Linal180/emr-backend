@@ -40,6 +40,10 @@ export class CVX {
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   systematic: boolean;
 
+  @Column({ nullable: true, default: false, type: "boolean" })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  isDeleted: boolean;
+
   // relation columns
 
   @Column({ nullable: true })

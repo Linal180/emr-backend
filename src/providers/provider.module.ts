@@ -1,44 +1,50 @@
-import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppointmentModule } from 'src/appointments/appointment.module';
+import { forwardRef, Module } from '@nestjs/common';
+// modules
+import { UsersModule } from 'src/users/users.module';
+import { MailerModule } from 'src/mailer/mailer.module';
+import { PatientModule } from 'src/patients/patient.module';
+import { PracticeModule } from 'src/practice/practice.module';
 import { FacilityModule } from 'src/facilities/facility.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
-import { PatientModule } from 'src/patients/patient.module';
-import { UsersModule } from 'src/users/users.module';
-import { BillingAddress } from './entities/billing-address.entity';
-import { Contact } from './entities/contact.entity';
-import { Doctor } from './entities/doctor.entity';
-import { Schedule } from './entities/schedule.entity';
-import { ScheduleServices } from './entities/scheduleServices.entity';
-import { Staff } from './entities/staff.entity';
-import { ContactResolver } from './resolvers/contact.resolver';
-import { DoctorResolver } from './resolvers/doctor.resolver';
-import { ScheduleResolver } from './resolvers/schedule.resolver';
-import { StaffResolver } from './resolvers/staff.resolver';
-import { BillingAddressService } from './services/billing-address.service';
-import { ContactService } from './services/contact.service';
-import { DoctorService } from './services/doctor.service';
-import { ScheduleService } from './services/schedule.service';
-import { StaffService } from './services/staff.service';
 import { AttachmentsModule } from 'src/attachments/attachments.module';
-import { DoctorController } from './controllers/doctor.controller';
+import { AppointmentModule } from 'src/appointments/appointment.module';
+//entities
+import { Staff } from './entities/staff.entity';
+import { Doctor } from './entities/doctor.entity';
+import { Contact } from './entities/contact.entity';
+import { Schedule } from './entities/schedule.entity';
+import { BillingAddress } from './entities/billing-address.entity';
+import { ScheduleServices } from './entities/scheduleServices.entity';
+//resolvers
+import { StaffResolver } from './resolvers/staff.resolver';
+import { DoctorResolver } from './resolvers/doctor.resolver';
+import { ContactResolver } from './resolvers/contact.resolver';
+import { ScheduleResolver } from './resolvers/schedule.resolver';
+//services
+import { StaffService } from './services/staff.service';
+import { DoctorService } from './services/doctor.service';
+import { ContactService } from './services/contact.service';
+import { ScheduleService } from './services/schedule.service';
+import { BillingAddressService } from './services/billing-address.service';
+//controllers
 import { StaffController } from './controllers/staff.controller';
-import { DoctorSubscriber } from './subscribers/doctor.subscriber';
+import { DoctorController } from './controllers/doctor.controller';
+//subscriber
 import { StaffSubscriber } from './subscribers/staff.subscriber';
-import { PracticeModule } from 'src/practice/practice.module';
-import { MailerModule } from 'src/mailer/mailer.module';
+import { DoctorSubscriber } from './subscribers/doctor.subscriber';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Staff, Doctor, Contact, BillingAddress, Schedule, ScheduleServices]),
+    MailerModule,
     PaginationModule,
-    forwardRef(() => PatientModule),
-    forwardRef(() => FacilityModule),
     forwardRef(() => UsersModule),
+    forwardRef(() => PatientModule),
+    forwardRef(() => PracticeModule),
+    forwardRef(() => FacilityModule),
     forwardRef(() => AppointmentModule),
     forwardRef(() => AttachmentsModule),
-    forwardRef(() => PracticeModule),
-    MailerModule
   ],
   providers: [StaffResolver, StaffService, ContactResolver, ContactService, BillingAddressService,
     DoctorResolver, DoctorService, ScheduleResolver, ScheduleService, DoctorSubscriber, StaffSubscriber],

@@ -58,7 +58,7 @@ export class ImagingTestResolver {
 	async createImagingTest(@Args('createImagingTestInput') createImagingTestInput: CreateImagingTestInput): Promise<ImagingTestPayload> {
 		return {
 			imagingTest: await this.imagingTestService.create(createImagingTestInput),
-			response: { status: 200, message: 'ImagingTest code created successfully.' }
+			response: { status: 200, message: 'Imaging Test created successfully.' }
 		};
 	}
 
@@ -68,7 +68,7 @@ export class ImagingTestResolver {
 	async updateImagingTest(@Args('updateImagingTestInput') updateImagingTestInput: UpdateImagingTestInput): Promise<ImagingTestPayload> {
 		return {
 			imagingTest: await this.imagingTestService.update(updateImagingTestInput),
-			response: { status: 200, message: 'ImagingTest code is updated successfully' }
+			response: { status: 200, message: 'Imaging Test is updated successfully' }
 		};
 	}
 
@@ -80,7 +80,7 @@ export class ImagingTestResolver {
 		const { id } = removeImagingTestInput
 		return {
 			imagingTest: await this.imagingTestService.remove(id),
-			response: { status: 200, message: 'ImagingTest code is removed successfully' }
+			response: { status: 200, message: 'Imaging Test is removed successfully' }
 		};
 	}
 }
