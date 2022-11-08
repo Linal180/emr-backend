@@ -14,7 +14,6 @@ import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 //services
 import { UtilsService } from 'src/util/utils.service';
 import { MailerService } from 'src/mailer/mailer.service';
-import { PermissionsService } from './permissions.service';
 import { RolePermissionsService } from './rolePermissions.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { PatientService } from 'src/patients/services/patient.service';
@@ -48,7 +47,6 @@ export class UsersService {
     private readonly utilsService: UtilsService,
     private readonly mailerService: MailerService,
     private readonly paginationService: PaginationService,
-    private readonly permissionsService: PermissionsService,
     private readonly rolePermissionsService: RolePermissionsService,
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
@@ -181,7 +179,6 @@ export class UsersService {
   async updateUserRole(updateRoleInput: UpdateRoleInput): Promise<User> {
     try {
       let shouldUserUpdateEmergencyAccess = true
-      debugger
       const { roles } = updateRoleInput
       const isSuperAdmin = roles?.includes("super-admin");
       if (isSuperAdmin) {
@@ -194,8 +191,12 @@ export class UsersService {
       const user = await this.findUserById(updateRoleInput.id);
       if (updateRoleInput?.roles?.includes('emergency-access')) {
         const { roles: userRoles } = await this.findRolesByUserId(user?.id)
-        const rolePermissions = await Promise.all(userRoles?.map(async (role) => await this.rolePermissionsService.findOneByRoleId(role?.id, ['permission'])))
-        const permissionsFlat = rolePermissions.map(({ permission }) => permission)
+        const rolePermissions = await Promise.all(userRoles?.map(async (role) => {
+          const rolePermissions = await this.rolePermissionsService.findByRoleId(role?.id, ['permission']);
+          return rolePermissions?.map(({ permission }) => permission)
+        }
+        ))
+        const permissionsFlat = rolePermissions?.flat(1)
 
         shouldUserUpdateEmergencyAccess = !!permissionsFlat?.find(({ name }) => name === 'emergencyAccess')
         if (!shouldUserUpdateEmergencyAccess) {

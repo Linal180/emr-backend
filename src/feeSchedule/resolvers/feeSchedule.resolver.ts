@@ -92,8 +92,7 @@ export class FeeScheduleResolver {
   @ResolveField(() => Practice)
   async practice(@Parent() feeSchedule: FeeSchedule): Promise<Practice> {
     if (feeSchedule?.practiceId) {
-      const response = await this.practiceService.getPractice(feeSchedule?.practiceId);
-      const { practice } = response || {}
+      const practice = await this.practiceService.findOne(feeSchedule?.practiceId);
       return practice
     }
   }

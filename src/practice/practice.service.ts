@@ -6,24 +6,29 @@ import {
   NotFoundException,
   PreconditionFailedException
 } from '@nestjs/common';
-//user imports
-import { getYearDate } from 'src/lib/helper';
-import PracticeInput from './dto/practice-input.dto';
+//entities
 import { Practice } from './entities/practice.entity';
-import { PracticePayload } from './dto/practice-payload.dto';
-import { PracticesPayload } from './dto/practices-payload.dto';
+import { Staff } from 'src/providers/entities/staff.entity';
+import { AttachmentType } from 'src/attachments/entities/attachment.entity';
+//services
 import { UsersService } from 'src/users/services/users.service';
-import { CreatePracticeInput } from './dto/create-practice.input';
 import { StaffService } from 'src/providers/services/staff.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
-import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { FacilityService } from 'src/facilities/services/facility.service';
+import { AttachmentsService } from 'src/attachments/services/attachments.service';
+//inputs
+import { File } from '../aws/dto/file-input.dto';
+import PracticeInput from './dto/practice-input.dto';
+import { CreatePracticeInput } from './dto/create-practice.input';
+import { RegisterUserInput } from 'src/users/dto/register-user-input.dto';
 import { RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
-import { AttachmentType } from 'src/attachments/entities/attachment.entity';
-import { File } from '../aws/dto/file-input.dto';
-import { AttachmentsService } from 'src/attachments/services/attachments.service';
+//payloads
+import { PracticePayload } from './dto/practice-payload.dto';
+import { PracticesPayload } from './dto/practices-payload.dto';
+//helpers
+import { getYearDate } from 'src/lib/helper';
 
 @Injectable()
 export class PracticeService {
@@ -132,7 +137,16 @@ export class PracticeService {
   async getPractice(id: string): Promise<PracticePayload> {
     const practice = await this.findOne(id);
     const staffs = await this.staffService.findStaffByPracticeId(id)
-    const staffInfo = staffs.find((staff) => staff.user.userType === 'practice-admin')
+    let staffInfo: null | Staff = null;
+    
+    await Promise.all(staffs?.map(async (staff) => {
+      const { id } = staff
+      const practiceUser = await this.usersService.findUserByUserId(id, 'practice-admin')
+      if (practiceUser) {
+        staffInfo = staff
+      }
+    }
+    ))
     if (practice) {
       return { practice, practiceAdmin: staffInfo }
     }
