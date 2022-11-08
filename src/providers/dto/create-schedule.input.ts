@@ -13,7 +13,7 @@ export class SingleScheduleInput {
   day: string;
 
   @Field({ nullable: true })
-  recurringEndDate: Date;
+  recurringEndDate: string;
 
   @Field({ nullable: true })
   doctorId: string;

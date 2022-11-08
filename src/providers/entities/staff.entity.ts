@@ -27,6 +27,7 @@ registerEnumType(Gender, {
 @Entity({ name: 'Staff' })
 @ObjectType()
 export class Staff {
+
   @PrimaryGeneratedColumn('uuid')
   @Field()
   id: string;
@@ -57,34 +58,39 @@ export class Staff {
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  facilityId: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
   mobile: string;
+
+  @Column({ type: "enum", enum: Gender, default: Gender.MALE })
+  @Field(() => Gender)
+  gender: Gender
+
+  // fields
+
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
+
+  // relationship fields
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   practiceId: string;
 
-  @Column({
-    type: "enum",
-    enum: Gender,
-    default: Gender.MALE
-  })
-  @Field(() => Gender)
-  gender: Gender
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  facilityId: string;
 
-  @OneToOne(() => User, { eager: true })
+  // relationships
+
+  @OneToOne(() => User)
   @JoinColumn()
   @Field(() => User, { nullable: true })
   user: User;
 
-  @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Facility, facility => facility.staff, { onDelete: 'CASCADE' })
   @Field(() => Facility, { nullable: true })
   facility: Facility;
 
-  @ManyToOne(() => Practice, practice => practice.staff, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Practice, practice => practice.staff, { onDelete: 'CASCADE' })
   @Field(() => Practice, { nullable: true })
   practice: Practice;
 
@@ -100,8 +106,10 @@ export class Staff {
   patientAllergies: PatientAllergies[];
 
   @OneToMany(() => PatientVitals, patientVitals => patientVitals.addedBy)
-  @Field(() => PatientVitals, { nullable: true })
-  patientVitals: PatientVitals;
+  @Field(() => [PatientVitals], { nullable: true })
+  patientVitals: PatientVitals[];
+
+  //dates 
 
   @CreateDateColumn({ type: 'timestamptz' })
   @Field()
@@ -110,8 +118,5 @@ export class Staff {
   @UpdateDateColumn({ type: 'timestamptz' })
   @Field()
   updatedAt: string;
-
-  @Field(() => [Attachment], { nullable: true })
-  attachments: Attachment[];
 
 }

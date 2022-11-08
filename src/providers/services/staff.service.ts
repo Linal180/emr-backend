@@ -209,7 +209,8 @@ export class StaffService {
       const staff = await this.findOne(id)
       if (staff) {
         await this.staffRepository.delete(id)
-        await this.usersService.remove(staff.user.id)
+        const user = await this.usersService.findUserByUserId(staff?.id)
+        await this.usersService.remove(user?.id)
         return
       }
       throw new NotFoundException({

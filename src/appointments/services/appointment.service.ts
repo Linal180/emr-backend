@@ -413,9 +413,14 @@ export class AppointmentService {
     try {
       const { appointmentId, roomId } = params
       const appointmentInstance = await this.findOne(appointmentId);
-      const roomInstance = await this.roomService.findOne(roomId);
-      appointmentInstance.room = roomInstance
-      appointmentInstance.roomId = roomInstance?.id
+      if (roomId) {
+        const roomInstance = await this.roomService.findOne(roomId);
+        appointmentInstance.room = roomInstance
+        appointmentInstance.roomId = roomInstance?.id
+      } else {
+        appointmentInstance.room = null
+        appointmentInstance.roomId = null
+      }
       return await this.appointmentRepository.save(appointmentInstance)
     } catch (error) {
       throw new InternalServerErrorException(error);

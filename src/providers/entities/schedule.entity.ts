@@ -26,7 +26,7 @@ export class Schedule {
 
   @Column({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })
-  recurringEndDate: Date;
+  recurringEndDate: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })

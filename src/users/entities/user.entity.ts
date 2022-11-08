@@ -28,7 +28,7 @@ export class User {
   @Column({
     type: "enum", enum: UserStatus, default: UserStatus.ACTIVE
   })
-  @Field(type => UserStatus)
+  @Field(() => UserStatus)
   status: UserStatus;
 
   @Column({ nullable: true, default: false })
@@ -85,11 +85,11 @@ export class User {
   facilityId: string;
 
   @ManyToOne(() => Facility, facility => facility.staff, { eager: true, onDelete: 'CASCADE' })
-  @Field(type => Facility, { nullable: true })
+  @Field(() => Facility, { nullable: true })
   facility: Facility;
 
-  @Field(type => [Role], { nullable: 'itemsAndList' })
-  @ManyToMany(type => Role, role => role.users, { eager: true })
+  @Field(() => [Role], { nullable: 'itemsAndList' })
+  @ManyToMany(() => Role, role => role.users, { eager: true })
   @JoinTable({ name: 'UserRoles' })
   roles: Role[];
 
