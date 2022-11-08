@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 //inputs
-import { FindAllIcdCodesInput, GetIcdCodeInput, CreateIcdCodeInput, RemoveIcdCodeInput, UpdateIcdCodeInput } from "../dto/icdCodes.input";
+import { FindAllIcdCodesInput, GetIcdCodeInput, CreateIcdCodeInput, RemoveIcdCodeInput, UpdateIcdCodeInput, AllIcdCodesInput } from "../dto/icdCodes.input";
 //payloads
 import { FindAllIcdCodesPayload, IcdCodePayload } from "../dto/icdCodes.payload";
 //entities
@@ -23,6 +23,22 @@ export class IcdCodeResolver {
   // @SetMetadata('name', 'findAllIcdCodes')
   async findAllIcdCodes(@Args('findAllIcdCodesInput') findAllIcdCodesInput: FindAllIcdCodesInput): Promise<FindAllIcdCodesPayload> {
     const { icdCodes, pagination } = await this.icdCodeService.findAll(findAllIcdCodesInput);
+    if (icdCodes) {
+      return {
+        icdCodes,
+        pagination,
+        response: {
+          message: "OK", status: 200,
+        }
+      }
+    }
+  }
+
+	@Query(() => FindAllIcdCodesPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'findAllIcdCodes')
+  async findChiefComplaintProblems(@Args('allIcdCodesInput') allIcdCodesInput: AllIcdCodesInput): Promise<FindAllIcdCodesPayload> {
+    const { icdCodes, pagination } = await this.icdCodeService.findChiefComplaintProblems(allIcdCodesInput);
     if (icdCodes) {
       return {
         icdCodes,

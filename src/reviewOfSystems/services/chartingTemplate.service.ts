@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 //entities
 //inputs
 import { FindAllTemplatesInput } from "../dto/questionTemplate-input.dto";
@@ -99,6 +99,18 @@ export class ChartingTemplateService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async findTemplates(searchString: string): Promise<QuestionTemplate[]> {
+    try {
+      const templates = this.questionTemplateRepository.find({
+        where: {
+          name: ILike(`%${searchString}%`)
+        }
+      })
+
+      return templates
+    } catch (error) { }
   }
 
 }

@@ -25,6 +25,11 @@ import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProbl
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { IcdCodesPayload, ICDCodesWithSnowMedCode } from '../dto/icdCodes-payload.dto';
+import { ChartingTemplateService } from 'src/reviewOfSystems/services/chartingTemplate.service';
+import { ReviewOfSystemService } from 'src/reviewOfSystems/services/reviewOfSystem.service';
+import { PhysicalExamService } from 'src/reviewOfSystems/services/physicalExam.service';
+import { PatientIllnessHistoryService } from 'src/reviewOfSystems/services/patientIllnessHistory.service';
+import { TemplateType } from 'src/lib/constants';
 
 @Injectable()
 export class ProblemService {
@@ -44,6 +49,11 @@ export class ProblemService {
     private readonly paginationService: PaginationService,
     private readonly appointmentService: AppointmentService,
     private readonly patientMedicationService: PatientMedicationService,
+    @Inject(forwardRef(() => ChartingTemplateService))
+    private readonly chartingTemplateService: ChartingTemplateService,
+    private readonly reviewOfSystemService: ReviewOfSystemService,
+    private readonly physicalExamService: PhysicalExamService,
+    private readonly patientIllnessHistoryService: PatientIllnessHistoryService,
   ) { }
 
   /**
@@ -53,7 +63,7 @@ export class ProblemService {
    */
   async addPatientProblem(createProblemInput: CreateProblemInput): Promise<PatientProblems> {
     try {
-      const { medicationIds, testIds, patientId, appointmentId } = createProblemInput || {}
+      const { medicationIds, testIds, patientId, appointmentId, shouldCreateTemplate, ...problemInputToCreate } = createProblemInput || {}
 
       //get icdCode
       const icdCode = await this.icdCodeRepository.findOne(createProblemInput.icdCodeId)
@@ -61,7 +71,7 @@ export class ProblemService {
       //get patient 
       const patient = await this.patientService.findOne(createProblemInput.patientId)
       //adding patient problem
-      const patientProblemInstance = this.patientProblemsRepository.create({ ...createProblemInput, ICDCode: icdCode, patient: patient })
+      const patientProblemInstance = this.patientProblemsRepository.create({ ...problemInputToCreate, ICDCode: icdCode, patient: patient })
       //get appointments
       if (createProblemInput.appointmentId) {
         const appointment = await this.appointmentService.findOne(createProblemInput.appointmentId)
@@ -113,6 +123,27 @@ export class ProblemService {
         }))
 
         patientProblemInstance.labTests = patientLabTests
+      }
+
+      if (shouldCreateTemplate) {
+        const icdCode = await this.icdCodeRepository.findOne(createProblemInput.icdCodeId)
+        const isCovidProblem = icdCode.description.toLowerCase().includes('covid')
+        if (isCovidProblem) {
+          const covidTemplates = await this.chartingTemplateService.findTemplates('covid')
+          covidTemplates.forEach(async (template) => {
+            const { templateType, id } = template || {}
+            if (templateType === TemplateType.HPI) {
+              const existingTemplate = await this.patientIllnessHistoryService.findOneByAppointmentId(appointmentId)
+              this.patientIllnessHistoryService.createOrUpdate({ appointmentId, patientId, templateIds: [id], answerResponses: [], id: existingTemplate?.id })
+            } else if (templateType === TemplateType.REVIEW_OF_SYSTEM) {
+              const existingTemplate = await this.reviewOfSystemService.findOneByAppointmentId(appointmentId)
+              this.reviewOfSystemService.createOrUpdate({ appointmentId, patientId, templateIds: [id], answerResponses: [], id: existingTemplate?.id })
+            } else {
+              const existingTemplate = await this.physicalExamService.findOneByAppointmentId(appointmentId)
+              this.physicalExamService.createOrUpdate({ appointmentId, patientId, templateIds: [id], answerResponses: [], id: existingTemplate?.id })
+            }
+          })
+        }
       }
       const patientProblem = await this.patientProblemsRepository.save(patientProblemInstance)
       return patientProblem
@@ -302,7 +333,7 @@ export class ProblemService {
 
     const totalPages = Math.ceil(totalCount / limit)
     return {
-      icdCodes: await (await this.getICDCodesWithSnoMedCodes(icdCodes)).filter((v, i, a) => a.findIndex(v2 => (v.code === v2.code && v.snoMedCode === v2.snoMedCode)) === i) ,
+      icdCodes: await (await this.getICDCodesWithSnoMedCodes(icdCodes)).filter((v, i, a) => a.findIndex(v2 => (v.code === v2.code && v.snoMedCode === v2.snoMedCode)) === i),
       pagination: {
         totalCount,
         page,
