@@ -19,7 +19,7 @@ export class ContractService {
     try {
       const contract = this.contractRepo.create(input)
       return await this.contractRepo.save(contract)
-      
+
     } catch (error) {
       throw new InternalServerErrorException(error)
     }
@@ -34,7 +34,6 @@ export class ContractService {
   async update(input: UpdateContractInput): Promise<Contract> {
     try {
       return await this.contractRepo.save(input)
-      
     } catch (error) {
       throw new InternalServerErrorException(error)
     }
