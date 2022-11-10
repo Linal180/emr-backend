@@ -5,8 +5,10 @@ import { Repository } from "typeorm";
 import { UpFrontPayment } from "../entities/upFrontPayment.entity";
 import { UpFrontPaymentType } from "../entities/upFrontPaymentType.entity";
 //inputs
-import { UpFrontPaymentInput } from "../dto/upFrontPayment-input.dto";
+import { UpFrontPaymentInput, UpfrontPreviousInput } from "../dto/upFrontPayment-input.dto";
 import { UtilsService } from "src/util/utils.service";
+import { AppointmentService } from "src/appointments/services/appointment.service";
+import { UpFrontPaymentPayload } from "../dto/upFrontPayment-payload";
 
 @Injectable()
 export class UpFrontPaymentService {
@@ -15,7 +17,8 @@ export class UpFrontPaymentService {
     private upFrontPaymentRepo: Repository<UpFrontPayment>,
     @InjectRepository(UpFrontPaymentType)
     private upFrontPaymentTypeRepo: Repository<UpFrontPaymentType>,
-    private readonly utilsService: UtilsService
+    private readonly utilsService: UtilsService,
+    private readonly appointmentService: AppointmentService,
   ) { }
 
   /**
@@ -65,11 +68,27 @@ export class UpFrontPaymentService {
     }
   }
 
+  async fetchUpFrontPaymentByAppointmentId(appointmentId: string): Promise<UpFrontPaymentPayload> {
+    const appointment = await this.appointmentService.findOne(appointmentId)
+    const pastAppointments = await this.appointmentService.findAllUpcomingAppointments({ shouldFetchPast: true, appointmentTime: appointment.scheduleStartDateTime, paginationOptions: { limit: 50, page: 1 }, patientId: appointment.patientId })
+    const pastUpfrontPayments = await Promise.all(pastAppointments.appointments.map(async (appointment) => {
+      const upfront = await this.upFrontPaymentRepo.findOne({ appointmentId: appointment.id }, { relations: ['UpFrontPaymentTypes'] })
+      return upfront
+    }))
 
-  async fetchUpFrontPaymentByAppointmentId(appointmentId: string): Promise<UpFrontPayment> {
-    return await this.upFrontPaymentRepo.findOne({
-      appointmentId
-    })
+    const filteredUpfrontPayment = pastUpfrontPayments.filter((val) => !!val)
+
+    const accPrevious = filteredUpfrontPayment.reduce((acc, payment) => {
+      const { UpFrontPaymentTypes } = payment || {}
+      const { amount } = UpFrontPaymentTypes.find((type) => type.paymentType === 'Previous') || {}
+      return acc += Number(amount || 0)
+    }, 0)
+
+    const upfrontPayment = await this.upFrontPaymentRepo.findOne({ appointmentId })
+    return {
+      upFrontPayment: upfrontPayment,
+      previous: accPrevious
+    }
   }
 
   async fetchUpFrontPaymentTypes(upFrontPaymentId: string): Promise<UpFrontPaymentType[]> {

@@ -112,3 +112,24 @@ export class FetchBillingClaimStatusesInput {
   paginationOptions: PaginationInput
 
 }
+
+@InputType()
+export class FetchBillingInput {
+  @Field({ nullable: true })
+  searchQuery?: string
+
+  @Field({ nullable: true })
+  facilityId?: string
+
+  @Field({ nullable: true })
+  patientId?: string
+
+  @Field({ nullable: true })
+  appointmentId?: string
+
+  @Field({ nullable: true })
+  claimNo?: string
+
+  @Field(() => PaginationInput)
+  paginationOptions: PaginationInput
+}

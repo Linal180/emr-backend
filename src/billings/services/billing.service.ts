@@ -5,16 +5,16 @@ import * as moment from 'moment';
 import * as FormData from 'form-data';
 import * as xmlBuilder from 'xmlbuilder';
 import { HttpService } from '@nestjs/axios';
-import { Connection, Repository } from 'typeorm';
+import { Brackets, Connection, getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 const { PDFDocument, createPDFAcroFields } = require('pdf-lib');
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 //entities
 import { Billing, PatientPaymentType } from '../entities/billing.entity';
 import { Code, CodeType } from '../entities/code.entity';
-import { MARITIALSTATUS } from 'src/patients/entities/patient.entity';
+import { MARITIALSTATUS, Patient } from 'src/patients/entities/patient.entity';
 import { OrderOfBenefitType } from 'src/insurance/entities/policy.entity';
-import { AppointmentStatus } from 'src/appointments/entities/appointment.entity';
+import { Appointment, AppointmentStatus } from 'src/appointments/entities/appointment.entity';
 import { DoctorPatientRelationType } from 'src/patients/entities/doctorPatient.entity';
 //services
 import { UtilsService } from 'src/util/utils.service';
@@ -37,7 +37,7 @@ import { BillingsPayload } from '../dto/billing-payload';
 import { SuperBillPayload } from '../dto/super-bill-payload';
 import { ClaimMd, ClaimMdPayload } from '../dto/claim-payload';
 //inputs
-import { BillingInput, FetchBillingClaimStatusesInput } from '../dto/billing-input.dto';
+import { BillingInput, FetchBillingClaimStatusesInput, FetchBillingInput } from '../dto/billing-input.dto';
 import { ClaimInput, CreateClaimInput, GetClaimFileInput } from '../dto/claim-input.dto';
 //helpers
 import { claimMedValidation } from 'src/lib/validations';
@@ -45,6 +45,7 @@ import { generateUniqueNumber, getClaimGender, getClaimRelation, getYesOrNo } fr
 import { CptCodeService } from 'src/feeSchedule/services/cptCode.service';
 import { UpFrontPaymentService } from './upFrontPayment.service';
 import { UPFRONT_PAYMENT_TYPES } from 'src/lib/constants';
+import { Service } from 'src/facilities/entities/services.entity';
 
 @Injectable()
 export class BillingService {
@@ -82,6 +83,52 @@ export class BillingService {
    */
   async getByAppointmentId(appointmentId: string): Promise<Billing> {
     return await this.billingRepository.findOne({ appointmentId })
+  }
+
+  async findAllBillings(fetchBillingInput: FetchBillingInput): Promise<BillingsPayload> {
+    const { paginationOptions, searchQuery, patientId, appointmentId } = fetchBillingInput
+
+    const { limit, page } = paginationOptions
+    const [first] = searchQuery ? searchQuery.split(' ') : ''
+    let baseQuery = getConnection()
+      .getRepository(Billing)
+      .createQueryBuilder('billing')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .where(appointmentId ? 'billing.appointmentId=:appointmentId' : '1=1', { appointmentId })
+      .where(patientId ? 'billing.patientId=:patientId' : '1=1', { patientId })
+
+    if (first) {
+      baseQuery
+        .innerJoin(Appointment, 'appointment', `appointment.id = "billing"."appointmentId"`)
+        .innerJoin(Patient, 'appointmentWithSpecificPatient', `billing.patientId = "appointmentWithSpecificPatient"."id"`)
+        .innerJoin(Service, 'appointmentWithSpecificService', `appointment.appointmentTypeId = "appointmentWithSpecificService"."id"`)
+        .andWhere(new Brackets(qb => {
+          qb.where('billing.claimNo ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.firstName ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.lastName ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.email ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.patientRecord ILIKE :search', { search: `%${first}%` })
+            .orWhere('appointmentWithSpecificPatient.dob ILIKE :patientDob', { patientDob: moment(new Date(first)).format("MM-DD-YYYY") })
+            .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
+            // .orWhere('patientContact.phone ILIKE :patientPhone', { patientPhone: `%${first}%` })
+        }))
+    }
+
+      const [billings, totalCount] = await baseQuery
+        .getManyAndCount()
+
+      const totalPages = Math.ceil(totalCount / limit)
+
+      return {
+        pagination: {
+          totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+        billings
+      }
   }
 
   /**
@@ -1025,7 +1072,7 @@ export class BillingService {
    */
   async getSuperBillInfo(appointmentId): Promise<SuperBillPayload> {
     const billingInfo = await this.fetchBillingDetailsByAppointmentId(appointmentId)
-    const upFrontPayment = await this.upFrontPaymentService.fetchUpFrontPaymentByAppointmentId(appointmentId)
+    const { upFrontPayment } = await this.upFrontPaymentService.fetchUpFrontPaymentByAppointmentId(appointmentId)
     const appointmentInfo = await this.appointmentService.findOne(appointmentId)
     const patientInfo = await this.patientService.findOne(appointmentInfo.patientId)
     const providersInfo = await this.patientService.usualProvider(patientInfo.id)
