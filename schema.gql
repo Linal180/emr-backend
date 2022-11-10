@@ -2714,34 +2714,6 @@ type AppointmentInsuranceStatus {
   insuranceStatus: String
 }
 
-type ServicePayload {
-  response: ResponsePayload
-  service: Service
-}
-
-type ServicesPayload {
-  response: ResponsePayload
-  services: [Service]
-  pagination: PaginationPayload
-}
-
-type FacilityPayload {
-  response: ResponsePayload
-  facility: Facility
-}
-
-type FacilitiesPayload {
-  response: ResponsePayload
-  facilities: [Facility]
-  pagination: PaginationPayload
-}
-
-type TaxonomyPayload {
-  response: ResponsePayload
-  taxonomies: [Taxonomy!]
-  pagination: PaginationPayload
-}
-
 type AllCPTCodePayload {
   cptCodes: [CPTCodes]
   pagination: PaginationPayload
@@ -2784,6 +2756,126 @@ type AllCPTFeeSchedulesPayload {
 type CPTFeeSchedulePayload {
   cptFeeSchedule: CptFeeSchedule
   response: ResponsePayloadResponse
+}
+
+type LiveClaimFeed {
+  id: String!
+  paidDate: String
+  provAddress1: String
+  provState: String
+  provCompanyId: String
+  provCity: String
+  payerAddress1: String
+  provRouting: String
+  payerRouting: String
+  payerCity: String
+  eraId: String
+  paymentFormat: String
+  payerName: String
+  provTaxId: String
+  fromDos: String
+  patientFullName: String
+  InsuranceFullName: String
+  totalPaid: String
+  thruDos: String
+  crossOverCarrier: String
+  crossOverId: String
+  pcn: String
+  provNpi: String
+  totalCharge: String
+  charge: String!
+  paidAmount: String
+  provAccount: String
+  payerAccount: String
+  provZip: String
+  paymentMethod: String
+  provName: String
+  payerId: String
+  checkNumber: String
+  createdAt: String
+  updatedAt: String
+}
+
+type PaymentInfo {
+  deductible: String
+  copay: String
+  previous: String
+}
+
+type SuperBillPayload {
+  appointmentInfo: Appointment
+  providerInfo: Doctor
+  insuranceDetail: Policy
+  policyHolderInfo: PolicyHolder
+  billingInfo: Billing
+  patientInfo: Patient
+  cptCodes: [CPTCodes!]
+  paymentInfo: PaymentInfo
+  response: ResponsePayload
+}
+
+type BillingsPayload {
+  billings: [Billing!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type BillingPayload {
+  billing: Billing!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type ClaimStatusesPayload {
+  claimStatuses: [ClaimStatus!]!
+  pagination: PaginationPayload
+  response: Response
+}
+
+type ClaimStatusPayload {
+  claimStatus: ClaimStatus!
+  response: Response
+}
+
+type LiveClaimFeedPayload {
+  liveClaimFeeds: [LiveClaimFeed!]
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
+type UpFrontPaymentPayload {
+  upFrontPayment: UpFrontPayment
+  previous: Int
+  pagination: PaginationPayload
+  response: Response
+}
+
+type ServicePayload {
+  response: ResponsePayload
+  service: Service
+}
+
+type ServicesPayload {
+  response: ResponsePayload
+  services: [Service]
+  pagination: PaginationPayload
+}
+
+type FacilityPayload {
+  response: ResponsePayload
+  facility: Facility
+}
+
+type FacilitiesPayload {
+  response: ResponsePayload
+  facilities: [Facility]
+  pagination: PaginationPayload
+}
+
+type TaxonomyPayload {
+  response: ResponsePayload
+  taxonomies: [Taxonomy!]
+  pagination: PaginationPayload
 }
 
 type PracticePayload {
@@ -3313,97 +3405,6 @@ type SmsPayload {
   response: ResponsePayloadResponse
 }
 
-type LiveClaimFeed {
-  id: String!
-  paidDate: String
-  provAddress1: String
-  provState: String
-  provCompanyId: String
-  provCity: String
-  payerAddress1: String
-  provRouting: String
-  payerRouting: String
-  payerCity: String
-  eraId: String
-  paymentFormat: String
-  payerName: String
-  provTaxId: String
-  fromDos: String
-  patientFullName: String
-  InsuranceFullName: String
-  totalPaid: String
-  thruDos: String
-  crossOverCarrier: String
-  crossOverId: String
-  pcn: String
-  provNpi: String
-  totalCharge: String
-  charge: String!
-  paidAmount: String
-  provAccount: String
-  payerAccount: String
-  provZip: String
-  paymentMethod: String
-  provName: String
-  payerId: String
-  checkNumber: String
-  createdAt: String
-  updatedAt: String
-}
-
-type PaymentInfo {
-  deductible: String
-  copay: String
-  previous: String
-}
-
-type SuperBillPayload {
-  appointmentInfo: Appointment
-  providerInfo: Doctor
-  insuranceDetail: Policy
-  policyHolderInfo: PolicyHolder
-  billingInfo: Billing
-  patientInfo: Patient
-  cptCodes: [CPTCodes!]
-  paymentInfo: PaymentInfo
-  response: ResponsePayload
-}
-
-type BillingsPayload {
-  billings: [Billing!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type BillingPayload {
-  billing: Billing!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type ClaimStatusesPayload {
-  claimStatuses: [ClaimStatus!]!
-  pagination: PaginationPayload
-  response: Response
-}
-
-type ClaimStatusPayload {
-  claimStatus: ClaimStatus!
-  response: Response
-}
-
-type LiveClaimFeedPayload {
-  liveClaimFeeds: [LiveClaimFeed!]
-  pagination: PaginationPayload
-  response: ResponsePayload
-}
-
-type UpFrontPaymentPayload {
-  upFrontPayment: UpFrontPayment!
-  pagination: PaginationPayload
-  response: Response
-}
-
 type UserLogs {
   id: String!
   operationName: String
@@ -3721,6 +3722,17 @@ type Query {
   findAllPatientMedications(patientMedicationInput: PatientMedicationInput!): PatientMedicationsPayload!
   findAllMedications(medicationInput: MedicationInput!): MedicationsPayload!
   getPatientMedications(getPatientMedication: GetPatientMedication!): PatientMedicationPayload!
+  getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
+  fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
+  generateClaimNo: ClaimNumberPayload!
+  getBillings(fetchBillingInput: FetchBillingInput!): BillingsPayload!
+  getClaimFile(getClaimFileInput: GetClaimFileInput!): ClaimFilePayload!
+  getSuperBillInfo(superBillInput: SuperBillInput!): SuperBillPayload!
+  fetchBillingClaimStatuses(fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!): BillingsPayload!
+  fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
+  findClaimStatus(id: String!): ClaimStatusPayload!
+  findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
+  fetchUpFrontPaymentDetailsByAppointmentId(appointmentId: String!): UpFrontPaymentPayload!
   patientChartingTemplates(findAllTemplatesInput: FindAllTemplatesInput!): FindAllQuestionTemplatesPayload!
   getPatientChartingTemplate(templateId: String!): QuestionTemplatePayload!
   patientIllnessHistory(patientIllnessHistoryInput: PatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
@@ -3729,16 +3741,6 @@ type Query {
   latestReviewOfSystem(reviewOfSystemInput: ReviewOfSystemInput!): ReviewOfSystemPayload!
   physicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
   latestPhysicalExam(physicalExamInput: PhysicalExamInput!): PhysicalExamPayload!
-  getClaim(getClaimInput: GetClaimInput!): ClaimPayload!
-  fetchBillingDetailsByAppointmentId(appointmentId: String!): BillingPayload!
-  generateClaimNo: ClaimNumberPayload!
-  getClaimFile(getClaimFileInput: GetClaimFileInput!): ClaimFilePayload!
-  getSuperBillInfo(superBillInput: SuperBillInput!): SuperBillPayload!
-  fetchBillingClaimStatuses(fetchBillingClaimStatusesInput: FetchBillingClaimStatusesInput!): BillingsPayload!
-  fetchAllClaimStatuses(claimStatusPaginationInput: ClaimStatusPaginationInput!): ClaimStatusesPayload!
-  findClaimStatus(id: String!): ClaimStatusPayload!
-  findAllLiveClaimFeeds(liveClaimFeedInput: LiveClaimFeedInput!): LiveClaimFeedPayload!
-  fetchUpFrontPaymentDetailsByAppointmentId(appointmentId: String!): UpFrontPaymentPayload!
   findAllUserLogs(userLogsInput: UserLogsInput!): UserLogsPayload!
   getPracticesFacilities: PracticeFacilitiesPayload!
   getPracticesUser: PracticeUsersPayload!
@@ -4080,6 +4082,7 @@ input AppointmentInput {
   sortBy: String
   appointmentDate: String
   isCheckedIn: Boolean = false
+  invoiceNumber: Boolean = false
 }
 
 input FindAllCalendarAppointmentsInput {
@@ -4113,7 +4116,9 @@ input UpComingAppointmentsInput {
   sortBy: String
   appointmentDate: String
   isCheckedIn: Boolean = false
+  invoiceNumber: Boolean = false
   shouldFetchPast: Boolean = false
+  appointmentTime: String
 }
 
 input LastVisitedAppointmentInput {
@@ -4360,29 +4365,17 @@ input GetPatientMedication {
   id: String!
 }
 
-input FindAllTemplatesInput {
-  templateType: String
-  searchString: String
-  paginationOptions: PaginationInput!
-}
-
-input PatientIllnessHistoryInput {
-  patientId: String
-  appointmentId: String
-}
-
-input ReviewOfSystemInput {
-  patientId: String
-  appointmentId: String
-}
-
-input PhysicalExamInput {
-  patientId: String
-  appointmentId: String
-}
-
 input GetClaimInput {
   id: String!
+}
+
+input FetchBillingInput {
+  searchQuery: String
+  facilityId: String
+  patientId: String
+  appointmentId: String
+  claimNo: String
+  paginationOptions: PaginationInput!
 }
 
 input GetClaimFileInput {
@@ -4440,6 +4433,27 @@ input LiveClaimFeedInput {
   claimFeedFromDate: String
   claimFeedToDate: String
   paginationOptions: PaginationInput!
+}
+
+input FindAllTemplatesInput {
+  templateType: String
+  searchString: String
+  paginationOptions: PaginationInput!
+}
+
+input PatientIllnessHistoryInput {
+  patientId: String
+  appointmentId: String
+}
+
+input ReviewOfSystemInput {
+  patientId: String
+  appointmentId: String
+}
+
+input PhysicalExamInput {
+  patientId: String
+  appointmentId: String
 }
 
 input UserLogsInput {
@@ -4676,13 +4690,6 @@ type Mutation {
   addPatientMedication(createPatientMedicationInput: CreatePatientMedicationInput!): PatientMedicationPayload!
   updatePatientMedication(updatePatientMedicationInput: UpdatePatientMedicationInput!): PatientMedicationPayload!
   removePatientMedication(removePatientMedication: RemovePatientMedication!): PatientMedicationPayload!
-  updateHPINotes(updateNotes: UpdateNotes!): PatientIllnessHistoryPayload!
-  createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
-  updateROSNotes(updateNotes: UpdateNotes!): ReviewOfSystemPayload!
-  createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
-  updatePENotes(updateNotes: UpdateNotes!): PhysicalExamPayload!
-  createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
-  sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createClaim(createClaimInput: CreateClaimInput!): ClaimPayload!
   createBilling(createBillingInput: BillingInput!): BillingPayload!
   createClaimStatus(createClaimStatusInput: ClaimStatusInput!): ClaimStatusPayload!
@@ -4690,6 +4697,13 @@ type Mutation {
   removeClaimStatus(id: String!): ClaimStatusPayload!
   createLiveClaimFeed: [LiveClaimFeed!]!
   createUpFrontPayment(createUpFrontPaymentInput: UpFrontPaymentInput!): UpFrontPaymentPayload!
+  updateHPINotes(updateNotes: UpdateNotes!): PatientIllnessHistoryPayload!
+  createPatientIllnessHistory(createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!): PatientIllnessHistoryPayload!
+  updateROSNotes(updateNotes: UpdateNotes!): ReviewOfSystemPayload!
+  createReviewOfSystem(createReviewOfSystemInput: CreateReviewOfSystemInput!): ReviewOfSystemPayload!
+  updatePENotes(updateNotes: UpdateNotes!): PhysicalExamPayload!
+  createPhysicalExam(createPhysicalExamInput: CreatePhysicalExamInput!): PhysicalExamPayload!
+  sendSms(sendSmsInput: SendSmsInput!): SmsPayload!
   createForm(createFormInput: CreateFormInput!): FormPayload!
   updateForm(updateFormInput: UpdateFormInput!): FormPayload!
   removeForm(removeForm: RemoveForm!): FormPayload!
@@ -6551,48 +6565,6 @@ input RemovePatientMedication {
   id: String!
 }
 
-input UpdateNotes {
-  id: String
-  patientId: String
-  appointmentId: String
-  notes: String
-}
-
-input CreatePatientIllnessHistoryInput {
-  id: String
-  patientId: String
-  appointmentId: String
-  templateIds: [String!]
-  answerResponses: [AnswerResponsesInput!]!
-}
-
-input AnswerResponsesInput {
-  answerId: String!
-  note: String
-  value: String
-}
-
-input CreateReviewOfSystemInput {
-  id: String
-  patientId: String
-  appointmentId: String
-  templateIds: [String!]
-  answerResponses: [AnswerResponsesInput!]!
-}
-
-input CreatePhysicalExamInput {
-  id: String
-  patientId: String
-  appointmentId: String
-  templateIds: [String!]
-  answerResponses: [AnswerResponsesInput!]!
-}
-
-input SendSmsInput {
-  message: String
-  to: String
-}
-
 input CreateClaimInput {
   patientId: String
   appointmentId: String
@@ -6679,6 +6651,48 @@ input UpFrontPaymentInputType {
   dueAmount: String
   paymentType: String
   notes: String
+}
+
+input UpdateNotes {
+  id: String
+  patientId: String
+  appointmentId: String
+  notes: String
+}
+
+input CreatePatientIllnessHistoryInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  templateIds: [String!]
+  answerResponses: [AnswerResponsesInput!]!
+}
+
+input AnswerResponsesInput {
+  answerId: String!
+  note: String
+  value: String
+}
+
+input CreateReviewOfSystemInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  templateIds: [String!]
+  answerResponses: [AnswerResponsesInput!]!
+}
+
+input CreatePhysicalExamInput {
+  id: String
+  patientId: String
+  appointmentId: String
+  templateIds: [String!]
+  answerResponses: [AnswerResponsesInput!]!
+}
+
+input SendSmsInput {
+  message: String
+  to: String
 }
 
 input CreateFormInput {

@@ -47,6 +47,9 @@ export class AppointmentInput {
 
     @Field({ nullable: true, defaultValue: false })
     isCheckedIn?: boolean
+
+    @Field({ nullable: true, defaultValue: false })
+    invoiceNumber?: boolean
 }
 
 @InputType()
@@ -65,6 +68,9 @@ export class UpComingAppointmentsInput extends AppointmentInput {
 
     @Field({ nullable: true, defaultValue: false })
     shouldFetchPast?: boolean
+
+    @Field({ nullable: true })
+    appointmentTime?: string;
 }
 
 @InputType()
