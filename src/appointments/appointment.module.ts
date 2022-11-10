@@ -21,6 +21,7 @@ import { AppointmentService } from './services/appointment.service';
 //resolvers
 import { ScribeResolver } from './resolvers/scribe.resolver';
 import { AppointmentResolver } from './resolvers/appointment.resolver';
+import { BillingModule } from 'src/billings/billing.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AppointmentResolver } from './resolvers/appointment.resolver';
     forwardRef(() => ProviderModule),
     forwardRef(() => FacilityModule),
     forwardRef(() => InsuranceModule),
+    forwardRef(() => BillingModule),
   ],
   providers: [AppointmentResolver, AppointmentService, ContractService, ScribeService, ScribeResolver],
   exports: [AppointmentService, TypeOrmModule, ContractService],

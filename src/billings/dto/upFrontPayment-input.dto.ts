@@ -28,3 +28,12 @@ export class UpFrontPaymentInput {
   @Field({ nullable: true })
   appointmentId?: string
 }
+
+@InputType()
+export class UpfrontPreviousInput {
+  @Field({ nullable: true })
+  appointmentId: string
+  
+  @Field({ nullable: true })
+  patientId: string
+}

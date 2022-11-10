@@ -11,9 +11,9 @@ import { AppointmentService } from 'src/appointments/services/appointment.servic
 import { PatientService } from 'src/patients/services/patient.service';
 import { UpFrontPaymentService } from '../services/upFrontPayment.service';
 //inputs
-import { UpFrontPaymentInput } from '../dto/upFrontPayment-input.dto';
+import { UpFrontPaymentInput, UpfrontPreviousInput } from '../dto/upFrontPayment-input.dto';
 //payloads
-import { UpFrontPaymentPayload } from '../dto/upFrontPayment-payload';
+import { PreviousWithAppointment, UpFrontPaymentPayload } from '../dto/upFrontPayment-payload';
 
 @Resolver(() => UpFrontPayment)
 export class UpFrontPaymentResolver {
@@ -43,12 +43,13 @@ export class UpFrontPaymentResolver {
   // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   // @SetMetadata('name', 'fetchUpFrontPaymentDetailsByAppointmentId')
   async fetchUpFrontPaymentDetailsByAppointmentId(@Args('appointmentId') appointmentId: string): Promise<UpFrontPaymentPayload> {
+    const upfrontPaymentDetails = await this.upFrontPaymentService.fetchUpFrontPaymentByAppointmentId(appointmentId)
     return {
-      upFrontPayment: await this.upFrontPaymentService.fetchUpFrontPaymentByAppointmentId(appointmentId),
+      ...upfrontPaymentDetails,
       response: { status: 200, message: "Policy created successfully" }
     };
   }
-
+  
   //resolve fields
 
   @ResolveField(() => [UpFrontPaymentType])

@@ -32,6 +32,8 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 // payloads
 import { AppointmentPayload, PatientPastUpcomingAppointmentPayload } from '../dto/appointment-payload.dto';
 import { AppointmentInsuranceStatus, AppointmentsPayload, UpcomingAppointmentsPayload } from '../dto/appointments-payload.dto';
+import { UpFrontPayment } from 'src/billings/entities/upFrontPayment.entity';
+import { UpFrontPaymentService } from 'src/billings/services/upFrontPayment.service';
 
 @Resolver(() => Appointment)
 export class AppointmentResolver {
@@ -45,6 +47,7 @@ export class AppointmentResolver {
     private readonly facilityService: FacilityService,
     private readonly servicesService: ServicesService,
     private readonly appointmentService: AppointmentService,
+    private readonly upFrontPaymentService: UpFrontPaymentService,
   ) { }
 
   //mutations
@@ -326,4 +329,12 @@ export class AppointmentResolver {
     }
   }
 
+
+  @ResolveField(() => UpFrontPayment)
+  async upFrontPayment(@Parent() appointment: Appointment): Promise<UpFrontPayment> {
+    if (appointment?.id) {
+      const upfrontPayment = await this.upFrontPaymentService.fetchUpFrontPaymentByAppointmentId(appointment.id);
+      return upfrontPayment.upFrontPayment
+    }
+  }
 }
