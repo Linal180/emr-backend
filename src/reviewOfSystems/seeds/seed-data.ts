@@ -3822,7 +3822,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
                     },
                     {
                       id: "greater_than_30-60_minutes",
-                      name: "<30 minutes"
+                      name: ">30-60 minutes"
                     },
                     {
                       id: "greater_than_1_hour",

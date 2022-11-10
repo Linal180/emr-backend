@@ -27,7 +27,7 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 //inputs
 import SuperBillInput from '../dto/super-bill-input.dto';
 import { GetClaimFileInput } from '../dto/claim-input.dto';
-import { BillingInput, FetchBillingClaimStatusesInput } from '../dto/billing-input.dto';
+import { BillingInput, FetchBillingClaimStatusesInput, FetchBillingInput } from '../dto/billing-input.dto';
 //payloads
 import { SuperBillPayload } from '../dto/super-bill-payload';
 import { BillingPayload, BillingsPayload } from '../dto/billing-payload';
@@ -77,6 +77,15 @@ export class BillingResolver {
     return {
       claimNumber: await this.billingService.generateClaimNumber(),
       response: { status: 200, message: "Claim Created successfully" }
+    };
+  }
+
+  @Query(() => BillingsPayload)
+  async getBillings(@Args('fetchBillingInput') fetchBillingInput: FetchBillingInput): Promise<BillingsPayload> {
+    const billingsPayload= await this.billingService.findAllBillings(fetchBillingInput)
+    return {
+      ...billingsPayload,
+      response: { status: 200, message: "Billings Fetched Successfully" }
     };
   }
 

@@ -17,8 +17,11 @@ export class UpFrontPaymentsPayload {
 
 @ObjectType()
 export class UpFrontPaymentPayload {
-  @Field(type => UpFrontPayment)
-  upFrontPayment: UpFrontPayment;
+  @Field(type => UpFrontPayment, { nullable: true })
+  upFrontPayment?: UpFrontPayment;
+
+  @Field(() => Int, { nullable: true })
+  previous?: Number
 
   @Field(type => PaginationPayload, { nullable: true })
   pagination?: PaginationPayload
@@ -26,3 +29,14 @@ export class UpFrontPaymentPayload {
   @Field(type => Response, { nullable: true })
   response?: Response
 }
+
+@ObjectType()
+export class PreviousWithAppointment {
+  @Field(() => Int, { nullable: true })
+  previous: Number
+
+  @Field(type => Response, { nullable: true })
+  response?: Response
+}
+
+
