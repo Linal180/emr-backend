@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 //modules
@@ -35,17 +35,17 @@ import { UpFrontPaymentService } from './services/upFrontPayment.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, LiveClaimFeed,Claim, UpFrontPayment, UpFrontPaymentType]),
+    TypeOrmModule.forFeature([Billing, Code, ClaimStatus, LiveClaimFeed, Claim, UpFrontPayment, UpFrontPaymentType]),
     HttpModule,
-    UsersModule,
-    PatientModule,
-    ProviderModule,
-    FacilityModule,
-    PracticeModule,
+    forwardRef(() => UsersModule),
+    forwardRef(() => PatientModule),
+    forwardRef(() => ProviderModule),
+    forwardRef(() => FacilityModule),
+    forwardRef(() => PracticeModule),
+    forwardRef(() => AppointmentModule),
     InsuranceModule,
     PaginationModule,
     FeeScheduleModule,
-    AppointmentModule,
   ],
   providers: [
     CodeResolver,
@@ -57,10 +57,10 @@ import { UpFrontPaymentService } from './services/upFrontPayment.service';
     ClaimStatusResolver,
     LiveClaimFeedService,
     LiveClaimFeedResolver,
-    UpFrontPaymentResolver,  
+    UpFrontPaymentResolver,
     UpFrontPaymentService
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, UpFrontPaymentService],
 })
 export class BillingModule { }
 

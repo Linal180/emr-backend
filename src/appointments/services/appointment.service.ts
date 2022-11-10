@@ -47,6 +47,7 @@ import { AppointmentPayload, PatientPastUpcomingAppointment } from '../dto/appoi
 // helpers
 import { createToken } from 'src/lib/helper';
 import { CalendarViewType, FromToDate } from 'src/lib/constants';
+import { Billing } from 'src/billings/entities/billing.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -438,7 +439,7 @@ export class AppointmentService {
    * @returns appointment query 
    */
   async findAppointmentQuery(appointmentInput: AppointmentInput): Promise<SelectQueryBuilder<Appointment>> {
-    const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, isCheckedIn, ...whereObj } = appointmentInput
+    const { paginationOptions, relationTable, searchString, sortBy, appointmentDate, isCheckedIn, invoiceNumber, ...whereObj } = appointmentInput
     const whereStr = Object.keys(whereObj).reduce((acc, key) => {
       const transformedKey = key === 'appointmentStatus' ? 'status' : key
       if (whereObj[key]) {
@@ -474,6 +475,12 @@ export class AppointmentService {
             .orWhere('appointmentWithSpecificService.name ILIKE :search', { search: `%${first}%` })
             .orWhere('patientContact.phone ILIKE :patientPhone', { patientPhone: `%${first}%` })
         }))
+    }
+
+    if (invoiceNumber) {
+      baseQuery
+      .innerJoin(Billing, 'appointmentWithSpecificBilling', `appointment.id = "appointmentWithSpecificBilling"."appointmentId"`)
+      .andWhere('appointmentWithSpecificBilling.claimNo ILIKE :search', { search: `%${invoiceNumber}%` })
     }
 
     return baseQuery
@@ -516,11 +523,11 @@ export class AppointmentService {
   async findAllUpcomingAppointments(upComingAppointmentInput: UpComingAppointmentsInput): Promise<UpcomingAppointmentsPayload> {
     try {
       const { paginationOptions } = upComingAppointmentInput
-      const { shouldFetchPast, ...appointmentInput } = upComingAppointmentInput
+      const { shouldFetchPast, appointmentTime, ...appointmentInput } = upComingAppointmentInput
       const { page, limit } = paginationOptions
       const baseQuery = await this.findAppointmentQuery(appointmentInput)
       const [appointments, totalCount] = await baseQuery
-        .andWhere(`"appointment"."scheduleStartDateTime" ${shouldFetchPast ? '<' : '>'}= :appointmentTime`, { appointmentTime: moment() })
+        .andWhere(`"appointment"."scheduleStartDateTime" ${shouldFetchPast ? '<' : '>'}= :appointmentTime`, { appointmentTime: appointmentTime ? moment(appointmentTime) : moment() })
         .getManyAndCount()
 
       const totalPages = Math.ceil(totalCount / limit)
@@ -925,5 +932,9 @@ export class AppointmentService {
    */
   async getAppointmentByPatientConsent(id: string): Promise<Appointment> {
     return await this.appointmentRepository.findOne({ where: { patientConsent: id } })
+  }
+
+  async fetchPatientReceivables(patientId) {
+
   }
 }
