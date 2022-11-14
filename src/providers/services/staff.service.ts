@@ -87,23 +87,26 @@ export class StaffService {
    */
   async updateStaff(updateStaffInput: UpdateStaffInput): Promise<Staff> {
     try {
-      const staff = await this.utilsService.updateEntityManager(Staff, updateStaffInput.updateStaffItemInput.id, updateStaffInput.updateStaffItemInput, this.staffRepository)
-      const staffInstance = await this.findOne(updateStaffInput.updateStaffItemInput.id)
+      const { updateStaffItemInput, providers } = updateStaffInput
+      const { id, ...rest } = updateStaffItemInput
+      const staff = await this.utilsService.updateEntityManager(Staff, id, rest, this.staffRepository)
+      const staffInstance = await this.findOne(id)
       if (!staffInstance) {
         throw new NotFoundException({
           status: HttpStatus.NOT_FOUND,
           error: 'Staff not found or disabled',
         });
       }
+      const userInstance = await this.usersService.findUserByUserId(staffInstance?.id)
       //update primary contact in user's model 
-      if (staffInstance.user.id) {
-        const { email, facilityId, phone } = updateStaffInput.updateStaffItemInput
-        await this.usersService.updateUserInfo({ id: staffInstance.user.id, email, facilityId, phone })
+      if (userInstance?.id) {
+        const { email, facilityId, phone } = updateStaffItemInput
+        await this.usersService.updateUserInfo({ id: userInstance?.id, email, facilityId, phone })
       }
       // get providers
-      if (updateStaffInput.providers) {
-        const providers = await this.doctorService.getDoctors(updateStaffInput.providers)
-        staffInstance.providers = providers
+      if (providers) {
+        const providerInstances = await this.doctorService.getDoctors(providers)
+        staffInstance.providers = providerInstances
         return this.staffRepository.save(staffInstance)
       }
       return staff
