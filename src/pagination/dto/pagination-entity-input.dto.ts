@@ -103,5 +103,6 @@ export class PaginatedEntityInput {
   section?: string
   roles?: string[]
   appointmentFromDate?: string
-  appointmentToDate?: string
+  appointmentToDate?: string;
+  active?: boolean;
 }

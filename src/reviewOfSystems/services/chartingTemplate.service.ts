@@ -35,8 +35,7 @@ export class ChartingTemplateService {
   async fetchAll(params: FindAllTemplatesInput): Promise<FindAllQuestionTemplatesPayload> {
     try {
       const { paginationOptions, searchString } = params
-      const [first] = searchString ? searchString.split(' ') : ''
-      const response = await this.paginationService.willPaginate<QuestionTemplate>(this.questionTemplateRepository, { ...params, associatedTo: 'QuestionTemplate', associatedToField: { columnValue: first, columnName: 'name', filterType: 'stringFilter' } });
+      const response = await this.paginationService.willPaginate<QuestionTemplate>(this.questionTemplateRepository, { ...params, associatedTo: 'QuestionTemplate', associatedToField: { columnValue: searchString, columnName: 'name', filterType: 'stringFilter' } });
       const { data: templates, ...pagination } = response
       return { templates, pagination }
     } catch (error) {

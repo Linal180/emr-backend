@@ -17,6 +17,10 @@ export class ImagingTest {
   @Field({ nullable: true })
   name: string;
 
+  @Column({ nullable: true, default: false })
+  @Field({ nullable: true })
+  active: boolean;
+
   // relationships
 
   @OneToMany(() => ImagingOrderTest, imagingOrderTest => imagingOrderTest.imagingTest)

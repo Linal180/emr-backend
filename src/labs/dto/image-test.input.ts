@@ -10,6 +10,9 @@ export class FindAllImagingTestInput {
 
   @Field(() => PaginationInput)
   paginationOptions: PaginationInput
+
+  @Field(() => Boolean, { nullable: true, defaultValue: true })
+  active: boolean
 }
 
 @InputType()
@@ -17,6 +20,9 @@ export class CreateImagingTestInput {
 
   @Field()
   name: string;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: true })
+  active: boolean
 
 }
 

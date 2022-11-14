@@ -232,6 +232,7 @@ export class PaginationService {
       roles,
       appointmentFromDate,
       appointmentToDate,
+      active,
       paginationOptions: { page, limit: take } } = paginationInput || {}
     const skip = (page - 1) * take;
 
@@ -341,6 +342,7 @@ export class PaginationService {
         ...(isActive != null && {
           isActive
         }),
+        ...(active != null && { active }),
         ...(customRole != null && {
           customRole
         }),

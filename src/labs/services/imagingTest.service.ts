@@ -30,11 +30,11 @@ export class ImagingTestService {
   async findAll(params: FindAllImagingTestInput): Promise<FindAllImagingTestPayload> {
     try {
 
-      const { paginationOptions, searchQuery } = params || {}
+      const { paginationOptions, searchQuery, active } = params || {}
       const response = await this.paginationService.willPaginate<ImagingTest>(this.imagingTestRepo, {
         paginationOptions, associatedToField: {
           filterType: "stringFilter", columnValue: searchQuery, columnName: 'name',
-        }, associatedTo: 'ImagingTest'
+        }, associatedTo: 'ImagingTest', active
       })
 
       const { data, ...pagination } = response;
@@ -95,7 +95,7 @@ export class ImagingTestService {
   async remove(id: string): Promise<ImagingTest> {
     try {
       const imagingTestInstance = await this.findOne(id);
-      await this.imagingTestRepo.delete(id);
+      const imagingTest = await this.utilsService.updateEntityManager(ImagingTest, id, { active: false }, this.imagingTestRepo)
       return imagingTestInstance;
     } catch (error) {
       throw new InternalServerErrorException(error);
