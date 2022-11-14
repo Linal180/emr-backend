@@ -26,7 +26,7 @@ export enum CopayType {
   NON_FORMULARY_DRUG = "Non-Formulary Drug",
   NURSE_VISIT = "Nurse visit",
   OFFICE_VISIT_FU = "Office Visit - F/U",
-  OFFICE_VISIR_NEW = "Office Visit - New",
+  OFFICE_VISIT_NEW = "Office Visit - New",
   OUT_OF_NETWORK = "Out of Network",
   PHYSICIANS_ASSISTANT = "Physician's Assistant",
   PODIATRY = "Podiatry",

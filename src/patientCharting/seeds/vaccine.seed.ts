@@ -100,7 +100,7 @@ export class CreateVaccine implements Seeder {
         //fetch cpt code
         let cptCodeInstance = await cptCodeRepo.findOne({ code: cptCode });
         //create cpt code if not found
-        if (!cptCode) {
+        if (!cptCodeInstance) {
           const cptCodeIns = cptCodeRepo?.create({ code: cptCode, shortDescription: cptDescription, systematic: true });
           cptCodeInstance = await cptCodeRepo.save(cptCodeIns)
         }
