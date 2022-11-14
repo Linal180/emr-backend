@@ -388,6 +388,7 @@ type PatientMedication {
 type ImagingTest {
   id: String!
   name: String
+  active: Boolean
   createdAt: String
   updatedAt: String
 }
@@ -3802,6 +3803,7 @@ input TestSpecimenTypeInput {
 input FindAllImagingTestInput {
   searchQuery: String
   paginationOptions: PaginationInput!
+  active: Boolean = true
 }
 
 input GetImagingTestInput {
@@ -4852,10 +4854,12 @@ input RemoveLabTestObservation {
 
 input CreateImagingTestInput {
   name: String!
+  active: Boolean = true
 }
 
 input UpdateImagingTestInput {
   name: String
+  active: Boolean = true
   id: String!
 }
 
