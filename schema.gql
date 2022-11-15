@@ -3020,6 +3020,32 @@ type LabTestObservationPayload {
   labTestObservation: Observations
 }
 
+type PhysicalExamPayload {
+  physicalExam: PhysicalExam
+  response: ResponsePayloadResponse
+}
+
+type ReviewOfSystemPayload {
+  reviewOfSystem: ReviewOfSystem
+  response: ResponsePayloadResponse
+}
+
+type FindAllQuestionTemplatesPayload {
+  templates: [QuestionTemplate!]!
+  pagination: PaginationPayload
+  response: ResponsePayload
+}
+
+type QuestionTemplatePayload {
+  template: QuestionTemplate!
+  response: ResponsePayload
+}
+
+type PatientIllnessHistoryPayload {
+  patientIllnessHistory: PatientIllnessHistory
+  response: ResponsePayloadResponse
+}
+
 type FindAllNdcPayload {
   ndcs: [NDC!]
   pagination: PaginationPayload
@@ -3230,32 +3256,6 @@ type MedicationsPayload {
   response: ResponsePayload
   medications: [Medications!]
   pagination: PaginationPayload
-}
-
-type FindAllQuestionTemplatesPayload {
-  templates: [QuestionTemplate!]!
-  pagination: PaginationPayload
-  response: ResponsePayload
-}
-
-type QuestionTemplatePayload {
-  template: QuestionTemplate!
-  response: ResponsePayload
-}
-
-type PatientIllnessHistoryPayload {
-  patientIllnessHistory: PatientIllnessHistory
-  response: ResponsePayloadResponse
-}
-
-type PhysicalExamPayload {
-  physicalExam: PhysicalExam
-  response: ResponsePayloadResponse
-}
-
-type ReviewOfSystemPayload {
-  reviewOfSystem: ReviewOfSystem
-  response: ResponsePayloadResponse
 }
 
 type PatientsPayload {

@@ -7,7 +7,8 @@ import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 import PatientProblemInput from '../dto/problem-input.dto';
 import { CreateProblemInput } from '../dto/create-problem.input';
 import {
-  GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput, UpdateProblemNotesInput, UpdateProblemSignedInput
+  GetPatientProblem, RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProblemInput,
+  UpdateProblemNotesInput, UpdateProblemSignedInput
 } from '../dto/update-problem.input';
 //payloads
 import { IcdCodesPayload } from '../dto/icdCodes-payload.dto';
@@ -77,7 +78,17 @@ export class ProblemResolver {
     };
   }
 
-  @Query(returns => PatientProblemsPayload)
+  @Mutation(() => PatientProblemPayload)
+  @UseGuards(JwtAuthGraphQLGuard)
+  @SetMetadata('name', 'removePatientProblem')
+  async removePatientProblem(@Args('removeProblem') removeProblem: RemoveProblem) {
+    await this.problemService.removePatientProblem(removeProblem);
+    return { response: { status: 200, message: 'Patient problem Deleted' } };
+  }
+
+  //queries
+
+  @Query(() => PatientProblemsPayload)
   @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
   @SetMetadata('name', 'findAllPatientProblem')
   async findAllPatientProblem(@Args('patientProblemInput') patientProblemInput: PatientProblemInput): Promise<PatientProblemsPayload> {
@@ -96,7 +107,7 @@ export class ProblemResolver {
     });
   }
 
-  @Query(returns => IcdCodesPayload)
+  @Query(() => IcdCodesPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'searchIcdCodes')
   async searchIcdCodes(@Args('searchIcdCodesInput') searchIcdCodesInput: SearchIcdCodesInput): Promise<IcdCodesPayload> {
@@ -122,7 +133,7 @@ export class ProblemResolver {
     }
   }
 
-  @Query(returns => snoMedCodesPayload)
+  @Query(() => snoMedCodesPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'searchSnoMedCodeByIcdCodes')
   async searchSnoMedCodeByIcdCodes(@Args('searchSnoMedCodesInput') searchSnoMedCodesInput: SearchSnoMedCodesInput): Promise<snoMedCodesPayload> {
@@ -135,7 +146,7 @@ export class ProblemResolver {
     }
   }
 
-  @Query(returns => PatientProblemPayload)
+  @Query(() => PatientProblemPayload)
   @UseGuards(JwtAuthGraphQLGuard)
   @SetMetadata('name', 'getPatientProblem')
   async getPatientProblem(@Args('getPatientProblem') getPatientProblem: GetPatientProblem): Promise<PatientProblemPayload> {
@@ -146,31 +157,25 @@ export class ProblemResolver {
     };
   }
 
-  @Mutation(() => PatientProblemPayload)
-  @UseGuards(JwtAuthGraphQLGuard)
-  @SetMetadata('name', 'removePatientProblem')
-  async removePatientProblem(@Args('removeProblem') removeProblem: RemoveProblem) {
-    await this.problemService.removePatientProblem(removeProblem);
-    return { response: { status: 200, message: 'Patient problem Deleted' } };
-  }
+  //resolve fields
 
   @ResolveField(() => [PatientMedication])
   async patientMedications(@Parent() patientProblem: PatientProblems): Promise<PatientMedication[]> {
-    if (patientProblem && patientProblem.id) {
+    if (patientProblem?.id) {
       return await this.patientMedicationService.GetPatientMedicationsByProblemId(patientProblem.id);
     }
   }
 
   @ResolveField(() => [LabTests])
   async labTests(@Parent() patientProblem: PatientProblems): Promise<LabTests[]> {
-    if (patientProblem && patientProblem.id) {
+    if (patientProblem?.id) {
       return await this.labTestsService.GetLabTestsByProblemId(patientProblem.id);
     }
   }
 
   @ResolveField(() => Appointment)
   async appointment(@Parent() patientProblem: PatientProblems): Promise<Appointment> {
-    if (patientProblem && patientProblem.appointmentId) {
+    if (patientProblem?.appointmentId) {
       return await this.appointmentService.findOne(patientProblem.appointmentId);
     }
   }
