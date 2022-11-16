@@ -10,3 +10,8 @@ export default class PracticeInput {
     @Field(type => PaginationInput)
     paginationOptions: PaginationInput
 }
+
+@InputType()
+export class GetAllPracticesInput {
+    
+}
