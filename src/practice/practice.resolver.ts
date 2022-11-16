@@ -2,32 +2,32 @@ import { HttpStatus, NotFoundException, SetMetadata, UseGuards } from '@nestjs/c
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 //entities
 import { Practice } from './entities/practice.entity';
+import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
 import { FeeSchedule } from 'src/feeSchedule/entities/feeSchedule.entity';
 import { Attachment, AttachmentType } from 'src/attachments/entities/attachment.entity';
 //services
 import { PracticeService } from './practice.service';
+import { TaxonomiesService } from 'src/facilities/services/taxonomy.service';
 import { AttachmentsService } from 'src/attachments/services/attachments.service';
+import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
 //guards
 import { default as PermissionGuard } from 'src/users/auth/role.guard';
 import { JwtAuthGraphQLGuard } from 'src/users/auth/jwt-auth-graphql.guard';
 //inputs
+import PracticeInput from './dto/practice-input.dto';
 import { CreatePracticeInput } from './dto/create-practice.input';
 import { GetPractice, RemovePractice, UpdatePracticeInput } from './dto/update-practice.input';
 //payloads
-import PracticeInput from './dto/practice-input.dto';
 import { PracticePayload } from './dto/practice-payload.dto';
-import { PracticesPayload } from './dto/practices-payload.dto';
-import { FeeScheduleService } from 'src/feeSchedule/services/feeSchedule.service';
-import { Taxonomy } from 'src/facilities/entities/taxonomy.entity';
-import { TaxonomiesService } from 'src/facilities/services/taxonomy.service';
+import { PracticeCountPayload, PracticesPayload } from './dto/practices-payload.dto';
 
 @Resolver(() => Practice)
 export class PracticeResolver {
   constructor(
     private readonly practiceService: PracticeService,
+    private readonly taxonomiesService: TaxonomiesService,
     private readonly attachmentsService: AttachmentsService,
     private readonly feeScheduleService: FeeScheduleService,
-    private readonly taxonomiesService: TaxonomiesService,
   ) { }
 
   //queries
@@ -62,6 +62,19 @@ export class PracticeResolver {
     };
   }
 
+  @Query(() => PracticeCountPayload)
+  // @UseGuards(JwtAuthGraphQLGuard, PermissionGuard)
+  // @SetMetadata('name', 'getAllPractices')
+  async getAllPractices(): Promise<PracticeCountPayload> {
+    const practices = await this.practiceService.allPracticeCount()
+    return {
+      practices,
+      response: {
+        message: "OK", status: 200,
+      }
+    }
+  }
+
   //mutations
 
   @Mutation(() => PracticePayload)
@@ -89,7 +102,7 @@ export class PracticeResolver {
   @SetMetadata('name', 'removePractice')
   async removePractice(@Args('removePractice') removePractice: RemovePractice) {
     await this.practiceService.removePractice(removePractice);
-    return { response: { status: 200, message: 'Practice Deleted' } };
+    return { response: { status: 200, message: 'Practice updated successfully' } };
   }
 
   //resolve fields

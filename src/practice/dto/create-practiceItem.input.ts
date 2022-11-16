@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class CreatePracticeItemInput {
-  @Field({nullable: true})
+  @Field({ nullable: true })
   name: string;
 
   @Field({ nullable: true })
@@ -34,4 +34,7 @@ export class CreatePracticeItemInput {
 
   @Field({ nullable: true })
   taxonomyCodeId: string;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: true })
+  active?: boolean;
 }

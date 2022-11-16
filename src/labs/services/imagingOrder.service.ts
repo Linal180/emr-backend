@@ -21,9 +21,10 @@ export class ImagingOrderService {
     private imagingOrderRepo: Repository<ImagingOrder>,
     private readonly connection: Connection,
     private readonly patientService: PatientService,
-    private readonly problemService: ProblemService,
     private readonly paginationService: PaginationService,
     private readonly appointmentService: AppointmentService,
+    @Inject(forwardRef(() => ProblemService))
+    private readonly problemService: ProblemService,
     @Inject(forwardRef(() => ImagingOrderTestService))
     private readonly imagingOrderTestService: ImagingOrderTestService,
   ) { }
@@ -201,5 +202,10 @@ export class ImagingOrderService {
    */
   async findByProblemId(patientProblemId: string): Promise<ImagingOrder[]> {
     return await this.imagingOrderRepo.find({ patientProblemId })
+  }
+
+  async removeByProblemId(patientProblemId: string) {
+    const imagingOrder = await this.imagingOrderRepo.find({ patientProblemId });
+    await this.imagingOrderRepo.remove(imagingOrder)
   }
 }

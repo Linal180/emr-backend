@@ -9,14 +9,20 @@ import { PaginationService } from 'src/pagination/pagination.service';
 import { DoctorService } from 'src/providers/services/doctor.service';
 import { PatientService } from 'src/patients/services/patient.service';
 import { PatientMedicationService } from './patientMedication.service';
+import { ImagingOrderService } from 'src/labs/services/imagingOrder.service';
 import { AppointmentService } from 'src/appointments/services/appointment.service';
+import { PhysicalExamService } from 'src/reviewOfSystems/services/physicalExam.service';
+import { ReviewOfSystemService } from 'src/reviewOfSystems/services/reviewOfSystem.service';
+import { ChartingTemplateService } from 'src/reviewOfSystems/services/chartingTemplate.service';
+import { PatientIllnessHistoryService } from 'src/reviewOfSystems/services/patientIllnessHistory.service';
 //entities
 import { ICDCodes } from '../entities/icdcodes.entity';
 import { SnoMedCodes } from '../entities/snowMedCodes.entity';
 import { LabTestStatus } from 'src/labs/entities/labTests.entity';
 import { PatientProblems } from '../entities/patientProblems.entity';
-//helpers
+//helpers, constants
 import { generateString } from 'src/lib/helper';
+import { TemplateType } from 'src/lib/constants';
 //inputs
 import PatientProblemInput from '../dto/problem-input.dto';
 import { CreateProblemInput } from '../dto/create-problem.input';
@@ -25,11 +31,6 @@ import { RemoveProblem, SearchIcdCodesInput, SearchSnoMedCodesInput, UpdateProbl
 import { snoMedCodesPayload } from '../dto/snoMedCodes-payload.dto';
 import { PatientProblemsPayload } from '../dto/problems-payload.dto';
 import { IcdCodesPayload, ICDCodesWithSnowMedCode } from '../dto/icdCodes-payload.dto';
-import { ChartingTemplateService } from 'src/reviewOfSystems/services/chartingTemplate.service';
-import { ReviewOfSystemService } from 'src/reviewOfSystems/services/reviewOfSystem.service';
-import { PhysicalExamService } from 'src/reviewOfSystems/services/physicalExam.service';
-import { PatientIllnessHistoryService } from 'src/reviewOfSystems/services/patientIllnessHistory.service';
-import { TemplateType } from 'src/lib/constants';
 
 @Injectable()
 export class ProblemService {
@@ -44,16 +45,18 @@ export class ProblemService {
     private readonly utilsService: UtilsService,
     private readonly doctorService: DoctorService,
     private readonly patientService: PatientService,
-    @Inject(forwardRef(() => LabTestsService))
-    private readonly labTestService: LabTestsService,
     private readonly paginationService: PaginationService,
     private readonly appointmentService: AppointmentService,
+    private readonly physicalExamService: PhysicalExamService,
+    private readonly reviewOfSystemService: ReviewOfSystemService,
     private readonly patientMedicationService: PatientMedicationService,
+    private readonly patientIllnessHistoryService: PatientIllnessHistoryService,
+    @Inject(forwardRef(() => ImagingOrderService))
+    private readonly imagingOrderService: ImagingOrderService,
+    @Inject(forwardRef(() => LabTestsService))
+    private readonly labTestService: LabTestsService,
     @Inject(forwardRef(() => ChartingTemplateService))
     private readonly chartingTemplateService: ChartingTemplateService,
-    private readonly reviewOfSystemService: ReviewOfSystemService,
-    private readonly physicalExamService: PhysicalExamService,
-    private readonly patientIllnessHistoryService: PatientIllnessHistoryService,
   ) { }
 
   /**
@@ -424,6 +427,7 @@ export class ProblemService {
   async removePatientProblem({ id }: RemoveProblem) {
     try {
       await this.patientMedicationService.removePatientMedicationByProblem(id)
+      await this.imagingOrderService.removeByProblemId(id)
       await this.patientProblemsRepository.delete(id)
     } catch (error) {
       throw new InternalServerErrorException(error);
