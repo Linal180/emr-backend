@@ -8,6 +8,7 @@ import { ProviderModule } from 'src/providers/provider.module';
 import { PaginationModule } from 'src/pagination/pagination.module';
 import { FeeScheduleModule } from 'src/feeSchedule/feeSchedule.module';
 import { AppointmentModule } from 'src/appointments/appointment.module';
+import { ReviewOfSystemModule } from 'src/reviewOfSystems/reviewOfSystems.module';
 //entities
 import { MVX } from './entities/mvx.entity';
 import { CVX } from './entities/cvx.entity';
@@ -62,7 +63,6 @@ import { PatientAllergiesService } from './services/patientAllergies.service';
 import { PatientMedicationService } from './services/patientMedication.service';
 import { NdcVaccineProductService } from './services/ndcVaccineProduct.service';
 import { FamilyHistoryRelativeService } from './services/familyHistoryRelative.service';
-import { ReviewOfSystemModule } from 'src/reviewOfSystems/reviewOfSystems.module';
 
 
 @Module({
@@ -74,12 +74,12 @@ import { ReviewOfSystemModule } from 'src/reviewOfSystems/reviewOfSystems.module
     ]),
     forwardRef(() => LabModule),
     forwardRef(() => UsersModule),
-    forwardRef(() => ProviderModule),
     forwardRef(() => PatientModule),
+    forwardRef(() => ProviderModule),
     forwardRef(() => PaginationModule),
+    forwardRef(() => ReviewOfSystemModule),
     FeeScheduleModule,
     AppointmentModule,
-    forwardRef(() => ReviewOfSystemModule),
   ],
   providers: [
     //services
