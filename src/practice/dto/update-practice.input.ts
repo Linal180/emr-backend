@@ -18,10 +18,10 @@ export class UpdatePracticeInput {
 }
 
 @InputType()
-export class GetPractice extends PickType(UpdatePracticeItemInput, ['id'] as const) { }
+export class GetPractice extends PickType(UpdatePracticeItemInput, ['id', 'active'] as const) { }
 
 @InputType()
-export class RemovePractice extends PickType(UpdatePracticeItemInput, ['id'] as const) { }
+export class RemovePractice extends PickType(UpdatePracticeItemInput, ['id', 'active'] as const) { }
 
 
 

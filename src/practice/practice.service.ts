@@ -11,6 +11,7 @@ import { Practice } from './entities/practice.entity';
 import { Staff } from 'src/providers/entities/staff.entity';
 import { AttachmentType } from 'src/attachments/entities/attachment.entity';
 //services
+import { UtilsService } from 'src/util/utils.service';
 import { UsersService } from 'src/users/services/users.service';
 import { StaffService } from 'src/providers/services/staff.service';
 import { PaginationService } from 'src/pagination/pagination.service';
@@ -26,7 +27,7 @@ import { RemovePractice, UpdatePracticeInput } from './dto/update-practice.input
 import { UpdateAttachmentMediaInput } from 'src/attachments/dto/update-attachment.input';
 //payloads
 import { PracticePayload } from './dto/practice-payload.dto';
-import { PracticesPayload } from './dto/practices-payload.dto';
+import { PracticesPayload, TotalPractices } from './dto/practices-payload.dto';
 //helpers
 import { getYearDate } from 'src/lib/helper';
 
@@ -36,6 +37,7 @@ export class PracticeService {
     @InjectRepository(Practice)
     private practiceRepository: Repository<Practice>,
     private readonly paginationService: PaginationService,
+    private readonly utilsService: UtilsService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => FacilityService))
@@ -138,7 +140,7 @@ export class PracticeService {
     const practice = await this.findOne(id);
     const staffs = await this.staffService.findStaffByPracticeId(id)
     let staffInfo: null | Staff = null;
-    
+
     await Promise.all(staffs?.map(async (staff) => {
       const { id } = staff
       const practiceUser = await this.usersService.findUserByUserId(id, 'practice-admin')
@@ -175,9 +177,11 @@ export class PracticeService {
    * Removes practice
    * @param { id } 
    */
-  async removePractice({ id }: RemovePractice) {
+  async removePractice({ id, active }: RemovePractice): Promise<Practice> {
     try {
-      await this.practiceRepository.delete(id)
+      const practice = await this.findOne(id);
+      const newPractice = await this.utilsService.updateEntityManager(Practice, id, { ...practice, active }, this.practiceRepository);
+      return newPractice
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -189,6 +193,26 @@ export class PracticeService {
    */
   async allPractices(id?: string) {
     return await this.practiceRepository.find({ select: ['id', 'name'], where: id ? { id } : {} })
+  }
+
+  /**
+   * All practice count
+   * @returns practice count 
+   */
+  async allPracticeCount(): Promise<TotalPractices> {
+    try {
+      const total = await this.practiceRepository.count();
+      const active = await this.practiceRepository.count({ active: true })
+      const inactive = await this.practiceRepository.count({ active: false })
+      return {
+        total,
+        active,
+        inactive
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+
   }
 
   /**
