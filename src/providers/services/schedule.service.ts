@@ -205,7 +205,7 @@ export class ScheduleService {
         await this.scheduleServicesRepository.delete({ scheduleId: scheduleInstance.id })
         const services = await this.servicesService.findByIds((transformedScheduleElement as UpdateScheduleInput).servicesIds)
         const serviceScheduleInstance = await this.createScheduleService(services, schedule.id)
-        const serviceSchedule = await this.scheduleServicesRepository.create(serviceScheduleInstance)
+        const serviceSchedule = this.scheduleServicesRepository.create(serviceScheduleInstance)
         scheduleInstance.scheduleServices = serviceSchedule
         await queryRunner.manager.save(serviceSchedule);
       }
