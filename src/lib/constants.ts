@@ -157,6 +157,7 @@ export enum TemplateType {
   HPI = 'hpi',
   REVIEW_OF_SYSTEM = 'reviewOfSystem',
   PHYSICAL_EXAM = 'physicalExam',
+  PHYSICAL_EXERCISE = 'physicalExercise',
   TEST_INTERPRETATION = 'testInterpretation',
   CHILD_REVIEW_SYSTEM = 'Child Review System'
 }
@@ -259,7 +260,7 @@ export enum CalendarViewType {
   Day
 }
 
-export interface FromToDate {
+export interface FromToDate  {
   fromDate: string
   toDate: string
 }

@@ -1805,6 +1805,14 @@ type TriageNotes {
   updatedAt: String
 }
 
+type Exercises {
+  id: String!
+  name: String
+  templateId: String
+  template: QuestionTemplate
+  createdAt: String
+}
+
 type SelectorType {
   id: String
   name: String
@@ -1854,6 +1862,7 @@ type QuestionTemplate {
   specialId: String
   templateType: String
   sections: [TemplateSections!]
+  exercise: [Exercises!]
   createdAt: String
   updatedAt: String
 }
