@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Exercises } from "./physicalTherapyExercise.entity";
 import { TemplateSections } from "./templateSections.entity";
 //entities
 
@@ -25,6 +26,10 @@ export class QuestionTemplate {
   @OneToMany(() => TemplateSections, sections => sections.template, { onDelete: 'CASCADE' })
   @Field(() => [TemplateSections], { nullable: true })
   sections: TemplateSections[];
+
+  @OneToMany(() => Exercises, exercise => exercise.template, { onDelete: 'CASCADE' })
+  @Field(() => [Exercises], { nullable: true })
+  exercise: Exercises[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

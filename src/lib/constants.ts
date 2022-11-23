@@ -156,7 +156,10 @@ export enum QuestionType {
 export enum TemplateType {
   HPI = 'hpi',
   REVIEW_OF_SYSTEM = 'reviewOfSystem',
-  PHYSICAL_EXAM = 'physicalExam'
+  PHYSICAL_EXAM = 'physicalExam',
+  TEST_INTERPRETATION = 'Test Interpretation',
+  CHILD_REVIEW_SYSTEM = "Child Review System",
+  PHYSICAL_EXERCISE = 'physicalExercise'
 }
 
 export enum ANSWER_TYPE {
@@ -257,7 +260,7 @@ export enum CalendarViewType {
   Day
 }
 
-export interface FromToDate  {
+export interface FromToDate {
   fromDate: string
   toDate: string
 }
