@@ -112,15 +112,15 @@ export class LabTests {
   patientProblemId: string;
 
   @ManyToOne(() => Patient, patient => patient.labTests, { onDelete: 'CASCADE', })
-  @Field(type => Patient, { nullable: true })
+  @Field(() => Patient, { nullable: true })
   patient: Patient;
 
   @ManyToOne(() => PatientProblems, patientProblem => patientProblem.labTests, { onDelete: 'CASCADE', })
-  @Field(type => PatientProblems, { nullable: true })
+  @Field(() => PatientProblems, { nullable: true })
   patientProblem: PatientProblems;
 
   @ManyToOne(() => Doctor, doctor => doctor.labTests, { onDelete: 'CASCADE' })
-  @Field(type => Doctor, { nullable: true })
+  @Field(() => Doctor, { nullable: true })
   doctor: Doctor;
 
   @ManyToOne(() => Doctor, doctor => doctor.labTests, { onDelete: 'CASCADE' })
@@ -132,24 +132,24 @@ export class LabTests {
   referringProvider: Doctor;
 
   @ManyToOne(() => Appointment, appointment => appointment.labTests, { onDelete: 'CASCADE' })
-  @Field(type => Appointment, { nullable: true })
+  @Field(() => Appointment, { nullable: true })
   appointment: Appointment;
 
-  @Field(type => [ICDCodes], { nullable: 'itemsAndList' })
-  @ManyToMany(type => ICDCodes, iCDCodes => iCDCodes.labTests, { eager: true })
+  @Field(() => [ICDCodes], { nullable: 'itemsAndList' })
+  @ManyToMany(() => ICDCodes, iCDCodes => iCDCodes.labTests, { eager: true })
   @JoinTable({ name: 'LabTestsDiagnoses' })
   diagnoses: ICDCodes[];
 
   @ManyToOne(() => LoincCodes, loincCodes => loincCodes.labTests, { onDelete: 'CASCADE', })
-  @Field(type => LoincCodes, { nullable: true })
+  @Field(() => LoincCodes, { nullable: true })
   test: LoincCodes;
 
   @OneToMany(() => TestSpecimens, testSpecimens => testSpecimens.labTest, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [TestSpecimens], { nullable: true })
+  @Field(() => [TestSpecimens], { nullable: true })
   testSpecimens: TestSpecimens[];
 
   @OneToMany(() => Observations, observations => observations.labTest, { onUpdate: 'CASCADE', onDelete: "CASCADE" })
-  @Field(type => [Observations], { nullable: true })
+  @Field(() => [Observations], { nullable: true })
   testObservations: Observations[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
