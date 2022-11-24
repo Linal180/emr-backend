@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { Attachment } from "src/attachments/entities/attachment.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Exercises } from "./physicalTherapyExercise.entity";
 import { TemplateSections } from "./templateSections.entity";
@@ -30,6 +31,9 @@ export class QuestionTemplate {
   @OneToMany(() => Exercises, exercise => exercise.template, { onDelete: 'CASCADE' })
   @Field(() => [Exercises], { nullable: true })
   exercise: Exercises[];
+
+  @Field(() => [Attachment], { nullable: true })
+  attachments: Attachment[];
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   @Field({ nullable: true })

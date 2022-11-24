@@ -12,6 +12,8 @@ import { FindAllQuestionTemplatesPayload, QuestionTemplatePayload } from "../dto
 import { FindAllTemplatesInput } from "../dto/questionTemplate-input.dto";
 import { Exercises } from "../entities/physicalTherapyExercise.entity";
 import { PhysicalExerciseServive } from "../services/physicalExercise.service";
+import { Attachment, AttachmentType } from "src/attachments/entities/attachment.entity";
+import { AttachmentsService } from "src/attachments/services/attachments.service";
 
 @Resolver(() => QuestionTemplate)
 export class ChartingTemplateResolver {
@@ -19,6 +21,7 @@ export class ChartingTemplateResolver {
     private readonly chartingTemplateService: ChartingTemplateService,
     private readonly templateSectionsService: TemplateSectionsService,
     private readonly physicalExerciseServive: PhysicalExerciseServive,
+    private readonly attachmentsService: AttachmentsService,
   ) { }
 
   //queries
@@ -62,6 +65,13 @@ export class ChartingTemplateResolver {
   async exercise(@Parent() questionTemplate: QuestionTemplate): Promise<Exercises[]> {
     if (questionTemplate?.id) {
       return await this.physicalExerciseServive.findByTemplateId(questionTemplate?.id);
+    }
+  }
+
+  @ResolveField(() => [Attachment])
+  async attachments(@Parent() questionTemplate: QuestionTemplate): Promise<Attachment[]> {
+    if (questionTemplate?.id) {
+      return await this.attachmentsService.findAttachments(questionTemplate.id, AttachmentType.CHARTING_TEMPLATE);
     }
   }
 }

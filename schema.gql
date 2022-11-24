@@ -1464,7 +1464,7 @@ type AttachmentMetadata {
 
 type Attachment {
   id: String!
-  type: AttachmentType!
+  type: String
   typeId: String!
   title: String
   key: String
@@ -1477,17 +1477,6 @@ type Attachment {
   preSignedUrl: String
   createdAt: String!
   updatedAt: String!
-}
-
-"""The type is assigned"""
-enum AttachmentType {
-  PATIENT
-  DOCTOR
-  lab
-  FORM_BUILDER
-  SUPER_ADMIN
-  STAFF
-  PRACTICE
 }
 
 type DoctorPatient {
@@ -1863,6 +1852,7 @@ type QuestionTemplate {
   templateType: String
   sections: [TemplateSections!]
   exercise: [Exercises!]
+  attachments: [Attachment!]
   createdAt: String
   updatedAt: String
 }
@@ -3382,7 +3372,7 @@ type AttachmentMediaPayload {
 
 type AttachmentWithPreSignedUrl {
   id: String!
-  type: AttachmentType!
+  type: String
   typeId: String!
   title: String
   key: String
@@ -4460,9 +4450,20 @@ input LiveClaimFeedInput {
 }
 
 input FindAllTemplatesInput {
-  templateType: String
+  templateType: TemplateType
   searchString: String
   paginationOptions: PaginationInput!
+}
+
+"""The charting template type is assigned"""
+enum TemplateType {
+  HPI
+  REVIEW_OF_SYSTEM
+  PHYSICAL_EXAM
+  PHYSICAL_EXERCISE
+  TEST_INTERPRETATION
+  CHILD_REVIEW_SYSTEM
+  ANATOMICAL_DRAWINGS
 }
 
 input PatientIllnessHistoryInput {
@@ -5745,6 +5746,18 @@ input CreateAttachmentInput {
   documentDate: String
   agreementId: String
   parentAttachmentId: String
+}
+
+"""The type is assigned"""
+enum AttachmentType {
+  PATIENT
+  DOCTOR
+  lab
+  FORM_BUILDER
+  SUPER_ADMIN
+  STAFF
+  PRACTICE
+  CHARTING_TEMPLATE
 }
 
 input RemoveAttachment {
