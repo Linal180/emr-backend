@@ -35,6 +35,7 @@ import { PaginationModule } from "src/pagination/pagination.module";
 import { AppointmentModule } from "src/appointments/appointment.module";
 //controller
 import { ChartingTemplateController } from "./chartingTemplate.controller";
+import { AttachmentsModule } from "src/attachments/attachments.module";
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ChartingTemplateController } from "./chartingTemplate.controller";
     //modules
     forwardRef(() => PaginationModule),
     forwardRef(() => PatientModule),
+    forwardRef(() => AttachmentsModule),
     AppointmentModule
   ],
   providers: [

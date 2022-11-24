@@ -9,7 +9,8 @@ export enum AttachmentType {
   FORM_BUILDER = 'form builder',
   SUPER_ADMIN = 'super-admin',
   STAFF = 'staff',
-  PRACTICE = 'practice'
+  PRACTICE = 'practice',
+  CHARTING_TEMPLATE = 'charting_template'
 }
 
 registerEnumType(AttachmentType, {
@@ -24,11 +25,9 @@ export class Attachment {
   @Field()
   id: string;
 
-  @Column({
-    type: "enum", enum: AttachmentType, default: AttachmentType.PATIENT
-  })
-  @Field(type => AttachmentType)
-  type: AttachmentType;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  type: string;
 
   @Column()
   @Field()
