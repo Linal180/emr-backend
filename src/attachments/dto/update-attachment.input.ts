@@ -26,6 +26,12 @@ export class UpdateAttachmentMediaInput extends PickType(CreateAttachmentInput, 
 }
 
 @InputType()
+export class UploadImageInput {
+  @Field({ nullable: true })
+  name: string
+}
+
+@InputType()
 export class GetAttachment {
   @Field()
   typeId: string;

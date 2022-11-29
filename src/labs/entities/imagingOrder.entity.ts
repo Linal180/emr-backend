@@ -1,12 +1,10 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 //entities
-import { LabTestStatus } from "./labTests.entity";
-import { ImagingTest } from "./imagingTest.entity";
+import { ImagingOrderTest } from "./imagingOrderTest.entity";
 import { Patient } from "src/patients/entities/patient.entity";
 import { Appointment } from "src/appointments/entities/appointment.entity";
 import { PatientProblems } from "src/patientCharting/entities/patientProblems.entity";
-import { ImagingOrderTest } from "./imagingOrderTest.entity";
 
 export enum ImagingOrderStatus {
   ORDER_ENTERED = "Order Entered",

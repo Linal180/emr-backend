@@ -8,8 +8,8 @@ import { LabTests } from 'src/labs/entities/labTests.entity';
 import { Doctor } from 'src/providers/entities/doctor.entity';
 import { Patient } from 'src/patients/entities/patient.entity';
 import { PatientMedication } from './patientMedication.entity';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { ImagingOrder } from 'src/labs/entities/imagingOrder.entity';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 export enum ProblemType {
   ACTIVE = "active",

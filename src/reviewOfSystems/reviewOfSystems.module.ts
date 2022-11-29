@@ -8,6 +8,7 @@ import { QuestionAnswers } from "./entities/questionAnswers.entity";
 import { QuestionTemplate } from "./entities/questionTemplate.entity";
 import { SectionQuestions } from "./entities/sectionQuestions.entity";
 import { TemplateSections } from "./entities/templateSections.entity";
+import { Exercises } from "./entities/physicalTherapyExercise.entity";
 import { PatientIllnessHistory } from "./entities/patientIllnessHistory.entity";
 //resolvers
 import { PhysicalExamResolver } from "./resolvers/physicalExam.resolver";
@@ -26,6 +27,7 @@ import { AnswerResponsesService } from "./services/answerResponses.service";
 import { ChartingTemplateService } from "./services/chartingTemplate.service";
 import { SectionQuestionsService } from "./services/sectionQuestions.service";
 import { TemplateSectionsService } from "./services/templateSections.service";
+import { PhysicalExerciseServive } from "./services/physicalExercise.service";
 import { PatientIllnessHistoryService } from "./services/patientIllnessHistory.service";
 //modules
 import { PatientModule } from "src/patients/patient.module";
@@ -33,16 +35,19 @@ import { PaginationModule } from "src/pagination/pagination.module";
 import { AppointmentModule } from "src/appointments/appointment.module";
 //controller
 import { ChartingTemplateController } from "./chartingTemplate.controller";
+import { AttachmentsModule } from "src/attachments/attachments.module";
 
 @Module({
   imports: [
     //entities
     TypeOrmModule.forFeature([
-      TemplateSections, SectionQuestions, QuestionAnswers, QuestionTemplate, PatientIllnessHistory, AnswerResponses, ReviewOfSystem, PhysicalExam
+      TemplateSections, SectionQuestions, QuestionAnswers, QuestionTemplate, PatientIllnessHistory, AnswerResponses, ReviewOfSystem, PhysicalExam,
+      Exercises
     ]),
     //modules
     forwardRef(() => PaginationModule),
     forwardRef(() => PatientModule),
+    forwardRef(() => AttachmentsModule),
     AppointmentModule
   ],
   providers: [
@@ -62,7 +67,8 @@ import { ChartingTemplateController } from "./chartingTemplate.controller";
     ReviewOfSystemResolver,
     ReviewOfSystemService,
     PhysicalExamService,
-    PhysicalExamResolver
+    PhysicalExamResolver,
+    PhysicalExerciseServive
     //services
 
   ],
