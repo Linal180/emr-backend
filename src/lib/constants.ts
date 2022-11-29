@@ -156,7 +156,11 @@ export enum QuestionType {
 export enum TemplateType {
   HPI = 'hpi',
   REVIEW_OF_SYSTEM = 'reviewOfSystem',
-  PHYSICAL_EXAM = 'physicalExam'
+  PHYSICAL_EXAM = 'physicalExam',
+  PHYSICAL_EXERCISE = 'physicalExercise',
+  TEST_INTERPRETATION = 'testInterpretation',
+  CHILD_REVIEW_SYSTEM = 'Child Review System',
+  ANATOMICAL_DRAWINGS = "anatomical drawings"
 }
 
 export enum ANSWER_TYPE {
@@ -213,7 +217,7 @@ export type StatusType = 'Active' | 'Inactive'
 
 
 export type TemplateQuestionAnswerType = {
-  title: string;
+  name: string;
   answerType: ANSWER_TYPE
   questionType?: QuestionType
   options?: SelectorType[]
@@ -246,7 +250,7 @@ export type CreateTemplateSection = {
 }
 
 export type TemplatesType = {
-  title: string;
+  name: string;
   templateType: TemplateType;
   sections: TemplateSectionType[]
 }
@@ -257,7 +261,7 @@ export enum CalendarViewType {
   Day
 }
 
-export interface FromToDate  {
+export interface FromToDate {
   fromDate: string
   toDate: string
 }
@@ -265,7 +269,7 @@ export interface FromToDate  {
 export type CreateTemplateType = {
   templateName: string;
   templateType: TemplateType;
-  sections: CreateTemplateSection[]
+  sections?: CreateTemplateSection[]
 }
 
 export type RolePermissionRelationsType = 'permission' | 'role'

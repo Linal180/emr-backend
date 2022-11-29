@@ -27,11 +27,12 @@ export class CreateChartingTemplate implements Seeder {
       const oldTemplates = await templateRepo.find();
       if (!oldTemplates?.length) {
 
-        for (let templateIndex = 0; templateIndex < TEMPLATE_DATA.length; templateIndex++) {
-          const template = TEMPLATE_DATA[templateIndex];
+      for (let templateIndex = 0; templateIndex < TEMPLATE_DATA.length; templateIndex++) {
+        const template = TEMPLATE_DATA[templateIndex];
 
-          const { templateType, title, sections } = template;
-          const templateIns = templateRepo.create({ templateType, name: title, specialId: `${templateIndex}` })
+
+        const { templateType, name, sections } = template;
+          const templateIns = templateRepo.create({ templateType, name, specialId: `${templateIndex}` })
           const templateInstance = await templateRepo.save(templateIns)
 
           for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
@@ -54,16 +55,16 @@ export class CreateChartingTemplate implements Seeder {
 
               for (let answerIndex = 0; answerIndex < answers.length; answerIndex++) {
                 const answer = answers[answerIndex];
-                const { title, ...rest } = answer
+                const { name, ...rest } = answer
 
-                const answerIns = answersRepo.create({ ...rest, name: title, specialId: `${templateIndex}_${sectionIndex}_${questionIndex}_${answerIndex}` })
+                const answerIns = answersRepo.create({ ...rest, name, specialId: `${templateIndex}_${sectionIndex}_${questionIndex}_${answerIndex}` })
                 answerIns.questions = questionInstance
                 answerIns.questionsId = questionInstance?.id
                 await answersRepo.save(answerIns)
               }
             }
           }
-        }
+      }
       }
 
       await queryRunner.commitTransaction();

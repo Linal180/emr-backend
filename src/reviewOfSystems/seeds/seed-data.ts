@@ -1,5 +1,6 @@
 import { ANSWER_TYPE, QuestionType, TemplateQuestionType, TemplatesType, TemplateType } from "src/lib/constants";
 import { SelectorType } from "src/socialHistory/payloads/questions.payload";
+import { templates } from './seedData'
 
 //template names
 
@@ -220,222 +221,222 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     answers: [
       {
 
-        title: COUGH_RESOLVED,
+        name: COUGH_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: FEVER_RESOLVED,
+        name: FEVER_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: SHORTNESS_OF_BIRTH_RESOLVED,
+        name: SHORTNESS_OF_BIRTH_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: REPEATED_SHAKING_RESOLVED,
+        name: REPEATED_SHAKING_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: MUSCLE_PAIN_RESOLVED,
+        name: MUSCLE_PAIN_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: HEADACHE_RESOLVED,
+        name: HEADACHE_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: SORE_THROAT_RESOLVED,
+        name: SORE_THROAT_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: LOSS_OF_TASTE_RESOLVED,
+        name: LOSS_OF_TASTE_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: VOMITING_RESOLVED,
+        name: VOMITING_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: FATIGUE_RESOLVED,
+        name: FATIGUE_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: ANOREXIA_RESOLVED,
+        name: ANOREXIA_RESOLVED,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
 
-        title: COUGH_SAME,
+        name: COUGH_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: COUGH_IMPROVING,
+        name: COUGH_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: FEVER_SAME,
+        name: FEVER_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: FEVER_IMPROVING,
+        name: FEVER_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: SHORTNESS_OF_BIRTH_SAME,
+        name: SHORTNESS_OF_BIRTH_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: SHORTNESS_OF_BIRTH_IMPROVING,
+        name: SHORTNESS_OF_BIRTH_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: CHILLS_IMPROVING,
+        name: CHILLS_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: CHILLS_SAME,
+        name: CHILLS_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: REPEATED_SHAKING_IMPROVING,
+        name: REPEATED_SHAKING_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: REPEATED_SHAKING_SAME,
+        name: REPEATED_SHAKING_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: MUSCLE_PAIN_IMPROVING,
+        name: MUSCLE_PAIN_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: MUSCLE_PAIN_SAME,
+        name: MUSCLE_PAIN_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: HEADACHE_IMPROVING,
+        name: HEADACHE_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: HEADACHE_SAME,
+        name: HEADACHE_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: SORE_THROAT_IMPROVING,
+        name: SORE_THROAT_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: SORE_THROAT_SAME,
+        name: SORE_THROAT_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: VOMITING_SAME,
+        name: VOMITING_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: VOMITING_IMPROVING,
+        name: VOMITING_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: FATIGUE_IMPROVING,
+        name: FATIGUE_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: FATIGUE_SAME,
+        name: FATIGUE_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: ANOREXIA_IMPROVING,
+        name: ANOREXIA_IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: ANOREXIA_SAME,
+        name: ANOREXIA_SAME,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: COUGH_WORSENING,
+        name: COUGH_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: FEVER_WORSENING,
+        name: FEVER_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: SHORTNESS_OF_BIRTH_WORSENING,
+        name: SHORTNESS_OF_BIRTH_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: REPEATED_SHAKING_WORSENING,
+        name: REPEATED_SHAKING_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: MUSCLE_PAIN_WORSENING,
+        name: MUSCLE_PAIN_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: HEADACHE_WORSENING,
+        name: HEADACHE_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: SORE_THROAT_WORSENING,
+        name: SORE_THROAT_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: LOSS_OF_TASTE_WORSENING,
+        name: LOSS_OF_TASTE_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: VOMITING_WORSENING,
+        name: VOMITING_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: FATIGUE_WORSENING,
+        name: FATIGUE_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
 
-        title: ANOREXIA_WORSENING,
+        name: ANOREXIA_WORSENING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
     ]
@@ -445,37 +446,37 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     answers: [
       {
 
-        title: CLOSE_CONTACT,
+        name: CLOSE_CONTACT,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: CLOSE_PROXIMITY,
+        name: CLOSE_PROXIMITY,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: HEALTHCARE_EXPOSURE,
+        name: HEALTHCARE_EXPOSURE,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: PERSON_LIVES,
+        name: PERSON_LIVES,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: HEALTHCARE_PERSONAL,
+        name: HEALTHCARE_PERSONAL,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: SPECIFIC_SETTING_EXPOSURE,
+        name: SPECIFIC_SETTING_EXPOSURE,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
 
-        title: WIDESPREAD_COMMUNITY_TRANSMISSION,
+        name: WIDESPREAD_COMMUNITY_TRANSMISSION,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
     ]
@@ -484,15 +485,15 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: QUALITY,
     answers: [
       {
-        title: PRODUCTIVE_COUGH,
+        name: PRODUCTIVE_COUGH,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: DRY_COUGH,
+        name: DRY_COUGH,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: WHEEZY_COUGH,
+        name: WHEEZY_COUGH,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
     ]
@@ -501,36 +502,36 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: SEVERITY,
     answers: [
       {
-        title: NO_PAIN,
+        name: NO_PAIN,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: MILD,
+        name: MILD,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: MODERATE,
+        name: MODERATE,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: PAIN_LEVEL,
+        name: PAIN_LEVEL,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.NUMBER,
       },
       {
-        title: SEVERE,
+        name: SEVERE,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: IMPROVING,
+        name: IMPROVING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: WORSENING,
+        name: WORSENING,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: UNCHANGED,
+        name: UNCHANGED,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
     ]
@@ -539,11 +540,11 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: DURATION,
     answers: [
       {
-        title: CANNOT_IDENTIFY,
+        name: CANNOT_IDENTIFY,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: SYMPTOMS_LASTING,
+        name: SYMPTOMS_LASTING,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.NUMBER,
       },
@@ -553,11 +554,11 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: ONSET_TIMING,
     answers: [
       {
-        title: CANNOT_IDENTIFY,
+        name: CANNOT_IDENTIFY,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: DATE_OF_ONSET,
+        name: DATE_OF_ONSET,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
     ]
@@ -566,19 +567,19 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: CONTEXT,
     answers: [
       {
-        title: ALLERGIES,
+        name: ALLERGIES,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: ASTHMA,
+        name: ASTHMA,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: CHRONIC_BRONCHITIS,
+        name: CHRONIC_BRONCHITIS,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: COPD,
+        name: COPD,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
     ]
@@ -587,115 +588,115 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: ASSOCIATED_SYMPTOMS,
     answers: [
       {
-        title: NO_SPUTUM_PRODUCTION,
+        name: NO_SPUTUM_PRODUCTION,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_WHEEZING,
+        name: NO_WHEEZING,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_RUNNY_NOSE,
+        name: NO_RUNNY_NOSE,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_VOMITING,
+        name: NO_VOMITING,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_DIARRHEA,
+        name: NO_DIARRHEA,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_BODY_ACHES,
+        name: NO_BODY_ACHES,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_NAUSEA,
+        name: NO_NAUSEA,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_CHANGE_MENTAL,
+        name: NO_CHANGE_MENTAL,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_HYPERTENSION,
+        name: NO_HYPERTENSION,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: NO_TACHYCARDIA,
+        name: NO_TACHYCARDIA,
         answerType: ANSWER_TYPE.NORMAL,
       },
       {
-        title: CHEST_PAIN,
+        name: CHEST_PAIN,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: YELLOW_GREEN_SPUTUM,
+        name: YELLOW_GREEN_SPUTUM,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: RUST_COLORED_SPUTUM,
+        name: RUST_COLORED_SPUTUM,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: GREEN_SPUTUM,
+        name: GREEN_SPUTUM,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: YELLOW_SPUTUM,
+        name: YELLOW_SPUTUM,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: BLOOD_STREAKED_SPUTUM,
+        name: BLOOD_STREAKED_SPUTUM,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: WHEEZING,
+        name: WHEEZING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: CYANOSIS,
+        name: CYANOSIS,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: FATIGUE,
+        name: FATIGUE,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: SWEATS,
+        name: SWEATS,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: VOMITING,
+        name: VOMITING,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: DIARRHEA,
+        name: DIARRHEA,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: NAUSEA,
+        name: NAUSEA,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: RUNNY_NOSE,
+        name: RUNNY_NOSE,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: BODY_ACHES,
+        name: BODY_ACHES,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: CHANGE_IN_MENTAL_STATUS,
+        name: CHANGE_IN_MENTAL_STATUS,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: HYPOTENSION,
+        name: HYPOTENSION,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
       {
-        title: TACHYCARDIA,
+        name: TACHYCARDIA,
         answerType: ANSWER_TYPE.ABNORMAL,
       },
     ]
@@ -704,19 +705,19 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: PRIOR_LABS_IMAGING,
     answers: [
       {
-        title: COVID_19_SWAB,
+        name: COVID_19_SWAB,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: CHEST_CT_SCAN,
+        name: CHEST_CT_SCAN,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: CHEST_RADIOGRAPH,
+        name: CHEST_RADIOGRAPH,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
       {
-        title: CHEST_ULTRASOUND,
+        name: CHEST_ULTRASOUND,
         answerType: ANSWER_TYPE.NEUTRAL,
       },
     ]
@@ -725,37 +726,37 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
     name: SUITABILITY_OF_RESIDENTIAL_SETTING,
     answers: [
       {
-        title: CAREGIVER_AT_HOME,
+        name: CAREGIVER_AT_HOME,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.SELECT,
         options: DOES_OPTIONS_MAPPED,
       },
       {
-        title: FACE_MASKS_AVAILABLE,
+        name: FACE_MASKS_AVAILABLE,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.SELECT,
         options: DOES_OPTIONS_MAPPED,
       },
       {
-        title: HOUSEHOLD_COMPLICATIONS,
+        name: HOUSEHOLD_COMPLICATIONS,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.SELECT,
         options: DOES_OPTIONS_MAPPED,
       },
       {
-        title: ACCESS_FOOD,
+        name: ACCESS_FOOD,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.SELECT,
         options: DOES_OPTIONS_MAPPED,
       },
       {
-        title: BEDROOM_AND_BATHROOM,
+        name: BEDROOM_AND_BATHROOM,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.SELECT,
         options: DOES_OPTIONS_MAPPED,
       },
       {
-        title: ETIQUETTE_PRACTICES,
+        name: ETIQUETTE_PRACTICES,
         answerType: ANSWER_TYPE.NEUTRAL,
         questionType: QuestionType.SELECT,
         options: DOES_OPTIONS_MAPPED,
@@ -765,9 +766,9 @@ const COVID_SYMPTOMS_QUESTIONS: TemplateQuestionType[] = [
 ]
 
 //templates
-export const TEMPLATE_DATA: TemplatesType[] = [
+const templateData: TemplatesType[] = [
   {
-    title: "COVID-19 Symptoms May 2020",
+    name: "COVID-19 Symptoms May 2020",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -777,7 +778,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "Geriatric Annual Well Visit",
+    name: "Geriatric Annual Well Visit",
     templateType: TemplateType.REVIEW_OF_SYSTEM,
     sections: [
       {
@@ -788,27 +789,27 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: FALLING,
             answers: [
               {
-                title: NO_FALL,
+                name: NO_FALL,
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: NO_FALL_SINCE_LAST_VISIT,
+                name: NO_FALL_SINCE_LAST_VISIT,
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: FALLS_IN_THE_PAST_YEAR,
+                name: FALLS_IN_THE_PAST_YEAR,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: FALLS_IN_THE_LAST_VISIT,
+                name: FALLS_IN_THE_LAST_VISIT,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: INJURY_WITH_FALL,
+                name: INJURY_WITH_FALL,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: FEAR_OF_FALLING,
+                name: FEAR_OF_FALLING,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -818,23 +819,23 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: USE_OF_ASSISTIVE_DEVICES,
             answers: [
               {
-                title: NONE,
+                name: NONE,
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: CANE,
+                name: CANE,
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: CRUTCHES,
+                name: CRUTCHES,
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: WALKER,
+                name: WALKER,
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: WHEELCHAIR,
+                name: WHEELCHAIR,
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -844,31 +845,31 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: ACTIVITIES_OF_DAILY_LIVING,
             answers: [
               {
-                title: BATH_INDEPENDENTLY,
+                name: BATH_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: DRESS_INDEPENDENTLY,
+                name: DRESS_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: CHAIR_INDEPENDENTLY,
+                name: CHAIR_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: GROOM_INDEPENDENTLY,
+                name: GROOM_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: TOILET_INDEPENDENTLY,
+                name: TOILET_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
@@ -880,37 +881,37 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: INSTRUMENTAL_ACTIVITIES_OF_DAILY_LIVING,
             answers: [
               {
-                title: PREP_MEAL_INDEPENDENTLY,
+                name: PREP_MEAL_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: GROCERY_INDEPENDENTLY,
+                name: GROCERY_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: MONEY_INDEPENDENTLY,
+                name: MONEY_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: MEDICATION_INDEPENDENTLY,
+                name: MEDICATION_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: PHONE_INDEPENDENTLY,
+                name: PHONE_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
               },
               {
-                title: HOUSE_WORK_INDEPENDENTLY,
+                name: HOUSE_WORK_INDEPENDENTLY,
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: ABLE_OPTIONS_MAPPED,
@@ -922,19 +923,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: FUNCTIONAL_CAPACITY,
             answers: [
               {
-                title: ABLE_TO_WALK,
+                name: ABLE_TO_WALK,
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: ABLE_TO_CLIMB,
+                name: ABLE_TO_CLIMB,
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: UNABLE_TO_WALK,
+                name: UNABLE_TO_WALK,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: UNABLE_TO_CLIMB,
+                name: UNABLE_TO_CLIMB,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -944,19 +945,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: SENSORY,
             answers: [
               {
-                title: NORMAL_HEARING,
+                name: NORMAL_HEARING,
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: NORMAL_VISION,
+                name: NORMAL_VISION,
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: LOSS_OF_HEARING,
+                name: LOSS_OF_HEARING,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: LOSS_OF_VISION,
+                name: LOSS_OF_VISION,
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -966,7 +967,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "COVID-19 Symptoms March 2020",
+    name: "COVID-19 Symptoms March 2020",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -976,7 +977,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "Brief Cardiology ROS",
+    name: "Brief Cardiology ROS",
     templateType: TemplateType.REVIEW_OF_SYSTEM,
     sections: [
       {
@@ -985,31 +986,31 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: CARDIOVASCULAR_SYMPTOMS,
             answers: [
-              { title: "no chest pressure", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no lightheadedness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no dyspnea on exertion", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no leg edema", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no syncope", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no orthopnea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no PND", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no claudication", answerType: ANSWER_TYPE.NORMAL },
-              { title: "chest pressure", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "lightheadedness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "dyspnea on exertion", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "leg edema", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "syncope", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "orthopnea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "palpitations", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "PND", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no chest pressure", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no lightheadedness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no dyspnea on exertion", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no leg edema", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no syncope", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no orthopnea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no PND", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no claudication", answerType: ANSWER_TYPE.NORMAL },
+              { name: "chest pressure", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "lightheadedness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "dyspnea on exertion", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "leg edema", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "syncope", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "orthopnea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "palpitations", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "PND", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
               {
-                title: "claudication fill",
+                name: "claudication fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: CLAUDICATION_MAPPED,
@@ -1024,16 +1025,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: CONSTITUTIONAL,
             answers: [
-              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no exercise intolerance", answerType: ANSWER_TYPE.NORMAL },
-              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
-              { title: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
-              { title: "exercise intolerance", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no exercise intolerance", answerType: ANSWER_TYPE.NORMAL },
+              { name: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { name: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { name: "exercise intolerance", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
         ]
@@ -1044,12 +1045,12 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: EYES,
             answers: [
-              { title: "no dry eyes", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no irritation", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no vision change", answerType: ANSWER_TYPE.NORMAL },
-              { title: "dry eyes", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "irritation", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "vision change", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no dry eyes", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no irritation", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no vision change", answerType: ANSWER_TYPE.NORMAL },
+              { name: "dry eyes", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "irritation", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "vision change", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
         ]
@@ -1060,39 +1061,39 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: EARS,
             answers: [
-              { title: "no difficulty hearing", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no ear pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "difficulty hearing", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "ear pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no difficulty hearing", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no ear pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "difficulty hearing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "ear pain", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: NOSE,
             answers: [
-              { title: "no frequent nosebleeds", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nose/sinus problems", answerType: ANSWER_TYPE.NORMAL },
-              { title: "frequent nosebleeds", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nose/sinus problems", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no frequent nosebleeds", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nose/sinus problems", answerType: ANSWER_TYPE.NORMAL },
+              { name: "frequent nosebleeds", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nose/sinus problems", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: MOUTH_OR_ThROAT,
             answers: [
-              { title: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no bleeding gums", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no snoring", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no dry mouth", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no mouth ulcers", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no oral abnormalities", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no teeth problems", answerType: ANSWER_TYPE.NORMAL },
-              { title: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "bleeding gums", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "snoring", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "dry mouth", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "mouth ulcers", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "oral abnormalities", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "teeth problems", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "mouth breathing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no bleeding gums", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no snoring", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no dry mouth", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no mouth ulcers", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no oral abnormalities", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no teeth problems", answerType: ANSWER_TYPE.NORMAL },
+              { name: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "bleeding gums", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "snoring", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "dry mouth", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "mouth ulcers", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "oral abnormalities", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "teeth problems", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "mouth breathing", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1103,14 +1104,14 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: RESPIRATORY,
             answers: [
-              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no sleep apnea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no sleep apnea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1121,16 +1122,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: MUSCULAOSKELETAL,
             answers: [
-              { title: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no back pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
-              { title: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no back pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
+              { name: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1141,20 +1142,20 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: NEUROLOGIC,
             answers: [
-              { title: "no loss of consciousness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no numbness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no seizures", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no headaches", answerType: ANSWER_TYPE.NORMAL },
-              { title: "loss of consciousness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "numbness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "seizures", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "frequent or severe headaches", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "migraines", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "restless legs", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no loss of consciousness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no numbness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no seizures", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no headaches", answerType: ANSWER_TYPE.NORMAL },
+              { name: "loss of consciousness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "numbness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "seizures", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "frequent or severe headaches", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "migraines", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "restless legs", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1165,15 +1166,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: PSYH,
             answers: [
-              { title: "no depression", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no sleep disturbances", answerType: ANSWER_TYPE.NORMAL },
-              { title: "feeling safe in relationship", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no alcohol abuse", answerType: ANSWER_TYPE.NORMAL },
-              { title: "depression", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sleep disturbances", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "restless sleep", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "feeling unsafe in relationship", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "alcohol abuse", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no depression", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no sleep disturbances", answerType: ANSWER_TYPE.NORMAL },
+              { name: "feeling safe in relationship", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no alcohol abuse", answerType: ANSWER_TYPE.NORMAL },
+              { name: "depression", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sleep disturbances", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "restless sleep", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "feeling unsafe in relationship", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "alcohol abuse", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1184,11 +1185,11 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: HEMATOLOGIC_LYMPHATIC,
             answers: [
-              { title: "no swollen glands", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no bruising", answerType: ANSWER_TYPE.NORMAL },
-              { title: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no swollen glands", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no bruising", answerType: ANSWER_TYPE.NORMAL },
+              { name: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1196,7 +1197,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "Brief Endocrinology ROS",
+    name: "Brief Endocrinology ROS",
     templateType: TemplateType.REVIEW_OF_SYSTEM,
     sections: [
       {
@@ -1205,35 +1206,35 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           name: CONSTITUTIONAL,
           answers: [
             {
-              title: "no constitutional symptoms",
+              name: "no constitutional symptoms",
               answerType: ANSWER_TYPE.NORMAL
             },
             {
-              title: "excess weight gain",
+              name: "excess weight gain",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "excess weight loss",
+              name: "excess weight loss",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "loss of appetite",
+              name: "loss of appetite",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "fever",
+              name: "fever",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "fussy",
+              name: "fussy",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "diminished activity",
+              name: "diminished activity",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: FATIGUE,
+              name: FATIGUE,
               answerType: ANSWER_TYPE.ABNORMAL
             },
           ]
@@ -1246,43 +1247,43 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: EYES,
             answers: [
               {
-                title: 'no eye symptoms',
+                name: 'no eye symptoms',
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: 'eye pain',
+                name: 'eye pain',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'blurry vision',
+                name: 'blurry vision',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'double vision',
+                name: 'double vision',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'eye redness',
+                name: 'eye redness',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'eye itchiness',
+                name: 'eye itchiness',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'eye swelling',
+                name: 'eye swelling',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'eye discharge',
+                name: 'eye discharge',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'protruding eyes',
+                name: 'protruding eyes',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'dry eyes',
+                name: 'dry eyes',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
             ]
@@ -1295,63 +1296,63 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           name: ENMT,
           answers: [
             {
-              title: "no ENMT symptoms",
+              name: "no ENMT symptoms",
               answerType: ANSWER_TYPE.NORMAL
             },
             {
-              title: "ear pain",
+              name: "ear pain",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "ear discharge",
+              name: "ear discharge",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "hearing loss",
+              name: "hearing loss",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "sinus pressure",
+              name: "sinus pressure",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "drooling",
+              name: "drooling",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "swelling",
+              name: "swelling",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "congestion",
+              name: "congestion",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "sore throat",
+              name: "sore throat",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "hoarseness",
+              name: "hoarseness",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "mouth lesions",
+              name: "mouth lesions",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "foul smelling breath",
+              name: "foul smelling breath",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "sneezing",
+              name: "sneezing",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "runny nose",
+              name: "runny nose",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "neck mass",
+              name: "neck mass",
               answerType: ANSWER_TYPE.ABNORMAL
             },
           ]
@@ -1363,23 +1364,23 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: 'Cardiovascular',
             answers: [
               {
-                title: 'no cardiovascular symptoms',
+                name: 'no cardiovascular symptoms',
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: 'chest pain',
+                name: 'chest pain',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'rapid heart rate',
+                name: 'rapid heart rate',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'cyanosis',
+                name: 'cyanosis',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'pallor',
+                name: 'pallor',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
             ]
@@ -1391,39 +1392,39 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           name: RESPIRATORY,
           answers: [
             {
-              title: 'no respiratory symptoms',
+              name: 'no respiratory symptoms',
               answerType: ANSWER_TYPE.NORMAL
             },
             {
-              title: 'cough',
+              name: 'cough',
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: 'bark-like cough',
+              name: 'bark-like cough',
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: 'wheezing',
+              name: 'wheezing',
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: 'chest tightness',
+              name: 'chest tightness',
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: 'pain with respiration',
+              name: 'pain with respiration',
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: 'noisy breathing',
+              name: 'noisy breathing',
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: 'rapid respirations',
+              name: 'rapid respirations',
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: 'difficulty breathing',
+              name: 'difficulty breathing',
               answerType: ANSWER_TYPE.ABNORMAL
             },
           ]
@@ -1435,56 +1436,56 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: 'GI',
             answers: [
               {
-                title: "no gastrointestinal symptoms",
+                name: "no gastrointestinal symptoms",
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: "difficulty swallowing",
+                name: "difficulty swallowing",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "abdominal pain",
+                name: "abdominal pain",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "nausea",
+                name: "nausea",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "vomiting",
+                name: "vomiting",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "loose stools",
+                name: "loose stools",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "diarrhea",
+                name: "diarrhea",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "constipation",
+                name: "constipation",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "blood in stools",
+                name: "blood in stools",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "mucus in stool",
+                name: "mucus in stool",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "heartburn",
+                name: "heartburn",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "ulcer(s)",
+                name: "ulcer(s)",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
 
-                title: "pancreatitis",
+                name: "pancreatitis",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
             ]
@@ -1497,64 +1498,64 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: 'GU General',
             answers: [
               {
-                title: "no genitourinary symptoms",
+                name: "no genitourinary symptoms",
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: "no bedwetting/accidents",
+                name: "no bedwetting/accidents",
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: "normal menses",
+                name: "normal menses",
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: "LMP: fill",
+                name: "LMP: fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "discharge",
+                name: "discharge",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "blood in the urine",
+                name: "blood in the urine",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "pain during urination",
+                name: "pain during urination",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "increased frequency of urination",
+                name: "increased frequency of urination",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "voiding urgency",
+                name: "voiding urgency",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "vaginal discharge",
+                name: "vaginal discharge",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "heavy menses",
+                name: "heavy menses",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "irregular menses",
+                name: "irregular menses",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "no menses",
+                name: "no menses",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "pelvic pain",
+                name: "pelvic pain",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "bedwetting/accidents",
+                name: "bedwetting/accidents",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
             ]
@@ -1568,43 +1569,43 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Musculoskeletal",
             answers: [
               {
-                title: 'no musculoskeletal symptoms',
+                name: 'no musculoskeletal symptoms',
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: 'soft tissue swelling',
+                name: 'soft tissue swelling',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'joint swelling',
+                name: 'joint swelling',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'limb swelling',
+                name: 'limb swelling',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'limb swelling',
+                name: 'limb swelling',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'limited motion',
+                name: 'limited motion',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'previous injuries',
+                name: 'previous injuries',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'myalgia',
+                name: 'myalgia',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'arthritis',
+                name: 'arthritis',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'weakness',
+                name: 'weakness',
                 answerType: ANSWER_TYPE.ABNORMAL
               }
             ]
@@ -1617,61 +1618,61 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Skin",
             answers: [
               {
-                title: "no skin symptoms",
+                name: "no skin symptoms",
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: "pain",
+                name: "pain",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "itchiness",
+                name: "itchiness",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "dry skin",
+                name: "dry skin",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "flaking",
+                name: "flaking",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "redness",
+                name: "redness",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "rash",
+                name: "rash",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "diaper rash",
+                name: "diaper rash",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "hives",
+                name: "hives",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "skin lesions",
+                name: "skin lesions",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "swelling",
+                name: "swelling",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "bruising",
+                name: "bruising",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: "insect bites",
+                name: "insect bites",
                 answerType: ANSWER_TYPE.ABNORMAL
               }, {
-                title: "acanthosis nigricans",
+                name: "acanthosis nigricans",
                 answerType: ANSWER_TYPE.ABNORMAL
               }, {
-                title: "nail changes",
+                name: "nail changes",
                 answerType: ANSWER_TYPE.ABNORMAL
               },
             ]
@@ -1683,40 +1684,40 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           name: "Neuro",
           answers: [
             {
-              title: "no neurological symptoms",
+              name: "no neurological symptoms",
               answerType: ANSWER_TYPE.NORMAL
             },
             {
-              title: "numbness",
+              name: "numbness",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "weakness",
+              name: "weakness",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "tingling",
+              name: "tingling",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "burning",
+              name: "burning",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "shooting pain",
+              name: "shooting pain",
               answerType: ANSWER_TYPE.ABNORMAL
             },
             {
-              title: "headache",
+              name: "headache",
               answerType: ANSWER_TYPE.ABNORMAL
             }, {
-              title: "dizziness",
+              name: "dizziness",
               answerType: ANSWER_TYPE.ABNORMAL
             }, {
-              title: "loss of conciousness",
+              name: "loss of conciousness",
               answerType: ANSWER_TYPE.ABNORMAL
             }, {
-              title: "tremor(s)",
+              name: "tremor(s)",
               answerType: ANSWER_TYPE.ABNORMAL
             }
           ]
@@ -1728,15 +1729,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Endocrine",
             answers: [
               {
-                title: 'no endocrine symptoms',
+                name: 'no endocrine symptoms',
                 answerType: ANSWER_TYPE.NORMAL
               },
               {
-                title: 'increased thirst',
+                name: 'increased thirst',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
               {
-                title: 'temperature intolerance',
+                name: 'temperature intolerance',
                 answerType: ANSWER_TYPE.ABNORMAL
               },
             ]
@@ -1745,7 +1746,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
       }
     ]
   }, {
-    title: 'Brief Geriatric ROS',
+    name: 'Brief Geriatric ROS',
     templateType: TemplateType.REVIEW_OF_SYSTEM,
     sections: [
       {
@@ -1754,18 +1755,18 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: CONSTITUTIONAL,
             answers: [
-              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no excessive sleepiness during the day (daytime somnolence)", answerType: ANSWER_TYPE.NORMAL },
-              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
-              { title: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
-              { title: "excessive sleepiness during the day (daytime somnolence)", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no excessive sleepiness during the day (daytime somnolence)", answerType: ANSWER_TYPE.NORMAL },
+              { name: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { name: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { name: "excessive sleepiness during the day (daytime somnolence)", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
         ]
@@ -1776,16 +1777,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: EYES,
             answers: [
-              { title: "no dry eyes", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no irritation", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no vision change", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no scotoma", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no diplopia", answerType: ANSWER_TYPE.NORMAL },
-              { title: "dry eyes", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "irritation", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "vision change", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "scotoma", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "diplopia", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no dry eyes", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no irritation", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no vision change", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no scotoma", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no diplopia", answerType: ANSWER_TYPE.NORMAL },
+              { name: "dry eyes", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "irritation", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "vision change", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "scotoma", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "diplopia", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
         ]
@@ -1796,16 +1797,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: EARS,
             answers: [
-              { title: "no ear pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nose/sinus problems", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no loss of hearing", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tinnitus", answerType: ANSWER_TYPE.NORMAL },
-              { title: "ear pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nose/sinus problems", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "loss of hearing", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tinnitus", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no ear pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nose/sinus problems", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no loss of hearing", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tinnitus", answerType: ANSWER_TYPE.NORMAL },
+              { name: "ear pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nose/sinus problems", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "loss of hearing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tinnitus", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1816,17 +1817,17 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: RESPIRATORY,
             answers: [
-              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no sputum production", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
-              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sputum production", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no sputum production", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { name: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sputum production", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1837,24 +1838,24 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Cardiovascular',
             answers: [
-              { title: 'no chest pain', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no palpitations', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no edema', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no cyanosis', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no known heart murmur', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no orthopnea', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no paroxysmal nocturnal dyspnea', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no syncope', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no lightheadedness', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'chest pain', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'palpitations', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'edema', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'cyanosis', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'known heart murmur', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'orthopnea', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'paroxysmal nocturnal dyspnea', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'syncope', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'lightheadedness', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'no chest pain', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no palpitations', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no edema', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no cyanosis', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no known heart murmur', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no orthopnea', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no paroxysmal nocturnal dyspnea', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no syncope', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no lightheadedness', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'chest pain', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'palpitations', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'edema', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'cyanosis', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'known heart murmur', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'orthopnea', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'paroxysmal nocturnal dyspnea', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'syncope', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'lightheadedness', answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1865,25 +1866,25 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Gastrointestinal',
             answers: [
-              { title: "no heartburn", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no dysphagia", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nausea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no blood stools", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no rectal bleed", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no recent change in bowel habits", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no constipation", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no heartburn", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no dysphagia", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nausea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no blood stools", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no rectal bleed", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no recent change in bowel habits", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no constipation", answerType: ANSWER_TYPE.NORMAL },
 
-              { title: "heartburn", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "dysphagia", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nausea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "blood stools", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "rectal bleed", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "recent change in bowel habits", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "constipation", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "heartburn", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "dysphagia", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nausea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "blood stools", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "rectal bleed", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "recent change in bowel habits", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "constipation", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1894,27 +1895,27 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Genitourinary',
             answers: [
-              { title: "no impotence", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no hematuria", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no abnormal bleeding", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no difficulty urinating", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no increased frequency", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no abnormal urethral discharge", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no feelings of urgency", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no incontinence", answerType: ANSWER_TYPE.NORMAL },
-              { title: "normal lubrication of vaginal mucosa", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no impotence", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no hematuria", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no abnormal bleeding", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no difficulty urinating", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no increased frequency", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no abnormal urethral discharge", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no feelings of urgency", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no incontinence", answerType: ANSWER_TYPE.NORMAL },
+              { name: "normal lubrication of vaginal mucosa", answerType: ANSWER_TYPE.NORMAL },
 
 
-              { title: "impotence", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "hematuria", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "abnormal bleeding", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "difficulty urinating", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "abnormal urethral discharge", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "increased urinary frequency", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "urinary loss of control", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "incomplete emptying", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "feelings of urgency", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "inadequacy of lubrication of vaginal mucosa", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "impotence", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "hematuria", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "abnormal bleeding", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "difficulty urinating", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "abnormal urethral discharge", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "increased urinary frequency", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "urinary loss of control", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "incomplete emptying", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "feelings of urgency", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "inadequacy of lubrication of vaginal mucosa", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -1925,19 +1926,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: MUSCULAOSKELETAL,
             answers: [
-              { title: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no back pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no stiffness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no back pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no stiffness", answerType: ANSWER_TYPE.NORMAL },
 
-              { title: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "stiffness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "stiffness", answerType: ANSWER_TYPE.ABNORMAL },
 
             ]
           }
@@ -1949,22 +1950,22 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: NEUROLOGIC,
             answers: [
-              { title: "no headaches", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no loss of consciousness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no numbness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no slurred speech", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no seizures", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no headaches", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no loss of consciousness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no numbness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no slurred speech", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no seizures", answerType: ANSWER_TYPE.NORMAL },
 
-              { title: "headaches", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "migraines", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "loss of consciousness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "numbness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "slurred speech", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "seizures", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "headaches", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "migraines", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "loss of consciousness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "numbness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "slurred speech", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "seizures", answerType: ANSWER_TYPE.ABNORMAL },
 
             ]
           }
@@ -1972,7 +1973,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
       },
     ]
   }, {
-    title: "Brief Infusion ROS",
+    name: "Brief Infusion ROS",
     templateType: TemplateType.REVIEW_OF_SYSTEM,
     sections: [
       {
@@ -1981,16 +1982,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: CONSTITUTIONAL,
             answers: [
-              { title: "no active infection ", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
-              { title: "infection of fill", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.INPUT },
-              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
-              { title: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { name: "no active infection ", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no significant weight gain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no significant weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { name: "infection of fill", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.INPUT },
+              { name: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "weight gain fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
+              { name: "weight loss fill lbs", answerType: ANSWER_TYPE.ABNORMAL, questionType: QuestionType.NUMBER },
             ]
           },
         ]
@@ -2001,15 +2002,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Cardiovascular',
             answers: [
-              { title: 'no chest pain', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no shortness of breath when walking', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no shortness of breath when lying down', answerType: ANSWER_TYPE.NORMAL },
-              { title: 'no palpitations', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no chest pain', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no shortness of breath when walking', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no shortness of breath when lying down', answerType: ANSWER_TYPE.NORMAL },
+              { name: 'no palpitations', answerType: ANSWER_TYPE.NORMAL },
 
-              { title: 'chest pain', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'shortness of breath when walking', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'shortness of breath when lying down', answerType: ANSWER_TYPE.ABNORMAL },
-              { title: 'palpitations', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'chest pain', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'shortness of breath when walking', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'shortness of breath when lying down', answerType: ANSWER_TYPE.ABNORMAL },
+              { name: 'palpitations', answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -2020,12 +2021,12 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: RESPIRATORY,
             answers: [
-              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
-              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { name: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -2036,8 +2037,8 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Skin',
             answers: [
-              { title: "no rash", answerType: ANSWER_TYPE.NORMAL },
-              { title: "rash", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no rash", answerType: ANSWER_TYPE.NORMAL },
+              { name: "rash", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -2047,12 +2048,12 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [{
           name: "Neurological",
           answers: [
-            { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
-            { title: "no headache", answerType: ANSWER_TYPE.NORMAL },
-            { title: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
-            { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
-            { title: "headache", answerType: ANSWER_TYPE.ABNORMAL },
-            { title: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+            { name: "no headache", answerType: ANSWER_TYPE.NORMAL },
+            { name: "no dizziness", answerType: ANSWER_TYPE.NORMAL },
+            { name: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "headache", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "dizziness", answerType: ANSWER_TYPE.ABNORMAL },
           ]
         }]
       },
@@ -2062,22 +2063,22 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Gastrointestinal',
             answers: [
-              { title: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
-              { title: "normal appetite", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no blood vomiting", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no dysphagia", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no GERD", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { name: "normal appetite", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no blood vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no dysphagia", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no GERD", answerType: ANSWER_TYPE.NORMAL },
 
-              { title: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "change in appetite", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "black or tarry stools", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "frequent diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "blood vomiting", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "dysphagia", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "GERD", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "change in appetite", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "black or tarry stools", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "frequent diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "blood vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "dysphagia", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "GERD", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -2088,16 +2089,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: MUSCULAOSKELETAL,
             answers: [
-              { title: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no back pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
-              { title: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no muscle aches", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no muscle weakness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no arthralgias/joint pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no back pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no swelling in the extremities", answerType: ANSWER_TYPE.NORMAL },
+              { name: "muscle aches", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "muscle weakness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "arthralgias/joint pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "back pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "swelling in the extremities", answerType: ANSWER_TYPE.ABNORMAL },
 
             ]
           }
@@ -2109,12 +2110,12 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: "Endocrine",
             answers: [
-              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
-              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "increased thirst", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "hair loss", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "increased hair growth", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "cold intolerance", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { name: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "increased thirst", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "hair loss", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "increased hair growth", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "cold intolerance", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -2125,15 +2126,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Genitourinary',
             answers: [
-              { title: "no incontinence", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no difficulty urinating", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no hematuria", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no increased frequency", answerType: ANSWER_TYPE.NORMAL },
-              { title: "urinary loss of control", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "difficulty urinating", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "increased urinary frequency", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "hematuria", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "incomplete emptying", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no incontinence", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no difficulty urinating", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no hematuria", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no increased frequency", answerType: ANSWER_TYPE.NORMAL },
+              { name: "urinary loss of control", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "difficulty urinating", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "increased urinary frequency", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "hematuria", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "incomplete emptying", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -2141,7 +2142,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ]
   },
   {
-    title: "Prenatal Nutrition Initial Visit",
+    name: "Prenatal Nutrition Initial Visit",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -2152,15 +2153,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: APPETITE,
             answers: [
               {
-                title: "good",
+                name: "good",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "fair",
+                name: "fair",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "poor",
+                name: "poor",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -2169,63 +2170,63 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Diet",
             answers: [
               {
-                title: "breast-feeding",
+                name: "breast-feeding",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "eats adequate fruits and vegetables",
+                name: "eats adequate fruits and vegetables",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "eats all whole grains",
+                name: "eats all whole grains",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "eats low fat protein sources",
+                name: "eats low fat protein sources",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "eats low glycemic choices",
+                name: "eats low glycemic choices",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "eats healthy snacks",
+                name: "eats healthy snacks",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "not breast-feeding",
+                name: "not breast-feeding",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "eats no fruits and vegetables",
+                name: "eats no fruits and vegetables",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "eats all refined grains",
+                name: "eats all refined grains",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "eats high fat protein sources",
+                name: "eats high fat protein sources",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "eats high glycemic choices",
+                name: "eats high glycemic choices",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "eats fried carb snacks",
+                name: "eats fried carb snacks",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "favorite foods:",
+                name: "favorite foods:",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "meals:",
+                name: "meals:",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "snacks:",
+                name: "snacks:",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2234,40 +2235,40 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Fluid Intake",
             answers: [
               {
-                title: "drinks calorie free beverages",
+                name: "drinks calorie free beverages",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "drinks adequet fluids",
+                name: "drinks adequet fluids",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "never drinks coffee",
+                name: "never drinks coffee",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "never drinks alcohol",
+                name: "never drinks alcohol",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "drinks excessive amount of sugary beverages",
+                name: "drinks excessive amount of sugary beverages",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "drinks very little fluids",
+                name: "drinks very little fluids",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "fill drinks per week",
+                name: "fill drinks per week",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.NUMBER,
               },
               {
-                title: "drinks coffee",
+                name: "drinks coffee",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "drinks fill soda",
+                name: "drinks fill soda",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'regular', name: 'regular' }, { id: 'diet', name: 'diet' }],
@@ -2278,15 +2279,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "24 hour diet recall",
             answers: [
               {
-                title: "breakfast",
+                name: "breakfast",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "lunch",
+                name: "lunch",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "dinner",
+                name: "dinner",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2295,19 +2296,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Eating Disorders",
             answers: [
               {
-                title: "no eating disorder",
+                name: "no eating disorder",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "anorexia",
+                name: "anorexia",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "bulemia",
+                name: "bulemia",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "binge eating",
+                name: "binge eating",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -2316,22 +2317,22 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Weight History",
             answers: [
               {
-                title: "high weight: fill pounds",
+                name: "high weight: fill pounds",
                 answerType: ANSWER_TYPE.NORMAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "low weight: fill pounds",
+                name: "low weight: fill pounds",
                 answerType: ANSWER_TYPE.NORMAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "desired/goal weight: fill pounds",
+                name: "desired/goal weight: fill pounds",
                 answerType: ANSWER_TYPE.NORMAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "past diets",
+                name: "past diets",
                 answerType: ANSWER_TYPE.NORMAL,
               },
             ]
@@ -2340,52 +2341,52 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "GI",
             answers: [
               {
-                title: "no heartburn",
+                name: "no heartburn",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no bloating",
+                name: "no bloating",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no constipation",
+                name: "no constipation",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no diarrhea",
+                name: "no diarrhea",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no vomiting",
+                name: "no vomiting",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "heartburn",
+                name: "heartburn",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "bloating",
+                name: "bloating",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "constipation",
+                name: "constipation",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "diarrhea",
+                name: "diarrhea",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "vomiting",
+                name: "vomiting",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "bowel movements: fill per day",
+                name: "bowel movements: fill per day",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "bowel movements: fill per week",
+                name: "bowel movements: fill per week",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
@@ -2395,57 +2396,57 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Social",
             answers: [
               {
-                title: "eats breakfast",
+                name: "eats breakfast",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "cooks meals",
+                name: "cooks meals",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "food shops",
+                name: "food shops",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "likes to cook",
+                name: "likes to cook",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "does not eat breakfast",
+                name: "does not eat breakfast",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "does not cook meals",
+                name: "does not cook meals",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "does not food shop",
+                name: "does not food shop",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "does not like to cook",
+                name: "does not like to cook",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "level of cooking skill",
+                name: "level of cooking skill",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "other special diets in the house",
+                name: "other special diets in the house",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "food budget fill",
-                answerType: ANSWER_TYPE.NEUTRAL,
-                questionType: QuestionType.NUMBER
-              },
-              {
-                title: "bowel movements: fill per week",
+                name: "food budget fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "fill meals per week taken away from home",
+                name: "bowel movements: fill per week",
+                answerType: ANSWER_TYPE.NEUTRAL,
+                questionType: QuestionType.NUMBER
+              },
+              {
+                name: "fill meals per week taken away from home",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               }
@@ -2455,28 +2456,28 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Food Allergies or Intolerances",
             answers: [
               {
-                title: "no food allergies",
+                name: "no food allergies",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no lactose intolerance",
+                name: "no lactose intolerance",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no aversions/dislikes",
+                name: "no aversions/dislikes",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "food allergy to: fill",
+                name: "food allergy to: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "lactose intolerance",
+                name: "lactose intolerance",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "aversions/dislikes",
+                name: "aversions/dislikes",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -2485,29 +2486,29 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Activity",
             answers: [
               {
-                title: "exercises fill times per week",
+                name: "exercises fill times per week",
                 answerType: ANSWER_TYPE.NORMAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "sufficient activity",
+                name: "sufficient activity",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "does not exercise",
+                name: "does not exercise",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "typical work out lasts fill minutes",
+                name: "typical work out lasts fill minutes",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "typical work out consists of",
+                name: "typical work out consists of",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "active gym membership",
+                name: "active gym membership",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2516,39 +2517,39 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Lifestyle",
             answers: [
               {
-                title: "motivated to make changes",
+                name: "motivated to make changes",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "losing weight",
+                name: "losing weight",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "making dietary changes",
+                name: "making dietary changes",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "does not eat when emotional",
+                name: "does not eat when emotional",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "not very motivated to make changes",
+                name: "not very motivated to make changes",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "not losing weight",
+                name: "not losing weight",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "not making dietary changes",
+                name: "not making dietary changes",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "eats when emotional",
+                name: "eats when emotional",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "barriers include",
+                name: "barriers include",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2557,11 +2558,11 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Supplements",
             answers: [
               {
-                title: "currently taking dietary supplement",
+                name: "currently taking dietary supplement",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "currently taking vitamin supplement",
+                name: "currently taking vitamin supplement",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2570,11 +2571,11 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "High Risk Pregnancy",
             answers: [
               {
-                title: "normal pregnancy",
+                name: "normal pregnancy",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "high-risk pregnancy",
+                name: "high-risk pregnancy",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -2584,7 +2585,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "Breast Pain",
+    name: "Breast Pain",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -2595,33 +2596,33 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Location",
             answers: [
               {
-                title: "right",
+                name: "right",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "left",
+                name: "left",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "bilateral",
+                name: "bilateral",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "in the axilla",
+                name: "in the axilla",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "at the nipple",
+                name: "at the nipple",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "upper fill quadrant",
+                name: "upper fill quadrant",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'inner', name: 'inner' }, { id: 'outer', name: 'outer' }]
               },
               {
-                title: "lower fill quadrant",
+                name: "lower fill quadrant",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'inner', name: 'inner' }, { id: 'outer', name: 'outer' }]
@@ -2632,39 +2633,39 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Onset/Timing",
             answers: [
               {
-                title: "1 day",
+                name: "1 day",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "2-7 days",
+                name: "2-7 days",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "1-2 weeks",
+                name: "1-2 weeks",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "2-4 weeks",
+                name: "2-4 weeks",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: ">1 month",
+                name: ">1 month",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "morning",
+                name: "morning",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "noon",
+                name: "noon",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "evening",
+                name: "evening",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "nighttime",
+                name: "nighttime",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2673,19 +2674,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Duration",
             answers: [
               {
-                title: "rare",
+                name: "rare",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "constant",
+                name: "constant",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "intermittent",
+                name: "intermittent",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "fluctuates with menses",
+                name: "fluctuates with menses",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2694,39 +2695,39 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Quality",
             answers: [
               {
-                title: "sharp",
+                name: "sharp",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "dull",
+                name: "dull",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "throbbing",
+                name: "throbbing",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "burning",
+                name: "burning",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "aching",
+                name: "aching",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "stabbing",
+                name: "stabbing",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "tingling",
+                name: "tingling",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "generalized",
+                name: "generalized",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "localized",
+                name: "localized",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2735,15 +2736,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Severity",
             answers: [
               {
-                title: "mild",
+                name: "mild",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "moderate",
+                name: "moderate",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "severe",
+                name: "severe",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2752,102 +2753,102 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Context",
             answers: [
               {
-                title: "premenstrual",
+                name: "premenstrual",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "menstruating",
+                name: "menstruating",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "premenopausal",
+                name: "premenopausal",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "post menopause",
+                name: "post menopause",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "change in contraceptives",
+                name: "change in contraceptives",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "post partum",
+                name: "post partum",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "breastfeeding",
+                name: "breastfeeding",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "miscarriage",
+                name: "miscarriage",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "abortion",
+                name: "abortion",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "breast cysts",
+                name: "breast cysts",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "benign breast tumor",
+                name: "benign breast tumor",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "fibrocystic breasts",
+                name: "fibrocystic breasts",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "sexually active",
+                name: "sexually active",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "performs breast self examination",
+                name: "performs breast self examination",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "current estrogen use",
+                name: "current estrogen use",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "history of estrogen use",
+                name: "history of estrogen use",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "history of ovaries removed",
+                name: "history of ovaries removed",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "history of fertility treatments",
+                name: "history of fertility treatments",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "history of fill prior biopsies",
+                name: "history of fill prior biopsies",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "family history of breast cancer",
+                name: "family history of breast cancer",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "history of fill breast cancer",
+                name: "history of fill breast cancer",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'right', name: 'right' }, { id: 'left', name: 'left' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "radiation treatment",
+                name: "radiation treatment",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "mastectomy",
+                name: "mastectomy",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "lumpectomy",
+                name: "lumpectomy",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2856,15 +2857,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Modifying Factors",
             answers: [
               {
-                title: "touch",
+                name: "touch",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "exercise",
+                name: "exercise",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "pressure",
+                name: "pressure",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -2873,95 +2874,95 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Associated Symptoms",
             answers: [
               {
-                title: "no fever",
+                name: "no fever",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no chills",
+                name: "no chills",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no skin redness",
+                name: "no skin redness",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no nipple discharge",
+                name: "no nipple discharge",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no sore nipples",
+                name: "no sore nipples",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "breasts not full, sore, unable to express milk",
+                name: "breasts not full, sore, unable to express milk",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no breast swelling",
+                name: "no breast swelling",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no arm pain",
+                name: "no arm pain",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no arm swelling",
+                name: "no arm swelling",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "no chest pain",
+                name: "no chest pain",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "no malaise",
+                name: "no malaise",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no breast lump",
+                name: "no breast lump",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "fever",
+                name: "fever",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "redness of the skin",
+                name: "redness of the skin",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "nipple discharge",
+                name: "nipple discharge",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "sore nipples",
+                name: "sore nipples",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "breasts full, sore, unable to express milk",
+                name: "breasts full, sore, unable to express milk",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "breast swelling",
+                name: "breast swelling",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "arm pain",
+                name: "arm pain",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "arm swelling",
+                name: "arm swelling",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "chest pain",
+                name: "chest pain",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "malaise",
+                name: "malaise",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "breast lump",
+                name: "breast lump",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -2971,7 +2972,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "Joint & Soft Tissue Pain",
+    name: "Joint & Soft Tissue Pain",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -2982,55 +2983,55 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Location",
             answers: [
               {
-                title: "right",
+                name: "right",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "left",
+                name: "left",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "bilateral",
+                name: "bilateral",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "anterior",
+                name: "anterior",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "posterior",
+                name: "posterior",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "medial",
+                name: "medial",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "lateral",
+                name: "lateral",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "deep",
+                name: "deep",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "superficial",
+                name: "superficial",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "joint pain",
+                name: "joint pain",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "muscle aches",
+                name: "muscle aches",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "muscle spasms",
+                name: "muscle spasms",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "diffuse nonspecific pain, swelling, and stiffness",
+                name: "diffuse nonspecific pain, swelling, and stiffness",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -3039,47 +3040,47 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Quality",
             answers: [
               {
-                title: "aching",
+                name: "aching",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "burning",
+                name: "burning",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "throbbing",
+                name: "throbbing",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "sharp",
+                name: "sharp",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "dull",
+                name: "dull",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "superficial",
+                name: "superficial",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "deep",
+                name: "deep",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "trend is resolved",
+                name: "trend is resolved",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "trend is not changing",
+                name: "trend is not changing",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "trend is not improving",
+                name: "trend is not improving",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "trend is not worsening",
+                name: "trend is not worsening",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -3088,15 +3089,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Timing",
             answers: [
               {
-                title: "occasional",
+                name: "occasional",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "frequent",
+                name: "frequent",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "constant",
+                name: "constant",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -3105,22 +3106,22 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Duration",
             answers: [
               {
-                title: "fill days",
+                name: "fill days",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "fill weeks",
+                name: "fill weeks",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "fill months",
+                name: "fill months",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "fill years",
+                name: "fill years",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.NUMBER
               },
@@ -3130,32 +3131,32 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Severity",
             answers: [
               {
-                title: "no pain",
+                name: "no pain",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "mild",
+                name: "mild",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "moderate",
+                name: "moderate",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "severe",
+                name: "severe",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "variable",
+                name: "variable",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "pain level fill/10",
+                name: "pain level fill/10",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.NUMBER
               },
               {
-                title: "worst pain fill/10",
+                name: "worst pain fill/10",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.NUMBER
               },
@@ -3165,27 +3166,27 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Context",
             answers: [
               {
-                title: "bending",
+                name: "bending",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "lifting",
+                name: "lifting",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "twisting",
+                name: "twisting",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "sports injury",
+                name: "sports injury",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "work injury",
+                name: "work injury",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "overuse",
+                name: "overuse",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -3194,107 +3195,107 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Alleviating Factors",
             answers: [
               {
-                title: "nothing helps",
+                name: "nothing helps",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "sitting",
+                name: "sitting",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "standing",
+                name: "standing",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "lying down",
+                name: "lying down",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "position change",
+                name: "position change",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "heat",
+                name: "heat",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "ice",
+                name: "ice",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "rest",
+                name: "rest",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "elevation",
+                name: "elevation",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "exercise",
+                name: "exercise",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "stretching",
+                name: "stretching",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "limited weight bearing",
+                name: "limited weight bearing",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "PT/OT",
+                name: "PT/OT",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "chiropractic care",
+                name: "chiropractic care",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "OTC medications",
+                name: "OTC medications",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "narcotics",
+                name: "narcotics",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "NSAIDS",
+                name: "NSAIDS",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "cortisone injection",
+                name: "cortisone injection",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "vicosupplement injection",
+                name: "vicosupplement injection",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "orthotics",
+                name: "orthotics",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "previous surgery",
+                name: "previous surgery",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "brace",
+                name: "brace",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "crutches",
+                name: "crutches",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "cane",
+                name: "cane",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "wheelchair",
+                name: "wheelchair",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "walker",
+                name: "walker",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -3303,83 +3304,83 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Aggravating Factors",
             answers: [
               {
-                title: "cannot identify",
+                name: "cannot identify",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "sitting",
+                name: "sitting",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "standing",
+                name: "standing",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "lying down",
+                name: "lying down",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "walking",
+                name: "walking",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "lifting",
+                name: "lifting",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "carrying",
+                name: "carrying",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "twisting",
+                name: "twisting",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "bending/squatting",
+                name: "bending/squatting",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "pushing/pulling",
+                name: "pushing/pulling",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "throwing",
+                name: "throwing",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "ROM",
+                name: "ROM",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "weightbearing",
+                name: "weightbearing",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "exercise",
+                name: "exercise",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "getting out of bed",
+                name: "getting out of bed",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "going from sit to stand",
+                name: "going from sit to stand",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "upstairs",
+                name: "upstairs",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "downstairs",
+                name: "downstairs",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "cold weather",
+                name: "cold weather",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "damp weather",
+                name: "damp weather",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -3388,131 +3389,131 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Associated Symptoms",
             answers: [
               {
-                title: "no weakness",
+                name: "no weakness",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no numbness",
+                name: "no numbness",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no tingling",
+                name: "no tingling",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no swelling",
+                name: "no swelling",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no redness",
+                name: "no redness",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no warmth",
+                name: "no warmth",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no ecchymosis",
+                name: "no ecchymosis",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no catching/locking",
+                name: "no catching/locking",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no popping/clicking",
+                name: "no popping/clicking",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no buckling",
+                name: "no buckling",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no grinding",
+                name: "no grinding",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no instability",
+                name: "no instability",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no radiation down leg",
+                name: "no radiation down leg",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no fever/chills",
+                name: "no fever/chills",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no weight loss",
+                name: "no weight loss",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no change in bowel/bladder habits",
+                name: "no change in bowel/bladder habits",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "weakness",
+                name: "weakness",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "numbness",
+                name: "numbness",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "tingling",
+                name: "tingling",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "swelling",
+                name: "swelling",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "redness",
+                name: "redness",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "warmth",
+                name: "warmth",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "ecchymosis",
+                name: "ecchymosis",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "catching/locking",
+                name: "catching/locking",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "popping/clicking",
+                name: "popping/clicking",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "buckling",
+                name: "buckling",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "grinding",
+                name: "grinding",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "instability",
+                name: "instability",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "radiation down leg",
+                name: "radiation down leg",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "fever/chills",
+                name: "fever/chills",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "weight loss",
+                name: "weight loss",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "change in bladder/bowel habits",
+                name: "change in bladder/bowel habits",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -3522,7 +3523,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "Concussion/Head Injury",
+    name: "Concussion/Head Injury",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -3533,15 +3534,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Mechanism of Injury",
             answers: [
               {
-                title: "fall with head contact with ground",
+                name: "fall with head contact with ground",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "fall with head contact with object",
+                name: "fall with head contact with object",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "struck in head by object, type of object: fill",
+                name: "struck in head by object, type of object: fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.INPUT
               },
@@ -3551,20 +3552,20 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Onset/Timing",
             answers: [
               {
-                title: "date fill",
+                name: "date fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "game",
+                name: "game",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "practice",
+                name: "practice",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "other: fill",
+                name: "other: fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.INPUT
               },
@@ -3574,82 +3575,82 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Context",
             answers: [
               {
-                title: "no prior concussions",
+                name: "no prior concussions",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no amnesic for events prior to injury",
+                name: "no amnesic for events prior to injury",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no amnesic for events after injury",
+                name: "no amnesic for events after injury",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "fill prior concussion(s)",
+                name: "fill prior concussion(s)",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "date of occurrence fill",
+                name: "date of occurrence fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "amnesic for events prior to injury",
+                name: "amnesic for events prior to injury",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "amnesic for events after injury lasting fill",
-                answerType: ANSWER_TYPE.ABNORMAL,
-                questionType: QuestionType.INPUT
-              },
-              {
-                title: "unable to go to school",
+                name: "amnesic for events after injury lasting fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "other symptoms fill",
+                name: "unable to go to school",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "seen at ER fill",
+                name: "other symptoms fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.INPUT
+              },
+              {
+                name: "seen at ER fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "seen at urgent care fill",
+                name: "seen at urgent care fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.INPUT
               },
               {
-                title: "evaluated by athletic trainer",
+                name: "evaluated by athletic trainer",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "evaluated by team physician",
+                name: "evaluated by team physician",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "no medical attention",
+                name: "no medical attention",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "CT of head",
+                name: "CT of head",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "plain film x-ray of head",
+                name: "plain film x-ray of head",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "plain film x-ray of neck",
+                name: "plain film x-ray of neck",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
               {
-                title: "no imaging studies performed",
+                name: "no imaging studies performed",
                 answerType: ANSWER_TYPE.NEUTRAL,
               },
             ]
@@ -3658,103 +3659,103 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Symptoms",
             answers: [
               {
-                title: "no loss of consciousness",
+                name: "no loss of consciousness",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "loss of consciousness",
+                name: "loss of consciousness",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "headache",
+                name: "headache",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "pressure in head",
+                name: "pressure in head",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "neck pain",
+                name: "neck pain",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "nausea/vomiting",
+                name: "nausea/vomiting",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "dizziness",
+                name: "dizziness",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "blurred vision",
+                name: "blurred vision",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "balance problems",
+                name: "balance problems",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "sensitivity to light",
+                name: "sensitivity to light",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "sensitivity to noise",
+                name: "sensitivity to noise",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "feeling slowed down",
+                name: "feeling slowed down",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "feeling like in a fog",
+                name: "feeling like in a fog",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "don't feel right",
+                name: "don't feel right",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "difficulty concentrating",
+                name: "difficulty concentrating",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "difficulty remembering",
+                name: "difficulty remembering",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "fatigue",
+                name: "fatigue",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "confusion",
+                name: "confusion",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "drowsiness",
+                name: "drowsiness",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "trouble falling asleep",
+                name: "trouble falling asleep",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "more emotional",
+                name: "more emotional",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "irritability",
+                name: "irritability",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "sadness",
+                name: "sadness",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "nervous",
+                name: "nervous",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "anxiety",
+                name: "anxiety",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -3763,19 +3764,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
             name: "Modifying Factors",
             answers: [
               {
-                title: "no increase with physical activity",
+                name: "no increase with physical activity",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "no increase with mental activity",
+                name: "no increase with mental activity",
                 answerType: ANSWER_TYPE.NORMAL,
               },
               {
-                title: "increase with physical activity",
+                name: "increase with physical activity",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
               {
-                title: "increase with mental activity",
+                name: "increase with mental activity",
                 answerType: ANSWER_TYPE.ABNORMAL,
               },
             ]
@@ -3785,7 +3786,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ],
   },
   {
-    title: "Fever",
+    name: "Fever",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -3794,28 +3795,28 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: QUALITY,
             answers: [
-              { title: "cannot identify", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "symptoms worse during the day", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "symptoms worse in the evening", answerType: ANSWER_TYPE.NEUTRAL }
+              { name: "cannot identify", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "symptoms worse during the day", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "symptoms worse in the evening", answerType: ANSWER_TYPE.NEUTRAL }
             ]
           },
           {
             name: SEVERITY,
             answers: [
-              { title: "highest fever", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "improving", answerType: ANSWER_TYPE.NORMAL },
-              { title: "worsening", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "same", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "pain fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.NUMBER },
+              { name: "highest fever", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "improving", answerType: ANSWER_TYPE.NORMAL },
+              { name: "worsening", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "same", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "pain fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.NUMBER },
             ]
           },
           {
             name: DURATION,
             answers: [
-              { title: "constant", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "intermittent", answerType: ANSWER_TYPE.NEUTRAL, },
+              { name: "constant", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "intermittent", answerType: ANSWER_TYPE.NEUTRAL, },
               {
-                title: "fever typically lasts fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options:
+                name: "fever typically lasts fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options:
                   [
                     {
                       id: "less_than_30_minutes", name: "<30 minutes"
@@ -3831,7 +3832,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
                   ]
               },
               {
-                title: "symptoms started fill",
+                name: "symptoms started fill",
                 answerType: ANSWER_TYPE.NEUTRAL,
                 questionType: QuestionType.SELECT,
                 options: [
@@ -3854,78 +3855,78 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: ONSET_TIMING,
             answers: [
-              { title: "first recorded", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "random onset", answerType: ANSWER_TYPE.NEUTRAL, },
-              { title: "occurs in a pattern", answerType: ANSWER_TYPE.NEUTRAL, },
-              { title: "fill days/week", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT },
+              { name: "first recorded", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "random onset", answerType: ANSWER_TYPE.NEUTRAL, },
+              { name: "occurs in a pattern", answerType: ANSWER_TYPE.NEUTRAL, },
+              { name: "fill days/week", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT },
             ]
           },
           {
             name: CONTEXT,
             answers: [
-              { title: "no recent travel", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tick/insect bites", answerType: ANSWER_TYPE.NORMAL, },
-              { title: "no new medications", answerType: ANSWER_TYPE.NORMAL, },
-              { title: "no animal exposure", answerType: ANSWER_TYPE.NORMAL, },
-              { title: "no recent surgery/procedure", answerType: ANSWER_TYPE.NORMAL, },
-              { title: "no recent dental work", answerType: ANSWER_TYPE.NORMAL, },
-              { title: "no IV drug use", answerType: ANSWER_TYPE.NORMAL, },
-              { title: "no immunocompromise", answerType: ANSWER_TYPE.NORMAL, },
-              { title: "recent travel", answerType: ANSWER_TYPE.ABNORMAL, },
-              { title: "recent tick/insect bites", answerType: ANSWER_TYPE.ABNORMAL, },
-              { title: "new medications", answerType: ANSWER_TYPE.ABNORMAL, },
-              { title: "animal exposure", answerType: ANSWER_TYPE.ABNORMAL, },
-              { title: "recent surgery/procedure", answerType: ANSWER_TYPE.ABNORMAL, },
-              { title: "recent dental work", answerType: ANSWER_TYPE.ABNORMAL, },
-              { title: "IV drug use", answerType: ANSWER_TYPE.ABNORMAL, },
-              { title: "immunocompromise", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "no recent travel", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tick/insect bites", answerType: ANSWER_TYPE.NORMAL, },
+              { name: "no new medications", answerType: ANSWER_TYPE.NORMAL, },
+              { name: "no animal exposure", answerType: ANSWER_TYPE.NORMAL, },
+              { name: "no recent surgery/procedure", answerType: ANSWER_TYPE.NORMAL, },
+              { name: "no recent dental work", answerType: ANSWER_TYPE.NORMAL, },
+              { name: "no IV drug use", answerType: ANSWER_TYPE.NORMAL, },
+              { name: "no immunocompromise", answerType: ANSWER_TYPE.NORMAL, },
+              { name: "recent travel", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "recent tick/insect bites", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "new medications", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "animal exposure", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "recent surgery/procedure", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "recent dental work", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "IV drug use", answerType: ANSWER_TYPE.ABNORMAL, },
+              { name: "immunocompromise", answerType: ANSWER_TYPE.ABNORMAL, },
             ]
           },
           {
             name: MODIFYING_FACTORS,
             answers: [
-              { title: "nothing gives relief", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "nothing makes it worse", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "OTC medication", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "nothing gives relief", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "nothing makes it worse", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "OTC medication", answerType: ANSWER_TYPE.NEUTRAL },
 
             ]
           },
           {
             name: ASSOCIATED_SYMPTOMS,
             answers: [
-              { title: "no rash", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no lethargy", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no headache", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no cold symptoms", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no unintentional weight loss", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no lower extremity edema", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no chills", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nasal congestion/discharge", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "rash", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "lethargy", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "headache", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "cold symptoms", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "rapid or irregular heartbeat (palpitations)", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "weight loss (abnormal)", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "lower extremity edema", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "generalized pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "chills", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nasal congestion/discharge", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "flank pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no rash", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no lethargy", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no night sweats", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no headache", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no cold symptoms", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no diarrhea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no unintentional weight loss", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no lower extremity edema", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no chills", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nasal congestion/discharge", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no sore throat", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "rash", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "lethargy", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "night sweats", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "headache", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "cold symptoms", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "diarrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "rapid or irregular heartbeat (palpitations)", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "weight loss (abnormal)", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "lower extremity edema", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "generalized pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "chills", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nasal congestion/discharge", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sore throat", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "flank pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
 
             ]
           }
@@ -3934,7 +3935,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ]
   },
   {
-    title: "Breast Mass",
+    name: "Breast Mass",
     templateType: TemplateType.HPI,
     sections: [
       {
@@ -3943,107 +3944,107 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: "Location",
             answers: [
-              { title: "right", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "left", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "bilateral", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "upper fill quadrant", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "inner", name: "inner" }, { id: "outer", name: "outer" }] },
-              { title: "lower fill quadrant", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "inner", name: "inner" }, { id: "outer", name: "outer" }] },
-              { title: "nipple", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "areola", answerType: ANSWER_TYPE.NEUTRAL }
+              { name: "right", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "left", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "bilateral", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "upper fill quadrant", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "inner", name: "inner" }, { id: "outer", name: "outer" }] },
+              { name: "lower fill quadrant", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "inner", name: "inner" }, { id: "outer", name: "outer" }] },
+              { name: "nipple", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "areola", answerType: ANSWER_TYPE.NEUTRAL }
             ]
           },
           {
             name: ONSET_TIMING,
             answers: [
-              { title: "1 day", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "2-7 days", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "1-2 weeks", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "2-4 weeks", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "1-4 months", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: ">4 months", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "morning", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "evening", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "nighttime", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "sudden", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "gradual", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "after starting new medication", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "associated with change in diet", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "1 day", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "2-7 days", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "1-2 weeks", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "2-4 weeks", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "1-4 months", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: ">4 months", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "morning", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "evening", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "nighttime", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "sudden", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "gradual", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "after starting new medication", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "associated with change in diet", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: QUALITY,
             answers: [
-              { title: "size fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT, },
-              { title: "unit fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "cm", name: "cm" }, { id: "mm", name: "mm" }] },
-              { title: "asymptomatic", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "painful", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "sharp", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "dull", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "localized", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "radiating", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "soft", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "firm", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "tender", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "fixed", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "mobile", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "size fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT, },
+              { name: "unit fill", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "cm", name: "cm" }, { id: "mm", name: "mm" }] },
+              { name: "asymptomatic", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "painful", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "sharp", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "dull", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "localized", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "radiating", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "soft", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "firm", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "tender", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "fixed", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "mobile", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: SEVERITY,
             answers: [
-              { title: "mild", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "moderate", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "severe", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "mild", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "moderate", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "severe", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: DURATION,
             answers: [
-              { title: "intermittent", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "constant", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "persistent", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "intermittent", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "constant", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "persistent", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: CONTEXT,
             answers: [
-              { title: "performs breast self examination", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "fill prior biopsies", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT },
-              { title: "fibrocystic breasts", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "breast cysts", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "benign breast tumor", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "prior fill prior", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "right", name: "right" }, { id: "left", name: "left" }, { id: "bilateral", name: "bilateral" }] },
-              { title: "lumpectomy", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "mastectomy", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "radiation treatment", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "history of estrogen use", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "current estrogen use", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "performs breast self examination", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "fill prior biopsies", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.INPUT },
+              { name: "fibrocystic breasts", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "breast cysts", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "benign breast tumor", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "prior fill prior", answerType: ANSWER_TYPE.NEUTRAL, questionType: QuestionType.SELECT, options: [{ id: "right", name: "right" }, { id: "left", name: "left" }, { id: "bilateral", name: "bilateral" }] },
+              { name: "lumpectomy", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "mastectomy", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "radiation treatment", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "history of estrogen use", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "current estrogen use", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: MODIFYING_FACTORS,
             answers: [
-              { title: "touch", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "pressure", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "touch", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "pressure", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: ASSOCIATED_SYMPTOMS,
             answers: [
-              { title: "no fever", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no skin redness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nipple discharge", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no breast swelling", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no arm pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no arm swelling", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "fever", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "redness of the skin", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nipple discharge", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "breast swelling", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "arm pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "arm swelling", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no fever", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no skin redness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nipple discharge", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no breast swelling", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no arm pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no arm swelling", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "fever", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "redness of the skin", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nipple discharge", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "breast swelling", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "arm pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "arm swelling", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -4051,7 +4052,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ]
   },
   {
-    title: "Brief Pediatric Obesity ROS",
+    name: "Brief Pediatric Obesity ROS",
     templateType: TemplateType.REVIEW_OF_SYSTEM,
     sections: [
       {
@@ -4060,18 +4061,18 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: "General",
             answers: [
-              { title: "no malaise", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no lethargy", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no anxiety", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no depression", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no hyperactivity", answerType: ANSWER_TYPE.NORMAL },
-              { title: "malaise", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "lethargy", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "anxiety", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "depression", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "hyperactivity", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no malaise", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no fatigue", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no lethargy", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no anxiety", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no depression", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no hyperactivity", answerType: ANSWER_TYPE.NORMAL },
+              { name: "malaise", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "fatigue", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "lethargy", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "anxiety", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "depression", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "hyperactivity", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
         ]
@@ -4081,19 +4082,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Skin',
             answers: [
-              { title: "no pruritus", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no rash", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no sleep apnea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no snoring", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no daytime sleepiness", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nasal congestion", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no pruritus", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no rash", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no sleep apnea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no snoring", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no daytime sleepiness", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nasal congestion", answerType: ANSWER_TYPE.NORMAL },
 
-              { title: "pruritus", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "rash", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "snoring", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "daytime sleepiness", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nasal congestion", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "pruritus", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "rash", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sleep apnea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "snoring", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "daytime sleepiness", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nasal congestion", answerType: ANSWER_TYPE.ABNORMAL },
 
             ]
           }
@@ -4105,11 +4106,11 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Cardiopulmonary',
             answers: [
-              { title: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no palpitations", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no chest pain", answerType: ANSWER_TYPE.NORMAL },
 
-              { title: "palpitations", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "palpitations", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "chest pain", answerType: ANSWER_TYPE.ABNORMAL },
 
             ]
           }
@@ -4121,14 +4122,14 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: RESPIRATORY,
             answers: [
-              { title: "no cough", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
-              { title: "cough", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no cough", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no wheezing", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no shortness of breath", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no coughing up blood", answerType: ANSWER_TYPE.NORMAL },
+              { name: "cough", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "wheezing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "shortness of breath", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "coughing up blood", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -4138,19 +4139,19 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'GI',
             answers: [
-              { title: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no heartburn", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nausea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no constipation", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no blood stools", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no abdominal pain", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no heartburn", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nausea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no vomiting", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no constipation", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no blood stools", answerType: ANSWER_TYPE.NORMAL },
 
-              { title: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "heartburn", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nausea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "constipation", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "blood stools", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "abdominal pain", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "heartburn", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nausea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "vomiting", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "constipation", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "blood stools", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -4161,16 +4162,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'GU',
             answers: [
-              { title: "no polyuria", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no polydipsia", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no nocturnal enuresis", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no oligomenorrhea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no amenorrhea", answerType: ANSWER_TYPE.NORMAL },
-              { title: "polyuria", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "polydipsia", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "nocturnal enuresis", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "oligomenorrhea", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "amenorrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no polyuria", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no polydipsia", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no nocturnal enuresis", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no oligomenorrhea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no amenorrhea", answerType: ANSWER_TYPE.NORMAL },
+              { name: "polyuria", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "polydipsia", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "nocturnal enuresis", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "oligomenorrhea", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "amenorrhea", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -4180,16 +4181,16 @@ export const TEMPLATE_DATA: TemplatesType[] = [
         questions: [{
           name: "Neuromuscular",
           answers: [
-            { title: "no headache", answerType: ANSWER_TYPE.NORMAL },
-            { title: "no syncope", answerType: ANSWER_TYPE.NORMAL },
-            { title: "no weakness", answerType: ANSWER_TYPE.NORMAL },
-            { title: "no hip/knee pain", answerType: ANSWER_TYPE.NORMAL },
-            { title: "no restricted ROM", answerType: ANSWER_TYPE.NORMAL },
-            { title: "headache", answerType: ANSWER_TYPE.ABNORMAL },
-            { title: "fainting (syncope)", answerType: ANSWER_TYPE.ABNORMAL },
-            { title: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
-            { title: "hip/knee pain", answerType: ANSWER_TYPE.ABNORMAL },
-            { title: "restricted ROM", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "no headache", answerType: ANSWER_TYPE.NORMAL },
+            { name: "no syncope", answerType: ANSWER_TYPE.NORMAL },
+            { name: "no weakness", answerType: ANSWER_TYPE.NORMAL },
+            { name: "no hip/knee pain", answerType: ANSWER_TYPE.NORMAL },
+            { name: "no restricted ROM", answerType: ANSWER_TYPE.NORMAL },
+            { name: "headache", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "fainting (syncope)", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "weakness", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "hip/knee pain", answerType: ANSWER_TYPE.ABNORMAL },
+            { name: "restricted ROM", answerType: ANSWER_TYPE.ABNORMAL },
           ]
         }]
       },
@@ -4199,13 +4200,13 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: PSYH,
             answers: [
-              { title: "no sleep disturbances", answerType: ANSWER_TYPE.NORMAL },
-              { title: "feeling safe in relationship", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no alcohol abuse", answerType: ANSWER_TYPE.NORMAL },
-              { title: "sleep disturbances", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "restless sleep", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "feeling unsafe in relationship", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "alcohol abuse", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no sleep disturbances", answerType: ANSWER_TYPE.NORMAL },
+              { name: "feeling safe in relationship", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no alcohol abuse", answerType: ANSWER_TYPE.NORMAL },
+              { name: "sleep disturbances", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "restless sleep", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "feeling unsafe in relationship", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "alcohol abuse", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -4215,11 +4216,11 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: HEMATOLOGIC_LYMPHATIC,
             answers: [
-              { title: "no swollen glands", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no bruising", answerType: ANSWER_TYPE.NORMAL },
-              { title: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no swollen glands", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no bruising", answerType: ANSWER_TYPE.NORMAL },
+              { name: "swollen glands", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "easy bruising", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "excessive bleeding", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           }
         ]
@@ -4227,7 +4228,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ]
   },
   {
-    title: "Fibromyalgia Exam",
+    name: "Fibromyalgia Exam",
     templateType: TemplateType.PHYSICAL_EXAM,
     sections: [
       {
@@ -4236,62 +4237,62 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: "Method",
             answers: [
-              { title: "using finger", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "using algometer", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "using finger", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "using algometer", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: "Right Muscles",
             answers: [
-              { title: "no tender points on suboccpital muscles", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on trapezius", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on supraspinatus", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on lateral epicondyle", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on gluteal", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on greater trochanter", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on medial knee", answerType: ANSWER_TYPE.NORMAL },
-              { title: "tender points on suboccpital muscles", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on trapezius", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on supraspinatus", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on lateral epicondyle", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on gluteal", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on greater trochanter", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on medial knee", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no tender points on suboccpital muscles", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on trapezius", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on supraspinatus", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on lateral epicondyle", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on gluteal", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on greater trochanter", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on medial knee", answerType: ANSWER_TYPE.NORMAL },
+              { name: "tender points on suboccpital muscles", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on trapezius", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on supraspinatus", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on lateral epicondyle", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on gluteal", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on greater trochanter", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on medial knee", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Left Muscles",
             answers: [
-              { title: "no tender points on suboccpital muscles", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on trapezius", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on supraspinatus", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on lateral epicondyle", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on gluteal", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on greater trochanter", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no tender points on medial knee", answerType: ANSWER_TYPE.NORMAL },
-              { title: "tender points on suboccpital muscles", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on trapezius", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on supraspinatus", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on lateral epicondyle", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on gluteal", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on greater trochanter", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tender points on medial knee", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no tender points on suboccpital muscles", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on trapezius", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on supraspinatus", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on lateral epicondyle", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on gluteal", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on greater trochanter", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points on medial knee", answerType: ANSWER_TYPE.NORMAL },
+              { name: "tender points on suboccpital muscles", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on low cervical at CS-7 level", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on trapezius", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on supraspinatus", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on 2nd costochondral junction", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on lateral epicondyle", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on gluteal", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on greater trochanter", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tender points on medial knee", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Findings",
             answers: [
-              { title: "no tender points", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no tender points", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "total fibromyalgia tender points: fill/18",
+                name: "total fibromyalgia tender points: fill/18",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: Array.from({ length: 10 }, (_, i) => i + 1).map((value) => {
@@ -4308,7 +4309,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ]
   },
   {
-    title: "Mental Status Exam",
+    name: "Mental Status Exam",
     templateType: TemplateType.PHYSICAL_EXAM,
     sections: [
       {
@@ -4317,177 +4318,177 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: "Appearance",
             answers: [
-              { title: "well-groomed", answerType: ANSWER_TYPE.NORMAL },
-              { title: "clean", answerType: ANSWER_TYPE.NORMAL },
-              { title: "normal weight", answerType: ANSWER_TYPE.NORMAL },
-              { title: "disheveled", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "body odor", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "soiled clothing", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "underweight", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "overweight", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "obesity", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "appears fatigued", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "well-groomed", answerType: ANSWER_TYPE.NORMAL },
+              { name: "clean", answerType: ANSWER_TYPE.NORMAL },
+              { name: "normal weight", answerType: ANSWER_TYPE.NORMAL },
+              { name: "disheveled", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "body odor", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "soiled clothing", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "underweight", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "overweight", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "obesity", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "appears fatigued", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Behavior",
             answers: [
-              { title: "eye contact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "cooperative", answerType: ANSWER_TYPE.NORMAL },
-              { title: "calm", answerType: ANSWER_TYPE.NORMAL },
-              { title: "pleasant", answerType: ANSWER_TYPE.NORMAL },
-              { title: "active", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "hyperactive", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "agitated", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "impulsive", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "disruptive", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "oppositional", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "guarded", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "aggressive", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "eye contact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "cooperative", answerType: ANSWER_TYPE.NORMAL },
+              { name: "calm", answerType: ANSWER_TYPE.NORMAL },
+              { name: "pleasant", answerType: ANSWER_TYPE.NORMAL },
+              { name: "active", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "hyperactive", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "agitated", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "impulsive", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "disruptive", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "oppositional", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "guarded", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "aggressive", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Speech",
             answers: [
-              { title: "fluent", answerType: ANSWER_TYPE.NORMAL },
-              { title: "clear", answerType: ANSWER_TYPE.NORMAL },
-              { title: "normal volume", answerType: ANSWER_TYPE.NORMAL },
-              { title: "soft", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "loud", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "lisp", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "slow", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "pressured", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "stutter", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "impediment", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "speech delay", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "absent speech", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "speech refusal", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "monotone", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "reciprocal", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "fluent", answerType: ANSWER_TYPE.NORMAL },
+              { name: "clear", answerType: ANSWER_TYPE.NORMAL },
+              { name: "normal volume", answerType: ANSWER_TYPE.NORMAL },
+              { name: "soft", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "loud", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "lisp", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "slow", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "pressured", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "stutter", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "impediment", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "speech delay", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "absent speech", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "speech refusal", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "monotone", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "reciprocal", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Perception",
             answers: [
-              { title: "no hallucinations", answerType: ANSWER_TYPE.NORMAL },
-              { title: "visual hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "auditory hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "olfactory hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tactile hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "no hallucinations", answerType: ANSWER_TYPE.NORMAL },
+              { name: "visual hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "auditory hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "olfactory hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tactile hallucinations", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Cognition",
             answers: [
-              { title: "alert", answerType: ANSWER_TYPE.NORMAL },
-              { title: "oriented to situation", answerType: ANSWER_TYPE.NORMAL },
-              { title: "oriented to time", answerType: ANSWER_TYPE.NORMAL },
-              { title: "oriented to person", answerType: ANSWER_TYPE.NORMAL },
-              { title: "memory intact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "normal concentrating ability", answerType: ANSWER_TYPE.NORMAL },
-              { title: "normal attention", answerType: ANSWER_TYPE.NORMAL },
-              { title: "disoriented to situation", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "disoriented to time", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "disoriented to place", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "disoriented to person", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "memory impaired", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "impaired concentration", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "impaired attention", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "alert", answerType: ANSWER_TYPE.NORMAL },
+              { name: "oriented to situation", answerType: ANSWER_TYPE.NORMAL },
+              { name: "oriented to time", answerType: ANSWER_TYPE.NORMAL },
+              { name: "oriented to person", answerType: ANSWER_TYPE.NORMAL },
+              { name: "memory intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "normal concentrating ability", answerType: ANSWER_TYPE.NORMAL },
+              { name: "normal attention", answerType: ANSWER_TYPE.NORMAL },
+              { name: "disoriented to situation", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "disoriented to time", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "disoriented to place", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "disoriented to person", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "memory impaired", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "impaired concentration", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "impaired attention", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Intelligence",
             answers: [
-              { title: "above average", answerType: ANSWER_TYPE.NORMAL },
-              { title: "below average", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "average", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "above average", answerType: ANSWER_TYPE.NORMAL },
+              { name: "below average", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "average", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: "Memory",
             answers: [
-              { title: "remote", answerType: ANSWER_TYPE.NEUTRAL },
-              { title: "recent", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "remote", answerType: ANSWER_TYPE.NEUTRAL },
+              { name: "recent", answerType: ANSWER_TYPE.NEUTRAL },
             ]
           },
           {
             name: "Mood",
             answers: [
-              { title: "euthymic", answerType: ANSWER_TYPE.NORMAL },
-              { title: "sad", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "irritable", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "labile", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "apathetic", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "elated", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "angry", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "euthymic", answerType: ANSWER_TYPE.NORMAL },
+              { name: "sad", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "irritable", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "labile", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "apathetic", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "elated", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "angry", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Affect",
             answers: [
-              { title: "pleasant", answerType: ANSWER_TYPE.NORMAL },
-              { title: "happy", answerType: ANSWER_TYPE.NORMAL },
-              { title: "congruent to thought content", answerType: ANSWER_TYPE.NORMAL },
-              { title: "anxious", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "angry", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "hostile", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sullen", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "sad", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tearful", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "flat", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "constricted", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "incongruent to thought content", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "expansive", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "euphoric", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "pleasant", answerType: ANSWER_TYPE.NORMAL },
+              { name: "happy", answerType: ANSWER_TYPE.NORMAL },
+              { name: "congruent to thought content", answerType: ANSWER_TYPE.NORMAL },
+              { name: "anxious", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "angry", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "hostile", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sullen", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "sad", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tearful", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "flat", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "constricted", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "incongruent to thought content", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "expansive", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "euphoric", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Insight",
             answers: [
-              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "impaired", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "impaired", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Judgment",
             answers: [
-              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "impaired", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "impaired", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Thought Processes",
             answers: [
-              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "perseveration", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "circumstantial", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "tangential", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "loose", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "flight of ideas", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "thought blocking", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "perseveration", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "circumstantial", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "tangential", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "loose", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "flight of ideas", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "thought blocking", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Thought Content",
             answers: [
-              { title: "unremarkable", answerType: ANSWER_TYPE.NORMAL },
-              { title: "thoughts of self-harm", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "suicidal ideation", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "homicidal ideation", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "delusions", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "obsessions", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "unremarkable", answerType: ANSWER_TYPE.NORMAL },
+              { name: "thoughts of self-harm", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "suicidal ideation", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "homicidal ideation", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "delusions", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "obsessions", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
           {
             name: "Thought Content",
             answers: [
-              { title: "intact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "tremor", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "vocal tic", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "motor tics", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "EPS", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "unsteady", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "abnormal movements", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "tremor", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "vocal tic", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "motor tics", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "EPS", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "unsteady", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "abnormal movements", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
         ]
@@ -4495,7 +4496,7 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ]
   },
   {
-    title: "Brief Eye Exam",
+    name: "Brief Eye Exam",
     templateType: TemplateType.PHYSICAL_EXAM,
     sections: [
       {
@@ -4504,14 +4505,14 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: "General Appearance",
             answers: [
-              { title: "healthy-appearing", answerType: ANSWER_TYPE.NORMAL },
-              { title: "well-nourished", answerType: ANSWER_TYPE.NORMAL },
-              { title: "well-developed", answerType: ANSWER_TYPE.NORMAL },
-              { title: "cachectic", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "too thin", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "overweight", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "obese", answerType: ANSWER_TYPE.ABNORMAL },
-              { title: "morbidly obese", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "healthy-appearing", answerType: ANSWER_TYPE.NORMAL },
+              { name: "well-nourished", answerType: ANSWER_TYPE.NORMAL },
+              { name: "well-developed", answerType: ANSWER_TYPE.NORMAL },
+              { name: "cachectic", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "too thin", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "overweight", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "obese", answerType: ANSWER_TYPE.ABNORMAL },
+              { name: "morbidly obese", answerType: ANSWER_TYPE.ABNORMAL },
             ]
           },
         ]
@@ -4522,35 +4523,35 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Lids',
             answers: [
-              { title: "no erythema", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no swelling", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no lesions", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no erythema", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no swelling", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no lesions", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "erythema: fill",
+                name: "erythema: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "swelling: fill",
+                name: "swelling: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "lesions: fill",
+                name: "lesions: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "ptosis: fill",
+                name: "ptosis: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "xanthelasma: fill",
+                name: "xanthelasma: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4560,46 +4561,46 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Conjunctivae',
             answers: [
-              { title: "non-injected", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no discharge", answerType: ANSWER_TYPE.NORMAL },
+              { name: "non-injected", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no discharge", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "injected: fill",
+                name: "injected: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'generalized', name: 'generalized' }, { id: 'localized', name: 'localized' }]
               },
               {
-                title: "injected: fill",
+                name: "injected: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "clear discharge: fill",
+                name: "clear discharge: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "purulent discharge: fill",
+                name: "purulent discharge: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "mucoid discharge: fill",
+                name: "mucoid discharge: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "exophthalmos: fill",
+                name: "exophthalmos: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "chemosis: fill",
+                name: "chemosis: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4609,15 +4610,15 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Pupils',
             answers: [
-              { title: "PERRLA", answerType: ANSWER_TYPE.NORMAL },
+              { name: "PERRLA", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "nonreactive to light: fill",
+                name: "nonreactive to light: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'generalized', name: 'generalized' }, { id: 'localized', name: 'localized' }]
               },
               {
-                title: "anisocoria: fill",
+                name: "anisocoria: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4627,50 +4628,50 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Corneas',
             answers: [
-              { title: "grossly intact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "fluorescein stain--normal", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no abrasion", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no opacity", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no ulceration", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no foreign body", answerType: ANSWER_TYPE.NORMAL },
+              { name: "grossly intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "fluorescein stain--normal", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no abrasion", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no opacity", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no ulceration", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no foreign body", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "fluorescein stain--abnormal: fill",
+                name: "fluorescein stain--abnormal: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "abrasion: fill",
+                name: "abrasion: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "opacity: fill",
+                name: "opacity: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "ulceration: fill",
+                name: "ulceration: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "hazy: fill",
+                name: "hazy: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "arcus senilis: fill",
+                name: "arcus senilis: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "foreign body: fill",
+                name: "foreign body: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4680,22 +4681,22 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'EOM',
             answers: [
-              { title: "EOMI", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no discharge", answerType: ANSWER_TYPE.NORMAL },
+              { name: "EOMI", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no discharge", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "dysconjugated: fill",
+                name: "dysconjugated: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "strabismus: fill",
+                name: "strabismus: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "nystagmus: fill",
+                name: "nystagmus: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4705,9 +4706,9 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Lens',
             answers: [
-              { title: "clear", answerType: ANSWER_TYPE.NORMAL },
+              { name: "clear", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "cataract: fill",
+                name: "cataract: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4717,39 +4718,39 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Sclerae',
             answers: [
-              { title: "non-icteric", answerType: ANSWER_TYPE.NORMAL },
+              { name: "non-icteric", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "injected: fill",
+                name: "injected: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "icteric: fill",
-                answerType: ANSWER_TYPE.ABNORMAL,
-                questionType: QuestionType.SELECT,
-                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
-              }, 
-              {
-                title: "abrasion: fill",
-                answerType: ANSWER_TYPE.ABNORMAL,
-                questionType: QuestionType.SELECT,
-                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
-              }, 
-              {
-                title: "hypopyon: fill",
-                answerType: ANSWER_TYPE.ABNORMAL,
-                questionType: QuestionType.SELECT,
-                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
-              }, 
-              {
-                title: "ciliary flush: fill",
+                name: "icteric: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "hemorrhage: fill",
+                name: "abrasion: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                name: "hypopyon: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                name: "ciliary flush: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                name: "hemorrhage: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4759,63 +4760,63 @@ export const TEMPLATE_DATA: TemplatesType[] = [
           {
             name: 'Vision',
             answers: [
-              { title: "peripheral vision grossly intact", answerType: ANSWER_TYPE.NORMAL },
-              { title: "acuity grossly intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "peripheral vision grossly intact", answerType: ANSWER_TYPE.NORMAL },
+              { name: "acuity grossly intact", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "field cut: fill",
+                name: "field cut: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "acuity impaired: fill",
+                name: "acuity impaired: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
-              }, 
+              },
             ]
           },
           {
             name: 'Optic Disc',
             answers: [
-              { title: "no blurred margins", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no hemorrhages", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no papilledema", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no optic cupping", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no AV nicking", answerType: ANSWER_TYPE.NORMAL },
-              { title: "no exudates", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no blurred margins", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no hemorrhages", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no papilledema", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no optic cupping", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no AV nicking", answerType: ANSWER_TYPE.NORMAL },
+              { name: "no exudates", answerType: ANSWER_TYPE.NORMAL },
               {
-                title: "blurred margins: fill",
+                name: "blurred margins: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "hemorrhages: fill",
-                answerType: ANSWER_TYPE.ABNORMAL,
-                questionType: QuestionType.SELECT,
-                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
-              }, 
-              {
-                title: "papilledema: fill",
-                answerType: ANSWER_TYPE.ABNORMAL,
-                questionType: QuestionType.SELECT,
-                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
-              }, 
-              {
-                title: "optic cupping: fill",
-                answerType: ANSWER_TYPE.ABNORMAL,
-                questionType: QuestionType.SELECT,
-                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
-              }, 
-              {
-                title: "AV nicking: fill",
+                name: "hemorrhages: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
               },
               {
-                title: "exudates: fill",
+                name: "papilledema: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                name: "optic cupping: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                name: "AV nicking: fill",
+                answerType: ANSWER_TYPE.ABNORMAL,
+                questionType: QuestionType.SELECT,
+                options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
+              },
+              {
+                name: "exudates: fill",
                 answerType: ANSWER_TYPE.ABNORMAL,
                 questionType: QuestionType.SELECT,
                 options: [{ id: 'left', name: 'left' }, { id: 'right', name: 'right' }, { id: 'bilateral', name: 'bilateral' },]
@@ -4827,3 +4828,6 @@ export const TEMPLATE_DATA: TemplatesType[] = [
     ]
   },
 ];
+
+
+export const TEMPLATE_DATA: TemplatesType[] = [...templateData, ...templates] 
