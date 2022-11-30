@@ -211,12 +211,7 @@ export const generateUniqueNumber = () => {
 
 export const getInsuranceStatus = (value: string) => {
   const key = value as unknown as FormBuilderPaymentTypes;
-  switch (key) {
-    case FormBuilderPaymentTypes.INSURANCE:
-      return 'insurance'
-    default:
-      return 'noInsurance'
-  }
+  return key
 }
 
 export const stringCustomErrorMessage = (errors: Joi.ErrorReport[], name: string) => {
