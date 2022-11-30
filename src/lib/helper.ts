@@ -242,6 +242,15 @@ export const formatAddress = (address: string | undefined | null, city: string |
 
 export const blobToFile = (theBlob: Blob, fileName: string): File => {
   const lastModified = new Date().getTime()
-  const file =  new File([theBlob], `${fileName}.pdf`, { lastModified, type: 'application/pdf' });
+  const file = new File([theBlob], `${fileName}.pdf`, { lastModified, type: 'application/pdf' });
   return file
 }
+
+export const formatValue = (value: string) => {
+  let formatted = ''
+
+  value?.split("_").map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
+
+  return formatted?.trim();
+};
