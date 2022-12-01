@@ -7,6 +7,7 @@ import { ContactType, RelationshipType } from 'src/providers/entities/contact.en
 import { RACE, ETHNICITY, SEXUALORIENTATION, MARITIALSTATUS, GENDERIDENTITY, PRONOUNS, HOMEBOUND } from 'src/patients/entities/patient.entity'
 import { formTemplateTabIds } from 'src/lib/constants';
 import { FormTabs } from '../dto/form-payload.dto';
+import { formatValue } from 'src/lib/helper';
 
 //elements for seed
 export const ElementTypeData = [
@@ -94,10 +95,6 @@ const MAPPED_RACE = [
     name: RACE.BLACK_AFRICAN_AMERICAN,
   },
   {
-    value: RACE.BLACK_AFRICAN_AMERICAN,
-    name: RACE.BLACK_AFRICAN_AMERICAN,
-  },
-  {
     value: RACE.AMERICAN_INDIAN_ALASKA_NATIVE,
     name: RACE.AMERICAN_INDIAN_ALASKA_NATIVE,
   },
@@ -108,7 +105,7 @@ const MAPPED_RACE = [
 ];
 
 const MAPPED_ETHNICITY = [
-  { value: ETHNICITY.NONE, name: ETHNICITY.NONE },
+  { value: formatValue(ETHNICITY.NONE), name: ETHNICITY.NONE },
   { value: ETHNICITY.HISPANIC_OR_LATINO, name: ETHNICITY.HISPANIC_OR_LATINO },
   { value: ETHNICITY.NOT_HISPANIC_OR_LATINO, name: ETHNICITY.NOT_HISPANIC_OR_LATINO },
   { value: ETHNICITY.DECLINE_TO_SPECIFY, name: ETHNICITY.DECLINE_TO_SPECIFY }
