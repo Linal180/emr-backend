@@ -160,7 +160,8 @@ export enum TemplateType {
   PHYSICAL_EXERCISE = 'physicalExercise',
   TEST_INTERPRETATION = 'testInterpretation',
   CHILD_REVIEW_SYSTEM = 'Child Review System',
-  ANATOMICAL_DRAWINGS = "anatomical drawings"
+  ANATOMICAL_DRAWINGS = "anatomical drawings",
+  ASSESSMENT_PLAN = 'Assessment plan'
 }
 
 export enum ANSWER_TYPE {
