@@ -577,6 +577,7 @@ export class UserFormsService {
 
                 //update patient & appointment
                 await this.patientService.updatePatientByFormBuilder(updatePatientInputs)
+                debugger
                 const updateAppointment = await this.appointmentService.updateAppointment({ id: appointmentId, ...appointmentInputs })
                 //associate contract
                 if (appointmentContract) {
