@@ -4464,6 +4464,7 @@ enum TemplateType {
   TEST_INTERPRETATION
   CHILD_REVIEW_SYSTEM
   ANATOMICAL_DRAWINGS
+  ASSESSMENT_PLAN
 }
 
 input PatientIllnessHistoryInput {
